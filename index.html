@@ -1,0 +1,1179 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>STEPS</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+:root{--bg:#121216;--surface:#1A1A20;--surface2:#24242C;--border:#2C2C36;--text:#F1F1F5;--muted:#8B8B99;--off:#34343F;--accent:#B4A7EE;--on-accent:#1D1D24;--accent-soft:rgba(180,167,238,.16);--green:#5FC98A;--red:#EF6B73;--blue:#7FB5FF}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+body{overscroll-behavior-y:none;transition:background .25s}
+button{font:inherit;color:inherit;cursor:pointer}
+#view{max-width:560px;margin:0 auto;padding:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 18px) 16px calc(100px + env(safe-area-inset-bottom))}
+.ic{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;display:block}
+h1{font-size:26px;font-weight:750;margin:2px 0 2px;letter-spacing:-.4px}
+h2{font-size:20px;font-weight:750;margin:0 0 14px;letter-spacing:-.2px}
+h3{font-size:16px;font-weight:700;margin:0 0 12px;display:flex;align-items:center;gap:8px}
+h3 .ic{color:var(--accent)}
+.sub{color:var(--muted);font-size:14px}
+.muted{color:var(--muted)}
+.cap{color:var(--muted);font-size:12px}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:16px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:16px;margin-bottom:12px}
+.row{display:flex;align-items:center;gap:10px}
+.sp{flex:1}
+.btn{border:0;border-radius:14px;padding:12px 16px;font-weight:650;display:inline-flex;gap:8px;align-items:center;justify-content:center;transition:transform .12s,filter .15s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.primary{background:var(--accent);color:var(--on-accent)}
+.ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.small{padding:8px 12px;font-size:13px;border-radius:11px}
+.danger{color:var(--red)}
+.actions{display:flex;gap:8px;margin:0 0 14px}
+.actions .btn{flex:1}
+.seg{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.seg::-webkit-scrollbar{display:none}
+.seg button{flex:none;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:12px;padding:7px 12px;font-size:13px;font-weight:650;transition:.18s}
+.seg.fill button{flex:1;padding:7px 4px}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:12px 14px}
+.kv{font-size:20px;font-weight:750;letter-spacing:-.3px}
+.kc{font-size:12px;color:var(--muted)}
+/* цель */
+.goal{display:flex;gap:16px;align-items:center}
+.gt{font-size:19px;font-weight:750;letter-spacing:-.2px}
+.gt.ok{color:var(--green)}
+.gs{font-size:13px;color:var(--muted);margin-top:3px}
+.glabel{font-size:11px;font-weight:700;letter-spacing:1.2px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.ring text{font-family:inherit}
+.ring-p{animation:ringIn 1s cubic-bezier(.2,.8,.2,1)}
+@keyframes ringIn{from{stroke-dashoffset:var(--c)}}
+.strip{display:flex;justify-content:space-between;margin-top:16px}
+.sd{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;min-width:0}
+.sc{width:var(--cs,32px);height:var(--cs,32px);border-radius:50%;border:2px solid var(--off);display:grid;place-items:center;font-size:13px;font-weight:750;animation:pop .45s backwards}
+.sc.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.sc.rest{background:rgba(127,181,255,.18);border-color:transparent;color:var(--blue)}
+.sd.today .sc{box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--accent)}
+.sw{font-size:11px;color:var(--muted)}
+.sd.today .sw{color:var(--text);font-weight:700}
+@keyframes pop{from{transform:scale(.3);opacity:0}}
+.note{margin-top:12px;font-size:13px;color:var(--blue);display:flex;gap:6px;align-items:center}
+/* история */
+.mh{display:flex;justify-content:space-between;align-items:baseline;margin:18px 4px 8px;font-weight:700}
+.mh span{font-size:12px;font-weight:500;color:var(--muted)}
+.wi{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:12px 14px;margin-bottom:8px;transition:transform .12s;animation:fadeUp .35s backwards}
+.wi:active{transform:scale(.985)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}}
+.wd{width:44px;text-align:center;flex:none}
+.wd b{display:block;font-size:22px;line-height:1.1;font-weight:750}
+.wd small{font-size:11px;color:var(--muted)}
+.wm{flex:1;min-width:0}
+.l1{font-weight:650;font-size:14px}
+.l2{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wr{text-align:right;flex:none}
+.wr small{display:block;font-size:11px;font-weight:650;margin-top:3px}
+.dots{display:inline-flex;gap:4px}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--off)}
+.empty{text-align:center;padding:28px 18px}
+.empty .badge{margin:0 auto 12px}
+.badge{width:64px;height:64px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center}
+.more{display:block;margin:6px auto 0}
+/* графики */
+.bars{display:flex;align-items:stretch;height:170px;gap:3px;margin-top:12px}
+.bar{flex:1;display:flex;flex-direction:column;min-width:0}
+.bv{height:16px;font-size:10px;text-align:center;font-weight:650;white-space:nowrap}
+.bcol{flex:1;display:flex;align-items:flex-end;justify-content:center}
+.bfill{width:min(72%,26px);background:var(--accent);border-radius:7px 7px 3px 3px;transform-origin:bottom;animation:grow .6s cubic-bezier(.2,.8,.2,1) backwards;transition:filter .15s}
+.bfill.zero{background:var(--off)}
+.bar.sel .bfill{filter:brightness(1.15);box-shadow:0 0 0 2px var(--text)}
+@keyframes grow{from{transform:scaleY(0)}}
+.bl{height:18px;font-size:10px;color:var(--muted);text-align:center;white-space:nowrap;overflow:visible;padding-top:4px}
+.chartcap{font-size:12px;color:var(--muted);margin-top:8px;min-height:17px}
+.chart-empty{height:150px;display:grid;place-items:center;color:var(--muted);font-size:14px}
+.line{width:100%;height:auto;display:block;margin-top:10px}
+.line .draw{stroke-dasharray:2000;stroke-dashoffset:2000;animation:draw 1.2s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.fd{display:grid;grid-template-columns:86px 1fr 62px;align-items:center;gap:10px;margin:7px 0;font-size:13px}
+.fdb{height:12px;border-radius:6px;background:var(--off);overflow:hidden}
+.fdb i{display:block;height:100%;border-radius:6px;animation:growX .7s cubic-bezier(.2,.8,.2,1) backwards;transform-origin:left}
+@keyframes growX{from{transform:scaleX(0)}}
+/* вес */
+.huge{font-size:40px;font-weight:800;letter-spacing:-1px;line-height:1.1}
+.delta{display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:650}
+.pbar{height:10px;border-radius:5px;background:var(--off);position:relative;margin:30px 0 22px}
+.pfill{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:var(--accent);animation:growX .9s cubic-bezier(.2,.8,.2,1) backwards}
+.pmark{position:absolute;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--text);border:3px solid var(--surface)}
+.plab{position:absolute;bottom:16px;transform:translateX(-50%);font-size:12px;font-weight:700;white-space:nowrap}
+.pends{position:absolute;top:16px;left:0;right:0;display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+.bmi{height:10px;border-radius:5px;position:relative;margin:12px 0 22px;background:linear-gradient(90deg,#7FB5FF 0 14%,#5FC98A 14% 40%,#F2D064 40% 60%,#EF6B73 60%)}
+.bmi .pmark{top:50%}
+.bmi-t{position:absolute;top:14px;font-size:10px;color:var(--muted);transform:translateX(-50%)}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.mini .kpi{padding:10px 12px}
+.mini .kv{font-size:16px}
+.ki{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:11px 14px;margin-bottom:6px}
+/* статистика */
+.recs{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px}
+.rv{font-size:16px;font-weight:750}
+.ach{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.at{background:var(--surface2);border-radius:16px;padding:12px;position:relative;border:1px solid transparent}
+.at.done{border-color:var(--accent);background:var(--accent-soft)}
+.at.off{opacity:.55}
+.at .badge{width:38px;height:38px}
+.at b{display:block;font-size:13.5px;margin-top:8px;line-height:1.25}
+.at small{font-size:11.5px;color:var(--muted);display:block;margin-top:2px;line-height:1.3}
+.at em{position:absolute;right:12px;top:12px;font-style:normal;font-size:10.5px;color:var(--muted)}
+.at .ck{position:absolute;right:10px;top:10px;color:var(--green)}
+.ap{height:4px;border-radius:2px;background:var(--off);margin-top:10px;overflow:hidden}
+.ap i{display:block;height:100%;border-radius:2px;background:var(--accent)}
+.at.done .ap i{background:var(--green)}
+/* профиль */
+.prof{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.ava{width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:26px;font-weight:750;background:var(--accent);color:var(--on-accent);overflow:hidden;box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--accent)}
+.ava img{width:100%;height:100%;object-fit:cover}
+.sync{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted)}
+.sync i{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.sync.ok i{background:var(--green)}
+.sync.err i{background:var(--red)}
+.sync.load i{background:var(--accent);animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.3}}
+.sws{display:flex;flex-wrap:wrap;gap:10px}
+.swc{width:36px;height:36px;border-radius:50%;border:0;position:relative}
+.swc.on::after{content:"";position:absolute;inset:-5px;border-radius:50%;border:2px solid var(--text)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chip{background:var(--surface2);border-radius:10px;padding:6px 10px;font-size:12.5px}
+.hr{height:1px;background:var(--border);margin:14px 0}
+/* формы */
+.f{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;min-width:0}
+.f>span{font-size:12px;color:var(--muted)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.inp{background:var(--surface2);border:1px solid transparent;border-radius:14px;padding:12px 14px;color:var(--text);font:inherit;font-size:16px;width:100%;min-height:50px;-webkit-appearance:none;appearance:none}
+.inp:focus{outline:none;border-color:var(--accent)}
+input[type=date].inp{display:block}
+.stp{display:flex;align-items:center;background:var(--surface2);border-radius:14px;padding:5px;min-height:50px}
+.sb{width:38px;height:38px;border-radius:11px;border:1px solid var(--border);background:var(--surface);display:grid;place-items:center;touch-action:none;flex:none;user-select:none;-webkit-user-select:none;transition:transform .1s}
+.sb:active{transform:scale(.9);border-color:var(--accent)}
+.sv{flex:1;display:flex;align-items:baseline;justify-content:center;gap:4px;min-width:0}
+.sv input{width:2.9em;min-width:0;text-align:right;background:none;border:0;color:var(--text);font:inherit;font-size:17px;font-weight:700;padding:0}
+.sv input:focus{outline:none}
+.sv em{font-style:normal;color:var(--muted);font-size:13px;white-space:nowrap}
+.feel{display:flex;gap:12px;align-items:center}
+.feel button{width:38px;height:38px;border-radius:50%;border:0;background:var(--off);transition:transform .18s,background .2s}
+.feel button.on{background:var(--c)}
+.feel button:active{transform:scale(1.25)}
+.feel-l{font-weight:650;font-size:14px;margin-left:4px}
+.hint{font-size:12.5px;color:var(--muted);margin:-6px 0 14px}
+.preview{font-size:14px;color:var(--muted);font-weight:650;margin:2px 0 16px}
+.sheet-btns{display:flex;gap:8px}
+.sheet-btns .primary{flex:1}
+/* шторка */
+#sw{position:fixed;inset:0;z-index:30;pointer-events:none;visibility:hidden;transition:visibility 0s .34s}
+#sw.open{pointer-events:auto;visibility:visible;transition:none}
+#sbd{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;transition:opacity .25s}
+#sw.open #sbd{opacity:1}
+#sheet{position:absolute;left:0;right:0;bottom:0;max-height:92vh;overflow-y:auto;background:var(--bg);border-radius:24px 24px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1);max-width:560px;margin:0 auto;border-top:1px solid var(--border)}
+#sw.open #sheet{transform:none}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--off);margin:0 auto 14px}
+/* навигация */
+#tabs{position:fixed;left:0;right:0;bottom:0;z-index:10;display:flex;justify-content:space-around;padding:6px 8px calc(6px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border)}
+@supports (backdrop-filter:blur(1px)){#tabs{background:var(--tabs-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}}
+.tab{flex:1;max-width:110px;background:none;border:0;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:650;padding:4px 0}
+.ti{width:52px;height:30px;border-radius:15px;display:grid;place-items:center;transition:background .2s,color .2s}
+.tab.on{color:var(--text)}
+.tab.on .ti{background:var(--accent);color:var(--on-accent)}
+#toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:40;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:11px 12px 11px 16px;display:flex;align-items:center;gap:12px;font-weight:600;font-size:14px;transition:.25s;max-width:calc(100% - 32px);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#toast button{border:1px solid var(--border);background:transparent;border-radius:10px;padding:6px 10px;font-weight:650;font-size:13px;color:var(--accent)}
+#cg{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);padding:24px}
+#cg.show{display:flex;animation:fadeIn .25s}
+@keyframes fadeIn{from{opacity:0}}
+.cgc{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:28px 22px 22px;text-align:center;max-width:360px;width:100%;animation:popIn .4s cubic-bezier(.2,1.4,.4,1)}
+@keyframes popIn{from{transform:scale(.8);opacity:0}}
+.cgc .badge{width:80px;height:80px;margin:0 auto 14px}
+.cgc h2{margin:0 0 6px}
+.cgc p{margin:6px 0 18px}
+.confetti{position:fixed;inset:0;z-index:60;pointer-events:none;width:100%;height:100%}
+.foot{text-align:center;font-size:12px;color:var(--muted);margin-top:18px}
+</style>
+</head>
+<body>
+<main id="view"></main>
+<nav id="tabs"></nav>
+<div id="sw"><div id="sbd" data-act="close"></div><div id="sheet"></div></div>
+<div id="toast"></div>
+<div id="cg"></div>
+<input type="file" id="file" accept=".json,application/json" hidden>
+<script>
+'use strict';
+/* ============================================================ основа ==== */
+const APP = 'STEPS (by BGASHEV) Mini App v1.271026';
+const tg = window.Telegram && window.Telegram.WebApp;
+const inTG = !!(tg && tg.initData);
+const ver = v => !!(tg && tg.isVersionAtLeast && tg.isVersionAtLeast(v));
+const hasCloud = inTG && ver('6.9') && !!tg.CloudStorage;
+const tgUser = (inTG && tg.initDataUnsafe && tg.initDataUnsafe.user) || null;
+const LS = 'steps_db_' + (tgUser ? tgUser.id : 'local');
+const CH = 3900;   // размер куска для CloudStorage (лимит 4096 символов на значение)
+
+const ACCENTS = [["rose","Розовый","#F4A3BE"],["peach","Персиковый","#F7B58E"],["butter","Лимонный","#F2D679"],["mint","Мятный","#9AD9B3"],["sky","Голубой","#8FC8EE"],["lavender","Лавандовый","#B4A7EE"],["lilac","Сиреневый","#D9A8EA"],["teal","Бирюзовый","#86D5CF"],["sand","Песочный","#E3C9A0"],["mono","Монохром","#EDEDF2"]];
+const THEMES = {
+  light:{bg:"#F5F5F8",surface:"#FFFFFF",surface2:"#EFEFF4",border:"#E3E3EA",text:"#1D1D24",muted:"#8A8A98",off:"#DEDEE6"},
+  dark:{bg:"#121216",surface:"#1A1A20",surface2:"#24242C",border:"#2C2C36",text:"#F1F1F5",muted:"#8B8B99",off:"#34343F"}};
+const FEEL = {1:["Тяжело","#EF6B73"],2:["Так себе","#F59E6C"],3:["Нормально","#F2D064"],4:["Хорошо","#A9DC8A"],5:["Отлично","#5FC98A"]};
+const GREEN="#5FC98A", RED="#EF6B73", YELLOW="#F2D064", BLUE="#7FB5FF";
+const WD=["пн","вт","ср","чт","пт","сб","вс"];
+const WDF=["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"];
+const MON=["янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"];
+const MONF=["январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"];
+const W_WORK=["тренировка","тренировки","тренировок"], W_DAY=["день","дня","дней"], W_YEAR=["год","года","лет"], W_ENTRY=["запись","записи","записей"];
+const CG_LINES = ["Ты официально не диванный. Холодильник в шоке.","Дорожка гордится тобой. Диван — в депрессии.","Норма закрыта. Теперь можно и пельмени, но по-умному.","Это не просто ходьба, это дисциплина с уклоном.","Тело сказало «спасибо», хотя вслух пока не умеет."];
+const CGW_LINES = ["Весы наконец показали то, что ты заслужил.","Сказал — сделал. Редкий жанр.","Цель достигнута. Главное — не отмечать тортом."];
+
+const $ = s => document.querySelector(s);
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const sum = (a,f) => a.reduce((s,x) => s + (f ? f(x) : x), 0);
+const last = a => a[a.length - 1];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Array.from({length:32}, () => '0123456789abcdef'[Math.random()*16|0]).join('');
+const nowSec = () => Date.now() / 1000;
+
+/* ------------------------------------------------------------- даты ---- */
+const DAY = 864e5;
+const ISO_RE = /^\d{4}-\d\d-\d\d$/;
+function dn(iso){ const p = iso.split('-').map(Number); return Math.round(Date.UTC(p[0], p[1]-1, p[2]) / DAY); }
+function isoOf(n){ return new Date(n * DAY).toISOString().slice(0, 10); }
+function todayN(){ const t = new Date(); return Math.round(Date.UTC(t.getFullYear(), t.getMonth(), t.getDate()) / DAY); }
+function wdOf(n){ return (new Date(n * DAY).getUTCDay() + 6) % 7; }
+function ymd(n){ const t = new Date(n * DAY); return [t.getUTCFullYear(), t.getUTCMonth() + 1, t.getUTCDate()]; }
+function fmtDate(n, forceYear){ const [y,m,d] = ymd(n); let s = d + ' ' + MON[m-1]; if (forceYear || y !== new Date().getFullYear()) s += ' ' + y; return s; }
+
+/* ------------------------------------------------------------- числа --- */
+function num(v, d = 1){ let s = (+v).toFixed(d); if (s.includes('.')) s = s.replace(/0+$/, '').replace(/\.$/, ''); if (s === '-0') s = '0'; return s.replace('.', ','); }
+function numSep(v){ return String(Math.round(v)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+function signed(v, d = 1){ if (Math.abs(v) < Math.pow(10, -d) / 2) return '0'; return (v > 0 ? '+' : '−') + num(Math.abs(v), d); }
+function plural(n, f){ n = Math.abs(Math.round(n)); if (n % 100 >= 11 && n % 100 <= 14) return f[2]; const r = n % 10; return r === 1 ? f[0] : (r >= 2 && r <= 4 ? f[1] : f[2]); }
+const npw = (n, f) => Math.round(n) + ' ' + plural(n, f);
+function fmtMin(t){ t = Math.round(t); return t >= 60 ? `${Math.floor(t/60)} ч ${t%60} мин` : `${t} мин`; }
+const kmF = v => num(v) + ' км';
+const kcalF = v => numSep(v) + ' ккал';
+
+/* ============================================================ данные ==== */
+function defaultDB(){
+  return {v:1, updated:0, profile:{name:'', birth:'', sex:'', height:0},
+    settings:{theme:'auto', accent:'lavender', goal:{count:5, days:7}},
+    workouts:[], weights:[], weight_goal:{}, plans:[]};
+}
+function normalize(d){
+  const b = defaultDB();
+  if (!d || typeof d !== 'object') return b;
+  for (const k of Object.keys(b)) {
+    const v = d[k];
+    if (v === undefined || v === null) continue;
+    if (Array.isArray(b[k])) { if (Array.isArray(v)) b[k] = v; }
+    else if (typeof b[k] === 'object') { if (typeof v === 'object' && !Array.isArray(v)) b[k] = Object.assign(b[k], v); }
+    else if (typeof v === typeof b[k]) b[k] = v;
+  }
+  b.settings.goal = Object.assign({count:5, days:7}, b.settings.goal || {});
+  if (!['auto','light','dark'].includes(b.settings.theme)) b.settings.theme = 'auto';
+  return b;
+}
+let db = defaultDB();
+let _wcache = null;
+function invalidate(){ _wcache = null; }
+
+function G(){
+  const g = db.settings.goal || {};
+  const days = clamp(parseInt(g.days) || 7, 3, 14);
+  const count = clamp(parseInt(g.count) || 5, 1, days);
+  return {count, days};
+}
+function valid(){ return db.workouts.filter(w => w && ISO_RE.test(w.date || '')); }
+const kmOf = w => w.speed * w.minutes / 60;
+function walkKcal(speed, inc, min, kg){
+  if (!kg) return null;
+  const v = speed * 1000 / 60;
+  const vo2 = 3.5 + 0.1 * v + 1.8 * v * inc / 100;
+  return vo2 * kg / 1000 * 5 * min;
+}
+function walkMets(speed, inc){ const v = speed * 1000 / 60; return (3.5 + 0.1 * v + 1.8 * v * inc / 100) / 3.5; }
+function weightsSorted(){
+  if (!_wcache) {
+    _wcache = db.weights.filter(e => e && ISO_RE.test(e.date || '') && +e.kg > 0)
+      .slice().sort((a,b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (a.created || 0) - (b.created || 0));
+  }
+  return _wcache;
+}
+function dailyWeights(){
+  const m = new Map();
+  for (const e of weightsSorted()) m.set(dn(e.date), +e.kg);
+  return [...m.entries()].sort((a,b) => a[0] - b[0]);
+}
+function currentWeight(){ const w = weightsSorted(); return w.length ? +last(w).kg : null; }
+function weightAt(iso){
+  const w = weightsSorted();
+  if (!w.length) return null;
+  let lo = 0, hi = w.length - 1, ans = -1;
+  while (lo <= hi) { const mid = (lo + hi) >> 1; if (w[mid].date <= iso) { ans = mid; lo = mid + 1; } else hi = mid - 1; }
+  return +(ans >= 0 ? w[ans] : w[0]).kg;
+}
+const kcal = w => walkKcal(w.speed, w.incline, w.minutes, weightAt(w.date));
+function ageOf(birth){
+  if (!birth || !ISO_RE.test(birth)) return null;
+  const [y,m,d] = birth.split('-').map(Number), t = new Date();
+  return t.getFullYear() - y - ((t.getMonth() + 1 < m || (t.getMonth() + 1 === m && t.getDate() < d)) ? 1 : 0);
+}
+function bmiOf(kg, h){ if (!kg || !h) return null; const m = h / 100; return kg / (m * m); }
+function bmiCat(b){ return b < 18.5 ? ['Дефицит', BLUE] : b < 25 ? ['Норма', GREEN] : b < 30 ? ['Избыток', YELLOW] : ['Ожирение', RED]; }
+function bmrOf(kg, h, age, sex){
+  if (!(kg && h && age != null && (sex === 'm' || sex === 'f'))) return null;
+  return 10 * kg + 6.25 * h - 5 * age + (sex === 'm' ? 5 : -161);
+}
+
+/* ------------------------------------------------- логика из десктопа --- */
+function goalCount(ws, onN){ const g = G(), lo = onN - g.days + 1; let n = 0; for (const w of ws) { const d = dn(w.date); if (d >= lo && d <= onN) n++; } return n; }
+function goalInfo(ws){
+  const g = G(), t = todayN(), lo = t - g.days + 1;
+  const ds = ws.map(w => dn(w.date)).filter(n => n >= lo && n <= t);
+  const count = ds.length;
+  const burn = ds.length ? Math.min(...ds) + g.days : null;
+  let hold = null;
+  if (count >= g.count) { hold = 0; for (let k = 1; k <= g.days; k++) { if (goalCount(ws, t + k) >= g.count) hold = k; else break; } }
+  return {count, lo, hi:t, burn, hold, remaining:Math.max(0, g.count - count)};
+}
+function perDay(ws){ const m = new Map(); for (const w of ws) { const d = dn(w.date); m.set(d, (m.get(d) || 0) + 1); } return m; }
+function goalHistory(ws){
+  const g = G(), t = todayN(), per = perDay(ws);
+  if (!per.size) return [0,0,0];
+  let d = Math.min(...per.keys()), days = 0, best = 0, run = 0;
+  while (d <= t) {
+    let c = 0; for (let k = 0; k < g.days; k++) c += per.get(d - k) || 0;
+    if (c >= g.count) { days++; run++; best = Math.max(best, run); } else run = 0;
+    d++;
+  }
+  return [days, best, run];
+}
+function dayStreaks(ws){
+  const t = todayN(), s = new Set(ws.map(w => dn(w.date)).filter(n => n <= t));
+  let best = 0, run = 0, prev = null;
+  for (const d of [...s].sort((a,b) => a - b)) { run = (prev !== null && d - prev === 1) ? run + 1 : 1; best = Math.max(best, run); prev = d; }
+  let d = s.has(t) ? t : t - 1, cur = 0;
+  while (s.has(d)) { cur++; d--; }
+  return [cur, best];
+}
+function restDays(ws){   // после 5 дней подряд — 2 дня отдыха
+  const days = new Set(ws.map(w => dn(w.date))), rest = new Set();
+  for (const d of days) {
+    let ok = true; for (let k = 0; k < 5; k++) if (!days.has(d - k)) { ok = false; break; }
+    if (ok && !days.has(d + 1)) for (let k = 1; k <= 2; k++) if (!days.has(d + k)) rest.add(d + k);
+  }
+  return rest;
+}
+function bestWindow(ws){
+  const g = G(), per = perDay(ws); let best = 0, bestD = null;
+  for (const d of per.keys()) { let c = 0; for (let k = 0; k < g.days; k++) c += per.get(d - k) || 0; if (c > best) { best = c; bestD = d; } }
+  return [best, bestD];
+}
+function linearSlope(pts){
+  if (pts.length < 2) return null;
+  const x0 = pts[0][0], xs = pts.map(p => p[0] - x0), ys = pts.map(p => p[1]);
+  if (Math.max(...xs) - Math.min(...xs) < 3) return null;
+  const mx = sum(xs) / xs.length, my = sum(ys) / ys.length;
+  const den = sum(xs, x => (x - mx) ** 2);
+  if (!den) return null;
+  return xs.reduce((s, x, i) => s + (x - mx) * (ys[i] - my), 0) / den;
+}
+function weightGoalState(goal, cur){
+  if (!goal || cur == null || !goal.start || !goal.target) return null;
+  const {start, target} = goal, total = target - start;
+  const frac = Math.abs(total) < 1e-9 ? 1 : clamp((cur - start) / total, 0, 1);
+  const direction = target < start ? -1 : 1;
+  const reached = direction < 0 ? cur <= target : cur >= target;
+  return {frac:reached ? 1 : frac, reached, left:reached ? 0 : Math.abs(target - cur),
+    done:(cur - start) * direction > 0 ? Math.abs(cur - start) : 0, start, target, direction};
+}
+function periodSince(key){
+  const t = todayN();
+  if (key === '7') return t - 6;
+  if (key === '30') return t - 29;
+  if (key === '90') return t - 89;
+  if (key === '365') return t - 364;
+  if (key === '12m') { let [y,m] = ymd(t); m -= 11; while (m <= 0) { m += 12; y--; } return Math.round(Date.UTC(y, m-1, 1) / DAY); }
+  return null;
+}
+function filterPeriod(ws, key){ const s = periodSince(key); return s == null ? ws.slice() : ws.filter(w => dn(w.date) >= s); }
+function periodDays(key, ws){
+  let s = periodSince(key); const t = todayN();
+  if (s == null) s = ws.length ? Math.min(...ws.map(w => dn(w.date))) : t;
+  return Math.max(7, t - s + 1);
+}
+function bucketData(ws, key, metric){
+  const vf = metric === 'min' ? g => sum(g, w => w.minutes) : metric === 'km' ? g => sum(g, kmOf)
+    : metric === 'kcal' ? g => sum(g, w => kcal(w) || 0) : g => g.length;
+  const full = metric === 'min' ? fmtMin : metric === 'km' ? kmF : metric === 'kcal' ? kcalF : v => npw(v, W_WORK);
+  const vfmt = metric === 'km' ? v => num(v) : v => String(Math.round(v));
+  const t = todayN(), groups = [];
+  if (key === '7' || key === '30') {
+    const n = +key, by = new Map();
+    for (const w of ws) { const d = dn(w.date); if (!by.has(d)) by.set(d, []); by.get(d).push(w); }
+    for (let i = n - 1; i >= 0; i--) { const d = t - i; groups.push([n === 7 ? WD[wdOf(d)] : String(ymd(d)[2]), `${fmtDate(d)}, ${WD[wdOf(d)]}`, by.get(d) || []]); }
+  } else {
+    if (!ws.length) return [[], vfmt];
+    const [ty, tm] = ymd(t), months = [];
+    if (key === '12m') { for (let i = 11; i >= 0; i--) { let y = ty, m = tm - i; while (m <= 0) { m += 12; y--; } months.push([y, m]); } }
+    else { let [y, m] = ymd(Math.min(...ws.map(w => dn(w.date)))); while (y < ty || (y === ty && m <= tm)) { months.push([y, m]); m++; if (m > 12) { m = 1; y++; } } }
+    const by = new Map();
+    if (key === 'all' && months.length > 36) {
+      for (const w of ws) { const y = +w.date.slice(0, 4); if (!by.has(y)) by.set(y, []); by.get(y).push(w); }
+      for (let y = months[0][0]; y <= ty; y++) groups.push([String(y), String(y), by.get(y) || []]);
+    } else {
+      for (const w of ws) { const k = w.date.slice(0, 7); if (!by.has(k)) by.set(k, []); by.get(k).push(w); }
+      for (const [y, m] of months) {
+        const k = `${y}-${String(m).padStart(2, '0')}`;
+        groups.push([key === '12m' ? MON[m-1] : `${MON[m-1]} ${String(y).slice(2)}`, `${MONF[m-1][0].toUpperCase() + MONF[m-1].slice(1)} ${y}`, by.get(k) || []]);
+      }
+    }
+  }
+  return [groups.map(([lab, title, g]) => { const v = vf(g); return [lab, v, `${title} · ${full(v)}`]; }), vfmt];
+}
+function achievements(){
+  const ws = valid(), n = ws.length, km = sum(ws, kmOf), mins = sum(ws, w => w.minutes), kc = sum(ws, w => kcal(w) || 0);
+  const maxInc = Math.max(0, ...ws.map(w => w.incline)), maxMin = Math.max(0, ...ws.map(w => w.minutes));
+  const [, bs] = dayStreaks(ws), [gd, gb] = goalHistory(ws);
+  const early = ws.some(w => w.created && new Date(w.created * 1000).getHours() < 8);
+  const wr = !!(db.weight_goal || {}).reached_on, we = weightsSorted().length;
+  const a = (icon, title, desc, val, need, txt) => { const prog = need ? clamp(val / need, 0, 1) : (val ? 1 : 0);
+    return {icon, title, desc, done:prog >= 1, prog, text:txt != null ? txt : `${num(Math.min(val, need), 0)} / ${num(need, 0)}`}; };
+  return [
+    a('steps','Первый шаг','Первая тренировка',n,1), a('n:10','Десятка','10 тренировок',n,10), a('n:100','Сотня','100 тренировок',n,100),
+    a('route','Полсотни','50 км суммарно',km,50), a('medal','Марафон в рассрочку','42,2 км суммарно',km,42.2,`${num(Math.min(km,42.2))} / 42,2`),
+    a('globe','Путешественник','500 км суммарно',km,500), a('clock','10 часов','Суммарно на дорожке',mins/60,10),
+    a('flame','Печка','10 000 ккал сожжено',kc,10000), a('mountain','Горный козёл','Тренировка с уклоном от 12%',maxInc,12),
+    a('hourglass','Черепаха-марафонец','Тренировка от 60 минут',maxMin,60), a('bolt','Неделя без пропусков','7 дней подряд',bs,7),
+    a('trophy','Нормальный','Выполнить недельную норму',gd,1), a('crown','Железная воля','30 дней подряд в норме',gb,30),
+    a('sunrise','Ранняя пташка','Записать тренировку до 8 утра',early?1:0,1,early?'':'—'),
+    a('scale','Взвешенное решение','10 взвешиваний',we,10), a('target','В яблочко','Достичь цели по весу',wr?1:0,1,wr?'':'—')];
+}
+
+/* ========================================================= хранилище ==== */
+function cs(method, ...args){
+  return new Promise((res, rej) => {
+    try { tg.CloudStorage[method](...args, (err, val) => err ? rej(err) : res(val)); } catch (e) { rej(e); }
+  });
+}
+let cloudPtr = null, saveTimer = null, saving = false, dirty = false, syncState = hasCloud ? 'load' : 'local';
+function setSync(s){ syncState = s; const el = $('#sync'); if (el) el.outerHTML = syncHTML(); }
+function save(){
+  db.updated = Date.now();
+  invalidate();
+  try { localStorage.setItem(LS, JSON.stringify(db)); } catch (e) {}
+  if (!hasCloud) return;
+  dirty = true;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(flush, 500);
+}
+async function flush(){
+  if (!hasCloud || saving || !dirty) return;
+  saving = true; dirty = false; setSync('load');
+  try {
+    const s = JSON.stringify(db), parts = [];
+    for (let i = 0; i < s.length; i += CH) parts.push(s.slice(i, i + CH));
+    const oldSlot = cloudPtr ? cloudPtr[0] : 'b', oldN = cloudPtr ? +cloudPtr.slice(1) : 0;
+    const slot = oldSlot === 'a' ? 'b' : 'a';          // пишем во второй слот, потом переключаем указатель
+    for (let i = 0; i < parts.length; i++) await cs('setItem', `${slot}_${i}`, parts[i]);
+    await cs('setItem', 'ptr', slot + parts.length);
+    cloudPtr = slot + parts.length;
+    if (oldN) { const rm = []; for (let i = 0; i < oldN; i++) rm.push(`${oldSlot}_${i}`); try { await cs('removeItems', rm); } catch (e) {} }
+    setSync('ok');
+  } catch (e) { dirty = true; setSync('err'); }
+  saving = false;
+  if (dirty) saveTimer = setTimeout(flush, 2000);
+}
+async function cloudLoad(){
+  const ptr = await cs('getItem', 'ptr');
+  if (!ptr) return null;
+  const slot = ptr[0], n = +ptr.slice(1), keys = [];
+  for (let i = 0; i < n; i++) keys.push(`${slot}_${i}`);
+  const obj = await cs('getItems', keys);
+  return {ptr, data:JSON.parse(keys.map(k => obj[k] || '').join(''))};
+}
+
+/* ============================================================ иконки ==== */
+const IP = {
+  walk:'<path d="M3 5H15M6 9H15M9 13H15"/>',
+  scale:'<rect x="2" y="2" width="14" height="14" rx="4"/><path d="M5.5 8A3.5 3.5 0 0 1 12.5 8M9 8L10.6 6"/>',
+  stats:'<path d="M4 15V10M9 15V6M14 15V3"/>',
+  user:'<circle cx="9" cy="6" r="3"/><path d="M3.5 15.5C4.4 12.6 6.4 11 9 11s4.6 1.6 5.5 4.5"/>',
+  plus:'<path d="M9 4V14M4 9H14"/>', minus:'<path d="M4 9H14"/>',
+  check:'<path d="M4 9.5L7.5 13L14.5 5.5"/>', close:'<path d="M5 5L13 13M13 5L5 13"/>',
+  repeat:'<path d="M14.3 10.4A5.5 5.5 0 1 1 13 5.3"/><path d="M13.6 2.4L13.2 5.6L10 5.2"/>',
+  trash:'<path d="M3.5 5H14.5M7 5V3H11V5"/><rect x="5" y="5" width="8" height="10.5" rx="2"/><path d="M7.7 8V12.5M10.3 8V12.5"/>',
+  target:'<circle cx="9" cy="9" r="7"/><circle cx="9" cy="9" r="3.8"/><circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"/>',
+  flame:'<path d="M9 16C5.2 16 3.5 13 4.6 10C5.4 7.8 7.6 6.8 7.4 2.8C10.6 4.6 13.6 7.8 13.6 11.4C13.6 14.2 11.6 16 9 16Z"/><path d="M9 16C7.6 16 7 14.7 7.6 13.5C8.1 12.5 9 12 9.2 10.6C10.4 11.6 11 12.9 10.8 14"/>',
+  trophy:'<path d="M5.5 3H12.5V7C12.5 9.6 11 11 9 11S5.5 9.6 5.5 7Z"/><path d="M5.5 4.2H3.4C3.4 6.6 4.3 7.8 5.8 8M12.5 4.2H14.6C14.6 6.6 13.7 7.8 12.2 8M9 11V14M6 15.2H12"/>',
+  clock:'<circle cx="9" cy="9" r="7"/><path d="M9 5V9L11.8 10.7"/>',
+  mountain:'<path d="M1.5 15L7 5.5L10 10.2L12 7.8L16.5 15Z"/>',
+  bolt:'<path d="M10.5 2L4.5 10H9L7.8 16L13.5 8H9Z"/>',
+  route:'<path d="M4 14.5C4 10.5 14 11 14 7.2"/><circle cx="4" cy="14.5" r="1.6"/><circle cx="14" cy="4.6" r="2.2"/>',
+  medal:'<circle cx="9" cy="11.6" r="4.4"/><path d="M6.2 2.5L7.8 7.6M11.8 2.5L10.2 7.6"/>',
+  crown:'<path d="M3 13V5.5L6.5 9L9 4L11.5 9L15 5.5V13Z"/><path d="M3 15.5H15"/>',
+  sunrise:'<path d="M5 11A4 4 0 0 1 13 11M2 11H16M9 2.5V4.5M3.6 5.4L5 6.8M14.4 5.4L13 6.8M5.5 14.5H12.5"/>',
+  globe:'<circle cx="9" cy="9" r="7"/><ellipse cx="9" cy="9" rx="3" ry="7"/><path d="M2 9H16"/>',
+  hourglass:'<path d="M4.5 2.5H13.5M4.5 15.5H13.5M6 2.5V5L9 9L6 13V15.5M12 2.5V5L9 9L12 13V15.5"/>',
+  steps:'<ellipse cx="5.6" cy="5.6" rx="2.2" ry="3.6"/><circle cx="5.6" cy="11.8" r="1.4"/><ellipse cx="12.4" cy="8.4" rx="2.2" ry="3.6"/><circle cx="12.4" cy="14.6" r="1.4"/>',
+  moon:'<path d="M14.6 11.2A6 6 0 1 1 6.8 3.4A5 5 0 0 0 14.6 11.2Z"/>',
+  cloud:'<path d="M5 14A3 3 0 0 1 4.6 8A4.6 4.6 0 0 1 13.2 8.4A2.8 2.8 0 0 1 13.6 14Z"/>',
+  import:'<path d="M9 3V11M5.5 7.5L9 11L12.5 7.5M3 11.5V15H15V11.5"/>',
+  export:'<path d="M9 11V3M5.5 6.5L9 3L12.5 6.5M3 11.5V15H15V11.5"/>',
+  edit:'<path d="M3 15L3.6 12L12 3.6L14.4 6L6 14.4Z"/><path d="M10.4 5.2L12.8 7.6"/>',
+  palette:'<circle cx="9" cy="9" r="6.5"/><circle cx="6.3" cy="7.2" r="1.1" fill="currentColor" stroke="none"/><circle cx="9.3" cy="5.4" r="1.1" fill="currentColor" stroke="none"/><circle cx="12.1" cy="7.4" r="1.1" fill="currentColor" stroke="none"/><circle cx="6.6" cy="11.2" r="1.1" fill="currentColor" stroke="none"/>',
+  info:'<circle cx="9" cy="9" r="7"/><path d="M9 8.3V12.6"/><circle cx="9" cy="5.6" r="1.1" fill="currentColor" stroke="none"/>',
+  arrow_up:'<path d="M9 14V4M4.5 8.5L9 4L13.5 8.5"/>', arrow_down:'<path d="M9 4V14M4.5 9.5L9 14L13.5 9.5"/>'
+};
+(function(){ let s = '<circle cx="9" cy="9" r="2.6"/><circle cx="9" cy="9" r="5"/>';
+  for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; s += `<path d="M${(9+5*Math.cos(a)).toFixed(2)} ${(9+5*Math.sin(a)).toFixed(2)}L${(9+7*Math.cos(a)).toFixed(2)} ${(9+7*Math.sin(a)).toFixed(2)}"/>`; }
+  IP.gear = s; })();
+function IC(n, s = 18){
+  if (n.startsWith('n:')) return `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7.4"/><text x="9" y="9.4" text-anchor="middle" dominant-baseline="middle" font-size="${n.length > 4 ? 6 : 7}" font-weight="800" fill="currentColor" stroke="none">${n.slice(2)}</text></svg>`;
+  return `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 18 18">${IP[n] || ''}</svg>`;
+}
+
+/* ============================================================ тема ====== */
+function hexRgb(h){ const n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+function themeMode(){
+  const t = db.settings.theme;
+  if (t === 'light' || t === 'dark') return t;
+  if (tg && tg.colorScheme) return tg.colorScheme;
+  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+function accentHex(mode){
+  const k = db.settings.accent;
+  if (k === 'mono') return mode === 'dark' ? '#EDEDF2' : '#26262C';
+  const a = ACCENTS.find(x => x[0] === k); return a ? a[2] : '#B4A7EE';
+}
+function applyTheme(){
+  const mode = themeMode(), th = THEMES[mode], r = document.documentElement.style;
+  for (const k in th) r.setProperty('--' + k, th[k]);
+  const acc = accentHex(mode), [ar, ag, ab] = hexRgb(acc);
+  r.setProperty('--accent', acc);
+  r.setProperty('--on-accent', (0.299*ar + 0.587*ag + 0.114*ab) > 140 ? '#1D1D24' : '#FFFFFF');
+  r.setProperty('--accent-soft', `rgba(${ar},${ag},${ab},.16)`);
+  const [sr, sg, sb] = hexRgb(th.surface);
+  r.setProperty('--tabs-bg', `rgba(${sr},${sg},${sb},.86)`);
+  try {
+    if (ver('6.1')) { tg.setBackgroundColor(th.bg); tg.setHeaderColor(ver('6.9') ? th.bg : 'bg_color'); }
+    if (ver('7.10')) tg.setBottomBarColor(th.surface);
+  } catch (e) {}
+}
+
+/* ========================================================= отклик ======= */
+const hap = {
+  tap(){ try { if (ver('6.1')) tg.HapticFeedback.selectionChanged(); } catch (e) {} },
+  imp(){ try { if (ver('6.1')) tg.HapticFeedback.impactOccurred('light'); } catch (e) {} },
+  ok(){ try { if (ver('6.1')) tg.HapticFeedback.notificationOccurred('success'); } catch (e) {} },
+  warn(){ try { if (ver('6.1')) tg.HapticFeedback.notificationOccurred('warning'); } catch (e) {} }
+};
+let toastTimer;
+function toast(msg, label, cb){
+  const t = $('#toast');
+  t.innerHTML = `<span>${esc(msg)}</span>` + (label ? `<button type="button">${esc(label)}</button>` : '');
+  if (label) t.querySelector('button').onclick = () => { t.classList.remove('show'); cb && cb(); };
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), label ? 5000 : 2600);
+}
+function ask(msg){
+  return new Promise(res => { if (ver('6.2')) tg.showConfirm(msg, ok => res(!!ok)); else res(window.confirm(msg)); });
+}
+function confetti(){
+  const c = document.createElement('canvas'); c.className = 'confetti'; document.body.appendChild(c);
+  const dpr = window.devicePixelRatio || 1, W = innerWidth, H = innerHeight;
+  c.width = W * dpr; c.height = H * dpr;
+  const x = c.getContext('2d'); x.scale(dpr, dpr);
+  const cols = ACCENTS.map(a => a[2]).concat([GREEN, RED, YELLOW, BLUE]);
+  const P = [], mk = (px, py, vx, vy, g) => ({x:px, y:py, vx, vy, g, a:Math.random()*6.28, va:(Math.random()-.5)*16,
+    f:Math.random()*6.28, vf:4 + Math.random()*6, w:6 + Math.random()*5, h:4 + Math.random()*3, c:cols[Math.random()*cols.length|0], o:Math.random() < .25});
+  for (let s = 0; s < 2; s++) for (let i = 0; i < 55; i++) {
+    const ang = (60 + Math.random()*25) * Math.PI / 180, sp = (600 + Math.random()*450) * Math.min(1, H / 800);
+    P.push(mk(s ? W : 0, H + 5, Math.cos(ang) * sp * (s ? -1 : 1) * .6, -Math.sin(ang) * sp, 1300));
+  }
+  let t0 = performance.now(), prev = t0;
+  (function step(now){
+    const dt = Math.min(.05, (now - prev) / 1000); prev = now;
+    const el = (now - t0) / 1000;
+    if (el < 2) for (let k = 0; k < 2; k++) P.push(mk(Math.random()*W, -10, (Math.random()-.5)*80, 60 + Math.random()*100, 220));
+    x.clearRect(0, 0, W, H);
+    for (const q of P) {
+      q.vy += q.g * dt; if (q.g < 500) q.vy = Math.min(q.vy, 240); else q.vy *= Math.exp(-.7 * dt);
+      q.vx *= Math.exp(-1.6 * dt); q.x += q.vx * dt; q.y += q.vy * dt; q.a += q.va * dt; q.f += q.vf * dt;
+      x.save(); x.translate(q.x, q.y); x.rotate(q.a); x.fillStyle = q.c;
+      if (q.o) { x.beginPath(); x.arc(0, 0, 3.5, 0, 6.28); x.fill(); }
+      else { const w = q.w * Math.max(.15, Math.abs(Math.cos(q.f))); x.fillRect(-w/2, -q.h/2, w, q.h); }
+      x.restore();
+    }
+    for (let i = P.length - 1; i >= 0; i--) if (P[i].y > H + 30) P.splice(i, 1);
+    if (el < 2 || P.length) requestAnimationFrame(step); else c.remove();
+  })(t0);
+}
+function celebrate(icon, title, subtitle, lines){
+  const el = $('#cg');
+  el.innerHTML = `<div class="cgc"><div class="badge">${IC(icon, 40)}</div><h2>${esc(title)}</h2><div class="muted">${esc(subtitle)}</div>
+    <p>${esc(lines[Math.random()*lines.length|0])}</p><button class="btn primary" style="width:100%" data-act="cgok">Ура!</button></div>`;
+  el.classList.add('show'); hap.ok(); setTimeout(confetti, 150);
+}
+
+/* ======================================================= компоненты ===== */
+function dotsHTML(v, s = 9){ let h = '<span class="dots">'; for (let i = 1; i <= 5; i++) h += `<i style="width:${s}px;height:${s}px;${i <= v ? 'background:' + FEEL[i][1] : ''}"></i>`; return h + '</span>'; }
+function ring(frac, big, small, done, size = 116){
+  const sw = 11, r = (size - sw) / 2 - 1, c = 2 * Math.PI * r, cx = size / 2, f = clamp(frac, 0, 1);
+  return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="var(--off)" stroke-width="${sw}"/>
+    ${f > 0.003 ? `<circle class="ring-p" cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="${done ? GREEN : 'var(--accent)'}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c * (1 - f)).toFixed(1)}" transform="rotate(-90 ${cx} ${cx})" style="--c:${c.toFixed(1)}"/>` : ''}
+    <text x="${cx}" y="${cx - size*.03}" text-anchor="middle" font-size="${size*.21}" font-weight="800" fill="var(--text)">${esc(big)}</text>
+    <text x="${cx}" y="${cx + size*.16}" text-anchor="middle" font-size="${Math.max(11, size*.1)}" fill="var(--muted)">${esc(small)}</text></svg>`;
+}
+function strip(ws, days){
+  const t = todayN(), per = perDay(ws), rest = restDays(ws), cs = Math.min(34, Math.floor(300 / days));
+  let h = `<div class="strip" style="--cs:${cs}px">`;
+  for (let i = days - 1; i >= 0; i--) {
+    const d = t - i, c = per.get(d) || 0, r = !c && rest.has(d);
+    h += `<div class="sd${i === 0 ? ' today' : ''}"><div class="sc${c ? ' on' : r ? ' rest' : ''}" style="animation-delay:${(days - 1 - i) * 40}ms">${c > 1 ? c : c ? IC('check', Math.round(cs*.5)) : r ? IC('moon', Math.round(cs*.5)) : ''}</div><div class="sw">${days > 9 ? ymd(d)[2] : WD[wdOf(d)]}</div></div>`;
+  }
+  return h + '</div>';
+}
+function bars(items, fmt, cid, h = 170){
+  if (!items.length || Math.max(...items.map(i => i[1])) <= 0) return `<div class="chart-empty">Пока нет данных</div>`;
+  const mx = Math.max(...items.map(i => i[1])), n = items.length, stride = Math.ceil(n / 8), showV = n <= 12;
+  return `<div class="bars" style="height:${h}px">` + items.map((it, i) => {
+    const v = it[1], ht = v > 0 ? Math.max(4, v / mx * 100) : 3;
+    return `<div class="bar" data-act="bar" data-cap="${cid}" data-tip="${esc(it[2])}"><div class="bv">${showV && v > 0 ? esc(fmt(v)) : ''}</div><div class="bcol"><div class="bfill${v > 0 ? '' : ' zero'}" style="height:${ht}%;animation-delay:${i * 18}ms"></div></div><div class="bl">${i % stride === 0 ? esc(it[0]) : ''}</div></div>`;
+  }).join('') + `</div><div class="chartcap" id="${cid}">Нажми на столбик — покажу детали</div>`;
+}
+function lineChart(pts, goal){
+  if (!pts.length) return `<div class="chart-empty">Добавь взвешивания — и здесь появится график</div>`;
+  const W = 340, H = 200, L = 36, R = 10, T = 14, B = 26;
+  const ys = pts.map(p => p[1]); if (goal) ys.push(goal);
+  let lo = Math.min(...ys), hi = Math.max(...ys);
+  if (hi - lo < 2) { const m = (hi + lo) / 2; lo = m - 1; hi = m + 1; }
+  const pad = (hi - lo) * .12; lo -= pad; hi += pad;
+  const d0 = pts[0][0], span = Math.max(1, last(pts)[0] - d0);
+  const X = d => pts.length === 1 ? L + (W - L - R) / 2 : L + (W - L - R) * (d - d0) / span;
+  const Y = k => T + (H - T - B) * (1 - (k - lo) / (hi - lo));
+  let s = `<svg class="line" viewBox="0 0 ${W} ${H}"><defs><linearGradient id="lg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".35"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>`;
+  for (let g = 0; g < 5; g++) { const k = lo + (hi - lo) * g / 4, y = Y(k).toFixed(1);
+    s += `<line x1="${L}" x2="${W - R}" y1="${y}" y2="${y}" stroke="var(--border)"/><text x="${L - 6}" y="${y}" text-anchor="end" dominant-baseline="middle" font-size="10" fill="var(--muted)">${num(k)}</text>`; }
+  const n = pts.length, ticks = Math.min(n, 4), used = new Set();
+  for (let t = 0; t < ticks; t++) { const i = Math.round(t * (n - 1) / Math.max(1, ticks - 1)); if (used.has(i)) continue; used.add(i);
+    const x = X(pts[i][0]); s += `<text x="${x.toFixed(1)}" y="${H - 8}" text-anchor="${i === 0 && n > 1 ? 'start' : i === n - 1 && n > 1 ? 'end' : 'middle'}" font-size="10" fill="var(--muted)">${fmtDate(pts[i][0])}</text>`; }
+  if (goal) { const gy = Y(goal).toFixed(1); s += `<line x1="${L}" x2="${W - R}" y1="${gy}" y2="${gy}" stroke="${GREEN}" stroke-width="1.5" stroke-dasharray="5 4"/><text x="${W - R}" y="${(gy - 5)}" text-anchor="end" font-size="10" fill="${GREEN}">цель ${num(goal)}</text>`; }
+  const xy = pts.map(p => [X(p[0]), Y(p[1])]);
+  if (xy.length >= 2) {
+    let d = `M${xy[0][0].toFixed(1)} ${xy[0][1].toFixed(1)}`;
+    for (let i = 1; i < xy.length; i++) { const a = xy[i-1], b = xy[i], mx = (a[0] + b[0]) / 2; d += `C${mx.toFixed(1)} ${a[1].toFixed(1)} ${mx.toFixed(1)} ${b[1].toFixed(1)} ${b[0].toFixed(1)} ${b[1].toFixed(1)}`; }
+    s += `<path d="${d}L${last(xy)[0].toFixed(1)} ${H - B}L${xy[0][0].toFixed(1)} ${H - B}Z" fill="url(#lg)" stroke="none"/>`;
+    s += `<path class="draw" d="${d}" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round"/>`;
+  }
+  xy.forEach((p, i) => { if (n > 40 && i !== 0 && i !== n - 1) return;
+    s += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.6" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>`; });
+  return s + '</svg>';
+}
+function seg(key, items){
+  return `<div class="seg">` + items.map(([v, l]) => `<button type="button" class="${S[key] === v ? 'on' : ''}" data-act="seg" data-k="${key}" data-v="${v}">${l}</button>`).join('') + `</div>`;
+}
+function kpi(v, c){ return `<div class="kpi"><div class="kv">${v}</div><div class="kc">${c}</div></div>`; }
+function stepper(key, label, val, min, max, step, dec, suf, bind){
+  return `<div class="f">${label ? `<span>${label}</span>` : ''}<div class="stp" data-key="${key}" data-min="${min}" data-max="${max}" data-step="${step}" data-dec="${dec}"${bind ? ` data-bind="${bind}"` : ''}>
+    <button class="sb" data-d="-1" type="button">${IC('minus', 16)}</button>
+    <div class="sv"><input inputmode="decimal" value="${fmtIn(val, dec, min)}" enterkeyhint="done"><em>${suf}</em></div>
+    <button class="sb" data-d="1" type="button">${IC('plus', 16)}</button></div></div>`;
+}
+function fmtIn(v, dec, min){ v = +v; if (isNaN(v)) v = min; return v.toFixed(dec).replace('.', ','); }
+function readStp(el){
+  const v = parseFloat(el.querySelector('input').value.replace(',', '.')), min = +el.dataset.min, max = +el.dataset.max, dec = +el.dataset.dec;
+  return isNaN(v) ? min : +clamp(v, min, max).toFixed(dec);
+}
+function stpVal(key){ const el = document.querySelector(`.stp[data-key="${key}"]`); return el ? readStp(el) : 0; }
+function stepBy(el, d){
+  const st = +el.dataset.step, dec = +el.dataset.dec;
+  let v = readStp(el);
+  if (el.dataset.jump && d > 0 && v <= +el.dataset.min) v = +el.dataset.jump; else v = v + d * st;
+  v = clamp(+v.toFixed(dec), +el.dataset.min, +el.dataset.max);
+  el.querySelector('input').value = fmtIn(v, dec);
+  onStp(el);
+}
+
+/* ========================================================== состояние === */
+const S = {tab:'home', limit:30, klimit:30, sp:'30', sm:'min', wp:'90'};
+let sheetCtx = null;
+
+function greet(){
+  const h = new Date().getHours();
+  const g = h < 5 || h >= 23 ? 'Доброй ночи' : h < 12 ? 'Доброе утро' : h < 18 ? 'Добрый день' : 'Добрый вечер';
+  const n = displayName(); return n ? `${g}, ${n}` : g;
+}
+function displayName(){ return (db.profile.name || '').trim() || (tgUser && tgUser.first_name) || ''; }
+
+/* ============================================================ экраны ==== */
+function viewHome(){
+  const ws = valid(), g = G(), t = todayN(), info = goalInfo(ws), rest = restDays(ws), [cur] = dayStreaks(ws);
+  const tMin = sum(ws.filter(w => dn(w.date) === t), w => w.minutes);
+  const bits = [tMin ? `сегодня уже ${fmtMin(tMin)} на дорожке` : (rest.has(t) ? 'сегодня день отдыха' : 'сегодня ещё без шагов')];
+  if (cur >= 2) bits.push(`серия ${npw(cur, W_DAY)} подряд`);
+  bits.push(info.remaining ? `до нормы ${info.remaining}` : 'норма недели закрыта');
+  const done = info.count >= g.count, pct = Math.round(info.count * 100 / g.count);
+  let gtxt;
+  if (done) {
+    const extra = info.count - g.count;
+    const hold = info.hold === 0 ? 'держится только сегодня — не расслабляйся' : `продержится ещё ${npw(info.hold, W_DAY)} без новых`;
+    gtxt = `<div class="gt ok">Норма выполнена${extra ? ' +' + extra : ''}</div><div class="gs">${hold}</div>`;
+  } else {
+    let burn = 'в окне пока нет тренировок';
+    if (info.burn != null) { const dl = info.burn - t; burn = dl <= 1 ? 'старая тренировка «сгорит» завтра' : `старая «сгорит» через ${npw(dl, W_DAY)}`; }
+    gtxt = `<div class="gt">Осталось ${npw(info.remaining, W_WORK)}</div><div class="gs">${burn}</div>`;
+  }
+  let note = '';
+  if (rest.has(t)) note = `<div class="note">${IC('moon', 15)}Сегодня день отдыха — восстанавливайся</div>`;
+  else if (rest.has(t + 1)) note = `<div class="note">${IC('moon', 15)}5 дней подряд — завтра и послезавтра отдых</div>`;
+
+  let h = `<div class="head"><div><h1>${esc(greet())}</h1><div class="sub">${bits.join(' · ')}</div></div></div>
+  <div class="card"><div class="goal">${ring(info.count / g.count, `${info.count}/${g.count}`, `${pct}%`, done)}
+    <div><div class="glabel">Цель: ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</div>${gtxt}</div></div>${strip(ws, g.days)}${note}</div>
+  <div class="actions"><button class="btn primary" data-act="add">${IC('plus')}Тренировка</button>${ws.length ? `<button class="btn ghost" data-act="repeat">${IC('repeat')}Повторить</button>` : ''}</div>`;
+  if (ws.length) {
+    const kcs = ws.map(kcal);
+    h += `<div class="kpis">${kpi(ws.length, 'Тренировок')}${kpi(fmtMin(sum(ws, w => w.minutes)), 'Всего времени')}${kpi(kmF(sum(ws, kmOf)), 'Пройдено, примерно')}${kpi(kcs.some(Boolean) ? kcalF(sum(kcs, k => k || 0)) : '—', kcs.some(Boolean) ? 'Сожжено, примерно' : 'Ккал: укажи вес')}</div>`;
+  }
+  h += historyHTML(ws);
+  return h;
+}
+function historyHTML(ws){
+  const sorted = ws.slice().sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : (b.created || 0) - (a.created || 0));
+  if (!sorted.length) return `<div class="card empty"><div class="badge">${IC('steps', 30)}</div><div class="muted">Пока пусто. Добавь первую тренировку — дорожка уже заждалась.</div></div>`;
+  const months = new Map();
+  for (const w of sorted) { const k = w.date.slice(0, 7); if (!months.has(k)) months.set(k, []); months.get(k).push(w); }
+  let h = '', prev = null;
+  sorted.slice(0, S.limit).forEach((w, i) => {
+    const k = w.date.slice(0, 7);
+    if (k !== prev) { prev = k; const g = months.get(k), [y, m] = k.split('-').map(Number);
+      h += `<div class="mh">${MONF[m-1][0].toUpperCase() + MONF[m-1].slice(1)} ${y}<span>${npw(g.length, W_WORK)} · ${fmtMin(sum(g, x => x.minutes))} · ${kmF(sum(g, kmOf))}</span></div>`; }
+    const d = dn(w.date), [, , dd] = ymd(d), f = clamp(parseInt(w.feeling) || 3, 1, 5), kc = kcal(w);
+    const l2 = [`≈ ${kmF(kmOf(w))}`]; if (kc) l2.push(`≈ ${kcalF(kc)}`); if (w.note) l2.push(esc(w.note));
+    h += `<div class="wi" data-act="wedit" data-id="${esc(w.id)}" style="animation-delay:${Math.min(i, 10) * 35}ms"><div class="wd"><b>${dd}</b><small>${MON[ymd(d)[1]-1]} · ${WD[wdOf(d)]}</small></div>
+      <div class="wm"><div class="l1">${num(w.speed)} км/ч · ${num(w.incline)}% · ${w.minutes} мин</div><div class="l2">${l2.join(' · ')}</div></div>
+      <div class="wr">${dotsHTML(f, 8)}<small style="color:${FEEL[f][1]}">${FEEL[f][0]}</small></div></div>`;
+  });
+  if (sorted.length > S.limit) h += `<button class="btn ghost small more" data-act="more">Показать ещё (осталось ${sorted.length - S.limit})</button>`;
+  return h;
+}
+
+function viewWeight(){
+  const es = weightsSorted(), goal = db.weight_goal || {};
+  let h = `<div class="head"><div><h1>Вес</h1><div class="sub">${es.length ? npw(es.length, W_ENTRY) + ' — продолжай в том же духе' : 'Следи за весом и иди к цели'}</div></div></div>`;
+  if (!es.length) return h + `<div class="card empty"><div class="badge">${IC('scale', 30)}</div><h3 style="justify-content:center">Здесь будет твой вес</h3><div class="muted" style="margin-bottom:16px">Добавь первое взвешивание — появятся график, ИМТ, прогноз и цель.</div><button class="btn primary" data-act="kadd">${IC('plus')}Первое взвешивание</button></div>`;
+  const t = todayN(), daily = dailyWeights(), curE = last(es), cur = +curE.kg, lastD = dn(curE.date);
+  const gs = weightGoalState(goal, cur), dir = gs ? gs.direction : 0;
+  h += `<div class="actions"><button class="btn primary" data-act="kadd">${IC('plus')}Взвеситься</button><button class="btn ghost" data-act="kgoal">${IC('target')}${goal.target ? 'Изменить цель' : 'Цель'}</button></div>`;
+  // сейчас
+  let delta = '';
+  if (es.length >= 2) {
+    const dv = cur - +es[es.length - 2].kg, z = Math.abs(dv) < 0.05;
+    const col = z || !dir ? 'var(--muted)' : (dv * dir > 0 ? GREEN : RED);
+    delta = `<div class="delta" style="color:${col}">${z ? IC('minus', 13) : IC(dv > 0 ? 'arrow_up' : 'arrow_down', 13)}${z ? 'без изменений' : num(Math.abs(dv)) + ' кг с прошлого раза'}</div>`;
+  } else delta = `<div class="delta muted">Первое взвешивание</div>`;
+  const ago = t - lastD;
+  h += `<div class="card"><div class="cap">Сейчас</div><div class="huge">${num(cur)} кг</div>${delta}
+    <div class="cap" style="margin-top:6px">${fmtDate(lastD)}${ago > 0 ? ' · ' + npw(ago, W_DAY) + ' назад' : ''} · ${ago >= 7 ? 'давно не взвешивался — пора на весы' : 'взвешивайся 1–3 раза в неделю'}</div></div>`;
+  // цель
+  const slope = linearSlope(daily.filter(p => lastD - p[0] <= 30));
+  if (gs) {
+    let fc = '';
+    if (!gs.reached) {
+      if (slope && slope * dir > 0.001) { const dd = gs.left / Math.abs(slope); if (dd < 3650) fc = `Прогноз: ≈ ${fmtDate(t + Math.ceil(dd), true)}`; }
+      else fc = slope != null ? 'Последний месяц вес идёт не в ту сторону' : 'Для прогноза нужно больше взвешиваний';
+    } else if (goal.reached_on) fc = `Достигнута ${fmtDate(dn(goal.reached_on), true)}`;
+    const p = gs.frac * 100;
+    h += `<div class="card"><div class="goal">${ring(gs.frac, Math.round(p) + '%', 'пройдено', gs.reached, 104)}<div style="flex:1;min-width:0">
+      <div class="cap">Цель</div><div class="gt${gs.reached ? ' ok' : ''}">${gs.reached ? 'Цель достигнута!' : 'Осталось ' + num(gs.left) + ' кг'}</div>
+      <div class="gs">${num(gs.start)} → ${num(gs.target)} кг · пройдено ${num(gs.done)} из ${num(Math.abs(gs.target - gs.start))}</div>
+      ${fc ? `<div style="font-weight:650;font-size:13px;margin-top:4px">${fc}</div>` : ''}</div></div>
+      <div class="pbar"><div class="pfill" style="width:${p}%;${gs.reached ? 'background:' + GREEN : ''}"></div><div class="pmark" style="left:${p}%"></div><div class="plab" style="left:${clamp(p, 10, 90)}%">${num(cur)} кг</div>
+      <div class="pends"><span>старт ${num(gs.start)}</span><span>цель ${num(gs.target)}</span></div></div></div>`;
+  } else {
+    h += `<div class="card"><div class="row"><div class="badge" style="width:46px;height:46px">${IC('target', 22)}</div><div class="sp"><b>Цель не задана</b><div class="cap">Поставь целевой вес — покажу прогресс и прогноз.</div></div></div>
+      <button class="btn primary small" style="margin-top:12px" data-act="kgoal">Поставить цель</button></div>`;
+  }
+  // ИМТ
+  const hgt = +db.profile.height || 0, b = bmiOf(cur, hgt);
+  if (b) {
+    const [cat, col] = bmiCat(b), pos = v => clamp((v - 15) / 25 * 100, 0, 100), m = hgt / 100;
+    h += `<div class="card"><div class="cap">ИМТ</div><div class="row" style="align-items:baseline"><div class="huge" style="font-size:32px">${num(b)}</div><b style="color:${col}">${cat}</b></div>
+      <div class="bmi"><div class="pmark" style="left:${pos(b)}%"></div>${[18.5, 25, 30].map(v => `<span class="bmi-t" style="left:${pos(v)}%">${num(v)}</span>`).join('')}</div>
+      <div class="cap">Здоровый вес для твоего роста: ${num(18.5*m*m)}–${num(24.9*m*m)} кг</div></div>`;
+  } else {
+    h += `<div class="card"><div class="cap">ИМТ</div><div class="muted" style="margin:4px 0 10px">Укажи рост в профиле — посчитаю ИМТ и здоровый диапазон веса.</div><button class="btn ghost small" data-act="tab" data-tab="me">Указать рост</button></div>`;
+  }
+  // график
+  const since = periodSince(S.wp), pts = daily.filter(p => since == null || p[0] >= since);
+  h += `<div class="card"><div class="row" style="justify-content:space-between;flex-wrap:wrap"><h3 style="margin:0">Динамика</h3>${seg('wp', [['30','30 дн'],['90','90 дн'],['365','Год'],['all','Всё']])}</div>${lineChart(pts, gs ? goal.target : null)}</div>`;
+  // мини-статистика
+  const kgs = es.map(e => +e.kg), fk = v => num(v) + ' кг';
+  const ref = days => { const r = daily.filter(p => p[0] <= t - days); return r.length ? signed(cur - last(r)[1]) + ' кг' : '—'; };
+  h += `<div class="mini">${kpi(fk(+es[0].kg), 'Старт')}${kpi(fk(Math.min(...kgs)), 'Минимум')}${kpi(fk(Math.max(...kgs)), 'Максимум')}${kpi(ref(7), 'За 7 дней')}${kpi(ref(30), 'За 30 дней')}${kpi(slope != null ? signed(slope * 7, 2) : '—', 'кг/нед, 30 дн')}</div>`;
+  // список
+  h += `<h3>Все взвешивания</h3>`;
+  const rev = es.slice().reverse();
+  rev.slice(0, S.klimit).forEach((e, i) => {
+    const prev = rev[i + 1], dv = prev ? +e.kg - +prev.kg : null, z = dv == null || Math.abs(dv) < 0.05;
+    const col = z || !dir ? 'var(--muted)' : (dv * dir > 0 ? GREEN : RED);
+    h += `<div class="ki" data-act="kedit" data-id="${esc(e.id)}"><div style="width:96px" class="cap">${fmtDate(dn(e.date))}, ${WD[wdOf(dn(e.date))]}</div><b style="width:70px">${num(+e.kg)} кг</b>
+      <span class="delta" style="color:${col};width:58px">${dv == null ? '—' : z ? '0' : IC(dv > 0 ? 'arrow_up' : 'arrow_down', 12) + num(Math.abs(dv))}</span><span class="cap sp" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.note || '')}</span></div>`;
+  });
+  if (rev.length > S.klimit) h += `<button class="btn ghost small more" data-act="kmore">Показать ещё (осталось ${rev.length - S.klimit})</button>`;
+  return h;
+}
+
+function viewStats(){
+  const ws = valid(), pws = filterPeriod(ws, S.sp), n = pws.length, g = G();
+  let h = `<div class="head"><div><h1>Статистика</h1><div class="sub">Всё, что накопилось на дорожке</div></div></div>
+    <div style="margin-bottom:12px">${seg('sp', [['7','7 дней'],['30','30 дней'],['12m','12 месяцев'],['all','Всё время']])}</div>`;
+  if (n) {
+    const tm = sum(pws, w => w.minutes), km = sum(pws, kmOf), kcs = pws.map(kcal), weeks = periodDays(S.sp, ws) / 7;
+    h += `<div class="kpis">${kpi(n, 'Тренировок')}${kpi(fmtMin(tm), 'Всего времени')}${kpi(kmF(km), 'Пройдено, примерно')}${kpi(kcs.some(Boolean) ? kcalF(sum(kcs, k => k || 0)) : '—', 'Сожжено, примерно')}
+      ${kpi(num(n / weeks), 'Тренировок в неделю')}${kpi(num(km / (tm / 60)) + ' км/ч', 'Средняя скорость')}${kpi(num(sum(pws, w => w.incline * w.minutes) / tm) + ' %', 'Средний уклон')}${kpi(num(sum(pws, w => +w.feeling || 3) / n) + ' / 5', 'Среднее состояние')}</div>`;
+  } else h += `<div class="card muted">За этот период тренировок нет.</div>`;
+  const [items, fmt] = bucketData(ws, S.sp, S.sm);
+  h += `<div class="card"><h3>Динамика</h3>${seg('sm', [['min','Минуты'],['km','Километры'],['kcal','Калории'],['cnt','Тренировки']])}${bars(items, fmt, 'cap1')}</div>`;
+  if (n) {
+    const counts = {1:0, 2:0, 3:0, 4:0, 5:0}; pws.forEach(w => counts[clamp(parseInt(w.feeling) || 3, 1, 5)]++);
+    const mx = Math.max(...Object.values(counts)) || 1;
+    h += `<div class="card"><h3>Состояние на тренировках</h3>` + [5,4,3,2,1].map((l, i) => `<div class="fd"><span>${FEEL[l][0]}</span><div class="fdb">${counts[l] ? `<i style="width:${Math.max(8, counts[l] / mx * 100)}%;background:${FEEL[l][1]};animation-delay:${i*60}ms"></i>` : ''}</div><span class="cap">${counts[l]} · ${Math.round(counts[l] * 100 / n)}%</span></div>`).join('') + `</div>`;
+    const wd = [0,0,0,0,0,0,0]; pws.forEach(w => wd[wdOf(dn(w.date))]++);
+    h += `<div class="card"><h3>По дням недели</h3>${bars(wd.map((v, i) => [WD[i], v, `${WDF[i]}: ${npw(v, W_WORK)}`]), v => String(v), 'cap2', 140)}</div>`;
+  }
+  // рекорды
+  h += `<div class="card"><h3>${IC('trophy')}Рекорды и серии</h3>`;
+  if (ws.length) {
+    const mxBy = f => ws.reduce((a, b) => f(b) > f(a) ? b : a);
+    const lo = mxBy(w => w.minutes), fa = mxBy(kmOf), fs = mxBy(w => w.speed), st = mxBy(w => w.incline);
+    const [bw, bwd] = bestWindow(ws), [cs, bs] = dayStreaks(ws), [gd, gb] = goalHistory(ws);
+    const wdc = [0,0,0,0,0,0,0]; ws.forEach(w => wdc[wdOf(dn(w.date))]++); const fav = wdc.indexOf(Math.max(...wdc));
+    const dd = w => fmtDate(dn(w.date));
+    const recs = [['Самая долгая', fmtMin(lo.minutes), dd(lo)], ['Самая дальняя', kmF(kmOf(fa)), dd(fa)], ['Самая быстрая', num(fs.speed) + ' км/ч', dd(fs)],
+      ['Самый крутой уклон', num(st.incline) + ' %', dd(st)], [`Больше всего за ${npw(g.days, W_DAY)}`, npw(bw, W_WORK), bwd != null ? 'по ' + fmtDate(bwd) : ''],
+      ['Дней подряд', npw(bs, W_DAY), 'сейчас: ' + npw(cs, W_DAY)], ['Дней в норме всего', npw(gd, W_DAY), 'лучшая серия: ' + npw(gb, W_DAY)], ['Любимый день', WDF[fav], npw(wdc[fav], W_WORK)]];
+    h += `<div class="recs">` + recs.map(r => `<div><div class="cap">${r[0]}</div><div class="rv">${r[1]}</div><div class="cap">${r[2]}</div></div>`).join('') + `</div>`;
+  } else h += `<div class="muted">Рекорды появятся после первой тренировки.</div>`;
+  h += `</div>`;
+  // достижения
+  const achs = achievements();
+  h += `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:12px"><h3 style="margin:0">${IC('medal')}Достижения</h3><span class="cap">${achs.filter(a => a.done).length} из ${achs.length}</span></div><div class="ach">`;
+  h += achs.map(a => `<div class="at${a.done ? ' done' : ' off'}"><div class="badge">${IC(a.icon, 20)}</div>${a.done ? `<span class="ck">${IC('check', 16)}</span>` : `<em>${a.text}</em>`}<b>${a.title}</b><small>${a.desc}</small><div class="ap"><i style="width:${Math.max(4, a.prog * 100)}%"></i></div></div>`).join('');
+  return h + `</div></div>`;
+}
+
+function syncHTML(){
+  const m = {ok:['ok','Синхронизировано с облаком Telegram'], load:['load','Синхронизация…'], err:['err','Нет связи с облаком — данные сохранены на устройстве'], local:['', inTG ? 'Облако недоступно в этой версии Telegram' : 'Открыто вне Telegram — данные только в этом браузере']}[syncState];
+  return `<span class="sync ${m[0]}" id="sync"><i></i>${m[1]}</span>`;
+}
+function viewMe(){
+  const p = db.profile, g = G(), name = displayName(), photo = tgUser && tgUser.photo_url;
+  const age = ageOf(p.birth), kg = currentWeight(), hgt = +p.height || 0, b = bmiOf(kg, hgt), bmr = bmrOf(kg, hgt, age, p.sex);
+  let h = `<div class="prof"><div class="ava">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div>
+    <div style="min-width:0"><h1 style="font-size:22px">${esc(name || 'Гость')}</h1>${syncHTML()}</div></div>`;
+  h += `<div class="card"><h3>${IC('user')}Профиль</h3>
+    <label class="f"><span>Имя</span><input class="inp" id="p-name" maxlength="32" placeholder="${esc((tgUser && tgUser.first_name) || 'Как тебя зовут?')}" value="${esc(p.name || '')}" data-ch="pname"></label>
+    <div class="g2"><label class="f"><span>Дата рождения</span><input class="inp" type="date" id="p-birth" value="${esc(p.birth || '')}" max="${isoOf(todayN())}" data-ch="pbirth"></label>
+    <div class="f"><span>Пол</span><div class="seg fill" style="min-height:50px;align-items:center">${[['m','Мужской'],['f','Женский']].map(([v, l]) => `<button type="button" class="${p.sex === v ? 'on' : ''}" data-act="sex" data-v="${v}">${l}</button>`).join('')}</div></div></div>
+    ${stepper('height', 'Рост', hgt, 0, 230, 1, 0, 'см', 'height').replace('data-bind', 'data-jump="175" data-bind')}
+    <div class="chips" id="p-chips">${chips(age, b, bmr)}</div>
+    <div class="cap" style="margin-top:10px">Вес меняется в разделе «Вес». Эти данные нужны для калорий, ИМТ и базового обмена.</div></div>`;
+  h += `<div class="card"><h3>${IC('target')}Цель недели</h3><div class="cap" style="margin:-6px 0 12px">Окно скользящее: в зачёт идут последние N дней, включая сегодня.</div>
+    <div class="g2">${stepper('gcount', 'Сколько тренировок', g.count, 1, 14, 1, 0, '', 'gcount')}${stepper('gdays', 'За сколько дней', g.days, 3, 14, 1, 0, '', 'gdays')}</div>
+    <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
+  h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}</div>
+    <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}" data-act="accent" data-v="${k}" style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div></div>`;
+  h += `<div class="card"><h3>${IC('cloud')}Данные</h3><div class="cap" style="margin:-6px 0 12px">Данные хранятся в облаке Telegram и привязаны к твоему аккаунту — доступны с телефона и с компьютера.</div>
+    <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost small" data-act="import">${IC('import', 16)}Импорт из STEPS для Windows</button><button class="btn ghost small" data-act="copy">${IC('export', 16)}Скопировать копию</button></div>
+    <div class="cap" style="margin-top:10px">Импорт: выбери файл STEPS_backup_….json из десктопной версии (Настройки → Резервная копия). Совпадающие записи не задублируются.</div></div>`;
+  h += `<div class="foot">${APP}<br>Тренировок: ${valid().length} · взвешиваний: ${weightsSorted().length}</div>`;
+  return h;
+}
+function seg2(act, items, cur){ return `<div class="seg">` + items.map(([v, l]) => `<button type="button" class="${cur === v ? 'on' : ''}" data-act="${act}" data-v="${v}">${l}</button>`).join('') + `</div>`; }
+function chips(age, b, bmr){
+  return `<span class="chip">Возраст: ${age != null ? npw(age, W_YEAR) : '—'}</span><span class="chip">${b ? `ИМТ ${num(b)} · ${bmiCat(b)[0].toLowerCase()}` : 'ИМТ: —'}</span><span class="chip">${bmr ? `Базовый обмен ≈ ${numSep(bmr)} ккал/день` : 'Базовый обмен: нужны пол, возраст, рост и вес'}</span>`;
+}
+function goalPreview(){ const g = G(); return `${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)} ≈ ${num(g.count * 7 / g.days)} в неделю`; }
+
+/* ============================================================ рендер ==== */
+const TABS = [['home','Тренировки','walk'],['weight','Вес','scale'],['stats','Статистика','stats'],['me','Профиль','user']];
+const VIEWS = {home:viewHome, weight:viewWeight, stats:viewStats, me:viewMe};
+function render(){
+  $('#view').innerHTML = VIEWS[S.tab]();
+  $('#tabs').innerHTML = TABS.map(([k, l, ic]) => `<button type="button" class="tab${S.tab === k ? ' on' : ''}" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 20)}</span>${l}</button>`).join('');
+}
+
+/* ============================================================ шторки ==== */
+function openSheet(html, ctx){
+  sheetCtx = ctx;
+  $('#sheet').innerHTML = `<div class="grab"></div>` + html;
+  $('#sheet').scrollTop = 0;
+  $('#sw').classList.add('open');
+  try { if (ver('6.1')) tg.BackButton.show(); } catch (e) {}
+}
+function closeSheet(){
+  $('#sw').classList.remove('open');
+  sheetCtx = null;
+  if (document.activeElement) document.activeElement.blur();
+  try { if (ver('6.1')) tg.BackButton.hide(); } catch (e) {}
+}
+function feelPicker(v){
+  return `<div class="f"><span>Состояние во время тренировки</span><div class="row"><div class="feel" id="f-feel" data-v="${v}">` +
+    [1,2,3,4,5].map(i => `<button type="button" class="${i <= v ? 'on' : ''}" style="--c:${FEEL[i][1]}" data-act="feel" data-v="${i}" aria-label="${FEEL[i][0]}"></button>`).join('') +
+    `</div><span class="feel-l" id="f-feel-l" style="color:${FEEL[v][1]}">${FEEL[v][0]}</span></div></div>`;
+}
+function openWorkout(w, preset, hint){
+  const src = w || preset || {}, date = w ? w.date : isoOf(todayN()), f = clamp(parseInt(src.feeling) || 3, 1, 5);
+  openSheet(`<h2>${w ? 'Редактирование' : 'Новая тренировка'}</h2>${hint ? `<div class="hint">${hint}</div>` : ''}
+    <div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label>
+    ${stepper('incline', 'Уклон', src.incline != null ? src.incline : 0, 0, 15, 1, 0, '%')}</div>
+    <div class="g2">${stepper('minutes', 'Время', src.minutes || 30, 1, 600, 1, 0, 'мин')}${stepper('speed', 'Скорость', src.speed || 4.5, 0.5, 12, 0.1, 1, 'км/ч')}</div>
+    <div class="preview" id="f-prev"></div>
+    ${feelPicker(f)}
+    <label class="f"><span>Заметка</span><input class="inp" id="f-note" maxlength="140" placeholder="Необязательно" value="${esc(w ? w.note || '' : '')}"></label>
+    <div class="sheet-btns">${w ? `<button class="btn ghost danger" data-act="wdel">${IC('trash')}</button>` : ''}<button class="btn primary" data-act="wsave">Сохранить</button></div>`, {type:'workout', item:w});
+  updPreview();
+}
+function updPreview(){
+  const el = $('#f-prev'); if (!el) return;
+  const sp = stpVal('speed'), mi = stpVal('minutes'), inc = stpVal('incline'), d = ($('#f-date') || {}).value || isoOf(todayN());
+  const kc = walkKcal(sp, inc, mi, weightAt(d));
+  const lvl = walkMets(sp, inc), lv = lvl < 4.5 ? 'лёгкая' : lvl < 6 ? 'средняя' : lvl < 7.5 ? 'тяжёлая' : 'интенсив';
+  el.textContent = `≈ ${kmF(sp * mi / 60)}` + (kc ? ` · ≈ ${kcalF(kc)}` : '') + ` · нагрузка: ${lv}`;
+}
+function openWeight(e){
+  const def = e ? +e.kg : (currentWeight() || 75);
+  openSheet(`<h2>${e ? 'Редактирование веса' : 'Взвеситься'}</h2>
+    <div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="k-date" value="${e ? e.date : isoOf(todayN())}"></label>${stepper('kg', 'Вес', def, 20, 300, 0.1, 1, 'кг')}</div>
+    <div class="hint" style="margin-top:0">Совет: взвешивайся в одно и то же время — утром, до завтрака. Так график честнее.</div>
+    <label class="f"><span>Заметка</span><input class="inp" id="k-note" maxlength="100" placeholder="Например: утром натощак" value="${esc(e ? e.note || '' : '')}"></label>
+    <div class="sheet-btns">${e ? `<button class="btn ghost danger" data-act="kdel">${IC('trash')}</button>` : ''}<button class="btn primary" data-act="ksave">Сохранить</button></div>`, {type:'weight', item:e});
+}
+function openWeightGoal(){
+  const goal = db.weight_goal || {}, cur = currentWeight() || 75;
+  openSheet(`<h2>Цель по весу</h2><div class="g2">${stepper('gstart', 'Стартовый вес', goal.start || cur, 20, 300, 0.1, 1, 'кг')}${stepper('gtarget', 'Целевой вес', goal.target || +(cur - 5).toFixed(1), 20, 300, 0.1, 1, 'кг')}</div>
+    <div class="preview" id="wg-info"></div>
+    <div class="sheet-btns">${goal.target ? `<button class="btn ghost danger" data-act="gdel">Удалить цель</button>` : ''}<button class="btn primary" data-act="gsave">Сохранить</button></div>`, {type:'wgoal'});
+  updGoalInfo();
+}
+function updGoalInfo(){
+  const el = $('#wg-info'); if (!el) return;
+  const diff = stpVal('gtarget') - stpVal('gstart');
+  let t = Math.abs(diff) < 0.05 ? 'Старт и цель совпадают — двигаться некуда' : diff < 0 ? `Нужно сбросить ${num(-diff)} кг.` : `Нужно набрать ${num(diff)} кг.`;
+  const b = bmiOf(stpVal('gtarget'), +db.profile.height || 0);
+  if (b) t += ` ИМТ на цели: ${num(b)} (${bmiCat(b)[0].toLowerCase()}).`;
+  el.textContent = t;
+}
+function onStp(el){
+  const key = el.dataset.key, bind = el.dataset.bind;
+  if (sheetCtx) { if (sheetCtx.type === 'workout') updPreview(); if (sheetCtx.type === 'wgoal') updGoalInfo(); }
+  if (!bind) return;
+  const v = readStp(el);
+  if (bind === 'height') {
+    db.profile.height = Math.round(v); save();
+    const c = $('#p-chips'); if (c) { const kg = currentWeight(), age = ageOf(db.profile.birth); c.innerHTML = chips(age, bmiOf(kg, v), bmrOf(kg, v, age, db.profile.sex)); }
+  } else if (bind === 'gcount' || bind === 'gdays') {
+    let c = bind === 'gcount' ? v : stpVal('gcount'), d = bind === 'gdays' ? v : stpVal('gdays');
+    if (c > d) { c = d; const ce = document.querySelector('.stp[data-key="gcount"] input'); if (ce) ce.value = String(c); }
+    db.settings.goal = {count:c, days:d}; save();
+    const p = $('#g-prev'); if (p) p.textContent = goalPreview();
+  }
+}
+
+/* ========================================================== действия ==== */
+function findW(id){ return db.workouts.find(w => String(w.id) === id); }
+function findK(id){ return db.weights.find(w => String(w.id) === id); }
+function lastWorkout(){ const ws = valid().sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (a.created || 0) - (b.created || 0)); return ws.length ? last(ws) : null; }
+
+function saveWorkout(){
+  const item = sheetCtx.item;
+  const data = {date:ISO_RE.test($('#f-date').value) ? $('#f-date').value : isoOf(todayN()), minutes:Math.round(stpVal('minutes')), speed:stpVal('speed'),
+    incline:Math.round(stpVal('incline')), feeling:+$('#f-feel').dataset.v, note:$('#f-note').value.trim()};
+  const g = G(), before = goalCount(valid(), todayN());
+  if (item) Object.assign(item, data); else db.workouts.push(Object.assign({id:uid(), created:nowSec()}, data));
+  save(); closeSheet(); render(); hap.ok();
+  toast(item ? 'Тренировка обновлена' : 'Тренировка сохранена');
+  const after = goalCount(valid(), todayN());
+  if (before < g.count && after >= g.count) setTimeout(() => celebrate('trophy', 'Норма выполнена!', `${after} из ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}`, CG_LINES), 350);
+}
+function delWorkout(){
+  const w = sheetCtx.item, idx = db.workouts.indexOf(w); if (idx < 0) return;
+  db.workouts.splice(idx, 1); save(); closeSheet(); render(); hap.warn();
+  toast('Тренировка удалена', 'Отменить', () => { db.workouts.splice(Math.min(idx, db.workouts.length), 0, w); save(); render(); });
+}
+function checkWeightGoal(before){
+  const goal = db.weight_goal || {}, after = weightGoalState(goal, currentWeight());
+  if (after && after.reached && !(before && before.reached) && !goal.reached_on) {
+    goal.reached_on = isoOf(todayN()); save();
+    setTimeout(() => celebrate('target', 'Цель по весу достигнута!', `Ты дошёл до ${num(after.target)} кг`, CGW_LINES), 350);
+  }
+}
+function saveWeight(){
+  const item = sheetCtx.item, before = weightGoalState(db.weight_goal, currentWeight());
+  const data = {date:ISO_RE.test($('#k-date').value) ? $('#k-date').value : isoOf(todayN()), kg:stpVal('kg'), note:$('#k-note').value.trim()};
+  if (item) Object.assign(item, data); else db.weights.push(Object.assign({id:uid(), created:nowSec()}, data));
+  save(); closeSheet(); render(); hap.ok();
+  toast(item ? 'Взвешивание обновлено' : `Записал: ${num(data.kg)} кг`);
+  checkWeightGoal(before);
+}
+function delWeight(){
+  const e = sheetCtx.item, idx = db.weights.indexOf(e); if (idx < 0) return;
+  db.weights.splice(idx, 1); save(); closeSheet(); render(); hap.warn();
+  toast('Взвешивание удалено', 'Отменить', () => { db.weights.splice(Math.min(idx, db.weights.length), 0, e); save(); render(); });
+}
+function saveGoal(){
+  db.weight_goal = {start:stpVal('gstart'), target:stpVal('gtarget'), start_date:isoOf(todayN())};
+  save(); closeSheet(); render(); hap.ok(); toast('Цель сохранена'); checkWeightGoal(null);
+}
+
+/* ------------------------------------------------- импорт / экспорт --- */
+function importFile(file){
+  const r = new FileReader();
+  r.onload = async () => {
+    let d;
+    try { d = JSON.parse(r.result); if (!d || !Array.isArray(d.workouts)) throw 0; }
+    catch (e) { toast('Это не похоже на копию STEPS'); hap.warn(); return; }
+    const wIds = new Set(db.workouts.map(w => String(w.id))), kIds = new Set(db.weights.map(w => String(w.id)));
+    const wKey = w => `${w.date}|${w.minutes}|${w.speed}|${w.incline}`, wKeys = new Set(db.workouts.map(wKey));
+    const newW = d.workouts.filter(w => w && ISO_RE.test(w.date || '') && !(w.id && wIds.has(String(w.id))) && !wKeys.has(wKey(w)));
+    const newK = (Array.isArray(d.weights) ? d.weights : []).filter(e => e && ISO_RE.test(e.date || '') && +e.kg > 0 && !(e.id && kIds.has(String(e.id))));
+    if (!newW.length && !newK.length) { toast('Всё уже импортировано — новых записей нет'); return; }
+    if (!(await ask(`Нашёл новых записей: ${npw(newW.length, W_WORK)}, взвешиваний: ${newK.length}. Добавить?`))) return;
+    for (const w of newW) db.workouts.push({id:String(w.id || uid()), date:w.date, minutes:clamp(Math.round(+w.minutes || 1), 1, 600),
+      speed:clamp(+w.speed || 0.5, 0.5, 12), incline:clamp(Math.round(+w.incline || 0), 0, 15), feeling:clamp(parseInt(w.feeling) || 3, 1, 5),
+      note:String(w.note || '').slice(0, 140), created:+w.created || nowSec()});
+    for (const e of newK) db.weights.push({id:String(e.id || uid()), date:e.date, kg:+(+e.kg).toFixed(1), note:String(e.note || '').slice(0, 100), created:+e.created || nowSec()});
+    const p = d.profile || {};
+    if (!db.profile.name && p.name) db.profile.name = String(p.name).slice(0, 32);
+    if (!db.profile.birth && ISO_RE.test(p.birth || '')) db.profile.birth = p.birth;
+    if (!db.profile.sex && (p.sex === 'm' || p.sex === 'f')) db.profile.sex = p.sex;
+    if (!(+db.profile.height) && +p.height) db.profile.height = Math.round(+p.height);
+    if (!(db.weight_goal || {}).target && d.weight_goal && d.weight_goal.target) db.weight_goal = d.weight_goal;
+    if (d.settings && d.settings.goal && d.settings.goal.count) db.settings.goal = {count:+d.settings.goal.count, days:+d.settings.goal.days || 7};
+    if (d.settings && ACCENTS.some(a => a[0] === d.settings.accent)) db.settings.accent = d.settings.accent;
+    if (Array.isArray(d.plans)) { const ids = new Set(db.plans.map(x => x.id)); d.plans.forEach(x => { if (x && !ids.has(x.id)) db.plans.push(x); }); }
+    save(); applyTheme(); render(); hap.ok();
+    toast(`Добавлено: ${npw(newW.length, W_WORK)}, взвешиваний: ${newK.length}`);
+  };
+  r.readAsText(file);
+}
+async function copyBackup(){
+  // формат совместим с «Восстановить» в STEPS для Windows
+  const data = {profile:db.profile, settings:{goal:db.settings.goal, accent:db.settings.accent}, workouts:db.workouts, weights:db.weights,
+    weight_goal:db.weight_goal, plans:db.plans, app:APP, saved_at:new Date().toISOString().slice(0, 19)};
+  const s = JSON.stringify(data);
+  let ok = false;
+  try { await navigator.clipboard.writeText(s); ok = true; } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = s; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+    try { ok = document.execCommand('copy'); } catch (_) {} ta.remove();
+  }
+  if (ok) { hap.ok(); toast('Копия в буфере — вставь в «Избранное» или в файл .json'); } else toast('Не получилось скопировать');
+}
+
+/* ============================================================ события === */
+const ACT = {
+  tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; render(); window.scrollTo(0, 0); hap.tap(); } },
+  add: () => openWorkout(null),
+  repeat: () => { const l = lastWorkout(); openWorkout(null, l, l ? 'Параметры из прошлой тренировки — поправь, если нужно' : ''); },
+  wedit: el => { const w = findW(el.dataset.id); if (w) openWorkout(w); },
+  wsave: saveWorkout, wdel: delWorkout,
+  more: () => { S.limit += 30; render(); },
+  kadd: () => openWeight(null),
+  kedit: el => { const e = findK(el.dataset.id); if (e) openWeight(e); },
+  ksave: saveWeight, kdel: delWeight,
+  kmore: () => { S.klimit += 30; render(); },
+  kgoal: openWeightGoal, gsave: saveGoal,
+  gdel: () => { db.weight_goal = {}; save(); closeSheet(); render(); toast('Цель удалена'); },
+  seg: el => { S[el.dataset.k] = el.dataset.v; render(); hap.tap(); },
+  bar: el => {
+    const cap = document.getElementById(el.dataset.cap); if (cap) cap.textContent = el.dataset.tip;
+    el.parentElement.querySelectorAll('.bar.sel').forEach(b => b.classList.remove('sel')); el.classList.add('sel'); hap.tap();
+  },
+  feel: el => {
+    const v = +el.dataset.v, box = $('#f-feel'); box.dataset.v = v;
+    box.querySelectorAll('button').forEach((b, i) => b.classList.toggle('on', i < v));
+    const l = $('#f-feel-l'); l.textContent = FEEL[v][0]; l.style.color = FEEL[v][1]; hap.tap();
+  },
+  sex: el => { db.profile.sex = el.dataset.v; save(); render(); hap.tap(); },
+  theme: el => { db.settings.theme = el.dataset.v; save(); applyTheme(); render(); hap.tap(); },
+  accent: el => { db.settings.accent = el.dataset.v; save(); applyTheme(); render(); hap.tap(); },
+  import: () => $('#file').click(),
+  copy: copyBackup,
+  close: closeSheet,
+  cgok: () => $('#cg').classList.remove('show')
+};
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-act]');
+  if (el && ACT[el.dataset.act]) ACT[el.dataset.act](el);
+});
+// степперы: нажал — шаг, держишь — повторяется
+let rep = null;
+const stopRep = () => { clearTimeout(rep); rep = null; };
+document.addEventListener('pointerdown', e => {
+  const b = e.target.closest('.sb'); if (!b) return;
+  e.preventDefault();
+  const el = b.closest('.stp'), d = +b.dataset.d;
+  stepBy(el, d); hap.tap();
+  const go = () => { stepBy(el, d); rep = setTimeout(go, 70); };
+  stopRep(); rep = setTimeout(go, 380);
+  b.addEventListener('pointerleave', stopRep, {once:true});
+});
+window.addEventListener('pointerup', stopRep);
+window.addEventListener('pointercancel', stopRep);
+document.addEventListener('input', e => {
+  const st = e.target.closest('.stp');
+  if (st && sheetCtx) { if (sheetCtx.type === 'workout') updPreview(); if (sheetCtx.type === 'wgoal') updGoalInfo(); }
+  if (e.target.id === 'f-date') updPreview();
+});
+document.addEventListener('change', e => {
+  const st = e.target.closest('.stp');
+  if (st) { const dec = +st.dataset.dec; st.querySelector('input').value = fmtIn(readStp(st), dec); onStp(st); return; }
+  const ch = e.target.dataset.ch;
+  if (ch === 'pname') { db.profile.name = e.target.value.trim().slice(0, 32); save(); toast('Сохранено'); }
+  if (ch === 'pbirth') { db.profile.birth = ISO_RE.test(e.target.value) ? e.target.value : ''; save();
+    const c = $('#p-chips'); if (c) { const kg = currentWeight(), h = +db.profile.height || 0, age = ageOf(db.profile.birth); c.innerHTML = chips(age, bmiOf(kg, h), bmrOf(kg, h, age, db.profile.sex)); } }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') e.target.blur(); });
+$('#file').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if (f) importFile(f); e.target.value = ''; });
+document.addEventListener('visibilitychange', () => { if (document.hidden && dirty) { clearTimeout(saveTimer); flush(); } });
+
+/* ============================================================ запуск ==== */
+async function init(){
+  if (tg) {
+    try { tg.ready(); tg.expand(); } catch (e) {}
+    try { if (ver('7.7')) tg.disableVerticalSwipes(); } catch (e) {}
+    try { tg.onEvent('themeChanged', () => { if (db.settings.theme === 'auto') { applyTheme(); render(); } }); } catch (e) {}
+    try { if (ver('6.1')) tg.BackButton.onClick(() => { if ($('#cg').classList.contains('show')) $('#cg').classList.remove('show'); else closeSheet(); }); } catch (e) {}
+  }
+  try { const s = localStorage.getItem(LS); if (s) db = normalize(JSON.parse(s)); } catch (e) {}
+  invalidate(); applyTheme(); render();
+  if (!hasCloud) return;
+  try {
+    const c = await cloudLoad();
+    if (c) {
+      cloudPtr = c.ptr;
+      const cd = normalize(c.data);
+      if ((cd.updated || 0) > (db.updated || 0)) {
+        db = cd; invalidate();
+        try { localStorage.setItem(LS, JSON.stringify(db)); } catch (e) {}
+        applyTheme(); if (!sheetCtx) render();
+      } else if ((db.updated || 0) > (cd.updated || 0)) { dirty = true; flush(); }
+    } else if (db.workouts.length || db.weights.length || db.updated) { dirty = true; flush(); }
+    setSync(dirty || saving ? 'load' : 'ok');
+  } catch (e) { setSync('err'); }
+}
+init();
+</script>
+</body>
+</html>
