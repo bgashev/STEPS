@@ -209,7 +209,8 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'STEPS (by BGASHEV) Mini App v1.271026';
+const APP = 'STEPS (by BGASHEV) Mini App v1.1.271026';
+const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const tg = window.Telegram && window.Telegram.WebApp;
 const inTG = !!(tg && tg.initData);
 const ver = v => !!(tg && tg.isVersionAtLeast && tg.isVersionAtLeast(v));
@@ -264,7 +265,8 @@ const kcalF = v => numSep(v) + ' ккал';
 function defaultDB(){
   return {v:1, updated:0, profile:{name:'', birth:'', sex:'', height:0},
     settings:{theme:'auto', accent:'lavender', goal:{count:5, days:7}},
-    workouts:[], weights:[], weight_goal:{}, plans:[]};
+    workouts:[], weights:[], weight_goal:{}, plans:[],
+    tomb:{}, metaU:{}, sync:{rev:0, dirty:{}, init:false}};
 }
 function normalize(d){
   const b = defaultDB();
@@ -278,6 +280,8 @@ function normalize(d){
   }
   b.settings.goal = Object.assign({count:5, days:7}, b.settings.goal || {});
   if (!['auto','light','dark'].includes(b.settings.theme)) b.settings.theme = 'auto';
+  b.sync = Object.assign({rev:0, dirty:{}, init:false}, b.sync || {});
+  if (!b.sync.dirty || typeof b.sync.dirty !== 'object') b.sync.dirty = {};
   return b;
 }
 let db = defaultDB();
@@ -465,7 +469,7 @@ function cs(method, ...args){
 }
 let cloudPtr = null, saveTimer = null, saving = false, dirty = false, syncState = hasCloud ? 'load' : 'local';
 function setSync(s){ syncState = s; const el = $('#sync'); if (el) el.outerHTML = syncHTML(); }
-function save(){
+function persist(){
   db.updated = Date.now();
   invalidate();
   try { localStorage.setItem(LS, JSON.stringify(db)); } catch (e) {}
@@ -474,6 +478,7 @@ function save(){
   clearTimeout(saveTimer);
   saveTimer = setTimeout(flush, 500);
 }
+function save(){ persist(); scheduleSync(1500); }
 async function flush(){
   if (!hasCloud || saving || !dirty) return;
   saving = true; dirty = false; setSync('load');
@@ -498,6 +503,149 @@ async function cloudLoad(){
   for (let i = 0; i < n; i++) keys.push(`${slot}_${i}`);
   const obj = await cs('getItems', keys);
   return {ptr, data:JSON.parse(keys.map(k => obj[k] || '').join(''))};
+}
+
+
+/* ================================================ синхронизация с сервером == */
+const TOK = 'steps_tok_' + (tgUser ? tgUser.id : 'local');
+const COLL = {workout:() => db.workouts, weight:() => db.weights, plan:() => db.plans};
+let srvState = inTG ? 'load' : 'off', srvUser = null, lastSync = 0, syncing = false, syncAgain = false, syncTimer = null;
+
+function touch(kind, item){                 // запись изменена на этом устройстве
+  const key = kind + ':' + item.id;
+  item.updated = Math.max(Date.now(), (item.updated || 0) + 1, (db.tomb[key] || 0) + 1);
+  delete db.tomb[key];
+  db.sync.dirty[key] = 1;
+}
+function tombstone(kind, item){             // запись удалена — помним, чтобы удалить и на других
+  const key = kind + ':' + item.id;
+  db.tomb[key] = Math.max(Date.now(), (item.updated || 0) + 1);
+  db.sync.dirty[key] = 1;
+}
+function touchMeta(id){
+  db.metaU[id] = Math.max(Date.now(), (db.metaU[id] || 0) + 1);
+  db.sync.dirty['meta:' + id] = 1;
+}
+function metaData(id){
+  if (id === 'profile') return {name:db.profile.name || '', birth:db.profile.birth || '', sex:db.profile.sex || '', height:+db.profile.height || 0};
+  if (id === 'settings') return {goal:db.settings.goal, accent:db.settings.accent};
+  return db.weight_goal || {};
+}
+function applyMeta(id, d){
+  d = d || {};
+  if (id === 'profile') {
+    if (typeof d.name === 'string') db.profile.name = d.name.slice(0, 32);
+    if (d.birth === '' || ISO_RE.test(d.birth || '')) db.profile.birth = d.birth;
+    if (['', 'm', 'f'].includes(d.sex)) db.profile.sex = d.sex;
+    if (d.height != null) db.profile.height = +d.height || 0;
+  } else if (id === 'settings') {
+    if (d.goal && d.goal.count) db.settings.goal = {count:+d.goal.count, days:+d.goal.days || 7};
+    if (ACCENTS.some(a => a[0] === d.accent)) db.settings.accent = d.accent;
+  } else if (id === 'weight_goal') db.weight_goal = (d && typeof d === 'object') ? d : {};
+}
+function splitKey(key){ const i = key.indexOf(':'); return [key.slice(0, i), key.slice(i + 1)]; }
+function curUpdated(key){
+  const [kind, id] = splitKey(key);
+  if (kind === 'meta') return db.metaU[id] || 0;
+  const it = (COLL[kind] ? COLL[kind]() : []).find(x => String(x.id) === id);
+  return it ? (it.updated || 0) : (db.tomb[key] || 0);
+}
+function markAllDirty(){
+  for (const kind of Object.keys(COLL)) for (const it of COLL[kind]()) {
+    if (!it || it.id == null) continue;
+    if (!it.updated) it.updated = Math.round((+it.created || 0) * 1000) || 1;
+    db.sync.dirty[kind + ':' + it.id] = 1;
+  }
+  // профиль/настройки отправляем, только если в них что-то заполнено:
+  // пустое новое устройство должно принять данные с сервера, а не затереть их
+  const g = db.settings.goal || {};
+  const has = {profile:!!(db.profile.name || db.profile.birth || db.profile.sex || +db.profile.height),
+    settings:(g.count && +g.count !== 5) || (g.days && +g.days !== 7) || db.settings.accent !== 'lavender',
+    weight_goal:!!(db.weight_goal && db.weight_goal.target)};
+  for (const id of Object.keys(has)) if (has[id] || db.metaU[id]) { if (!db.metaU[id]) db.metaU[id] = 1; db.sync.dirty['meta:' + id] = 1; }
+}
+function pendingRows(){
+  const rows = [];
+  for (const key of Object.keys(db.sync.dirty)) {
+    const [kind, id] = splitKey(key);
+    if (kind === 'meta') { rows.push({kind, id, data:metaData(id), updated:db.metaU[id] || 1, deleted:false}); continue; }
+    if (!COLL[kind]) { delete db.sync.dirty[key]; continue; }
+    const it = COLL[kind]().find(x => String(x.id) === id);
+    if (it) { const data = Object.assign({}, it); delete data.updated; rows.push({kind, id, data, updated:it.updated || 1, deleted:false}); }
+    else if (db.tomb[key]) rows.push({kind, id, data:{}, updated:db.tomb[key], deleted:true});
+    else delete db.sync.dirty[key];
+    if (rows.length >= 2500) break;
+  }
+  return rows;
+}
+function applyRemote(rows){
+  let changed = false;
+  for (const r of rows) {
+    const key = r.kind + ':' + r.id, ru = +r.updated || 0;
+    if (r.kind === 'meta') {
+      if (ru > (db.metaU[r.id] || 0)) { applyMeta(r.id, r.data); db.metaU[r.id] = ru; delete db.sync.dirty[key]; changed = true; }
+      continue;
+    }
+    if (!COLL[r.kind]) continue;
+    const arr = COLL[r.kind](), idx = arr.findIndex(x => String(x.id) === String(r.id));
+    const lu = Math.max(idx >= 0 ? (arr[idx].updated || 0) : 0, db.tomb[key] || 0);
+    if (ru <= lu) continue;                               // у нас свежее или то же самое
+    if (r.deleted) { if (idx >= 0) arr.splice(idx, 1); db.tomb[key] = ru; }
+    else {
+      const item = Object.assign({}, r.data || {}, {id:String(r.id), updated:ru});
+      if (idx >= 0) arr[idx] = item; else arr.push(item);
+      delete db.tomb[key];
+    }
+    delete db.sync.dirty[key];
+    changed = true;
+  }
+  return changed;
+}
+async function api(route, body){
+  const r = await fetch(API + route, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(j.error || ('HTTP ' + r.status)); e.status = r.status; throw e; }
+  return j;
+}
+async function ensureToken(force){
+  let t = null;
+  if (!force) { try { t = localStorage.getItem(TOK); } catch (e) {} }
+  if (t) return t;
+  const j = await api('/tg-webapp', {initData:tg.initData});
+  try { localStorage.setItem(TOK, j.token); } catch (e) {}
+  srvUser = j.user;
+  return j.token;
+}
+function setSrv(s){ srvState = s; const el = $('#sync'); if (el) el.outerHTML = syncHTML(); }
+function scheduleSync(ms){ if (!inTG) return; clearTimeout(syncTimer); syncTimer = setTimeout(syncNow, ms); }
+async function syncNow(){
+  if (!inTG) return;
+  if (syncing) { syncAgain = true; return; }
+  syncing = true; setSrv('load');
+  try {
+    let tok = await ensureToken(false);
+    if (!db.sync.init) { markAllDirty(); db.sync.init = true; }
+    const rows = pendingRows(), snap = rows.map(r => [r.kind + ':' + r.id, r.updated]);
+    const body = {since:db.sync.rev || 0, rows};
+    let res;
+    try { res = await api('/sync', Object.assign({token:tok}, body)); }
+    catch (e) {
+      if (e.status !== 401) throw e;
+      tok = await ensureToken(true);                       // сессия протухла — войти заново
+      res = await api('/sync', Object.assign({token:tok}, body));
+    }
+    for (const [k, u] of snap) if (curUpdated(k) === u) delete db.sync.dirty[k];
+    const changed = applyRemote(res.rows || []);
+    db.sync.rev = Math.max(db.sync.rev || 0, +res.rev || 0);
+    srvUser = res.user || srvUser;
+    lastSync = Date.now();
+    persist();
+    if (changed && !sheetCtx) { applyTheme(); render(); }
+    setSrv(Object.keys(db.sync.dirty).length ? 'load' : 'ok');
+    if (Object.keys(db.sync.dirty).length) syncAgain = true;   // остался хвост больше 2500 записей
+  } catch (e) { setSrv('err'); }
+  syncing = false;
+  if (syncAgain) { syncAgain = false; scheduleSync(400); }
 }
 
 /* ============================================================ иконки ==== */
@@ -874,7 +1022,10 @@ function viewStats(){
 }
 
 function syncHTML(){
-  const m = {ok:['ok','Синхронизировано с облаком Telegram'], load:['load','Синхронизация…'], err:['err','Нет связи с облаком — данные сохранены на устройстве'], local:['', inTG ? 'Облако недоступно в этой версии Telegram' : 'Открыто вне Telegram — данные только в этом браузере']}[syncState];
+  const t = lastSync ? new Date(lastSync).toTimeString().slice(0, 5) : '';
+  const m = {ok:['ok', 'Синхронизировано' + (t ? ' · ' + t : '')], load:['load', 'Синхронизация…'],
+    err:['err', 'Нет связи с сервером — изменения сохранены и отправятся позже'],
+    off:['', 'Открыто вне Telegram — синхронизация недоступна']}[srvState] || ['', ''];
   return `<span class="sync ${m[0]}" id="sync"><i></i>${m[1]}</span>`;
 }
 function viewMe(){
@@ -894,7 +1045,7 @@ function viewMe(){
     <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}</div>
     <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}" data-act="accent" data-v="${k}" style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div></div>`;
-  h += `<div class="card"><h3>${IC('cloud')}Данные</h3><div class="cap" style="margin:-6px 0 12px">Данные хранятся в облаке Telegram и привязаны к твоему аккаунту — доступны с телефона и с компьютера.</div>
+  h += `<div class="card"><h3>${IC('cloud')}Данные</h3><div class="cap" style="margin:-6px 0 12px">Данные синхронизируются через сервер STEPS и привязаны к твоему Telegram: одинаковы на телефоне, в Telegram Desktop и в программе STEPS для Windows.</div>
     <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost small" data-act="import">${IC('import', 16)}Импорт из STEPS для Windows</button><button class="btn ghost small" data-act="copy">${IC('export', 16)}Скопировать копию</button></div>
     <div class="cap" style="margin-top:10px">Импорт: выбери файл STEPS_backup_….json из десктопной версии (Настройки → Резервная копия). Совпадающие записи не задублируются.</div></div>`;
   h += `<div class="foot">${APP}<br>Тренировок: ${valid().length} · взвешиваний: ${weightsSorted().length}</div>`;
@@ -981,12 +1132,12 @@ function onStp(el){
   if (!bind) return;
   const v = readStp(el);
   if (bind === 'height') {
-    db.profile.height = Math.round(v); save();
+    db.profile.height = Math.round(v); touchMeta('profile'); save();
     const c = $('#p-chips'); if (c) { const kg = currentWeight(), age = ageOf(db.profile.birth); c.innerHTML = chips(age, bmiOf(kg, v), bmrOf(kg, v, age, db.profile.sex)); }
   } else if (bind === 'gcount' || bind === 'gdays') {
     let c = bind === 'gcount' ? v : stpVal('gcount'), d = bind === 'gdays' ? v : stpVal('gdays');
     if (c > d) { c = d; const ce = document.querySelector('.stp[data-key="gcount"] input'); if (ce) ce.value = String(c); }
-    db.settings.goal = {count:c, days:d}; save();
+    db.settings.goal = {count:c, days:d}; touchMeta('settings'); save();
     const p = $('#g-prev'); if (p) p.textContent = goalPreview();
   }
 }
@@ -1001,7 +1152,9 @@ function saveWorkout(){
   const data = {date:ISO_RE.test($('#f-date').value) ? $('#f-date').value : isoOf(todayN()), minutes:Math.round(stpVal('minutes')), speed:stpVal('speed'),
     incline:Math.round(stpVal('incline')), feeling:+$('#f-feel').dataset.v, note:$('#f-note').value.trim()};
   const g = G(), before = goalCount(valid(), todayN());
-  if (item) Object.assign(item, data); else db.workouts.push(Object.assign({id:uid(), created:nowSec()}, data));
+  let w = item;
+  if (w) Object.assign(w, data); else { w = Object.assign({id:uid(), created:nowSec()}, data); db.workouts.push(w); }
+  touch('workout', w);
   save(); closeSheet(); render(); hap.ok();
   toast(item ? 'Тренировка обновлена' : 'Тренировка сохранена');
   const after = goalCount(valid(), todayN());
@@ -1009,32 +1162,34 @@ function saveWorkout(){
 }
 function delWorkout(){
   const w = sheetCtx.item, idx = db.workouts.indexOf(w); if (idx < 0) return;
-  db.workouts.splice(idx, 1); save(); closeSheet(); render(); hap.warn();
-  toast('Тренировка удалена', 'Отменить', () => { db.workouts.splice(Math.min(idx, db.workouts.length), 0, w); save(); render(); });
+  db.workouts.splice(idx, 1); tombstone('workout', w); save(); closeSheet(); render(); hap.warn();
+  toast('Тренировка удалена', 'Отменить', () => { db.workouts.splice(Math.min(idx, db.workouts.length), 0, w); touch('workout', w); save(); render(); });
 }
 function checkWeightGoal(before){
   const goal = db.weight_goal || {}, after = weightGoalState(goal, currentWeight());
   if (after && after.reached && !(before && before.reached) && !goal.reached_on) {
-    goal.reached_on = isoOf(todayN()); save();
+    goal.reached_on = isoOf(todayN()); touchMeta('weight_goal'); save();
     setTimeout(() => celebrate('target', 'Цель по весу достигнута!', `Ты дошёл до ${num(after.target)} кг`, CGW_LINES), 350);
   }
 }
 function saveWeight(){
   const item = sheetCtx.item, before = weightGoalState(db.weight_goal, currentWeight());
   const data = {date:ISO_RE.test($('#k-date').value) ? $('#k-date').value : isoOf(todayN()), kg:stpVal('kg'), note:$('#k-note').value.trim()};
-  if (item) Object.assign(item, data); else db.weights.push(Object.assign({id:uid(), created:nowSec()}, data));
+  let k = item;
+  if (k) Object.assign(k, data); else { k = Object.assign({id:uid(), created:nowSec()}, data); db.weights.push(k); }
+  touch('weight', k);
   save(); closeSheet(); render(); hap.ok();
   toast(item ? 'Взвешивание обновлено' : `Записал: ${num(data.kg)} кг`);
   checkWeightGoal(before);
 }
 function delWeight(){
   const e = sheetCtx.item, idx = db.weights.indexOf(e); if (idx < 0) return;
-  db.weights.splice(idx, 1); save(); closeSheet(); render(); hap.warn();
-  toast('Взвешивание удалено', 'Отменить', () => { db.weights.splice(Math.min(idx, db.weights.length), 0, e); save(); render(); });
+  db.weights.splice(idx, 1); tombstone('weight', e); save(); closeSheet(); render(); hap.warn();
+  toast('Взвешивание удалено', 'Отменить', () => { db.weights.splice(Math.min(idx, db.weights.length), 0, e); touch('weight', e); save(); render(); });
 }
 function saveGoal(){
   db.weight_goal = {start:stpVal('gstart'), target:stpVal('gtarget'), start_date:isoOf(todayN())};
-  save(); closeSheet(); render(); hap.ok(); toast('Цель сохранена'); checkWeightGoal(null);
+  touchMeta('weight_goal'); save(); closeSheet(); render(); hap.ok(); toast('Цель сохранена'); checkWeightGoal(null);
 }
 
 /* ------------------------------------------------- импорт / экспорт --- */
@@ -1050,6 +1205,7 @@ function importFile(file){
     const newK = (Array.isArray(d.weights) ? d.weights : []).filter(e => e && ISO_RE.test(e.date || '') && +e.kg > 0 && !(e.id && kIds.has(String(e.id))));
     if (!newW.length && !newK.length) { toast('Всё уже импортировано — новых записей нет'); return; }
     if (!(await ask(`Нашёл новых записей: ${npw(newW.length, W_WORK)}, взвешиваний: ${newK.length}. Добавить?`))) return;
+    const n0w = db.workouts.length, n0k = db.weights.length, n0p = db.plans.length;
     for (const w of newW) db.workouts.push({id:String(w.id || uid()), date:w.date, minutes:clamp(Math.round(+w.minutes || 1), 1, 600),
       speed:clamp(+w.speed || 0.5, 0.5, 12), incline:clamp(Math.round(+w.incline || 0), 0, 15), feeling:clamp(parseInt(w.feeling) || 3, 1, 5),
       note:String(w.note || '').slice(0, 140), created:+w.created || nowSec()});
@@ -1062,7 +1218,11 @@ function importFile(file){
     if (!(db.weight_goal || {}).target && d.weight_goal && d.weight_goal.target) db.weight_goal = d.weight_goal;
     if (d.settings && d.settings.goal && d.settings.goal.count) db.settings.goal = {count:+d.settings.goal.count, days:+d.settings.goal.days || 7};
     if (d.settings && ACCENTS.some(a => a[0] === d.settings.accent)) db.settings.accent = d.settings.accent;
-    if (Array.isArray(d.plans)) { const ids = new Set(db.plans.map(x => x.id)); d.plans.forEach(x => { if (x && !ids.has(x.id)) db.plans.push(x); }); }
+    if (Array.isArray(d.plans)) { const ids = new Set(db.plans.map(x => x.id)); d.plans.forEach(x => { if (x && x.id && !ids.has(x.id)) db.plans.push(Object.assign({}, x, {id:String(x.id)})); }); }
+    db.workouts.slice(n0w).forEach(w => touch('workout', w));
+    db.weights.slice(n0k).forEach(k => touch('weight', k));
+    db.plans.slice(n0p).forEach(x => touch('plan', x));
+    touchMeta('profile'); touchMeta('settings'); touchMeta('weight_goal');
     save(); applyTheme(); render(); hap.ok();
     toast(`Добавлено: ${npw(newW.length, W_WORK)}, взвешиваний: ${newK.length}`);
   };
@@ -1070,8 +1230,9 @@ function importFile(file){
 }
 async function copyBackup(){
   // формат совместим с «Восстановить» в STEPS для Windows
-  const data = {profile:db.profile, settings:{goal:db.settings.goal, accent:db.settings.accent}, workouts:db.workouts, weights:db.weights,
-    weight_goal:db.weight_goal, plans:db.plans, app:APP, saved_at:new Date().toISOString().slice(0, 19)};
+  const strip = a => a.map(x => { const c = Object.assign({}, x); delete c.updated; return c; });
+  const data = {profile:db.profile, settings:{goal:db.settings.goal, accent:db.settings.accent}, workouts:strip(db.workouts), weights:strip(db.weights),
+    weight_goal:db.weight_goal, plans:strip(db.plans), app:APP, saved_at:new Date().toISOString().slice(0, 19)};
   const s = JSON.stringify(data);
   let ok = false;
   try { await navigator.clipboard.writeText(s); ok = true; } catch (e) {
@@ -1094,7 +1255,7 @@ const ACT = {
   ksave: saveWeight, kdel: delWeight,
   kmore: () => { S.klimit += 30; render(); },
   kgoal: openWeightGoal, gsave: saveGoal,
-  gdel: () => { db.weight_goal = {}; save(); closeSheet(); render(); toast('Цель удалена'); },
+  gdel: () => { db.weight_goal = {}; touchMeta('weight_goal'); save(); closeSheet(); render(); toast('Цель удалена'); },
   seg: el => { S[el.dataset.k] = el.dataset.v; render(); hap.tap(); },
   bar: el => {
     const cap = document.getElementById(el.dataset.cap); if (cap) cap.textContent = el.dataset.tip;
@@ -1105,9 +1266,9 @@ const ACT = {
     box.querySelectorAll('button').forEach((b, i) => b.classList.toggle('on', i < v));
     const l = $('#f-feel-l'); l.textContent = FEEL[v][0]; l.style.color = FEEL[v][1]; hap.tap();
   },
-  sex: el => { db.profile.sex = el.dataset.v; save(); render(); hap.tap(); },
+  sex: el => { db.profile.sex = el.dataset.v; touchMeta('profile'); save(); render(); hap.tap(); },
   theme: el => { db.settings.theme = el.dataset.v; save(); applyTheme(); render(); hap.tap(); },
-  accent: el => { db.settings.accent = el.dataset.v; save(); applyTheme(); render(); hap.tap(); },
+  accent: el => { db.settings.accent = el.dataset.v; touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
   import: () => $('#file').click(),
   copy: copyBackup,
   close: closeSheet,
@@ -1140,13 +1301,17 @@ document.addEventListener('change', e => {
   const st = e.target.closest('.stp');
   if (st) { const dec = +st.dataset.dec; st.querySelector('input').value = fmtIn(readStp(st), dec); onStp(st); return; }
   const ch = e.target.dataset.ch;
-  if (ch === 'pname') { db.profile.name = e.target.value.trim().slice(0, 32); save(); toast('Сохранено'); }
-  if (ch === 'pbirth') { db.profile.birth = ISO_RE.test(e.target.value) ? e.target.value : ''; save();
+  if (ch === 'pname') { db.profile.name = e.target.value.trim().slice(0, 32); touchMeta('profile'); save(); toast('Сохранено'); }
+  if (ch === 'pbirth') { db.profile.birth = ISO_RE.test(e.target.value) ? e.target.value : ''; touchMeta('profile'); save();
     const c = $('#p-chips'); if (c) { const kg = currentWeight(), h = +db.profile.height || 0, age = ageOf(db.profile.birth); c.innerHTML = chips(age, bmiOf(kg, h), bmrOf(kg, h, age, db.profile.sex)); } }
 });
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') e.target.blur(); });
 $('#file').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if (f) importFile(f); e.target.value = ''; });
-document.addEventListener('visibilitychange', () => { if (document.hidden && dirty) { clearTimeout(saveTimer); flush(); } });
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { if (dirty) { clearTimeout(saveTimer); flush(); } if (Object.keys(db.sync.dirty).length) syncNow(); }
+  else scheduleSync(200);
+});
+setInterval(() => { if (!document.hidden) syncNow(); }, 60000);
 
 /* ============================================================ запуск ==== */
 async function init(){
@@ -1158,6 +1323,7 @@ async function init(){
   }
   try { const s = localStorage.getItem(LS); if (s) db = normalize(JSON.parse(s)); } catch (e) {}
   invalidate(); applyTheme(); render();
+  scheduleSync(100);
   if (!hasCloud) return;
   try {
     const c = await cloudLoad();
@@ -1172,6 +1338,7 @@ async function init(){
     } else if (db.workouts.length || db.weights.length || db.updated) { dirty = true; flush(); }
     setSync(dirty || saving ? 'load' : 'ok');
   } catch (e) { setSync('err'); }
+  scheduleSync(300);
 }
 init();
 </script>
