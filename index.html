@@ -209,7 +209,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'STEPS (by BGASHEV) Mini App v1.1.271026';
+const APP = 'STEPS (by BGASHEV) Mini App v1.2.271026';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const tg = window.Telegram && window.Telegram.WebApp;
 const inTG = !!(tg && tg.initData);
@@ -1311,7 +1311,7 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) { if (dirty) { clearTimeout(saveTimer); flush(); } if (Object.keys(db.sync.dirty).length) syncNow(); }
   else scheduleSync(200);
 });
-setInterval(() => { if (!document.hidden) syncNow(); }, 60000);
+setInterval(() => { if (!document.hidden) syncNow(); }, 15000);   // пока приложение на экране — проверяем облако часто
 
 /* ============================================================ запуск ==== */
 async function init(){
