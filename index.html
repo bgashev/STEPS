@@ -209,7 +209,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'STEPS (by BGASHEV) Mini App v1.2.271026';
+const APP = 'STEPS (by BGASHEV) Mini App v1.3.271026';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const tg = window.Telegram && window.Telegram.WebApp;
 const inTG = !!(tg && tg.initData);
@@ -229,7 +229,7 @@ const WD=["пн","вт","ср","чт","пт","сб","вс"];
 const WDF=["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"];
 const MON=["янв","фев","мар","апр","май","июн","июл","авг","сен","окт","ноя","дек"];
 const MONF=["январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"];
-const W_WORK=["тренировка","тренировки","тренировок"], W_DAY=["день","дня","дней"], W_YEAR=["год","года","лет"], W_ENTRY=["запись","записи","записей"];
+const W_WORK=["тренировка","тренировки","тренировок"], W_DAY=["день","дня","дней"], W_YEAR=["год","года","лет"], W_ENTRY=["запись","записи","записей"], W_TIMES=["раз","раза","раз"];
 const CG_LINES = ["Ты официально не диванный. Холодильник в шоке.","Дорожка гордится тобой. Диван — в депрессии.","Норма закрыта. Теперь можно и пельмени, но по-умному.","Это не просто ходьба, это дисциплина с уклоном.","Тело сказало «спасибо», хотя вслух пока не умеет."];
 const CGW_LINES = ["Весы наконец показали то, что ты заслужил.","Сказал — сделал. Редкий жанр.","Цель достигнута. Главное — не отмечать тортом."];
 
@@ -337,28 +337,31 @@ function bmrOf(kg, h, age, sex){
 }
 
 /* ------------------------------------------------- логика из десктопа --- */
-function goalCount(ws, onN){ const g = G(), lo = onN - g.days + 1; let n = 0; for (const w of ws) { const d = dn(w.date); if (d >= lo && d <= onN) n++; } return n; }
+/* Цель недели по циклам: неделя начинается с первой тренировки и длится g.days дней.
+   Набрал g.count — норма выполнена, следующая неделя начнётся со следующей тренировки (отдых ничего не сжигает).
+   Не успел — неделя не засчитана. Серию норм рвёт проваленная неделя или пауза длиннее g.days после нормы. */
+function goalCycles(ws, t){
+  const g = G(); t = t == null ? todayN() : t;
+  const per = new Map(); for (const w of ws) { const d = dn(w.date); if (d <= t) per.set(d, (per.get(d) || 0) + 1); }
+  let S = null, count = 0, done = 0, run = 0, best = 0, last = null;
+  for (const d of [...per.keys()].sort((a, b) => a - b)) {
+    if (S != null && d > S + g.days - 1) { S = null; count = 0; run = 0; }
+    if (S == null) { if (last != null && d - last > g.days) run = 0; S = d; count = 0; }
+    count += per.get(d);
+    if (count >= g.count) { done++; run++; best = Math.max(best, run); last = d; S = null; count = 0; }
+  }
+  if (S != null && t > S + g.days - 1) { S = null; count = 0; run = 0; }
+  if (S == null && last != null && t - last > g.days) run = 0;
+  return {start:S, end:S != null ? S + g.days - 1 : null, count, done, best, run, last, doneToday:S == null && last === t};
+}
 function goalInfo(ws){
-  const g = G(), t = todayN(), lo = t - g.days + 1;
-  const ds = ws.map(w => dn(w.date)).filter(n => n >= lo && n <= t);
-  const count = ds.length;
-  const burn = ds.length ? Math.min(...ds) + g.days : null;
-  let hold = null;
-  if (count >= g.count) { hold = 0; for (let k = 1; k <= g.days; k++) { if (goalCount(ws, t + k) >= g.count) hold = k; else break; } }
-  return {count, lo, hi:t, burn, hold, remaining:Math.max(0, g.count - count)};
+  const g = G(), t = todayN(), c = goalCycles(ws, t);
+  const shown = c.doneToday ? g.count : c.count;
+  return Object.assign(c, {shown, remaining:Math.max(0, g.count - shown), daysLeft:c.end != null ? c.end - t + 1 : null,
+    prevOk:c.start == null && !c.doneToday && c.last != null && t - c.last <= g.days});
 }
 function perDay(ws){ const m = new Map(); for (const w of ws) { const d = dn(w.date); m.set(d, (m.get(d) || 0) + 1); } return m; }
-function goalHistory(ws){
-  const g = G(), t = todayN(), per = perDay(ws);
-  if (!per.size) return [0,0,0];
-  let d = Math.min(...per.keys()), days = 0, best = 0, run = 0;
-  while (d <= t) {
-    let c = 0; for (let k = 0; k < g.days; k++) c += per.get(d - k) || 0;
-    if (c >= g.count) { days++; run++; best = Math.max(best, run); } else run = 0;
-    d++;
-  }
-  return [days, best, run];
-}
+function goalHistory(ws){ const c = goalCycles(ws); return [c.done, c.best, c.run]; }
 function dayStreaks(ws){
   const t = todayN(), s = new Set(ws.map(w => dn(w.date)).filter(n => n <= t));
   let best = 0, run = 0, prev = null;
@@ -456,7 +459,7 @@ function achievements(){
     a('globe','Путешественник','500 км суммарно',km,500), a('clock','10 часов','Суммарно на дорожке',mins/60,10),
     a('flame','Печка','10 000 ккал сожжено',kc,10000), a('mountain','Горный козёл','Тренировка с уклоном от 12%',maxInc,12),
     a('hourglass','Черепаха-марафонец','Тренировка от 60 минут',maxMin,60), a('bolt','Неделя без пропусков','7 дней подряд',bs,7),
-    a('trophy','Нормальный','Выполнить недельную норму',gd,1), a('crown','Железная воля','30 дней подряд в норме',gb,30),
+    a('trophy','Нормальный','Выполнить недельную норму',gd,1), a('crown','Железная воля','4 нормы подряд',gb,4),
     a('sunrise','Ранняя пташка','Записать тренировку до 8 утра',early?1:0,1,early?'':'—'),
     a('scale','Взвешенное решение','10 взвешиваний',we,10), a('target','В яблочко','Достичь цели по весу',wr?1:0,1,wr?'':'—')];
 }
@@ -869,24 +872,21 @@ function viewHome(){
   const tMin = sum(ws.filter(w => dn(w.date) === t), w => w.minutes);
   const bits = [tMin ? `сегодня уже ${fmtMin(tMin)} на дорожке` : (rest.has(t) ? 'сегодня день отдыха' : 'сегодня ещё без шагов')];
   if (cur >= 2) bits.push(`серия ${npw(cur, W_DAY)} подряд`);
-  bits.push(info.remaining ? `до нормы ${info.remaining}` : 'норма недели закрыта');
-  const done = info.count >= g.count, pct = Math.round(info.count * 100 / g.count);
+  bits.push(info.doneToday ? 'норма недели закрыта' : info.start == null ? 'новая неделя — с первой тренировки' : `до нормы ${info.remaining}`);
+  const done = info.shown >= g.count, pct = Math.round(info.shown * 100 / g.count);
   let gtxt;
-  if (done) {
-    const extra = info.count - g.count;
-    const hold = info.hold === 0 ? 'держится только сегодня — не расслабляйся' : `продержится ещё ${npw(info.hold, W_DAY)} без новых`;
-    gtxt = `<div class="gt ok">Норма выполнена${extra ? ' +' + extra : ''}</div><div class="gs">${hold}</div>`;
-  } else {
-    let burn = 'в окне пока нет тренировок';
-    if (info.burn != null) { const dl = info.burn - t; burn = dl <= 1 ? 'старая тренировка «сгорит» завтра' : `старая «сгорит» через ${npw(dl, W_DAY)}`; }
-    gtxt = `<div class="gt">Осталось ${npw(info.remaining, W_WORK)}</div><div class="gs">${burn}</div>`;
-  }
+  if (done) gtxt = `<div class="gt ok">Норма выполнена</div><div class="gs">новая неделя начнётся со следующей тренировки — отдыхай спокойно</div>`;
+  else if (info.start != null) {
+    const left = info.daysLeft === 1 ? 'сегодня последний день недели' : `до конца недели ${npw(info.daysLeft, W_DAY)}`;
+    gtxt = `<div class="gt">Осталось ${npw(info.remaining, W_WORK)}</div><div class="gs">${left}</div>`;
+  } else if (info.prevOk) gtxt = `<div class="gt ok">Прошлая выполнена</div><div class="gs">${fmtDate(info.last)} · новая неделя начнётся с первой тренировки</div>`;
+  else gtxt = `<div class="gt">Неделя начнётся с первой тренировки</div><div class="gs">успей ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</div>`;
   let note = '';
   if (rest.has(t)) note = `<div class="note">${IC('moon', 15)}Сегодня день отдыха — восстанавливайся</div>`;
   else if (rest.has(t + 1)) note = `<div class="note">${IC('moon', 15)}5 дней подряд — завтра и послезавтра отдых</div>`;
 
   let h = `<div class="head"><div><h1>${esc(greet())}</h1><div class="sub">${bits.join(' · ')}</div></div></div>
-  <div class="card"><div class="goal">${ring(info.count / g.count, `${info.count}/${g.count}`, `${pct}%`, done)}
+  <div class="card"><div class="goal">${ring(info.shown / g.count, `${info.shown}/${g.count}`, `${pct}%`, done)}
     <div><div class="glabel">Цель: ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</div>${gtxt}</div></div>${strip(ws, g.days)}${note}</div>
   <div class="actions"><button class="btn primary" data-act="add">${IC('plus')}Тренировка</button>${ws.length ? `<button class="btn ghost" data-act="repeat">${IC('repeat')}Повторить</button>` : ''}</div>`;
   if (ws.length) {
@@ -1010,7 +1010,7 @@ function viewStats(){
     const dd = w => fmtDate(dn(w.date));
     const recs = [['Самая долгая', fmtMin(lo.minutes), dd(lo)], ['Самая дальняя', kmF(kmOf(fa)), dd(fa)], ['Самая быстрая', num(fs.speed) + ' км/ч', dd(fs)],
       ['Самый крутой уклон', num(st.incline) + ' %', dd(st)], [`Больше всего за ${npw(g.days, W_DAY)}`, npw(bw, W_WORK), bwd != null ? 'по ' + fmtDate(bwd) : ''],
-      ['Дней подряд', npw(bs, W_DAY), 'сейчас: ' + npw(cs, W_DAY)], ['Дней в норме всего', npw(gd, W_DAY), 'лучшая серия: ' + npw(gb, W_DAY)], ['Любимый день', WDF[fav], npw(wdc[fav], W_WORK)]];
+      ['Дней подряд', npw(bs, W_DAY), 'сейчас: ' + npw(cs, W_DAY)], ['Норм выполнено', npw(gd, W_TIMES), 'лучшая серия: ' + npw(gb, W_TIMES)], ['Любимый день', WDF[fav], npw(wdc[fav], W_WORK)]];
     h += `<div class="recs">` + recs.map(r => `<div><div class="cap">${r[0]}</div><div class="rv">${r[1]}</div><div class="cap">${r[2]}</div></div>`).join('') + `</div>`;
   } else h += `<div class="muted">Рекорды появятся после первой тренировки.</div>`;
   h += `</div>`;
@@ -1040,7 +1040,7 @@ function viewMe(){
     ${stepper('height', 'Рост', hgt, 0, 230, 1, 0, 'см', 'height').replace('data-bind', 'data-jump="175" data-bind')}
     <div class="chips" id="p-chips">${chips(age, b, bmr)}</div>
     <div class="cap" style="margin-top:10px">Вес меняется в разделе «Вес». Эти данные нужны для калорий, ИМТ и базового обмена.</div></div>`;
-  h += `<div class="card"><h3>${IC('target')}Цель недели</h3><div class="cap" style="margin:-6px 0 12px">Окно скользящее: в зачёт идут последние N дней, включая сегодня.</div>
+  h += `<div class="card"><h3>${IC('target')}Цель недели</h3><div class="cap" style="margin:-6px 0 12px">Неделя начинается с первой тренировки и длится N дней. Выполнил норму — следующая начнётся с новой тренировки.</div>
     <div class="g2">${stepper('gcount', 'Сколько тренировок', g.count, 1, 14, 1, 0, '', 'gcount')}${stepper('gdays', 'За сколько дней', g.days, 3, 14, 1, 0, '', 'gdays')}</div>
     <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}</div>
@@ -1151,14 +1151,14 @@ function saveWorkout(){
   const item = sheetCtx.item;
   const data = {date:ISO_RE.test($('#f-date').value) ? $('#f-date').value : isoOf(todayN()), minutes:Math.round(stpVal('minutes')), speed:stpVal('speed'),
     incline:Math.round(stpVal('incline')), feeling:+$('#f-feel').dataset.v, note:$('#f-note').value.trim()};
-  const g = G(), before = goalCount(valid(), todayN());
+  const g = G(), before = goalCycles(valid()).done;
   let w = item;
   if (w) Object.assign(w, data); else { w = Object.assign({id:uid(), created:nowSec()}, data); db.workouts.push(w); }
   touch('workout', w);
   save(); closeSheet(); render(); hap.ok();
   toast(item ? 'Тренировка обновлена' : 'Тренировка сохранена');
-  const after = goalCount(valid(), todayN());
-  if (before < g.count && after >= g.count) setTimeout(() => celebrate('trophy', 'Норма выполнена!', `${after} из ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}`, CG_LINES), 350);
+  const after = goalCycles(valid()).done;
+  if (after > before) setTimeout(() => celebrate('trophy', 'Норма выполнена!', `${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}`, CG_LINES), 350);
 }
 function delWorkout(){
   const w = sheetCtx.item, idx = db.workouts.indexOf(w); if (idx < 0) return;
