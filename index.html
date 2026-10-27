@@ -231,6 +231,31 @@ input[type=date].inp{display:block}
 .fq{display:flex;gap:8px;font-style:italic;font-weight:600;font-size:14px;line-height:1.35}
 .fq b{font-size:34px;line-height:.8;opacity:.35;font-style:normal}
 .gsbtn{margin-top:10px}
+
+/* ---- друзья ---- */
+.fav{width:46px;height:46px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:800;font-size:18px;background:var(--accent);color:var(--on-accent);overflow:hidden}
+.fav img{width:100%;height:100%;object-fit:cover}
+.fav.s{width:26px;height:26px;font-size:12px}
+.fc{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:12px 12px 12px 14px;margin-bottom:8px;animation:fadeUp .35s backwards}
+.fc .fm{flex:1;min-width:0}
+.fc b{font-size:15px}
+.fc .u{color:var(--muted);font-size:12px;margin-left:6px}
+.fc .l2{color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.fc .gr{display:flex;flex-direction:column;align-items:center;gap:2px;flex:none;width:64px}
+.fc .gr small{font-size:10.5px;font-weight:650;color:var(--muted);text-align:center;line-height:1.15}
+.fc .gr small.ok{color:var(--green)}
+.fc .rm{border:0;background:none;color:var(--muted);padding:6px;border-radius:10px;flex:none}
+.fstreak{display:inline-flex;align-items:center;gap:3px;color:var(--accent);font-weight:700;font-size:12px;margin-left:6px}
+.rk{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:12px}
+.rk.me{background:var(--accent-soft)}
+.rk .pl{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);flex:none}
+.rk .pl.m1{background:#F2C94C;color:#1D1D24}.rk .pl.m2{background:#C9CED6;color:#1D1D24}.rk .pl.m3{background:#D9A273;color:#1D1D24}
+.rk .nm{width:92px;font-weight:650;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none}
+.rk .br{flex:1;height:9px;border-radius:5px;background:var(--off);overflow:hidden}
+.rk .br i{display:block;height:100%;border-radius:5px;background:var(--accent);transform-origin:left;animation:growX .9s cubic-bezier(.2,.8,.2,1) backwards}
+.rk .mv{width:70px;text-align:right;font-size:12.5px;font-weight:650;flex:none}
+.codein{display:flex;gap:8px;margin-top:10px}
+.codein .inp{flex:1;min-width:0;text-transform:uppercase}.codein .inp::placeholder{text-transform:none}
 </style>
 </head>
 <body>
@@ -243,7 +268,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'STEPS (by BGASHEV) Mini App v1.4.271026';
+const APP = 'STEPS (by BGASHEV) Mini App v1.5.271026';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const tg = window.Telegram && window.Telegram.WebApp;
 const inTG = !!(tg && tg.initData);
@@ -691,6 +716,7 @@ const IP = {
   scale:'<rect x="2" y="2" width="14" height="14" rx="4"/><path d="M5.5 8A3.5 3.5 0 0 1 12.5 8M9 8L10.6 6"/>',
   stats:'<path d="M4 15V10M9 15V6M14 15V3"/>',
   user:'<circle cx="9" cy="6" r="3"/><path d="M3.5 15.5C4.4 12.6 6.4 11 9 11s4.6 1.6 5.5 4.5"/>',
+  friends:'<circle cx="5.8" cy="6.2" r="2.6"/><circle cx="12.4" cy="6.8" r="2.2"/><path d="M1.8 15C1.8 11.2 9.8 11.2 9.8 15"/><path d="M10.6 11.4C13.8 10.6 16.4 12 16.4 14.6"/>',
   plus:'<path d="M9 4V14M4 9H14"/>', minus:'<path d="M4 9H14"/>',
   check:'<path d="M4 9.5L7.5 13L14.5 5.5"/>', close:'<path d="M5 5L13 13M13 5L5 13"/>',
   repeat:'<path d="M14.3 10.4A5.5 5.5 0 1 1 13 5.3"/><path d="M13.6 2.4L13.2 5.6L10 5.2"/>',
@@ -813,7 +839,7 @@ function celebrate(icon, title, subtitle, lines){
 /* ======================================================= компоненты ===== */
 function dotsHTML(v, s = 9){ let h = '<span class="dots">'; for (let i = 1; i <= 5; i++) h += `<i style="width:${s}px;height:${s}px;${i <= v ? 'background:' + FEEL[i][1] : ''}"></i>`; return h + '</span>'; }
 function ring(frac, big, small, done, size = 116){
-  const sw = 11, r = (size - sw) / 2 - 1, c = 2 * Math.PI * r, cx = size / 2, f = clamp(frac, 0, 1);
+  const sw = size < 80 ? 6 : 11, r = (size - sw) / 2 - 1, c = 2 * Math.PI * r, cx = size / 2, f = clamp(frac, 0, 1);
   return `<svg class="ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
     <circle cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="var(--off)" stroke-width="${sw}"/>
     ${f > 0.003 ? `<circle class="ring-p" cx="${cx}" cy="${cx}" r="${r}" fill="none" stroke="${done ? GREEN : 'var(--accent)'}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${(c * (1 - f)).toFixed(1)}" transform="rotate(-90 ${cx} ${cx})" style="--c:${c.toFixed(1)}"/>` : ''}
@@ -973,6 +999,71 @@ function dueWeekSummary(ws){   // пн–ср: итоги прошлой кал�
   if ((db.settings.summary_seen || []).includes(key)) return null;
   if (Math.min(...ws.map(w => dn(w.date))) > b) return null;
   return [key, a, b];
+}
+
+/* ============================================================ друзья ==== */
+const FR = {data:null, loading:false, err:'', ph:new Map(), phTried:new Set()};
+async function apiAuth(route, body){
+  let tok = await ensureToken();
+  try { return await api(route, Object.assign({token:tok}, body || {})); }
+  catch (e) { if (e.status !== 401) throw e; tok = await ensureToken(true); return await api(route, Object.assign({token:tok}, body || {})); }
+}
+async function loadFriends(){
+  if (!inTG || FR.loading) return;
+  FR.loading = true;
+  try { FR.data = await apiAuth('/friends', {today:isoOf(todayN())}); FR.err = ''; }
+  catch (e) { FR.err = e.message || 'нет связи'; }
+  FR.loading = false;
+  if (S.tab === 'friends') render();
+  loadFriendPhotos();
+}
+async function loadFriendPhotos(){
+  const d = FR.data; if (!d) return;
+  const ids = [d.me.tg_id, ...d.friends.map(f => f.tg_id)].filter(id => !FR.phTried.has(id));
+  for (const id of ids) {
+    FR.phTried.add(id);
+    try { const j = await apiAuth('/friends/photo', {tg_id:id}); if (j.ok) { FR.ph.set(id, 'data:image/jpeg;base64,' + j.b64); if (S.tab === 'friends') render(); } } catch (e) {}
+  }
+}
+function favHTML(f, small){
+  const src = FR.ph.get(f.tg_id);
+  return `<div class="fav${small ? ' s' : ''}">${src ? `<img src="${src}" alt="">` : esc((f.name || '?')[0].toUpperCase())}</div>`;
+}
+function agoText(iso){ const d = dn(iso), k = todayN() - d; return k <= 0 ? 'сегодня' : k === 1 ? 'вчера' : fmtDate(d); }
+function viewFriends(){
+  let h = `<div class="head"><div><h1>Друзья</h1><div class="sub">Следи за успехами друзей — и пусть они следят за твоими</div></div></div>`;
+  if (!inTG) return h + `<div class="card muted">Открой STEPS в Telegram — друзья работают через него.</div>`;
+  if (!FR.data && !FR.loading && !FR.err) setTimeout(loadFriends, 0);
+  if (!FR.data) return h + `<div class="card muted">${FR.err ? 'Не удалось загрузить друзей: ' + esc(FR.err) + `<div style="margin-top:10px"><button class="btn ghost small" data-act="frload">Повторить</button></div>` : 'Загружаю друзей…'}</div>`;
+  const d = FR.data, fr = d.friends;
+  h += `<div class="card"><h3>${IC('friends')}Пригласить друга</h3><div class="muted" style="margin:-4px 0 12px">Отправь ссылку — друг откроет её, и вы сразу станете друзьями.</div>
+    <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn primary small" data-act="frshare">${IC('export', 16)}Отправить в Telegram</button><button class="btn ghost small" data-act="frcode">Мой код: ${esc(d.code)}</button></div>
+    <div class="codein"><input class="inp" id="fr-code" placeholder="Код друга" maxlength="24" autocomplete="off"><button class="btn ghost small" data-act="fradd">${IC('plus', 16)}Добавить</button></div></div>`;
+  if (fr.length) {
+    const people = fr.map(f => [f, false]).concat([[d.me, true]]).sort((a, b) => (b[0].week.minutes - a[0].week.minutes) || (b[1] - a[1]));
+    const mx = Math.max(1, ...people.map(p => p[0].week.minutes));
+    h += `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:6px"><h3 style="margin:0">${IC('trophy')}Рейтинг недели</h3><span class="cap">минуты за 7 дней</span></div>` +
+      people.slice(0, 10).map(([f, me], i) => `<div class="rk${me ? ' me' : ''}"><span class="pl${i < 3 ? ' m' + (i + 1) : ''}">${i + 1}</span>${favHTML(f, true)}<span class="nm">${esc(f.name)}${me ? ' · ты' : ''}</span><span class="br"><i style="width:${Math.max(f.week.minutes ? 4 : 0, f.week.minutes / mx * 100)}%;animation-delay:${i * 60}ms"></i></span><span class="mv">${fmtMin(f.week.minutes)}</span></div>`).join('') + `</div>`;
+  }
+  h += `<div class="mh">Друзья · ${fr.length}<span>за 7 дней · последняя тренировка</span></div>`;
+  if (!fr.length) h += `<div class="card muted">Пока никого. Отправь ссылку первому другу — вдвоём ходить веселее.</div>`;
+  const order = fr.slice().sort((a, b) => (b.goal.done_today - a.goal.done_today) || (b.week.minutes - a.week.minutes));
+  h += order.map((f, i) => {
+    const g = f.goal, ok = g.done_today || g.prev_ok, shown = g.done_today ? g.target : g.shown;
+    const gl = g.done_today ? 'норма выполнена' : g.prev_ok ? 'норма закрыта' : `до нормы ${Math.max(0, g.target - g.shown)}`;
+    const last = f.last ? `${agoText(f.last.date)} · ${f.last.minutes} мин` : 'ещё не тренировался';
+    return `<div class="fc" style="animation-delay:${Math.min(i, 10) * 40}ms">${favHTML(f)}<div class="fm"><div><b>${esc(f.name)}</b>${f.username ? `<span class="u">@${esc(f.username)}</span>` : ''}${g.run >= 2 ? `<span class="fstreak">${IC('flame', 12)}${g.run}</span>` : ''}</div>
+      <div class="l2">${fmtMin(f.week.minutes)} · ${f.week.workouts} трен. · ${kmF(f.week.km)}</div><div class="l2">${last}</div></div>
+      <div class="gr">${ring(shown / g.target, `${shown}/${g.target}`, '', ok, 50)}<small class="${ok ? 'ok' : ''}">${gl}</small></div>
+      <button class="rm" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать">${IC('trash', 16)}</button></div>`;
+  }).join('');
+  return h;
+}
+async function copyStr(s){
+  try { await navigator.clipboard.writeText(s); return true; } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = s; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+    let ok = false; try { ok = document.execCommand('copy'); } catch (_) {} ta.remove(); return ok;
+  }
 }
 
 /* ============================================================ экраны ==== */
@@ -1173,8 +1264,8 @@ function chips(age, b, bmr){
 function goalPreview(){ const g = G(); return `${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)} ≈ ${num(g.count * 7 / g.days)} в неделю`; }
 
 /* ============================================================ рендер ==== */
-const TABS = [['home','Тренировки','walk'],['weight','Вес','scale'],['stats','Статистика','stats'],['me','Профиль','user']];
-const VIEWS = {home:viewHome, weight:viewWeight, stats:viewStats, me:viewMe};
+const TABS = [['home','Тренировки','walk'],['weight','Вес','scale'],['stats','Статистика','stats'],['friends','Друзья','friends'],['me','Профиль','user']];
+const VIEWS = {home:viewHome, weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe};
 function render(){
   $('#view').innerHTML = VIEWS[S.tab]();
   festCountUp();
@@ -1360,11 +1451,31 @@ async function copyBackup(){
 
 /* ============================================================ события === */
 const ACT = {
-  tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; render(); window.scrollTo(0, 0); hap.tap(); } },
+  tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') loadFriends(); } },
   add: () => openWorkout(null),
   repeat: () => { const l = lastWorkout(); openWorkout(null, l, l ? 'Параметры из прошлой тренировки — поправь, если нужно' : ''); },
   wedit: el => { const w = findW(el.dataset.id); if (w) openWorkout(w); },
   wsave: saveWorkout, wdel: delWorkout,
+  frload: () => { FR.err = ''; render(); loadFriends(); },
+  frshare: () => { if (!FR.data) return; hap.imp();
+    const url = 'https://t.me/share/url?url=' + encodeURIComponent(FR.data.link) + '&text=' + encodeURIComponent('Давай вместе ходить в STEPS 👟 Добавь меня в друзья:');
+    try { tg.openTelegramLink(url); } catch (e) { copyStr(FR.data.link).then(ok => toast(ok ? 'Ссылка скопирована' : 'Не получилось')); } },
+  frcode: async () => { if (FR.data && await copyStr(FR.data.code)) { hap.ok(); toast('Код скопирован — продиктуй его другу'); } },
+  fradd: async () => {
+    const code = ($('#fr-code').value || '').trim(); if (!code) return;
+    try {
+      const j = await apiAuth('/friends/add', {code});
+      const n = j.name || '';
+      const m = {ok:`${n} теперь твой друг 🎉`, already:`Вы с ${n} уже друзья`, self:'Это твой собственный код 🙂', nocode:'Такой код не найден — проверь буквы', limit:'Слишком много друзей — максимум 100'}[j.status] || 'Не получилось';
+      toast(m); if (j.status === 'ok') { hap.ok(); loadFriends(); } else hap.warn();
+    } catch (e) { toast('Нет связи: ' + e.message); }
+  },
+  frdel: async el => {
+    const id = +el.dataset.id, f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
+    if (!(await ask(`Убрать ${f.name} из друзей? Вы перестанете видеть успехи друг друга.`))) return;
+    try { await apiAuth('/friends/remove', {tg_id:id}); FR.data.friends = FR.data.friends.filter(x => x.tg_id !== id); render(); toast(`${f.name} больше не в друзьях`); }
+    catch (e) { toast('Нет связи: ' + e.message); }
+  },
   gsum: () => { S.gsum = !S.gsum; hap.imp(); render(); },
   sumhide: el => { const seen = (db.settings.summary_seen || []).filter(k => k !== el.dataset.k); seen.push(el.dataset.k);
     db.settings.summary_seen = seen.slice(-20); persist(); hap.tap();
