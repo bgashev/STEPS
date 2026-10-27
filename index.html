@@ -197,6 +197,40 @@ input[type=date].inp{display:block}
 .cgc p{margin:6px 0 18px}
 .confetti{position:fixed;inset:0;z-index:60;pointer-events:none;width:100%;height:100%}
 .foot{text-align:center;font-size:12px;color:var(--muted);margin-top:18px}
+
+/* ---- праздничные итоги недели ---- */
+.fest{position:relative;overflow:hidden;border-radius:24px;padding:18px 18px 16px;margin-bottom:12px;color:var(--on-accent);
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);animation:festIn .55s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes festIn{from{opacity:0;transform:translateY(10px) scale(.97)}}
+.fest::before,.fest::after{content:"";position:absolute;border-radius:50%;pointer-events:none;background:radial-gradient(circle,rgba(255,255,255,.38),rgba(255,255,255,0) 70%)}
+.fest::before{width:260px;height:260px;right:-90px;top:-120px}
+.fest::after{width:200px;height:200px;left:-80px;bottom:-110px;opacity:.7}
+.fest>*{position:relative;z-index:1}
+.fest .cf{position:absolute;z-index:0;pointer-events:none;border-radius:2px;animation:cfFall var(--d) ease-in-out var(--dl) infinite alternate}
+@keyframes cfFall{from{transform:translateY(-6px) rotate(var(--r))}to{transform:translateY(8px) rotate(calc(var(--r) + 90deg))}}
+.fest .wm{position:absolute;right:-18px;bottom:-22px;z-index:0;opacity:.08;pointer-events:none}
+.fhead{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.fpill{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;border-radius:999px;background:rgba(0,0,0,.10);font-size:10.5px;font-weight:800;letter-spacing:.12em}
+.fhead .per{font-weight:750;font-size:14px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fx{width:32px;height:32px;border-radius:50%;border:0;background:rgba(0,0,0,.10);color:inherit;display:grid;place-items:center;flex:none}
+.fx:active{transform:scale(.9)}
+.fhero{font-size:42px;font-weight:850;letter-spacing:-.02em;line-height:1.05}
+.fsub{opacity:.72;font-size:13px;margin:2px 0 8px}
+.fdelta{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;border-radius:999px;background:var(--on-accent);color:var(--accent);font-size:12px;font-weight:750}
+.fbars{display:flex;gap:6px;align-items:flex-end;height:96px;margin:30px 0 4px}
+.fbar{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
+.fbar .ft{flex:1;width:100%;border-radius:9px;background:rgba(0,0,0,.07);display:flex;align-items:flex-end;position:relative}
+.fbar .ff{width:100%;border-radius:9px;background:currentColor;opacity:.35;transform-origin:bottom;animation:grow .9s cubic-bezier(.2,.8,.2,1) backwards}
+.fbar.best .ff{opacity:.9}
+.fbar .fv{position:absolute;left:50%;transform:translateX(-50%);font-size:10.5px;font-weight:800;white-space:nowrap;animation:fadeIn .4s .8s backwards}
+.fbar small{font-size:10.5px;opacity:.65}
+.fbar.best small{opacity:1;font-weight:800}
+.fchips{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 10px}
+.fchip{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.42);font-size:12.5px;font-weight:650}
+.fest.dk .fchip{background:rgba(0,0,0,.20)}
+.fq{display:flex;gap:8px;font-style:italic;font-weight:600;font-size:14px;line-height:1.35}
+.fq b{font-size:34px;line-height:.8;opacity:.35;font-style:normal}
+.gsbtn{margin-top:10px}
 </style>
 </head>
 <body>
@@ -209,7 +243,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'STEPS (by BGASHEV) Mini App v1.3.271026';
+const APP = 'STEPS (by BGASHEV) Mini App v1.4.271026';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const tg = window.Telegram && window.Telegram.WebApp;
 const inTG = !!(tg && tg.initData);
@@ -343,16 +377,16 @@ function bmrOf(kg, h, age, sex){
 function goalCycles(ws, t){
   const g = G(); t = t == null ? todayN() : t;
   const per = new Map(); for (const w of ws) { const d = dn(w.date); if (d <= t) per.set(d, (per.get(d) || 0) + 1); }
-  let S = null, count = 0, done = 0, run = 0, best = 0, last = null;
+  let S = null, count = 0, done = 0, run = 0, best = 0, last = null, lastStart = null;
   for (const d of [...per.keys()].sort((a, b) => a - b)) {
     if (S != null && d > S + g.days - 1) { S = null; count = 0; run = 0; }
     if (S == null) { if (last != null && d - last > g.days) run = 0; S = d; count = 0; }
     count += per.get(d);
-    if (count >= g.count) { done++; run++; best = Math.max(best, run); last = d; S = null; count = 0; }
+    if (count >= g.count) { done++; run++; best = Math.max(best, run); last = d; lastStart = S; S = null; count = 0; }
   }
   if (S != null && t > S + g.days - 1) { S = null; count = 0; run = 0; }
   if (S == null && last != null && t - last > g.days) run = 0;
-  return {start:S, end:S != null ? S + g.days - 1 : null, count, done, best, run, last, doneToday:S == null && last === t};
+  return {start:S, end:S != null ? S + g.days - 1 : null, count, done, best, run, last, lastStart, doneToday:S == null && last === t};
 }
 function goalInfo(ws){
   const g = G(), t = todayN(), c = goalCycles(ws, t);
@@ -681,7 +715,7 @@ const IP = {
   edit:'<path d="M3 15L3.6 12L12 3.6L14.4 6L6 14.4Z"/><path d="M10.4 5.2L12.8 7.6"/>',
   palette:'<circle cx="9" cy="9" r="6.5"/><circle cx="6.3" cy="7.2" r="1.1" fill="currentColor" stroke="none"/><circle cx="9.3" cy="5.4" r="1.1" fill="currentColor" stroke="none"/><circle cx="12.1" cy="7.4" r="1.1" fill="currentColor" stroke="none"/><circle cx="6.6" cy="11.2" r="1.1" fill="currentColor" stroke="none"/>',
   info:'<circle cx="9" cy="9" r="7"/><path d="M9 8.3V12.6"/><circle cx="9" cy="5.6" r="1.1" fill="currentColor" stroke="none"/>',
-  arrow_up:'<path d="M9 14V4M4.5 8.5L9 4L13.5 8.5"/>', arrow_down:'<path d="M9 4V14M4.5 9.5L9 14L13.5 9.5"/>'
+  sparkle:'<path d="M9 2.5C9.6 6.4 11.6 8.4 15.5 9C11.6 9.6 9.6 11.6 9 15.5C8.4 11.6 6.4 9.6 2.5 9C6.4 8.4 8.4 6.4 9 2.5Z"/>', arrow_up:'<path d="M9 14V4M4.5 8.5L9 4L13.5 8.5"/>', arrow_down:'<path d="M9 4V14M4.5 9.5L9 14L13.5 9.5"/>'
 };
 (function(){ let s = '<circle cx="9" cy="9" r="2.6"/><circle cx="9" cy="9" r="5"/>';
   for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; s += `<path d="M${(9+5*Math.cos(a)).toFixed(2)} ${(9+5*Math.sin(a)).toFixed(2)}L${(9+7*Math.cos(a)).toFixed(2)} ${(9+7*Math.sin(a)).toFixed(2)}"/>`; }
@@ -711,6 +745,7 @@ function applyTheme(){
   r.setProperty('--accent', acc);
   r.setProperty('--on-accent', (0.299*ar + 0.587*ag + 0.114*ab) > 140 ? '#1D1D24' : '#FFFFFF');
   r.setProperty('--accent-soft', `rgba(${ar},${ag},${ab},.16)`);
+  r.setProperty('--accent2', accent2(acc));
   const [sr, sg, sb] = hexRgb(th.surface);
   r.setProperty('--tabs-bg', `rgba(${sr},${sg},${sb},.86)`);
   try {
@@ -866,6 +901,80 @@ function greet(){
 }
 function displayName(){ return (db.profile.name || '').trim() || (tgUser && tgUser.first_name) || ''; }
 
+/* ============================================= итоги недели (праздничные) === */
+function accent2(hex){   // соседний оттенок для градиента
+  let [r, g, b] = hexRgb(hex).map(v => v / 255);
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  if (d < 0.06) { const k = (r + g + b) / 3 > .5 ? -0.16 : 0.16; return `rgb(${[r, g, b].map(v => Math.round(clamp(v + k, 0, 1) * 255)).join(',')})`; }
+  let h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h = (h * 60 + 360 + 40) % 360;
+  const l = (mx + mn) / 2, sat = d / (1 - Math.abs(2 * l - 1));
+  return `hsl(${h.toFixed(0)},${(sat * 100).toFixed(0)}%,${(l * 100).toFixed(0)}%)`;
+}
+const SUM_V = {
+  first:['Первые итоги — дальше будет с чем сравнить.', 'Хорошее начало. Теперь есть точка отсчёта.', 'Старт положен. Посмотрим, что будет дальше.'],
+  better:['Сильнее, чем в прошлый раз. Холодильник нервничает.', 'Прогресс налицо — и на ногах.', 'Дорожка заметила, что ты стал серьёзнее.'],
+  worse:['Чуть тише, чем в прошлый раз. Не страшно — главное не останавливаться.', 'Небольшой спад. Даже у дорожки бывают выходные.', 'Меньше, чем раньше, но больше, чем ноль. Это уже победа.'],
+  same:['Стабильно, как швейцарские часы.', 'Ровно держишь темп — это и есть дисциплина.', 'Без сюрпризов. Скучно? Нет — надёжно.']};
+function sumOf(ws, a, b){
+  const xs = ws.filter(w => { const d = dn(w.date); return d >= a && d <= b; }), kc = xs.map(kcal);
+  return {xs, count:xs.length, minutes:sum(xs, w => w.minutes), km:sum(xs, kmOf), kcal:kc.some(Boolean) ? sum(kc, k => k || 0) : null,
+    days:new Set(xs.map(w => w.date)).size};
+}
+function seeded(str){ let h = 2166136261; for (const c of str) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) ^ Math.imul(h ^ (h >>> 13), 3266489909)) >>> 0) / 4294967296; }
+function perTitle(a, b){ const [, m1, d1] = ymd(a), [, m2, d2] = ymd(b); return m1 === m2 ? `${d1}–${d2} ${MON[m1-1]}` : `${d1} ${MON[m1-1]} – ${d2} ${MON[m2-1]}`; }
+function festHTML(a, b, key, title, closeAct){
+  const ws = valid(), cur = sumOf(ws, a, b), prev = sumOf(ws, a - 7, a - 1), hist = ws.some(w => dn(w.date) < a), g = G();
+  let vk = !hist ? 'first' : !prev.minutes ? 'better' : cur.minutes / prev.minutes >= 1.1 ? 'better' : cur.minutes / prev.minutes <= .9 ? 'worse' : 'same';
+  const vs = SUM_V[vk], verdict = cur.count ? vs[[...key].reduce((x, c) => x + c.charCodeAt(0), 0) % vs.length] : 'Неделя без шагов. Бывает — начнём заново?';
+  const dark = getComputedStyle(document.documentElement).getPropertyValue('--on-accent').trim().toUpperCase() === '#FFFFFF';
+  const rnd = seeded(key), pal = ACCENTS.filter(x => x[0] !== 'mono').map(x => x[2]);
+  let cf = '';
+  for (let i = 0; i < 22; i++) {
+    const w = rnd() < .5 ? [9, 3.5] : [6, 6], round = w[0] === w[1];
+    cf += `<i class="cf" style="left:${(4 + rnd() * 92).toFixed(1)}%;top:${(3 + rnd() * 92).toFixed(1)}%;width:${w[0]}px;height:${w[1]}px;${round ? 'border-radius:50%;' : ''}background:${pal[rnd() * pal.length | 0]};opacity:${(.45 + rnd() * .4).toFixed(2)};--r:${(rnd() * 180).toFixed(0)}deg;--d:${(2.4 + rnd() * 2.4).toFixed(1)}s;--dl:-${(rnd() * 3).toFixed(1)}s;filter:${dark ? 'brightness(1.1)' : 'saturate(.9) brightness(.9)'}"></i>`;
+  }
+  let h = `<div class="fest${dark ? ' dk' : ''}">${cf}<span class="wm">${IC('trophy', 150)}</span>
+    <div class="fhead"><span class="fpill">${IC('sparkle', 13)}${esc(title)}</span><span class="per">${perTitle(a, b)}</span>
+    <button class="fx" data-act="${closeAct}" data-k="${key}" aria-label="Скрыть">${IC('close', 15)}</button></div>`;
+  if (cur.count) {
+    let delta = '';
+    if (hist && prev.count) {
+      const dm = cur.minutes - prev.minutes;
+      delta = dm ? `${IC(dm > 0 ? 'arrow_up' : 'arrow_down', 12)}${dm > 0 ? '+' : '−'}${fmtMin(Math.abs(dm))} к прошлой неделе` : 'как на прошлой неделе';
+    } else if (!hist) delta = 'первые итоги — отличный старт';
+    h += `<div class="fhero" data-count="${cur.minutes}">${fmtMin(cur.minutes)}</div><div class="fsub">в движении</div>${delta ? `<span class="fdelta">${delta}</span>` : ''}`;
+    const days = []; for (let d = a; d <= b; d++) days.push([d, sum(cur.xs.filter(w => dn(w.date) === d), w => w.minutes)]);
+    const mx = Math.max(1, ...days.map(x => x[1])), bi = days.some(x => x[1]) ? days.reduce((m, x, i) => x[1] > days[m][1] ? i : m, 0) : -1;
+    h += `<div class="fbars">` + days.map(([d, m], i) => { const ht = m ? Math.max(14, m / mx * 100) : 0;
+      return `<div class="fbar${i === bi ? ' best' : ''}"><div class="ft">${m ? `<div class="ff" style="height:${ht}%;animation-delay:${200 + i * 70}ms"></div>` : ''}${i === bi ? `<span class="fv" style="bottom:calc(${ht}% + 4px)">${m} мин</span>` : ''}</div><small>${WD[wdOf(d)]}</small></div>`; }).join('') + `</div>`;
+    const chips = [['walk', npw(cur.count, W_WORK)], ['route', kmF(cur.km)]];
+    if (cur.kcal) chips.push(['flame', kcalF(cur.kcal)]);
+    chips.push(['bolt', `${cur.days} из 7 дней активны`]);
+    const tgt = g.count, okN = cur.count >= tgt;
+    chips.push([okN ? 'check' : 'target', okN ? `Норма выполнена: ${cur.count} из ${tgt}` : `Норма: ${cur.count} из ${tgt}`]);
+    const wk = weightsSorted().filter(e => dn(e.date) <= b), wIn = wk.filter(e => dn(e.date) >= a);
+    if (wIn.length) { const before = wk.filter(e => dn(e.date) < a), w0 = before.length ? +last(before).kg : +wIn[0].kg; chips.push(['scale', `${num(w0)} → ${num(+last(wIn).kg)} кг`]); }
+    h += `<div class="fchips">` + chips.map(([ic, t]) => `<span class="fchip">${IC(ic, 14)}${esc(t)}</span>`).join('') + `</div>`;
+  }
+  return h + `<div class="fq"><b>“</b><span>${esc(verdict)}</span></div></div>`;
+}
+function festCountUp(){   // минуты «набегают»
+  document.querySelectorAll('.fhero[data-count]').forEach(el => {
+    const to = +el.dataset.count; if (!to || el.dataset.done) return; el.dataset.done = 1;
+    const t0 = performance.now(), dur = 900;
+    const step = t => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); el.textContent = fmtMin(Math.round(to * e)); if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+}
+function lastWeekKey(){ const t = todayN(), mon = t - wdOf(t); return ['w' + isoOf(mon - 7), mon - 7, mon - 1]; }
+function dueWeekSummary(ws){   // пн–ср: итоги прошлой календарной недели, пока не скрыты
+  const t = todayN(); if (wdOf(t) > 2 || !ws.length) return null;
+  const [key, a, b] = lastWeekKey();
+  if ((db.settings.summary_seen || []).includes(key)) return null;
+  if (Math.min(...ws.map(w => dn(w.date))) > b) return null;
+  return [key, a, b];
+}
+
 /* ============================================================ экраны ==== */
 function viewHome(){
   const ws = valid(), g = G(), t = todayN(), info = goalInfo(ws), rest = restDays(ws), [cur] = dayStreaks(ws);
@@ -881,14 +990,20 @@ function viewHome(){
     gtxt = `<div class="gt">Осталось ${npw(info.remaining, W_WORK)}</div><div class="gs">${left}</div>`;
   } else if (info.prevOk) gtxt = `<div class="gt ok">Прошлая выполнена</div><div class="gs">${fmtDate(info.last)} · новая неделя начнётся с первой тренировки</div>`;
   else gtxt = `<div class="gt">Неделя начнётся с первой тренировки</div><div class="gs">успей ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</div>`;
+  const canSum = info.lastStart != null && (info.doneToday || info.prevOk);
+  if (!canSum) S.gsum = false;
+  const gsBtn = canSum ? `<button class="btn ghost small gsbtn" data-act="gsum">${IC(S.gsum ? 'close' : 'sparkle', 15)}${S.gsum ? 'Скрыть итоги' : 'Итоги недели'}</button>` : '';
   let note = '';
   if (rest.has(t)) note = `<div class="note">${IC('moon', 15)}Сегодня день отдыха — восстанавливайся</div>`;
   else if (rest.has(t + 1)) note = `<div class="note">${IC('moon', 15)}5 дней подряд — завтра и послезавтра отдых</div>`;
 
   let h = `<div class="head"><div><h1>${esc(greet())}</h1><div class="sub">${bits.join(' · ')}</div></div></div>
   <div class="card"><div class="goal">${ring(info.shown / g.count, `${info.shown}/${g.count}`, `${pct}%`, done)}
-    <div><div class="glabel">Цель: ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</div>${gtxt}</div></div>${strip(ws, g.days)}${note}</div>
+    <div><div class="glabel">Цель: ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</div>${gtxt}${gsBtn}</div></div>${strip(ws, g.days)}${note}</div>
   <div class="actions"><button class="btn primary" data-act="add">${IC('plus')}Тренировка</button>${ws.length ? `<button class="btn ghost" data-act="repeat">${IC('repeat')}Повторить</button>` : ''}</div>`;
+  if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
+  const due = dueWeekSummary(ws);
+  if (due) h += festHTML(due[1], due[2], due[0], 'ИТОГИ НЕДЕЛИ', 'sumhide');
   if (ws.length) {
     const kcs = ws.map(kcal);
     h += `<div class="kpis">${kpi(ws.length, 'Тренировок')}${kpi(fmtMin(sum(ws, w => w.minutes)), 'Всего времени')}${kpi(kmF(sum(ws, kmOf)), 'Пройдено, примерно')}${kpi(kcs.some(Boolean) ? kcalF(sum(kcs, k => k || 0)) : '—', kcs.some(Boolean) ? 'Сожжено, примерно' : 'Ккал: укажи вес')}</div>`;
@@ -1062,6 +1177,7 @@ const TABS = [['home','Тренировки','walk'],['weight','Вес','scale']
 const VIEWS = {home:viewHome, weight:viewWeight, stats:viewStats, me:viewMe};
 function render(){
   $('#view').innerHTML = VIEWS[S.tab]();
+  festCountUp();
   $('#tabs').innerHTML = TABS.map(([k, l, ic]) => `<button type="button" class="tab${S.tab === k ? ' on' : ''}" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 20)}</span>${l}</button>`).join('');
 }
 
@@ -1249,6 +1365,10 @@ const ACT = {
   repeat: () => { const l = lastWorkout(); openWorkout(null, l, l ? 'Параметры из прошлой тренировки — поправь, если нужно' : ''); },
   wedit: el => { const w = findW(el.dataset.id); if (w) openWorkout(w); },
   wsave: saveWorkout, wdel: delWorkout,
+  gsum: () => { S.gsum = !S.gsum; hap.imp(); render(); },
+  sumhide: el => { const seen = (db.settings.summary_seen || []).filter(k => k !== el.dataset.k); seen.push(el.dataset.k);
+    db.settings.summary_seen = seen.slice(-20); persist(); hap.tap();
+    const card = el.closest('.fest'); if (card) { card.style.transition = 'opacity .25s, transform .25s'; card.style.opacity = 0; card.style.transform = 'scale(.97)'; setTimeout(render, 240); } else render(); },
   more: () => { S.limit += 30; render(); },
   kadd: () => openWeight(null),
   kedit: el => { const e = findK(el.dataset.id); if (e) openWeight(e); },
