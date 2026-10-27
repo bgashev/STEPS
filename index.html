@@ -287,6 +287,21 @@ input[type=date].inp{display:block}
 .tgl .sw2::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s}
 .tgl.on .sw2{background:var(--accent)}
 .tgl.on .sw2::after{transform:translateX(18px)}
+
+/* ---- скелеты загрузки ---- */
+.sk{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--border);border-radius:18px;margin-bottom:8px;display:flex;align-items:center;gap:12px;padding:14px;animation:fadeIn .3s backwards}
+.sk i{display:block;background:var(--surface2);border-radius:8px}
+.sk .c{width:46px;height:46px;border-radius:50%;flex:none}
+.sk .ln{flex:1;display:flex;flex-direction:column;gap:8px}
+.sk .ln i:first-child{height:12px;width:45%}.sk .ln i:last-child{height:10px;width:75%}
+.sk::after,.skl::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);transform:translateX(-100%);animation:skm 1.3s infinite}
+@keyframes skm{to{transform:translateX(100%)}}
+.skl{position:relative;overflow:hidden;border-radius:8px;background:var(--surface2)}
+.fstrip{display:flex;align-items:center;gap:6px;margin:12px 0 2px;min-height:30px}
+.fstrip .cap{margin-right:4px}
+.fstrip .fav{width:30px;height:30px;font-size:13px}
+.fstrip .fav .lvb{display:none}
+.fp-head .rmx{border:0;background:none;color:var(--muted);padding:8px;border-radius:12px;align-self:flex-start}
 </style>
 </head>
 <body>
@@ -299,7 +314,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'STEPS (by BGASHEV) Mini App v1.6.271026';
+const APP = 'STEPS (by BGASHEV) Mini App v1.7.271026';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const tg = window.Telegram && window.Telegram.WebApp;
 const inTG = !!(tg && tg.initData);
@@ -1076,7 +1091,8 @@ function viewFriends(){
   let h = `<div class="head"><div><h1>Друзья</h1><div class="sub">Следи за успехами друзей — и пусть они следят за твоими</div></div></div>`;
   if (!inTG) return h + `<div class="card muted">Открой STEPS в Telegram — друзья работают через него.</div>`;
   if (!FR.data && !FR.loading && !FR.err) setTimeout(loadFriends, 0);
-  if (!FR.data) return h + `<div class="card muted">${FR.err ? 'Не удалось загрузить друзей: ' + esc(FR.err) + `<div style="margin-top:10px"><button class="btn ghost small" data-act="frload">Повторить</button></div>` : 'Загружаю друзей…'}</div>`;
+  if (!FR.data) return h + (FR.err ? `<div class="card muted">Не удалось загрузить друзей: ${esc(FR.err)}<div style="margin-top:10px"><button class="btn ghost small" data-act="frload">Повторить</button></div></div>`
+    : `<div class="sk" style="height:120px"><i class="c"></i><span class="ln"><i></i><i></i></span></div>` + [0, 1, 2].map(i => `<div class="sk" style="animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join(''));
   const d = FR.data, fr = d.friends;
   if ((d.requests || []).length) h += `<div class="card"><h3>${IC('friends')}Заявки в друзья · ${d.requests.length}</h3>` + d.requests.map(r =>
     `<div class="rq">${favHTML(r)}<span class="nm">${esc(r.name)}</span><button class="btn ghost small" data-act="frresp" data-id="${r.tg_id}" data-v="0">Нет</button><button class="btn primary small" data-act="frresp" data-id="${r.tg_id}" data-v="1">${IC('check', 15)}Принять</button></div>`).join('') + `</div>`;
@@ -1112,20 +1128,22 @@ async function openFriendProfile(id){
 async function loadFofPhotos(j){
   for (const x of (j.friends || [])) {
     if (FR.phTried.has(x.tg_id)) continue; FR.phTried.add(x.tg_id);
-    try { const r = await apiAuth('/friends/photo', {tg_id:x.tg_id}); if (r.ok) { FR.ph.set(x.tg_id, 'data:image/jpeg;base64,' + r.b64); const el = document.querySelector(`.fof[data-id="${x.tg_id}"] .fi`); if (el) el.innerHTML = `<img src="${FR.ph.get(x.tg_id)}" alt="">`; } } catch (e) {}
+    try { const r = await apiAuth('/friends/photo', {tg_id:x.tg_id}); if (r.ok) { FR.ph.set(x.tg_id, 'data:image/jpeg;base64,' + r.b64); document.querySelectorAll(`.fof[data-id="${x.tg_id}"] .fi, .fstrip [data-fid="${x.tg_id}"] .fi`).forEach(el => { el.innerHTML = `<img src="${FR.ph.get(x.tg_id)}" alt="">`; }); } } catch (e) {}
   }
 }
 function friendSheetHTML(f, j, loading){
   const lv = f.level || xpLevel(0), g = f.goal, ok = g.done_today || g.prev_ok, shown = g.done_today ? g.target : g.shown;
   let h = `<div class="fp-head">${favHTML(f)}<div style="flex:1;min-width:0"><h2 style="margin:0">${esc(f.name)}</h2>${f.username ? `<div class="cap">@${esc(f.username)}</div>` : ''}
-    <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level}</div></div></div>
-    <div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}${j ? ` · друзей: ${j.friends_count}` : ''}</div>`;
+    <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level}</div></div><button class="rmx" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button></div>
+    <div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div>`;
+  h += `<div class="fstrip">` + (loading ? `<span class="cap">Друзья · …</span><span class="skl" style="width:150px;height:28px;border-radius:14px"></span>`
+    : `<span class="cap">Друзья · ${j.friends_count}</span>` + (j.friends || []).slice(0, 8).map(x => `<span data-fid="${x.tg_id}" title="${esc(x.name)}">${favHTML(x, false)}</span>`).join('') + ((j.friends || []).length > 8 ? `<span class="cap">+${j.friends.length - 8}</span>` : '')) + `</div>`;
   h += `<div class="card" style="margin-top:12px"><div class="row" style="gap:14px">${ring(shown / g.target, `${shown}/${g.target}`, '', ok, 64)}<div><div style="font-weight:700;color:${ok ? 'var(--green)' : 'var(--text)'}">${g.done_today ? 'Норма выполнена' : g.prev_ok ? 'Норма закрыта' : 'До нормы ' + Math.max(0, g.target - g.shown)}</div>
     <div class="cap">${fmtMin(f.week.minutes)} за 7 дней · ${npw(f.week.workouts, W_WORK)} · ${kmF(f.week.km)}</div>${g.best ? `<div class="cap">лучшая серия: ${npw(g.best, W_TIMES)}</div>` : ''}</div></div>`;
   const days = j && j.week && j.week.days;
   if (days && days.some(Boolean)) { const t = todayN(); h += bars(days.map((m, i) => [WD[wdOf(t - 6 + i)], m, `${WDF[wdOf(t - 6 + i)]}: ${fmtMin(m)}`]), v => String(v), 'fpw', 110); }
   h += `</div>`;
-  if (loading) return h + `<div class="card muted" id="fp-load">Загружаю профиль…</div>`;
+  if (loading) return h + `<div id="fp-load">` + [100, 120, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('') + `</div>`;
   if (!j.details) return h + `<div class="card muted">${IC('lock', 16)} ${esc(f.name)} закрыл(а) профиль — видно только основное.</div>`;
   const d = j.details, t = d.totals, r = d.records;
   h += `<div class="card"><h3>${IC('trophy')}За всё время</h3><div class="tot"><div><b>${t.workouts}</b><span class="cap">тренировок</span></div><div><b>${fmtMin(t.minutes)}</b><span class="cap">в движении</span></div><div><b>${kmF(t.km)}</b><span class="cap">пройдено</span></div><div><b>${t.days}</b><span class="cap">активных дней</span></div></div></div>`;
@@ -1135,7 +1153,7 @@ function friendSheetHTML(f, j, loading){
   if (d.recent.length) h += `<div class="card"><h3>${IC('walk')}Последние тренировки</h3>` + d.recent.map(w => `<div class="rw"><span>${fmtDate(dn(w.date))}, ${WD[wdOf(dn(w.date))]}</span><span class="cap">${num(w.speed)} км/ч · ${num(w.incline)}% · ${w.minutes} мин</span></div>`).join('') + `</div>`;
   if (j.friends) {
     h += `<div class="card"><h3>${IC('friends')}Друзья ${esc(f.name)}</h3>` + (j.friends.length ? j.friends.map(x => {
-      const btn = x.state === 'friend' ? `<span class="cap" style="color:var(--green)">${IC('check', 13)} друзья</span>` : x.state === 'requested' ? `<span class="cap">заявка отправлена</span>`
+      const btn = x.state === 'me' ? `<span class="cap">это ты</span>` : x.state === 'friend' ? `<span class="cap" style="color:var(--green)">${IC('check', 13)} друзья</span>` : x.state === 'requested' ? `<span class="cap">заявка отправлена</span>`
         : `<button class="btn ghost small" data-act="frreq" data-id="${x.tg_id}">${IC('plus', 14)}${x.state === 'incoming' ? 'Принять' : 'Добавить'}</button>`;
       return `<div class="fof" data-id="${x.tg_id}">${favHTML(x)}<span class="nm">${esc(x.name)}</span>${btn}</div>`; }).join('') : `<div class="muted">Других друзей пока нет</div>`) + `</div>`;
   }
@@ -1581,7 +1599,7 @@ const ACT = {
   frdel: async el => {
     const id = +el.dataset.id, f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
     if (!(await ask(`Убрать ${f.name} из друзей? Вы перестанете видеть успехи друг друга.`))) return;
-    try { await apiAuth('/friends/remove', {tg_id:id}); FR.data.friends = FR.data.friends.filter(x => x.tg_id !== id); render(); toast(`${f.name} больше не в друзьях`); }
+    try { await apiAuth('/friends/remove', {tg_id:id}); FR.data.friends = FR.data.friends.filter(x => x.tg_id !== id); if (sheetCtx && sheetCtx.type === 'fprof') closeSheet(); render(); toast(`${f.name} больше не в друзьях`); }
     catch (e) { toast('Нет связи: ' + e.message); }
   },
   gsum: () => { S.gsum = !S.gsum; hap.imp(); render(); },
