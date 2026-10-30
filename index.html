@@ -927,6 +927,7 @@ const IP = {
   clock:'<circle cx="9" cy="9" r="7"/><path d="M9 5V9L11.8 10.7"/>',
   lock:'<rect x="3.5" y="8" width="11" height="7.5" rx="2"/><path d="M6 8V6a3 3 0 0 1 6 0v2"/>',
   mountain:'<path d="M1.5 15L7 5.5L10 10.2L12 7.8L16.5 15Z"/>',
+  home:'<path d="M2.8 8.4L9 3.2l6.2 5.2V15a1.2 1.2 0 0 1-1.2 1.2h-3V11.6H7v4.6H4a1.2 1.2 0 0 1-1.2-1.2z"/>',
   bolt:'<path d="M10.5 2L4.5 10H9L7.8 16L13.5 8H9Z"/>',
   gift:'<rect x="2.5" y="6.5" width="13" height="3.6" rx="1.2"/><path d="M3.8 10.1V15.5H14.2V10.1M9 6.5V15.5M9 6.5C6.6 6.5 4.8 5.8 5.3 4C5.8 2.4 8.1 3 9 6.5ZM9 6.5C11.4 6.5 13.2 5.8 12.7 4C12.2 2.4 9.9 3 9 6.5Z"/>',
   route:'<path d="M4 14.5C4 10.5 14 11 14 7.2"/><circle cx="4" cy="14.5" r="1.6"/><circle cx="14" cy="4.6" r="2.2"/>',
@@ -1866,7 +1867,7 @@ function chips(age, b, bmr){
 function goalPreview(){ const g = G(); return `${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)} ≈ ${num(g.count * 7 / g.days)} в неделю`; }
 
 /* ============================================================ рендер ==== */
-const TABS = [['home','Шаги','run'],['weight','Вес','scale'],['stats','Итоги','stats'],['friends','Друзья','friends'],['me','Я','user']];
+const TABS = [['home','Главная','home'],['weight','Вес','scale'],['stats','Итоги','stats'],['friends','Друзья','friends'],['me','Я','user']];
 const VIEWS = {home:viewHome, weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe};
 function render(){
   $('#view').innerHTML = VIEWS[S.tab]();
