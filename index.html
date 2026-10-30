@@ -338,15 +338,15 @@ input[type=date].inp{display:block}
 .emb .rg b{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--surface);font-size:56px;font-weight:900}
 @keyframes pulse{50%{transform:scale(1.08);opacity:.8}}
 /* ==== v1.410: подарки ==== */
-.gshelf{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.gshelf{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
 .gsh{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:14px;background:var(--surface2);padding:5px;transition:.2s}
-.gsh svg{width:100%;height:100%;filter:grayscale(1);opacity:.25}
+.gsh{min-width:0;overflow:hidden}.gsh svg{display:block;width:100%;height:100%;filter:grayscale(1);opacity:.25}
 .gsh.on svg{filter:none;opacity:1}
 .gp .gi{width:44px;height:44px;display:block}.gbig svg{width:96px;height:96px}
 .gbtn svg{color:var(--accent)}
 .gen{display:inline-flex;align-items:center;gap:2px;font-size:12px;color:var(--muted)}
 .gen i{display:inline-flex;color:var(--border)}.gen i.on{color:var(--accent)}.gen b{margin-left:4px;color:var(--text)}
-.gpick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gpick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .gp{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:transform .12s}
 .gp i{font-style:normal;font-size:12px;color:var(--muted)}
 .gp.has::after{content:'';position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.6}
