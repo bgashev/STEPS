@@ -401,6 +401,18 @@ input[type=date].inp{display:block}
 .plsug{padding:14px 14px 14px 16px;margin-bottom:12px;border-radius:20px;
   border:1.5px dashed color-mix(in srgb,var(--accent) 50%,var(--muted));background:color-mix(in srgb,var(--accent) 5%,transparent);
   animation:plIn .35s ease both}
+.plsug{position:relative;overflow:hidden;isolation:isolate}
+/* мягкий блик: проходит по карточке раз в несколько секунд, рамка чуть «дышит» */
+.plsug::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(105deg,transparent 30%,color-mix(in srgb,var(--accent) 22%,transparent) 48%,
+    color-mix(in srgb,#fff 10%,transparent) 50%,color-mix(in srgb,var(--accent) 22%,transparent) 52%,transparent 70%);
+  background-size:250% 100%;background-position:120% 0;animation:plSheen 4.2s ease-in-out 1s infinite}
+.plsug{animation:plIn .35s ease both,plGlow 4.2s ease-in-out 1s infinite}
+@keyframes plSheen{0%{background-position:120% 0}55%,100%{background-position:-60% 0}}
+@keyframes plGlow{0%,100%{border-color:color-mix(in srgb,var(--accent) 45%,var(--muted));box-shadow:none}
+  45%{border-color:var(--accent);box-shadow:0 0 18px color-mix(in srgb,var(--accent) 25%,transparent)}}
+@media (prefers-reduced-motion:reduce){.plsug::before,.plsug{animation:none}}
+.plsug.out{animation:plOut .28s ease forwards}
 .plsug .ph{display:flex;align-items:center;gap:12px}
 .plsug .pd{flex:none;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
   color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
