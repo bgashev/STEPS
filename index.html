@@ -337,6 +337,20 @@ input[type=date].inp{display:block}
 .emb .rg{position:relative;width:76%;height:76%;border-radius:50%;padding:10px;background:var(--tg);animation:popIn .7s cubic-bezier(.2,1.5,.4,1)}
 .emb .rg b{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--surface);font-size:56px;font-weight:900}
 @keyframes pulse{50%{transform:scale(1.08);opacity:.8}}
+/* ==== v1.410: подарки ==== */
+.gshelf{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.gs{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:14px;background:var(--surface2);filter:grayscale(1);opacity:.28;transition:.2s}
+.gs.on{filter:none;opacity:1}
+.gen{display:inline-flex;align-items:center;gap:2px;font-size:12px;color:var(--muted)}
+.gen i{display:inline-flex;color:var(--border)}.gen i.on{color:var(--accent)}.gen b{margin-left:4px;color:var(--text)}
+.gpick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.gp{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:transform .12s}
+.gp span{font-size:30px;line-height:1}.gp i{font-style:normal;font-size:12px;color:var(--muted)}
+.gp.has::after{content:'';position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.6}
+.gp:active{transform:scale(.95)}.gp:disabled{opacity:.4}
+.gin{text-align:center}.gbig{font-size:72px;line-height:1.1;margin:6px 0 10px;animation:pop .5s}
+@keyframes pop{0%{transform:scale(.4)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
+.gbtn{font-size:16px}
 /* ==== v1.9: мягкий дизайн ==== */
 .card{border-radius:26px;padding:18px}
 .kpi{border-radius:22px}
@@ -447,7 +461,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.9.301026';
+const APP = 'VOOB (by BGASHEV) Mini App v1.410';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const tg = window.Telegram && window.Telegram.WebApp;
 const inTG = !!(tg && tg.initData);
@@ -883,6 +897,7 @@ async function syncNow(){
     const changed = applyRemote(res.rows || []);
     db.sync.rev = Math.max(db.sync.rev || 0, +res.rev || 0);
     srvUser = res.user || srvUser;
+    setGifts(res.gifts);
     lastSync = Date.now();
     persist();
     if (changed && !sheetCtx) { applyTheme(); render(); }
@@ -1394,8 +1409,106 @@ function workoutXp(w){
   const sp = Math.max(1, +w.speed || 5), inc = Math.max(0, +w.incline || 0);
   return Math.max(3, Math.min(150, Math.round(m * Math.pow(sp / 5, 0.8) * (1 + inc * 0.06))));
 }
-function xpLevel(xp){ let lvl = 1, need = 160, x = Math.max(0, Math.round(xp)); while (x >= need && lvl < 999) { x -= need; lvl++; need = 160 + 10 * (lvl - 1); } return {level:lvl, xp:Math.round(xp), into:x, need}; }
-function myLevel(){ const t = todayN(); return xpLevel(sum(valid().filter(w => dn(w.date) <= t), workoutXp)); }
+/* ---- v1.410: кривая уровней, анти-чит, подарки, @username, отзывы ---- */
+function levelNeed(l){ return 120 + 40 * (l - 1) + 2 * (l - 1) * (l - 1); }
+function xpLevel(xp){ let lvl = 1, x = Math.max(0, Math.round(xp)), need = levelNeed(1); while (x >= need && lvl < 999) { x -= need; lvl++; need = levelNeed(lvl); } return {level:lvl, xp:Math.round(xp), into:x, need}; }
+// Анти-чит (жёсткий): те же правила, что на сервере
+const AC = {minMin:1, maxMin:240, minSpeed:0.5, maxSpeed:20, maxIncline:15, dayMin:300, dayCount:6, backDays:2};
+function acLocked(w){ return !!w && ISO_RE.test(w.date || '') && todayN() - dn(w.date) > AC.backDays; }
+function acCheck(data, item){   // null — можно сохранить, иначе текст причины
+  const d = ISO_RE.test(data.date) ? dn(data.date) : null, t = todayN();
+  if (d == null) return 'Неверная дата';
+  if (d > t) return 'Тренировку из будущего сохранить нельзя 🙂';
+  if (t - d > AC.backDays) return 'Задним числом — максимум на 2 дня назад';
+  if (!(data.minutes >= AC.minMin && data.minutes <= AC.maxMin)) return `Время — от ${AC.minMin} до ${AC.maxMin} минут`;
+  if (!(data.speed >= AC.minSpeed && data.speed <= AC.maxSpeed)) return `Скорость — от ${num(AC.minSpeed)} до ${AC.maxSpeed} км/ч`;
+  if (!(data.incline >= 0 && data.incline <= AC.maxIncline)) return `Уклон — от 0 до ${AC.maxIncline}%`;
+  const same = valid().filter(w => w !== item && w.date === data.date);
+  if (same.length + 1 > AC.dayCount) return `Не больше ${AC.dayCount} тренировок в день`;
+  if (sum(same, w => +w.minutes || 0) + data.minutes > AC.dayMin) return `Не больше ${AC.dayMin / 60} часов тренировок в день`;
+  return null;
+}
+function honestWs(ws){   // для очков: только то, что прошло бы проверку
+  const t = todayN(), per = new Map();
+  return ws.filter(w => { const d = dn(w.date), m = +w.minutes || 0, s = +w.speed || 0, i = +w.incline || 0;
+      if (d > t || !(m >= AC.minMin && m <= AC.maxMin) || !(s >= AC.minSpeed && s <= AC.maxSpeed) || !(i >= 0 && i <= AC.maxIncline)) return false;
+      if (w.created && Math.floor(w.created / 86400) - d > AC.backDays + 1) return false;
+      return true; })
+    .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (a.created || 0) - (b.created || 0))
+    .filter(w => { const p = per.get(w.date) || [0, 0], m = +w.minutes || 0; if (p[0] + 1 > AC.dayCount || p[1] + m > AC.dayMin) return false; per.set(w.date, [p[0] + 1, p[1] + m]); return true; });
+}
+const GK = 'voob_gifts';
+let GIFTS_IN = null; try { GIFTS_IN = JSON.parse(localStorage.getItem(GK) || 'null'); } catch (e) {}
+function giftXp(){ return (GIFTS_IN && +GIFTS_IN.xp) || 0; }
+function myLevel(){ return xpLevel(sum(honestWs(valid()), workoutXp) + giftXp()); }
+const GIFT_T = {sneaker:['👟','Кроссовок'], water:['💧','Водичка'], banana:['🍌','Банан'], bolt:['⚡','Заряд'], fire:['🔥','Огонь'], medal:['🏅','Медалька'],
+  sprout:['🌱','Росток'], coffee:['☕','Кофе'], music:['🎧','Плейлист'], rocket:['🚀','Ракета'], peak:['🏔️','Вершина'], sloth:['🦥','Ленивец']};
+const GIFT_KEYS = Object.keys(GIFT_T);
+function setGifts(g){
+  if (!g) return;
+  const was = GIFTS_IN ? (GIFTS_IN.pending || []).length : 0;
+  GIFTS_IN = g; try { localStorage.setItem(GK, JSON.stringify(g)); } catch (e) {}
+  if ((g.pending || []).length && (g.pending.length > was || !S.giftSeen) && !sheetCtx) { S.giftSeen = true; setTimeout(openGiftInbox, 600); }
+}
+function giftShelf(kinds, size){
+  const own = new Set(kinds || []);
+  return `<div class="gshelf">` + GIFT_KEYS.map(k => `<span class="gs${own.has(k) ? ' on' : ''}" title="${GIFT_T[k][1]}" style="font-size:${size || 22}px">${GIFT_T[k][0]}</span>`).join('') + `</div>`;
+}
+function energyHTML(en){
+  if (!en) return '';
+  return `<span class="gen" title="Подарков в этом месяце">${Array.from({length:en.total}, (_, i) => `<i class="${i < en.left ? 'on' : ''}">${IC('bolt', 13)}</i>`).join('')}<b>${en.left}/${en.total}</b></span>`;
+}
+function openGiftInbox(){
+  const p = (GIFTS_IN && GIFTS_IN.pending) || []; if (!p.length) return;
+  const g = p[0], [emo, ttl] = GIFT_T[g.kind] || GIFT_T.medal, own = new Set((GIFTS_IN && GIFTS_IN.kinds) || []);
+  openSheet(`<div class="gin"><div class="gbig">${emo}</div><h2>${esc(g.from_name)} дарит тебе «${ttl}»</h2>
+    <div class="muted">${own.has(g.kind) ? 'Такой у тебя уже есть — но внимание всё равно приятно.' : `Первый такой в коллекции: +100 очков к уровню!`}</div>
+    ${p.length > 1 ? `<div class="cap" style="margin-top:6px">Ещё подарков: ${p.length - 1}</div>` : ''}
+    <button class="btn primary" style="width:100%;margin-top:16px" data-act="gclaim" data-id="${g.id}">Получить</button></div>`, {type:'ginbox'});
+}
+function openGiftPicker(id){
+  const f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
+  const en = FR.data.gift_energy || {left:0, total:3}, has = new Set(f.gift_kinds || []);
+  openSheet(`<div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px"><h2 style="margin:0">Подарок для ${esc(f.name)}</h2>${energyHTML(en)}</div>
+    <div class="cap" style="margin-bottom:12px">${en.left ? 'Энергии хватит ещё на ' + npw(en.left, ['подарок','подарка','подарков']) + ' в этом месяце. Отмеченные точкой у друга уже есть — новый вид даст ему +100 очков.' : 'Энергия кончилась — новые подарки с 1-го числа.'}</div>
+    <div class="gpick">` + GIFT_KEYS.map(k => `<button type="button" class="gp${has.has(k) ? ' has' : ''}" data-act="gsend" data-id="${id}" data-k="${k}"${en.left ? '' : ' disabled'}><span>${GIFT_T[k][0]}</span><i>${GIFT_T[k][1]}</i></button>`).join('') + `</div>`, {type:'gpick', id});
+}
+const FB_TYPES = [['idea','Идея'],['bug','Ошибка'],['complaint','Жалоба']];
+function openFeedback(type, target){
+  const f = target && FR.data && FR.data.friends.find(x => x.tg_id === target);
+  S.fbType = type || 'idea';
+  openSheet(`<h2>${target ? 'Пожаловаться на ' + esc(f ? f.name : 'пользователя') : 'Идеи и жалобы'}</h2>
+    <div class="hint">${target ? 'Опиши, что случилось. Жалобу увидит только разработчик.' : 'Пиши как есть — читаю всё сам. Лучшие идеи попадут в следующие версии.'}</div>
+    ${target ? '' : `<div class="seg fill" style="margin-bottom:12px" id="fb-type">${FB_TYPES.map(([v, l]) => `<button type="button" class="${S.fbType === v ? 'on' : ''}" data-act="fbtype" data-v="${v}">${l}</button>`).join('')}</div>`}
+    <textarea class="inp" id="fb-text" maxlength="1000" rows="5" placeholder="${target ? 'Что не так?' : 'Например: хочу тёмную тему ещё темнее'}" style="resize:vertical;min-height:120px"></textarea>
+    <button class="btn primary" style="width:100%;margin-top:12px" data-act="fbsend"${target ? ` data-target="${target}"` : ''}>Отправить</button>`, {type:'feedback'});
+}
+async function openPublicProfile(handle){
+  if (!inTG) return;
+  openSheet(`<div id="pub"><div class="sk" style="height:140px"><i class="c"></i><span class="ln"><i></i><i></i></span></div></div>`, {type:'pub'});
+  try {
+    const j = await apiAuth('/profile/public', {handle, today:isoOf(todayN())});
+    const el = $('#pub'); if (!el) return;
+    if (j.status !== 'ok') { el.innerHTML = `<h2>Профиль не найден</h2><div class="muted">Похоже, @${esc(handle)} сменил(а) ник.</div>`; return; }
+    if (!FR.phTried.has(j.tg_id)) { FR.phTried.add(j.tg_id); apiAuth('/friends/photo', {tg_id:j.tg_id}).then(r => { if (r.ok) { FR.ph.set(j.tg_id, 'data:image/jpeg;base64,' + r.b64); putPhoto(j.tg_id); } }).catch(() => {}); }
+    const lv = j.level, btn = j.state === 'me' ? `<div class="cap" style="text-align:center">Это твой профиль 🙂</div>`
+      : j.state === 'friend' ? `<button class="btn ghost" style="width:100%" data-act="frprof" data-id="${j.tg_id}">${IC('check', 16)}Вы друзья — открыть профиль</button>`
+      : j.state === 'requested' ? `<div class="cap" style="text-align:center">Заявка уже отправлена</div>`
+      : `<button class="btn primary" style="width:100%" data-act="frreq" data-id="${j.tg_id}">${IC('plus', 16)}${j.state === 'incoming' ? 'Принять заявку' : 'Добавить в друзья'}</button>`;
+    el.innerHTML = `<div class="fp-head">${favHTML(j)}<div style="flex:1;min-width:0"><h2 style="margin:0">${esc(j.name)}</h2><div class="cap">@${esc(j.handle)}</div>
+      <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div></div>
+      <div class="card" style="margin-top:12px"><div class="tot"><div><b>${j.total == null ? '—' : j.total}</b><span class="cap">тренировок</span></div><div><b>${j.friends_count}</b><span class="cap">друзей</span></div><div><b>${(j.gift_kinds || []).length}/12</b><span class="cap">подарков</span></div></div></div>
+      ${(j.gift_kinds || []).length ? `<div class="card"><h3>🎁 Коллекция подарков</h3>${giftShelf(j.gift_kinds, 20)}</div>` : ''}${btn}`;
+  } catch (e) { const el = $('#pub'); if (el) el.innerHTML = `<div class="muted">Не удалось загрузить: ${esc(e.message)}</div>`; }
+}
+function handleCard(){
+  if (!inTG) return '';
+  const h = srvUser && srvUser.handle;
+  return `<div class="card"><h3>${IC('user')}Ник в VOOB</h3><div class="hint">По нику тебя найдут друзья. Латиница, цифры и «_», 3–20 символов.</div>
+    <div class="codein" style="margin-top:0"><input class="inp" id="p-handle" maxlength="21" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="@nickname" value="${h ? '@' + esc(h) : ''}"><button class="btn ghost small" data-act="hsave">Сохранить</button></div>
+    ${h ? `<div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn primary small" data-act="pshare">${IC('share', 16)}Поделиться профилем</button><button class="btn ghost small" data-act="pcopy">Скопировать ссылку</button></div>` : ''}</div>`;
+}
+const profLink = h => `https://t.me/steps_v1_bot/STEPS?startapp=u_${h}`;
 
 /* ============================================================ друзья ==== */
 const FR = {data:null, loading:false, err:'', ph:new Map(), phTried:new Set()};
@@ -1409,7 +1522,7 @@ async function loadFriends(){
   if (!inTG || FR.loading) return;
   FR.loading = true;
   let changed = true;
-  try { const j = await apiAuth('/friends', {today:isoOf(todayN())}); const sig = JSON.stringify(j); changed = sig !== FR.sig || !!FR.err; FR.sig = sig; FR.data = j; FR.err = '';
+  try { const j = await apiAuth('/friends', {today:isoOf(todayN())}); const sig = JSON.stringify(j); changed = sig !== FR.sig || !!FR.err; FR.sig = sig; FR.data = j; FR.err = ''; if (j.my_gifts) setGifts(j.my_gifts);
     const n = (j.friends || []).length; if (db.settings.friends_n !== n) { db.settings.friends_n = n; persist(); } }
   catch (e) { FR.err = e.message || 'нет связи'; }
   FR.loading = false;
@@ -1463,6 +1576,9 @@ function viewFriends(){
   h += `<div class="reveal${S.inv ? ' open' : ''}" id="inv"><div><div class="card"><h3>${IC('friends')}Пригласить друга</h3><div class="muted" style="margin:-4px 0 12px">Отправь ссылку — друг откроет её, и вы сразу станете друзьями.</div>
     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn primary small" data-act="frshare">${IC('export', 16)}Отправить в Telegram</button><button class="btn ghost small" data-act="frcode">Мой код: ${esc(d.code)}</button></div>
     <div class="codein"><input class="inp" id="fr-code" placeholder="Код друга" maxlength="24" autocomplete="off"><button class="btn ghost small" data-act="fradd">${IC('plus', 16)}Добавить</button></div></div></div></div>`;
+  { const en = d.gift_energy, mg = d.my_gifts || {};
+    h += `<div class="card"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px"><h3 style="margin:0">🎁 Подарки</h3>${energyHTML(en)}</div>${giftShelf(mg.kinds, 22)}
+      <div class="cap" style="margin-top:8px">Коллекция: ${(mg.kinds || []).length} из 12 · ${(mg.pending || []).length ? `<a data-act="ginbox" style="color:var(--accent);font-weight:700">ждут ${(mg.pending || []).length} — открыть</a>` : 'дари друзьям — 3 подарка в месяц'}</div></div>`; }
   if (fr.length) {
     const people = fr.map(f => [f, false]).concat([[d.me, true]]).sort((a, b) => (pm(b[0]) - pm(a[0])) || (b[1] - a[1]));
     const mx = Math.max(1, ...people.map(p => pm(p[0])));
@@ -1476,10 +1592,10 @@ function viewFriends(){
     const g = f.goal;
     const gl = g.done_today ? `<span class="gok">${IC('check', 12)}норма</span>` : g.prev_ok ? `<span class="gok">${IC('check', 12)}закрыта</span>` : `норма ${g.shown}/${g.target}`;
     const last = f.last ? `${agoText(f.last.date)} · ${f.last.minutes} мин` : 'ещё не тренировался';
-    const sub = [f.level ? `<span style="color:${tierColor(f.level.level)};font-weight:700">${tierOf(f.level.level).title}</span>` : '', f.username ? '@' + esc(f.username) : ''].filter(Boolean).join(' · ');
+    const sub = [f.level ? `<span style="color:${tierColor(f.level.level)};font-weight:700">${tierOf(f.level.level).title}</span>` : '', f.handle ? '@' + esc(f.handle) : f.username ? '@' + esc(f.username) : ''].filter(Boolean).join(' · ');
     return `<div class="fc" data-act="frprof" data-id="${f.tg_id}" style="animation-delay:${Math.min(i, 10) * 40}ms">${favHTML(f)}<div class="fm"><div><b>${esc(f.name)}</b>${f.private ? IC('lock', 12) : ''}${g.run >= 2 ? `<span class="fstreak">${IC('flame', 12)}${g.run}</span>` : ''}</div>
       ${sub ? `<div class="l3">${sub}</div>` : ''}<div class="l2">${fmtMin(f.week.minutes)} за 7 дней · ${gl}</div><div class="l3">${last}</div></div>
-      <button class="rm" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 16)}</button></div>`;
+      <button class="rm gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">🎁</button><button class="rm" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 16)}</button></div>`;
   }).join('');
   return h;
 }
@@ -1497,8 +1613,8 @@ async function loadFofPhotos(j){
 }
 function friendSheetHTML(f, j, loading){
   const lv = f.level || xpLevel(0), g = f.goal, ok = g.done_today || g.prev_ok, shown = g.done_today ? g.target : g.shown;
-  let h = `<div class="fp-head"><span data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span><div style="flex:1;min-width:0"><h2 style="margin:0">${esc(f.name)}</h2>${f.username ? `<div class="cap">@${esc(f.username)}</div>` : ''}
-    <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div><button class="rmx" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 18)}</button><button class="rmx" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button></div>
+  let h = `<div class="fp-head"><span data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span><div style="flex:1;min-width:0"><h2 style="margin:0">${esc(f.name)}</h2>${f.handle || f.username ? `<div class="cap">@${esc(f.handle || f.username)}</div>` : ''}
+    <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div><button class="rmx" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 18)}</button><button class="rmx gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">🎁</button><button class="rmx" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button></div>
     <div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div>`;
   if (j && j.friends) FR.prof = j.friends;
   h += loading ? `<div class="fstrip"><span class="skl" style="width:150px;height:34px;border-radius:17px"></span></div>`
@@ -1508,6 +1624,8 @@ function friendSheetHTML(f, j, loading){
   const days = j && j.week && j.week.days;
   if (days && days.some(Boolean)) { const t = todayN(); h += bars(days.map((m, i) => [WD[wdOf(t - 6 + i)], m, `${WDF[wdOf(t - 6 + i)]}: ${fmtMin(m)}`]), v => String(v), 'fpw', 110); }
   h += `</div>`;
+  if ((f.gift_kinds || []).length) h += `<div class="card"><h3>🎁 Подарки · ${f.gift_kinds.length} из 12</h3>${giftShelf(f.gift_kinds, 20)}</div>`;
+  if (!loading) h += `<button class="btn ghost small" style="width:100%;margin-bottom:12px;color:var(--muted)" data-act="frrep" data-id="${f.tg_id}">Пожаловаться</button>`;
   if (loading) return h + `<div id="fp-load">` + [100, 120, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('') + `</div>`;
   if (!j.details) return h + `<div class="card muted">${IC('lock', 16)} ${esc(f.name)} закрыл(а) профиль — видно только основное.</div>`;
   const d = j.details, t = d.totals, r = d.records;
@@ -1707,7 +1825,8 @@ function viewMe(){
     <div style="min-width:0"><h1 style="font-size:22px">${esc(name || 'Гость')}</h1>${syncHTML()}</div></div>`;
   h += `<div class="card"><h3>${IC('medal')}Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></h3><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div>
     <div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1} · всего ${numSep(lv.xp)}</div>
-    <div class="cap" style="margin-top:6px">Очки дают тренировки: чем дольше, быстрее и круче уклон — тем больше. Обычно 3–5 тренировок на уровень.</div></div>`;
+    <div class="cap" style="margin-top:6px">Очки дают тренировки: чем дольше, быстрее и круче уклон — тем больше. Ещё +100 за каждый новый вид подарка от друзей. С каждым уровнем следующий чуть дороже.</div></div>`;
+  h += handleCard();
   { const got = achievements().filter(a => a.done);
     h += `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${IC('medal')}Достижения</h3><button class="btn ghost small" data-act="tab" data-tab="stats">${got.length} из ${ACH_KEYS.length} ${IC('chev', 14)}</button></div>` +
       (got.length ? medalStrip(got.map(a => a.key), 48) : `<div class="cap">Пока ни одной медали — первая тренировка уже принесёт «Первый шаг».</div>`) + `</div>`; }
@@ -1729,6 +1848,7 @@ function viewMe(){
     h += `<div class="card"><h3>${IC('lock')}Конфиденциальность</h3><div class="tgl${PRIV.v ? ' on' : ''}" data-act="privacy"><span class="sw2"></span><b>Закрытый профиль</b></div>
       <div class="cap" style="margin-top:8px">Друзья увидят только основное: уровень, цель недели и итоги за 7 дней. Подробная статистика, рекорды, история тренировок и список твоих друзей будут скрыты. Вес и заметки друзьям не видны никогда.</div></div>`;
   }
+  if (inTG) h += `<div class="card"><h3>${IC('sparkle')}Идеи и жалобы</h3><div class="hint">Нашёл ошибку или есть идея? Напиши — сообщение уйдёт разработчику.</div><button class="btn ghost small" data-act="fbopen">${IC('edit', 16)}Написать</button></div>`;
   h += `<div class="card"><h3>${IC('cloud')}Данные</h3><div class="cap" style="margin:-6px 0 12px">Данные синхронизируются через сервер VOOB и привязаны к твоему Telegram: одинаковы на телефоне, в Telegram Desktop и в программе VOOB для Windows.</div>
     <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost small" data-act="import">${IC('import', 16)}Импорт из VOOB для Windows</button><button class="btn ghost small" data-act="copy">${IC('export', 16)}Скопировать копию</button></div>
     <div class="cap" style="margin-top:10px">Импорт: выбери файл STEPS_backup_….json из десктопной версии (Настройки → Резервная копия). Совпадающие записи не задублируются.</div></div>`;
@@ -1778,11 +1898,11 @@ function openWorkout(w, preset, hint){
   openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC(actOf(src), 22)}</span><div><h2 style="margin:0">${w ? 'Редактирование' : 'Новая тренировка'}</h2><div class="cap">${(ACTS.find(a => a[0] === actOf(src)) || ACTS[0])[1]}</div></div></div>${hint ? `<div class="hint">${hint}</div>` : ''}
     <div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label>
     ${stepper('incline', 'Уклон', src.incline != null ? src.incline : 0, 0, 15, 1, 0, '%')}</div>
-    <div class="g2">${stepper('minutes', 'Время', src.minutes || 30, 1, 600, 1, 0, 'мин')}${stepper('speed', 'Скорость', src.speed || 4.5, 0.5, 12, 0.1, 1, 'км/ч')}</div>
+    <div class="g2">${stepper('minutes', 'Время', src.minutes || 30, 1, 240, 1, 0, 'мин')}${stepper('speed', 'Скорость', src.speed || 4.5, 0.5, 12, 0.1, 1, 'км/ч')}</div>
     <div class="preview" id="f-prev"></div>
     ${feelPicker(f)}
     <label class="f"><span>Заметка</span><input class="inp" id="f-note" maxlength="140" placeholder="Необязательно" value="${esc(w ? w.note || '' : '')}"></label>
-    <div class="sheet-btns">${w ? `<button class="btn ghost danger" data-act="wdel">${IC('trash')}</button>` : ''}<button class="btn primary" data-act="wsave">Сохранить</button></div>`, {type:'workout', item:w});
+    <div class="sheet-btns">${w ? `<button class="btn ghost danger" data-act="wdel">${IC('trash')}</button>` : ''}${acLocked(w) ? `<div class="hint" style="margin:0;align-self:center">${IC('lock', 13)} Старше 2 дней — менять нельзя, только удалить</div>` : `<button class="btn primary" data-act="wsave">Сохранить</button>`}</div>`, {type:'workout', item:w});
   updPreview();
 }
 function updPreview(){
@@ -1840,6 +1960,7 @@ function saveWorkout(){
   const item = sheetCtx.item;
   const data = {date:ISO_RE.test($('#f-date').value) ? $('#f-date').value : isoOf(todayN()), minutes:Math.round(stpVal('minutes')), speed:stpVal('speed'),
     incline:Math.round(stpVal('incline')), feeling:+$('#f-feel').dataset.v, note:$('#f-note').value.trim()};
+  const bad = acCheck(data, item); if (bad) { hap.warn(); toast(bad); return; }
   const g = G(), before = goalCycles(valid()).done;
   let w = item;
   if (w) Object.assign(w, data); else { w = Object.assign({id:uid(), created:nowSec()}, data); db.workouts.push(w); }
@@ -1962,6 +2083,46 @@ const ACT = {
   stsave: () => saveStory(),
   stshare: () => shareStory(),
   frprof: el => { hap.tap(); openFriendProfile(+el.dataset.id); },
+  gift: el => { hap.tap(); openGiftPicker(+el.dataset.id); },
+  ginbox: () => openGiftInbox(),
+  gsend: async el => {
+    const id = +el.dataset.id, k = el.dataset.k, f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
+    document.querySelectorAll('.gp').forEach(b => b.disabled = true);
+    try { const j = await apiAuth('/gifts/send', {tg_id:id, kind:k});
+      if (j.energy) FR.data.gift_energy = j.energy;
+      if (j.status === 'ok') { hap.ok(); closeSheet(); toast(`${GIFT_T[k][0]} «${GIFT_T[k][1]}» улетел к ${f.name}`); render(); }
+      else { hap.warn(); toast(j.status === 'energy' ? 'Энергия кончилась — новые подарки с 1-го числа' : 'Не получилось'); closeSheet(); render(); }
+    } catch (e) { toast(e.message || 'Нет связи'); document.querySelectorAll('.gp').forEach(b => b.disabled = false); } },
+  gclaim: async el => {
+    el.disabled = true;
+    try { const j = await apiAuth('/gifts/claim', {id:+el.dataset.id}); setGifts(j.gifts); closeSheet(); render();
+      if (j.first) { celebrate('medal', 'Новый подарок!', '+100 очков к уровню', ['Коллекция растёт', 'Друзья не забывают', 'Это было приятно']); }
+      else toast('Подарок получен 🎁');
+      if ((GIFTS_IN.pending || []).length) setTimeout(openGiftInbox, j.first ? 1800 : 500);
+      if (FR.data) loadFriends();
+    } catch (e) { el.disabled = false; toast('Нет связи: ' + e.message); } },
+  fbopen: () => { hap.tap(); openFeedback('idea'); },
+  frrep: el => { hap.tap(); openFeedback('user', +el.dataset.id); },
+  fbtype: el => { S.fbType = el.dataset.v; document.querySelectorAll('#fb-type button').forEach(b => b.classList.toggle('on', b === el)); hap.tap(); },
+  fbsend: async el => {
+    const text = ($('#fb-text').value || '').trim(), target = +el.dataset.target || null;
+    if (text.length < 3) { toast('Напиши хоть пару слов'); return; }
+    el.disabled = true;
+    try { const j = await apiAuth('/feedback', {type:target ? 'user' : S.fbType, text, target_id:target, app:APP});
+      if (j.status === 'ok') { hap.ok(); closeSheet(); toast(target ? 'Жалоба отправлена. Спасибо!' : 'Отправлено. Спасибо! 💛'); }
+      else { el.disabled = false; toast(j.status === 'limit' ? 'На сегодня хватит — не больше 5 сообщений в день' : 'Слишком коротко'); }
+    } catch (e) { el.disabled = false; toast('Нет связи: ' + e.message); } },
+  hsave: async () => {
+    const v = ($('#p-handle').value || '').trim().replace(/^@+/, '');
+    if (v && !/^[A-Za-z][A-Za-z0-9_]{2,19}$/.test(v)) { hap.warn(); toast('Ник: латиница, цифры, «_», 3–20 символов, первая — буква'); return; }
+    try { const j = await apiAuth('/profile/handle', {handle:v});
+      if (j.status === 'ok') { srvUser = Object.assign({}, srvUser, {handle:j.handle}); hap.ok(); toast(j.handle ? `Теперь ты @${j.handle}` : 'Ник удалён'); render(); }
+      else { hap.warn(); toast(j.status === 'taken' ? 'Этот ник уже занят' : 'Такой ник не подходит'); }
+    } catch (e) { toast('Нет связи: ' + e.message); } },
+  pshare: () => { const h = srvUser && srvUser.handle; if (!h) return; hap.imp();
+    const url = 'https://t.me/share/url?url=' + encodeURIComponent(profLink(h)) + '&text=' + encodeURIComponent('Мой профиль в VOOB 👟 Добавляйся в друзья:');
+    try { tg.openTelegramLink(url); } catch (e) { copyStr(profLink(h)).then(ok => toast(ok ? 'Ссылка скопирована' : 'Не получилось')); } },
+  pcopy: async () => { const h = srvUser && srvUser.handle; if (h && await copyStr(profLink(h))) { hap.ok(); toast('Ссылка на профиль скопирована'); } },
   frreq: async el => {
     const id = +el.dataset.id; el.disabled = true;
     try { const j = await apiAuth('/friends/request', {tg_id:id});
@@ -2077,6 +2238,7 @@ async function init(){
   try { const s = localStorage.getItem(LS); if (s) db = normalize(JSON.parse(s)); } catch (e) {}
   invalidate(); applyTheme(); render();
   scheduleSync(100);
+  try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); } catch (e) {}
   if (!hasCloud) return;
   try {
     const c = await cloudLoad();
