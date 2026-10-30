@@ -390,9 +390,9 @@ input[type=date].inp{display:block}
   animation:plIn .35s ease both}
 .wdock button{display:flex;align-items:center;gap:7px;border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s}
 .wdock button:active{transform:scale(.94)}
-.wd-goal{height:48px;padding:0 16px 0 13px;border-radius:24px;color:var(--text);background:var(--surface);border:1px solid var(--border)!important;
-  box-shadow:0 8px 24px rgba(0,0,0,.25)}
-.wd-goal svg{color:var(--accent)}
+.gedit{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;z-index:1}
+.gedit:active{transform:scale(.92)}
 .wd-add{height:56px;padding:0 22px 0 18px;border-radius:28px;font-size:15px;color:var(--bg);background:var(--accent);
   box-shadow:0 10px 28px color-mix(in srgb,var(--accent) 45%,transparent)}
 .wdock-sp{height:70px}
@@ -1834,8 +1834,7 @@ function viewWeight(){
   const t = todayN(), daily = dailyWeights(), curE = last(es), cur = +curE.kg, lastD = dn(curE.date);
   const gs = weightGoalState(goal, cur), dir = gs ? gs.direction : 0;
   // кнопки — внизу справа, над меню: под большой палец, а не в дальнем углу экрана
-  h += `<div class="wdock"><button class="wd-goal" data-act="kgoal" aria-label="${goal.target ? 'Изменить цель' : 'Цель по весу'}">${IC('target', 20)}<span>Цель</span></button>
-    <button class="wd-add" data-act="kadd">${IC('plus', 20)}Взвеситься</button></div><div class="wdock-sp"></div>`;
+  h += `<div class="wdock"><button class="wd-add" data-act="kadd">${IC('plus', 20)}Взвеситься</button></div>`;
   // сейчас
   let delta = '';
   if (es.length >= 2) {
@@ -1855,7 +1854,8 @@ function viewWeight(){
       else fc = slope != null ? 'Последний месяц вес идёт не в ту сторону' : 'Для прогноза нужно больше взвешиваний';
     } else if (goal.reached_on) fc = `Достигнута ${fmtDate(dn(goal.reached_on), true)}`;
     const p = gs.frac * 100;
-    h += `<div class="card"><div class="goal">${ring(gs.frac, Math.round(p) + '%', 'пройдено', gs.reached, 104)}<div style="flex:1;min-width:0">
+    h += `<div class="card" style="position:relative"><button class="gedit" data-act="kgoal" aria-label="Изменить цель">${IC('edit', 16)}</button>
+      <div class="goal">${ring(gs.frac, Math.round(p) + '%', 'пройдено', gs.reached, 104)}<div style="flex:1;min-width:0">
       <div class="cap">Цель</div><div class="gt${gs.reached ? ' ok' : ''}">${gs.reached ? 'Цель достигнута!' : 'Осталось ' + num(gs.left) + ' кг'}</div>
       <div class="gs">${num(gs.start)} → ${num(gs.target)} кг · пройдено ${num(gs.done)} из ${num(Math.abs(gs.target - gs.start))}</div>
       ${fc ? `<div style="font-weight:650;font-size:13px;margin-top:4px">${fc}</div>` : ''}</div></div>
@@ -1892,7 +1892,7 @@ function viewWeight(){
       <span class="delta" style="color:${col};width:58px">${dv == null ? '—' : z ? '0' : IC(dv > 0 ? 'arrow_up' : 'arrow_down', 12) + num(Math.abs(dv))}</span><span class="cap sp" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.note || '')}</span></div>`;
   });
   if (rev.length > S.klimit) h += `<button class="btn ghost small more" data-act="kmore">Показать ещё (осталось ${rev.length - S.klimit})</button>`;
-  return h;
+  return h + '<div class="wdock-sp"></div>';   // отступ в самом низу, чтобы кнопка не закрывала историю
 }
 
 function viewStats(){
