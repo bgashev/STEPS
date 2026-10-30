@@ -411,6 +411,28 @@ input[type=date].inp{display:block}
 .ib.round:active{transform:scale(.92)}
 .ib.round.accent svg{color:var(--accent)}
 .me-prof .fp-head{margin-top:2px}
+.fitem{display:flex;align-items:center;gap:12px;padding:8px 0}
+.fitem .fav{flex:none}
+.ftx{flex:1;min-width:0}
+.ftx .fh{font-size:14px;line-height:1.3}
+.ftx .cap{display:flex;align-items:center;gap:4px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fday{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 0 2px}
+.fgift{font-size:28px;line-height:1;cursor:pointer}
+.flk{flex:none;display:flex;align-items:center;gap:4px;min-width:48px;height:40px;justify-content:center;border:0;background:none;color:var(--muted);cursor:pointer;font:inherit;font-weight:800}
+.flk i{font-style:normal;font-size:13px;min-width:8px}
+.flk svg{transition:transform .2s}
+.flk.on{color:#EF6B73}.flk.on svg{fill:currentColor}
+.flk.own{cursor:default}
+.flk.pop svg{animation:lkPop .42s ease}
+@keyframes lkPop{35%{transform:scale(1.45)}70%{transform:scale(.9)}100%{transform:scale(1)}}
+.fticker{margin-bottom:12px;padding:12px 14px 6px;border-radius:20px;background:var(--surface);border:1px solid var(--border);cursor:pointer;animation:plIn .35s ease both}
+.fticker:active{transform:scale(.99)}
+.ft-cap{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.ft-cap svg{color:var(--accent)}.ft-cap span{margin-left:auto;display:flex}
+.ft-win{overflow:hidden}
+.ft-slot{transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .32s ease}
+.ft-slot.out{transform:translateY(-60%);opacity:0}
+.ft-slot.in{transition:none;transform:translateY(60%);opacity:0}
 .plsug{padding:14px 14px 14px 16px;margin-bottom:12px;border-radius:20px;
   border:1.5px dashed color-mix(in srgb,var(--accent) 50%,var(--muted));background:color-mix(in srgb,var(--accent) 5%,transparent);
   animation:plIn .35s ease both}
@@ -556,6 +578,7 @@ input[type=date].inp{display:block}
 /* ============================================================ основа ==== */
 const APP = 'VOOB (by BGASHEV) Mini App v1.420';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
+const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
 const inTG = !!(tg && tg.initData);
 const ver = v => !!(tg && tg.isVersionAtLeast && tg.isVersionAtLeast(v));
@@ -954,7 +977,7 @@ function applyRemote(rows){
   return changed;
 }
 async function api(route, body){
-  const r = await fetch(API + route, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  const r = await fetch(route.startsWith('http') ? route : API + route, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
   const j = await r.json().catch(() => ({}));
   if (!r.ok) { const e = new Error(j.error || ('HTTP ' + r.status)); e.status = r.status; throw e; }
   return j;
@@ -1040,7 +1063,7 @@ const IP = {
   burpee:'<circle cx="9" cy="2.8" r="1.5"/><path d="M9 4.8V10M5.4 3.2L9 6.4L12.6 3.2M6.4 14L9 10L11.6 14M3 16.2H6M12 16.2H15"/>',
   pullup:'<path d="M2 2.6H16M5.6 2.6L7.4 7.6M12.4 2.6L10.6 7.6M9 7.8V12.4M7.8 16L9 12.4L10.2 16"/><circle cx="9" cy="5.8" r="1.5"/>',
   share:'<path d="M9 11V2.6M5.8 5.6L9 2.6L12.2 5.6"/><path d="M5.5 8H4.5A1.5 1.5 0 0 0 3 9.5V14A1.5 1.5 0 0 0 4.5 15.5H13.5A1.5 1.5 0 0 0 15 14V9.5A1.5 1.5 0 0 0 13.5 8H12.5"/>',
-  chev:'<path d="M7 4L12 9L7 14"/>', back:'<path d="M11 4L6 9L11 14"/>',
+  chev:'<path d="M7 4L12 9L7 14"/>', heart:'<path d="M9 15.2C5.2 12.6 2.6 10.2 2.6 7.2C2.6 5.2 4.1 3.6 6 3.6C7.3 3.6 8.4 4.3 9 5.3C9.6 4.3 10.7 3.6 12 3.6C13.9 3.6 15.4 5.2 15.4 7.2C15.4 10.2 12.8 12.6 9 15.2Z"/>', back:'<path d="M11 4L6 9L11 14"/>',
   gear:'<circle cx="9" cy="9" r="2.4"/><path d="M9 1.8V3.6M9 14.4V16.2M1.8 9H3.6M14.4 9H16.2M3.9 3.9L5.2 5.2M12.8 12.8L14.1 14.1M3.9 14.1L5.2 12.8M12.8 5.2L14.1 3.9"/><circle cx="9" cy="9" r="5.3"/>',
   cloud:'<path d="M5 14A3 3 0 0 1 4.6 8A4.6 4.6 0 0 1 13.2 8.4A2.8 2.8 0 0 1 13.6 14Z"/>',
   import:'<path d="M9 3V11M5.5 7.5L9 11L12.5 7.5M3 11.5V15H15V11.5"/>',
@@ -1682,6 +1705,83 @@ function putPhoto(id){   // точечно, без перерисовки все
 }
 function pm(f){ return f.month && f.month.minutes != null ? f.month.minutes : (f.week ? f.week.minutes : 0); }
 function agoText(iso){ const d = dn(iso), k = todayN() - d; return k <= 0 ? 'сегодня' : k === 1 ? 'вчера' : fmtDate(d); }
+/* ============================================================ лента ==== */
+const FEED = {ev:null, at:0, busy:false, err:'', tick:null, i:0};
+async function loadFeed(force){
+  if (!inTG || FEED.busy || (!force && FEED.ev && Date.now() - FEED.at < 90000)) return;
+  FEED.busy = true;
+  try { const j = await apiAuth(FEED_API, {today:isoOf(todayN())}); FEED.ev = j.events || []; FEED.err = ''; }
+  catch (e) { FEED.err = e.message || 'нет связи'; if (!FEED.ev) FEED.ev = []; }
+  FEED.busy = false; FEED.at = Date.now();
+  if (S.tab === 'friends' || S.tab === 'home') render();
+}
+const actName = k => ((ACTS.find(a => a[0] === k) || ACTS[0])[1]).toLowerCase();
+function feedTime(iso){ const d = new Date(iso); return isNaN(d) ? '' : d.toTimeString().slice(0, 5); }
+function feedDay(iso){ const d = new Date(iso); return isNaN(d) ? '' : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+function feedText(ev){
+  const u = ev.user || {}, d = ev.data || {}, n = u.me ? 'Ты' : esc(u.name || '?');
+  if (ev.type === 'workout') {
+    const sub = [];
+    if (d.sets) sub.push(d.secs ? `${d.sets} × ${d.secs} сек` : `${d.sets} × ${d.reps}`);
+    else { if (d.speed && d.minutes) sub.push(kmF(d.speed * d.minutes / 60)); if (d.speed) sub.push(`${num(d.speed)} км/ч`); if (d.incline) sub.push(`уклон ${num(d.incline)}%`); }
+    return [`<b>${n}</b> · ${esc(actName(d.act || 'run'))}${d.sets ? '' : ', ' + fmtMin(d.minutes || 0)}`, sub, ACTS.some(a => a[0] === d.act) ? d.act : 'run'];
+  }
+  if (ev.type === 'gift') { const f = d.from || {}; return [`<b>${n}</b> ${u.me ? 'получаешь' : 'получает'} подарок «${esc(d.title || '')}» от ${f.me ? 'тебя' : esc(f.name || '?')}`, [], 'gift']; }
+  return [`Вы с <b>${n}</b> теперь друзья 🤝`, [], 'friends'];
+}
+function feedAva(u){
+  const fr = FR.data && ((FR.data.me && FR.data.me.tg_id === u.tg_id) ? FR.data.me : (FR.data.friends || []).find(x => x.tg_id === u.tg_id));
+  return favHTML(Object.assign({tg_id:u.tg_id, name:u.name}, fr ? {level:fr.level} : {}), true);
+}
+function feedItemHTML(ev, i){
+  const [head, sub, ic] = feedText(ev), u = ev.user || {};
+  let like = '';
+  if (ev.type === 'workout' && ev.post) {
+    const n = +ev.likes || 0;
+    like = u.me ? (n ? `<span class="flk own on">${IC('heart', 18)}<i>${n}</i></span>` : '')
+      : `<button type="button" class="flk${ev.liked ? ' on' : ''}" data-act="flike" data-i="${i}" aria-label="Нравится">${IC('heart', 18)}<i>${n || ''}</i></button>`;
+  }
+  const gift = ev.type === 'gift' ? `<span class="fgift" data-act="gview" data-k="${esc((ev.data || {}).kind || 'star')}">${(ev.data || {}).emoji || '🎁'}</span>` : '';
+  return `<div class="fitem">${feedAva(u)}<div class="ftx"><div class="fh">${head}</div><div class="cap">${IC(ic, 13)} ${[...sub, feedTime(ev.at)].map(esc).join(' · ')}</div></div>${gift}${like}</div>`;
+}
+function feedListHTML(){
+  if (!FEED.ev) return [0, 1, 2].map(i => `<div class="sk" style="height:56px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('');
+  if (!FEED.ev.length) return `<div class="muted">${FEED.err ? 'Не удалось загрузить ленту: ' + esc(FEED.err) : 'За последние две недели тут тихо. Потренируйся — и лента оживёт.'}</div>`;
+  const t = isoOf(todayN()), y = isoOf(todayN() - 1);
+  let h = '', last = null;
+  FEED.ev.slice(0, 60).forEach((ev, i) => {
+    const d = feedDay(ev.at);
+    if (d !== last) { last = d; h += `<div class="fday">${d === t ? 'Сегодня' : d === y ? 'Вчера' : fmtDate(dn(d))}</div>`; }
+    h += feedItemHTML(ev, i);
+  });
+  return h;
+}
+// главная: одна новость, каждые 3 секунды плавно сменяется следующей; нажатие — в «Друзья»
+function feedTickerHTML(){
+  if (!inTG) return '';
+  if (!FEED.ev) { loadFeed(); return ''; }
+  if (!FEED.ev.length) return '';
+  FEED.i = FEED.i % FEED.ev.length;
+  setTimeout(startTicker, 0);
+  return `<div class="fticker" data-act="feedgo" role="button" aria-label="Открыть ленту друзей"><div class="ft-cap">${IC('friends', 14)}Лента друзей<span>${IC('chev', 14)}</span></div>
+    <div class="ft-win"><div class="ft-slot" id="ft-slot">${feedItemHTML(FEED.ev[FEED.i], FEED.i)}</div></div></div>`;
+}
+function startTicker(){
+  clearInterval(FEED.tick);
+  if (!FEED.ev || FEED.ev.length < 2) return;
+  FEED.tick = setInterval(() => {
+    const slot = $('#ft-slot');
+    if (!slot || S.tab !== 'home') { clearInterval(FEED.tick); return; }
+    slot.classList.add('out');
+    setTimeout(() => {
+      FEED.i = (FEED.i + 1) % FEED.ev.length;
+      slot.innerHTML = feedItemHTML(FEED.ev[FEED.i], FEED.i);
+      slot.classList.remove('out'); slot.classList.add('in');
+      void slot.offsetWidth; slot.classList.remove('in');
+    }, 320);
+  }, 3000);
+}
+
 function viewFriends(){
   let h = `<div class="head"><div><h1>Друзья</h1><div class="sub">Следи за успехами друзей — и пусть они следят за твоими</div></div>${inTG ? `<div class="hbtns"><button class="ib${FR.loading ? ' spin' : ''}" data-act="frload" aria-label="Обновить">${IC('repeat', 18)}</button><button class="ib shim${S.inv ? ' on' : ''}" data-act="frinv" aria-label="Добавить друга">${IC('plus', 20)}</button></div>` : ''}</div>`;
   if (!inTG) return h + `<div class="card muted">Открой VOOB в Telegram — друзья работают через него.</div>`;
@@ -1695,6 +1795,8 @@ function viewFriends(){
   h += `<div class="reveal${S.inv ? ' open' : ''}" id="inv"><div><div class="card"><h3>${IC('friends')}Пригласить друга</h3><div class="muted" style="margin:-4px 0 12px">Отправь ссылку — друг откроет её, и вы сразу станете друзьями. Или впиши код либо @ник друга.</div>
     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn primary small" data-act="frshare">${IC('export', 16)}Отправить в Telegram</button><button class="btn ghost small" data-act="frcode">Мой код: ${esc(d.code)}</button></div>
     <div class="codein"><input class="inp" id="fr-code" placeholder="Код или @ник друга" maxlength="24" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn ghost small" data-act="fradd">${IC('plus', 16)}Добавить</button></div></div></div></div>`;
+  loadFeed();
+  h += `<div class="card" id="feed"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px"><h3 style="margin:0">${IC('friends')}Лента друзей</h3><span class="cap">2 недели</span></div>${feedListHTML()}</div>`;
   { const en = d.gift_energy, mg = d.my_gifts || {};
     // компактная строка: витрина подарков — только в профиле человека (v1.420)
     const pn = (mg.pending || []).length;
@@ -1793,6 +1895,7 @@ function viewHome(){
     <div><div class="glabel">Цель: ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</div>${gtxt}${gsBtn}</div></div>${strip(ws, g.days)}${note}</div>
   ${ws.length ? `<div class="actions"><button class="btn ghost" data-act="repeat">${IC('repeat')}Повторить последнюю</button></div>` : ''}`;
   h += planSuggestHTML(ws);
+  h += feedTickerHTML();
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
   const due = dueWeekSummary(ws);
   const dueM = dueMonthSummary(ws);
@@ -2278,6 +2381,17 @@ const ACT = {
   repeat: () => { const l = lastWorkout(); openWorkout(null, l, l ? 'Параметры из прошлой тренировки — поправь, если нужно' : ''); },
   wedit: el => { const w = findW(el.dataset.id); if (w) openWorkout(w); },
   wsave: saveWorkout, wdel: delWorkout,
+  feedgo: e => { if (e && e.closest && e.closest('[data-act="flike"],[data-act="gview"]') && e !== document.querySelector('.fticker')) return;
+    hap.tap(); S.tab = 'friends'; S.meSet = false; render(); loadFriends();
+    setTimeout(() => { const f = $('#feed'); if (f) f.scrollIntoView({behavior:'smooth', block:'start'}); }, 60); },
+  flike: async el => {
+    const ev = FEED.ev && FEED.ev[+el.dataset.i]; if (!ev || !ev.post) return;
+    const on = !ev.liked; ev.liked = on; ev.likes = Math.max(0, (+ev.likes || 0) + (on ? 1 : -1));
+    el.classList.toggle('on', on); el.querySelector('i').textContent = ev.likes || ''; el.classList.remove('pop'); void el.offsetWidth; if (on) el.classList.add('pop');
+    on ? hap.ok() : hap.tap();
+    try { const j = await apiAuth(FEED_API, {action:'like', owner_id:ev.user.tg_id, post_id:ev.post, on}); ev.likes = +j.likes || 0; ev.liked = !!j.liked; }
+    catch (e) { ev.liked = !on; ev.likes = Math.max(0, ev.likes + (on ? -1 : 1)); toast('Лайк не дошёл — проверь интернет'); }
+    el.classList.toggle('on', ev.liked); el.querySelector('i').textContent = ev.likes || ''; },
   meset: () => { hap.tap(); S.meSet = true; render(); window.scrollTo(0, 0); },
   mesback: () => { hap.tap(); S.meSet = false; render(); window.scrollTo(0, 0); },
   gexp: el => { const w = el.closest('.gwrap'); if (!w) return; hap.tap(); w.classList.toggle('open');
