@@ -319,14 +319,25 @@ input[type=date].inp{display:block}
 @keyframes frNeon{0%,100%{box-shadow:0 0 4px 0 var(--accent),0 0 0 1px var(--accent)}50%{box-shadow:0 0 16px 3px var(--accent),0 0 0 1px var(--accent)}}
 @keyframes frFlick{0%,100%{box-shadow:0 0 10px 1px rgba(255,90,30,.55)}40%{box-shadow:0 0 18px 4px rgba(255,150,40,.65)}70%{box-shadow:0 0 8px 0 rgba(255,60,30,.5)}}
 @keyframes frGlow{0%,100%{box-shadow:0 0 6px rgba(240,180,60,.35)}50%{box-shadow:0 0 14px 2px rgba(255,214,120,.6)}}
-.fav.fr-aurora,.ava.fr-aurora,.fav.fr-gold,.ava.fr-gold,.fav.fr-neon,.ava.fr-neon,.fav.fr-flame,.ava.fr-flame{padding:4px}
-.fav.s.fr-aurora,.fav.s.fr-gold,.fav.s.fr-neon,.fav.s.fr-flame{padding:2.5px}
-:is(.fav,.ava):is(.fr-aurora,.fr-gold,.fr-neon,.fr-flame) .fi{box-shadow:0 0 0 2.5px var(--bg);background:var(--accent);color:var(--on-accent)}
-.fav.s:is(.fr-aurora,.fr-gold,.fr-neon,.fr-flame) .fi{box-shadow:0 0 0 1.5px var(--bg)}
+:is(.fav,.ava):is(.fr-aurora,.fr-gold,.fr-neon,.fr-flame,.fr-ocean,.fr-sakura,.fr-cyber,.fr-emerald,.fr-galaxy,.fr-ice){padding:4px}
+.fav.s:is(.fr-aurora,.fr-gold,.fr-neon,.fr-flame,.fr-ocean,.fr-sakura,.fr-cyber,.fr-emerald,.fr-galaxy,.fr-ice){padding:2.5px}
+:is(.fav,.ava):is(.fr-aurora,.fr-gold,.fr-neon,.fr-flame,.fr-ocean,.fr-sakura,.fr-cyber,.fr-emerald,.fr-galaxy,.fr-ice) .fi{box-shadow:0 0 0 2.5px var(--bg);background:var(--accent);color:var(--on-accent)}
+.fav.s:is(.fr-aurora,.fr-gold,.fr-neon,.fr-flame,.fr-ocean,.fr-sakura,.fr-cyber,.fr-emerald,.fr-galaxy,.fr-ice) .fi{box-shadow:0 0 0 1.5px var(--bg)}
 :is(.fav,.ava).fr-aurora{background:conic-gradient(from var(--fra),#7C5CFF,#22D3EE,#34D399,#F472B6,#7C5CFF);animation:frSpin 4s linear infinite}
 :is(.fav,.ava).fr-gold{background:conic-gradient(from var(--fra),#FFF4CC,#E0A030 20%,#B7791F 35%,#FFE9A3 50%,#C98A22 70%,#FFF4CC);animation:frSpin 6s linear infinite,frGlow 3s ease-in-out infinite}
 :is(.fav,.ava).fr-neon{background:var(--accent);animation:frNeon 2.2s ease-in-out infinite}
 :is(.fav,.ava).fr-flame{background:conic-gradient(from var(--fra),#FF3D2E,#FF9F1C,#FFE066,#FF6B1C,#FF3D2E);animation:frSpin 2.4s linear infinite,frFlick 1.3s ease-in-out infinite}
+:is(.fav,.ava).fr-ocean{background:conic-gradient(from var(--fra),#0EA5E9,#22D3EE,#1E40AF,#38BDF8,#0EA5E9);animation:frSpin 5s linear infinite,frWave 3s ease-in-out infinite}
+@keyframes frWave{0%,100%{box-shadow:0 0 6px rgba(14,165,233,.35)}50%{box-shadow:0 0 14px 2px rgba(34,211,238,.55)}}
+:is(.fav,.ava).fr-sakura{background:conic-gradient(from var(--fra),#FBCFE8,#F472B6,#FFF1F7,#EC4899,#FBCFE8);animation:frSpin 7s linear infinite,frPetal 3.4s ease-in-out infinite}
+@keyframes frPetal{0%,100%{box-shadow:0 0 8px rgba(244,114,182,.35)}50%{box-shadow:0 0 16px 3px rgba(251,207,232,.6)}}
+:is(.fav,.ava).fr-cyber{background:repeating-conic-gradient(from var(--fra),#22D3EE 0 18deg,transparent 18deg 30deg,#F0ABFC 30deg 48deg,transparent 48deg 60deg);animation:frSpin 3s linear infinite;filter:drop-shadow(0 0 4px rgba(34,211,238,.6))}
+:is(.fav,.ava).fr-emerald{background:conic-gradient(from var(--fra),#065F46,#34D399 25%,#ECFDF5 40%,#10B981 60%,#065F46);animation:frSpin 5s linear infinite,frGem 2.6s ease-in-out infinite}
+@keyframes frGem{0%,100%{box-shadow:0 0 6px rgba(16,185,129,.35)}50%{box-shadow:0 0 14px 2px rgba(52,211,153,.6)}}
+:is(.fav,.ava).fr-galaxy{background:radial-gradient(1.2px 1.2px at 20% 15%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 85% 30%,#fff 50%,transparent 51%),radial-gradient(1.3px 1.3px at 70% 88%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 10% 70%,#fff 50%,transparent 51%),conic-gradient(from var(--fra),#312E81,#7C3AED,#C026D3,#1E1B4B,#312E81);animation:frSpin 8s linear infinite,frTw 2.2s ease-in-out infinite}
+@keyframes frTw{0%,100%{box-shadow:0 0 6px rgba(124,58,237,.35)}50%{box-shadow:0 0 15px 2px rgba(192,38,211,.5)}}
+:is(.fav,.ava).fr-ice{background:conic-gradient(from var(--fra),#E0F2FE,#7DD3FC,#FFFFFF,#BAE6FD,#E0F2FE);animation:frSpin 9s linear infinite,frFrost 3s ease-in-out infinite}
+@keyframes frFrost{0%,100%{box-shadow:0 0 6px rgba(125,211,252,.35)}50%{box-shadow:0 0 16px 3px rgba(224,242,254,.55)}}
 .frb{position:relative}
 .frb .prot{position:absolute;top:6px;right:6px;font-size:9px;font-weight:850;letter-spacing:.08em;padding:2px 6px;border-radius:999px;background:linear-gradient(120deg,#F5B23C,#FFE08A);color:#3a2600}
 .frb.lock{opacity:.6}
@@ -855,7 +866,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.427';
+const APP = 'VOOB (by BGASHEV) Mini App v1.428';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2051,7 +2062,7 @@ async function loadFriendPhotos(){
   await Promise.all([worker(), worker(), worker(), worker()]);
   if (got) savePhotos();
 }
-const FRAMES = [['', 'Без рамки'], ['classic', 'Стандартная'], ['aurora', 'Аврора', 1], ['gold', 'Золото', 1], ['neon', 'Неон', 1], ['flame', 'Пламя', 1]];
+const FRAMES = [['', 'Без рамки'], ['classic', 'Стандартная'], ['aurora', 'Аврора', 1], ['gold', 'Золото', 1], ['neon', 'Неон', 1], ['flame', 'Пламя', 1], ['ocean', 'Океан', 1], ['sakura', 'Сакура', 1], ['cyber', 'Кибер', 1], ['emerald', 'Изумруд', 1], ['galaxy', 'Галактика', 1], ['ice', 'Лёд', 1]];
 function isPro(){ const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.pro || b.creator)); }   // v1.420: персонализация, список будет расти
 function frameOf(f){
   const mine = tgUser && f && +f.tg_id === tgUser.id, b = f ? (BDG.get(+f.tg_id) || {}) : {};
