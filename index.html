@@ -386,18 +386,19 @@ input[type=date].inp{display:block}
 .nmrow .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nbadge{display:inline-flex;flex:none;color:var(--accent)}
 .nbadge svg{display:block}
-.plsug{display:flex;align-items:center;gap:14px;padding:14px 14px 14px 16px;margin-bottom:12px;border-radius:20px;
-  border:1.5px dashed color-mix(in srgb,var(--accent) 55%,var(--muted));background:color-mix(in srgb,var(--accent) 6%,transparent);
+.plsug{display:flex;align-items:center;gap:12px;padding:12px 12px 12px 14px;margin-bottom:12px;border-radius:20px;
+  border:1.5px dashed color-mix(in srgb,var(--accent) 50%,var(--muted));background:color-mix(in srgb,var(--accent) 5%,transparent);
   animation:plIn .35s ease both}
-.plsug .pd{min-width:46px;text-align:center;color:var(--muted)}
-.plsug .pd b{display:block;font-size:22px;line-height:1.1;font-weight:800}
-.plsug .pd span{font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.plsug .pd{flex:none;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
 .plsug .pi{flex:1;min-width:0}
-.plsug .pt{font-weight:700;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.plsug .pt i{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.05em;padding:2px 8px;border-radius:9px;
-  color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent)}
-.plsug .ps{font-size:12px;color:var(--muted);margin-top:2px}
-.plsug .pb{display:flex;flex-direction:column;gap:6px}
+.plsug .pt{font-size:12px;font-weight:700;color:var(--muted)}
+.plsug .pv{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plsug .pb{display:flex;gap:8px;flex:none}
+.plsug .ib{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:transform .12s}
+.plsug .ib:active{transform:scale(.9)}
+.plsug .ib.ok{border:0;background:var(--accent);color:var(--bg)}
 .plsug.out{animation:plOut .28s ease forwards}
 @keyframes plIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 @keyframes plOut{to{opacity:0;transform:scale(.96);height:0;padding:0;margin:0;border-width:0}}
@@ -1769,12 +1770,12 @@ function todayPlans(ws){
 function planSuggestHTML(ws){
   const ps = todayPlans(ws);
   if (!ps.length) return '';
-  const p = ps[0], d = todayN();
+  const p = ps[0];
   const par = [fmtMin(+p.minutes || 0), `${num(+p.speed || 0)} км/ч`, `уклон ${num(+p.incline || 0)}%`].join(' · ');
-  return `<div class="plsug" id="plsug"><div class="pd"><b>${new Date(d * 864e5).getUTCDate()}</b><span>сегодня</span></div>
-    <div class="pi"><div class="pt">${esc(par)}<i>ПЛАН</i></div><div class="ps">Запланировано на сегодня${ps.length > 1 ? ` · ещё ${ps.length - 1}` : ''} — отметь, когда сделаешь</div></div>
-    <div class="pb"><button class="btn primary small" data-act="pladd" data-id="${esc(p.id)}">${IC('check', 15)}Добавить</button>
-    <button class="btn ghost small" data-act="plskip" data-id="${esc(p.id)}">${IC('close', 15)}Отклонить</button></div></div>`;
+  return `<div class="plsug" id="plsug"><div class="pd">${IC('target', 18)}</div>
+    <div class="pi"><div class="pt">План на сегодня${ps.length > 1 ? ` · ещё ${ps.length - 1}` : ''}</div><div class="pv">${esc(par)}</div></div>
+    <div class="pb"><button class="ib" data-act="plskip" data-id="${esc(p.id)}" aria-label="Отклонить">${IC('close', 16)}</button>
+    <button class="ib ok" data-act="pladd" data-id="${esc(p.id)}" aria-label="Добавить тренировку">${IC('check', 17)}</button></div></div>`;
 }
 function findPlan(id){ return (db.plans || []).find(p => String(p.id) === String(id)); }
 
