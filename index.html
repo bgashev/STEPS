@@ -710,6 +710,70 @@ input[type=date].inp{display:block}
 .af-bar{height:6px;border-radius:3px;background:color-mix(in srgb,var(--text) 8%,transparent);overflow:hidden;margin:0 0 16px}
 .af-bar i{display:block;height:100%;border-radius:3px;background:var(--accent)}
 .achlink{cursor:pointer}
+
+/* ===== v1.423 ===== */
+/* профиль друга: «удалить» в углу, две аккуратные кнопки */
+.fp-head{position:relative}
+.fp-del{position:absolute;top:-2px;right:-4px;width:38px;height:38px;border-radius:50%;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer;opacity:.75}
+.fp-del:active{transform:scale(.9);opacity:1}
+.fp-bar{grid-template-columns:1fr 1fr!important;gap:10px!important}
+.fpb{height:54px!important;flex-direction:row!important;gap:10px!important;border-radius:18px!important}
+.fpb span{width:30px!important;height:30px!important;border-radius:10px!important}
+.fpb b{font-size:14px!important}
+.fpb.gift{background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 92%,#fff),var(--accent))!important;border-color:transparent!important;color:var(--on-accent)!important;
+  box-shadow:0 8px 22px color-mix(in srgb,var(--accent) 26%,transparent)}
+.fpb.gift span{background:rgba(255,255,255,.28)!important;color:var(--on-accent)!important}
+.fpb.poke{background:linear-gradient(135deg,rgba(242,208,100,.13),rgba(242,208,100,.04))!important;border-color:rgba(242,208,100,.28)!important}
+/* PRO в настройках */
+.prox{position:relative;overflow:hidden;border-radius:24px;padding:18px 18px 16px;margin-bottom:14px;border:1px solid rgba(233,185,73,.45);
+  background:radial-gradient(90% 80% at 0% 0%,rgba(233,185,73,.20),transparent 60%),linear-gradient(140deg,color-mix(in srgb,var(--surface) 82%,#3a2c0c),var(--surface) 55%,color-mix(in srgb,var(--surface) 88%,var(--accent)))}
+.prox::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.10) 50%,transparent 70%);background-size:250% 100%;animation:proSh 6s linear infinite}
+@keyframes proSh{from{background-position:150% 0}to{background-position:-100% 0}}
+.prox-top{display:flex;align-items:center;gap:12px}
+.prox-em{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#2A2110;background:linear-gradient(140deg,#FFE29A,#E9B949 55%,#B9852A);box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+.prox-t{font-size:19px;font-weight:900;letter-spacing:.3px;background:linear-gradient(90deg,#FFE29A,#E9B949);-webkit-background-clip:text;background-clip:text;color:transparent}
+.prox-s{font-size:12.5px;color:var(--muted);margin-top:1px}
+.prox-pill{white-space:nowrap;margin-left:auto;align-self:flex-start;font-size:10px;font-weight:850;letter-spacing:.08em;padding:4px 9px;border-radius:999px;color:#E9B949;border:1px solid rgba(233,185,73,.4);background:rgba(233,185,73,.10)}
+.prox-pill.on{color:var(--green);border-color:rgba(95,201,138,.4);background:rgba(95,201,138,.10)}
+.prox-perks{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.prox-perks span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:650;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--text) 5%,transparent);border:1px solid rgba(233,185,73,.16)}
+.prox-perks svg{color:#E9B949}
+.prox-plans{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.prox-plan{position:relative;text-align:left;border-radius:18px;padding:12px 12px 10px;font:inherit;color:var(--text);cursor:pointer;background:color-mix(in srgb,var(--text) 5%,transparent);
+  border:1.4px solid color-mix(in srgb,var(--text) 26%,transparent);transition:transform .12s}
+.prox-plan:active{transform:scale(.97)}
+.prox-plan.best{border-color:#E9B949;box-shadow:0 0 0 3px rgba(233,185,73,.10)}
+.prox-plan i{display:block;font-style:normal;font-size:9.5px;font-weight:850;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+.prox-plan.best i{color:#E9B949}
+.prox-plan b{display:flex;align-items:center;gap:4px;font-size:24px;font-weight:900;letter-spacing:-.5px;margin-top:2px}
+.prox-plan small{display:block;font-size:11px;color:var(--muted)}
+.prox-plan em{display:inline-block;margin-top:7px;font-style:normal;font-size:10.5px;font-weight:800;color:var(--green);background:rgba(95,201,138,.13);padding:3px 7px;border-radius:999px}
+.prox-plan u{position:absolute;top:10px;right:10px;text-decoration:none;font-size:10px;font-weight:900;color:#2A2110;background:linear-gradient(90deg,#E9B949,#FFE29A);padding:3px 7px;border-radius:999px}
+.prox-note{font-size:11px;color:var(--muted);margin-top:10px;text-align:center}
+/* соцсети */
+.socs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.socs:empty{display:none}
+.soc{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px 0 5px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.soc .lg{width:20px;height:20px;border-radius:7px;display:grid;place-items:center;color:#fff}
+.lg.ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}
+.lg.tg{background:#2AABEE}
+.lg.tt{background:#111;box-shadow:inset -1.5px 0 0 #25F4EE,inset 1.5px 0 0 #FE2C55}
+.soc-ed{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.soc-b{display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 6px 10px;border-radius:18px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;cursor:pointer}
+.soc-b .lg{width:36px;height:36px;border-radius:12px}
+.soc-b b{font-size:12px;font-weight:750}
+.soc-b small{font-size:10.5px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.soc-b.on{border-color:var(--accent)}
+.soc-b.on small{color:var(--accent)}
+.soc-prev{display:flex;align-items:center;gap:12px;padding:12px;border-radius:18px;background:var(--surface2);margin:12px 0}
+.soc-prev .av{width:52px;height:52px;border-radius:50%;flex:none;overflow:hidden;background:var(--surface);display:grid;place-items:center;font-weight:800}
+.soc-prev .av img{width:100%;height:100%;object-fit:cover}
+/* достижения на весь экран: шапка не просвечивает */
+#achfull{padding-top:0!important}
+.af-top{background:var(--bg)!important;margin:0 -16px;padding:calc(14px + env(safe-area-inset-top) + var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px)) 16px 12px!important;
+  border-bottom:1px solid color-mix(in srgb,var(--text) 6%,transparent);box-shadow:0 10px 20px -12px rgba(0,0,0,.5)}
+.af-bar{margin-top:14px!important}
+.foot a{color:var(--accent);text-decoration:none;font-weight:700;cursor:pointer}
 </style>
 </head>
 <body>
@@ -723,7 +787,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.422';
+const APP = 'VOOB (by BGASHEV) Mini App v1.423';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -1205,6 +1269,7 @@ const IP = {
   target:'<circle cx="9" cy="9" r="7"/><circle cx="9" cy="9" r="3.8"/><circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"/>',
   flame:'<path d="M9 16C5.2 16 3.5 13 4.6 10C5.4 7.8 7.6 6.8 7.4 2.8C10.6 4.6 13.6 7.8 13.6 11.4C13.6 14.2 11.6 16 9 16Z"/><path d="M9 16C7.6 16 7 14.7 7.6 13.5C8.1 12.5 9 12 9.2 10.6C10.4 11.6 11 12.9 10.8 14"/>',
   trophy:'<path d="M5.5 3H12.5V7C12.5 9.6 11 11 9 11S5.5 9.6 5.5 7Z"/><path d="M5.5 4.2H3.4C3.4 6.6 4.3 7.8 5.8 8M12.5 4.2H14.6C14.6 6.6 13.7 7.8 12.2 8M9 11V14M6 15.2H12"/>',
+  link:'<path d="M7.6 10.4 10.4 7.6"/><path d="M8.2 5.4 9.3 4.3a3 3 0 0 1 4.3 4.3l-1.1 1.1"/><path d="M9.8 12.6 8.7 13.7a3 3 0 0 1-4.3-4.3l1.1-1.1"/>',
   clock:'<circle cx="9" cy="9" r="7"/><path d="M9 5V9L11.8 10.7"/>',
   lock:'<rect x="3.5" y="8" width="11" height="7.5" rx="2"/><path d="M6 8V6a3 3 0 0 1 6 0v2"/>',
   mountain:'<path d="M1.5 15L7 5.5L10 10.2L12 7.8L16.5 15Z"/>',
@@ -2079,14 +2144,13 @@ async function loadFofPhotos(j){
 }
 function friendSheetHTML(f, j, loading, self){
   const lv = f.level || xpLevel(0), g = f.goal, ok = g.done_today || g.prev_ok, shown = g.done_today ? g.target : g.shown;
-  let h = `<div class="fp-head"><span data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span><div style="flex:1;min-width:0"><h2 class="nmrow" style="margin:0"><span class="nm">${esc(f.name)}</span>${bdgHTML(f.tg_id, 18)}</h2>${f.handle || f.username ? `<div class="cap">@${esc(f.handle || f.username)}</div>` : ''}${creatorHTML(f.tg_id)}
+  let h = `<div class="fp-head">${self ? '' : `<button class="fp-del" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button>`}<span data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span><div style="flex:1;min-width:0"><h2 class="nmrow" style="margin:0"><span class="nm">${esc(f.name)}</span>${bdgHTML(f.tg_id, 18)}</h2>${f.handle || f.username ? `<div class="cap">@${esc(f.handle || f.username)}</div>` : ''}${creatorHTML(f.tg_id)}${socialsHTML(f.tg_id)}
     <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div></div>
     <div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div>`;
   if (j && j.friends) FR.prof = j.friends;
   const pw = +f.poke_wait || 0;
-  const acts = self ? '' : `<div class="fp-bar"><button class="fpb poke${pw ? ' off' : ''}" data-act="frpoke" data-id="${f.tg_id}"><span>${IC('bolt', 22)}</span><b>${pw ? `через ${pw} ч` : 'Взбодрить'}</b></button>`
-    + `<button class="fpb gift" data-act="gift" data-id="${f.tg_id}"><span>${IC('gift', 22)}</span><b>Подарок</b></button>`
-    + `<button class="fpb del" data-act="frdel" data-id="${f.tg_id}"><span>${IC('trash', 21)}</span><b>Удалить</b></button></div>`;
+  const acts = self ? '' : `<div class="fp-bar"><button class="fpb poke${pw ? ' off' : ''}" data-act="frpoke" data-id="${f.tg_id}"><span>${IC('bolt', 20)}</span><b>${pw ? `через ${pw} ч` : 'Взбодрить'}</b></button>`
+    + `<button class="fpb gift" data-act="gift" data-id="${f.tg_id}"><span>${IC('gift', 20)}</span><b>Подарок</b></button></div>`;
   h += `<div class="fp-row">` + (loading ? `<span class="skl" style="width:150px;height:34px;border-radius:17px"></span>`
     : `<button type="button" class="fchipb" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · ${j.friends_count}${(j.friends || []).length ? IC('chev', 14) : ''}</button>`) + `</div>` + acts;
   h += `<div class="card" style="margin-top:12px"><div class="row" style="gap:14px">${ring(shown / g.target, `${shown}/${g.target}`, '', ok, 64)}<div><div style="font-weight:700;color:${ok ? 'var(--green)' : 'var(--text)'}">${g.done_today ? 'Норма выполнена' : g.prev_ok ? 'Норма закрыта' : 'До нормы ' + Math.max(0, g.target - g.shown)}</div>
@@ -2342,6 +2406,17 @@ function badgeHTML(kind, size = 18){
 const ME = {prof:null, at:0, busy:false};
 /* v1.421: галочка — только у PRO-подписчиков и у создателя; у создателя ещё плашка CREATOR OF "VOOB" */
 const BADGES_API = FEED_API.replace(/voob-feed$/, 'voob-badges');
+const SOC_NETS = [['ig', 'Instagram', 'https://www.instagram.com/{h}/'], ['tg', 'Telegram', 'https://t.me/{h}'], ['tt', 'TikTok', 'https://www.tiktok.com/@{h}']];
+const SOC_LOGO = {
+  ig:'<svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="#fff" stroke="none"/></svg>',
+  tg:'<svg width="62%" height="62%" viewBox="0 0 24 24"><path fill="#fff" d="M20.7 4.3 2.9 11.2c-1.2.5-1.2 1.2-.2 1.5l4.6 1.4 1.7 5.4c.2.6.4.8.9.8.4 0 .6-.2.9-.5l2.2-2.1 4.6 3.4c.8.5 1.4.2 1.6-.8l3-14.1c.3-1.3-.5-1.9-1.5-1.4ZM9.1 14l9-5.7c.4-.3.8-.1.5.2l-7.7 7-.3 3.2L9.1 14Z"/></svg>',
+  tt:'<svg width="58%" height="58%" viewBox="0 0 24 24"><path fill="#fff" d="M16.6 3c.4 2.1 1.7 3.6 3.9 3.8v3.1c-1.4 0-2.7-.4-3.9-1.1v6.4c0 3.3-2.6 5.8-5.8 5.8S5 18.5 5 15.2s2.7-5.8 6-5.7v3.2c-1.5-.2-2.8.9-2.8 2.5 0 1.4 1.2 2.6 2.6 2.6 1.5 0 2.6-1.1 2.6-2.8V3h3.2Z"/></svg>'};
+const SOC = new Map(Object.entries(lsGet('voob_soc_' + ((typeof tgUser !== 'undefined' && tgUser && tgUser.id) || 0)) || {}).map(([k, v]) => [+k, v]));
+let CREATOR = lsGet('voob_creator') || null;
+function socUrl(net, h){ return (SOC_NETS.find(n => n[0] === net) || [,, ''])[2].replace('{h}', h); }
+function socialsHTML(id){ return `<div class="socs" data-soc="${+id || 0}">${socialsInner(id)}</div>`; }
+function socialsInner(id){ const s = SOC.get(+id) || {}; return SOC_NETS.filter(([k]) => s[k]).map(([k, l]) =>
+  `<button type="button" class="soc" data-act="socopen" data-net="${k}" data-h="${esc(s[k])}"><span class="lg ${k}">${SOC_LOGO[k]}</span>@${esc(s[k])}</button>`).join(''); }
 const BDK = 'voob_badges_' + UK;
 const BDG = new Map(Object.entries(lsGet(BDK) || {}).map(([k, v]) => [+k, v]));
 const BDG_ASKED = new Set(); let bdgTimer = null; const bdgQueue = new Set();
@@ -2357,8 +2432,11 @@ function askBadges(ids){
     const list = [...bdgQueue]; bdgQueue.clear(); bdgTimer = null; list.forEach(x => BDG_ASKED.add(x));
     try {
       const j = await apiAuth(BADGES_API, {ids:list});
-      for (const id of list) { const b = (j.badges || {})[id]; if (b) BDG.set(id, b); else BDG.delete(id); }
-      lsSet(BDK, Object.fromEntries(BDG));
+      for (const id of list) { const b = (j.badges || {})[id]; if (b) BDG.set(id, b); else BDG.delete(id);
+        const so = (j.socials || {})[id]; if (so) SOC.set(id, so); else SOC.delete(id); }
+      lsSet(BDK, Object.fromEntries(BDG)); lsSet('voob_soc_' + ((tgUser && tgUser.id) || 0), Object.fromEntries(SOC));
+      if (j.creator) { CREATOR = j.creator; lsSet('voob_creator', CREATOR); }
+      document.querySelectorAll('.socs[data-soc]').forEach(el => { el.innerHTML = socialsInner(el.dataset.soc); });
       document.querySelectorAll('.bdg[data-bid]').forEach(el => { el.innerHTML = bdgInner(el.dataset.bid, +el.dataset.sz || 16); });
       document.querySelectorAll('.crw[data-cid]').forEach(el => { el.innerHTML = creatorInner(el.dataset.cid); });
     } catch (e) { list.forEach(x => BDG_ASKED.delete(x)); }
@@ -2391,7 +2469,7 @@ function viewMeSettings(){
   const age = ageOf(p.birth), kg = currentWeight(), hgt = +p.height || 0, b = bmiOf(kg, hgt), bmr = bmrOf(kg, hgt, age, p.sex);
   const lv = myLevel();
   let h = `<div class="prof"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
-    <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}${syncHTML()}</div></div>`;
+    <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}${tgUser ? socialsHTML(tgUser.id) : ''}${syncHTML()}</div></div>`;
   h += `<div class="card"><h3>${IC('medal')}Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></h3><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div>
     <div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1} · всего ${numSep(lv.xp)}</div>
     <div class="cap" style="margin-top:6px">Очки дают тренировки: чем дольше, быстрее и круче уклон — тем больше. Ещё +100 за каждый новый вид подарка от друзей. С каждым уровнем следующий чуть дороже.</div></div>`;
@@ -2412,6 +2490,8 @@ function viewMeSettings(){
   h += `<div class="card"><h3>${IC('target')}Цель недели</h3><div class="cap" style="margin:-6px 0 12px">Неделя начинается с первой тренировки и длится N дней. Выполнил норму — следующая начнётся с новой тренировки.</div>
     <div class="g2">${stepper('gcount', 'Сколько тренировок', g.count, 1, 14, 1, 0, '', 'gcount')}${stepper('gdays', 'За сколько дней', g.days, 3, 14, 1, 0, '', 'gdays')}</div>
     <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
+  if (inTG) h += proCardHTML();
+  if (inTG) h += socEditHTML();
   { const cur = frameOf(tgUser ? {tg_id:tgUser.id} : null);
     h += `<div class="card"><h3>${IC('sparkle')}Персонализация</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте.</div><div class="frs">${FRAMES.map(([k, l]) =>
       `<button type="button" class="frb${cur === k ? ' on' : ''}" data-act="frame" data-v="${k}"><div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div></div>`; }
@@ -2429,8 +2509,69 @@ function viewMeSettings(){
   h += `<div class="card"><h3>${IC('cloud')}Данные</h3><div class="cap" style="margin:-6px 0 12px">Данные синхронизируются через сервер VOOB и привязаны к твоему Telegram: одинаковы на телефоне, в Telegram Desktop и в программе VOOB для Windows.</div>
     <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost small" data-act="import">${IC('import', 16)}Импорт из VOOB для Windows</button><button class="btn ghost small" data-act="copy">${IC('export', 16)}Скопировать копию</button></div>
     <div class="cap" style="margin-top:10px">Импорт: выбери файл STEPS_backup_….json из десктопной версии (Настройки → Резервная копия). Совпадающие записи не задублируются.</div></div>`;
-  h += `<div class="foot">${APP}<br>Тренировок: ${valid().length} · взвешиваний: ${weightsSorted().length}</div>`;
+  h += `<div class="foot">VOOB <a data-act="creator">by BGASHEV</a> · ${APP.split(' ').pop()}<br>Тренировок: ${valid().length} · взвешиваний: ${weightsSorted().length}</div>`;
   return h;
+}
+/* ---- PRO (v1.423) ---- */
+const PROM = {st:null, busy:false};
+function proCardHTML(){
+  if (!PROM.st && !PROM.busy) { PROM.busy = true; apiAuth('/pro/status', {}).then(j => { PROM.st = j; if (S.tab === 'me' && S.meSet) render(); }).catch(() => {}).finally(() => { PROM.busy = false; }); }
+  const st = PROM.st || {}, by = Object.fromEntries((st.plans || []).map(p => [p.plan, p])), m = by.month, y = by.year;
+  const save = m && y ? Math.round(100 - y.stars * 100 / (m.stars * 12)) : 0;
+  const plan = (p, best) => p ? `<button type="button" class="prox-plan${best ? ' best' : ''}" data-act="probuy" data-v="${p.plan}"><i>${best ? 'Год' : 'Месяц'}</i>
+    <b>${p.stars}<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#E9B949" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.1l-5.7 3.2 1.2-6.4L2.8 9.5l6.4-.8L12 2.8Z"/></svg></b>
+    <small>${best ? `≈ ${Math.round(p.stars / 12)} ⭐ в месяц` : 'в месяц'}</small>${p.bonus_days ? `<em>+${p.bonus_days} дней в подарок</em>` : ''}${best && save > 0 ? `<u>−${save}%</u>` : ''}</button>` : '';
+  const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки']];
+  return `<div class="prox"><div class="prox-top"><div class="prox-em">${IC('crown', 22)}</div><div><div class="prox-t">VOOB PRO</div><div class="prox-s">${st.active ? `активен до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : 'больше возможностей и галочка'}</div></div>
+    <span class="prox-pill${st.active ? ' on' : ''}">${st.active ? 'АКТИВЕН' : 'БЕТА · ОТКРЫТО'}</span></div>
+    <div class="prox-perks">${perks.map(([i, t]) => `<span>${IC(i, 13)}${t}</span>`).join('')}</div>
+    ${(st.plans || []).length ? `<div class="prox-plans">${plan(m)}${plan(y, true)}</div>` : '<div class="cap">Загружаю тарифы…</div>'}
+    <div class="prox-note">Оплата звёздами Telegram · без автопродления</div></div>`;
+}
+async function proBuy(plan){
+  hap.imp();
+  try {
+    const j = await apiAuth('/pro/invoice', {plan});
+    if (!j.link) throw new Error(j.error || 'нет ссылки');
+    if (ver('6.1') && tg.openInvoice) tg.openInvoice(j.link, status => { if (status === 'paid') { hap.ok(); toast('👑 PRO включён — спасибо!'); PROM.st = null; render(); } });
+    else tg.openTelegramLink(j.link);
+  } catch (e) { toast('Не получилось: ' + e.message); }
+}
+/* ---- соцсети (v1.423) ---- */
+function socEditHTML(){
+  const me = tgUser && SOC.get(tgUser.id) || {};
+  return `<div class="card"><h3>${IC('link', 18)}Соцсети</h3><div class="cap" style="margin:-6px 0 12px">До трёх: друзья увидят их в твоём профиле. Только ник — без сторонних ссылок.</div>
+    <div class="soc-ed">${SOC_NETS.map(([k, l]) => `<button type="button" class="soc-b${me[k] ? ' on' : ''}" data-act="socedit" data-net="${k}"><span class="lg ${k}">${SOC_LOGO[k]}</span><b>${l}</b><small>${me[k] ? '@' + esc(me[k]) : 'добавить'}</small></button>`).join('')}</div></div>`;
+}
+function socSheet(net){
+  const [k, l] = SOC_NETS.find(n => n[0] === net), cur = (tgUser && SOC.get(tgUser.id) || {})[k];
+  openSheet(`<div class="row" style="gap:12px;margin-bottom:12px"><span class="lg ${k}" style="width:44px;height:44px;border-radius:14px;display:grid;place-items:center">${SOC_LOGO[k]}</span><div><h2 style="margin:0">${l}</h2><div class="cap">ник или ссылка на твой профиль</div></div></div>
+    <input class="inp" id="soc-in" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="@nickname" value="${cur ? '@' + esc(cur) : ''}">
+    <div id="soc-res"></div>
+    <div class="sheet-btns">${cur ? `<button class="btn ghost danger" data-act="socdel" data-net="${k}">${IC('trash')}</button>` : ''}<button class="btn primary" data-act="socfind" data-net="${k}" id="soc-go">Найти</button></div>`, {type:'soc', net:k});
+  setTimeout(() => { const i = $('#soc-in'); if (i) i.focus(); }, 250);
+}
+async function socFind(net){
+  const v = ($('#soc-in') || {}).value || '', res = $('#soc-res'), btn = $('#soc-go'); if (!res) return;
+  res.innerHTML = `<div class="soc-prev"><div class="av skl"></div><div style="flex:1"><span class="skl" style="display:block;width:60%;height:14px;border-radius:7px"></span></div></div>`;
+  try {
+    const j = await apiAuth(BADGES_API, {action:'social_preview', net, value:v});
+    if (j.status !== 'ok') { res.innerHTML = `<div class="hint">Это не похоже на ник ${esc((SOC_NETS.find(n => n[0] === net) || [])[1])}. Впиши @ник или ссылку на профиль.</div>`; return; }
+    if (j.found === false) { res.innerHTML = `<div class="hint">Профиль @${esc(j.handle)} не найден — проверь ник.</div>`; return; }
+    res.innerHTML = `<div class="soc-prev"><div class="av">${j.image ? `<img src="${j.image}" alt="">` : esc((j.name || j.handle)[0].toUpperCase())}</div><div style="min-width:0">
+      <b style="display:block">${esc(j.name || '@' + j.handle)}</b><span class="cap">@${esc(j.handle)}${j.found == null ? ' · превью не загрузилось' : ''}</span></div></div>
+      <div class="cap" style="margin-bottom:6px">Это ты? Добавим в профиль.</div>`;
+    if (btn) { btn.textContent = 'Да, добавить'; btn.dataset.act = 'socsave'; btn.dataset.h = j.handle; }
+  } catch (e) { res.innerHTML = `<div class="hint">Нет связи: ${esc(e.message)}</div>`; }
+}
+async function socSave(net, value){
+  try {
+    const j = await apiAuth(BADGES_API, {action:'social_set', net, value});
+    if (j.status !== 'ok') { toast('Не получилось сохранить'); return; }
+    if (tgUser) SOC.set(tgUser.id, j.socials || {});
+    lsSet('voob_soc_' + ((tgUser && tgUser.id) || 0), Object.fromEntries(SOC));
+    hap.ok(); closeSheet(); render(); toast(value ? 'Добавлено в профиль' : 'Убрано из профиля');
+  } catch (e) { toast('Нет связи: ' + e.message); }
 }
 function seg2(act, items, cur){ return `<div class="seg">` + items.map(([v, l]) => `<button type="button" class="${cur === v ? 'on' : ''}" data-act="${act}" data-v="${v}">${l}</button>`).join('') + `</div>`; }
 function chips(age, b, bmr){
@@ -2771,6 +2912,14 @@ const ACT = {
   stshare: () => shareStory(),
   frprof: el => { hap.tap(); openFriendProfile(+el.dataset.id); },
   achall: () => openAchFull(),
+  probuy: el => proBuy(el.dataset.v),
+  socedit: el => { hap.tap(); socSheet(el.dataset.net); },
+  socfind: el => socFind(el.dataset.net),
+  socsave: el => socSave(el.dataset.net, el.dataset.h),
+  socdel: el => socSave(el.dataset.net, null),
+  socopen: el => { const u = socUrl(el.dataset.net, el.dataset.h); hap.tap();
+    try { if (el.dataset.net === 'tg') tg.openTelegramLink(u); else tg.openLink(u); } catch (e) { window.open(u, '_blank'); } },
+  creator: () => { hap.tap(); const c = CREATOR; if (c && c.handle) openPublicProfile(c.handle); else { askBadges([]); toast('Секунду…'); } },
   achclose: () => { hap.tap(); closeAchFull(); },
   pubprof: el => { hap.tap(); openPublicProfile(el.dataset.h); },
   gome: () => { hap.tap(); closeSheet(); if (S.tab !== 'me') { S.tab = 'me'; S.meSet = false; render(); } },
@@ -2921,7 +3070,9 @@ document.addEventListener('pointerdown', e => {
 });
 window.addEventListener('pointerup', stopRep);
 window.addEventListener('pointercancel', stopRep);
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'soc-in') { const b = $('#soc-go'); if (b) b.click(); } });
 document.addEventListener('input', e => {
+  if (e.target.id === 'soc-in') { const b = $('#soc-go'); if (b && b.dataset.act === 'socsave') { b.dataset.act = 'socfind'; b.textContent = 'Найти'; const r = $('#soc-res'); if (r) r.innerHTML = ''; } }
   const st = e.target.closest('.stp');
   if (st && sheetCtx) { if (sheetCtx.type === 'workout') updPreview(); if (sheetCtx.type === 'wgoal') updGoalInfo(); }
   if (e.target.id === 'f-date' || e.target.classList.contains('sli')) updPreview();
