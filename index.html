@@ -403,6 +403,14 @@ input[type=date].inp{display:block}
 .wd-add{height:56px;padding:0 22px 0 18px;border-radius:28px;font-size:15px;color:var(--bg);background:var(--accent);
   box-shadow:0 10px 28px color-mix(in srgb,var(--accent) 45%,transparent)}
 .wdock-sp{height:70px}
+.me-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.me-top h1{margin:0}
+.mset-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:17px}
+.ib.round{flex:none;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  border:1px solid var(--border);background:var(--surface);color:var(--text);transition:transform .12s}
+.ib.round:active{transform:scale(.92)}
+.ib.round.accent svg{color:var(--accent)}
+.me-prof .fp-head{margin-top:2px}
 .plsug{padding:14px 14px 14px 16px;margin-bottom:12px;border-radius:20px;
   border:1.5px dashed color-mix(in srgb,var(--accent) 50%,var(--muted));background:color-mix(in srgb,var(--accent) 5%,transparent);
   animation:plIn .35s ease both}
@@ -1030,7 +1038,8 @@ const IP = {
   burpee:'<circle cx="9" cy="2.8" r="1.5"/><path d="M9 4.8V10M5.4 3.2L9 6.4L12.6 3.2M6.4 14L9 10L11.6 14M3 16.2H6M12 16.2H15"/>',
   pullup:'<path d="M2 2.6H16M5.6 2.6L7.4 7.6M12.4 2.6L10.6 7.6M9 7.8V12.4M7.8 16L9 12.4L10.2 16"/><circle cx="9" cy="5.8" r="1.5"/>',
   share:'<path d="M9 11V2.6M5.8 5.6L9 2.6L12.2 5.6"/><path d="M5.5 8H4.5A1.5 1.5 0 0 0 3 9.5V14A1.5 1.5 0 0 0 4.5 15.5H13.5A1.5 1.5 0 0 0 15 14V9.5A1.5 1.5 0 0 0 13.5 8H12.5"/>',
-  chev:'<path d="M7 4L12 9L7 14"/>',
+  chev:'<path d="M7 4L12 9L7 14"/>', back:'<path d="M11 4L6 9L11 14"/>',
+  gear:'<circle cx="9" cy="9" r="2.4"/><path d="M9 1.8V3.6M9 14.4V16.2M1.8 9H3.6M14.4 9H16.2M3.9 3.9L5.2 5.2M12.8 12.8L14.1 14.1M3.9 14.1L5.2 12.8M12.8 5.2L14.1 3.9"/><circle cx="9" cy="9" r="5.3"/>',
   cloud:'<path d="M5 14A3 3 0 0 1 4.6 8A4.6 4.6 0 0 1 13.2 8.4A2.8 2.8 0 0 1 13.6 14Z"/>',
   import:'<path d="M9 3V11M5.5 7.5L9 11L12.5 7.5M3 11.5V15H15V11.5"/>',
   export:'<path d="M9 11V3M5.5 6.5L9 3L12.5 6.5M3 11.5V15H15V11.5"/>',
@@ -1722,10 +1731,10 @@ async function loadFofPhotos(j){
     try { const r = await apiAuth('/friends/photo', {tg_id:x.tg_id}); if (r.ok) { FR.ph.set(x.tg_id, 'data:image/jpeg;base64,' + r.b64); putPhoto(x.tg_id); } } catch (e) {}
   }
 }
-function friendSheetHTML(f, j, loading){
+function friendSheetHTML(f, j, loading, self){
   const lv = f.level || xpLevel(0), g = f.goal, ok = g.done_today || g.prev_ok, shown = g.done_today ? g.target : g.shown;
   let h = `<div class="fp-head"><span data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span><div style="flex:1;min-width:0"><h2 style="margin:0">${esc(f.name)}</h2>${f.handle || f.username ? `<div class="cap">@${esc(f.handle || f.username)}</div>` : ''}
-    <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div><button class="rmx" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 18)}</button><button class="rmx gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 17)}</button><button class="rmx" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button></div>
+    <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div>${self ? '' : `<button class="rmx" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 18)}</button><button class="rmx gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 17)}</button><button class="rmx" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button>`}</div>
     <div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div>`;
   if (j && j.friends) FR.prof = j.friends;
   h += loading ? `<div class="fstrip"><span class="skl" style="width:150px;height:34px;border-radius:17px"></span></div>`
@@ -1736,9 +1745,9 @@ function friendSheetHTML(f, j, loading){
   if (days && days.some(Boolean)) { const t = todayN(); h += bars(days.map((m, i) => [WD[wdOf(t - 6 + i)], m, `${WDF[wdOf(t - 6 + i)]}: ${fmtMin(m)}`]), v => String(v), 'fpw', 110); }
   h += `</div>`;
   if ((f.gift_kinds || []).length) h += `<div class="card"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из ${GIFT_KEYS.length}</h3>${giftShelf(f.gift_kinds, 20, f.name)}</div>`;
-  if (!loading) h += `<button class="btn ghost small" style="width:100%;margin-bottom:12px;color:var(--muted)" data-act="frrep" data-id="${f.tg_id}">Пожаловаться</button>`;
+  if (!loading && !self) h += `<button class="btn ghost small" style="width:100%;margin-bottom:12px;color:var(--muted)" data-act="frrep" data-id="${f.tg_id}">Пожаловаться</button>`;
   if (loading) return h + `<div id="fp-load">` + [100, 120, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('') + `</div>`;
-  if (!j.details) return h + `<div class="card muted">${IC('lock', 16)} ${esc(f.name)} закрыл(а) профиль — видно только основное.</div>`;
+  if (!j.details) return h + `<div class="card muted">${IC('lock', 16)} ${self ? 'Твой профиль закрыт — друзья видят только основное. Открыть можно в настройках.' : esc(f.name) + ' закрыл(а) профиль — видно только основное.'}</div>`;
   const d = j.details, t = d.totals, r = d.records;
   if ((d.ach || []).length) h += `<div class="card"><h3>${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${medalStrip(d.ach, 44)}</div>`;
   h += `<div class="card"><h3>${IC('trophy')}За всё время</h3><div class="tot"><div><b>${t.workouts}</b><span class="cap">тренировок</span></div><div><b>${fmtMin(t.minutes)}</b><span class="cap">в движении</span></div><div><b>${kmF(t.km)}</b><span class="cap">пройдено</span></div><div><b>${t.days}</b><span class="cap">активных дней</span></div></div></div>`;
@@ -1966,7 +1975,29 @@ function badgeHTML(kind, size = 18){
   const k = BADGE_SVG[kind] ? kind : 'verified';
   return `<span class="nbadge" title="Подтверждённый профиль" style="width:${size}px;height:${size}px"><svg viewBox="0 0 347 347" width="${size}" height="${size}">${BADGE_SVG[k]}</svg></span>`;
 }
+const ME = {prof:null, at:0, busy:false};
 function viewMe(){
+  if (S.meSet || !inTG) return (inTG ? `<div class="mset-top"><button class="ib round" data-act="mesback" aria-label="Назад к профилю">${IC('back', 20)}</button><b>Настройки</b></div>` : '') + viewMeSettings();
+  const me = FR.data && FR.data.me;
+  if (!me) { loadFriends().then(() => { if (S.tab === 'me' && !S.meSet) render(); }); }
+  else if (!ME.busy && (!ME.prof || Date.now() - ME.at > 60000)) loadMyProfile(me.tg_id);
+  const photo = tgUser && tgUser.photo_url;
+  if (me && photo && !FR.ph.get(me.tg_id)) FR.ph.set(me.tg_id, photo);
+  let h = `<div class="me-top"><div><h1>Я</h1><div class="sub">так твой профиль видят друзья</div></div>
+    <button class="ib round accent" data-act="meset" aria-label="Настройки профиля и приложения">${IC('gear', 21)}</button></div>`;
+  if (!me) return h + (FR.err ? `<div class="card muted">Не удалось загрузить профиль: ${esc(FR.err)}</div>`
+    : [110, 90, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join(''));
+  const f = Object.assign({}, me, {name: displayName() || me.name, gift_kinds: (GIFTS_IN && GIFTS_IN.kinds) || me.gift_kinds || []});
+  return h + `<div class="me-prof">${friendSheetHTML(f, ME.prof, !ME.prof, true)}</div>`;
+}
+async function loadMyProfile(id){
+  ME.busy = true;
+  try { ME.prof = await apiAuth('/friends/profile', {tg_id:id, today:isoOf(todayN())}); ME.at = Date.now(); }
+  catch (e) { ME.at = Date.now(); }
+  ME.busy = false;
+  if (S.tab === 'me' && !S.meSet) render();
+}
+function viewMeSettings(){
   const p = db.profile, g = G(), name = displayName(), photo = tgUser && tgUser.photo_url;
   const age = ageOf(p.birth), kg = currentWeight(), hgt = +p.height || 0, b = bmiOf(kg, hgt), bmr = bmrOf(kg, hgt, age, p.sex);
   const lv = myLevel();
@@ -2236,7 +2267,7 @@ async function copyBackup(){
 
 /* ============================================================ события === */
 const ACT = {
-  tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') loadFriends(); } },
+  tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; S.meSet = false; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') loadFriends(); } },
   add: () => { hap.imp(); openSheet(`<h2>Что тренируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше привычная форма</div><div class="acts">` +
       ACTS.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="animation-delay:${i * 30}ms"><span class="ai">${IC(k, 24)}</span>${l}${ok ? '' : '<em>в разработке</em>'}</button>`).join('') + `</div>`, {type:'acts'}); },
   actpick: () => { hap.tap(); openWorkout(null); },
@@ -2245,6 +2276,8 @@ const ACT = {
   repeat: () => { const l = lastWorkout(); openWorkout(null, l, l ? 'Параметры из прошлой тренировки — поправь, если нужно' : ''); },
   wedit: el => { const w = findW(el.dataset.id); if (w) openWorkout(w); },
   wsave: saveWorkout, wdel: delWorkout,
+  meset: () => { hap.tap(); S.meSet = true; render(); window.scrollTo(0, 0); },
+  mesback: () => { hap.tap(); S.meSet = false; render(); window.scrollTo(0, 0); },
   gexp: el => { const w = el.closest('.gwrap'); if (!w) return; hap.tap(); w.classList.toggle('open');
     el.setAttribute('aria-label', w.classList.contains('open') ? 'Свернуть' : 'Показать все подарки'); },
   pladd: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.imp();
@@ -2257,7 +2290,7 @@ const ACT = {
   frinv: el => { S.inv = !S.inv; hap.imp(); el.classList.toggle('on', S.inv); const r = $('#inv'); if (r) r.classList.toggle('open', S.inv); },
   frzoom: el => openZoom(+el.dataset.id),
   zclose: () => { const z = $('#zoom'); if (z) z.remove(); },
-  frall: el => { const id = +el.dataset.id, f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f || !FR.prof) return; hap.tap();
+  frall: el => { const id = +el.dataset.id, f = FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me && FR.data.me.tg_id === id ? FR.data.me : null)); if (!f || !FR.prof) return; hap.tap();
     openSheet(`<h2>Друзья ${esc(f.name)}</h2>` + FR.prof.map(x => fofHTML(x)).join('') + `<button class="btn ghost" style="width:100%;margin-top:12px" data-act="frprof" data-id="${id}">Назад к профилю</button>`, {type:'frall', id}); },
   rwok: () => { $('#cg').classList.remove('show'); setTimeout(showNextReward, 250); },
   frpoke: async el => {
