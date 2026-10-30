@@ -753,6 +753,10 @@ input[type=date].inp{display:block}
 /* соцсети */
 .socs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .socs:empty{display:none}
+.socs.ico{margin:0 0 0 auto;gap:6px;flex-wrap:nowrap}
+.soci{width:34px;height:34px;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center;transition:transform .15s}
+.soci:active{transform:scale(.9)}
+.soci .lg{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,0,0,.18)}
 .soc{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px 0 5px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 .soc .lg{width:20px;height:20px;border-radius:7px;display:grid;place-items:center;color:#fff}
 .lg.ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)}
@@ -787,7 +791,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.423';
+const APP = 'VOOB (by BGASHEV) Mini App v1.424';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2144,7 +2148,7 @@ async function loadFofPhotos(j){
 }
 function friendSheetHTML(f, j, loading, self){
   const lv = f.level || xpLevel(0), g = f.goal, ok = g.done_today || g.prev_ok, shown = g.done_today ? g.target : g.shown;
-  let h = `<div class="fp-head">${self ? '' : `<button class="fp-del" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button>`}<span data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span><div style="flex:1;min-width:0"><h2 class="nmrow" style="margin:0"><span class="nm">${esc(f.name)}</span>${bdgHTML(f.tg_id, 18)}</h2>${f.handle || f.username ? `<div class="cap">@${esc(f.handle || f.username)}</div>` : ''}${creatorHTML(f.tg_id)}${socialsHTML(f.tg_id)}
+  let h = `<div class="fp-head">${self ? '' : `<button class="fp-del" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button>`}<span data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span><div style="flex:1;min-width:0"><h2 class="nmrow" style="margin:0"><span class="nm">${esc(f.name)}</span>${bdgHTML(f.tg_id, 18)}</h2>${f.handle || f.username ? `<div class="cap">@${esc(f.handle || f.username)}</div>` : ''}${creatorHTML(f.tg_id)}
     <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div></div>
     <div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div>`;
   if (j && j.friends) FR.prof = j.friends;
@@ -2152,7 +2156,7 @@ function friendSheetHTML(f, j, loading, self){
   const acts = self ? '' : `<div class="fp-bar"><button class="fpb poke${pw ? ' off' : ''}" data-act="frpoke" data-id="${f.tg_id}"><span>${IC('bolt', 20)}</span><b>${pw ? `через ${pw} ч` : 'Взбодрить'}</b></button>`
     + `<button class="fpb gift" data-act="gift" data-id="${f.tg_id}"><span>${IC('gift', 20)}</span><b>Подарок</b></button></div>`;
   h += `<div class="fp-row">` + (loading ? `<span class="skl" style="width:150px;height:34px;border-radius:17px"></span>`
-    : `<button type="button" class="fchipb" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · ${j.friends_count}${(j.friends || []).length ? IC('chev', 14) : ''}</button>`) + `</div>` + acts;
+    : `<button type="button" class="fchipb" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · ${j.friends_count}${(j.friends || []).length ? IC('chev', 14) : ''}</button>`) + socialsHTML(f.tg_id, true) + `</div>` + acts;
   h += `<div class="card" style="margin-top:12px"><div class="row" style="gap:14px">${ring(shown / g.target, `${shown}/${g.target}`, '', ok, 64)}<div><div style="font-weight:700;color:${ok ? 'var(--green)' : 'var(--text)'}">${g.done_today ? 'Норма выполнена' : g.prev_ok ? 'Норма закрыта' : 'До нормы ' + Math.max(0, g.target - g.shown)}</div>
     <div class="cap">${fmtMin(f.week.minutes)} за 7 дней · ${npw(f.week.workouts, W_WORK)} · ${kmF(f.week.km)}</div>${g.best ? `<div class="cap">лучшая серия: ${npw(g.best, W_TIMES)}</div>` : ''}</div></div>`;
   const days = j && j.week && j.week.days;
@@ -2414,9 +2418,10 @@ const SOC_LOGO = {
 const SOC = new Map(Object.entries(lsGet('voob_soc_' + ((typeof tgUser !== 'undefined' && tgUser && tgUser.id) || 0)) || {}).map(([k, v]) => [+k, v]));
 let CREATOR = lsGet('voob_creator') || null;
 function socUrl(net, h){ return (SOC_NETS.find(n => n[0] === net) || [,, ''])[2].replace('{h}', h); }
-function socialsHTML(id){ return `<div class="socs" data-soc="${+id || 0}">${socialsInner(id)}</div>`; }
-function socialsInner(id){ const s = SOC.get(+id) || {}; return SOC_NETS.filter(([k]) => s[k]).map(([k, l]) =>
-  `<button type="button" class="soc" data-act="socopen" data-net="${k}" data-h="${esc(s[k])}"><span class="lg ${k}">${SOC_LOGO[k]}</span>@${esc(s[k])}</button>`).join(''); }
+function socialsHTML(id, ico){ return `<div class="socs${ico ? ' ico' : ''}" data-soc="${+id || 0}"${ico ? ' data-ico="1"' : ''}>${socialsInner(id, ico)}</div>`; }
+function socialsInner(id, ico){ const s = SOC.get(+id) || {}; return SOC_NETS.filter(([k]) => s[k]).map(([k, l]) => ico
+  ? `<button type="button" class="soci" data-act="socopen" data-net="${k}" data-h="${esc(s[k])}" aria-label="${l}"><span class="lg ${k}">${SOC_LOGO[k]}</span></button>`
+  : `<button type="button" class="soc" data-act="socopen" data-net="${k}" data-h="${esc(s[k])}"><span class="lg ${k}">${SOC_LOGO[k]}</span>@${esc(s[k])}</button>`).join(''); }
 const BDK = 'voob_badges_' + UK;
 const BDG = new Map(Object.entries(lsGet(BDK) || {}).map(([k, v]) => [+k, v]));
 const BDG_ASKED = new Set(); let bdgTimer = null; const bdgQueue = new Set();
@@ -2436,7 +2441,7 @@ function askBadges(ids){
         const so = (j.socials || {})[id]; if (so) SOC.set(id, so); else SOC.delete(id); }
       lsSet(BDK, Object.fromEntries(BDG)); lsSet('voob_soc_' + ((tgUser && tgUser.id) || 0), Object.fromEntries(SOC));
       if (j.creator) { CREATOR = j.creator; lsSet('voob_creator', CREATOR); }
-      document.querySelectorAll('.socs[data-soc]').forEach(el => { el.innerHTML = socialsInner(el.dataset.soc); });
+      document.querySelectorAll('.socs[data-soc]').forEach(el => { el.innerHTML = socialsInner(el.dataset.soc, el.dataset.ico); });
       document.querySelectorAll('.bdg[data-bid]').forEach(el => { el.innerHTML = bdgInner(el.dataset.bid, +el.dataset.sz || 16); });
       document.querySelectorAll('.crw[data-cid]').forEach(el => { el.innerHTML = creatorInner(el.dataset.cid); });
     } catch (e) { list.forEach(x => BDG_ASKED.delete(x)); }
@@ -2470,6 +2475,7 @@ function viewMeSettings(){
   const lv = myLevel();
   let h = `<div class="prof"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
     <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}${tgUser ? socialsHTML(tgUser.id) : ''}${syncHTML()}</div></div>`;
+  if (inTG) h += socEditHTML();
   h += `<div class="card"><h3>${IC('medal')}Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></h3><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div>
     <div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1} · всего ${numSep(lv.xp)}</div>
     <div class="cap" style="margin-top:6px">Очки дают тренировки: чем дольше, быстрее и круче уклон — тем больше. Ещё +100 за каждый новый вид подарка от друзей. С каждым уровнем следующий чуть дороже.</div></div>`;
@@ -2491,7 +2497,6 @@ function viewMeSettings(){
     <div class="g2">${stepper('gcount', 'Сколько тренировок', g.count, 1, 14, 1, 0, '', 'gcount')}${stepper('gdays', 'За сколько дней', g.days, 3, 14, 1, 0, '', 'gdays')}</div>
     <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
   if (inTG) h += proCardHTML();
-  if (inTG) h += socEditHTML();
   { const cur = frameOf(tgUser ? {tg_id:tgUser.id} : null);
     h += `<div class="card"><h3>${IC('sparkle')}Персонализация</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте.</div><div class="frs">${FRAMES.map(([k, l]) =>
       `<button type="button" class="frb${cur === k ? ' on' : ''}" data-act="frame" data-v="${k}"><div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div></div>`; }
@@ -2559,7 +2564,7 @@ async function socFind(net){
     if (j.status !== 'ok') { res.innerHTML = `<div class="hint">Это не похоже на ник ${esc((SOC_NETS.find(n => n[0] === net) || [])[1])}. Впиши @ник или ссылку на профиль.</div>`; return; }
     if (j.found === false) { res.innerHTML = `<div class="hint">Профиль @${esc(j.handle)} не найден — проверь ник.</div>`; return; }
     res.innerHTML = `<div class="soc-prev"><div class="av">${j.image ? `<img src="${j.image}" alt="">` : esc((j.name || j.handle)[0].toUpperCase())}</div><div style="min-width:0">
-      <b style="display:block">${esc(j.name || '@' + j.handle)}</b><span class="cap">@${esc(j.handle)}${j.found == null ? ' · превью не загрузилось' : ''}</span></div></div>
+      <b style="display:block">${esc(j.name || '@' + j.handle)}</b><span class="cap">@${esc(j.handle)}${j.found ? '' : ' · превью скрыто'}</span></div>${j.found ? '' : `<button type="button" class="btn ghost small" style="margin-left:auto" data-act="socopen" data-net="${net}" data-h="${esc(j.handle)}">Открыть</button>`}</div>
       <div class="cap" style="margin-bottom:6px">Это ты? Добавим в профиль.</div>`;
     if (btn) { btn.textContent = 'Да, добавить'; btn.dataset.act = 'socsave'; btn.dataset.h = j.handle; }
   } catch (e) { res.innerHTML = `<div class="hint">Нет связи: ${esc(e.message)}</div>`; }
