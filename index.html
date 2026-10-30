@@ -2454,8 +2454,7 @@ function viewMe(){
   else if (!ME.busy && (!ME.prof || Date.now() - ME.at > 60000)) loadMyProfile(me.tg_id);
   const photo = tgUser && tgUser.photo_url;
   if (me && photo && !FR.ph.get(me.tg_id)) FR.ph.set(me.tg_id, photo);
-  let h = `<div class="me-top"><div><h1>Я</h1><div class="sub">так твой профиль видят друзья</div></div>
-    <button class="ib round accent" data-act="meset" aria-label="Настройки профиля и приложения">${IC('gear', 21)}</button></div>`;
+  let h = `<div class="me-top" style="justify-content:flex-end;margin-bottom:6px"><button class="ib round accent" data-act="meset" aria-label="Настройки профиля и приложения">${IC('gear', 21)}</button></div>`;
   if (!me) return h + (FR.err ? `<div class="card muted">Не удалось загрузить профиль: ${esc(FR.err)}</div>`
     : [110, 90, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join(''));
   const f = Object.assign({}, me, {name: displayName() || me.name, gift_kinds: (GIFTS_IN && GIFTS_IN.kinds) || me.gift_kinds || []});
