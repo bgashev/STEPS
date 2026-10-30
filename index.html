@@ -415,16 +415,18 @@ input[type=date].inp{display:block}
   border:1.5px dashed color-mix(in srgb,var(--accent) 50%,var(--muted));background:color-mix(in srgb,var(--accent) 5%,transparent);
   animation:plIn .35s ease both}
 .plsug{position:relative;overflow:hidden;isolation:isolate}
-/* мягкий блик: проходит по карточке раз в несколько секунд, рамка чуть «дышит» */
-.plsug::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:linear-gradient(105deg,transparent 30%,color-mix(in srgb,var(--accent) 22%,transparent) 48%,
-    color-mix(in srgb,#fff 10%,transparent) 50%,color-mix(in srgb,var(--accent) 22%,transparent) 52%,transparent 70%);
-  background-size:250% 100%;background-position:120% 0;animation:plSheen 4.2s ease-in-out 1s infinite}
-.plsug{animation:plIn .35s ease both,plGlow 4.2s ease-in-out 1s infinite}
-@keyframes plSheen{0%{background-position:120% 0}55%,100%{background-position:-60% 0}}
-@keyframes plGlow{0%,100%{border-color:color-mix(in srgb,var(--accent) 45%,var(--muted));box-shadow:none}
-  45%{border-color:var(--accent);box-shadow:0 0 18px color-mix(in srgb,var(--accent) 25%,transparent)}}
-@media (prefers-reduced-motion:reduce){.plsug::before,.plsug{animation:none}}
+/* переливание в цвет акцента: узкая полоса света скользит по карточке (только transform/opacity — без рывков) */
+.plsug::before{content:"";position:absolute;top:-20%;bottom:-20%;left:0;width:45%;z-index:-1;pointer-events:none;
+  background:linear-gradient(100deg,transparent 0%,color-mix(in srgb,var(--accent) 10%,transparent) 30%,
+    color-mix(in srgb,var(--accent) 30%,transparent) 50%,color-mix(in srgb,var(--accent) 10%,transparent) 70%,transparent 100%);
+  transform:translateX(-120%) skewX(-12deg);will-change:transform;animation:plSheen 5s cubic-bezier(.45,.05,.35,1) 1.2s infinite}
+/* мягкое свечение изнутри, в такт полосе */
+.plsug::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;
+  box-shadow:inset 0 0 22px color-mix(in srgb,var(--accent) 35%,transparent);opacity:0;will-change:opacity;
+  animation:plGlow 5s ease-in-out 1.2s infinite}
+@keyframes plSheen{0%{transform:translateX(-120%) skewX(-12deg)}55%,100%{transform:translateX(300%) skewX(-12deg)}}
+@keyframes plGlow{0%,100%{opacity:0}28%{opacity:1}60%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.plsug::before,.plsug::after{animation:none;opacity:0}}
 .plsug.out{animation:plOut .28s ease forwards}
 .plsug .ph{display:flex;align-items:center;gap:12px}
 .plsug .pd{flex:none;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
