@@ -1673,6 +1673,18 @@ const profLink = h => `https://t.me/steps_v1_bot/STEPS?startapp=u_${h}`;
 
 /* ============================================================ друзья ==== */
 const FR = {data:null, loading:false, err:'', ph:new Map(), phTried:new Set()};
+/* v1.420: кэш — «Друзья», лента и аватарки показываются мгновенно, свежие данные догружаются фоном */
+const UK = (tgUser && tgUser.id) || 0;   // кэш у каждого аккаунта Telegram свой
+const FRK = 'voob_fr_cache_' + UK, PHK = 'voob_ph_cache_' + UK, FDK = 'voob_feed_cache_' + UK, PH_TTL = 7 * 864e5, PH_MAX = 40;
+const lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+{ const c = lsGet(FRK); if (c && c.friends) { FR.data = c; FR.sig = JSON.stringify(c); } }
+{ const c = lsGet(PHK) || {}; for (const [id, [at, src]] of Object.entries(c)) if (Date.now() - at < PH_TTL) { FR.ph.set(+id, src); FR.phTried.add(+id); } }
+function savePhotos(){
+  const out = {}; let n = 0;
+  for (const [id, src] of FR.ph) { if (n++ >= PH_MAX) break; if (String(src).startsWith('data:')) out[id] = [Date.now(), src]; }
+  lsSet(PHK, out);
+}
 const PRIV = {v:null, loading:false};
 async function apiAuth(route, body){
   let tok = await ensureToken();
@@ -1683,7 +1695,7 @@ async function loadFriends(){
   if (!inTG || FR.loading) return;
   FR.loading = true;
   let changed = true;
-  try { const j = await apiAuth('/friends', {today:isoOf(todayN())}); const sig = JSON.stringify(j); changed = sig !== FR.sig || !!FR.err; FR.sig = sig; FR.data = j; FR.err = ''; if (j.my_gifts) setGifts(j.my_gifts);
+  try { const j = await apiAuth('/friends', {today:isoOf(todayN())}); const sig = JSON.stringify(j); changed = sig !== FR.sig || !!FR.err; FR.sig = sig; FR.data = j; FR.err = ''; if (changed) lsSet(FRK, j); if (j.my_gifts) setGifts(j.my_gifts);
     const n = (j.friends || []).length; if (db.settings.friends_n !== n) { db.settings.friends_n = n; persist(); } }
   catch (e) { FR.err = e.message || 'нет связи'; }
   FR.loading = false;
@@ -1708,10 +1720,12 @@ async function openZoom(id){
 async function loadFriendPhotos(){
   const d = FR.data; if (!d) return;
   const ids = [d.me.tg_id, ...d.friends.map(f => f.tg_id), ...(d.requests || []).map(r => r.tg_id)].filter(id => !FR.phTried.has(id));
-  for (const id of ids) {
-    FR.phTried.add(id);
-    try { const j = await apiAuth('/friends/photo', {tg_id:id}); if (j.ok) { FR.ph.set(id, 'data:image/jpeg;base64,' + j.b64); putPhoto(id); } } catch (e) {}
-  }
+  ids.forEach(id => FR.phTried.add(id));
+  let got = false;
+  const worker = async () => { while (ids.length) { const id = ids.shift();
+    try { const j = await apiAuth('/friends/photo', {tg_id:id}); if (j.ok) { FR.ph.set(id, 'data:image/jpeg;base64,' + j.b64); putPhoto(id); got = true; } } catch (e) {} } };
+  await Promise.all([worker(), worker(), worker(), worker()]);
+  if (got) savePhotos();
 }
 function favHTML(f, small){
   const src = FR.ph.get(f.tg_id), lv = f.level && f.level.level;
@@ -1726,10 +1740,11 @@ function pm(f){ return f.month && f.month.minutes != null ? f.month.minutes : (f
 function agoText(iso){ const d = dn(iso), k = todayN() - d; return k <= 0 ? 'сегодня' : k === 1 ? 'вчера' : fmtDate(d); }
 /* ============================================================ лента ==== */
 const FEED = {ev:null, at:0, busy:false, err:'', tick:null, i:0};
+{ const c = lsGet(FDK); if (Array.isArray(c)) FEED.ev = c; }
 async function loadFeed(force){
   if (!inTG || FEED.busy || (!force && FEED.ev && Date.now() - FEED.at < 90000)) return;
   FEED.busy = true;
-  try { const j = await apiAuth(FEED_API, {today:isoOf(todayN())}); FEED.ev = (j.events || []).filter(e => !(e.user || {}).me); FEED.err = ''; }   // свои новости не показываем
+  try { const j = await apiAuth(FEED_API, {today:isoOf(todayN())}); FEED.ev = (j.events || []).filter(e => !(e.user || {}).me); FEED.err = ''; lsSet(FDK, FEED.ev.slice(0, 40)); }   // свои новости не показываем
   catch (e) { FEED.err = e.message || 'нет связи'; if (!FEED.ev) FEED.ev = []; }
   FEED.busy = false; FEED.at = Date.now();
   if (sheetCtx && sheetCtx.type === 'feed') { const l = $('#feedlist'); if (l) l.innerHTML = feedListHTML(); document.querySelectorAll('[data-act=feedref]').forEach(b => b.classList.remove('spin')); }
@@ -2640,6 +2655,7 @@ async function init(){
   try { const s = localStorage.getItem(LS); if (s) db = normalize(JSON.parse(s)); } catch (e) {}
   invalidate(); applyTheme(); render();
   scheduleSync(100);
+  if (inTG) setTimeout(() => { loadFriends(); loadFeed(true); }, 900);   // к моменту перехода во вкладку всё уже свежее
   try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); } catch (e) {}
   if (!hasCloud) return;
   try {
