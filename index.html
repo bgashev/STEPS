@@ -307,9 +307,11 @@ input[type=date].inp{display:block}
 .fp-head .rmx{border:0;background:none;color:var(--muted);padding:8px;border-radius:12px;align-self:flex-start}
 
 /* ---- рамки уровней ---- */
-.fav.fr-classic,.ava.fr-classic{padding:3px;background:linear-gradient(145deg,color-mix(in srgb,var(--text) 62%,transparent),color-mix(in srgb,var(--text) 18%,transparent))}
-.fav.fr-classic .fi,.ava.fr-classic .fi{box-shadow:0 0 0 2px var(--bg)}
-.fav.s.fr-classic{padding:2px}
+.fav.fr-classic,.ava.fr-classic{padding:4px;background:conic-gradient(from 210deg,color-mix(in srgb,var(--text) 96%,transparent),color-mix(in srgb,var(--text) 38%,transparent) 25%,color-mix(in srgb,var(--text) 88%,transparent) 50%,color-mix(in srgb,var(--text) 34%,transparent) 75%,color-mix(in srgb,var(--text) 96%,transparent));
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--text) 18%,transparent),0 4px 14px rgba(0,0,0,.22)}
+.fav.fr-classic .fi,.ava.fr-classic .fi{box-shadow:0 0 0 2.5px var(--bg);background:var(--accent);color:var(--on-accent)}
+.fav.s.fr-classic{padding:2.5px}
+.fav.s.fr-classic .fi{box-shadow:0 0 0 1.5px var(--bg)}
 .frs{display:flex;gap:12px;flex-wrap:wrap}
 .frb{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 10px 10px;min-width:96px;border-radius:18px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:13px;font-weight:650;cursor:pointer;transition:border-color .2s,transform .12s}
 .frb:active{transform:scale(.96)}
@@ -1904,9 +1906,9 @@ async function loadFriendPhotos(){
   await Promise.all([worker(), worker(), worker(), worker()]);
   if (got) savePhotos();
 }
-const FRAMES = [['', 'По уровню'], ['classic', 'Стандартная']];   // v1.420: персонализация, список будет расти
+const FRAMES = [['', 'Без рамки'], ['classic', 'Стандартная']];   // v1.420: персонализация, список будет расти
 function frameOf(f){ const mine = tgUser && f && f.tg_id === tgUser.id; const k = mine ? (db.settings || {}).frame : f && f.frame; return FRAMES.some(x => x[0] && x[0] === k) ? k : ''; }
-function frameCls(k, lv){ return k ? ` fr-${k}` : (lv ? tierStyle(lv) : ''); }
+function frameCls(k, lv){ const vars = lv ? tierStyle(lv).replace(' tr"', '"') : ''; return (k ? ` fr-${k}` : '') + vars; }   // v1.422: без рамки — без кольца, цвета значка уровня остаются
 function favHTML(f, small){
   const src = FR.ph.get(f.tg_id), lv = f.level && f.level.level;
   const ts = frameCls(frameOf(f), lv);
