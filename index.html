@@ -372,6 +372,10 @@ input[type=date].inp{display:block}
 @keyframes gvIn{from{opacity:0}to{opacity:1}}@keyframes gvOut{to{opacity:0}}
 /* ==== v1.9: мягкий дизайн ==== */
 .card{border-radius:26px;padding:18px}
+.nmrow{display:flex;align-items:center;gap:6px;min-width:0}
+.nmrow .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nbadge{display:inline-flex;flex:none;color:var(--accent)}
+.nbadge svg{display:block}
 .plsug{display:flex;align-items:center;gap:14px;padding:14px 14px 14px 16px;margin-bottom:12px;border-radius:20px;
   border:1.5px dashed color-mix(in srgb,var(--accent) 55%,var(--muted));background:color-mix(in srgb,var(--accent) 6%,transparent);
   animation:plIn .35s ease both}
@@ -1889,12 +1893,18 @@ function syncHTML(){
     off:['', 'Открыто вне Telegram — синхронизация недоступна']}[srvState] || ['', ''];
   return `<span class="sync ${m[0]}" id="sync"><i></i>${m[1]}</span>`;
 }
+/* значок у имени: сейчас у всех «галочка» в цвет акцента; позже — выбранный в профиле (корона, PRO и т.д.) */
+const BADGE_SVG = {verified:'<path d="M260.765 17.4273L262.76 21.4436L277.906 61.6848C279.087 64.8348 281.581 67.3548 284.757 68.5361L323.607 83.1048C340.67 89.5098 349.831 107.727 345.29 124.974L344.187 128.386L326.127 168.365C325.439 169.891 325.083 171.547 325.083 173.221C325.083 174.896 325.439 176.551 326.127 178.077L343.269 215.851C346.87 223.774 347.407 232.752 344.774 241.047C342.141 249.343 336.526 256.368 329.015 260.765L324.999 262.76L284.757 277.906C283.196 278.499 281.778 279.416 280.597 280.597C279.416 281.778 278.499 283.196 277.906 284.757L263.337 323.607C260.282 331.764 254.308 338.497 246.574 342.502C238.839 346.508 229.893 347.501 221.469 345.29L218.056 344.187L178.077 326.127C176.551 325.439 174.896 325.083 173.221 325.083C171.547 325.083 169.891 325.439 168.365 326.127L130.591 343.295C122.665 346.894 113.685 347.427 105.389 344.789C97.0929 342.151 90.0696 336.531 85.6773 329.015L83.6823 324.999L68.5361 284.757C67.9433 283.196 67.0262 281.778 65.8452 280.597C64.6643 279.416 63.2463 278.499 61.6848 277.906L22.8348 263.337C14.6782 260.282 7.94548 254.308 3.93999 246.574C-0.0654998 238.839 -1.05882 229.893 1.15232 221.469L2.25482 218.056L20.3411 178.077C21.0295 176.551 21.3855 174.896 21.3855 173.221C21.3855 171.547 21.0295 169.891 20.3411 168.365L3.17357 130.591C-0.428159 122.668 -0.964496 113.69 1.66824 105.395C4.30098 97.0989 9.91582 90.0738 17.4273 85.6773L21.4436 83.6823L61.6848 68.5361C63.2463 67.9433 64.6643 67.0262 65.8452 65.8452C67.0262 64.6643 67.9433 63.2463 68.5361 61.6848L83.1048 22.8348C86.1606 14.6782 92.1339 7.94548 99.8685 3.93999C107.603 -0.0654998 116.549 -1.05882 124.974 1.15232L128.386 2.25482L168.365 20.3411C169.891 21.0295 171.547 21.3855 173.221 21.3855C174.896 21.3855 176.551 21.0295 178.077 20.3411L215.851 3.17357C223.774 -0.428159 232.752 -0.964496 241.047 1.66824C249.343 4.30098 256.368 9.91582 260.765 17.4273ZM230.026 112.977L146.394 208.606L115.891 178.051C114.811 176.922 113.516 176.02 112.082 175.398C110.648 174.777 109.105 174.447 107.543 174.43C105.98 174.413 104.43 174.708 102.983 175.298C101.536 175.888 100.221 176.761 99.1162 177.866C98.0113 178.971 97.1382 180.286 96.5481 181.733C95.9581 183.18 95.663 184.73 95.6802 186.293C95.6974 187.855 96.0266 189.398 96.6484 190.832C97.2702 192.266 98.172 193.561 99.3011 194.641L138.676 234.016C139.812 235.15 141.169 236.038 142.663 236.626C144.156 237.215 145.754 237.49 147.359 237.436C148.963 237.382 150.539 236.999 151.989 236.312C153.44 235.624 154.734 234.646 155.791 233.439L247.666 128.439C249.537 126.077 250.428 123.086 250.154 120.086C249.88 117.086 248.463 114.306 246.195 112.322C243.928 110.338 240.984 109.302 237.974 109.429C234.964 109.556 232.118 110.81 230.026 112.977Z" fill="currentColor"/>'};
+function badgeHTML(kind, size = 18){
+  const k = BADGE_SVG[kind] ? kind : 'verified';
+  return `<span class="nbadge" title="Подтверждённый профиль" style="width:${size}px;height:${size}px"><svg viewBox="0 0 347 347" width="${size}" height="${size}">${BADGE_SVG[k]}</svg></span>`;
+}
 function viewMe(){
   const p = db.profile, g = G(), name = displayName(), photo = tgUser && tgUser.photo_url;
   const age = ageOf(p.birth), kg = currentWeight(), hgt = +p.height || 0, b = bmiOf(kg, hgt), bmr = bmrOf(kg, hgt, age, p.sex);
   const lv = myLevel();
   let h = `<div class="prof"><div class="ava${tierStyle(lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
-    <div style="min-width:0"><h1 style="font-size:22px">${esc(name || 'Гость')}</h1>${syncHTML()}</div></div>`;
+    <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${name ? badgeHTML((db.settings || {}).badge, 20) : ''}</h1>${syncHTML()}</div></div>`;
   h += `<div class="card"><h3>${IC('medal')}Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></h3><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div>
     <div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1} · всего ${numSep(lv.xp)}</div>
     <div class="cap" style="margin-top:6px">Очки дают тренировки: чем дольше, быстрее и круче уклон — тем больше. Ещё +100 за каждый новый вид подарка от друзей. С каждым уровнем следующий чуть дороже.</div></div>`;
