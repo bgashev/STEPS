@@ -598,7 +598,15 @@ const THEMES = {
   light:{bg:"#F5F5F8",surface:"#FFFFFF",surface2:"#EFEFF4",border:"#E3E3EA",text:"#1D1D24",muted:"#8A8A98",off:"#DEDEE6"},
   dark:{bg:"#121216",surface:"#1A1A20",surface2:"#24242C",border:"#2C2C36",text:"#F1F1F5",muted:"#8B8B99",off:"#34343F"},
   black:{bg:"#050507",surface:"#0E0E12",surface2:"#18181D",border:"#212128",text:"#F4F4F7",muted:"#878794",off:"#27272F"}};
-const ACTS = [['run','Бег / ходьба',1],['dumbbell','Гантели'],['squat','Приседания'],['pushup','Отжимания'],['bike','Велосипед'],['yoga','Растяжка / йога'],['plank','Планка'],['burpee','Бёрпи'],['pullup','Подтягивания']];
+const ACTS = [['run','Бег / ходьба',1],['dumbbell','Гантели',1],['squat','Приседания',1],['pushup','Отжимания',1],['bike','Велосипед'],['yoga','Растяжка / йога'],['plank','Планка',1],['burpee','Бёрпи'],['pullup','Подтягивания',1]];
+// v1.420: силовые — act: [что в подходе, максимум, очков за единицу, MET]; те же правила, что на сервере
+const STR = {pushup:['reps', 200, 0.5, 8], squat:['reps', 300, 0.35, 5.5], pullup:['reps', 100, 1.2, 8], plank:['secs', 900, 1 / 6, 3.8], dumbbell:['reps', 100, 0.3, 6]};
+const isStr = w => !!(w && STR[w.act]);
+function strMin(act, sets, per){ return Math.max(1, Math.min(240, Math.ceil((sets * per * (STR[act][0] === 'secs' ? 1 : 3) + Math.max(0, sets - 1) * 60) / 60))); }
+function strText(w){ const st = STR[w.act]; if (!st) return ''; const per = +(st[0] === 'secs' ? w.secs : w.reps) || 0;
+  return `${+w.sets || 0} × ${per}${st[0] === 'secs' ? ' сек' : ''}${w.act === 'dumbbell' && +w.kg ? ` × ${num(+w.kg)} кг` : ''}`; }
+function strBad(w){ const st = STR[w.act], n = +w.sets, v = +(st[0] === 'secs' ? w.secs : w.reps), kg = +(w.kg || 0);
+  return Number.isInteger(n) && n >= 1 && n <= 20 && v >= 1 && v <= st[1] && kg >= 0 && kg <= 150 ? null : 'Проверь подходы и повторы: от 1 до 20 подходов, повторы в разумных пределах'; }
 function actOf(w){ return (w && w.act) || 'run'; }
 const FEEL = {1:["Тяжело","#EF6B73"],2:["Так себе","#F59E6C"],3:["Нормально","#F2D064"],4:["Хорошо","#A9DC8A"],5:["Отлично","#5FC98A"]};
 const GREEN="#5FC98A", RED="#EF6B73", YELLOW="#F2D064", BLUE="#7FB5FF";
@@ -672,7 +680,7 @@ function G(){
   return {count, days};
 }
 function valid(){ return db.workouts.filter(w => w && ISO_RE.test(w.date || '')); }
-const kmOf = w => w.speed * w.minutes / 60;
+const kmOf = w => (+w.speed || 0) * (+w.minutes || 0) / 60;
 function walkKcal(speed, inc, min, kg){
   if (!kg) return null;
   const v = speed * 1000 / 60;
@@ -700,7 +708,7 @@ function weightAt(iso){
   while (lo <= hi) { const mid = (lo + hi) >> 1; if (w[mid].date <= iso) { ans = mid; lo = mid + 1; } else hi = mid - 1; }
   return +(ans >= 0 ? w[ans] : w[0]).kg;
 }
-const kcal = w => walkKcal(w.speed, w.incline, w.minutes, weightAt(w.date));
+const kcal = w => { const st = STR[w.act]; if (st) { const kg = weightAt(w.date); return kg ? Math.round(st[3] * kg * (+w.minutes || 0) / 60) : 0; } return walkKcal(w.speed, w.incline, w.minutes, weightAt(w.date)); };
 function ageOf(birth){
   if (!birth || !ISO_RE.test(birth)) return null;
   const [y,m,d] = birth.split('-').map(Number), t = new Date();
@@ -1530,6 +1538,9 @@ function checkRewards(){
 
 /* ============================================================ уровни ==== */
 function workoutXp(w){
+  const st = STR[w.act];
+  if (st) { const tot = (+w.sets || 0) * (+(st[0] === 'secs' ? w.secs : w.reps) || 0), kgf = w.act === 'dumbbell' ? 1 + clamp(+w.kg || 0, 0, 150) / 20 : 1;
+    return tot > 0 ? Math.max(3, Math.min(150, Math.round(tot * st[2] * kgf))) : 0; }
   const m = clamp(+w.minutes || 0, 0, 240); if (m < 1) return 0;
   const sp = Math.max(1, +w.speed || 5), inc = Math.max(0, +w.incline || 0);
   return Math.max(3, Math.min(150, Math.round(m * Math.pow(sp / 5, 0.8) * (1 + inc * 0.06))));
@@ -1546,8 +1557,9 @@ function acCheck(data, item){   // null — можно сохранить, ин�
   if (d > t) return 'Тренировку из будущего сохранить нельзя 🙂';
   if (t - d > AC.backDays) return 'Задним числом — максимум на 2 дня назад';
   if (!(data.minutes >= AC.minMin && data.minutes <= AC.maxMin)) return `Время — от ${AC.minMin} до ${AC.maxMin} минут`;
-  if (!(data.speed >= AC.minSpeed && data.speed <= AC.maxSpeed)) return `Скорость — от ${num(AC.minSpeed)} до ${AC.maxSpeed} км/ч`;
-  if (!(data.incline >= 0 && data.incline <= AC.maxIncline)) return `Уклон — от 0 до ${AC.maxIncline}%`;
+  if (isStr(data)) { const b = strBad(data); if (b) return b; }
+  else if (!(data.speed >= AC.minSpeed && data.speed <= AC.maxSpeed)) return `Скорость — от ${num(AC.minSpeed)} до ${AC.maxSpeed} км/ч`;
+  else if (!(data.incline >= 0 && data.incline <= AC.maxIncline)) return `Уклон — от 0 до ${AC.maxIncline}%`;
   const same = valid().filter(w => w !== item && w.date === data.date);
   if (same.length + 1 > AC.dayCount) return `Не больше ${AC.dayCount} тренировок в день`;
   if (sum(same, w => +w.minutes || 0) + data.minutes > AC.dayMin) return `Не больше ${AC.dayMin / 60} часов тренировок в день`;
@@ -1556,7 +1568,8 @@ function acCheck(data, item){   // null — можно сохранить, ин�
 function honestWs(ws){   // для очков: только то, что прошло бы проверку
   const t = todayN(), per = new Map();
   return ws.filter(w => { const d = dn(w.date), m = +w.minutes || 0, s = +w.speed || 0, i = +w.incline || 0;
-      if (d > t || !(m >= AC.minMin && m <= AC.maxMin) || !(s >= AC.minSpeed && s <= AC.maxSpeed) || !(i >= 0 && i <= AC.maxIncline)) return false;
+      if (d > t || !(m >= AC.minMin && m <= AC.maxMin)) return false;
+      if (isStr(w) ? strBad(w) : (!(s >= AC.minSpeed && s <= AC.maxSpeed) || !(i >= 0 && i <= AC.maxIncline))) return false;
       if (w.created && Math.floor(w.created / 86400) - d > AC.backDays + 1) return false;
       return true; })
     .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (a.created || 0) - (b.created || 0))
@@ -1729,7 +1742,7 @@ function feedText(ev){
   const u = ev.user || {}, d = ev.data || {}, n = u.me ? 'Ты' : esc(u.name || '?');
   if (ev.type === 'workout') {
     const sub = [];
-    if (d.sets) sub.push(d.secs ? `${d.sets} × ${d.secs} сек` : `${d.sets} × ${d.reps}`);
+    if (d.sets) sub.push(strText(d));
     else { if (d.speed && d.minutes) sub.push(kmF(d.speed * d.minutes / 60)); if (d.speed) sub.push(`${num(d.speed)} км/ч`); if (d.incline) sub.push(`уклон ${num(d.incline)}%`); }
     return [`<b>${n}</b> · ${esc(actName(d.act || 'run'))}${d.sets ? '' : ', ' + fmtMin(d.minutes || 0)}`, sub, ACTS.some(a => a[0] === d.act) ? d.act : 'run'];
   }
@@ -1968,9 +1981,9 @@ function historyHTML(ws){
     if (hs === 'date' && k !== prev) { prev = k; const g = months.get(k), [y, m] = k.split('-').map(Number);
       h += `<div class="mh">${MONF[m-1][0].toUpperCase() + MONF[m-1].slice(1)} ${y}<span>${npw(g.length, W_WORK)} · ${fmtMin(sum(g, x => x.minutes))} · ${kmF(sum(g, kmOf))}</span></div>`; }
     const d = dn(w.date), [, , dd] = ymd(d), f = clamp(parseInt(w.feeling) || 3, 1, 5), kc = kcal(w);
-    const l2 = [`≈ ${kmF(kmOf(w))}`]; if (kc) l2.push(`≈ ${kcalF(kc)}`); if (w.note) l2.push(esc(w.note));
+    const l2 = [isStr(w) ? `+${workoutXp(w)} XP` : `≈ ${kmF(kmOf(w))}`]; if (kc) l2.push(`≈ ${kcalF(kc)}`); if (w.note) l2.push(esc(w.note));
     h += `<div class="wi" data-act="wedit" data-id="${esc(w.id)}" style="animation-delay:${Math.min(i, 10) * 35}ms"><span class="wa">${IC(actOf(w), 19)}</span><div class="wd"><b>${dd}</b><small>${MON[ymd(d)[1]-1]} · ${WD[wdOf(d)]}</small></div>
-      <div class="wm"><div class="l1">${num(w.speed)} км/ч · ${num(w.incline)}% · ${w.minutes} мин</div><div class="l2">${l2.join(' · ')}</div></div>
+      <div class="wm"><div class="l1">${isStr(w) ? `${esc((ACTS.find(a => a[0] === w.act) || ACTS[0])[1])} · ${strText(w)}` : `${num(w.speed)} км/ч · ${num(w.incline)}% · ${w.minutes} мин`}</div><div class="l2">${l2.join(' · ')}</div></div>
       <div class="wr">${dotsHTML(f, 8)}<small style="color:${FEEL[f][1]}">${FEEL[f][0]}</small></div></div>`;
   });
   if (sorted.length > S.limit) h += `<button class="btn ghost small more" data-act="more">Показать ещё (осталось ${sorted.length - S.limit})</button>`;
@@ -2051,7 +2064,7 @@ function viewStats(){
   if (n) {
     const tm = sum(pws, w => w.minutes), km = sum(pws, kmOf), kcs = pws.map(kcal), weeks = periodDays(S.sp, ws) / 7;
     h += `<div class="kpis">${kpi(n, 'Тренировок')}${kpi(fmtMin(tm), 'Всего времени')}${kpi(kmF(km), 'Пройдено, примерно')}${kpi(kcs.some(Boolean) ? kcalF(sum(kcs, k => k || 0)) : '—', 'Сожжено, примерно')}
-      ${kpi(num(n / weeks), 'Тренировок в неделю')}${kpi(num(km / (tm / 60)) + ' км/ч', 'Средняя скорость')}${kpi(num(sum(pws, w => w.incline * w.minutes) / tm) + ' %', 'Средний уклон')}${kpi(num(sum(pws, w => +w.feeling || 3) / n) + ' / 5', 'Среднее состояние')}</div>`;
+      ${kpi(num(n / weeks), 'Тренировок в неделю')}${(() => { const cw = pws.filter(w => !isStr(w)), ct = sum(cw, w => w.minutes); return ct ? kpi(num(sum(cw, kmOf) / (ct / 60)) + ' км/ч', 'Средняя скорость') + kpi(num(sum(cw, w => w.incline * w.minutes) / ct) + ' %', 'Средний уклон') : kpi('—', 'Средняя скорость') + kpi('—', 'Средний уклон'); })()}${kpi(num(sum(pws, w => +w.feeling || 3) / n) + ' / 5', 'Среднее состояние')}</div>`;
   } else h += `<div class="card muted">За этот период тренировок нет.</div>`;
   const [items, fmt] = bucketData(ws, S.sp, S.sm);
   h += `<div class="card"><h3>Динамика</h3>${seg('sm', [['min','Минуты'],['km','Километры'],['kcal','Калории'],['cnt','Тренировки']])}${bars(items, fmt, 'cap1')}</div>`;
@@ -2227,20 +2240,32 @@ function feelPicker(v){
     [1,2,3,4,5].map(i => `<button type="button" class="${i <= v ? 'on' : ''}" style="--c:${FEEL[i][1]}" data-act="feel" data-v="${i}" aria-label="${FEEL[i][0]}"></button>`).join('') +
     `</div><span class="feel-l" id="f-feel-l" style="color:${FEEL[v][1]}">${FEEL[v][0]}</span></div></div>`;
 }
-function openWorkout(w, preset, hint){
+function openWorkout(w, preset, hint, act){
   const src = w || preset || {}, date = w ? w.date : isoOf(todayN()), f = clamp(parseInt(src.feeling) || 3, 1, 5);
-  openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC(actOf(src), 22)}</span><div><h2 style="margin:0">${w ? 'Редактирование' : 'Новая тренировка'}</h2><div class="cap">${(ACTS.find(a => a[0] === actOf(src)) || ACTS[0])[1]}</div></div></div>${hint ? `<div class="hint">${hint}</div>` : ''}
-    <div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label>
+  act = act || actOf(src); const st = STR[act], same = src.act === act;
+  openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${w ? 'Редактирование' : 'Новая тренировка'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}</div></div></div>${hint ? `<div class="hint">${hint}</div>` : ''}
+    ${st ? `<div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label>
+      ${stepper('sets', 'Подходы', (same && +src.sets) || 3, 1, 20, 1, 0, '')}</div>
+    <div class="g2">${stepper('per', st[0] === 'secs' ? 'Секунд в подходе' : 'Повторы в подходе', (same && +(st[0] === 'secs' ? src.secs : src.reps)) || (st[0] === 'secs' ? 45 : 12), 1, st[1], st[0] === 'secs' ? 5 : 1, 0, st[0] === 'secs' ? 'сек' : 'повт.')}${act === 'dumbbell' ? stepper('kg', 'Вес гантели', (same && +src.kg) || 5, 0, 150, 0.5, 1, 'кг') : '<span></span>'}</div>`
+    : `<div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label>
     ${stepper('incline', 'Уклон', src.incline != null ? src.incline : 0, 0, 15, 1, 0, '%')}</div>
-    <div class="g2">${stepper('minutes', 'Время', src.minutes || 30, 1, 240, 1, 0, 'мин')}${stepper('speed', 'Скорость', src.speed || 4.5, 0.5, 12, 0.1, 1, 'км/ч')}</div>
+    <div class="g2">${stepper('minutes', 'Время', src.minutes || 30, 1, 240, 1, 0, 'мин')}${stepper('speed', 'Скорость', src.speed || 4.5, 0.5, 12, 0.1, 1, 'км/ч')}</div>`}
     <div class="preview" id="f-prev"></div>
     ${feelPicker(f)}
     <label class="f"><span>Заметка</span><input class="inp" id="f-note" maxlength="140" placeholder="Необязательно" value="${esc(w ? w.note || '' : '')}"></label>
-    <div class="sheet-btns">${w ? `<button class="btn ghost danger" data-act="wdel">${IC('trash')}</button>` : ''}${acLocked(w) ? `<div class="hint" style="margin:0;align-self:center">${IC('lock', 13)} Старше 2 дней — менять нельзя, только удалить</div>` : `<button class="btn primary" data-act="wsave">Сохранить</button>`}</div>`, {type:'workout', item:w});
+    <div class="sheet-btns">${w ? `<button class="btn ghost danger" data-act="wdel">${IC('trash')}</button>` : ''}${acLocked(w) ? `<div class="hint" style="margin:0;align-self:center">${IC('lock', 13)} Старше 2 дней — менять нельзя, только удалить</div>` : `<button class="btn primary" data-act="wsave">Сохранить</button>`}</div>`, {type:'workout', item:w, act});
   updPreview();
 }
 function updPreview(){
   const el = $('#f-prev'); if (!el) return;
+  const act = sheetCtx && sheetCtx.act, st = STR[act];
+  if (st) {
+    const n = stpVal('sets'), v = stpVal('per'), mi = strMin(act, n, v), d = ($('#f-date') || {}).value || isoOf(todayN()), kg = weightAt(d);
+    const tot = st[0] === 'secs' ? (n * v >= 60 ? `${fmtMin(Math.round(n * v / 60))} под нагрузкой` : `${n * v} сек`) : `${n * v} повторов`;
+    const xp = workoutXp({act, sets:n, reps:v, secs:v, kg:act === 'dumbbell' ? stpVal('kg') : 0});
+    el.textContent = `Всего ${tot} · ≈ ${fmtMin(mi)}` + (kg ? ` · ≈ ${kcalF(Math.round(st[3] * kg * mi / 60))}` : '') + ` · +${xp} XP`;
+    return;
+  }
   const sp = stpVal('speed'), mi = stpVal('minutes'), inc = stpVal('incline'), d = ($('#f-date') || {}).value || isoOf(todayN());
   const kc = walkKcal(sp, inc, mi, weightAt(d));
   const lvl = walkMets(sp, inc), lv = lvl < 4.5 ? 'лёгкая' : lvl < 6 ? 'средняя' : lvl < 7.5 ? 'тяжёлая' : 'интенсив';
@@ -2292,12 +2317,17 @@ function lastWorkout(){ const ws = valid().sort((a, b) => a.date < b.date ? -1 :
 
 function saveWorkout(){
   const item = sheetCtx.item, plan = sheetCtx.plan;
-  const data = {date:ISO_RE.test($('#f-date').value) ? $('#f-date').value : isoOf(todayN()), minutes:Math.round(stpVal('minutes')), speed:stpVal('speed'),
-    incline:Math.round(stpVal('incline')), feeling:+$('#f-feel').dataset.v, note:$('#f-note').value.trim()};
+  const act = sheetCtx.act || 'run', st = STR[act];
+  const data = {date:ISO_RE.test($('#f-date').value) ? $('#f-date').value : isoOf(todayN()), act, feeling:+$('#f-feel').dataset.v, note:$('#f-note').value.trim()};
+  if (st) {
+    const n = Math.round(stpVal('sets')), v = Math.round(stpVal('per'));
+    Object.assign(data, {sets:n, [st[0]]:v, minutes:strMin(act, n, v), speed:0, incline:0});
+    if (act === 'dumbbell') data.kg = Math.round(stpVal('kg') * 10) / 10;
+  } else Object.assign(data, {minutes:Math.round(stpVal('minutes')), speed:stpVal('speed'), incline:Math.round(stpVal('incline'))});
   const bad = acCheck(data, item); if (bad) { hap.warn(); toast(bad); return; }
   const g = G(), before = goalCycles(valid()).done;
   let w = item;
-  if (w) Object.assign(w, data); else { w = Object.assign({id:uid(), created:nowSec()}, data); db.workouts.push(w); }
+  if (w) { if (!st) ['sets', 'reps', 'secs', 'kg'].forEach(k => delete w[k]); Object.assign(w, data); } else { w = Object.assign({id:uid(), created:nowSec()}, data); db.workouts.push(w); }
   if (plan && !item) { if (plan.act && !w.act) w.act = plan.act; plan.done_id = w.id; delete plan.skipped; touch('plan', plan); }
   touch('workout', w);
   save(); closeSheet(); render(); hap.ok();
@@ -2392,7 +2422,7 @@ const ACT = {
   tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; S.meSet = false; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') loadFriends(); } },
   add: () => { hap.imp(); openSheet(`<h2>Что тренируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше привычная форма</div><div class="acts">` +
       ACTS.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="animation-delay:${i * 30}ms"><span class="ai">${IC(k, 24)}</span>${l}${ok ? '' : '<em>в разработке</em>'}</button>`).join('') + `</div>`, {type:'acts'}); },
-  actpick: () => { hap.tap(); openWorkout(null); },
+  actpick: el => { hap.tap(); openWorkout(null, null, '', el.dataset.v); },
   actsoon: () => { hap.warn(); toast('Скоро — уже готовим ✨'); },
   hsort: el => { S.hsort = el.dataset.v; render(); hap.tap(); },
   repeat: () => { const l = lastWorkout(); openWorkout(null, l, l ? 'Параметры из прошлой тренировки — поправь, если нужно' : ''); },
