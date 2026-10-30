@@ -683,6 +683,17 @@ input[type=date].inp{display:block}
 .fp-row{display:flex;align-items:center;gap:10px;margin:12px 0 2px}
 .fp-row .fchipb{margin:0}
 .fp-acts{margin-left:auto;display:flex;gap:8px}
+.fp-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0 4px}
+.fpb{height:66px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  font:inherit;cursor:pointer;transition:transform .12s,background .2s;-webkit-tap-highlight-color:transparent}
+.fpb:active{transform:scale(.95)}
+.fpb span{width:34px;height:34px;border-radius:12px;display:grid;place-items:center}
+.fpb b{font-size:12px;font-weight:750;letter-spacing:.1px}
+.fpb.poke span{background:rgba(242,208,100,.16);color:#F2D064}
+.fpb.gift span{background:var(--accent-soft);color:var(--accent)}
+.fpb.del span{background:rgba(239,107,115,.12);color:var(--red)}
+.fpb.del b{color:var(--muted)}
+.fpb.off{opacity:.5}
 .fpa{width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:transform .12s}
 .fpa:active{transform:scale(.9)}
 .fpa.gbtn{color:var(--accent)}
@@ -2072,9 +2083,12 @@ function friendSheetHTML(f, j, loading, self){
     <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div></div>
     <div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div>`;
   if (j && j.friends) FR.prof = j.friends;
-  const acts = self ? '' : `<div class="fp-acts"><button class="fpa" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить" title="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 20)}</button><button class="fpa gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить" title="Подарок">${IC('gift', 19)}</button><button class="fpa del" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей" title="Удалить">${IC('trash', 19)}</button></div>`;
+  const pw = +f.poke_wait || 0;
+  const acts = self ? '' : `<div class="fp-bar"><button class="fpb poke${pw ? ' off' : ''}" data-act="frpoke" data-id="${f.tg_id}"><span>${IC('bolt', 22)}</span><b>${pw ? `через ${pw} ч` : 'Взбодрить'}</b></button>`
+    + `<button class="fpb gift" data-act="gift" data-id="${f.tg_id}"><span>${IC('gift', 22)}</span><b>Подарок</b></button>`
+    + `<button class="fpb del" data-act="frdel" data-id="${f.tg_id}"><span>${IC('trash', 21)}</span><b>Удалить</b></button></div>`;
   h += `<div class="fp-row">` + (loading ? `<span class="skl" style="width:150px;height:34px;border-radius:17px"></span>`
-    : `<button type="button" class="fchipb" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · ${j.friends_count}${(j.friends || []).length ? IC('chev', 14) : ''}</button>`) + acts + `</div>`;
+    : `<button type="button" class="fchipb" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · ${j.friends_count}${(j.friends || []).length ? IC('chev', 14) : ''}</button>`) + `</div>` + acts;
   h += `<div class="card" style="margin-top:12px"><div class="row" style="gap:14px">${ring(shown / g.target, `${shown}/${g.target}`, '', ok, 64)}<div><div style="font-weight:700;color:${ok ? 'var(--green)' : 'var(--text)'}">${g.done_today ? 'Норма выполнена' : g.prev_ok ? 'Норма закрыта' : 'До нормы ' + Math.max(0, g.target - g.shown)}</div>
     <div class="cap">${fmtMin(f.week.minutes)} за 7 дней · ${npw(f.week.workouts, W_WORK)} · ${kmF(f.week.km)}</div>${g.best ? `<div class="cap">лучшая серия: ${npw(g.best, W_TIMES)}</div>` : ''}</div></div>`;
   const days = j && j.week && j.week.days;
@@ -2750,7 +2764,7 @@ const ACT = {
     try { const j = await apiAuth('/friends/poke', {tg_id:id});
       if (j.status === 'soon') { f.poke_wait = j.hours; toast(`Уже взбодрил(а) — снова можно через ${j.hours} ч`); }
       else { f.poke_wait = j.hours || 12; toast(j.status === 'undelivered' ? `${f.name} ещё не писал(а) боту — сообщение не дошло` : `Ты взбодрил(а) ${f.name} ⚡ Бот уже передал`); hap.ok(); }
-      document.querySelectorAll(`[data-act=frpoke][data-id="${id}"]`).forEach(b => b.style.opacity = '.35');
+      document.querySelectorAll(`[data-act=frpoke][data-id="${id}"]`).forEach(b => { if (b.classList.contains('fpb')) { b.classList.add('off'); const t = b.querySelector('b'); if (t) t.textContent = `через ${f.poke_wait} ч`; } else b.style.opacity = '.35'; });
     } catch (e) { toast('Нет связи: ' + e.message); } },
   story: el => { hap.imp(); openStory(el.dataset.kind, +el.dataset.a, +el.dataset.b, el.dataset.k); },
   stsave: () => saveStory(),
