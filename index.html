@@ -388,8 +388,13 @@ input[type=date].inp{display:block}
 .nbadge svg{display:block}
 .wdock{position:fixed;right:max(16px,calc(50% - 264px));bottom:calc(84px + env(safe-area-inset-bottom));z-index:9;display:flex;align-items:center;gap:10px;
   animation:plIn .35s ease both}
-.wdock.center{right:auto;left:50%;transform:translateX(-50%);animation:dockIn .35s ease both}
-@keyframes dockIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
+.wdock.center{right:auto;left:50%;transform:translateX(-50%);animation:none;
+  transition:opacity .25s ease,transform .3s cubic-bezier(.2,.8,.2,1)}
+#fab.hide{opacity:0;transform:translate(-50%,14px) scale(.9);pointer-events:none}
+#fab .wd-add{overflow:hidden;white-space:nowrap;justify-content:center;transition:width .36s cubic-bezier(.2,.8,.2,1),transform .12s}
+#fab .fi{display:flex}
+#fab .fl{display:inline-block;transition:opacity .14s ease,transform .14s ease}
+#fab .fl.swap{opacity:0;transform:translateY(6px)}
 .wdock button{display:flex;align-items:center;gap:7px;border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s}
 .wdock button:active{transform:scale(.94)}
 .gedit{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
@@ -530,6 +535,7 @@ input[type=date].inp{display:block}
 </head>
 <body>
 <main id="view"></main>
+<div id="fab" class="wdock center hide"><button class="wd-add" data-act="add" type="button"><span class="fi"></span><span class="fl"></span></button></div>
 <nav id="tabs"></nav>
 <div id="sw"><div id="sbd" data-act="close"></div><div id="sheet"></div></div>
 <div id="toast"></div>
@@ -1774,8 +1780,7 @@ function viewHome(){
   let h = `<div class="head"><div><h1>${esc(greet())}</h1><div class="sub">${bits.join(' · ')}</div></div></div>
   <div class="card"><div class="goal">${ring(info.shown / g.count, `${info.shown}/${g.count}`, `${pct}%`, done)}
     <div><div class="glabel">Цель: ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</div>${gtxt}${gsBtn}</div></div>${strip(ws, g.days)}${note}</div>
-  ${ws.length ? `<div class="actions"><button class="btn ghost" data-act="repeat">${IC('repeat')}Повторить последнюю</button></div>` : ''}
-  <div class="wdock center"><button class="wd-add" data-act="add">${IC('plus', 20)}Тренировка</button></div>`;
+  ${ws.length ? `<div class="actions"><button class="btn ghost" data-act="repeat">${IC('repeat')}Повторить последнюю</button></div>` : ''}`;
   h += planSuggestHTML(ws);
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
   const due = dueWeekSummary(ws);
@@ -1849,7 +1854,6 @@ function viewWeight(){
   const t = todayN(), daily = dailyWeights(), curE = last(es), cur = +curE.kg, lastD = dn(curE.date);
   const gs = weightGoalState(goal, cur), dir = gs ? gs.direction : 0;
   // кнопки — внизу справа, над меню: под большой палец, а не в дальнем углу экрана
-  h += `<div class="wdock"><button class="wd-add" data-act="kadd">${IC('plus', 20)}Взвеситься</button></div>`;
   // сейчас
   let delta = '';
   if (es.length >= 2) {
@@ -2012,8 +2016,37 @@ function goalPreview(){ const g = G(); return `${npw(g.count, W_WORK)} за ${np
 /* ============================================================ рендер ==== */
 const TABS = [['home','Главная','home'],['weight','Вес','scale'],['stats','Итоги','stats'],['friends','Друзья','friends'],['me','Я','user']];
 const VIEWS = {home:viewHome, weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe};
+// плавающая кнопка внизу по центру: на «Главной» — тренировка, во «Весе» — взвеситься
+const FAB = {home:['add', 'Тренировка'], weight:['kadd', 'Взвеситься']};
+function updFab(){
+  const box = $('#fab'); if (!box) return;
+  const b = box.querySelector('button'), fl = b.querySelector('.fl'), fi = b.querySelector('.fi');
+  const cfg = FAB[S.tab];
+  if (!fi.innerHTML) fi.innerHTML = IC('plus', 20);
+  if (!cfg) { box.classList.add('hide'); return; }
+  const wasHidden = box.classList.contains('hide');
+  box.classList.remove('hide');
+  b.dataset.act = cfg[0];
+  if (fl.textContent === cfg[1]) return;
+  const from = b.getBoundingClientRect().width;
+  if (wasHidden || !fl.textContent) { fl.textContent = cfg[1]; b.style.width = ''; return; }
+  // ширина плавно перетекает, текст сменяется с лёгким сдвигом
+  b.style.width = from + 'px';
+  fl.classList.add('swap');
+  setTimeout(() => {
+    fl.textContent = cfg[1];
+    b.style.width = 'auto';
+    const to = b.getBoundingClientRect().width;
+    b.style.width = from + 'px';
+    void b.offsetWidth;
+    b.style.width = to + 'px';
+    fl.classList.remove('swap');
+    setTimeout(() => { if (fl.textContent === cfg[1]) b.style.width = ''; }, 380);
+  }, 140);
+}
 function render(){
   $('#view').innerHTML = VIEWS[S.tab]();
+  updFab();
   festCountUp();
   setTimeout(checkRewards, 700);
   const tb = $('#tabs'), ti = TABS.findIndex(t => t[0] === S.tab);
