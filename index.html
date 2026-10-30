@@ -428,6 +428,8 @@ input[type=date].inp{display:block}
 #sheet.full{top:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 8px);max-height:none}
 .fs-head{display:flex;align-items:center;gap:10px;margin:2px 0 6px;position:sticky;top:-10px;z-index:2;background:var(--bg);padding:6px 0}
 .fs-head .cap{margin-right:auto}
+.fs-head .ib.round{width:42px;height:42px}
+.ib.round.fs-x{background:var(--surface2);color:var(--text)}
 .ib.round.spin svg{animation:spin .8s linear infinite}
 .fticker{margin-bottom:12px;padding:12px 14px 6px;border-radius:20px;background:var(--surface);border:1px solid var(--border);cursor:pointer;animation:plIn .35s ease both}
 .fticker:active{transform:scale(.99)}
@@ -1773,7 +1775,8 @@ function feedTickerHTML(){
 }
 function feedSheetHTML(){
   return `<div class="fs-head"><h2 style="margin:0">Лента друзей</h2><span class="cap">за 2 недели</span>
-    <button type="button" class="ib round" data-act="feedref" aria-label="Обновить">${IC('repeat', 18)}</button></div><div id="feedlist">${feedListHTML()}</div>`;
+    <button type="button" class="ib round" data-act="feedref" aria-label="Обновить">${IC('repeat', 18)}</button>
+    <button type="button" class="ib round fs-x" data-act="close" aria-label="Закрыть ленту">${IC('close', 20)}</button></div><div id="feedlist">${feedListHTML()}</div>`;
 }
 function openFeed(){
   openSheet(feedSheetHTML(), {type:'feed'});
