@@ -388,6 +388,8 @@ input[type=date].inp{display:block}
 .nbadge svg{display:block}
 .wdock{position:fixed;right:max(16px,calc(50% - 264px));bottom:calc(84px + env(safe-area-inset-bottom));z-index:9;display:flex;align-items:center;gap:10px;
   animation:plIn .35s ease both}
+.wdock.center{right:auto;left:50%;transform:translateX(-50%);animation:dockIn .35s ease both}
+@keyframes dockIn{from{opacity:0;transform:translate(-50%,8px)}to{opacity:1;transform:translate(-50%,0)}}
 .wdock button{display:flex;align-items:center;gap:7px;border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s}
 .wdock button:active{transform:scale(.94)}
 .gedit{position:absolute;top:12px;right:12px;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
@@ -1760,7 +1762,8 @@ function viewHome(){
   let h = `<div class="head"><div><h1>${esc(greet())}</h1><div class="sub">${bits.join(' · ')}</div></div></div>
   <div class="card"><div class="goal">${ring(info.shown / g.count, `${info.shown}/${g.count}`, `${pct}%`, done)}
     <div><div class="glabel">Цель: ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</div>${gtxt}${gsBtn}</div></div>${strip(ws, g.days)}${note}</div>
-  <div class="actions"><button class="btn primary" data-act="add">${IC('plus')}Тренировка</button>${ws.length ? `<button class="btn ghost" data-act="repeat">${IC('repeat')}Повторить</button>` : ''}</div>`;
+  ${ws.length ? `<div class="actions"><button class="btn ghost" data-act="repeat">${IC('repeat')}Повторить последнюю</button></div>` : ''}
+  <div class="wdock center"><button class="wd-add" data-act="add">${IC('plus', 20)}Тренировка</button></div>`;
   h += planSuggestHTML(ws);
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
   const due = dueWeekSummary(ws);
@@ -1772,7 +1775,7 @@ function viewHome(){
     h += `<div class="kpis">${kpi(ws.length, 'Тренировок')}${kpi(fmtMin(sum(ws, w => w.minutes)), 'Всего времени')}${kpi(kmF(sum(ws, kmOf)), 'Пройдено, примерно')}${kpi(kcs.some(Boolean) ? kcalF(sum(kcs, k => k || 0)) : '—', kcs.some(Boolean) ? 'Сожжено, примерно' : 'Ккал: укажи вес')}</div>`;
   }
   h += historyHTML(ws);
-  return h;
+  return h + '<div class="wdock-sp"></div>';   // место под кнопку «Тренировка»
 }
 /* план на сегодня: пунктирная карточка-предложение (полного раздела «План» в мобильной версии нет) */
 function todayPlans(ws){
