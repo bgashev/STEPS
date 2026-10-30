@@ -1716,7 +1716,7 @@ const FEED = {ev:null, at:0, busy:false, err:'', tick:null, i:0};
 async function loadFeed(force){
   if (!inTG || FEED.busy || (!force && FEED.ev && Date.now() - FEED.at < 90000)) return;
   FEED.busy = true;
-  try { const j = await apiAuth(FEED_API, {today:isoOf(todayN())}); FEED.ev = j.events || []; FEED.err = ''; }
+  try { const j = await apiAuth(FEED_API, {today:isoOf(todayN())}); FEED.ev = (j.events || []).filter(e => !(e.user || {}).me); FEED.err = ''; }   // свои новости не показываем
   catch (e) { FEED.err = e.message || 'нет связи'; if (!FEED.ev) FEED.ev = []; }
   FEED.busy = false; FEED.at = Date.now();
   if (sheetCtx && sheetCtx.type === 'feed') { const l = $('#feedlist'); if (l) l.innerHTML = feedListHTML(); document.querySelectorAll('[data-act=feedref]').forEach(b => b.classList.remove('spin')); }
@@ -1753,7 +1753,7 @@ function feedItemHTML(ev, i){
 }
 function feedListHTML(){
   if (!FEED.ev) return [0, 1, 2].map(i => `<div class="sk" style="height:56px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('');
-  if (!FEED.ev.length) return `<div class="muted">${FEED.err ? 'Не удалось загрузить ленту: ' + esc(FEED.err) : 'За последние две недели тут тихо. Потренируйся — и лента оживёт.'}</div>`;
+  if (!FEED.ev.length) return `<div class="muted">${FEED.err ? 'Не удалось загрузить ленту: ' + esc(FEED.err) : 'У друзей за последние две недели тихо. Взбодри кого-нибудь ⚡'}</div>`;
   const t = isoOf(todayN()), y = isoOf(todayN() - 1);
   let h = '', last = null;
   FEED.ev.slice(0, 60).forEach((ev, i) => {
