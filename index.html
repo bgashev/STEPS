@@ -1505,7 +1505,8 @@ function setGifts(g){
 const GIFT_ROWS = 2, GIFT_COLS = 7;   // сколько видно сразу; остальное — по стрелке
 function giftShelf(kinds, size, who){
   const own = new Set(kinds || []);
-  const keys = GIFT_KEYS.filter(k => own.has(k)).concat(GIFT_KEYS.filter(k => !own.has(k)));   // полученные — первыми
+  const keys = GIFT_KEYS.filter(k => own.has(k));   // только полученные: подарков нет — и показывать нечего
+  if (!keys.length) return '';
   const cell = k => own.has(k) ? `<button type="button" class="gsh on" title="${GIFT_T[k][1]}" data-act="gview" data-k="${k}"${who ? ` data-who="${esc(who)}"` : ''}>${giftArt(k)}</button>`
     : `<span class="gsh" title="${GIFT_T[k][1]}">${giftArt(k)}</span>`;
   const n = GIFT_ROWS * GIFT_COLS;
