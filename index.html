@@ -425,6 +425,10 @@ input[type=date].inp{display:block}
 .flk.own{cursor:default}
 .flk.pop svg{animation:lkPop .42s ease}
 @keyframes lkPop{35%{transform:scale(1.45)}70%{transform:scale(.9)}100%{transform:scale(1)}}
+#sheet.full{top:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 8px);max-height:none}
+.fs-head{display:flex;align-items:center;gap:10px;margin:2px 0 6px;position:sticky;top:-10px;z-index:2;background:var(--bg);padding:6px 0}
+.fs-head .cap{margin-right:auto}
+.ib.round.spin svg{animation:spin .8s linear infinite}
 .fticker{margin-bottom:12px;padding:12px 14px 6px;border-radius:20px;background:var(--surface);border:1px solid var(--border);cursor:pointer;animation:plIn .35s ease both}
 .fticker:active{transform:scale(.99)}
 .ft-cap{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
@@ -1713,7 +1717,8 @@ async function loadFeed(force){
   try { const j = await apiAuth(FEED_API, {today:isoOf(todayN())}); FEED.ev = j.events || []; FEED.err = ''; }
   catch (e) { FEED.err = e.message || 'нет связи'; if (!FEED.ev) FEED.ev = []; }
   FEED.busy = false; FEED.at = Date.now();
-  if (S.tab === 'friends' || S.tab === 'home') render();
+  if (sheetCtx && sheetCtx.type === 'feed') { const l = $('#feedlist'); if (l) l.innerHTML = feedListHTML(); document.querySelectorAll('[data-act=feedref]').forEach(b => b.classList.remove('spin')); }
+  if (S.tab === 'home') render();
 }
 const actName = k => ((ACTS.find(a => a[0] === k) || ACTS[0])[1]).toLowerCase();
 function feedTime(iso){ const d = new Date(iso); return isNaN(d) ? '' : d.toTimeString().slice(0, 5); }
@@ -1766,6 +1771,16 @@ function feedTickerHTML(){
   return `<div class="fticker" data-act="feedgo" role="button" aria-label="Открыть ленту друзей"><div class="ft-cap">${IC('friends', 14)}Лента друзей<span>${IC('chev', 14)}</span></div>
     <div class="ft-win"><div class="ft-slot" id="ft-slot">${feedItemHTML(FEED.ev[FEED.i], FEED.i)}</div></div></div>`;
 }
+function feedSheetHTML(){
+  return `<div class="fs-head"><h2 style="margin:0">Лента друзей</h2><span class="cap">за 2 недели</span>
+    <button type="button" class="ib round" data-act="feedref" aria-label="Обновить">${IC('repeat', 18)}</button></div><div id="feedlist">${feedListHTML()}</div>`;
+}
+function openFeed(){
+  openSheet(feedSheetHTML(), {type:'feed'});
+  $('#sheet').classList.add('full');
+  if (!FR.data) loadFriends();
+  loadFeed(true);
+}
 function startTicker(){
   clearInterval(FEED.tick);
   if (!FEED.ev || FEED.ev.length < 2) return;
@@ -1795,8 +1810,6 @@ function viewFriends(){
   h += `<div class="reveal${S.inv ? ' open' : ''}" id="inv"><div><div class="card"><h3>${IC('friends')}Пригласить друга</h3><div class="muted" style="margin:-4px 0 12px">Отправь ссылку — друг откроет её, и вы сразу станете друзьями. Или впиши код либо @ник друга.</div>
     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn primary small" data-act="frshare">${IC('export', 16)}Отправить в Telegram</button><button class="btn ghost small" data-act="frcode">Мой код: ${esc(d.code)}</button></div>
     <div class="codein"><input class="inp" id="fr-code" placeholder="Код или @ник друга" maxlength="24" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn ghost small" data-act="fradd">${IC('plus', 16)}Добавить</button></div></div></div></div>`;
-  loadFeed();
-  h += `<div class="card" id="feed"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px"><h3 style="margin:0">${IC('friends')}Лента друзей</h3><span class="cap">2 недели</span></div>${feedListHTML()}</div>`;
   { const en = d.gift_energy, mg = d.my_gifts || {};
     // компактная строка: витрина подарков — только в профиле человека (v1.420)
     const pn = (mg.pending || []).length;
@@ -2201,6 +2214,7 @@ function openSheet(html, ctx){
 }
 function closeSheet(){
   $('#sw').classList.remove('open');
+  setTimeout(() => { if (!sheetCtx) $('#sheet').classList.remove('full'); }, 340);
   sheetCtx = null;
   if (document.activeElement) document.activeElement.blur();
   try { if (ver('6.1')) tg.BackButton.hide(); } catch (e) {}
@@ -2381,9 +2395,8 @@ const ACT = {
   repeat: () => { const l = lastWorkout(); openWorkout(null, l, l ? 'Параметры из прошлой тренировки — поправь, если нужно' : ''); },
   wedit: el => { const w = findW(el.dataset.id); if (w) openWorkout(w); },
   wsave: saveWorkout, wdel: delWorkout,
-  feedgo: e => { if (e && e.closest && e.closest('[data-act="flike"],[data-act="gview"]') && e !== document.querySelector('.fticker')) return;
-    hap.tap(); S.tab = 'friends'; S.meSet = false; render(); loadFriends();
-    setTimeout(() => { const f = $('#feed'); if (f) f.scrollIntoView({behavior:'smooth', block:'start'}); }, 60); },
+  feedgo: () => { hap.imp(); openFeed(); },
+  feedref: el => { hap.tap(); el.classList.add('spin'); loadFeed(true); },
   flike: async el => {
     const ev = FEED.ev && FEED.ev[+el.dataset.i]; if (!ev || !ev.post) return;
     const on = !ev.liked; ev.liked = on; ev.likes = Math.max(0, (+ev.likes || 0) + (on ? 1 : -1));
