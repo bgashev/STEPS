@@ -396,6 +396,11 @@ input[type=date].inp{display:block}
 .nmrow{display:flex;align-items:center;gap:6px;min-width:0}
 .nmrow .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nbadge{display:inline-flex;flex:none;color:var(--accent)}
+.bdg{display:inline-flex;flex:none;vertical-align:middle}
+.bdg:empty{display:none}
+.crw:empty{display:none}
+.crt{display:inline-flex;align-items:center;margin-top:6px;padding:4px 10px 4px 9px;border-radius:999px;font-size:10px;font-weight:850;letter-spacing:.12em;
+  color:var(--on-accent);background:linear-gradient(120deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#fff));box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
 .nbadge svg{display:block}
 .wdock{position:fixed;right:max(16px,calc(50% - 264px));bottom:calc(84px + env(safe-area-inset-bottom));z-index:9;display:flex;align-items:center;gap:10px;
   animation:plIn .35s ease both}
@@ -519,6 +524,18 @@ input[type=date].inp{display:block}
 .acts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 16px}
 .act{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px 12px;border-radius:22px;border:1px solid var(--border);background:var(--surface);font-weight:700;font-size:12.5px;text-align:center;animation:fadeUp .35s backwards}
 .act .ai{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent)}
+.sl{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.slr{display:grid;grid-template-columns:26px 44px 1fr 44px 30px;align-items:center;gap:8px;animation:plIn .25s ease both}
+.slr.new{animation:slNew .35s cubic-bezier(.2,.9,.3,1.3) both}
+@keyframes slNew{from{opacity:0;transform:translateY(-6px) scale(.96)}to{opacity:1;transform:none}}
+.sln{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;color:var(--muted);background:var(--surface2)}
+.slb{height:44px;border-radius:14px;border:1px solid var(--border);background:var(--surface2);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:transform .1s}
+.slb:active{transform:scale(.9)}
+.sli{height:44px;border-radius:14px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-size:19px;font-weight:800;text-align:center;width:100%;min-width:0;-moz-appearance:textfield}
+.sli::-webkit-outer-spin-button,.sli::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.sli:focus{outline:none;border-color:var(--accent)}
+.slx{width:30px;height:30px;border:0;border-radius:50%;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer}
+.sl-btns{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
 .act.soon{border-style:dashed;color:var(--muted);background:transparent}
 .act.soon .ai{background:var(--surface2);color:var(--muted);opacity:.7}
 .act.soon::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,var(--accent-soft) 50%,transparent 70%);transform:translateX(-100%);animation:skm 3.2s ease-in-out infinite}
@@ -614,15 +631,25 @@ const THEMES = {
   light:{bg:"#F5F5F8",surface:"#FFFFFF",surface2:"#EFEFF4",border:"#E3E3EA",text:"#1D1D24",muted:"#8A8A98",off:"#DEDEE6"},
   dark:{bg:"#121216",surface:"#1A1A20",surface2:"#24242C",border:"#2C2C36",text:"#F1F1F5",muted:"#8B8B99",off:"#34343F"},
   black:{bg:"#050507",surface:"#0E0E12",surface2:"#18181D",border:"#212128",text:"#F4F4F7",muted:"#878794",off:"#27272F"}};
-const ACTS = [['run','Бег / ходьба',1],['dumbbell','Гантели',1],['squat','Приседания',1],['pushup','Отжимания',1],['bike','Велосипед'],['yoga','Растяжка / йога'],['plank','Планка',1],['burpee','Бёрпи'],['pullup','Подтягивания',1]];
+const ACTS = [['run','Бег / ходьба',1],['dumbbell','Гантели',1],['squat','Приседания',1],['pushup','Отжимания',1],['bike','Велосипед',1],['yoga','Растяжка / йога',1],['plank','Планка',1],['burpee','Бёрпи',1],['pullup','Подтягивания',1]];
 // v1.420: силовые — act: [что в подходе, максимум, очков за единицу, MET]; те же правила, что на сервере
-const STR = {pushup:['reps', 200, 0.5, 8], squat:['reps', 300, 0.35, 5.5], pullup:['reps', 100, 1.2, 8], plank:['secs', 900, 1 / 6, 3.8], dumbbell:['reps', 100, 0.3, 6]};
+const STR = {pushup:['reps', 200, 0.5, 8], squat:['reps', 300, 0.35, 5.5], pullup:['reps', 100, 1.2, 8], plank:['secs', 900, 1 / 6, 3.8], dumbbell:['reps', 100, 0.3, 6], burpee:['reps', 100, 1.0, 8]};
 const isStr = w => !!(w && STR[w.act]);
+// v1.421: по времени — act: [очков за минуту, макс. скорость (0 — без скорости), MET]
+const TIMEA = {bike:[0.9, 45, 7], yoga:[0.6, 0, 2.5]};
+const isTime = w => !!(w && TIMEA[w.act]);
+// подходы могут быть разными: sl = [12, 10, 8]; старые записи — sets × reps
+function slOf(w){ const st = STR[w.act]; if (!st) return []; if (Array.isArray(w.sl) && w.sl.length) return w.sl.map(x => +x || 0);
+  const n = +w.sets || 0, v = +(st[0] === 'secs' ? w.secs : w.reps) || 0; return Array.from({length:n}, () => v); }
+const strTotal = w => slOf(w).reduce((a, x) => a + x, 0);
 function strMin(act, sets, per){ return Math.max(1, Math.min(240, Math.ceil((sets * per * (STR[act][0] === 'secs' ? 1 : 3) + Math.max(0, sets - 1) * 60) / 60))); }
-function strText(w){ const st = STR[w.act]; if (!st) return ''; const per = +(st[0] === 'secs' ? w.secs : w.reps) || 0;
-  return `${+w.sets || 0} × ${per}${st[0] === 'secs' ? ' сек' : ''}${w.act === 'dumbbell' && +w.kg ? ` × ${num(+w.kg)} кг` : ''}`; }
+function strMinL(act, sl){ const tot = sl.reduce((a, x) => a + x, 0); return Math.max(1, Math.min(240, Math.ceil((tot * (STR[act][0] === 'secs' ? 1 : 3) + Math.max(0, sl.length - 1) * 60) / 60))); }
+function strText(w){ const st = STR[w.act]; if (!st) return ''; const sl = slOf(w), u = st[0] === 'secs' ? ' сек' : '', kg = w.act === 'dumbbell' && +w.kg ? ` × ${num(+w.kg)} кг` : '';
+  if (sl.length && sl.some(x => x !== sl[0])) return `${sl.join(' · ')}${u}${kg} = ${strTotal(w)}${u}`;
+  return `${sl.length} × ${sl[0] || 0}${u}${kg}`; }
 function strBad(w){ const st = STR[w.act], n = +w.sets, v = +(st[0] === 'secs' ? w.secs : w.reps), kg = +(w.kg || 0);
-  return Number.isInteger(n) && n >= 1 && n <= 20 && v >= 1 && v <= st[1] && kg >= 0 && kg <= 150 ? null : 'Проверь подходы и повторы: от 1 до 20 подходов, повторы в разумных пределах'; }
+  const okL = !Array.isArray(w.sl) || (w.sl.length === n && w.sl.every(x => Number.isInteger(+x) && +x >= 1 && +x <= st[1]));
+  return okL && Number.isInteger(n) && n >= 1 && n <= 20 && (Array.isArray(w.sl) || (v >= 1 && v <= st[1])) && kg >= 0 && kg <= 150 ? null : `Проверь подходы: от 1 до 20, в каждом от 1 до ${st[1]}${st[0] === 'secs' ? ' сек' : ''}`; }
 function actOf(w){ return (w && w.act) || 'run'; }
 const FEEL = {1:["Тяжело","#EF6B73"],2:["Так себе","#F59E6C"],3:["Нормально","#F2D064"],4:["Хорошо","#A9DC8A"],5:["Отлично","#5FC98A"]};
 const GREEN="#5FC98A", RED="#EF6B73", YELLOW="#F2D064", BLUE="#7FB5FF";
@@ -724,7 +751,8 @@ function weightAt(iso){
   while (lo <= hi) { const mid = (lo + hi) >> 1; if (w[mid].date <= iso) { ans = mid; lo = mid + 1; } else hi = mid - 1; }
   return +(ans >= 0 ? w[ans] : w[0]).kg;
 }
-const kcal = w => { const st = STR[w.act]; if (st) { const kg = weightAt(w.date); return kg ? Math.round(st[3] * kg * (+w.minutes || 0) / 60) : 0; } return walkKcal(w.speed, w.incline, w.minutes, weightAt(w.date)); };
+const kcal = w => { const tm = TIMEA[w.act]; if (tm) { const kg = weightAt(w.date); return kg ? Math.round(tm[2] * kg * (+w.minutes || 0) / 60) : 0; }
+  const st = STR[w.act]; if (st) { const kg = weightAt(w.date); return kg ? Math.round(st[3] * kg * (+w.minutes || 0) / 60) : 0; } return walkKcal(w.speed, w.incline, w.minutes, weightAt(w.date)); };
 function ageOf(birth){
   if (!birth || !ISO_RE.test(birth)) return null;
   const [y,m,d] = birth.split('-').map(Number), t = new Date();
@@ -1557,9 +1585,10 @@ function checkRewards(){
 /* ============================================================ уровни ==== */
 function workoutXp(w){
   const st = STR[w.act];
-  if (st) { const tot = (+w.sets || 0) * (+(st[0] === 'secs' ? w.secs : w.reps) || 0), kgf = w.act === 'dumbbell' ? 1 + clamp(+w.kg || 0, 0, 150) / 20 : 1;
+  if (st) { const tot = strTotal(w), kgf = w.act === 'dumbbell' ? 1 + clamp(+w.kg || 0, 0, 150) / 20 : 1;
     return tot > 0 ? Math.max(3, Math.min(150, Math.round(tot * st[2] * kgf))) : 0; }
   const m = clamp(+w.minutes || 0, 0, 240); if (m < 1) return 0;
+  if (TIMEA[w.act]) return Math.max(3, Math.min(150, Math.round(m * TIMEA[w.act][0])));
   const sp = Math.max(1, +w.speed || 5), inc = Math.max(0, +w.incline || 0);
   return Math.max(3, Math.min(150, Math.round(m * Math.pow(sp / 5, 0.8) * (1 + inc * 0.06))));
 }
@@ -1576,6 +1605,7 @@ function acCheck(data, item){   // null — можно сохранить, ин�
   if (t - d > AC.backDays) return 'Задним числом — максимум на 2 дня назад';
   if (!(data.minutes >= AC.minMin && data.minutes <= AC.maxMin)) return `Время — от ${AC.minMin} до ${AC.maxMin} минут`;
   if (isStr(data)) { const b = strBad(data); if (b) return b; }
+  else if (isTime(data)) { if (!(data.speed >= 0 && data.speed <= TIMEA[data.act][1])) return `Скорость — до ${TIMEA[data.act][1]} км/ч`; }
   else if (!(data.speed >= AC.minSpeed && data.speed <= AC.maxSpeed)) return `Скорость — от ${num(AC.minSpeed)} до ${AC.maxSpeed} км/ч`;
   else if (!(data.incline >= 0 && data.incline <= AC.maxIncline)) return `Уклон — от 0 до ${AC.maxIncline}%`;
   const same = valid().filter(w => w !== item && w.date === data.date);
@@ -1587,7 +1617,7 @@ function honestWs(ws){   // для очков: только то, что про�
   const t = todayN(), per = new Map();
   return ws.filter(w => { const d = dn(w.date), m = +w.minutes || 0, s = +w.speed || 0, i = +w.incline || 0;
       if (d > t || !(m >= AC.minMin && m <= AC.maxMin)) return false;
-      if (isStr(w) ? strBad(w) : (!(s >= AC.minSpeed && s <= AC.maxSpeed) || !(i >= 0 && i <= AC.maxIncline))) return false;
+      if (isStr(w) ? strBad(w) : isTime(w) ? !(s >= 0 && s <= TIMEA[w.act][1]) : (!(s >= AC.minSpeed && s <= AC.maxSpeed) || !(i >= 0 && i <= AC.maxIncline))) return false;
       if (w.created && Math.floor(w.created / 86400) - d > AC.backDays + 1) return false;
       return true; })
     .sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (a.created || 0) - (b.created || 0))
@@ -1667,14 +1697,14 @@ async function openPublicProfile(handle){
   openSheet(`<div id="pub"><div class="sk" style="height:140px"><i class="c"></i><span class="ln"><i></i><i></i></span></div></div>`, {type:'pub'});
   try {
     const j = await apiAuth('/profile/public', {handle, today:isoOf(todayN())});
-    const el = $('#pub'); if (!el) return;
+    const el = $('#pub'); if (!el) return; askBadges([j.tg_id]);
     if (j.status !== 'ok') { el.innerHTML = `<h2>Профиль не найден</h2><div class="muted">Похоже, @${esc(handle)} сменил(а) ник.</div>`; return; }
     if (!FR.phTried.has(j.tg_id)) { FR.phTried.add(j.tg_id); apiAuth('/friends/photo', {tg_id:j.tg_id}).then(r => { if (r.ok) { FR.ph.set(j.tg_id, 'data:image/jpeg;base64,' + r.b64); putPhoto(j.tg_id); } }).catch(() => {}); }
     const lv = j.level, btn = j.state === 'me' ? `<div class="cap" style="text-align:center">Это твой профиль 🙂</div>`
       : j.state === 'friend' ? `<button class="btn ghost" style="width:100%" data-act="frprof" data-id="${j.tg_id}">${IC('check', 16)}Вы друзья — открыть профиль</button>`
       : j.state === 'requested' ? `<div class="cap" style="text-align:center">Заявка уже отправлена</div>`
       : `<button class="btn primary" style="width:100%" data-act="frreq" data-id="${j.tg_id}">${IC('plus', 16)}${j.state === 'incoming' ? 'Принять заявку' : 'Добавить в друзья'}</button>`;
-    el.innerHTML = `<div class="fp-head">${favHTML(j)}<div style="flex:1;min-width:0"><h2 style="margin:0">${esc(j.name)}</h2><div class="cap">@${esc(j.handle)}</div>
+    el.innerHTML = `<div class="fp-head">${favHTML(j)}<div style="flex:1;min-width:0"><h2 class="nmrow" style="margin:0"><span class="nm">${esc(j.name)}</span>${bdgHTML(j.tg_id, 18)}</h2>${creatorHTML(j.tg_id)}<div class="cap">@${esc(j.handle)}</div>
       <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div></div>
       <div class="card" style="margin-top:12px"><div class="tot"><div><b>${j.total == null ? '—' : j.total}</b><span class="cap">тренировок</span></div><div><b>${j.friends_count}</b><span class="cap">друзей</span></div><div><b>${(j.gift_kinds || []).length}/${GIFT_KEYS.length}</b><span class="cap">подарков</span></div></div></div>
       ${(j.gift_kinds || []).length ? `<div class="card"><h3>${IC('gift')}Коллекция подарков</h3>${giftShelf(j.gift_kinds, 20, j.name)}</div>` : ''}${btn}`;
@@ -1713,7 +1743,7 @@ async function loadFriends(){
   if (!inTG || FR.loading) return;
   FR.loading = true;
   let changed = true;
-  try { const j = await apiAuth('/friends', {today:isoOf(todayN())}); const sig = JSON.stringify(j); changed = sig !== FR.sig || !!FR.err; FR.sig = sig; FR.data = j; FR.err = ''; if (changed) lsSet(FRK, j); if (j.my_gifts) setGifts(j.my_gifts);
+  try { const j = await apiAuth('/friends', {today:isoOf(todayN())}); const sig = JSON.stringify(j); changed = sig !== FR.sig || !!FR.err; FR.sig = sig; FR.data = j; FR.err = ''; askBadges([...(j.friends || []).map(x => x.tg_id), j.me && j.me.tg_id, ...(j.requests || []).map(x => x.tg_id)]); if (changed) lsSet(FRK, j); if (j.my_gifts) setGifts(j.my_gifts);
     const n = (j.friends || []).length; if (db.settings.friends_n !== n) { db.settings.friends_n = n; persist(); } }
   catch (e) { FR.err = e.message || 'нет связи'; }
   FR.loading = false;
@@ -1724,7 +1754,7 @@ function fofHTML(x){
   const btn = x.state === 'me' ? `<span class="cap">это ты</span>` : x.state === 'friend' ? `<span class="cap" style="color:var(--green)">${IC('check', 13)} друзья</span>` : x.state === 'requested' ? `<span class="cap">заявка отправлена</span>`
     : `<button class="btn ghost small" data-act="frreq" data-id="${x.tg_id}">${IC('plus', 14)}${x.state === 'incoming' ? 'Принять' : 'Добавить'}</button>`;
   const go = x.state === 'me' ? 'gome' : x.state === 'friend' ? 'frprof' : x.handle ? 'pubprof' : '';
-  return `<div class="fof${go ? ' tap' : ''}" data-id="${x.tg_id}"${go ? ` data-act="${go}"` : ''}${x.handle ? ` data-h="${esc(x.handle)}"` : ''}>${favHTML(x)}<span class="nm">${esc(x.name)}</span>${btn}${go ? `<span class="fofc">${IC('chev', 14)}</span>` : ''}</div>`;
+  return `<div class="fof${go ? ' tap' : ''}" data-id="${x.tg_id}"${go ? ` data-act="${go}"` : ''}${x.handle ? ` data-h="${esc(x.handle)}"` : ''}>${favHTML(x)}<span class="nm">${esc(x.name)}</span>${bdgHTML(x.tg_id, 14)}${btn}${go ? `<span class="fofc">${IC('chev', 14)}</span>` : ''}</div>`;
 }
 async function openZoom(id){
   const f = (FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me.tg_id === id ? FR.data.me : null))); if (!f) return;
@@ -1766,7 +1796,7 @@ const FEED = {ev:null, at:0, busy:false, err:'', tick:null, i:0};
 async function loadFeed(force){
   if (!inTG || FEED.busy || (!force && FEED.ev && Date.now() - FEED.at < 90000)) return;
   FEED.busy = true;
-  try { const j = await apiAuth(FEED_API, {today:isoOf(todayN())}); FEED.ev = (j.events || []).filter(e => !(e.user || {}).me); FEED.err = ''; lsSet(FDK, FEED.ev.slice(0, 40)); }   // свои новости не показываем
+  try { const j = await apiAuth(FEED_API, {today:isoOf(todayN())}); FEED.ev = (j.events || []).filter(e => !(e.user || {}).me); FEED.err = ''; askBadges(FEED.ev.map(e => (e.user || {}).tg_id)); lsSet(FDK, FEED.ev.slice(0, 40)); }   // свои новости не показываем
   catch (e) { FEED.err = e.message || 'нет связи'; if (!FEED.ev) FEED.ev = []; }
   FEED.busy = false; FEED.at = Date.now();
   if (sheetCtx && sheetCtx.type === 'feed') { const l = $('#feedlist'); if (l) l.innerHTML = feedListHTML(); document.querySelectorAll('[data-act=feedref]').forEach(b => b.classList.remove('spin')); }
@@ -1776,7 +1806,7 @@ const actName = k => ((ACTS.find(a => a[0] === k) || ACTS[0])[1]).toLowerCase();
 function feedTime(iso){ const d = new Date(iso); return isNaN(d) ? '' : d.toTimeString().slice(0, 5); }
 function feedDay(iso){ const d = new Date(iso); return isNaN(d) ? '' : `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 function feedText(ev){
-  const u = ev.user || {}, d = ev.data || {}, n = u.me ? 'Ты' : esc(u.name || '?');
+  const u = ev.user || {}, d = ev.data || {}, n = (u.me ? 'Ты' : esc(u.name || '?')) + bdgHTML(u.tg_id, 13);
   if (ev.type === 'workout') {
     const sub = [];
     if (d.sets) sub.push(strText(d));
@@ -1883,7 +1913,7 @@ function viewFriends(){
     const gl = g.done_today ? `<span class="gok">${IC('check', 12)}норма</span>` : g.prev_ok ? `<span class="gok">${IC('check', 12)}закрыта</span>` : `норма ${g.shown}/${g.target}`;
     const last = f.last ? `${agoText(f.last.date)} · ${f.last.minutes} мин` : 'ещё не тренировался';
     const sub = [f.level ? `<span style="color:${tierColor(f.level.level)};font-weight:700">${tierOf(f.level.level).title}</span>` : '', f.handle ? '@' + esc(f.handle) : f.username ? '@' + esc(f.username) : ''].filter(Boolean).join(' · ');
-    return `<div class="fc" data-act="frprof" data-id="${f.tg_id}" style="animation-delay:${Math.min(i, 10) * 40}ms">${favHTML(f)}<div class="fm"><div><b>${esc(f.name)}</b>${f.private ? IC('lock', 12) : ''}${g.run >= 2 ? `<span class="fstreak">${IC('flame', 12)}${g.run}</span>` : ''}</div>
+    return `<div class="fc" data-act="frprof" data-id="${f.tg_id}" style="animation-delay:${Math.min(i, 10) * 40}ms">${favHTML(f)}<div class="fm"><div><b>${esc(f.name)}</b>${bdgHTML(f.tg_id, 14)}${f.private ? IC('lock', 12) : ''}${g.run >= 2 ? `<span class="fstreak">${IC('flame', 12)}${g.run}</span>` : ''}</div>
       ${sub ? `<div class="l3">${sub}</div>` : ''}<div class="l2">${fmtMin(f.week.minutes)} за 7 дней · ${gl}</div><div class="l3">${last}</div></div>
       <button class="rm gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 17)}</button><button class="rm" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 16)}</button></div>`;
   }).join('');
@@ -1900,6 +1930,7 @@ async function openFriendProfile(id){
   catch (e) { const el = $('#fp-load'); if (el) el.textContent = 'Не удалось загрузить: ' + e.message; }
 }
 async function loadFofPhotos(j){
+  askBadges([j && j.tg_id, ...((j && j.friends) || []).map(x => x.tg_id)]);
   for (const x of (j.friends || [])) {
     if (FR.phTried.has(x.tg_id)) continue; FR.phTried.add(x.tg_id);
     try { const r = await apiAuth('/friends/photo', {tg_id:x.tg_id}); if (r.ok) { FR.ph.set(x.tg_id, 'data:image/jpeg;base64,' + r.b64); putPhoto(x.tg_id); } } catch (e) {}
@@ -1907,7 +1938,7 @@ async function loadFofPhotos(j){
 }
 function friendSheetHTML(f, j, loading, self){
   const lv = f.level || xpLevel(0), g = f.goal, ok = g.done_today || g.prev_ok, shown = g.done_today ? g.target : g.shown;
-  let h = `<div class="fp-head"><span data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span><div style="flex:1;min-width:0"><h2 style="margin:0">${esc(f.name)}</h2>${f.handle || f.username ? `<div class="cap">@${esc(f.handle || f.username)}</div>` : ''}
+  let h = `<div class="fp-head"><span data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span><div style="flex:1;min-width:0"><h2 class="nmrow" style="margin:0"><span class="nm">${esc(f.name)}</span>${bdgHTML(f.tg_id, 18)}</h2>${f.handle || f.username ? `<div class="cap">@${esc(f.handle || f.username)}</div>` : ''}${creatorHTML(f.tg_id)}
     <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div>${self ? '' : `<button class="rmx" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 18)}</button><button class="rmx gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 17)}</button><button class="rmx" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button>`}</div>
     <div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div>`;
   if (j && j.friends) FR.prof = j.friends;
@@ -2022,9 +2053,9 @@ function historyHTML(ws){
     if (hs === 'date' && k !== prev) { prev = k; const g = months.get(k), [y, m] = k.split('-').map(Number);
       h += `<div class="mh">${MONF[m-1][0].toUpperCase() + MONF[m-1].slice(1)} ${y}<span>${npw(g.length, W_WORK)} · ${fmtMin(sum(g, x => x.minutes))} · ${kmF(sum(g, kmOf))}</span></div>`; }
     const d = dn(w.date), [, , dd] = ymd(d), f = clamp(parseInt(w.feeling) || 3, 1, 5), kc = kcal(w);
-    const l2 = [isStr(w) ? `+${workoutXp(w)} XP` : `≈ ${kmF(kmOf(w))}`]; if (kc) l2.push(`≈ ${kcalF(kc)}`); if (w.note) l2.push(esc(w.note));
+    const l2 = [isStr(w) || (isTime(w) && !+w.speed) ? `+${workoutXp(w)} XP` : `≈ ${kmF(kmOf(w))}`]; if (kc) l2.push(`≈ ${kcalF(kc)}`); if (w.note) l2.push(esc(w.note));
     h += `<div class="wi" data-act="wedit" data-id="${esc(w.id)}" style="animation-delay:${Math.min(i, 10) * 35}ms"><span class="wa">${IC(actOf(w), 19)}</span><div class="wd"><b>${dd}</b><small>${MON[ymd(d)[1]-1]} · ${WD[wdOf(d)]}</small></div>
-      <div class="wm"><div class="l1">${isStr(w) ? `${esc((ACTS.find(a => a[0] === w.act) || ACTS[0])[1])} · ${strText(w)}` : `${num(w.speed)} км/ч · ${num(w.incline)}% · ${w.minutes} мин`}</div><div class="l2">${l2.join(' · ')}</div></div>
+      <div class="wm"><div class="l1">${isStr(w) ? `${esc((ACTS.find(a => a[0] === w.act) || ACTS[0])[1])} · ${strText(w)}` : isTime(w) ? `${esc((ACTS.find(a => a[0] === w.act) || ACTS[0])[1])} · ${w.minutes} мин${+w.speed ? ` · ${num(w.speed)} км/ч` : ''}` : `${num(w.speed)} км/ч · ${num(w.incline)}% · ${w.minutes} мин`}</div><div class="l2">${l2.join(' · ')}</div></div>
       <div class="wr">${dotsHTML(f, 8)}<small style="color:${FEEL[f][1]}">${FEEL[f][0]}</small></div></div>`;
   });
   if (sorted.length > S.limit) h += `<button class="btn ghost small more" data-act="more">Показать ещё (осталось ${sorted.length - S.limit})</button>`;
@@ -2151,6 +2182,30 @@ function badgeHTML(kind, size = 18){
   return `<span class="nbadge" title="Подтверждённый профиль" style="width:${size}px;height:${size}px"><svg viewBox="0 0 347 347" width="${size}" height="${size}">${BADGE_SVG[k]}</svg></span>`;
 }
 const ME = {prof:null, at:0, busy:false};
+/* v1.421: галочка — только у PRO-подписчиков и у создателя; у создателя ещё плашка CREATOR OF "VOOB" */
+const BADGES_API = FEED_API.replace(/voob-feed$/, 'voob-badges');
+const BDK = 'voob_badges_' + UK;
+const BDG = new Map(Object.entries(lsGet(BDK) || {}).map(([k, v]) => [+k, v]));
+const BDG_ASKED = new Set(); let bdgTimer = null; const bdgQueue = new Set();
+function bdgHTML(id, size = 16){ return `<span class="bdg" data-bid="${+id || 0}" data-sz="${size}">${bdgInner(id, size)}</span>`; }
+function bdgInner(id, size = 16){ const b = BDG.get(+id); return b && b.v ? badgeHTML('verified', size) : ''; }
+function creatorHTML(id){ return `<span class="crw" data-cid="${+id || 0}">${creatorInner(id)}</span>`; }
+function creatorInner(id){ const b = BDG.get(+id); return b && b.creator ? '<span class="crt">CREATOR OF "VOOB"</span>' : ''; }
+function askBadges(ids){
+  if (!inTG) return;
+  for (const id of ids || []) { const n = +id; if (n && !BDG_ASKED.has(n)) bdgQueue.add(n); }
+  if (!bdgQueue.size || bdgTimer) return;
+  bdgTimer = setTimeout(async () => {
+    const list = [...bdgQueue]; bdgQueue.clear(); bdgTimer = null; list.forEach(x => BDG_ASKED.add(x));
+    try {
+      const j = await apiAuth(BADGES_API, {ids:list});
+      for (const id of list) { const b = (j.badges || {})[id]; if (b) BDG.set(id, b); else BDG.delete(id); }
+      lsSet(BDK, Object.fromEntries(BDG));
+      document.querySelectorAll('.bdg[data-bid]').forEach(el => { el.innerHTML = bdgInner(el.dataset.bid, +el.dataset.sz || 16); });
+      document.querySelectorAll('.crw[data-cid]').forEach(el => { el.innerHTML = creatorInner(el.dataset.cid); });
+    } catch (e) { list.forEach(x => BDG_ASKED.delete(x)); }
+  }, 120);
+}
 function viewMe(){
   if (S.meSet || !inTG) return (inTG ? `<div class="mset-top"><button class="ib round" data-act="mesback" aria-label="Назад к профилю">${IC('back', 20)}</button><b>Настройки</b></div>` : '') + viewMeSettings();
   const me = FR.data && FR.data.me;
@@ -2166,6 +2221,7 @@ function viewMe(){
   return h + `<div class="me-prof">${friendSheetHTML(f, ME.prof, !ME.prof, true)}</div>`;
 }
 async function loadMyProfile(id){
+  askBadges([id]);
   ME.busy = true;
   try { ME.prof = await apiAuth('/friends/profile', {tg_id:id, today:isoOf(todayN())}); ME.at = Date.now(); }
   catch (e) { ME.at = Date.now(); }
@@ -2177,7 +2233,7 @@ function viewMeSettings(){
   const age = ageOf(p.birth), kg = currentWeight(), hgt = +p.height || 0, b = bmiOf(kg, hgt), bmr = bmrOf(kg, hgt, age, p.sex);
   const lv = myLevel();
   let h = `<div class="prof"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
-    <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${name ? badgeHTML((db.settings || {}).badge, 20) : ''}</h1>${syncHTML()}</div></div>`;
+    <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}${syncHTML()}</div></div>`;
   h += `<div class="card"><h3>${IC('medal')}Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></h3><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div>
     <div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1} · всего ${numSep(lv.xp)}</div>
     <div class="cap" style="margin-top:6px">Очки дают тренировки: чем дольше, быстрее и круче уклон — тем больше. Ещё +100 за каждый новый вид подарка от друзей. С каждым уровнем следующий чуть дороже.</div></div>`;
@@ -2290,9 +2346,12 @@ function openWorkout(w, preset, hint, act){
   const src = w || preset || {}, date = w ? w.date : isoOf(todayN()), f = clamp(parseInt(src.feeling) || 3, 1, 5);
   act = act || actOf(src); const st = STR[act], same = src.act === act;
   openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${w ? 'Редактирование' : 'Новая тренировка'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}</div></div></div>${hint ? `<div class="hint">${hint}</div>` : ''}
-    ${st ? `<div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label>
-      ${stepper('sets', 'Подходы', (same && +src.sets) || 3, 1, 20, 1, 0, '')}</div>
-    <div class="g2">${stepper('per', st[0] === 'secs' ? 'Секунд в подходе' : 'Повторы в подходе', (same && +(st[0] === 'secs' ? src.secs : src.reps)) || (st[0] === 'secs' ? 45 : 12), 1, st[1], st[0] === 'secs' ? 5 : 1, 0, st[0] === 'secs' ? 'сек' : 'повт.')}${act === 'dumbbell' ? stepper('kg', 'Вес гантели', (same && +src.kg) || 5, 0, 150, 0.5, 1, 'кг') : '<span></span>'}</div>`
+    ${st ? `<div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label><span></span></div>
+      <div class="f"><span>Подходы · ${st[0] === 'secs' ? 'секунд в каждом' : 'повторов в каждом'}</span><div class="sl" id="f-sl">${slRowsHTML(same && slOf(src).length ? slOf(src) : (act === 'pullup' ? [8, 7, 6] : st[0] === 'secs' ? [45, 45, 45] : [12, 12, 12]), st)}</div>
+        <div class="sl-btns"><button type="button" class="btn ghost small" data-act="sladd">${IC('plus', 15)}Ещё подход</button><span class="cap" id="sl-sum"></span></div></div>
+    <div class="g2">${act === 'dumbbell' ? stepper('kg', 'Вес гантели', (same && +src.kg) || 5, 0, 150, 0.5, 1, 'кг') : '<span></span>'}</div>`
+    : TIMEA[act] ? `<div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label>${stepper('minutes', 'Время', (same && src.minutes) || (act === 'yoga' ? 20 : 40), 1, 240, 1, 0, 'мин')}</div>
+    ${TIMEA[act][1] ? `<div class="g2">${stepper('speed', 'Средняя скорость', (same && +src.speed) || 18, 0, TIMEA[act][1], 0.5, 1, 'км/ч')}<span></span></div>` : ''}`
     : `<div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label>
     ${stepper('incline', 'Уклон', src.incline != null ? src.incline : 0, 0, 15, 1, 0, '%')}</div>
     <div class="g2">${stepper('minutes', 'Время', src.minutes || 30, 1, 240, 1, 0, 'мин')}${stepper('speed', 'Скорость', src.speed || 4.5, 0.5, 12, 0.1, 1, 'км/ч')}</div>`}
@@ -2302,14 +2361,31 @@ function openWorkout(w, preset, hint, act){
     <div class="sheet-btns">${w ? `<button class="btn ghost danger" data-act="wdel">${IC('trash')}</button>` : ''}${acLocked(w) ? `<div class="hint" style="margin:0;align-self:center">${IC('lock', 13)} Старше 2 дней — менять нельзя, только удалить</div>` : `<button class="btn primary" data-act="wsave">Сохранить</button>`}</div>`, {type:'workout', item:w, act});
   updPreview();
 }
+function slRowsHTML(sl, st){
+  const step = st[0] === 'secs' ? 5 : 1;
+  return sl.map((v, i) => `<div class="slr" style="animation-delay:${i * 30}ms"><span class="sln">${i + 1}</span>
+    <button type="button" class="slb" data-act="slstep" data-i="${i}" data-d="${-step}" aria-label="Меньше">${IC('minus', 16)}</button>
+    <input class="sli" type="number" inputmode="numeric" min="1" max="${st[1]}" value="${v}" data-i="${i}">
+    <button type="button" class="slb" data-act="slstep" data-i="${i}" data-d="${step}" aria-label="Больше">${IC('plus', 16)}</button>
+    ${sl.length > 1 ? `<button type="button" class="slx" data-act="sldel" data-i="${i}" aria-label="Убрать подход">${IC('close', 14)}</button>` : '<span class="slx"></span>'}</div>`).join('');
+}
+function slRead(){ const st = STR[sheetCtx && sheetCtx.act]; if (!st) return []; return [...document.querySelectorAll('#f-sl .sli')].map(i => clamp(Math.round(+i.value || 0), 1, st[1])); }
+function slRedraw(sl){ const st = STR[sheetCtx.act], box = $('#f-sl'); if (!box) return; box.innerHTML = slRowsHTML(sl, st); updPreview(); }
 function updPreview(){
   const el = $('#f-prev'); if (!el) return;
   const act = sheetCtx && sheetCtx.act, st = STR[act];
   if (st) {
-    const n = stpVal('sets'), v = stpVal('per'), mi = strMin(act, n, v), d = ($('#f-date') || {}).value || isoOf(todayN()), kg = weightAt(d);
-    const tot = st[0] === 'secs' ? (n * v >= 60 ? `${fmtMin(Math.round(n * v / 60))} под нагрузкой` : `${n * v} сек`) : `${n * v} повторов`;
-    const xp = workoutXp({act, sets:n, reps:v, secs:v, kg:act === 'dumbbell' ? stpVal('kg') : 0});
+    const sl = slRead(), tot0 = sl.reduce((a, x) => a + x, 0), mi = strMinL(act, sl), d = ($('#f-date') || {}).value || isoOf(todayN()), kg = weightAt(d);
+    const tot = st[0] === 'secs' ? (tot0 >= 60 ? `${fmtMin(Math.round(tot0 / 60))} под нагрузкой` : `${tot0} сек`) : `${tot0} повторов`;
+    const xp = workoutXp({act, sl, sets:sl.length, kg:act === 'dumbbell' ? stpVal('kg') : 0});
+    const sm = $('#sl-sum'); if (sm) sm.textContent = `${sl.length} ${plural(sl.length, ['подход','подхода','подходов'])} · ${tot}`;
     el.textContent = `Всего ${tot} · ≈ ${fmtMin(mi)}` + (kg ? ` · ≈ ${kcalF(Math.round(st[3] * kg * mi / 60))}` : '') + ` · +${xp} XP`;
+    return;
+  }
+  if (TIMEA[act]) {
+    const mi = stpVal('minutes'), sp = TIMEA[act][1] ? stpVal('speed') : 0, d = ($('#f-date') || {}).value || isoOf(todayN()), kg = weightAt(d);
+    const xp = workoutXp({act, minutes:mi});
+    el.textContent = (sp ? `≈ ${kmF(sp * mi / 60)} · ` : '') + (kg ? `≈ ${kcalF(Math.round(TIMEA[act][2] * kg * mi / 60))} · ` : '') + `+${xp} XP`;
     return;
   }
   const sp = stpVal('speed'), mi = stpVal('minutes'), inc = stpVal('incline'), d = ($('#f-date') || {}).value || isoOf(todayN());
@@ -2366,14 +2442,15 @@ function saveWorkout(){
   const act = sheetCtx.act || 'run', st = STR[act];
   const data = {date:ISO_RE.test($('#f-date').value) ? $('#f-date').value : isoOf(todayN()), act, feeling:+$('#f-feel').dataset.v, note:$('#f-note').value.trim()};
   if (st) {
-    const n = Math.round(stpVal('sets')), v = Math.round(stpVal('per'));
-    Object.assign(data, {sets:n, [st[0]]:v, minutes:strMin(act, n, v), speed:0, incline:0});
+    const sl = slRead(), n = sl.length, v = Math.round(sl.reduce((a, x) => a + x, 0) / Math.max(1, n));
+    Object.assign(data, {sets:n, [st[0]]:v, sl, minutes:strMinL(act, sl), speed:0, incline:0});
     if (act === 'dumbbell') data.kg = Math.round(stpVal('kg') * 10) / 10;
-  } else Object.assign(data, {minutes:Math.round(stpVal('minutes')), speed:stpVal('speed'), incline:Math.round(stpVal('incline'))});
+  } else if (TIMEA[act]) Object.assign(data, {minutes:Math.round(stpVal('minutes')), speed:TIMEA[act][1] ? stpVal('speed') : 0, incline:0});
+  else Object.assign(data, {minutes:Math.round(stpVal('minutes')), speed:stpVal('speed'), incline:Math.round(stpVal('incline'))});
   const bad = acCheck(data, item); if (bad) { hap.warn(); toast(bad); return; }
   const g = G(), before = goalCycles(valid()).done;
   let w = item;
-  if (w) { if (!st) ['sets', 'reps', 'secs', 'kg'].forEach(k => delete w[k]); Object.assign(w, data); } else { w = Object.assign({id:uid(), created:nowSec()}, data); db.workouts.push(w); }
+  if (w) { if (!st) ['sets', 'reps', 'secs', 'kg', 'sl'].forEach(k => delete w[k]); else ['reps', 'secs'].forEach(k => { if (!(k in data)) delete w[k]; }); Object.assign(w, data); } else { w = Object.assign({id:uid(), created:nowSec()}, data); db.workouts.push(w); }
   if (plan && !item) { if (plan.act && !w.act) w.act = plan.act; plan.done_id = w.id; delete plan.skipped; touch('plan', plan); }
   touch('workout', w);
   save(); closeSheet(); render(); hap.ok();
@@ -2470,6 +2547,11 @@ const ACT = {
       ACTS.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="animation-delay:${i * 30}ms"><span class="ai">${IC(k, 24)}</span>${l}${ok ? '' : '<em>в разработке</em>'}</button>`).join('') + `</div>`, {type:'acts'}); },
   actpick: el => { hap.tap(); openWorkout(null, null, '', el.dataset.v); },
   actsoon: () => { hap.warn(); toast('Скоро — уже готовим ✨'); },
+  sladd: () => { const sl = slRead(); if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } sl.push(sl[sl.length - 1] || 10); hap.tap(); slRedraw(sl);
+    const rows = document.querySelectorAll('#f-sl .slr'); if (rows.length) rows[rows.length - 1].classList.add('new'); },
+  sldel: el => { const sl = slRead(); sl.splice(+el.dataset.i, 1); hap.tap(); slRedraw(sl); },
+  slstep: el => { const i = +el.dataset.i, inp = document.querySelector(`#f-sl .sli[data-i="${i}"]`), st = STR[sheetCtx.act]; if (!inp || !st) return;
+    inp.value = clamp((+inp.value || 0) + (+el.dataset.d), 1, st[1]); hap.tap(); updPreview(); },
   hsort: el => { S.hsort = el.dataset.v; render(); hap.tap(); },
   repeat: () => { const l = lastWorkout(); openWorkout(null, l, l ? 'Параметры из прошлой тренировки — поправь, если нужно' : ''); },
   wedit: el => { const w = findW(el.dataset.id); if (w) openWorkout(w); },
@@ -2666,7 +2748,7 @@ window.addEventListener('pointercancel', stopRep);
 document.addEventListener('input', e => {
   const st = e.target.closest('.stp');
   if (st && sheetCtx) { if (sheetCtx.type === 'workout') updPreview(); if (sheetCtx.type === 'wgoal') updGoalInfo(); }
-  if (e.target.id === 'f-date') updPreview();
+  if (e.target.id === 'f-date' || e.target.classList.contains('sli')) updPreview();
 });
 document.addEventListener('change', e => {
   const st = e.target.closest('.stp');
