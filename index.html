@@ -1632,8 +1632,11 @@ function viewFriends(){
     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn primary small" data-act="frshare">${IC('export', 16)}Отправить в Telegram</button><button class="btn ghost small" data-act="frcode">Мой код: ${esc(d.code)}</button></div>
     <div class="codein"><input class="inp" id="fr-code" placeholder="Код или @ник друга" maxlength="24" autocomplete="off" autocapitalize="off" spellcheck="false"><button class="btn ghost small" data-act="fradd">${IC('plus', 16)}Добавить</button></div></div></div></div>`;
   { const en = d.gift_energy, mg = d.my_gifts || {};
-    h += `<div class="card"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px"><h3 style="margin:0">${IC('gift')}Подарки</h3>${energyHTML(en)}</div>${giftShelf(mg.kinds, 22)}
-      <div class="cap" style="margin-top:8px">Коллекция: ${(mg.kinds || []).length} из ${GIFT_KEYS.length} · ${(mg.pending || []).length ? `<a data-act="ginbox" style="color:var(--accent);font-weight:700">ждут ${(mg.pending || []).length} — открыть</a>` : 'дари друзьям — 3 подарка в месяц'}</div></div>`; }
+    // компактная строка: витрина подарков — только в профиле человека (v1.420)
+    const pn = (mg.pending || []).length;
+    h += `<div class="card" style="padding:12px 16px"><div class="row" style="justify-content:space-between;align-items:center;gap:10px">
+      <h3 style="margin:0;white-space:nowrap">${IC('gift')}Подарки <span class="cap" style="font-weight:600">${(mg.kinds || []).length}/${GIFT_KEYS.length}</span></h3>
+      ${pn ? `<button class="btn primary small" data-act="ginbox">${IC('gift', 14)}Ждут ${pn}</button>` : energyHTML(en)}</div></div>`; }
   if (fr.length) {
     const people = fr.map(f => [f, false]).concat([[d.me, true]]).sort((a, b) => (pm(b[0]) - pm(a[0])) || (b[1] - a[1]));
     const mx = Math.max(1, ...people.map(p => pm(p[0])));
