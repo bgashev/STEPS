@@ -386,6 +386,16 @@ input[type=date].inp{display:block}
 .nmrow .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nbadge{display:inline-flex;flex:none;color:var(--accent)}
 .nbadge svg{display:block}
+.wdock{position:fixed;right:max(16px,calc(50% - 264px));bottom:calc(84px + env(safe-area-inset-bottom));z-index:9;display:flex;align-items:center;gap:10px;
+  animation:plIn .35s ease both}
+.wdock button{display:flex;align-items:center;gap:7px;border:0;cursor:pointer;font:inherit;font-weight:800;transition:transform .12s}
+.wdock button:active{transform:scale(.94)}
+.wd-goal{height:48px;padding:0 16px 0 13px;border-radius:24px;color:var(--text);background:var(--surface);border:1px solid var(--border)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.wd-goal svg{color:var(--accent)}
+.wd-add{height:56px;padding:0 22px 0 18px;border-radius:28px;font-size:15px;color:var(--bg);background:var(--accent);
+  box-shadow:0 10px 28px color-mix(in srgb,var(--accent) 45%,transparent)}
+.wdock-sp{height:70px}
 .plsug{padding:14px 14px 14px 16px;margin-bottom:12px;border-radius:20px;
   border:1.5px dashed color-mix(in srgb,var(--accent) 50%,var(--muted));background:color-mix(in srgb,var(--accent) 5%,transparent);
   animation:plIn .35s ease both}
@@ -1823,7 +1833,9 @@ function viewWeight(){
   if (!es.length) return h + `<div class="card empty"><div class="badge">${IC('scale', 30)}</div><h3 style="justify-content:center">Здесь будет твой вес</h3><div class="muted" style="margin-bottom:16px">Добавь первое взвешивание — появятся график, ИМТ, прогноз и цель.</div><button class="btn primary" data-act="kadd">${IC('plus')}Первое взвешивание</button></div>`;
   const t = todayN(), daily = dailyWeights(), curE = last(es), cur = +curE.kg, lastD = dn(curE.date);
   const gs = weightGoalState(goal, cur), dir = gs ? gs.direction : 0;
-  h += `<div class="actions"><button class="btn primary" data-act="kadd">${IC('plus')}Взвеситься</button><button class="btn ghost" data-act="kgoal">${IC('target')}${goal.target ? 'Изменить цель' : 'Цель'}</button></div>`;
+  // кнопки — внизу справа, над меню: под большой палец, а не в дальнем углу экрана
+  h += `<div class="wdock"><button class="wd-goal" data-act="kgoal" aria-label="${goal.target ? 'Изменить цель' : 'Цель по весу'}">${IC('target', 20)}<span>Цель</span></button>
+    <button class="wd-add" data-act="kadd">${IC('plus', 20)}Взвеситься</button></div><div class="wdock-sp"></div>`;
   // сейчас
   let delta = '';
   if (es.length >= 2) {
