@@ -339,18 +339,20 @@ input[type=date].inp{display:block}
 @keyframes pulse{50%{transform:scale(1.08);opacity:.8}}
 /* ==== v1.410: подарки ==== */
 .gshelf{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
-.gs{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:14px;background:var(--surface2);filter:grayscale(1);opacity:.28;transition:.2s}
-.gs.on{filter:none;opacity:1}
+.gsh{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:14px;background:var(--surface2);padding:5px;transition:.2s}
+.gsh svg{width:100%;height:100%;filter:grayscale(1);opacity:.25}
+.gsh.on svg{filter:none;opacity:1}
+.gp .gi{width:44px;height:44px;display:block}.gbig svg{width:96px;height:96px}
+.gbtn svg{color:var(--accent)}
 .gen{display:inline-flex;align-items:center;gap:2px;font-size:12px;color:var(--muted)}
 .gen i{display:inline-flex;color:var(--border)}.gen i.on{color:var(--accent)}.gen b{margin-left:4px;color:var(--text)}
 .gpick{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .gp{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:transform .12s}
-.gp span{font-size:30px;line-height:1}.gp i{font-style:normal;font-size:12px;color:var(--muted)}
+.gp i{font-style:normal;font-size:12px;color:var(--muted)}
 .gp.has::after{content:'';position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--muted);opacity:.6}
 .gp:active{transform:scale(.95)}.gp:disabled{opacity:.4}
 .gin{text-align:center}.gbig{font-size:72px;line-height:1.1;margin:6px 0 10px;animation:pop .5s}
 @keyframes pop{0%{transform:scale(.4)}70%{transform:scale(1.12)}100%{transform:scale(1)}}
-.gbtn{font-size:16px}
 /* ==== v1.9: мягкий дизайн ==== */
 .card{border-radius:26px;padding:18px}
 .kpi{border-radius:22px}
@@ -926,6 +928,7 @@ const IP = {
   lock:'<rect x="3.5" y="8" width="11" height="7.5" rx="2"/><path d="M6 8V6a3 3 0 0 1 6 0v2"/>',
   mountain:'<path d="M1.5 15L7 5.5L10 10.2L12 7.8L16.5 15Z"/>',
   bolt:'<path d="M10.5 2L4.5 10H9L7.8 16L13.5 8H9Z"/>',
+  gift:'<rect x="2.5" y="6.5" width="13" height="3.6" rx="1.2"/><path d="M3.8 10.1V15.5H14.2V10.1M9 6.5V15.5M9 6.5C6.6 6.5 4.8 5.8 5.3 4C5.8 2.4 8.1 3 9 6.5ZM9 6.5C11.4 6.5 13.2 5.8 12.7 4C12.2 2.4 9.9 3 9 6.5Z"/>',
   route:'<path d="M4 14.5C4 10.5 14 11 14 7.2"/><circle cx="4" cy="14.5" r="1.6"/><circle cx="14" cy="4.6" r="2.2"/>',
   medal:'<circle cx="9" cy="11.6" r="4.4"/><path d="M6.2 2.5L7.8 7.6M11.8 2.5L10.2 7.6"/>',
   crown:'<path d="M3 13V5.5L6.5 9L9 4L11.5 9L15 5.5V13Z"/><path d="M3 15.5H15"/>',
@@ -1444,6 +1447,8 @@ function myLevel(){ return xpLevel(sum(honestWs(valid()), workoutXp) + giftXp())
 const GIFT_T = {sneaker:['👟','Кроссовок'], water:['💧','Водичка'], banana:['🍌','Банан'], bolt:['⚡','Заряд'], fire:['🔥','Огонь'], medal:['🏅','Медалька'],
   sprout:['🌱','Росток'], coffee:['☕','Кофе'], music:['🎧','Плейлист'], rocket:['🚀','Ракета'], peak:['🏔️','Вершина'], sloth:['🦥','Ленивец']};
 const GIFT_KEYS = Object.keys(GIFT_T);
+const GIFT_SVG = {"sneaker": "<svg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'><g transform='translate(0 -5)'><path d='M8 40c0-6 2-14 6-18 2-2 5-1 7 1l5 5c2 2 5 3 8 3h6c6 0 13 3 15 8 1 2 1 4 0 5H8z' fill='#7FB6FF'/><path d='M8 40h48c1 0 2 1 2 2v3c0 2-1 3-3 3H11c-2 0-3-1-3-3z' fill='#F4F6FB'/><path d='M8 45h50v1c0 1-1 2-3 2H11c-2 0-3-1-3-2z' fill='#D5DBE8'/><path d='M14 22c2-2 5-1 7 1l3 3-6 6c-3-2-5-5-6-8 0-1 1-1 2-2z' fill='#5E9BF0'/><path d='M27 29l3-3M31 31l3-3M35 32l3-3' stroke='#F4F6FB' stroke-width='2.2' stroke-linecap='round'/><path d='M44 34c3 0 7 1 9 4' stroke='#5E9BF0' stroke-width='2.4' stroke-linecap='round' fill='none'/></g></svg>", "water": "<svg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'><path d='M32 6c8 11 18 21 18 33a18 18 0 0 1-36 0C14 27 24 17 32 6z' fill='#5FC3F5'/><path d='M32 6c8 11 18 21 18 33a18 18 0 0 1-18 18V6z' fill='#3FA9E6'/><path d='M22 38c0 6 4 10 9 11' stroke='#E6F7FF' stroke-width='3.4' stroke-linecap='round' fill='none'/><circle cx='24' cy='31' r='2.3' fill='#E6F7FF'/></svg>", "banana": "<svg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'><path d='M50 10c3 1 4 4 3 7-2 17-14 33-34 36-5 1-9-2-9-5 0-2 2-3 5-3 16-2 27-14 31-31 0-2 2-4 4-4z' fill='#FFD84D'/><path d='M53 17c-2 17-14 33-34 36-5 1-9-2-9-5 12 4 33-6 43-31z' fill='#F2B92B'/><path d='M48 6l4 1c1 0 1 1 1 2l-1 3-5-2 1-4z' fill='#8A6A2E'/><path d='M12 48c-1 1-1 3 1 3' stroke='#8A6A2E' stroke-width='2' stroke-linecap='round' fill='none'/></svg>", "bolt": "<svg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'><circle cx='32' cy='32' r='26' fill='#2D2B55'/><circle cx='32' cy='32' r='26' fill='none' stroke='#FFC94D' stroke-width='3' opacity='.35'/><path d='M36 10L18 35h12l-4 19 20-27H34z' fill='#FFC94D'/><path d='M36 10l-2 17h12L26 54l8-21H30z' fill='#FFAE2B'/></svg>", "fire": "<svg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'><path d='M32 58c-12 0-20-8-20-19 0-10 7-15 9-24 1 4 3 7 6 9 0-9 5-16 12-19-1 8 2 13 7 18 5 5 6 10 6 16 0 11-8 19-20 19z' fill='#FF7A45'/><path d='M32 58c-7 0-12-5-12-12 0-6 4-9 6-14 1 3 3 5 5 6 1-5 4-9 8-11-1 5 1 8 3 11 2 3 2 5 2 8 0 7-5 12-12 12z' fill='#FFB547'/><path d='M32 58c-3 0-6-3-6-6 0-4 3-5 4-8 2 2 4 3 5 5 1 1 2 2 2 4 0 3-2 5-5 5z' fill='#FFE38A'/></svg>", "medal": "<svg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'><path d='M20 4h10l6 18h-10z' fill='#6C8CFF'/><path d='M44 4H34l-6 18h10z' fill='#FF6B8A'/><circle cx='32' cy='40' r='19' fill='#F2B92B'/><circle cx='32' cy='40' r='14' fill='#FFD84D'/><path d='M32 31l2.8 5.7 6.2.9-4.5 4.4 1 6.2-5.5-2.9-5.5 2.9 1-6.2-4.5-4.4 6.2-.9z' fill='#F2B92B'/></svg>", "sprout": "<svg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'><path d='M32 40V24' stroke='#4FAF6B' stroke-width='3.4' stroke-linecap='round'/><path d='M32 28c-2-9-10-14-20-13 1 10 9 15 20 13z' fill='#6BD08A'/><path d='M32 24c2-9 10-15 20-14-1 10-9 16-20 14z' fill='#4FBF72'/><path d='M16 38h32l-4 20H20z' fill='#E08A5A'/><path d='M14 36h36v5c0 1-1 2-2 2H16c-1 0-2-1-2-2z' fill='#C9704A'/></svg>", "coffee": "<svg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'><path d='M24 6c-3 4 3 6 0 10M32 4c-3 5 3 7 0 12M40 6c-3 4 3 6 0 10' stroke='#B9B4C9' stroke-width='2.4' stroke-linecap='round' fill='none'/><path d='M12 22h36v16c0 10-8 18-18 18s-18-8-18-18z' fill='#F4F1EC'/><path d='M48 26h3a7 7 0 0 1 0 14h-4' stroke='#F4F1EC' stroke-width='4' fill='none'/><path d='M12 22h36v5H12z' fill='#8B5A3C'/><path d='M14 46c3 6 9 10 16 10s13-4 16-10z' fill='#E4DED4'/><path d='M8 56h44' stroke='#D5CFC4' stroke-width='3' stroke-linecap='round'/></svg>", "music": "<svg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'><path d='M12 36v-6a20 20 0 0 1 40 0v6' stroke='#3E3B66' stroke-width='5' fill='none' stroke-linecap='round'/><rect x='8' y='32' width='14' height='22' rx='6' fill='#9B7BFF'/><rect x='42' y='32' width='14' height='22' rx='6' fill='#9B7BFF'/><rect x='14' y='36' width='8' height='14' rx='4' fill='#7C5CF0'/><rect x='42' y='36' width='8' height='14' rx='4' fill='#7C5CF0'/></svg>", "rocket": "<svg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'><path d='M26 46l-4 12 10-6 10 6-4-12z' fill='#FFB547'/><path d='M28 46l-2 7 6-3 6 3-2-7z' fill='#FF7A45'/><path d='M32 4c9 7 13 18 12 30l-4 12H24l-4-12C19 22 23 11 32 4z' fill='#EEF0F7'/><path d='M32 4c9 7 13 18 12 30l-4 12h-8z' fill='#D5DBE8'/><circle cx='32' cy='24' r='6' fill='#5FC3F5' stroke='#3E3B66' stroke-width='2.4'/><path d='M20 34l-8 8v6l10-4zM44 34l8 8v6l-10-4z' fill='#FF6B8A'/></svg>", "peak": "<svg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'><path d='M4 56L26 18l12 20 6-8 16 26z' fill='#7A8BB0'/><path d='M26 18l12 20 6-8 16 26H32z' fill='#5E6E94'/><path d='M26 18l-7 12 4-1 3 3 3-3 4 2z' fill='#F4F6FB'/><path d='M44 30l-3 4 3-1 2 2 2-1z' fill='#F4F6FB'/><path d='M26 18V5' stroke='#3E3B66' stroke-width='2.2' stroke-linecap='round'/><path d='M26 5h11l-3 4 3 4H26z' fill='#FF6B8A'/></svg>", "sloth": "<svg viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg'><path d='M4 10h56' stroke='#8A6A2E' stroke-width='4' stroke-linecap='round'/><path d='M18 10c0 5 2 9 5 11M46 10c0 5-2 9-5 11' stroke='#A58A6E' stroke-width='6' stroke-linecap='round' fill='none'/><circle cx='32' cy='38' r='20' fill='#A58A6E'/><ellipse cx='32' cy='41' rx='15' ry='12' fill='#E9D9C4'/><path d='M19 38c2-4 7-5 9-1-1 4-7 5-9 1zM45 38c-2-4-7-5-9-1 1 4 7 5 9 1z' fill='#5C4632'/><path d='M22 38.5c1.5-1 3-1 4 0M42 38.5c-1.5-1-3-1-4 0' stroke='#E9D9C4' stroke-width='1.6' stroke-linecap='round'/><ellipse cx='32' cy='43' rx='3' ry='2' fill='#3E2E20'/><path d='M28 47c2 2 6 2 8 0' stroke='#3E2E20' stroke-width='1.8' stroke-linecap='round' fill='none'/></svg>"};
+function giftArt(k){ return GIFT_SVG[k] || GIFT_SVG.medal; }
 function setGifts(g){
   if (!g) return;
   const was = GIFTS_IN ? (GIFTS_IN.pending || []).length : 0;
@@ -1452,7 +1457,7 @@ function setGifts(g){
 }
 function giftShelf(kinds, size){
   const own = new Set(kinds || []);
-  return `<div class="gshelf">` + GIFT_KEYS.map(k => `<span class="gs${own.has(k) ? ' on' : ''}" title="${GIFT_T[k][1]}" style="font-size:${size || 22}px">${GIFT_T[k][0]}</span>`).join('') + `</div>`;
+  return `<div class="gshelf">` + GIFT_KEYS.map(k => `<span class="gsh${own.has(k) ? ' on' : ''}" title="${GIFT_T[k][1]}">${giftArt(k)}</span>`).join('') + `</div>`;
 }
 function energyHTML(en){
   if (!en) return '';
@@ -1461,7 +1466,7 @@ function energyHTML(en){
 function openGiftInbox(){
   const p = (GIFTS_IN && GIFTS_IN.pending) || []; if (!p.length) return;
   const g = p[0], [emo, ttl] = GIFT_T[g.kind] || GIFT_T.medal, own = new Set((GIFTS_IN && GIFTS_IN.kinds) || []);
-  openSheet(`<div class="gin"><div class="gbig">${emo}</div><h2>${esc(g.from_name)} дарит тебе «${ttl}»</h2>
+  openSheet(`<div class="gin"><div class="gbig">${giftArt(g.kind)}</div><h2>${esc(g.from_name)} дарит тебе «${ttl}»</h2>
     <div class="muted">${own.has(g.kind) ? 'Такой у тебя уже есть — но внимание всё равно приятно.' : `Первый такой в коллекции: +100 очков к уровню!`}</div>
     ${p.length > 1 ? `<div class="cap" style="margin-top:6px">Ещё подарков: ${p.length - 1}</div>` : ''}
     <button class="btn primary" style="width:100%;margin-top:16px" data-act="gclaim" data-id="${g.id}">Получить</button></div>`, {type:'ginbox'});
@@ -1469,9 +1474,9 @@ function openGiftInbox(){
 function openGiftPicker(id){
   const f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
   const en = FR.data.gift_energy || {left:0, total:3}, has = new Set(f.gift_kinds || []);
-  openSheet(`<div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px"><h2 style="margin:0">Подарок для ${esc(f.name)}</h2>${energyHTML(en)}</div>
+  openSheet(`<div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px"><h2 style="margin:0">Подарить: ${esc(f.name)}</h2>${energyHTML(en)}</div>
     <div class="cap" style="margin-bottom:12px">${en.left ? 'Энергии хватит ещё на ' + npw(en.left, ['подарок','подарка','подарков']) + ' в этом месяце. Отмеченные точкой у друга уже есть — новый вид даст ему +100 очков.' : 'Энергия кончилась — новые подарки с 1-го числа.'}</div>
-    <div class="gpick">` + GIFT_KEYS.map(k => `<button type="button" class="gp${has.has(k) ? ' has' : ''}" data-act="gsend" data-id="${id}" data-k="${k}"${en.left ? '' : ' disabled'}><span>${GIFT_T[k][0]}</span><i>${GIFT_T[k][1]}</i></button>`).join('') + `</div>`, {type:'gpick', id});
+    <div class="gpick">` + GIFT_KEYS.map(k => `<button type="button" class="gp${has.has(k) ? ' has' : ''}" data-act="gsend" data-id="${id}" data-k="${k}"${en.left ? '' : ' disabled'}><span class="gi">${giftArt(k)}</span><i>${GIFT_T[k][1]}</i></button>`).join('') + `</div>`, {type:'gpick', id});
 }
 const FB_TYPES = [['idea','Идея'],['bug','Ошибка'],['complaint','Жалоба']];
 function openFeedback(type, target){
@@ -1498,7 +1503,7 @@ async function openPublicProfile(handle){
     el.innerHTML = `<div class="fp-head">${favHTML(j)}<div style="flex:1;min-width:0"><h2 style="margin:0">${esc(j.name)}</h2><div class="cap">@${esc(j.handle)}</div>
       <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div></div>
       <div class="card" style="margin-top:12px"><div class="tot"><div><b>${j.total == null ? '—' : j.total}</b><span class="cap">тренировок</span></div><div><b>${j.friends_count}</b><span class="cap">друзей</span></div><div><b>${(j.gift_kinds || []).length}/12</b><span class="cap">подарков</span></div></div></div>
-      ${(j.gift_kinds || []).length ? `<div class="card"><h3>🎁 Коллекция подарков</h3>${giftShelf(j.gift_kinds, 20)}</div>` : ''}${btn}`;
+      ${(j.gift_kinds || []).length ? `<div class="card"><h3>${IC('gift')}Коллекция подарков</h3>${giftShelf(j.gift_kinds, 20)}</div>` : ''}${btn}`;
   } catch (e) { const el = $('#pub'); if (el) el.innerHTML = `<div class="muted">Не удалось загрузить: ${esc(e.message)}</div>`; }
 }
 function handleCard(){
@@ -1577,7 +1582,7 @@ function viewFriends(){
     <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn primary small" data-act="frshare">${IC('export', 16)}Отправить в Telegram</button><button class="btn ghost small" data-act="frcode">Мой код: ${esc(d.code)}</button></div>
     <div class="codein"><input class="inp" id="fr-code" placeholder="Код друга" maxlength="24" autocomplete="off"><button class="btn ghost small" data-act="fradd">${IC('plus', 16)}Добавить</button></div></div></div></div>`;
   { const en = d.gift_energy, mg = d.my_gifts || {};
-    h += `<div class="card"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px"><h3 style="margin:0">🎁 Подарки</h3>${energyHTML(en)}</div>${giftShelf(mg.kinds, 22)}
+    h += `<div class="card"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:8px"><h3 style="margin:0">${IC('gift')}Подарки</h3>${energyHTML(en)}</div>${giftShelf(mg.kinds, 22)}
       <div class="cap" style="margin-top:8px">Коллекция: ${(mg.kinds || []).length} из 12 · ${(mg.pending || []).length ? `<a data-act="ginbox" style="color:var(--accent);font-weight:700">ждут ${(mg.pending || []).length} — открыть</a>` : 'дари друзьям — 3 подарка в месяц'}</div></div>`; }
   if (fr.length) {
     const people = fr.map(f => [f, false]).concat([[d.me, true]]).sort((a, b) => (pm(b[0]) - pm(a[0])) || (b[1] - a[1]));
@@ -1595,7 +1600,7 @@ function viewFriends(){
     const sub = [f.level ? `<span style="color:${tierColor(f.level.level)};font-weight:700">${tierOf(f.level.level).title}</span>` : '', f.handle ? '@' + esc(f.handle) : f.username ? '@' + esc(f.username) : ''].filter(Boolean).join(' · ');
     return `<div class="fc" data-act="frprof" data-id="${f.tg_id}" style="animation-delay:${Math.min(i, 10) * 40}ms">${favHTML(f)}<div class="fm"><div><b>${esc(f.name)}</b>${f.private ? IC('lock', 12) : ''}${g.run >= 2 ? `<span class="fstreak">${IC('flame', 12)}${g.run}</span>` : ''}</div>
       ${sub ? `<div class="l3">${sub}</div>` : ''}<div class="l2">${fmtMin(f.week.minutes)} за 7 дней · ${gl}</div><div class="l3">${last}</div></div>
-      <button class="rm gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">🎁</button><button class="rm" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 16)}</button></div>`;
+      <button class="rm gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 17)}</button><button class="rm" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 16)}</button></div>`;
   }).join('');
   return h;
 }
@@ -1614,7 +1619,7 @@ async function loadFofPhotos(j){
 function friendSheetHTML(f, j, loading){
   const lv = f.level || xpLevel(0), g = f.goal, ok = g.done_today || g.prev_ok, shown = g.done_today ? g.target : g.shown;
   let h = `<div class="fp-head"><span data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span><div style="flex:1;min-width:0"><h2 style="margin:0">${esc(f.name)}</h2>${f.handle || f.username ? `<div class="cap">@${esc(f.handle || f.username)}</div>` : ''}
-    <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div><button class="rmx" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 18)}</button><button class="rmx gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">🎁</button><button class="rmx" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button></div>
+    <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div><button class="rmx" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 18)}</button><button class="rmx gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 17)}</button><button class="rmx" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button></div>
     <div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div>`;
   if (j && j.friends) FR.prof = j.friends;
   h += loading ? `<div class="fstrip"><span class="skl" style="width:150px;height:34px;border-radius:17px"></span></div>`
@@ -1624,7 +1629,7 @@ function friendSheetHTML(f, j, loading){
   const days = j && j.week && j.week.days;
   if (days && days.some(Boolean)) { const t = todayN(); h += bars(days.map((m, i) => [WD[wdOf(t - 6 + i)], m, `${WDF[wdOf(t - 6 + i)]}: ${fmtMin(m)}`]), v => String(v), 'fpw', 110); }
   h += `</div>`;
-  if ((f.gift_kinds || []).length) h += `<div class="card"><h3>🎁 Подарки · ${f.gift_kinds.length} из 12</h3>${giftShelf(f.gift_kinds, 20)}</div>`;
+  if ((f.gift_kinds || []).length) h += `<div class="card"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из 12</h3>${giftShelf(f.gift_kinds, 20)}</div>`;
   if (!loading) h += `<button class="btn ghost small" style="width:100%;margin-bottom:12px;color:var(--muted)" data-act="frrep" data-id="${f.tg_id}">Пожаловаться</button>`;
   if (loading) return h + `<div id="fp-load">` + [100, 120, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('') + `</div>`;
   if (!j.details) return h + `<div class="card muted">${IC('lock', 16)} ${esc(f.name)} закрыл(а) профиль — видно только основное.</div>`;
