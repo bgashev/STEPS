@@ -313,6 +313,23 @@ input[type=date].inp{display:block}
 .fav.s.fr-classic{padding:2.5px}
 .fav.s.fr-classic .fi{box-shadow:0 0 0 1.5px var(--bg)}
 .frs{display:flex;gap:12px;flex-wrap:wrap}
+/* v1.426: анимированные рамки PRO */
+@property --fra{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes frSpin{to{--fra:360deg}}
+@keyframes frNeon{0%,100%{box-shadow:0 0 4px 0 var(--accent),0 0 0 1px var(--accent)}50%{box-shadow:0 0 16px 3px var(--accent),0 0 0 1px var(--accent)}}
+@keyframes frFlick{0%,100%{box-shadow:0 0 10px 1px rgba(255,90,30,.55)}40%{box-shadow:0 0 18px 4px rgba(255,150,40,.65)}70%{box-shadow:0 0 8px 0 rgba(255,60,30,.5)}}
+@keyframes frGlow{0%,100%{box-shadow:0 0 6px rgba(240,180,60,.35)}50%{box-shadow:0 0 14px 2px rgba(255,214,120,.6)}}
+.fav.fr-aurora,.ava.fr-aurora,.fav.fr-gold,.ava.fr-gold,.fav.fr-neon,.ava.fr-neon,.fav.fr-flame,.ava.fr-flame{padding:4px}
+.fav.s.fr-aurora,.fav.s.fr-gold,.fav.s.fr-neon,.fav.s.fr-flame{padding:2.5px}
+:is(.fav,.ava):is(.fr-aurora,.fr-gold,.fr-neon,.fr-flame) .fi{box-shadow:0 0 0 2.5px var(--bg);background:var(--accent);color:var(--on-accent)}
+.fav.s:is(.fr-aurora,.fr-gold,.fr-neon,.fr-flame) .fi{box-shadow:0 0 0 1.5px var(--bg)}
+:is(.fav,.ava).fr-aurora{background:conic-gradient(from var(--fra),#7C5CFF,#22D3EE,#34D399,#F472B6,#7C5CFF);animation:frSpin 4s linear infinite}
+:is(.fav,.ava).fr-gold{background:conic-gradient(from var(--fra),#FFF4CC,#E0A030 20%,#B7791F 35%,#FFE9A3 50%,#C98A22 70%,#FFF4CC);animation:frSpin 6s linear infinite,frGlow 3s ease-in-out infinite}
+:is(.fav,.ava).fr-neon{background:var(--accent);animation:frNeon 2.2s ease-in-out infinite}
+:is(.fav,.ava).fr-flame{background:conic-gradient(from var(--fra),#FF3D2E,#FF9F1C,#FFE066,#FF6B1C,#FF3D2E);animation:frSpin 2.4s linear infinite,frFlick 1.3s ease-in-out infinite}
+.frb{position:relative}
+.frb .prot{position:absolute;top:6px;right:6px;font-size:9px;font-weight:850;letter-spacing:.08em;padding:2px 6px;border-radius:999px;background:linear-gradient(120deg,#F5B23C,#FFE08A);color:#3a2600}
+.frb.lock{opacity:.6}
 .frb{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 10px 10px;min-width:96px;border-radius:18px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:13px;font-weight:650;cursor:pointer;transition:border-color .2s,transform .12s}
 .frb:active{transform:scale(.96)}
 .frb.on{border-color:var(--accent)}
@@ -435,7 +452,9 @@ input[type=date].inp{display:block}
 .ftx .fh{font-size:14px;line-height:1.3}
 .ftx .cap{display:flex;align-items:center;gap:4px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .fday{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 0 2px}
-.fgift{font-size:28px;line-height:1;cursor:pointer}
+.fgift{width:42px;height:42px;flex:none;cursor:pointer;display:grid;place-items:center;transition:transform .12s}
+.fgift:active{transform:scale(.9)}
+.fgift svg{display:block;width:100%;height:100%}
 .flk{flex:none;display:flex;align-items:center;gap:4px;min-width:48px;height:40px;justify-content:center;border:0;background:none;color:var(--muted);cursor:pointer;font:inherit;font-weight:800}
 .flk i{font-style:normal;font-size:13px;min-width:8px}
 .flk svg{transition:transform .2s}
@@ -795,6 +814,19 @@ input[type=date].inp{display:block}
 .ssh-q{font-weight:750;margin:14px 0 10px}
 .ssh-btns{display:grid;grid-template-columns:1fr 1.6fr;gap:8px}
 .ssh-btns .yes{background:var(--sc);color:#fff;border:0}
+.ssh-wait{display:flex;flex-direction:column;align-items:center;padding:22px 0 8px;animation:sshIn .3s ease}
+.ssh-wait .rad{position:relative;width:120px;height:120px;display:grid;place-items:center}
+.ssh-wait .rad>i{position:absolute;inset:30px;border-radius:50%;border:2px solid var(--sc);opacity:0;animation:sshWave 1.8s cubic-bezier(.2,.6,.3,1) infinite}
+.ssh-wait .rad>i:nth-child(2){animation-delay:.6s}.ssh-wait .rad>i:nth-child(3){animation-delay:1.2s}
+@keyframes sshWave{0%{transform:scale(.7);opacity:.75}100%{transform:scale(2);opacity:0}}
+.ssh-wait .orb{position:absolute;inset:14px;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 70%,color-mix(in srgb,var(--sc) 60%,transparent) 92%,var(--sc));-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 3px));animation:sshOrb 1.1s linear infinite}
+@keyframes sshOrb{to{transform:rotate(360deg)}}
+.ssh-wait .lg{width:52px;height:52px;border-radius:50%;position:relative;box-shadow:0 6px 20px color-mix(in srgb,var(--sc) 45%,transparent);animation:sshBeat 1.8s ease-in-out infinite}
+@keyframes sshBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.ssh-wait .cap{margin-top:6px;font-size:13.5px}.ssh-wait .cap b{color:var(--text)}
+.ssh-wait em{font-style:normal}.ssh-wait em i{font-style:normal;animation:sshDot 1.2s infinite;opacity:.2}
+.ssh-wait em i:nth-child(2){animation-delay:.2s}.ssh-wait em i:nth-child(3){animation-delay:.4s}
+@keyframes sshDot{0%,100%{opacity:.2}40%{opacity:1}}
 .ssh-err{margin-top:12px;padding:12px 14px;border-radius:16px;background:color-mix(in srgb,var(--red,#ff5a5f) 12%,var(--surface2));font-size:13px;text-align:center}
 .ssh-del{display:block;margin:14px auto 0;background:none;border:0;color:var(--muted);font:inherit;font-size:13px;cursor:pointer}
 .soc-b b{font-size:12px;font-weight:750}
@@ -823,7 +855,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.425';
+const APP = 'VOOB (by BGASHEV) Mini App v1.426';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2019,8 +2051,15 @@ async function loadFriendPhotos(){
   await Promise.all([worker(), worker(), worker(), worker()]);
   if (got) savePhotos();
 }
-const FRAMES = [['', 'Без рамки'], ['classic', 'Стандартная']];   // v1.420: персонализация, список будет расти
-function frameOf(f){ const mine = tgUser && f && f.tg_id === tgUser.id; const k = mine ? (db.settings || {}).frame : f && f.frame; return FRAMES.some(x => x[0] && x[0] === k) ? k : ''; }
+const FRAMES = [['', 'Без рамки'], ['classic', 'Стандартная'], ['aurora', 'Аврора', 1], ['gold', 'Золото', 1], ['neon', 'Неон', 1], ['flame', 'Пламя', 1]];
+function isPro(){ const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.pro || b.creator)); }   // v1.420: персонализация, список будет расти
+function frameOf(f){
+  const mine = tgUser && f && +f.tg_id === tgUser.id, b = f ? (BDG.get(+f.tg_id) || {}) : {};
+  const k = mine ? (db.settings || {}).frame : f && (f.frame || b.frame);
+  const e = FRAMES.find(x => x[0] && x[0] === k); if (!e) return '';
+  if (e[2] && !(mine ? isPro() : (b.pro || b.creator))) return '';   // рамки PRO видны только у подписчиков
+  return k;
+}
 function frameCls(k, lv){ const vars = lv ? tierStyle(lv).replace(' tr"', '"') : ''; return (k ? ` fr-${k}` : '') + vars; }   // v1.422: без рамки — без кольца, цвета значка уровня остаются
 function favHTML(f, small){
   const src = FR.ph.get(f.tg_id), lv = f.level && f.level.level;
@@ -2071,7 +2110,8 @@ function feedItemHTML(ev, i){
     like = u.me ? (n ? `<span class="flk own on">${IC('heart', 18)}<i>${n}</i></span>` : '')
       : `<button type="button" class="flk${ev.liked ? ' on' : ''}" data-act="flike" data-i="${i}" aria-label="Нравится">${IC('heart', 18)}<i>${n || ''}</i></button>`;
   }
-  const gift = ev.type === 'gift' ? `<span class="fgift" data-act="gview" data-k="${esc((ev.data || {}).kind || 'star')}">${(ev.data || {}).emoji || '🎁'}</span>` : '';
+  const gk = (ev.data || {}).kind || 'star';
+  const gift = ev.type === 'gift' ? `<span class="fgift" data-act="gview" data-k="${esc(gk)}">${giftArt(GIFT_SVG[gk] ? gk : 'star')}</span>` : '';
   return `<div class="fitem">${feedAva(u)}<div class="ftx"><div class="fh">${head}</div><div class="cap">${IC(ic, 13)} ${[...sub, feedTime(ev.at)].map(esc).join(' · ')}</div></div>${gift}${like}</div>`;
 }
 function feedListHTML(){
@@ -2462,7 +2502,7 @@ const BDG = new Map(Object.entries(lsGet(BDK) || {}).map(([k, v]) => [+k, v]));
 const BDG_ASKED = new Set(); let bdgTimer = null; const bdgQueue = new Set();
 function bdgHTML(id, size = 16){ return `<span class="bdg" data-bid="${+id || 0}" data-sz="${size}">${bdgInner(id, size)}</span>`; }
 function bdgInner(id, size = 16){ const b = BDG.get(+id); return b && b.creator ? crownHTML(size) : b && b.v ? badgeHTML('verified', size) : ''; }
-function crownHTML(size = 16){ return `<span class="nbadge crown" title="Создатель VOOB" style="width:${size}px;height:${size}px"><svg viewBox="0 0 24 24" width="${size}" height="${size}"><defs><linearGradient id="cr${size}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE38A"/><stop offset="1" stop-color="#F0A22E"/></linearGradient></defs><path fill="url(#cr${size})" d="M2.6 7.6 7.4 11.4 12 4.3l4.6 7.1 4.8-3.8-1.9 10.2H4.5Z"/><rect x="4.4" y="19.2" width="15.2" height="2.3" rx="1.1" fill="url(#cr${size})"/><circle cx="12" cy="4.1" r="1.5" fill="#FFE38A"/><circle cx="2.6" cy="7.4" r="1.3" fill="#FFE38A"/><circle cx="21.4" cy="7.4" r="1.3" fill="#FFE38A"/><path d="M12 10.4l1.6 2.4-1.6 2.4-1.6-2.4Z" fill="#fff" fill-opacity=".75"/></svg></span>`; }
+function crownHTML(size = 16){ const d = (BADGE_SVG.verified.match(/d="([^Z]*Z)/) || [])[1] || ''; return `<span class="nbadge crown" title="Создатель VOOB" style="width:${size}px;height:${size}px"><svg viewBox="0 0 347 347" width="${size}" height="${size}"><defs><linearGradient id="cg${size}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE08A"/><stop offset=".55" stop-color="#F5B23C"/><stop offset="1" stop-color="#E08A1E"/></linearGradient></defs><path d="${d}" fill="url(#cg${size})"/><g transform="translate(76 80) scale(8.1)" fill="#fff"><path d="M2.6 8.2 7.3 11.6 12 4.9l4.7 6.7 4.7-3.4-1.8 9.4H4.4Z"/><rect x="4.4" y="18.2" width="15.2" height="2.2" rx="1.1"/></g></svg></span>`; }
 function creatorHTML(id){ return `<span class="crw" data-cid="${+id || 0}">${creatorInner(id)}</span>`; }
 function creatorInner(id){ const b = BDG.get(+id); return b && b.creator ? '<span class="crt"><i class="s1"></i><i class="s2"></i>CREATOR OF "VOOB"</span>' : ''; }
 function askBadges(ids){
@@ -2473,13 +2513,15 @@ function askBadges(ids){
     const list = [...bdgQueue]; bdgQueue.clear(); bdgTimer = null; list.forEach(x => BDG_ASKED.add(x));
     try {
       const j = await apiAuth(BADGES_API, {ids:list});
-      for (const id of list) { const b = (j.badges || {})[id]; if (b) BDG.set(id, b); else BDG.delete(id);
+      let fch = false;
+      for (const id of list) { const b = (j.badges || {})[id]; if (((BDG.get(id) || {}).frame || '') !== ((b || {}).frame || '')) fch = true; if (b) BDG.set(id, b); else BDG.delete(id);
         const so = (j.socials || {})[id]; if (so) SOC.set(id, so); else SOC.delete(id); }
       lsSet(BDK, Object.fromEntries(BDG)); lsSet('voob_soc_' + ((tgUser && tgUser.id) || 0), Object.fromEntries(SOC));
       if (j.creator) { CREATOR = j.creator; lsSet('voob_creator', CREATOR); }
       document.querySelectorAll('.socs[data-soc]').forEach(el => { el.innerHTML = socialsInner(el.dataset.soc, el.dataset.ico); });
       document.querySelectorAll('.bdg[data-bid]').forEach(el => { el.innerHTML = bdgInner(el.dataset.bid, +el.dataset.sz || 16); });
       document.querySelectorAll('.crw[data-cid]').forEach(el => { el.innerHTML = creatorInner(el.dataset.cid); });
+      if (fch && !sheetCtx) render();                         // пришли рамки PRO — перерисуем аватарки
     } catch (e) { list.forEach(x => BDG_ASKED.delete(x)); }
   }, 120);
 }
@@ -2533,8 +2575,8 @@ function viewMeSettings(){
     <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
   if (inTG) h += proCardHTML();
   { const cur = frameOf(tgUser ? {tg_id:tgUser.id} : null);
-    h += `<div class="card"><h3>${IC('sparkle')}Персонализация</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте.</div><div class="frs">${FRAMES.map(([k, l]) =>
-      `<button type="button" class="frb${cur === k ? ' on' : ''}" data-act="frame" data-v="${k}"><div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div></div>`; }
+    h += `<div class="card"><h3>${IC('sparkle')}Персонализация</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте. Анимированные — для PRO.</div><div class="frs">${FRAMES.map(([k, l, pro]) =>
+      `<button type="button" class="frb${cur === k ? ' on' : ''}${pro && !isPro() ? ' lock' : ''}" data-act="frame" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div></div>`; }
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}
     ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${(db.settings.dv || 'graphite') === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${(db.settings.dv || 'graphite') === k ? IC('check', 16) : ''}</button>`).join('')}</div>` : ''}</div>
     <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}" data-act="accent" data-v="${k}" style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div></div>`;
@@ -2604,7 +2646,7 @@ async function socFind(net){
   const inp = $('#soc-in'), v = inp ? inp.value : '', res = $('#soc-res'), btn = $('#soc-go'); if (!res || !v.trim()) return;
   const l = (SOC_NETS.find(n => n[0] === net) || [])[1];
   if (btn) btn.disabled = true;
-  res.innerHTML = `<div class="ssh-card"><div class="ssh-av"><div class="skl"></div></div><span class="skl" style="display:block;width:50%;height:16px;border-radius:8px;margin:6px auto"></span><span class="skl" style="display:block;width:30%;height:12px;border-radius:6px;margin:8px auto 0"></span></div>`;
+  res.innerHTML = `<div class="ssh-wait"><div class="rad"><i></i><i></i><i></i><b class="orb"></b><span class="lg ${net}">${SOC_LOGO[net]}</span></div><div class="cap">Ищем <b>@${esc(socNick(net, v) || v)}</b><em><i>.</i><i>.</i><i>.</i></em></div></div>`;
   try {
     const j = await apiAuth(BADGES_API, {action:'social_preview', net, value:v});
     if (btn) btn.disabled = false;
@@ -3099,7 +3141,8 @@ const ACT = {
   sex: el => { db.profile.sex = el.dataset.v; touchMeta('profile'); save(); render(); hap.tap(); },
   theme: el => { db.settings.theme = el.dataset.v; save(); applyTheme(); render(); hap.tap(); },
   dv: el => { db.settings.dv = el.dataset.v; save(); applyTheme(); render(); hap.tap(); },
-  frame: el => { db.settings.frame = el.dataset.v || ''; touchMeta('settings'); save(); render(); hap.tap(); },
+  frame: el => { const f = FRAMES.find(x => x[0] === (el.dataset.v || '')); if (f && f[2] && !isPro()) { hap.warn(); toast('👑 Эта рамка — для подписчиков PRO'); return; }
+    db.settings.frame = el.dataset.v || ''; touchMeta('settings'); save(); render(); hap.tap(); },
   accent: el => { db.settings.accent = el.dataset.v; touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
   import: () => $('#file').click(),
   copy: copyBackup,
