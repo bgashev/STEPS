@@ -602,6 +602,101 @@ input[type=date].inp{display:block}
 
 /* ---- сторис ---- */
 .stimg{display:block;max-height:58vh;max-width:100%;margin:6px auto 14px;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+
+/* ===== v1.422 ===== */
+/* цель недели на главной */
+.gx{position:relative;overflow:hidden;padding:20px 18px 16px;background:
+  radial-gradient(120% 90% at 100% 0%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 60%),var(--surface)}
+.gx::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent) top/70% 1px no-repeat}
+.gx-top{display:flex;align-items:center;gap:18px}
+.gx-ring{flex:none;position:relative;width:124px;height:124px}
+.gx-ring svg{display:block;overflow:visible}
+.gx-ring .tr{stroke:color-mix(in srgb,var(--text) 9%,transparent)}
+.gx-ring .sg{stroke:var(--accent);stroke-dashoffset:var(--len);animation:gxSeg .7s cubic-bezier(.3,.9,.3,1) forwards}
+.gx-ring.full .sg{stroke:var(--green)}
+.gx-ring .nx{stroke:var(--accent);animation:gxPulse 1.8s ease-in-out infinite}
+@keyframes gxSeg{to{stroke-dashoffset:0}}
+@keyframes gxPulse{0%,100%{opacity:.14}50%{opacity:.42}}
+.gx-ring .glow{position:absolute;inset:14px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%);filter:blur(6px)}
+.gx-ring.full .glow{background:radial-gradient(circle,rgba(95,201,138,.28),transparent 70%)}
+.gx-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.gx-num b{font-size:38px;font-weight:850;letter-spacing:-1.5px;line-height:1}
+.gx-num b i{font-style:normal;font-size:17px;font-weight:700;color:var(--muted);letter-spacing:0;margin-left:2px}
+.gx-num span{font-size:10.5px;font-weight:800;letter-spacing:1.4px;color:var(--muted);margin-top:5px}
+.gx-ring.full .gx-num span{color:var(--green)}
+.gx-txt{min-width:0;flex:1}
+.gx-cap{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font-size:10.5px;font-weight:800;letter-spacing:1.3px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.gx-cap svg{color:var(--accent)}
+.gx-chip{padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--text) 7%,transparent);color:var(--text);letter-spacing:.4px;text-transform:none;font-weight:750}
+.gx .gt{font-size:22px;line-height:1.15;font-weight:800;letter-spacing:-.4px}
+.gx .gs{margin-top:6px}
+.gx-strip{display:flex;justify-content:space-between;margin-top:18px;padding-top:16px;border-top:1px solid color-mix(in srgb,var(--text) 7%,transparent)}
+.gx-d{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:7px;position:relative}
+.gx-c{position:relative;z-index:1;width:min(38px,82%);height:52px;border-radius:19px;display:grid;place-items:center;font-weight:800;font-size:14px;
+  background:color-mix(in srgb,var(--text) 5%,transparent);border:1px solid color-mix(in srgb,var(--text) 8%,transparent);animation:gxIn .5s cubic-bezier(.2,1.2,.4,1) backwards}
+@keyframes gxIn{from{opacity:0;transform:translateY(8px) scale(.9)}}
+.gx-c.on{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 80%,#fff),var(--accent));border-color:transparent;color:var(--on-accent);box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 22%,transparent)}
+.gx-c.rest{background:rgba(127,181,255,.14);border-color:transparent;color:var(--blue)}
+.gx-c.fut{background:none;border:1.5px dashed color-mix(in srgb,var(--text) 16%,transparent)}
+.gx-d.today .gx-c{outline:2px solid var(--accent);outline-offset:3px}
+.gx-d.link::after{content:"";position:absolute;top:24px;left:50%;width:100%;height:3px;border-radius:2px;background:color-mix(in srgb,var(--accent) 55%,transparent);z-index:0}
+.gx-w{font-size:10px;font-weight:800;letter-spacing:1px;color:var(--muted);text-transform:uppercase}
+.gx-n{font-size:13px;font-weight:800;color:var(--muted);margin-top:-5px}
+.gx-d.today .gx-w{color:var(--accent)}
+.gx-d.today .gx-n,.gx-d.has .gx-n{color:var(--text)}
+/* плавающая кнопка сворачивается при прокрутке вниз */
+#fab .wd-add{transition:width .32s cubic-bezier(.2,.8,.2,1),padding .32s cubic-bezier(.2,.8,.2,1),transform .12s}
+#fab.mini .wd-add{padding:0 16px;gap:0}
+#fab.mini .fl{display:none}
+/* увеличение фото: загрузка */
+#zoom .zi{position:relative}
+#zoom .zi.ld img{filter:blur(10px) saturate(1.2);transform:scale(1.06)}
+#zoom .zi img{transition:filter .55s ease,transform .7s cubic-bezier(.2,.8,.2,1),opacity .45s ease}
+#zoom .zi img.hi{position:absolute;inset:0;opacity:0}
+#zoom .zi img.hi.in{opacity:1}
+#zoom .zring{position:absolute;inset:-8px;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .3s}
+#zoom .zi.ld .zring{opacity:1}
+#zoom .zring::before{content:"";position:absolute;inset:0;border-radius:50%;padding:3px;background:conic-gradient(from 0deg,transparent 0 62%,var(--accent) 88%,#fff 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:zspin 1s linear infinite}
+#zoom .zi{overflow:visible}
+#zoom .zi .zclip{position:absolute;inset:0;border-radius:50%;overflow:hidden;display:grid;place-items:center}
+@keyframes zspin{to{transform:rotate(360deg)}}
+/* профиль: синхронизация под плашкой */
+.prof .crw{display:block}
+.prof .sync{display:flex;margin-top:6px}
+/* CREATOR OF "VOOB" — мерцание звёздочек внутри */
+.crt{position:relative;overflow:hidden;isolation:isolate}
+.crt i{position:absolute;inset:0;z-index:-1;pointer-events:none;background-repeat:no-repeat}
+.crt .s1{background-image:radial-gradient(1.2px 1.2px at 12% 30%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 34% 72%,#fff 50%,transparent 51%),
+  radial-gradient(1.4px 1.4px at 58% 22%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 81% 66%,#fff 50%,transparent 51%),radial-gradient(1.2px 1.2px at 93% 28%,#fff 50%,transparent 51%);
+  animation:crTw 2.4s ease-in-out infinite}
+.crt .s2{background-image:radial-gradient(1px 1px at 22% 62%,#fff 50%,transparent 51%),radial-gradient(1.3px 1.3px at 46% 38%,#fff 50%,transparent 51%),
+  radial-gradient(1px 1px at 69% 78%,#fff 50%,transparent 51%),radial-gradient(1.3px 1.3px at 6% 70%,#fff 50%,transparent 51%),radial-gradient(1px 1px at 88% 44%,#fff 50%,transparent 51%);
+  animation:crTw 2.4s ease-in-out -1.2s infinite}
+.crt::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.55) 50%,transparent 65%);transform:translateX(-120%);animation:crSh 3.6s ease-in-out infinite}
+@keyframes crTw{0%,100%{opacity:.15}50%{opacity:1}}
+@keyframes crSh{0%,55%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
+/* профиль друга: действия в ряд с «Друзьями» */
+.fp-row{display:flex;align-items:center;gap:10px;margin:12px 0 2px}
+.fp-row .fchipb{margin:0}
+.fp-acts{margin-left:auto;display:flex;gap:8px}
+.fpa{width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:transform .12s}
+.fpa:active{transform:scale(.9)}
+.fpa.gbtn{color:var(--accent)}
+.fpa.del{color:var(--muted)}
+/* достижения на весь экран */
+#achfull{position:fixed;inset:0;z-index:65;background:var(--bg);overflow-y:auto;padding:calc(14px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));animation:afIn .32s cubic-bezier(.2,.9,.3,1)}
+#achfull.out{animation:afOut .22s ease forwards}
+@keyframes afIn{from{opacity:0;transform:translateY(24px)}}
+@keyframes afOut{to{opacity:0;transform:translateY(24px)}}
+.af-top{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:6px 0 14px;background:linear-gradient(var(--bg) 75%,transparent)}
+.af-top h2{margin:0;font-size:24px}
+.af-top .cap{margin-top:2px}
+.af-x{margin-left:auto;width:42px;height:42px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);display:grid;place-items:center;cursor:pointer}
+.af-bar{height:6px;border-radius:3px;background:color-mix(in srgb,var(--text) 8%,transparent);overflow:hidden;margin:0 0 16px}
+.af-bar i{display:block;height:100%;border-radius:3px;background:var(--accent)}
+.achlink{cursor:pointer}
 </style>
 </head>
 <body>
@@ -615,7 +710,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.421';
+const APP = 'VOOB (by BGASHEV) Mini App v1.422';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -1236,6 +1331,29 @@ function ring(frac, big, small, done, size = 116){
     <text x="${cx}" y="${cx - size*.03}" text-anchor="middle" font-size="${size*.21}" font-weight="800" fill="var(--text)">${esc(big)}</text>
     <text x="${cx}" y="${cx + size*.16}" text-anchor="middle" font-size="${Math.max(11, size*.1)}" fill="var(--muted)">${esc(small)}</text></svg>`;
 }
+function segRing(done, n, full, pct){
+  const S = 124, r = 52, sw = 11, C = 2 * Math.PI * r, gap = n > 1 ? sw + 7 : 0, len = Math.max(2, C / n - gap);
+  let segs = '';
+  for (let i = 0; i < n; i++) {
+    const rot = -90 + i * 360 / n + (gap / 2) / C * 360;
+    const base = `cx="62" cy="62" r="${r}" fill="none" stroke-width="${sw}" stroke-linecap="round" transform="rotate(${rot} 62 62)"`;
+    segs += `<circle class="tr" ${base} stroke-dasharray="${len} ${C}"/>`;
+    if (i < done) segs += `<circle class="sg" ${base} stroke-dasharray="${len} ${C}" style="--len:${len};animation-delay:${120 + i * 110}ms"/>`;
+    else if (i === done && !full) segs += `<circle class="nx" ${base} stroke-dasharray="${len} ${C}"/>`;
+  }
+  return `<div class="gx-ring${full ? ' full' : ''}"><div class="glow"></div><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">${segs}</svg>
+    <div class="gx-num"><b>${Math.min(done, n)}<i>/${n}</i></b><span>${full ? 'ГОТОВО' : pct + '%'}</span></div></div>`;
+}
+function goalStrip(ws, days){
+  const t = todayN(), per = perDay(ws), rest = restDays(ws);
+  let h = '<div class="gx-strip">';
+  for (let i = days - 1; i >= 0; i--) {
+    const d = t - i, c = per.get(d) || 0, r = !c && rest.has(d), nx = i > 0 && (per.get(d + 1) || 0);
+    h += `<div class="gx-d${i === 0 ? ' today' : ''}${c ? ' has' : ''}${c && nx ? ' link' : ''}"><div class="gx-c${c ? ' on' : r ? ' rest' : ''}" style="animation-delay:${(days - 1 - i) * 45}ms">${c > 1 ? c : c ? IC('check', 17) : r ? IC('rest', 16) : ''}</div>
+      <div class="gx-w">${WD[wdOf(d)]}</div><div class="gx-n">${ymd(d)[2]}</div></div>`;
+  }
+  return h + '</div>';
+}
 function strip(ws, days){
   const t = todayN(), per = perDay(ws), rest = restDays(ws), cs = Math.min(34, Math.floor(300 / days));
   let h = `<div class="strip" style="--cs:${cs}px">`;
@@ -1760,11 +1878,21 @@ async function openZoom(id){
   const f = (FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me.tg_id === id ? FR.data.me : null))); if (!f) return;
   hap.imp();
   const z = document.createElement('div'); z.id = 'zoom'; z.dataset.act = 'zclose';
-  const src = FR.big && FR.big.get(id) || FR.ph.get(id);
-  z.innerHTML = `<div class="zi">${src ? `<img src="${src}" alt="">` : esc((f.name || '?')[0].toUpperCase())}</div><b>${esc(f.name)}</b>`;
-  document.body.appendChild(z);
   FR.big = FR.big || new Map();
-  if (!FR.big.has(id)) try { const j = await apiAuth('/friends/photo', {tg_id:id, big:true}); if (j.ok) { FR.big.set(id, 'data:image/jpeg;base64,' + j.b64); const im = z.querySelector('.zi'); if (im && document.body.contains(z)) im.innerHTML = `<img class="fade" src="${FR.big.get(id)}" alt="">`; } } catch (e) {}
+  const big = FR.big.get(id), src = big || FR.ph.get(id), loading = !big;
+  z.innerHTML = `<div class="zi${loading ? ' ld' : ''}"><div class="zring"></div><div class="zclip">${src ? `<img src="${src}" alt="">` : esc((f.name || '?')[0].toUpperCase())}</div></div><b>${esc(f.name)}</b>`;
+  document.body.appendChild(z);
+  if (!loading) return;
+  const done = () => { const zi = z.querySelector('.zi'); if (zi) zi.classList.remove('ld'); };
+  try {
+    const j = await apiAuth('/friends/photo', {tg_id:id, big:true});
+    if (!j.ok) { done(); return; }
+    FR.big.set(id, 'data:image/jpeg;base64,' + j.b64);
+    const clip = z.querySelector('.zclip'); if (!clip || !document.body.contains(z)) return;
+    const im = new Image(); im.className = 'hi'; im.alt = ''; im.src = FR.big.get(id);
+    const show = () => { clip.appendChild(im); requestAnimationFrame(() => { im.classList.add('in'); done(); }); };
+    if (im.decode) im.decode().then(show, show); else im.onload = show;
+  } catch (e) { done(); }
 }
 async function loadFriendPhotos(){
   const d = FR.data; if (!d) return;
@@ -1939,11 +2067,12 @@ async function loadFofPhotos(j){
 function friendSheetHTML(f, j, loading, self){
   const lv = f.level || xpLevel(0), g = f.goal, ok = g.done_today || g.prev_ok, shown = g.done_today ? g.target : g.shown;
   let h = `<div class="fp-head"><span data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span><div style="flex:1;min-width:0"><h2 class="nmrow" style="margin:0"><span class="nm">${esc(f.name)}</span>${bdgHTML(f.tg_id, 18)}</h2>${f.handle || f.username ? `<div class="cap">@${esc(f.handle || f.username)}</div>` : ''}${creatorHTML(f.tg_id)}
-    <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div>${self ? '' : `<button class="rmx" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 18)}</button><button class="rmx gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 17)}</button><button class="rmx" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button>`}</div>
+    <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div></div>
     <div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div>`;
   if (j && j.friends) FR.prof = j.friends;
-  h += loading ? `<div class="fstrip"><span class="skl" style="width:150px;height:34px;border-radius:17px"></span></div>`
-    : `<button type="button" class="fchipb" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · ${j.friends_count}${(j.friends || []).length ? IC('chev', 14) : ''}</button>`;
+  const acts = self ? '' : `<div class="fp-acts"><button class="fpa" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить" title="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 20)}</button><button class="fpa gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить" title="Подарок">${IC('gift', 19)}</button><button class="fpa del" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей" title="Удалить">${IC('trash', 19)}</button></div>`;
+  h += `<div class="fp-row">` + (loading ? `<span class="skl" style="width:150px;height:34px;border-radius:17px"></span>`
+    : `<button type="button" class="fchipb" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · ${j.friends_count}${(j.friends || []).length ? IC('chev', 14) : ''}</button>`) + acts + `</div>`;
   h += `<div class="card" style="margin-top:12px"><div class="row" style="gap:14px">${ring(shown / g.target, `${shown}/${g.target}`, '', ok, 64)}<div><div style="font-weight:700;color:${ok ? 'var(--green)' : 'var(--text)'}">${g.done_today ? 'Норма выполнена' : g.prev_ok ? 'Норма закрыта' : 'До нормы ' + Math.max(0, g.target - g.shown)}</div>
     <div class="cap">${fmtMin(f.week.minutes)} за 7 дней · ${npw(f.week.workouts, W_WORK)} · ${kmF(f.week.km)}</div>${g.best ? `<div class="cap">лучшая серия: ${npw(g.best, W_TIMES)}</div>` : ''}</div></div>`;
   const days = j && j.week && j.week.days;
@@ -1954,7 +2083,8 @@ function friendSheetHTML(f, j, loading, self){
   if (loading) return h + `<div id="fp-load">` + [100, 120, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('') + `</div>`;
   if (!j.details) return h + `<div class="card muted">${IC('lock', 16)} ${self ? 'Твой профиль закрыт — друзья видят только основное. Открыть можно в настройках.' : esc(f.name) + ' закрыл(а) профиль — видно только основное.'}</div>`;
   const d = j.details, t = d.totals, r = d.records;
-  if ((d.ach || []).length) h += `<div class="card"><h3>${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${medalStrip(d.ach, 44)}</div>`;
+  if ((d.ach || []).length) h += self ? `<div class="card achlink" data-act="achall"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${IC('chev', 16)}</div>${medalStrip(d.ach, 44)}</div>`
+    : `<div class="card"><h3>${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${medalStrip(d.ach, 44)}</div>`;
   h += `<div class="card"><h3>${IC('trophy')}За всё время</h3><div class="tot"><div><b>${t.workouts}</b><span class="cap">тренировок</span></div><div><b>${fmtMin(t.minutes)}</b><span class="cap">в движении</span></div><div><b>${kmF(t.km)}</b><span class="cap">пройдено</span></div><div><b>${t.days}</b><span class="cap">активных дней</span></div></div></div>`;
   const rec = (cap, x, v) => x ? `<div><span class="cap">${cap}</span><b>${v}</b><span class="cap">${fmtDate(dn(x.date))}</span></div>` : '';
   h += `<div class="card"><h3>${IC('medal')}Рекорды</h3><div class="recs2">${rec('Самая долгая', r.longest, r.longest && r.longest.value + ' мин')}${rec('Самая дальняя', r.farthest, r.farthest && kmF(r.farthest.value))}${rec('Самая быстрая', r.fastest, r.fastest && num(r.fastest.value) + ' км/ч')}${rec('Самый крутой уклон', r.steepest, r.steepest && num(r.steepest.value) + ' %')}<div><span class="cap">Дней подряд</span><b>${npw(r.best_days_row, W_DAY)}</b></div></div></div>`;
@@ -1992,8 +2122,8 @@ function viewHome(){
   else if (rest.has(t + 1)) note = `<div class="note">${IC('rest', 15)}5 дней подряд — завтра и послезавтра отдых</div>`;
 
   let h = `<div class="head"><div><h1>${esc(greet())}</h1><div class="sub">${bits.join(' · ')}</div></div></div>
-  <div class="card"><div class="goal">${ring(info.shown / g.count, `${info.shown}/${g.count}`, `${pct}%`, done)}
-    <div><div class="glabel">Цель: ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</div>${gtxt}${gsBtn}</div></div>${strip(ws, g.days)}${note}</div>
+  <div class="card gx"><div class="gx-top">${segRing(info.shown, g.count, done, pct)}
+    <div class="gx-txt"><div class="gx-cap">${IC('target', 13)}Цель недели<span class="gx-chip">${g.count} за ${npw(g.days, W_DAY)}</span></div>${gtxt}${gsBtn}</div></div>${goalStrip(ws, g.days)}${note}</div>
   ${ws.length ? `<div class="actions"><button class="btn ghost" data-act="repeat">${IC('repeat')}Повторить последнюю</button></div>` : ''}`;
   h += planSuggestHTML(ws);
   h += feedTickerHTML();
@@ -2161,11 +2291,23 @@ function viewStats(){
     h += `<div class="recs">` + recs.map(r => `<div><div class="cap">${r[0]}</div><div class="rv">${r[1]}</div><div class="cap">${r[2]}</div></div>`).join('') + `</div>`;
   } else h += `<div class="muted">Рекорды появятся после первой тренировки.</div>`;
   h += `</div>`;
-  // достижения
-  const achs = achievements();
-  h += `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:12px"><h3 style="margin:0">${IC('medal')}Достижения</h3><span class="cap">${achs.filter(a => a.done).length} из ${achs.length}</span></div><div class="ach">`;
-  h += achs.map((a, i) => achTile(a, i)).join('');
-  return h + `</div></div>`;
+  return h;
+}
+function openAchFull(){
+  hap.imp();
+  const achs = achievements(), got = achs.filter(a => a.done).length;
+  const el = document.createElement('div'); el.id = 'achfull';
+  el.innerHTML = `<div class="af-top"><div><h2>Достижения</h2><div class="cap">${got} из ${achs.length} · медали за тренировки, серии и рекорды</div></div>
+    <button type="button" class="af-x" data-act="achclose" aria-label="Закрыть">${IC('close', 20)}</button></div>
+    <div class="af-bar"><i style="width:${Math.max(2, got * 100 / Math.max(1, achs.length))}%"></i></div>
+    <div class="ach">${achs.map((a, i) => achTile(a, i)).join('')}</div>`;
+  document.body.appendChild(el);
+  document.body.style.overflow = 'hidden';
+}
+function closeAchFull(){
+  const el = $('#achfull'); if (!el) return;
+  el.classList.add('out'); document.body.style.overflow = '';
+  setTimeout(() => el.remove(), 220);
 }
 
 function syncHTML(){
@@ -2190,7 +2332,7 @@ const BDG_ASKED = new Set(); let bdgTimer = null; const bdgQueue = new Set();
 function bdgHTML(id, size = 16){ return `<span class="bdg" data-bid="${+id || 0}" data-sz="${size}">${bdgInner(id, size)}</span>`; }
 function bdgInner(id, size = 16){ const b = BDG.get(+id); return b && b.v ? badgeHTML('verified', size) : ''; }
 function creatorHTML(id){ return `<span class="crw" data-cid="${+id || 0}">${creatorInner(id)}</span>`; }
-function creatorInner(id){ const b = BDG.get(+id); return b && b.creator ? '<span class="crt">CREATOR OF "VOOB"</span>' : ''; }
+function creatorInner(id){ const b = BDG.get(+id); return b && b.creator ? '<span class="crt"><i class="s1"></i><i class="s2"></i>CREATOR OF "VOOB"</span>' : ''; }
 function askBadges(ids){
   if (!inTG) return;
   for (const id of ids || []) { const n = +id; if (n && !BDG_ASKED.has(n)) bdgQueue.add(n); }
@@ -2242,7 +2384,7 @@ function viewMeSettings(){
       <div class="cap" style="margin-top:8px">${mk.length ? 'Нажми на подарок, чтобы рассмотреть его поближе.' : 'Пока пусто — подарки дарят друзья. За каждый новый вид +100 очков.'}</div></div>`; }
   h += handleCard();
   { const got = achievements().filter(a => a.done);
-    h += `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${IC('medal')}Достижения</h3><button class="btn ghost small" data-act="tab" data-tab="stats">${got.length} из ${ACH_KEYS.length} ${IC('chev', 14)}</button></div>` +
+    h += `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${IC('medal')}Достижения</h3><button class="btn ghost small" data-act="achall">${got.length} из ${ACH_KEYS.length} ${IC('chev', 14)}</button></div>` +
       (got.length ? medalStrip(got.map(a => a.key), 48) : `<div class="cap">Пока ни одной медали — первая тренировка уже принесёт «Первый шаг».</div>`) + `</div>`; }
   h += `<div class="card"><h3>${IC('user')}Профиль</h3>
     <label class="f"><span>Имя</span><input class="inp" id="p-name" maxlength="32" placeholder="${esc((tgUser && tgUser.first_name) || 'Как тебя зовут?')}" value="${esc(p.name || '')}" data-ch="pname"></label>
@@ -2285,6 +2427,22 @@ const TABS = [['home','Главная','home'],['weight','Вес','scale'],['sta
 const VIEWS = {home:viewHome, weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe};
 // плавающая кнопка внизу по центру: на «Главной» — тренировка, во «Весе» — взвеситься
 const FAB = {home:['add', 'Тренировка'], weight:['kadd', 'Взвеситься']};
+let fabY = 0, fabMiniOn = false;
+function fabMini(on){
+  const box = $('#fab'); if (!box || on === fabMiniOn) return;
+  fabMiniOn = on;
+  const b = box.querySelector('button'); if (!b) { box.classList.toggle('mini', on); return; }
+  const from = b.getBoundingClientRect().width;
+  box.classList.toggle('mini', on);
+  b.style.width = 'auto'; const to = b.getBoundingClientRect().width;
+  b.style.width = from + 'px'; void b.offsetWidth; b.style.width = to + 'px';
+}
+window.addEventListener('scroll', () => {
+  const y = window.scrollY || 0, dy = y - fabY;
+  if (Math.abs(dy) < 6) return;
+  fabMini(dy > 0 && y > 60);
+  fabY = y;
+}, {passive:true});
 function updFab(){
   const box = $('#fab'); if (!box) return;
   const b = box.querySelector('button'), fl = b.querySelector('.fl'), fi = b.querySelector('.fi');
@@ -2542,7 +2700,7 @@ async function copyBackup(){
 
 /* ============================================================ события === */
 const ACT = {
-  tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; S.meSet = false; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') loadFriends(); } },
+  tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; S.meSet = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') loadFriends(); } },
   add: () => { hap.imp(); openSheet(`<h2>Что тренируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше привычная форма</div><div class="acts">` +
       ACTS.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="animation-delay:${i * 30}ms"><span class="ai">${IC(k, 24)}</span>${l}${ok ? '' : '<em>в разработке</em>'}</button>`).join('') + `</div>`, {type:'acts'}); },
   actpick: el => { hap.tap(); openWorkout(null, null, '', el.dataset.v); },
@@ -2596,6 +2754,8 @@ const ACT = {
   stsave: () => saveStory(),
   stshare: () => shareStory(),
   frprof: el => { hap.tap(); openFriendProfile(+el.dataset.id); },
+  achall: () => openAchFull(),
+  achclose: () => { hap.tap(); closeAchFull(); },
   pubprof: el => { hap.tap(); openPublicProfile(el.dataset.h); },
   gome: () => { hap.tap(); closeSheet(); if (S.tab !== 'me') { S.tab = 'me'; S.meSet = false; render(); } },
   gift: el => { hap.tap(); openGiftPicker(+el.dataset.id); },
