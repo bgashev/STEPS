@@ -783,7 +783,7 @@ input[type=date].inp{display:block}
 .lg.yt{background:#FF0033}
 .lg{display:grid!important;place-items:center;flex:none;line-height:0}
 .lg svg{display:block;margin:auto}
-.nbadge.crown{filter:drop-shadow(0 1px 2px rgba(240,162,46,.45))}
+.nbadge.crown{filter:drop-shadow(0 1px 3px color-mix(in srgb,var(--accent) 45%,transparent))}
 .lg.tt{background:#111;box-shadow:inset -1.5px 0 0 #25F4EE,inset 1.5px 0 0 #FE2C55}
 .soc-ed{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .soc-b{display:flex;flex-direction:column;align-items:center;gap:7px;padding:12px 6px 10px;border-radius:18px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;cursor:pointer}
@@ -855,7 +855,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.426';
+const APP = 'VOOB (by BGASHEV) Mini App v1.427';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2502,7 +2502,7 @@ const BDG = new Map(Object.entries(lsGet(BDK) || {}).map(([k, v]) => [+k, v]));
 const BDG_ASKED = new Set(); let bdgTimer = null; const bdgQueue = new Set();
 function bdgHTML(id, size = 16){ return `<span class="bdg" data-bid="${+id || 0}" data-sz="${size}">${bdgInner(id, size)}</span>`; }
 function bdgInner(id, size = 16){ const b = BDG.get(+id); return b && b.creator ? crownHTML(size) : b && b.v ? badgeHTML('verified', size) : ''; }
-function crownHTML(size = 16){ const d = (BADGE_SVG.verified.match(/d="([^Z]*Z)/) || [])[1] || ''; return `<span class="nbadge crown" title="Создатель VOOB" style="width:${size}px;height:${size}px"><svg viewBox="0 0 347 347" width="${size}" height="${size}"><defs><linearGradient id="cg${size}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE08A"/><stop offset=".55" stop-color="#F5B23C"/><stop offset="1" stop-color="#E08A1E"/></linearGradient></defs><path d="${d}" fill="url(#cg${size})"/><g transform="translate(76 80) scale(8.1)" fill="#fff"><path d="M2.6 8.2 7.3 11.6 12 4.9l4.7 6.7 4.7-3.4-1.8 9.4H4.4Z"/><rect x="4.4" y="18.2" width="15.2" height="2.2" rx="1.1"/></g></svg></span>`; }
+function crownHTML(size = 16){ return `<span class="nbadge crown" title="Создатель VOOB" style="width:${size}px;height:${size}px"><svg viewBox="0 0 100 100" width="${size}" height="${size}"><polygon points="50.00,4.00 60.09,12.33 73.00,10.16 77.58,22.42 89.84,27.00 87.67,39.91 96.00,50.00 87.67,60.09 89.84,73.00 77.58,77.58 73.00,89.84 60.09,87.67 50.00,96.00 39.91,87.67 27.00,89.84 22.42,77.58 10.16,73.00 12.33,60.09 4.00,50.00 12.33,39.91 10.16,27.00 22.42,22.42 27.00,10.16 39.91,12.33" style="fill:var(--accent);stroke:var(--accent)" stroke-width="5" stroke-linejoin="round"/><g transform="translate(23.6 22.6) scale(2.2)" style="fill:var(--on-accent)"><path d="M2.6 8.2 7.3 11.6 12 4.9l4.7 6.7 4.7-3.4-1.8 9.4H4.4Z"/><rect x="4.4" y="18.2" width="15.2" height="2.2" rx="1.1"/></g></svg></span>`; }
 function creatorHTML(id){ return `<span class="crw" data-cid="${+id || 0}">${creatorInner(id)}</span>`; }
 function creatorInner(id){ const b = BDG.get(+id); return b && b.creator ? '<span class="crt"><i class="s1"></i><i class="s2"></i>CREATOR OF "VOOB"</span>' : ''; }
 function askBadges(ids){
