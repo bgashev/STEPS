@@ -1855,7 +1855,7 @@ function viewWeight(){
     } else if (goal.reached_on) fc = `Достигнута ${fmtDate(dn(goal.reached_on), true)}`;
     const p = gs.frac * 100;
     h += `<div class="card" style="position:relative"><button class="gedit" data-act="kgoal" aria-label="Изменить цель">${IC('edit', 16)}</button>
-      <div class="goal">${ring(gs.frac, Math.round(p) + '%', 'пройдено', gs.reached, 104)}<div style="flex:1;min-width:0">
+      <div class="goal">${ring(gs.frac, Math.round(p) + '%', 'пройдено', gs.reached, 104)}<div style="flex:1;min-width:0;padding-right:40px">
       <div class="cap">Цель</div><div class="gt${gs.reached ? ' ok' : ''}">${gs.reached ? 'Цель достигнута!' : 'Осталось ' + num(gs.left) + ' кг'}</div>
       <div class="gs">${num(gs.start)} → ${num(gs.target)} кг · пройдено ${num(gs.done)} из ${num(Math.abs(gs.target - gs.start))}</div>
       ${fc ? `<div style="font-weight:650;font-size:13px;margin-top:4px">${fc}</div>` : ''}</div></div>
