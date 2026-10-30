@@ -386,21 +386,23 @@ input[type=date].inp{display:block}
 .nmrow .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .nbadge{display:inline-flex;flex:none;color:var(--accent)}
 .nbadge svg{display:block}
-.plsug{display:flex;align-items:center;gap:12px;padding:16px 14px 16px 16px;min-height:72px;margin-bottom:12px;border-radius:20px;
+.plsug{padding:14px 14px 14px 16px;margin-bottom:12px;border-radius:20px;
   border:1.5px dashed color-mix(in srgb,var(--accent) 50%,var(--muted));background:color-mix(in srgb,var(--accent) 5%,transparent);
   animation:plIn .35s ease both}
+.plsug .ph{display:flex;align-items:center;gap:12px}
 .plsug .pd{flex:none;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
   color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
-.plsug .pi{flex:1;min-width:0}
-.plsug .pt{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px}
-.plsug .pv{display:flex;flex-wrap:wrap;gap:6px}
-.plsug .pc{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:9px;font-size:12px;font-weight:700;white-space:nowrap;background:var(--surface2)}
-.plsug .pc svg{color:var(--accent)}
-.plsug .pb{display:flex;gap:8px;flex:none}
-.plsug .ib{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;
+.plsug .pt{flex:1;min-width:0;font-size:14px;font-weight:800}
+.plsug .pt small{display:block;font-size:12px;font-weight:600;color:var(--muted)}
+.plsug .pb{display:flex;gap:10px;flex:none}
+.plsug .ib{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;
   border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:transform .12s}
 .plsug .ib:active{transform:scale(.9)}
 .plsug .ib.ok{border:0;background:var(--accent);color:var(--bg)}
+.plsug .pv{display:flex;flex-wrap:nowrap;gap:6px;margin-top:12px}
+.plsug .pc{flex:1 1 auto;display:flex;align-items:center;justify-content:center;gap:4px;padding:7px 6px;border-radius:11px;
+  font-size:12px;font-weight:700;white-space:nowrap;background:var(--surface2)}
+.plsug .pc svg{flex:none;color:var(--accent)}
 .plsug.out{animation:plOut .28s ease forwards}
 @keyframes plIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 @keyframes plOut{to{opacity:0;transform:scale(.96);height:0;padding:0;margin:0;border-width:0}}
@@ -1770,16 +1772,25 @@ function todayPlans(ws){
   const free = ws.filter(w => w.date === t && !linked.has(w.id)).length;   // тренировка в тот же день закрывает план (как на ПК)
   return ps.slice(free);
 }
+// параметры плана чипами в один ряд: только те, что есть у тренировки, и не больше четырёх
+function planParams(p){
+  const out = [];
+  if (+p.minutes) out.push(['clock', fmtMin(+p.minutes), 'Время']);
+  if (+p.speed) out.push(['bolt', `${num(+p.speed)} км/ч`, 'Скорость']);
+  if (p.incline != null && (+p.incline || +p.speed)) out.push(['mountain', `${num(+p.incline || 0)}%`, 'Уклон']);
+  if (+p.speed && +p.minutes) out.push(['route', kmF(+p.speed * +p.minutes / 60), 'Дистанция']);
+  return out.slice(0, 4);
+}
 function planSuggestHTML(ws){
   const ps = todayPlans(ws);
   if (!ps.length) return '';
   const p = ps[0];
-  const par = [['clock', fmtMin(+p.minutes || 0), 'Время'], ['bolt', `${num(+p.speed || 0)} км/ч`, 'Скорость'],
-    ['mountain', `${num(+p.incline || 0)}%`, 'Уклон']].map(([ic, v, t]) => `<span class="pc" title="${t}">${IC(ic, 13)}${esc(v)}</span>`).join('');
-  return `<div class="plsug" id="plsug"><div class="pd">${IC('target', 18)}</div>
-    <div class="pi"><div class="pt">План на сегодня${ps.length > 1 ? ` · ещё ${ps.length - 1}` : ''}</div><div class="pv">${par}</div></div>
-    <div class="pb"><button class="ib" data-act="plskip" data-id="${esc(p.id)}" aria-label="Отклонить">${IC('close', 16)}</button>
-    <button class="ib ok" data-act="pladd" data-id="${esc(p.id)}" aria-label="Добавить тренировку">${IC('check', 17)}</button></div></div>`;
+  const par = planParams(p).map(([ic, v, t]) => `<span class="pc" title="${t}" aria-label="${t}: ${esc(v)}">${IC(ic, 13)}${esc(v)}</span>`).join('');
+  return `<div class="plsug" id="plsug"><div class="ph"><div class="pd">${IC('target', 18)}</div>
+    <div class="pt">План на сегодня<small>${ps.length > 1 ? `ещё ${ps.length - 1} в плане` : 'отметь, когда сделаешь'}</small></div>
+    <div class="pb"><button class="ib" data-act="plskip" data-id="${esc(p.id)}" aria-label="Отклонить">${IC('close', 20)}</button>
+    <button class="ib ok" data-act="pladd" data-id="${esc(p.id)}" aria-label="Добавить тренировку">${IC('check', 22)}</button></div></div>
+    ${par ? `<div class="pv">${par}</div>` : ''}</div>`;
 }
 function findPlan(id){ return (db.plans || []).find(p => String(p.id) === String(id)); }
 
