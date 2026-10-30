@@ -1866,7 +1866,7 @@ function chips(age, b, bmr){
 function goalPreview(){ const g = G(); return `${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)} ≈ ${num(g.count * 7 / g.days)} в неделю`; }
 
 /* ============================================================ рендер ==== */
-const TABS = [['home','Тренировки','run'],['weight','Вес','scale'],['stats','Статистика','stats'],['friends','Друзья','friends'],['me','Профиль','user']];
+const TABS = [['home','Шаги','run'],['weight','Вес','scale'],['stats','Итоги','stats'],['friends','Друзья','friends'],['me','Я','user']];
 const VIEWS = {home:viewHome, weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe};
 function render(){
   $('#view').innerHTML = VIEWS[S.tab]();
