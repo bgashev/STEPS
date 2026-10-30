@@ -338,6 +338,16 @@ input[type=date].inp{display:block}
 .emb .rg b{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--surface);font-size:56px;font-weight:900}
 @keyframes pulse{50%{transform:scale(1.08);opacity:.8}}
 /* ==== v1.410: подарки ==== */
+.gmore{display:grid;grid-template-rows:0fr;transition:grid-template-rows .38s cubic-bezier(.2,.8,.2,1)}
+.gmore>div{overflow:hidden;min-height:0}
+.gmore .gshelf{padding-top:6px}
+.gwrap.open .gmore{grid-template-rows:1fr}
+.gexp{display:flex;align-items:center;justify-content:center;margin:8px auto 0;width:44px;height:26px;border-radius:13px;
+  border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:background .2s,color .2s}
+.gexp:active{transform:scale(.94)}
+.gexp svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .35s ease}
+.gwrap.open .gexp{color:var(--accent)}
+.gwrap.open .gexp svg{transform:rotate(180deg)}
 .gshelf{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
 .gsh{display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:14px;background:var(--surface2);padding:5px;transition:.2s}
 .gsh{min-width:0;overflow:hidden;border:0;color:inherit;font:inherit;cursor:default}button.gsh{cursor:pointer;transition:transform .12s}button.gsh:active{transform:scale(.92)}.gsh svg{display:block;width:100%;height:100%;filter:grayscale(1);opacity:.25}
@@ -1491,10 +1501,17 @@ function setGifts(g){
   GIFTS_IN = g; try { localStorage.setItem(GK, JSON.stringify(g)); } catch (e) {}
   if ((g.pending || []).length && (g.pending.length > was || !S.giftSeen) && !sheetCtx) { S.giftSeen = true; setTimeout(openGiftInbox, 600); }
 }
+const GIFT_ROWS = 2, GIFT_COLS = 7;   // сколько видно сразу; остальное — по стрелке
 function giftShelf(kinds, size, who){
   const own = new Set(kinds || []);
-  return `<div class="gshelf">` + GIFT_KEYS.map(k => own.has(k) ? `<button type="button" class="gsh on" title="${GIFT_T[k][1]}" data-act="gview" data-k="${k}"${who ? ` data-who="${esc(who)}"` : ''}>${giftArt(k)}</button>`
-    : `<span class="gsh" title="${GIFT_T[k][1]}">${giftArt(k)}</span>`).join('') + `</div>`;
+  const keys = GIFT_KEYS.filter(k => own.has(k)).concat(GIFT_KEYS.filter(k => !own.has(k)));   // полученные — первыми
+  const cell = k => own.has(k) ? `<button type="button" class="gsh on" title="${GIFT_T[k][1]}" data-act="gview" data-k="${k}"${who ? ` data-who="${esc(who)}"` : ''}>${giftArt(k)}</button>`
+    : `<span class="gsh" title="${GIFT_T[k][1]}">${giftArt(k)}</span>`;
+  const n = GIFT_ROWS * GIFT_COLS;
+  if (keys.length <= n) return `<div class="gshelf">${keys.map(cell).join('')}</div>`;
+  return `<div class="gwrap"><div class="gshelf">${keys.slice(0, n).map(cell).join('')}</div>
+    <div class="gmore"><div><div class="gshelf">${keys.slice(n).map(cell).join('')}</div></div></div>
+    <button type="button" class="gexp" data-act="gexp" aria-label="Показать все подарки"><svg viewBox="0 0 18 18" width="16" height="16"><path d="M4.5 7L9 11.5L13.5 7"/></svg></button></div>`;
 }
 // Подарок крупно: свечение и вращающиеся лучи
 function openGiftView(k, who){
@@ -2152,6 +2169,8 @@ const ACT = {
   repeat: () => { const l = lastWorkout(); openWorkout(null, l, l ? 'Параметры из прошлой тренировки — поправь, если нужно' : ''); },
   wedit: el => { const w = findW(el.dataset.id); if (w) openWorkout(w); },
   wsave: saveWorkout, wdel: delWorkout,
+  gexp: el => { const w = el.closest('.gwrap'); if (!w) return; hap.tap(); w.classList.toggle('open');
+    el.setAttribute('aria-label', w.classList.contains('open') ? 'Свернуть' : 'Показать все подарки'); },
   pladd: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.imp();
     openWorkout(null, p, 'Параметры из плана — поправь, если нужно'); if (sheetCtx) sheetCtx.plan = p; },
   plskip: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.tap();
