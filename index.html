@@ -372,6 +372,21 @@ input[type=date].inp{display:block}
 @keyframes gvIn{from{opacity:0}to{opacity:1}}@keyframes gvOut{to{opacity:0}}
 /* ==== v1.9: мягкий дизайн ==== */
 .card{border-radius:26px;padding:18px}
+.plsug{display:flex;align-items:center;gap:14px;padding:14px 14px 14px 16px;margin-bottom:12px;border-radius:20px;
+  border:1.5px dashed color-mix(in srgb,var(--accent) 55%,var(--muted));background:color-mix(in srgb,var(--accent) 6%,transparent);
+  animation:plIn .35s ease both}
+.plsug .pd{min-width:46px;text-align:center;color:var(--muted)}
+.plsug .pd b{display:block;font-size:22px;line-height:1.1;font-weight:800}
+.plsug .pd span{font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.plsug .pi{flex:1;min-width:0}
+.plsug .pt{font-weight:700;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.plsug .pt i{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.05em;padding:2px 8px;border-radius:9px;
+  color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.plsug .ps{font-size:12px;color:var(--muted);margin-top:2px}
+.plsug .pb{display:flex;flex-direction:column;gap:6px}
+.plsug.out{animation:plOut .28s ease forwards}
+@keyframes plIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes plOut{to{opacity:0;transform:scale(.96);height:0;padding:0;margin:0;border-width:0}}
 .kpi{border-radius:22px}
 .wi,.fc{border-radius:22px}
 .btn{border-radius:999px}
@@ -480,7 +495,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.410';
+const APP = 'VOOB (by BGASHEV) Mini App v1.420';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const tg = window.Telegram && window.Telegram.WebApp;
 const inTG = !!(tg && tg.initData);
@@ -1706,6 +1721,7 @@ function viewHome(){
   <div class="card"><div class="goal">${ring(info.shown / g.count, `${info.shown}/${g.count}`, `${pct}%`, done)}
     <div><div class="glabel">Цель: ${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</div>${gtxt}${gsBtn}</div></div>${strip(ws, g.days)}${note}</div>
   <div class="actions"><button class="btn primary" data-act="add">${IC('plus')}Тренировка</button>${ws.length ? `<button class="btn ghost" data-act="repeat">${IC('repeat')}Повторить</button>` : ''}</div>`;
+  h += planSuggestHTML(ws);
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
   const due = dueWeekSummary(ws);
   const dueM = dueMonthSummary(ws);
@@ -1718,6 +1734,26 @@ function viewHome(){
   h += historyHTML(ws);
   return h;
 }
+/* план на сегодня: пунктирная карточка-предложение (полного раздела «План» в мобильной версии нет) */
+function todayPlans(ws){
+  const t = isoOf(todayN());
+  const ps = (db.plans || []).filter(p => p && p.date === t && !p.skipped && !p.done_id).sort((a, b) => (a.created || 0) - (b.created || 0));
+  const linked = new Set((db.plans || []).map(p => p && p.done_id).filter(Boolean));
+  const free = ws.filter(w => w.date === t && !linked.has(w.id)).length;   // тренировка в тот же день закрывает план (как на ПК)
+  return ps.slice(free);
+}
+function planSuggestHTML(ws){
+  const ps = todayPlans(ws);
+  if (!ps.length) return '';
+  const p = ps[0], d = todayN();
+  const par = [fmtMin(+p.minutes || 0), `${num(+p.speed || 0)} км/ч`, `уклон ${num(+p.incline || 0)}%`].join(' · ');
+  return `<div class="plsug" id="plsug"><div class="pd"><b>${new Date(d * 864e5).getUTCDate()}</b><span>сегодня</span></div>
+    <div class="pi"><div class="pt">${esc(par)}<i>ПЛАН</i></div><div class="ps">Запланировано на сегодня${ps.length > 1 ? ` · ещё ${ps.length - 1}` : ''} — отметь, когда сделаешь</div></div>
+    <div class="pb"><button class="btn primary small" data-act="pladd" data-id="${esc(p.id)}">${IC('check', 15)}Добавить</button>
+    <button class="btn ghost small" data-act="plskip" data-id="${esc(p.id)}">${IC('close', 15)}Отклонить</button></div></div>`;
+}
+function findPlan(id){ return (db.plans || []).find(p => String(p.id) === String(id)); }
+
 function historyHTML(ws){
   let sorted = ws.slice().sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : (b.created || 0) - (a.created || 0));
   const hs = S.hsort || 'date';
@@ -1996,13 +2032,14 @@ function findK(id){ return db.weights.find(w => String(w.id) === id); }
 function lastWorkout(){ const ws = valid().sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (a.created || 0) - (b.created || 0)); return ws.length ? last(ws) : null; }
 
 function saveWorkout(){
-  const item = sheetCtx.item;
+  const item = sheetCtx.item, plan = sheetCtx.plan;
   const data = {date:ISO_RE.test($('#f-date').value) ? $('#f-date').value : isoOf(todayN()), minutes:Math.round(stpVal('minutes')), speed:stpVal('speed'),
     incline:Math.round(stpVal('incline')), feeling:+$('#f-feel').dataset.v, note:$('#f-note').value.trim()};
   const bad = acCheck(data, item); if (bad) { hap.warn(); toast(bad); return; }
   const g = G(), before = goalCycles(valid()).done;
   let w = item;
   if (w) Object.assign(w, data); else { w = Object.assign({id:uid(), created:nowSec()}, data); db.workouts.push(w); }
+  if (plan && !item) { if (plan.act && !w.act) w.act = plan.act; plan.done_id = w.id; delete plan.skipped; touch('plan', plan); }
   touch('workout', w);
   save(); closeSheet(); render(); hap.ok();
   toast(item ? 'Тренировка обновлена' : 'Тренировка сохранена');
@@ -2102,6 +2139,12 @@ const ACT = {
   repeat: () => { const l = lastWorkout(); openWorkout(null, l, l ? 'Параметры из прошлой тренировки — поправь, если нужно' : ''); },
   wedit: el => { const w = findW(el.dataset.id); if (w) openWorkout(w); },
   wsave: saveWorkout, wdel: delWorkout,
+  pladd: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.imp();
+    openWorkout(null, p, 'Параметры из плана — поправь, если нужно'); if (sheetCtx) sheetCtx.plan = p; },
+  plskip: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.tap();
+    const done = () => { p.skipped = true; touch('plan', p); save(); render();
+      toast('План на сегодня отклонён', 'Вернуть', () => { delete p.skipped; touch('plan', p); save(); render(); }); };
+    const c = $('#plsug'); if (c) { c.classList.add('out'); setTimeout(done, 260); } else done(); },
   frload: () => { FR.err = ''; hap.tap(); const b = document.querySelector('[data-act=frload]'); if (b) b.classList.add('spin'); loadFriends(true); },
   frinv: el => { S.inv = !S.inv; hap.imp(); el.classList.toggle('on', S.inv); const r = $('#inv'); if (r) r.classList.toggle('open', S.inv); },
   frzoom: el => openZoom(+el.dataset.id),
