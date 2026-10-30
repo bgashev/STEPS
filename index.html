@@ -392,8 +392,10 @@ input[type=date].inp{display:block}
 .plsug .pd{flex:none;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;
   color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
 .plsug .pi{flex:1;min-width:0}
-.plsug .pt{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:3px}
-.plsug .pv{font-weight:700;line-height:1.35;overflow-wrap:anywhere}
+.plsug .pt{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.plsug .pv{display:flex;flex-wrap:wrap;gap:6px}
+.plsug .pc{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:9px;font-size:12px;font-weight:700;white-space:nowrap;background:var(--surface2)}
+.plsug .pc svg{color:var(--accent)}
 .plsug .pb{display:flex;gap:8px;flex:none}
 .plsug .ib{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;
   border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:transform .12s}
@@ -1772,9 +1774,10 @@ function planSuggestHTML(ws){
   const ps = todayPlans(ws);
   if (!ps.length) return '';
   const p = ps[0];
-  const par = [fmtMin(+p.minutes || 0), `${num(+p.speed || 0)} км/ч`, `уклон ${num(+p.incline || 0)}%`].join(' · ');
+  const par = [['clock', fmtMin(+p.minutes || 0), 'Время'], ['bolt', `${num(+p.speed || 0)} км/ч`, 'Скорость'],
+    ['mountain', `${num(+p.incline || 0)}%`, 'Уклон']].map(([ic, v, t]) => `<span class="pc" title="${t}">${IC(ic, 13)}${esc(v)}</span>`).join('');
   return `<div class="plsug" id="plsug"><div class="pd">${IC('target', 18)}</div>
-    <div class="pi"><div class="pt">План на сегодня${ps.length > 1 ? ` · ещё ${ps.length - 1}` : ''}</div><div class="pv">${esc(par)}</div></div>
+    <div class="pi"><div class="pt">План на сегодня${ps.length > 1 ? ` · ещё ${ps.length - 1}` : ''}</div><div class="pv">${par}</div></div>
     <div class="pb"><button class="ib" data-act="plskip" data-id="${esc(p.id)}" aria-label="Отклонить">${IC('close', 16)}</button>
     <button class="ib ok" data-act="pladd" data-id="${esc(p.id)}" aria-label="Добавить тренировку">${IC('check', 17)}</button></div></div>`;
 }
