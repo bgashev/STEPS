@@ -281,6 +281,9 @@ input[type=date].inp{display:block}
 .rw{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13.5px}
 .rw:last-child{border-bottom:0}
 .fof{display:flex;align-items:center;gap:10px;padding:6px 0}
+.fof.tap{cursor:pointer;border-radius:14px;transition:background .15s}
+.fof.tap:active{background:var(--surface2)}
+.fofc{display:flex;color:var(--muted);opacity:.6}
 .fof .nm{flex:1;min-width:0;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tgl{display:flex;align-items:center;gap:12px;cursor:pointer}
 .tgl .sw2{width:46px;height:28px;border-radius:14px;background:var(--off);position:relative;flex:none;transition:background .2s}
@@ -304,6 +307,14 @@ input[type=date].inp{display:block}
 .fp-head .rmx{border:0;background:none;color:var(--muted);padding:8px;border-radius:12px;align-self:flex-start}
 
 /* ---- рамки уровней ---- */
+.fav.fr-classic,.ava.fr-classic{padding:3px;background:linear-gradient(145deg,color-mix(in srgb,var(--text) 62%,transparent),color-mix(in srgb,var(--text) 18%,transparent))}
+.fav.fr-classic .fi,.ava.fr-classic .fi{box-shadow:0 0 0 2px var(--bg)}
+.fav.s.fr-classic{padding:2px}
+.frs{display:flex;gap:12px;flex-wrap:wrap}
+.frb{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 10px 10px;min-width:96px;border-radius:18px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:13px;font-weight:650;cursor:pointer;transition:border-color .2s,transform .12s}
+.frb:active{transform:scale(.96)}
+.frb.on{border-color:var(--accent)}
+.frb .fav{width:52px;height:52px;font-size:20px}
 .fav.tr,.ava.tr{padding:3px;background:var(--tg)}
 .fav.tr .fi,.ava.tr .fi{box-shadow:0 0 0 2px var(--bg)}
 .lvb.tg{background:var(--tg);color:var(--tink)}
@@ -401,7 +412,7 @@ input[type=date].inp{display:block}
   border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;z-index:1}
 .gedit:active{transform:scale(.92)}
 .wd-add{height:56px;padding:0 22px 0 18px;border-radius:28px;font-size:15px;color:var(--bg);background:var(--accent);
-  box-shadow:0 10px 28px color-mix(in srgb,var(--accent) 45%,transparent)}
+  box-shadow:0 4px 12px rgba(0,0,0,.12)}
 .wdock-sp{height:70px}
 .me-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
 .me-top h1{margin:0}
@@ -435,7 +446,10 @@ input[type=date].inp{display:block}
 .fticker:active{transform:scale(.99)}
 .ft-cap{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .ft-cap svg{color:var(--accent)}.ft-cap span{margin-left:auto;display:flex}
-.ft-win{overflow:hidden}
+.ft-win{overflow:hidden;height:58px}
+.ft-slot .fitem{height:58px;padding:0}
+.ft-slot .ftx{flex:1;min-width:0}
+.ft-slot .fh,.ft-slot .cap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ft-slot{transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .32s ease}
 .ft-slot.out{transform:translateY(-60%);opacity:0}
 .ft-slot.in{transition:none;transform:translateY(60%);opacity:0}
@@ -917,7 +931,7 @@ function touchMeta(id){
 }
 function metaData(id){
   if (id === 'profile') return {name:db.profile.name || '', birth:db.profile.birth || '', sex:db.profile.sex || '', height:+db.profile.height || 0};
-  if (id === 'settings') return Object.assign({goal:db.settings.goal, accent:db.settings.accent}, Array.isArray(db.settings.seen_ach) ? {ach:db.settings.seen_ach.slice(0, 60)} : {});
+  if (id === 'settings') return Object.assign({goal:db.settings.goal, accent:db.settings.accent}, db.settings.frame ? {frame:db.settings.frame} : {}, Array.isArray(db.settings.seen_ach) ? {ach:db.settings.seen_ach.slice(0, 60)} : {});
   return db.weight_goal || {};
 }
 function applyMeta(id, d){
@@ -930,6 +944,7 @@ function applyMeta(id, d){
   } else if (id === 'settings') {
     if (d.goal && d.goal.count) db.settings.goal = {count:+d.goal.count, days:+d.goal.days || 7};
     if (ACCENTS.some(a => a[0] === d.accent)) db.settings.accent = d.accent;
+    db.settings.frame = FRAMES.some(x => x[0] && x[0] === d.frame) ? d.frame : '';
   } else if (id === 'weight_goal') db.weight_goal = (d && typeof d === 'object') ? d : {};
 }
 function splitKey(key){ const i = key.indexOf(':'); return [key.slice(0, i), key.slice(i + 1)]; }
@@ -1066,6 +1081,7 @@ const IP = {
   hourglass:'<path d="M4.5 2.5H13.5M4.5 15.5H13.5M6 2.5V5L9 9L6 13V15.5M12 2.5V5L9 9L12 13V15.5"/>',
   steps:'<ellipse cx="5.6" cy="5.6" rx="2.2" ry="3.6"/><circle cx="5.6" cy="11.8" r="1.4"/><ellipse cx="12.4" cy="8.4" rx="2.2" ry="3.6"/><circle cx="12.4" cy="14.6" r="1.4"/>',
   moon:'<path d="M14.6 11.2A6 6 0 1 1 6.8 3.4A5 5 0 0 0 14.6 11.2Z"/>',
+  rest:'<path d="M14.6 11.2A6.3 6.3 0 0 1 6.8 3.4 6.3 6.3 0 1 0 14.6 11.2Z"/>',
   recharge:'<rect x="2.5" y="5.5" width="12" height="8" rx="2.4"/><path d="M16 8V11"/><path d="M9.6 6.8L7 9.7H9.4L7.8 12.2"/>',
   run:'<circle cx="11.2" cy="3.2" r="1.6"/><path d="M10.2 6.2L8.4 10.2L11.2 12.2L10.2 16M5.6 7.8L8.8 6.2L12.6 8.6M8.4 10.2L5.4 12.2L3 11.6"/>',
   dumbbell:'<path d="M5.5 9H12.5M1.6 7.4V10.6M16.4 7.4V10.6"/><rect x="3.2" y="5.2" width="2.6" height="7.6" rx="1"/><rect x="12.2" y="5.2" width="2.6" height="7.6" rx="1"/>',
@@ -1195,7 +1211,7 @@ function strip(ws, days){
   let h = `<div class="strip" style="--cs:${cs}px">`;
   for (let i = days - 1; i >= 0; i--) {
     const d = t - i, c = per.get(d) || 0, r = !c && rest.has(d);
-    h += `<div class="sd${i === 0 ? ' today' : ''}"><div class="sc${c ? ' on' : r ? ' rest' : ''}" style="animation-delay:${(days - 1 - i) * 40}ms">${c > 1 ? c : c ? IC('check', Math.round(cs*.5)) : r ? IC('recharge', Math.round(cs*.5)) : ''}</div><div class="sw">${days > 9 ? ymd(d)[2] : WD[wdOf(d)]}</div></div>`;
+    h += `<div class="sd${i === 0 ? ' today' : ''}"><div class="sc${c ? ' on' : r ? ' rest' : ''}" style="animation-delay:${(days - 1 - i) * 40}ms">${c > 1 ? c : c ? IC('check', Math.round(cs*.5)) : r ? IC('rest', Math.round(cs*.5)) : ''}</div><div class="sw">${days > 9 ? ymd(d)[2] : WD[wdOf(d)]}</div></div>`;
   }
   return h + '</div>';
 }
@@ -1685,7 +1701,7 @@ function savePhotos(){
   for (const [id, src] of FR.ph) { if (n++ >= PH_MAX) break; if (String(src).startsWith('data:')) out[id] = [Date.now(), src]; }
   lsSet(PHK, out);
 }
-const PRIV = {v:null, loading:false};
+const PRIV = {v:null, hf:false, loading:false};
 async function apiAuth(route, body){
   let tok = await ensureToken();
   try { return await api(route, Object.assign({token:tok}, body || {})); }
@@ -1705,7 +1721,8 @@ async function loadFriends(){
 function fofHTML(x){
   const btn = x.state === 'me' ? `<span class="cap">это ты</span>` : x.state === 'friend' ? `<span class="cap" style="color:var(--green)">${IC('check', 13)} друзья</span>` : x.state === 'requested' ? `<span class="cap">заявка отправлена</span>`
     : `<button class="btn ghost small" data-act="frreq" data-id="${x.tg_id}">${IC('plus', 14)}${x.state === 'incoming' ? 'Принять' : 'Добавить'}</button>`;
-  return `<div class="fof" data-id="${x.tg_id}">${favHTML(x)}<span class="nm">${esc(x.name)}</span>${btn}</div>`;
+  const go = x.state === 'me' ? 'gome' : x.state === 'friend' ? 'frprof' : x.handle ? 'pubprof' : '';
+  return `<div class="fof${go ? ' tap' : ''}" data-id="${x.tg_id}"${go ? ` data-act="${go}"` : ''}${x.handle ? ` data-h="${esc(x.handle)}"` : ''}>${favHTML(x)}<span class="nm">${esc(x.name)}</span>${btn}${go ? `<span class="fofc">${IC('chev', 14)}</span>` : ''}</div>`;
 }
 async function openZoom(id){
   const f = (FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me.tg_id === id ? FR.data.me : null))); if (!f) return;
@@ -1727,9 +1744,12 @@ async function loadFriendPhotos(){
   await Promise.all([worker(), worker(), worker(), worker()]);
   if (got) savePhotos();
 }
+const FRAMES = [['', 'По уровню'], ['classic', 'Стандартная']];   // v1.420: персонализация, список будет расти
+function frameOf(f){ const mine = tgUser && f && f.tg_id === tgUser.id; const k = mine ? (db.settings || {}).frame : f && f.frame; return FRAMES.some(x => x[0] && x[0] === k) ? k : ''; }
+function frameCls(k, lv){ return k ? ` fr-${k}` : (lv ? tierStyle(lv) : ''); }
 function favHTML(f, small){
   const src = FR.ph.get(f.tg_id), lv = f.level && f.level.level;
-  const ts = lv ? tierStyle(lv) : '';
+  const ts = frameCls(frameOf(f), lv);
   return `<div class="fav${small ? ' s' : ''}${ts}" data-fid="${f.tg_id}"><div class="fi">${src ? `<img src="${src}" alt="">` : esc((f.name || '?')[0].toUpperCase())}</div>${lv ? `<span class="lvb${tierOf(lv).idx ? ' tg' : ''}">${lv}</span>` : ''}</div>`;
 }
 function putPhoto(id){   // точечно, без перерисовки всей страницы
@@ -1766,7 +1786,7 @@ function feedText(ev){
 }
 function feedAva(u){
   const fr = FR.data && ((FR.data.me && FR.data.me.tg_id === u.tg_id) ? FR.data.me : (FR.data.friends || []).find(x => x.tg_id === u.tg_id));
-  return favHTML(Object.assign({tg_id:u.tg_id, name:u.name}, fr ? {level:fr.level} : {}), true);
+  return favHTML(Object.assign({tg_id:u.tg_id, name:u.name}, fr ? {level:fr.level, frame:fr.frame} : {}), true);
 }
 function feedItemHTML(ev, i){
   const [head, sub, ic] = feedText(ev), u = ev.user || {};
@@ -1867,10 +1887,14 @@ function viewFriends(){
   }).join('');
   return h;
 }
+const FPC = new Map();   // кэш профилей друзей: открываются мгновенно, свежие данные догружаются фоном
 async function openFriendProfile(id){
   const f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
-  openSheet(friendSheetHTML(f, null, true), {type:'fprof', id});
-  try { const j = await apiAuth('/friends/profile', {tg_id:id, today:isoOf(todayN())}); if (sheetCtx && sheetCtx.type === 'fprof' && sheetCtx.id === id) { $('#sheet').innerHTML = '<div class="grab"></div>' + friendSheetHTML(f, j, false); loadFofPhotos(j); } }
+  const c = FPC.get(id), cj = c && c.j;
+  openSheet(friendSheetHTML(f, cj || null, !cj), {type:'fprof', id});
+  if (cj) { loadFofPhotos(cj); if (Date.now() - c.at < 60000) return; }
+  try { const j = await apiAuth('/friends/profile', {tg_id:id, today:isoOf(todayN())}); FPC.set(id, {j, at:Date.now()});
+    if (sheetCtx && sheetCtx.type === 'fprof' && sheetCtx.id === id) { const sh = $('#sheet'), st = sh.scrollTop; sh.innerHTML = '<div class="grab"></div>' + friendSheetHTML(f, j, false); sh.scrollTop = st; loadFofPhotos(j); } }
   catch (e) { const el = $('#fp-load'); if (el) el.textContent = 'Не удалось загрузить: ' + e.message; }
 }
 async function loadFofPhotos(j){
@@ -1931,8 +1955,8 @@ function viewHome(){
   if (!canSum) S.gsum = false;
   const gsBtn = canSum ? `<button class="btn ghost small gsbtn" data-act="gsum">${IC(S.gsum ? 'close' : 'sparkle', 15)}${S.gsum ? 'Скрыть итоги' : 'Итоги недели'}</button>` : '';
   let note = '';
-  if (rest.has(t)) note = `<div class="note">${IC('recharge', 15)}Сегодня день отдыха — восстанавливайся</div>`;
-  else if (rest.has(t + 1)) note = `<div class="note">${IC('recharge', 15)}5 дней подряд — завтра и послезавтра отдых</div>`;
+  if (rest.has(t)) note = `<div class="note">${IC('rest', 15)}Сегодня день отдыха — восстанавливайся</div>`;
+  else if (rest.has(t + 1)) note = `<div class="note">${IC('rest', 15)}5 дней подряд — завтра и послезавтра отдых</div>`;
 
   let h = `<div class="head"><div><h1>${esc(greet())}</h1><div class="sub">${bits.join(' · ')}</div></div></div>
   <div class="card"><div class="goal">${ring(info.shown / g.count, `${info.shown}/${g.count}`, `${pct}%`, done)}
@@ -2150,7 +2174,7 @@ function viewMeSettings(){
   const p = db.profile, g = G(), name = displayName(), photo = tgUser && tgUser.photo_url;
   const age = ageOf(p.birth), kg = currentWeight(), hgt = +p.height || 0, b = bmiOf(kg, hgt), bmr = bmrOf(kg, hgt, age, p.sex);
   const lv = myLevel();
-  let h = `<div class="prof"><div class="ava${tierStyle(lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
+  let h = `<div class="prof"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
     <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${name ? badgeHTML((db.settings || {}).badge, 20) : ''}</h1>${syncHTML()}</div></div>`;
   h += `<div class="card"><h3>${IC('medal')}Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></h3><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div>
     <div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1} · всего ${numSep(lv.xp)}</div>
@@ -2172,13 +2196,18 @@ function viewMeSettings(){
   h += `<div class="card"><h3>${IC('target')}Цель недели</h3><div class="cap" style="margin:-6px 0 12px">Неделя начинается с первой тренировки и длится N дней. Выполнил норму — следующая начнётся с новой тренировки.</div>
     <div class="g2">${stepper('gcount', 'Сколько тренировок', g.count, 1, 14, 1, 0, '', 'gcount')}${stepper('gdays', 'За сколько дней', g.days, 3, 14, 1, 0, '', 'gdays')}</div>
     <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
+  { const cur = frameOf(tgUser ? {tg_id:tgUser.id} : null);
+    h += `<div class="card"><h3>${IC('sparkle')}Персонализация</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте.</div><div class="frs">${FRAMES.map(([k, l]) =>
+      `<button type="button" class="frb${cur === k ? ' on' : ''}" data-act="frame" data-v="${k}"><div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div></div>`; }
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}
     ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${(db.settings.dv || 'graphite') === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${(db.settings.dv || 'graphite') === k ? IC('check', 16) : ''}</button>`).join('')}</div>` : ''}</div>
     <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}" data-act="accent" data-v="${k}" style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div></div>`;
   if (inTG) {
-    if (PRIV.v == null && !PRIV.loading) { PRIV.loading = true; apiAuth('/friends/privacy', {}).then(j => { PRIV.v = !!j.private; if (S.tab === 'me') render(); }).catch(() => {}).finally(() => { PRIV.loading = false; }); }
+    if (PRIV.v == null && !PRIV.loading) { PRIV.loading = true; apiAuth('/friends/privacy', {}).then(j => { PRIV.v = !!j.private; PRIV.hf = !!j.hide_feed; if (S.tab === 'me') render(); }).catch(() => {}).finally(() => { PRIV.loading = false; }); }
     h += `<div class="card"><h3>${IC('lock')}Конфиденциальность</h3><div class="tgl${PRIV.v ? ' on' : ''}" data-act="privacy"><span class="sw2"></span><b>Закрытый профиль</b></div>
-      <div class="cap" style="margin-top:8px">Друзья увидят только основное: уровень, цель недели и итоги за 7 дней. Подробная статистика, рекорды, история тренировок и список твоих друзей будут скрыты. Вес и заметки друзьям не видны никогда.</div></div>`;
+      <div class="cap" style="margin-top:8px">Друзья увидят только основное: уровень, цель недели и итоги за 7 дней. Подробная статистика, рекорды, история тренировок и список твоих друзей будут скрыты. Вес и заметки друзьям не видны никогда.</div></div>
+      <div class="tgl${PRIV.hf ? ' on' : ''}" data-act="hidefeed" style="margin-top:16px"><span class="sw2"></span><b>Скрывать мои новости в ленте</b></div>
+      <div class="cap" style="margin-top:8px">Тренировки, подарки и новые друзья не попадут в ленту твоих друзей. Профиль при этом остаётся доступен.</div>`;
   }
   if (inTG) h += `<div class="card"><h3>${IC('sparkle')}Идеи и жалобы</h3><div class="hint">Нашёл ошибку или есть идея? Напиши — сообщение уйдёт разработчику.</div><button class="btn ghost small" data-act="fbopen">${IC('edit', 16)}Написать</button></div>`;
   h += `<div class="card"><h3>${IC('cloud')}Данные</h3><div class="cap" style="margin:-6px 0 12px">Данные синхронизируются через сервер VOOB и привязаны к твоему Telegram: одинаковы на телефоне, в Telegram Desktop и в программе VOOB для Windows.</div>
@@ -2483,6 +2512,8 @@ const ACT = {
   stsave: () => saveStory(),
   stshare: () => shareStory(),
   frprof: el => { hap.tap(); openFriendProfile(+el.dataset.id); },
+  pubprof: el => { hap.tap(); openPublicProfile(el.dataset.h); },
+  gome: () => { hap.tap(); closeSheet(); if (S.tab !== 'me') { S.tab = 'me'; S.meSet = false; render(); } },
   gift: el => { hap.tap(); openGiftPicker(+el.dataset.id); },
   ginbox: () => openGiftInbox(),
   gview: el => openGiftView(el.dataset.k, el.dataset.who),
@@ -2536,6 +2567,12 @@ const ACT = {
     const id = +el.dataset.id, acc = el.dataset.v === '1';
     try { const j = await apiAuth('/friends/respond', {tg_id:id, accept:acc}); toast(acc && j.status === 'ok' ? 'Теперь вы друзья 🎉' : 'Заявка отклонена'); if (acc) hap.ok(); loadFriends(); }
     catch (e) { toast('Нет связи: ' + e.message); } },
+  hidefeed: async () => {
+    if (!inTG) return; const want = !PRIV.hf; PRIV.hf = want; render(); hap.tap();
+    try { const j = await apiAuth('/friends/privacy', {hide_feed:want}); PRIV.hf = !!j.hide_feed; toast(PRIV.hf ? 'Твои новости скрыты из ленты друзей' : 'Друзья снова видят твои новости в ленте'); }
+    catch (e) { PRIV.hf = !want; toast('Нет связи: ' + e.message); }
+    render();
+  },
   privacy: async () => {
     if (!inTG) return; const want = !PRIV.v; PRIV.v = want; render(); hap.tap();
     try { const j = await apiAuth('/friends/privacy', {private:want}); PRIV.v = !!j.private; toast(PRIV.v ? 'Профиль закрыт — друзья видят только основное' : 'Профиль открыт для друзей'); }
@@ -2599,6 +2636,7 @@ const ACT = {
   sex: el => { db.profile.sex = el.dataset.v; touchMeta('profile'); save(); render(); hap.tap(); },
   theme: el => { db.settings.theme = el.dataset.v; save(); applyTheme(); render(); hap.tap(); },
   dv: el => { db.settings.dv = el.dataset.v; save(); applyTheme(); render(); hap.tap(); },
+  frame: el => { db.settings.frame = el.dataset.v || ''; touchMeta('settings'); save(); render(); hap.tap(); },
   accent: el => { db.settings.accent = el.dataset.v; touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
   import: () => $('#file').click(),
   copy: copyBackup,
