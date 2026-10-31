@@ -909,7 +909,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.432';
+const APP = 'VOOB (by BGASHEV) Mini App v1.432.1';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2654,7 +2654,7 @@ function viewMeSettings(){
   if (inTG) h += proCardHTML();
   { const cur = frameOf(tgUser ? {tg_id:tgUser.id} : null);
     h += `<div class="card"><h3>${IC('sparkle')}Персонализация</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте. Анимированные — для PRO.</div><div class="frs${S.frAll ? '' : ' col'}">${FRAMES.map(([k, l, pro], i) =>
-      `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 && cur !== k ? ' more' : ''}${pro && !isPro() ? ' lock' : ''}" data-act="frame" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="frall">${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}${IC('chev', 14)}</button></div>`; }
+      `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 && cur !== k ? ' more' : ''}${pro && !isPro() ? ' lock' : ''}" data-act="frame" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="frmore">${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}${IC('chev', 14)}</button></div>`; }
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}
     ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${(db.settings.dv || 'graphite') === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${(db.settings.dv || 'graphite') === k ? IC('check', 16) : ''}</button>`).join('')}</div>` : ''}</div>
     <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}" data-act="accent" data-v="${k}" style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div></div>`;
@@ -3088,7 +3088,7 @@ const ACT = {
   probuy: el => proBuy(el.dataset.v),
   socedit: el => { hap.tap(); socSheet(el.dataset.net); },
   socfind: el => socFind(el.dataset.net),
-  frall: () => { hap.tap(); S.frAll = !S.frAll; render(); },
+  frmore: () => { hap.tap(); S.frAll = !S.frAll; render(); },
   giftpro: el => { hap.tap(); openGiftPro(+el.dataset.id); },
   gpbuy: el => buyGiftPro(+el.dataset.id, el.dataset.v, el),
   socno: () => { hap.tap(); const r = $('#soc-res'), i = $('#soc-in'); if (r) r.innerHTML = ''; if (i) { i.focus(); i.select(); } },
