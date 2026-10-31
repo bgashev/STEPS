@@ -896,6 +896,9 @@ input[type=date].inp{display:block}
   border-bottom:1px solid color-mix(in srgb,var(--text) 6%,transparent);box-shadow:0 10px 20px -12px rgba(0,0,0,.5)}
 .af-bar{margin-top:14px!important}
 .foot a{color:var(--accent);text-decoration:none;font-weight:700;cursor:pointer}
+/* v1.432.2: повторная перерисовка той же вкладки — без повторных «появлений» */
+#view.rr :is(.act,.bfill,.cgc,.emb .rg,.fbar .ff,.fbar .fv,.fc,.fdb i,.fi img.fade,.fticker,.gbig,.gx-c,.gx-ring .sg,.line .draw,.lvbar i,.pfill,.plsug,.ring-p,.rk .br i,.sc,.slr,.slr.new,.wdock,.wi,.fest){animation:none!important}
+#view.rr .lvbar i,#view.rr [style*="--c"]{transition:none!important}
 </style>
 </head>
 <body>
@@ -909,7 +912,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.432.1';
+const APP = 'VOOB (by BGASHEV) Mini App v1.432.2';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2799,8 +2802,14 @@ function updFab(){
     setTimeout(() => { if (fl.textContent === cfg[1]) b.style.width = ''; }, 380);
   }, 140);
 }
+let _rTab = null, _rHtml = '';
 function render(){
-  $('#view').innerHTML = VIEWS[S.tab]();
+  const html = VIEWS[S.tab](), v = $('#view');
+  const same = _rTab === S.tab;
+  if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
+  v.classList.toggle('rr', same);                          // та же вкладка: обновляем без повторных «появлений»
+  _rTab = S.tab; _rHtml = html;
+  v.innerHTML = html;
   updFab();
   festCountUp();
   setTimeout(checkRewards, 700);
