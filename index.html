@@ -1078,6 +1078,21 @@ input[type=date].inp{display:block}
 .bg-prism .c{left:56%;top:48%;width:24%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.3),transparent);animation:bgBeam 5s ease-in-out infinite alternate}
 @keyframes bgBeam{from{opacity:.55}to{opacity:1}}
 @keyframes bgFan{from{opacity:.7;transform:scaleY(.92)}to{opacity:1;transform:scaleY(1.06)}}
+
+/* v1.436: промокод — «билет» */
+.pmc{position:relative;padding:16px 16px 14px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 10%,var(--surface)),var(--surface));
+  -webkit-mask:radial-gradient(circle 9px at 0 50%,transparent 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 9px at 100% 50%,transparent 98%,#000) right/51% 100% no-repeat;
+  mask:radial-gradient(circle 9px at 0 50%,transparent 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 9px at 100% 50%,transparent 98%,#000) right/51% 100% no-repeat}
+.pm-h{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:15px}
+.pm-ic{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+.pm-row{display:flex;gap:8px}
+.pm-row .inp{flex:1;min-width:0;padding-left:12px;padding-right:8px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:15px;font-weight:750;letter-spacing:.03em;text-transform:uppercase}
+.pm-row .btn{flex:none;white-space:nowrap;padding-left:16px;padding-right:16px}
+#pm-msg{margin-top:8px;padding-top:8px;border-top:1px dashed color-mix(in srgb,var(--text) 14%,transparent)}
+#pm-msg.bad{color:var(--red);font-weight:650}
+#pm-msg.ok{color:var(--green);font-weight:700}
+.pmc.shake{animation:pmShake .42s}
+@keyframes pmShake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
 </style>
 </head>
 <body>
@@ -1091,7 +1106,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.435';
+const APP = 'VOOB (by BGASHEV) Mini App v1.436';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2833,6 +2848,10 @@ function viewMeSettings(){
   const lv = myLevel();
   let h = `<div class="prof"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
     <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}${tgUser ? socialsHTML(tgUser.id) : ''}${syncHTML()}</div></div>`;
+  if (inTG) h += `<div class="card pmc"><div class="pm-h"><span class="pm-ic">${IC('gift', 18)}</span><b>Промокод</b></div>
+    <div class="pm-row"><input id="pm-in" class="inp" placeholder="VOOB-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="24" enterkeyhint="done">
+    <button type="button" class="btn primary" id="pm-go" data-act="promo" disabled>Активировать</button></div>
+    <div class="cap" id="pm-msg">Введи код — PRO, рамка или подарок сразу станут твоими</div></div>`;   // v1.436
   if (inTG) h += socEditHTML();
   h += `<div class="card"><h3>${IC('medal')}Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></h3><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div>
     <div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1} · всего ${numSep(lv.xp)}</div>
@@ -3623,6 +3642,31 @@ fitFrames();
   vv.addEventListener('resize', upd); vv.addEventListener('scroll', upd);
   document.addEventListener('focusin', e => { if (e.target.matches && e.target.matches('#sheet input,#sheet textarea')) setTimeout(upd, 300); });
   document.addEventListener('focusout', () => setTimeout(upd, 200)); })();
+document.addEventListener('input', e => { if (e.target.id !== 'pm-in') return;
+  const i = e.target; let v = i.value.toUpperCase().replace(/[^A-Z0-9-]/g, ''); const f = v.replace(/-/g, '');
+  if (f.startsWith('VOOB') && f.length > 4) { const b = f.slice(4, 12); v = 'VOOB-' + b.slice(0, 4) + (b.length > 4 ? '-' + b.slice(4) : ''); }
+  if (v !== i.value) i.value = v;
+  const g = $('#pm-go'); if (g) g.disabled = v.replace(/-/g, '').length < 4;
+  const m = $('#pm-msg'); if (m && m.className) { m.className = 'cap'; m.textContent = 'Введи код — PRO, рамка или подарок сразу станут твоими'; } });
+document.addEventListener('keydown', e => { if (e.target.id === 'pm-in' && e.key === 'Enter') { e.preventDefault(); const g = $('#pm-go'); if (g && !g.disabled) g.click(); } });
+ACT.promo = async el => {
+  const i = $('#pm-in'), m = $('#pm-msg'), card = el.closest('.pmc'); if (!i || !m) return;
+  el.disabled = true; m.className = 'cap'; m.textContent = 'Проверяем код…';
+  const ERR = {bad:'Такого кода нет — проверь буквы и цифры', used:'Ты уже активировал этот код', empty:'Код уже использовали — он закончился',
+    expired:'Срок действия кода истёк', limit:'Слишком много попыток — попробуй через час'};
+  try {
+    const j = await apiAuth(EXTRA_API, {action:'promo', code:i.value});
+    if (j.status !== 'ok') { hap.warn(); m.className = 'cap bad'; m.textContent = ERR[j.status] || 'Не получилось'; card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake'); el.disabled = false; return; }
+    let txt;
+    if (j.kind === 'pro') { INBOX_PRO = true; try { localStorage.setItem(INBOX_K, '1'); } catch (e) {}
+      txt = `PRO на ${npw(+j.value, W_DAY)} — действует до ${j.until ? fmtDate(dn(j.until.slice(0, 10))) : '…'}`; }
+    else if (j.kind === 'frame') txt = `Рамка «${(FRAMES.find(f => f[0] === j.value) || [, j.value])[1]}» теперь твоя`;
+    else txt = `Подарок «${(GIFT_T[j.value] || [, j.value])[1]}» уже в коллекции`;
+    hap.ok(); confetti(); i.value = ''; m.className = 'cap ok'; m.textContent = '✓ ' + txt; toast(txt);
+    if (tgUser) { BDG_ASKED.delete(+tgUser.id); askBadges([tgUser.id]); }
+    scheduleSync(50); setTimeout(checkInbox, 500); setTimeout(() => { applyTheme(); }, 600);
+  } catch (e) { m.className = 'cap bad'; m.textContent = 'Нет связи: ' + e.message; el.disabled = false; }
+};
 init();
 </script>
 </body>
