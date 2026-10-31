@@ -2358,7 +2358,26 @@ function fofHTML(x){
   const go = x.state === 'me' ? 'gome' : x.state === 'friend' ? 'frprof' : x.handle ? 'pubprof' : '';
   return `<div class="fof${go ? ' tap' : ''}" data-id="${x.tg_id}"${go ? ` data-act="${go}"` : ''}${x.handle ? ` data-h="${esc(x.handle)}"` : ''}>${favHTML(x)}<span class="nm">${esc(x.name)}</span>${bdgHTML(x.tg_id, 14)}${btn}${go ? `<span class="fofc">${IC('chev', 14)}</span>` : ''}</div>`;
 }
-async function openZoom(id){
+// v1.441: аватарка «вылетает» из профиля и на закрытии плавно летит обратно на своё место
+function zoomFlip(zi, src, back){
+  if (!src || !document.body.contains(src) || !zi.animate) return null;
+  const a = (src.querySelector('.fi') || src).getBoundingClientRect(), b = zi.getBoundingClientRect();
+  if (!a.width || !b.width) return null;
+  const dx = a.left + a.width / 2 - (b.left + b.width / 2), dy = a.top + a.height / 2 - (b.top + b.height / 2), sc = a.width / b.width;
+  const home = {transform:'translate(0,0) scale(1)'}, away = {transform:`translate(${dx}px,${dy}px) scale(${sc})`};
+  return zi.animate(back ? [home, away] : [away, home], {duration: back ? 420 : 480, easing:'cubic-bezier(.2,.85,.25,1)', fill:'both'});
+}
+function closeZoom(){
+  const z = $('#zoom'); if (!z || z.dataset.closing) return; z.dataset.closing = '1';
+  const src = z._src, zi = z.querySelector('.zi'), lb = z.querySelector('b');
+  const end = () => { if (src) src.style.visibility = ''; z.remove(); };
+  const fl = zi ? zoomFlip(zi, src, true) : null;
+  z.style.animation = 'none';
+  z.animate([{opacity:1}, {opacity:0}], {duration: 420, easing:'ease-in', fill:'forwards'});
+  if (lb) lb.animate([{opacity:1}, {opacity:0}], {duration: 180, fill:'forwards'});
+  if (fl) { fl.onfinish = end; setTimeout(end, 700); } else setTimeout(end, 260);
+}
+async function openZoom(id, from){
   const f = (FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me.tg_id === id ? FR.data.me : null))); if (!f) return;
   hap.imp();
   const z = document.createElement('div'); z.id = 'zoom'; z.dataset.act = 'zclose';
@@ -2366,6 +2385,8 @@ async function openZoom(id){
   const big = FR.big.get(id), src = big || FR.ph.get(id), loading = !big;
   z.innerHTML = `<div class="zi${loading ? ' ld' : ''}"><div class="zring"></div><div class="zclip">${src ? `<img src="${src}" alt="">` : esc((f.name || '?')[0].toUpperCase())}</div></div><b>${esc(f.name)}</b>`;
   document.body.appendChild(z);
+  z._src = from || null;
+  { const zi0 = z.querySelector('.zi'); if (from && zi0 && zi0.animate) { zi0.style.animation = 'none'; if (zoomFlip(zi0, from, false)) from.style.visibility = 'hidden'; } }
   if (!loading) return;
   const done = () => { const zi = z.querySelector('.zi'); if (zi) zi.classList.remove('ld'); };
   try {
@@ -3355,8 +3376,8 @@ const ACT = {
     const c = $('#plsug'); if (c) { c.classList.add('out'); setTimeout(done, 260); } else done(); },
   frload: () => { FR.err = ''; hap.tap(); const b = document.querySelector('[data-act=frload]'); if (b) b.classList.add('spin'); loadFriends(true); },
   frinv: el => { S.inv = !S.inv; hap.imp(); el.classList.toggle('on', S.inv); const r = $('#inv'); if (r) r.classList.toggle('open', S.inv); },
-  frzoom: el => openZoom(+el.dataset.id),
-  zclose: () => { const z = $('#zoom'); if (z) z.remove(); },
+  frzoom: el => openZoom(+el.dataset.id, el),
+  zclose: () => closeZoom(),
   frall: el => { const id = +el.dataset.id, f = FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me && FR.data.me.tg_id === id ? FR.data.me : null)); if (!f || !FR.prof) return; hap.tap();
     openSheet(`<h2>Друзья ${esc(f.name)}</h2>` + FR.prof.map(x => fofHTML(x)).join('') + `<button class="btn ghost" style="width:100%;margin-top:12px" data-act="frprof" data-id="${id}">Назад к профилю</button>`, {type:'frall', id}); },
   rwok: () => { $('#cg').classList.remove('show'); setTimeout(showNextReward, 250); },
