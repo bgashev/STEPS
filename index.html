@@ -272,6 +272,33 @@ input[type=date].inp{display:block}
 .rq{display:flex;align-items:center;gap:10px;padding:6px 0}
 .rq .nm{flex:1;min-width:0;font-weight:700}
 .fp-head{display:flex;gap:14px;align-items:center;margin:4px 0 12px}
+/* v1.433: шапка профиля — по центру, мягкое свечение цветом уровня, уровень с кольцом-номером */
+.hero{position:relative;text-align:center;padding:26px 18px 18px;margin:2px 0 12px;border-radius:26px;background:var(--surface);border:1px solid var(--border);overflow:hidden;isolation:isolate}
+.hero::before{content:'';position:absolute;left:50%;top:-120px;width:420px;height:300px;transform:translateX(-50%);z-index:-1;pointer-events:none;
+  background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 30%,transparent),transparent 72%);opacity:.9;animation:heroGlow 7s ease-in-out infinite alternate}
+.hero::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+  background-image:radial-gradient(color-mix(in srgb,var(--text) 14%,transparent) 1px,transparent 1.2px);background-size:16px 16px;
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 0%,#000 10%,transparent 75%);mask-image:radial-gradient(ellipse 70% 60% at 50% 0%,#000 10%,transparent 75%)}
+@keyframes heroGlow{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.12)}}
+.hero-av{display:inline-block;margin:0 auto 10px;cursor:zoom-in}
+.hero-av .fav{width:100px;height:100px;font-size:38px}
+.hero-av .fav .lvb{display:none}
+.hero-nm{justify-content:center;margin:0;font-size:24px;letter-spacing:-.4px}
+.hero-at{color:var(--muted);font-weight:600;font-size:14px;margin-top:2px}
+.hero .crw{display:flex;justify-content:center;margin-top:8px}
+.hero-lv{max-width:300px;margin:16px auto 0;padding:12px 14px 10px;border-radius:18px;background:color-mix(in srgb,var(--surface2) 80%,transparent);border:1px solid var(--border)}
+.hero-lvt{display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px}
+.hero-lvt .lvn{min-width:26px;height:26px;padding:0 6px;border-radius:13px;display:grid;place-items:center;font-weight:850;font-size:13px;color:var(--bg);background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.hero-lvt .ttl{margin:0;color:var(--tc);font-size:12.5px;padding:2px 8px;border-radius:9px;background:color-mix(in srgb,var(--tc) 14%,transparent)}
+.hero .lvbar{margin:10px 0 6px}
+.hero .cap{font-size:12px}
+.hero-row{display:flex;justify-content:center;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+.hero-row .fchipb{margin:0;height:38px}
+.hero .fchipb.hset{padding:5px 14px 5px 11px;color:var(--muted)}
+.hero .fchipb.hset svg{color:var(--accent)}
+.hero .socs.ico{justify-content:center;margin-top:12px}
+.hero .socs.ico:empty{display:none}
+.hero .fp-del{top:10px;right:10px}
 .fp-head .fav{width:70px;height:70px;font-size:28px}
 .fp-head .fav .lvb{min-width:24px;height:24px;font-size:12.5px;border-radius:12px}
 .tot{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -912,7 +939,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.432.2';
+const APP = 'VOOB (by BGASHEV) Mini App v1.433';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2133,12 +2160,13 @@ async function loadFriendPhotos(){
   if (got) savePhotos();
 }
 const FRAMES = [['', 'Без рамки'], ['classic', 'Стандартная'], ['aurora', 'Аврора', 1], ['gold', 'Золото', 1], ['neon', 'Неон', 1], ['flame', 'Пламя', 1], ['ocean', 'Океан', 1], ['sakura', 'Сакура', 1], ['cyber', 'Кибер', 1], ['emerald', 'Изумруд', 1], ['galaxy', 'Галактика', 1], ['ice', 'Лёд', 1], ['storm', 'Гроза', 1], ['hearts', 'Сердца', 1], ['pixel', 'Пиксель', 1], ['plasma', 'Плазма', 1], ['atom', 'Атом', 1], ['holo', 'Голограмма', 1]];
-function isPro(){ const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.pro || b.creator)); }   // v1.420: персонализация, список будет расти
+function isPro(){ const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.pro || b.creator)); }
+function frOwned(k){ if (isPro()) return true; const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.frames || []).includes(k)); }   // v1.433: рамка в подарок от VOOB   // v1.420: персонализация, список будет расти
 function frameOf(f){
   const mine = tgUser && f && +f.tg_id === tgUser.id, b = f ? (BDG.get(+f.tg_id) || {}) : {};
   const k = mine ? (db.settings || {}).frame : f && (f.frame || b.frame);
   const e = FRAMES.find(x => x[0] && x[0] === k); if (!e) return '';
-  if (e[2] && !(mine ? isPro() : (b.pro || b.creator))) return '';   // рамки PRO видны только у подписчиков
+  if (e[2] && !(mine ? frOwned(k) : (b.pro || b.creator || b.frame === k))) return '';   // рамки PRO видны только у подписчиков
   return k;
 }
 function frameCls(k, lv){ const vars = lv ? tierStyle(lv).replace(' tr"', '"') : ''; return (k ? ` fr-${k}` : '') + vars; }   // v1.422: без рамки — без кольца, цвета значка уровня остаются
@@ -2302,15 +2330,21 @@ async function loadFofPhotos(j){
 }
 function friendSheetHTML(f, j, loading, self){
   const lv = f.level || xpLevel(0), g = f.goal, ok = g.done_today || g.prev_ok, shown = g.done_today ? g.target : g.shown;
-  let h = `<div class="fp-head">${self ? '' : `<button class="fp-del" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button>`}<span data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span><div style="flex:1;min-width:0"><h2 class="nmrow" style="margin:0"><span class="nm">${esc(f.name)}</span>${bdgHTML(f.tg_id, 18)}</h2>${f.handle || f.username ? `<div class="cap">@${esc(f.handle || f.username)}</div>` : ''}${creatorHTML(f.tg_id)}
-    <div style="font-weight:800;color:var(--accent);margin-top:4px">Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></div></div></div>
-    <div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div>`;
+  const tc = tierColor(lv.level), pct = Math.max(3, lv.into / lv.need * 100);
+  let h = `<div class="hero${self ? ' me' : ''}" style="--tc:${tc}">${self ? '' : `<button class="fp-del" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button>`}
+    <span class="hero-av" data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span>
+    <h2 class="nmrow hero-nm"><span class="nm">${esc(f.name)}</span>${bdgHTML(f.tg_id, 20)}</h2>
+    ${f.handle || f.username ? `<div class="hero-at">@${esc(f.handle || f.username)}</div>` : ''}${creatorHTML(f.tg_id)}
+    <div class="hero-lv"><div class="hero-lvt"><span class="lvn">${lv.level}</span><b>Уровень ${lv.level}</b><span class="ttl">${tierOf(lv.level).title}</span></div>
+      <div class="lvbar"><i style="width:${pct}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div></div>`;
   if (j && j.friends) FR.prof = j.friends;
   const pw = +f.poke_wait || 0;
   const acts = self ? '' : `<div class="fp-bar"><button class="fpb poke${pw ? ' off' : ''}" data-act="frpoke" data-id="${f.tg_id}"><span>${IC('bolt', 20)}</span><b>${pw ? `через ${pw} ч` : 'Взбодрить'}</b></button>`
     + `<button class="fpb gift" data-act="gift" data-id="${f.tg_id}"><span>${IC('gift', 20)}</span><b>Подарок</b></button></div>`;
-  h += `<div class="fp-row">` + (loading ? `<span class="skl" style="width:150px;height:34px;border-radius:17px"></span>`
-    : `<button type="button" class="fchipb" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · ${j.friends_count}${(j.friends || []).length ? IC('chev', 14) : ''}</button>`) + socialsHTML(f.tg_id, true) + `</div>` + acts;
+  h += `<div class="hero-row">` + (loading ? `<span class="skl" style="width:150px;height:38px;border-radius:19px"></span>`
+    : `<button type="button" class="fchipb" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · ${j.friends_count}${(j.friends || []).length ? IC('chev', 14) : ''}</button>`)
+    + (self ? `<button type="button" class="fchipb hset" data-act="meset" aria-label="Настройки профиля и приложения">${IC('gear', 16)}Настройки</button>` : '')
+    + `</div>` + socialsHTML(f.tg_id, true) + `</div>` + acts;
   h += `<div class="card" style="margin-top:12px"><div class="row" style="gap:14px">${ring(shown / g.target, `${shown}/${g.target}`, '', ok, 64)}<div><div style="font-weight:700;color:${ok ? 'var(--green)' : 'var(--text)'}">${g.done_today ? 'Норма выполнена' : g.prev_ok ? 'Норма закрыта' : 'До нормы ' + Math.max(0, g.target - g.shown)}</div>
     <div class="cap">${fmtMin(f.week.minutes)} за 7 дней · ${npw(f.week.workouts, W_WORK)} · ${kmF(f.week.km)}</div>${g.best ? `<div class="cap">лучшая серия: ${npw(g.best, W_TIMES)}</div>` : ''}</div></div>`;
   const days = j && j.week && j.week.days;
@@ -2613,7 +2647,7 @@ function viewMe(){
   else if (!ME.busy && (!ME.prof || Date.now() - ME.at > 60000)) loadMyProfile(me.tg_id);
   const photo = tgUser && tgUser.photo_url;
   if (me && photo && !FR.ph.get(me.tg_id)) FR.ph.set(me.tg_id, photo);
-  let h = `<div class="me-top" style="justify-content:flex-end;margin-bottom:6px"><button class="ib round accent" data-act="meset" aria-label="Настройки профиля и приложения">${IC('gear', 21)}</button></div>`;
+  let h = '';
   if (!me) return h + (FR.err ? `<div class="card muted">Не удалось загрузить профиль: ${esc(FR.err)}</div>`
     : [110, 90, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join(''));
   const f = Object.assign({}, me, {name: displayName() || me.name, gift_kinds: (GIFTS_IN && GIFTS_IN.kinds) || me.gift_kinds || []});
@@ -2657,7 +2691,7 @@ function viewMeSettings(){
   if (inTG) h += proCardHTML();
   { const cur = frameOf(tgUser ? {tg_id:tgUser.id} : null);
     h += `<div class="card"><h3>${IC('sparkle')}Персонализация</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте. Анимированные — для PRO.</div><div class="frs${S.frAll ? '' : ' col'}">${FRAMES.map(([k, l, pro], i) =>
-      `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 && cur !== k ? ' more' : ''}${pro && !isPro() ? ' lock' : ''}" data-act="frame" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="frmore">${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}${IC('chev', 14)}</button></div>`; }
+      `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 && cur !== k ? ' more' : ''}${pro && !frOwned(k) ? ' lock' : ''}" data-act="frame" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="frmore">${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}${IC('chev', 14)}</button></div>`; }
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}
     ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${(db.settings.dv || 'graphite') === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${(db.settings.dv || 'graphite') === k ? IC('check', 16) : ''}</button>`).join('')}</div>` : ''}</div>
     <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}" data-act="accent" data-v="${k}" style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div></div>`;
@@ -3231,7 +3265,7 @@ const ACT = {
   sex: el => { db.profile.sex = el.dataset.v; touchMeta('profile'); save(); render(); hap.tap(); },
   theme: el => { db.settings.theme = el.dataset.v; save(); applyTheme(); render(); hap.tap(); },
   dv: el => { db.settings.dv = el.dataset.v; save(); applyTheme(); render(); hap.tap(); },
-  frame: el => { const f = FRAMES.find(x => x[0] === (el.dataset.v || '')); if (f && f[2] && !isPro()) { hap.warn(); toast('👑 Эта рамка — для подписчиков PRO'); return; }
+  frame: el => { const f = FRAMES.find(x => x[0] === (el.dataset.v || '')); if (f && f[2] && !frOwned(f[0])) { hap.warn(); toast('👑 Эта рамка — для подписчиков PRO'); return; }
     db.settings.frame = el.dataset.v || ''; touchMeta('settings'); save(); render(); hap.tap(); },
   accent: el => { db.settings.accent = el.dataset.v; touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
   import: () => $('#file').click(),
