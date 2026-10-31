@@ -850,6 +850,18 @@ input[type=date].inp{display:block}
 .prox-plan em{display:inline-block;margin-top:7px;font-style:normal;font-size:10.5px;font-weight:800;color:var(--green);background:rgba(95,201,138,.13);padding:3px 7px;border-radius:999px}
 .prox-plan u{position:absolute;top:10px;right:10px;text-decoration:none;font-size:10px;font-weight:900;color:#2A2110;background:linear-gradient(90deg,#E9B949,#FFE29A);padding:3px 7px;border-radius:999px}
 .prox-note{font-size:11px;color:var(--muted);margin-top:10px;text-align:center}
+.prox-top{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.prox-tg{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:#E9B949;background:rgba(233,185,73,.10);transition:transform .3s}
+.prox-tg svg{transform:rotate(-90deg);transition:transform .3s}
+.prox.min .prox-tg svg{transform:rotate(90deg)}
+.prox .prox-pill{align-self:center}
+.prox-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .32s cubic-bezier(.2,.8,.2,1),opacity .25s}
+.prox-body>div{overflow:hidden;min-height:0}
+.prox.min{padding:12px 14px}
+.prox.min .prox-body{grid-template-rows:0fr;opacity:0}
+.prox.min .prox-em{width:36px;height:36px;border-radius:12px}
+.prox.min .prox-t{font-size:16px}
+.prox-s{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 /* соцсети */
 .socs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .socs:empty{display:none}
@@ -1152,7 +1164,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.439';
+const APP = 'VOOB (by BGASHEV) Mini App v1.440';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2892,13 +2904,14 @@ function viewMeSettings(){
   const p = db.profile, g = G(), name = displayName(), photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url);
   const age = ageOf(p.birth), kg = currentWeight(), hgt = +p.height || 0, b = bmiOf(kg, hgt), bmr = bmrOf(kg, hgt, age, p.sex);
   const lv = myLevel();
-  let h = inTG ? proCardHTML() : '';                 // v1.436: PRO — в самом верху настроек
+  let h = '';                                        // v1.438: PRO — под профилем и промокодом
   h += `<div class="prof"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
     <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}${tgUser ? socialsHTML(tgUser.id) : ''}${syncHTML()}</div></div>`;
   if (inTG) h += `<div class="card pmc"><div class="pm-h"><span class="pm-ic">${IC('gift', 18)}</span><b>Промокод</b></div>
     <div class="pm-row"><input id="pm-in" class="inp" placeholder="VOOB-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="24" enterkeyhint="done">
     <button type="button" class="btn primary" id="pm-go" data-act="promo" disabled>Активировать</button></div>
     <div class="cap" id="pm-msg">Введи код — PRO, рамка или подарок сразу станут твоими</div></div>`;   // v1.436
+  if (inTG) h += proCardHTML();
   if (inTG) h += socEditHTML();
   h += `<div class="card"><h3>${IC('medal')}Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></h3><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div>
     <div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1} · всего ${numSep(lv.xp)}</div>
@@ -2954,11 +2967,14 @@ function proCardHTML(){
     <b>${p.stars}<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#E9B949" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.1l-5.7 3.2 1.2-6.4L2.8 9.5l6.4-.8L12 2.8Z"/></svg></b>
     <small>${best ? `≈ ${Math.round(p.stars / 12)} ⭐ в месяц` : 'в месяц'}</small>${p.bonus_days ? `<em>+${p.bonus_days} дней в подарок</em>` : ''}${best && save > 0 ? `<u>−${save}%</u>` : ''}</button>` : '';
   const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки']];
-  return `<div class="prox"><div class="prox-top"><div class="prox-em">${IC('crown', 22)}</div><div><div class="prox-t">VOOB PRO</div><div class="prox-s">${st.active ? `активен до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : 'больше возможностей и галочка'}</div></div>
-    <span class="prox-pill${st.active ? ' on' : ''}">${st.active ? 'АКТИВЕН' : 'БЕТА · ОТКРЫТО'}</span></div>
+  const min = !!lsGet('voob_pro_min');            // v1.438: плашку можно свернуть, выбор запоминается
+  const sub = st.active ? `активен до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : (m ? `от ${m.stars} ⭐ в месяц · галочка и рамки` : 'больше возможностей и галочка');
+  return `<div class="prox${min ? ' min' : ''}"><div class="prox-top" data-act="promin" role="button" aria-expanded="${!min}"><div class="prox-em">${IC('crown', 22)}</div><div style="min-width:0"><div class="prox-t">VOOB PRO</div><div class="prox-s">${sub}</div></div>
+    <span class="prox-pill${st.active ? ' on' : ''}">${st.active ? 'АКТИВЕН' : 'БЕТА · ОТКРЫТО'}</span><span class="prox-tg">${IC('chev', 16)}</span></div>
+    <div class="prox-body"><div>
     <div class="prox-perks">${perks.map(([i, t]) => `<span>${IC(i, 13)}${t}</span>`).join('')}</div>
     ${(st.plans || []).length ? `<div class="prox-plans">${plan(m)}${plan(y, true)}</div>` : '<div class="cap">Загружаю тарифы…</div>'}
-    <div class="prox-note">Оплата звёздами Telegram · без автопродления</div></div>`;
+    <div class="prox-note">Оплата звёздами Telegram · без автопродления</div></div></div></div>`;
 }
 async function proBuy(plan){
   hap.imp();
@@ -3359,6 +3375,8 @@ const ACT = {
   frprof: el => { hap.tap(); openFriendProfile(+el.dataset.id); },
   achall: () => openAchFull(),
   probuy: el => proBuy(el.dataset.v),
+  promin: el => { hap.tap(); const c = el.closest('.prox'); if (!c) return; const m = !c.classList.contains('min');
+    c.classList.toggle('min', m); el.setAttribute('aria-expanded', String(!m)); lsSet('voob_pro_min', m); },
   socedit: el => { hap.tap(); socSheet(el.dataset.net); },
   goaled: () => { hap.tap(); const g = G();
     openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC('target', 22)}</span><div><h2 style="margin:0">Цель недели</h2><div class="cap">Неделя начинается с первой тренировки</div></div></div>
