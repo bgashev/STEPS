@@ -339,7 +339,7 @@ input[type=date].inp{display:block}
 .fav.fr-classic .fi,.ava.fr-classic .fi{box-shadow:0 0 0 2.5px var(--bg);background:var(--accent);color:var(--on-accent)}
 .fav.s.fr-classic{padding:2.5px}
 .fav.s.fr-classic .fi{box-shadow:0 0 0 1.5px var(--bg)}
-.frs{display:flex;gap:12px;flex-wrap:wrap}
+.frs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 /* v1.426: анимированные рамки PRO */
 @property --fra{syntax:'<angle>';inherits:false;initial-value:0deg}
 @keyframes frSpin{to{--fra:360deg}}
@@ -399,7 +399,7 @@ input[type=date].inp{display:block}
 .frb{position:relative}
 .frb .prot{position:absolute;top:6px;right:6px;font-size:9px;font-weight:850;letter-spacing:.08em;padding:2px 6px;border-radius:999px;background:linear-gradient(120deg,#F5B23C,#FFE08A);color:#3a2600}
 .frb.lock{opacity:.6}
-.frb{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 10px 10px;min-width:96px;border-radius:18px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:13px;font-weight:650;cursor:pointer;transition:border-color .2s,transform .12s}
+.frb{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 6px 10px;min-width:0;border-radius:18px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:13px;font-weight:650;cursor:pointer;transition:border-color .2s,transform .12s}
 .frb:active{transform:scale(.96)}
 .frb.on{border-color:var(--accent)}
 .frb .fav{width:52px;height:52px;font-size:20px}
@@ -1145,7 +1145,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.437';
+const APP = 'VOOB (by BGASHEV) Mini App v1.438';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2915,7 +2915,7 @@ function viewMeSettings(){
     <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
   { const cur = frameOf(tgUser ? {tg_id:tgUser.id} : null);
     h += `<div class="card"><h3>${IC('sparkle')}Персонализация</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте. Анимированные — для PRO.</div><div class="frs${S.frAll ? '' : ' col'}">${FRAMES.map(([k, l, pro], i) =>
-      `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 && cur !== k ? ' more' : ''}${pro && !frOwned(k) ? ' lock' : ''}" data-act="frame" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="smore" data-k="frAll" data-more="Все рамки · ${FRAMES.length}"><span>${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}</span>${IC('chev', 14)}</button></div>`; }
+      `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 ? ' more' : ''}${pro && !frOwned(k) ? ' lock' : ''}" data-act="frame" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="smore" data-k="frAll" data-more="Все рамки · ${FRAMES.length}"><span>${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}</span>${IC('chev', 14)}</button></div>`; }
   { const cb = db.settings.bg || '', pro = isPro();
     h += `<div class="card"><h3>${IC('palette')}Фон профиля</h3><div class="cap" style="margin:-6px 0 12px">Фон карточки профиля — его видят все, кто откроет твой профиль. Только для PRO.</div>
       <div class="bgs${S.bgAll ? '' : ' col'}"><button type="button" class="bgb${cb ? '' : ' on'}" data-act="bgset" data-v=""><span class="th none"></span>Без фона</button>${BG_KEYS.map(([k, l], i) =>
