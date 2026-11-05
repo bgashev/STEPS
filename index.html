@@ -1475,11 +1475,17 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .prof.pc .nmrow{justify-content:center}
 .prof.pc .crw{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
 .prof.pc .prof-act{justify-content:center}
-@keyframes mePushIn{from{opacity:0;transform:translate3d(36px,0,0) scale(.985)}to{opacity:1;transform:none}}
-@keyframes mePopIn{from{opacity:0;transform:translate3d(-36px,0,0) scale(.985)}to{opacity:1;transform:none}}
-#view.nav-in{animation:mePushIn .5s cubic-bezier(.32,.72,0,1) both}
-#view.nav-out{animation:mePopIn .5s cubic-bezier(.32,.72,0,1) both}
-@media (prefers-reduced-motion:reduce){#view.nav-in,#view.nav-out{animation:none}}
+@keyframes navIn{from{opacity:0;transform:translate3d(0,10px,0) scale(.965);filter:blur(14px)}60%{filter:blur(2px)}to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes navOut{from{opacity:0;transform:translate3d(0,-6px,0) scale(1.035);filter:blur(14px)}60%{filter:blur(2px)}to{opacity:1;transform:none;filter:blur(0)}}
+#view.nav-in>*,#view.nav-out>*{transform-origin:50% 0;will-change:transform,opacity,filter}
+#view.nav-in>*{animation:navIn .75s cubic-bezier(.22,1,.36,1) backwards}
+#view.nav-out>*{animation:navOut .75s cubic-bezier(.22,1,.36,1) backwards}
+#view.nav-in>:nth-child(2),#view.nav-out>:nth-child(2){animation-delay:.05s}
+#view.nav-in>:nth-child(3),#view.nav-out>:nth-child(3){animation-delay:.1s}
+#view.nav-in>:nth-child(4),#view.nav-out>:nth-child(4){animation-delay:.15s}
+#view.nav-in>:nth-child(5),#view.nav-out>:nth-child(5){animation-delay:.2s}
+#view.nav-in>:nth-child(n+6),#view.nav-out>:nth-child(n+6){animation-delay:.25s}
+@media (prefers-reduced-motion:reduce){#view.nav-in>*,#view.nav-out>*{animation:none}}
 .prof-sync{display:flex;justify-content:center;margin:-4px 0 16px}
 .prof-sync:empty{display:none}
 .prof-sync .sync2{margin:0;height:30px}
@@ -1547,7 +1553,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.492';
+const APP = 'VOOB (by BGASHEV) Mini App v1.493';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3839,7 +3845,7 @@ function morphEl(o, n){
 function meNav(cls){   // v1.484: плавный «пуш» между профилем и настройками, как в iOS
   window.scrollTo(0, 0); _rTab = null; render();
   const v = $('#view'); v.classList.remove('nav-in', 'nav-out'); void v.offsetWidth; v.classList.add(cls);
-  setTimeout(() => v.classList.remove(cls), 560);
+  setTimeout(() => v.classList.remove(cls), 1000);
 }
 function render(){
   const html = VIEWS[S.tab](), v = $('#view');
