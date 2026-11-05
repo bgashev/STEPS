@@ -1424,6 +1424,17 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 @keyframes lvFlow{to{background-position:-200% 0}}
 @keyframes lvShine{0%{left:-45%}60%,100%{left:120%}}
 @media (prefers-reduced-motion:reduce){.hero .lvbar i,.hero .lvbar i::after{animation:none!important}}
+/* v1.476: шапка «Я» — аккуратная колонка: имя, роль, ряд из иконок соцсетей и статуса; крупнее аватар в чужом профиле */
+.prof{gap:18px;align-items:center}
+.prof .ava{width:92px;height:92px}
+.prof .nmrow{margin:0}
+.prof .crt{margin-top:8px}
+.prof-act{display:flex;align-items:center;gap:8px;margin-top:14px;min-height:34px}
+.prof-act .socs{margin:0}
+.prof-act .soci,.prof-act .soci .lg{width:34px;height:34px}
+.prof-act .sync2{margin:0;height:34px;padding:0 9px;border-radius:17px}
+.prof-act .sync2:empty{display:none}
+.hero-av .fav{width:128px;height:128px;font-size:48px}
 /* v1.467: выбор значка */
 .bgl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .bgi{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;cursor:pointer;transition:transform .15s,border-color .2s,background .2s}
@@ -1459,7 +1470,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.475';
+const APP = 'VOOB (by BGASHEV) Mini App v1.476';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3440,7 +3451,7 @@ function viewMeSettings(){
   const lv = myLevel();
   let h = '';                                        // v1.438: PRO — под профилем и промокодом
   h += `<div class="prof"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
-    <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}${tgUser ? socialsHTML(tgUser.id) : ''}${syncHTML()}</div></div>`;
+    <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}<div class="prof-act">${tgUser ? socialsHTML(tgUser.id, true) : ''}${syncHTML()}</div></div></div>`;
   if (inTG) h += proCardHTML();
   if (inTG) h += `<div class="card pmc"><div class="pm-h"><span class="pm-ic">${IC('gift', 18)}</span><b>Промокод</b></div>
     <div class="pm-row"><input id="pm-in" class="inp" placeholder="VOOB-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="24" enterkeyhint="done">
