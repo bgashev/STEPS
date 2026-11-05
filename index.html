@@ -670,7 +670,7 @@ input[type=date].inp{display:block}
 .hsort button{border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:650}
 .hsort button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 /* выбор активности */
-.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:6px 0 16px}
+.acts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:6px 0 16px}
 .act{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px 12px;border-radius:22px;border:1px solid var(--border);background:var(--surface);font-weight:700;font-size:12.5px;text-align:center;animation:fadeUp .35s backwards}
 .act .ai{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent)}
 .sl{display:flex;flex-direction:column;gap:8px;margin-top:4px}
@@ -1860,6 +1860,7 @@ function applyTheme(){
 const hap = {
   tap(){ try { if (ver('6.1')) tg.HapticFeedback.selectionChanged(); } catch (e) {} },
   imp(){ try { if (ver('6.1')) tg.HapticFeedback.impactOccurred('light'); } catch (e) {} },
+  med(){ try { if (ver('6.1')) tg.HapticFeedback.impactOccurred('medium'); } catch (e) {} },
   ok(){ try { if (ver('6.1')) tg.HapticFeedback.notificationOccurred('success'); } catch (e) {} },
   warn(){ try { if (ver('6.1')) tg.HapticFeedback.notificationOccurred('warning'); } catch (e) {} }
 };
@@ -3640,7 +3641,7 @@ const ACT = {
   add: () => { hap.imp(); openSheet(`<div class="wstep"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div><h2>Что тренируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше привычная форма</div><div class="acts">` + actsHTML() + `</div>`, {type:'acts'}); },
   actfav: el => { const k = el.dataset.v, f = favActs(), on = f.includes(k);
     if (!on && f.length >= favMax()) { hap.warn(); toast(isPro() ? 'Закрепить можно до 6 видов — сначала открепи один' : '👑 Больше трёх — с VOOB PRO, до 6 видов'); return; }
-    hap.imp(); db.settings.fav = on ? f.filter(x => x !== k) : [...f, k]; touchMeta('settings'); save();
+    on ? hap.med() : hap.ok(); db.settings.fav = on ? f.filter(x => x !== k) : [...f, k];   // закрепили — «успех», открепили — средний толчок touchMeta('settings'); save();
     const box = $('.acts'); if (!box) return;
     const was = new Map([...box.querySelectorAll('.act[data-k]')].map(b => [b.dataset.k, b.getBoundingClientRect()]));
     box.classList.add('calm'); box.innerHTML = actsHTML();
