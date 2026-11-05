@@ -624,7 +624,12 @@ input[type=date].inp{display:block}
 #toast{bottom:calc(98px + env(safe-area-inset-bottom))}
 /* иконка активности в истории */
 .wa{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
-.hsort{display:flex;gap:6px;justify-content:flex-end;margin:10px 0 -4px}
+.hflt{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:10px -18px 2px;padding:0 18px 2px}
+.hflt::-webkit-scrollbar{display:none}
+.hflt button{flex:none;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;font-weight:650;transition:background .2s,color .2s,border-color .2s}
+.hflt button i{font-style:normal;font-size:11px;font-weight:800;opacity:.6}
+.hflt button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.hflt button.on i{opacity:.75}
 .hsort button{border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:999px;padding:5px 11px;font-size:12px;font-weight:650}
 .hsort button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 /* выбор активности */
@@ -724,6 +729,15 @@ input[type=date].inp{display:block}
 .gx-ring.full .sg{stroke:var(--green)}
 .gx-ring .nx{stroke:var(--accent);animation:gxPulse 1.8s ease-in-out infinite}
 @keyframes gxSeg{to{stroke-dashoffset:0}}
+/* v1.447: приглашение поставить цель */
+.gnew{display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 20px 20px}
+.gnew-ring{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;color:var(--accent);margin-bottom:12px;
+  border:2.5px dashed color-mix(in srgb,var(--accent) 55%,transparent);background:var(--accent-soft);animation:gnewSpin 14s linear infinite}
+.gnew-ring svg{animation:gnewSpin 14s linear infinite reverse}
+@keyframes gnewSpin{to{transform:rotate(360deg)}}
+.gnew-t{font-size:18px;font-weight:800;margin-bottom:4px}
+.gnew .cap{max-width:300px;line-height:1.4}
+.gnew-b{width:100%;justify-content:center;min-height:50px;margin-top:16px}
 @keyframes gxPulse{0%,100%{opacity:.14}50%{opacity:.42}}
 .gx-ring .glow{position:absolute;inset:14px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%);filter:blur(6px)}
 .gx-ring.full .glow{background:radial-gradient(circle,rgba(95,201,138,.28),transparent 70%)}
@@ -836,8 +850,10 @@ input[type=date].inp{display:block}
 /* PRO в настройках */
 .prox{position:relative;overflow:hidden;border-radius:24px;padding:18px 18px 16px;margin-bottom:14px;border:1px solid rgba(233,185,73,.45);
   background:radial-gradient(90% 80% at 0% 0%,rgba(233,185,73,.20),transparent 60%),linear-gradient(140deg,color-mix(in srgb,var(--surface) 82%,#3a2c0c),var(--surface) 55%,color-mix(in srgb,var(--surface) 88%,var(--accent)))}
-.prox::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.10) 50%,transparent 70%);background-size:250% 100%;animation:proSh 6s linear infinite}
-@keyframes proSh{from{background-position:150% 0}to{background-position:-100% 0}}
+.prox::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(100deg,transparent 0 34%,rgba(255,255,255,.10) 50%,transparent 66% 100%);background-size:200% 100%;background-repeat:repeat-x;
+  animation:proSh 5s linear infinite;animation-delay:var(--ph,0ms)}
+/* v1.447: сдвиг ровно на одну плитку — блик идёт по кругу без скачка; фаза общая для всех перерисовок */
+@keyframes proSh{from{background-position:200% 0}to{background-position:0 0}}
 .prox-top{display:flex;align-items:center;gap:12px}
 .prox-em{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#2A2110;background:linear-gradient(140deg,#FFE29A,#E9B949 55%,#B9852A);box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
 .prox-t{font-size:19px;font-weight:900;letter-spacing:.3px;background:linear-gradient(90deg,#FFE29A,#E9B949);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -1168,6 +1184,14 @@ input[type=date].inp{display:block}
 .kbo #sheet.top .ssh-hero h2{margin-top:8px;font-size:19px}
 .kbo #sheet.top .ssh-hero::before{display:none}
 #sheet.top .grab{display:none}
+/* v1.447: «назад» в профиле + свайп вниз для закрытия шторок */
+.fp-back{position:sticky;top:6px;z-index:6;width:36px;height:36px;margin:-23px 0 0 -4px;border-radius:50%;border:1px solid var(--border);
+  background:color-mix(in srgb,var(--surface2) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--text);
+  display:grid;place-items:center;cursor:pointer;transition:transform .15s}
+.fp-back svg{transform:scaleX(-1)}
+.fp-back:active{transform:scale(.9)}
+#sheet.drag{transition:none!important}
+#sw.dragging #sbd{transition:none!important}
 </style>
 </head>
 <body>
@@ -1181,7 +1205,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.446';
+const APP = 'VOOB (by BGASHEV) Mini App v1.447';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -1259,7 +1283,7 @@ const kcalF = v => numSep(v) + ' ккал';
 /* ============================================================ данные ==== */
 function defaultDB(){
   return {v:1, updated:0, profile:{name:'', birth:'', sex:'', height:0},
-    settings:{theme:'auto', accent:'lavender', goal:{count:5, days:7}},
+    settings:{theme:'auto', accent:'lavender', goal:{count:3, days:7, set:false}},
     workouts:[], weights:[], weight_goal:{}, plans:[],
     tomb:{}, metaU:{}, sync:{rev:0, dirty:{}, init:false}};
 }
@@ -1273,7 +1297,9 @@ function normalize(d){
     else if (typeof b[k] === 'object') { if (typeof v === 'object' && !Array.isArray(v)) b[k] = Object.assign(b[k], v); }
     else if (typeof v === typeof b[k]) b[k] = v;
   }
-  b.settings.goal = Object.assign({count:5, days:7}, b.settings.goal || {});
+  b.settings.goal = Object.assign({count:3, days:7}, b.settings.goal || {});
+  // v1.447: у новичка цели нет, пока он сам её не задаст. Старые аккаунты (цель уже была сохранена или есть тренировки) — считаются с целью
+  { const sg = d.settings && d.settings.goal; b.settings.goal.set = sg && typeof sg.set === 'boolean' ? sg.set : !!(sg || (Array.isArray(d.workouts) && d.workouts.length)); }
   if (!['auto','light','dark'].includes(b.settings.theme)) b.settings.theme = 'auto';
   b.sync = Object.assign({rev:0, dirty:{}, init:false}, b.sync || {});
   if (!b.sync.dirty || typeof b.sync.dirty !== 'object') b.sync.dirty = {};
@@ -1283,6 +1309,8 @@ let db = defaultDB();
 let _wcache = null;
 function invalidate(){ _wcache = null; }
 
+// v1.447: синхронизация оформления — настройка этого устройства (в облако не уходит)
+function lookSync(){ try { return localStorage.getItem('voob_look_sync') !== 'false'; } catch (e) { return true; } }
 function G(){
   const g = db.settings.goal || {};
   const days = clamp(parseInt(g.days) || 7, 3, 14);
@@ -1529,7 +1557,7 @@ function touchMeta(id){
 }
 function metaData(id){
   if (id === 'profile') return {name:db.profile.name || '', birth:db.profile.birth || '', sex:db.profile.sex || '', height:+db.profile.height || 0};
-  if (id === 'settings') return Object.assign({goal:db.settings.goal, accent:db.settings.accent}, db.settings.frame ? {frame:db.settings.frame} : {}, db.settings.bg ? {bg:db.settings.bg} : {}, Array.isArray(db.settings.seen_ach) ? {ach:db.settings.seen_ach.slice(0, 60)} : {});
+  if (id === 'settings') return Object.assign({goal:db.settings.goal}, lookSync() ? {accent:db.settings.accent, theme:db.settings.theme, dv:db.settings.dv || 'graphite'} : {}, db.settings.frame ? {frame:db.settings.frame} : {}, db.settings.bg ? {bg:db.settings.bg} : {}, Array.isArray(db.settings.seen_ach) ? {ach:db.settings.seen_ach.slice(0, 60)} : {});
   return db.weight_goal || {};
 }
 function applyMeta(id, d){
@@ -1540,8 +1568,12 @@ function applyMeta(id, d){
     if (['', 'm', 'f'].includes(d.sex)) db.profile.sex = d.sex;
     if (d.height != null) db.profile.height = +d.height || 0;
   } else if (id === 'settings') {
-    if (d.goal && d.goal.count) db.settings.goal = {count:+d.goal.count, days:+d.goal.days || 7};
-    if (ACCENTS.some(a => a[0] === d.accent)) db.settings.accent = d.accent;
+    if (d.goal && d.goal.count) db.settings.goal = {count:+d.goal.count, days:+d.goal.days || 7, set:d.goal.set !== false};
+    if (lookSync()) {   // чужое оформление принимаем, только если синхронизация включена
+      if (ACCENTS.some(a => a[0] === d.accent)) db.settings.accent = d.accent;
+      if (['auto','light','dark'].includes(d.theme)) db.settings.theme = d.theme;
+      if (['graphite','black'].includes(d.dv)) db.settings.dv = d.dv;
+      try { applyTheme(); } catch (e) {} }
     db.settings.frame = FRAMES.some(x => x[0] && x[0] === d.frame) ? d.frame : '';
     db.settings.bg = typeof d.bg === 'string' && d.bg.length < 24 ? d.bg : '';
   } else if (id === 'weight_goal') db.weight_goal = (d && typeof d === 'object') ? d : {};
@@ -2599,7 +2631,7 @@ async function openFriendProfile(id){
   openSheet(friendSheetHTML(f, cj || null, !cj), {type:'fprof', id});
   if (cj) { loadFofPhotos(cj); if (Date.now() - c.at < 60000) return; }
   try { const j = await apiAuth('/friends/profile', {tg_id:id, today:isoOf(todayN())}); FPC.set(id, {j, at:Date.now()});
-    if (sheetCtx && sheetCtx.type === 'fprof' && sheetCtx.id === id) { const sh = $('#sheet'), st = sh.scrollTop; sh.innerHTML = '<div class="grab"></div>' + friendSheetHTML(f, j, false); sh.scrollTop = st; loadFofPhotos(j); } }
+    if (sheetCtx && sheetCtx.type === 'fprof' && sheetCtx.id === id) { const sh = $('#sheet'), st = sh.scrollTop; sh.innerHTML = '<div class="grab"></div>' + sheetBack(sheetCtx) + friendSheetHTML(f, j, false); sh.scrollTop = st; loadFofPhotos(j); } }
   catch (e) { const el = $('#fp-load'); if (el) el.textContent = 'Не удалось загрузить: ' + e.message; }
 }
 async function loadFofPhotos(j){
@@ -2677,11 +2709,14 @@ function viewHome(){
   if (rest.has(t)) note = `<div class="note">${IC('rest', 15)}Сегодня день отдыха — восстанавливайся</div>`;
   else if (rest.has(t + 1)) note = `<div class="note">${IC('rest', 15)}5 дней подряд — завтра и послезавтра отдых</div>`;
 
+  const noGoal = !(db.settings.goal || {}).set;
   let h = `<div class="head"><div><h1>${esc(greet())}</h1><div class="sub">${bits.join(' · ')}</div></div></div>
-  <div class="card gx2${done ? ' done' : ''}"><div class="gx2-h"><span class="gx2-ic">${IC('target', 17)}</span>
+  ${noGoal ? `<div class="card gx2 gnew"><div class="gnew-ring">${IC('target', 30)}</div>
+      <div class="gnew-t">Цель недели</div><div class="cap">Сколько тренировок и за сколько дней — решаешь ты. Кольцо прогресса появится, как только поставишь цель.</div>
+      <button type="button" class="btn primary gnew-b" data-act="goaled">${IC('plus', 18)}Добавить свой план на неделю</button></div>` : `<div class="card gx2${done ? ' done' : ''}"><div class="gx2-h"><span class="gx2-ic">${IC('target', 17)}</span>
       <div class="gx2-t">Цель недели<small>${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</small></div>
       <button type="button" class="gx2-ed" data-act="goaled" aria-label="Изменить цель">${IC('edit', 17)}</button></div>
-    <div class="gx-top">${segRing(info.shown, g.count, done, pct)}<div class="gx-txt">${gtxt}<div class="gx2-bar"><i style="width:${Math.min(100, pct)}%"></i></div>${gsBtn}</div></div>${goalStrip(ws, g.days)}${note}</div>
+    <div class="gx-top">${segRing(info.shown, g.count, done, pct)}<div class="gx-txt">${gtxt}<div class="gx2-bar"><i style="width:${Math.min(100, pct)}%"></i></div>${gsBtn}</div></div>${goalStrip(ws, g.days)}${note}</div>`}
   ${ws.length ? `<div class="actions"><button class="btn ghost" data-act="repeat">${IC('repeat')}Повторить последнюю</button></div>` : ''}`;
   h += planSuggestHTML(ws);
   h += feedTickerHTML();
@@ -2734,13 +2769,18 @@ function historyHTML(ws){
 }
 function historyHTML0(ws){
   let sorted = ws.slice().sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : (b.created || 0) - (a.created || 0));
-  const hs = S.hsort || 'date';
-  if (hs === 'long') sorted.sort((a, b) => b.minutes - a.minutes);
-  if (hs === 'fast') sorted.sort((a, b) => b.speed - a.speed);
+  // v1.447: вместо бесполезной сортировки — фильтр по виду активности (только виды, что есть в истории)
+  const kinds = new Map(); for (const w of sorted) { const a = actOf(w); kinds.set(a, (kinds.get(a) || 0) + 1); }
+  let hf = S.hflt || ''; if (hf && !kinds.has(hf)) hf = S.hflt = '';
+  const all = sorted.length;
+  if (hf) sorted = sorted.filter(w => actOf(w) === hf);
+  const hs = 'date';
   if (!sorted.length) return `<div class="card empty"><div class="badge">${IC('steps', 30)}</div><div class="muted">Пока пусто. Добавь первую тренировку — дорожка уже заждалась.</div></div>`;
   const months = new Map();
   for (const w of sorted) { const k = w.date.slice(0, 7); if (!months.has(k)) months.set(k, []); months.get(k).push(w); }
-  let h = `<div class="hsort">` + [['date','Новые'],['long','Долгие'],['fast','Быстрые']].map(([v, l]) => `<button type="button" class="${hs === v ? 'on' : ''}" data-act="hsort" data-v="${v}">${l}</button>`).join('') + `</div>`, prev = null;
+  const actName = k => { const a = ACTS.find(x => x[0] === k); return a ? a[1] : k; };
+  let h = kinds.size > 1 ? `<div class="hflt">` + [['', 'Все', all], ...[...kinds].sort((a, b) => b[1] - a[1]).map(([k, n]) => [k, actName(k), n])]
+    .map(([k, l, n]) => `<button type="button" class="${hf === k ? 'on' : ''}" data-act="hflt" data-v="${esc(k)}">${k ? IC(k, 14) : ''}${esc(l)}<i>${n}</i></button>`).join('') + `</div>` : '', prev = null;
   sorted.slice(0, S.limit).forEach((w, i) => {
     const k = w.date.slice(0, 7);
     if (hs === 'date' && k !== prev) { prev = k; const g = months.get(k), [y, m] = k.split('-').map(Number);
@@ -2968,13 +3008,8 @@ function viewMeSettings(){
   h += `<div class="card"><h3>${IC('medal')}Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></h3><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div>
     <div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1} · всего ${numSep(lv.xp)}</div>
     <div class="cap" style="margin-top:6px">Очки дают тренировки: чем дольше, быстрее и круче уклон — тем больше. Ещё +100 за каждый новый вид подарка от друзей. С каждым уровнем следующий чуть дороже.</div></div>`;
-  if (inTG) { const mk = (GIFTS_IN && GIFTS_IN.kinds) || [];
-    h += `<div class="card"><div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px"><h3 style="margin:0">${IC('gift')}Мои подарки</h3><span class="cap">${mk.length} из ${GIFT_KEYS.length}</span></div>${giftShelf(mk)}
-      <div class="cap" style="margin-top:8px">${mk.length ? 'Нажми на подарок, чтобы рассмотреть его поближе.' : 'Пока пусто — подарки дарят друзья. За каждый новый вид +100 очков.'}</div></div>`; }
+  // v1.447: «Мои подарки» и «Достижения» убраны из настроек — они показываются в самом профиле выше
   h += handleCard();
-  { const got = achievements().filter(a => a.done);
-    h += `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${IC('medal')}Достижения</h3><button class="btn ghost small" data-act="achall">${got.length} из ${ACH_KEYS.length} ${IC('chev', 14)}</button></div>` +
-      (got.length ? medalStrip(got.map(a => a.key), 48) : `<div class="cap">Пока ни одной медали — первая тренировка уже принесёт «Первый шаг».</div>`) + `</div>`; }
   h += `<div class="card"><h3>${IC('user')}Профиль</h3>
     <label class="f"><span>Имя</span><input class="inp" id="p-name" maxlength="32" placeholder="${esc((tgUser && tgUser.first_name) || 'Как тебя зовут?')}" value="${esc(p.name || '')}" data-ch="pname"></label>
     <div class="g2"><label class="f"><span>Дата рождения</span><input class="inp" type="date" id="p-birth" value="${esc(p.birth || '')}" max="${isoOf(todayN())}" data-ch="pbirth"></label>
@@ -2994,7 +3029,9 @@ function viewMeSettings(){
       `<button type="button" class="bgb${cb === k ? ' on' : ''}${(si >= 3 ? (i >= 2 && i !== si) : i >= 3) ? ' bmore' : ''}" data-act="bgset" data-v="${k}"><span class="th">${bgFx(k)}</span>${pro ? '' : `<span class="lk">${IC('lock', 11)}</span>`}${l}</button>`).join('')}</div><button type="button" class="frx${S.bgAll ? ' open' : ''}" data-act="smore" data-k="bgAll" data-more="Все фоны · ${BG_KEYS.length}"><span>${S.bgAll ? 'Свернуть' : 'Все фоны · ' + BG_KEYS.length}</span>${IC('chev', 14)}</button></div>`; }
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}
     ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${(db.settings.dv || 'graphite') === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${(db.settings.dv || 'graphite') === k ? IC('check', 16) : ''}</button>`).join('')}</div>` : ''}</div>
-    <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}${k !== 'mono' && !isPro() ? ' lk' : ''}" data-act="accent" data-v="${k}"${k !== 'mono' && !isPro() ? ' data-lk="1"' : ''} style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div></div>`;
+    <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}${k !== 'mono' && !isPro() ? ' lk' : ''}" data-act="accent" data-v="${k}"${k !== 'mono' && !isPro() ? ' data-lk="1"' : ''} style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div>
+    ${inTG ? `<div class="tgl${lookSync() ? ' on' : ''}" data-act="looksync" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)"><span class="sw2"></span><b>Одинаково на всех устройствах</b></div>
+    <div class="cap" style="margin-top:8px">${lookSync() ? 'Тема, оттенок и акцентный цвет синхронизируются с программой на компьютере.' : 'Здесь своё оформление: на телефоне и компьютере тема и цвет могут быть разными.'}</div>` : ''}</div>`;
   if (inTG) {
     if (PRIV.v == null && !PRIV.loading) { PRIV.loading = true; apiAuth('/friends/privacy', {}).then(j => { PRIV.v = !!j.private; PRIV.hf = !!j.hide_feed; if (S.tab === 'me') render(); }).catch(() => {}).finally(() => { PRIV.loading = false; }); }
     h += `<div class="card"><h3>${IC('lock')}Конфиденциальность</h3><div class="tgl${PRIV.v ? ' on' : ''}" data-act="privacy"><span class="sw2"></span><b>Закрытый профиль</b></div>
@@ -3134,7 +3171,7 @@ function updFab(){
 let _rTab = null, _rHtml = '';
 /* v1.442: морфинг DOM. Повторный render той же вкладки (пришли друзья, значки, фото…) больше не пересоздаёт
    страницу целиком: кольца, полоски, фон профиля и аватарки остаются теми же узлами, анимации не стартуют заново. */
-const KEEP_ATTR = new Set(['data-done', 'data-zh']);   // ставит сам скрипт (счётчик минут уже отыграл)
+const KEEP_ATTR = new Set(['data-done', 'data-zh', 'data-ph']);   // ставит сам скрипт (счётчик минут уже отыграл)
 function morphKids(from, to){
   const a = [...from.childNodes], b = [...to.childNodes];
   b.forEach((n, i) => {
@@ -3148,7 +3185,7 @@ function morphKids(from, to){
 }
 function morphEl(o, n){
   if (o.isEqualNode(n)) return;
-  const hold = o.dataset && o.dataset.zh;   // фото сейчас открыто крупно — не трогаем его видимость
+  const hold = o.dataset && (o.dataset.zh || o.dataset.ph);   // фото сейчас открыто крупно — не трогаем его видимость
   for (const at of [...o.attributes]) if (!n.hasAttribute(at.name) && !KEEP_ATTR.has(at.name) && !(hold && at.name === 'style')) o.removeAttribute(at.name);
   for (const at of n.attributes) if (o.getAttribute(at.name) !== at.value && !(hold && at.name === 'style')) o.setAttribute(at.name, at.value);
   if ((o.tagName === 'INPUT' || o.tagName === 'TEXTAREA') && document.activeElement !== o && n.hasAttribute('value') && o.value !== n.getAttribute('value')) o.value = n.getAttribute('value');
@@ -3165,6 +3202,7 @@ function render(){
   else v.innerHTML = html;
   updFab();
   festCountUp();
+  document.querySelectorAll('.prox:not([data-ph])').forEach(el => { el.dataset.ph = 1; el.style.setProperty('--ph', -Math.round(performance.now() % 5000) + 'ms'); });   // блик PRO не начинается заново
   setTimeout(checkRewards, 700);
   const tb = $('#tabs'), ti = TABS.findIndex(t => t[0] === S.tab);
   if (!tb.querySelector('.tab')) tb.innerHTML = '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${l}</button>`).join('');
@@ -3173,14 +3211,44 @@ function render(){
 }
 
 /* ============================================================ шторки ==== */
+// v1.447: в профилях — аккуратная кнопка «назад» слева сверху (липкая, не уезжает при прокрутке)
+const BACK_T = new Set(['fprof', 'pub']);
+const sheetBack = ctx => ctx && BACK_T.has(ctx.type) ? `<button type="button" class="fp-back" data-act="close" aria-label="Назад">${IC('chev', 20)}</button>` : '';
 function openSheet(html, ctx){
   sheetCtx = ctx;
   $('#sheet').classList.remove('top');
-  $('#sheet').innerHTML = `<div class="grab"></div>` + html;
+  $('#sheet').innerHTML = `<div class="grab"></div>` + sheetBack(ctx) + html;
   $('#sheet').scrollTop = 0;
   $('#sw').classList.add('open');
   try { if (ver('6.1')) tg.BackButton.show(); } catch (e) {}
 }
+// v1.447: шторку можно смахнуть вниз (когда она прокручена к началу). Окна «по центру» (.top) не смахиваются
+(function(){ const sh = $('#sheet'), sw = $('#sw'), bd = $('#sbd'); if (!sh) return;
+  let on = false, lock = null, y0 = 0, x0 = 0, dy = 0, t0 = 0;
+  sh.addEventListener('touchstart', e => {
+    on = false;
+    if (!sw.classList.contains('open') || sh.classList.contains('top') || e.touches.length !== 1 || sh.scrollTop > 0) return;
+    if (e.target.closest('input,textarea,select,.stp,[data-noswipe]')) return;
+    on = true; lock = null; dy = 0; y0 = e.touches[0].clientY; x0 = e.touches[0].clientX; t0 = Date.now();
+  }, {passive:true});
+  sh.addEventListener('touchmove', e => {
+    if (!on) return; const t = e.touches[0], my = t.clientY - y0, mx = t.clientX - x0;
+    if (lock === null) { if (Math.abs(my) < 8 && Math.abs(mx) < 8) return;
+      lock = my > 0 && Math.abs(my) > Math.abs(mx) * 1.2 && sh.scrollTop <= 0;
+      if (!lock) { on = false; return; }
+      sh.classList.add('drag'); sw.classList.add('dragging'); y0 = t.clientY; t0 = Date.now(); }
+    e.preventDefault();
+    dy = Math.max(0, t.clientY - y0);
+    sh.style.transform = `translateY(${dy}px)`;
+    bd.style.opacity = String(Math.max(.15, 1 - dy / Math.max(320, sh.offsetHeight)));
+  }, {passive:false});
+  const fin = () => { if (!on) return; on = false; if (!lock) return;
+    const v = dy / Math.max(1, Date.now() - t0), close = dy > 120 || (v > .55 && dy > 36);
+    sh.classList.remove('drag'); sw.classList.remove('dragging');
+    sh.style.transform = ''; bd.style.opacity = '';
+    if (close) { hap.tap(); closeSheet(); } };
+  sh.addEventListener('touchend', fin); sh.addEventListener('touchcancel', fin);
+})();
 function closeSheet(){
   $('#sw').classList.remove('open');
   setTimeout(() => { if (!sheetCtx) $('#sheet').classList.remove('full'); }, 340);
@@ -3278,7 +3346,7 @@ function onStp(el){
   } else if (bind === 'gcount' || bind === 'gdays') {
     let c = bind === 'gcount' ? v : stpVal('gcount'), d = bind === 'gdays' ? v : stpVal('gdays');
     if (c > d) { c = d; const ce = document.querySelector('.stp[data-key="gcount"] input'); if (ce) ce.value = String(c); }
-    db.settings.goal = {count:c, days:d}; touchMeta('settings'); save();
+    db.settings.goal = {count:c, days:d, set:true}; touchMeta('settings'); save();
     const p = $('#g-prev'); if (p) p.textContent = goalPreview();
   }
 }
@@ -3367,7 +3435,7 @@ function importFile(file){
     if (!db.profile.sex && (p.sex === 'm' || p.sex === 'f')) db.profile.sex = p.sex;
     if (!(+db.profile.height) && +p.height) db.profile.height = Math.round(+p.height);
     if (!(db.weight_goal || {}).target && d.weight_goal && d.weight_goal.target) db.weight_goal = d.weight_goal;
-    if (d.settings && d.settings.goal && d.settings.goal.count) db.settings.goal = {count:+d.settings.goal.count, days:+d.settings.goal.days || 7};
+    if (d.settings && d.settings.goal && d.settings.goal.count) db.settings.goal = {count:+d.settings.goal.count, days:+d.settings.goal.days || 7, set:d.settings.goal.set !== false};
     if (d.settings && ACCENTS.some(a => a[0] === d.settings.accent)) db.settings.accent = d.settings.accent;
     if (Array.isArray(d.plans)) { const ids = new Set(db.plans.map(x => x.id)); d.plans.forEach(x => { if (x && x.id && !ids.has(x.id)) db.plans.push(Object.assign({}, x, {id:String(x.id)})); }); }
     db.workouts.slice(n0w).forEach(w => touch('workout', w));
@@ -3405,7 +3473,7 @@ const ACT = {
   sldel: el => { const sl = slRead(); sl.splice(+el.dataset.i, 1); hap.tap(); slRedraw(sl); },
   slstep: el => { const i = +el.dataset.i, inp = document.querySelector(`#f-sl .sli[data-i="${i}"]`), st = STR[sheetCtx.act]; if (!inp || !st) return;
     inp.value = clamp((+inp.value || 0) + (+el.dataset.d), 1, st[1]); hap.tap(); updPreview(); },
-  hsort: el => { S.hsort = el.dataset.v; render(); hap.tap(); },
+  hflt: el => { S.hflt = el.dataset.v || ''; S.limit = 30; render(); hap.tap(); },
   repeat: () => { const l = lastWorkout(); openWorkout(null, l, l ? 'Параметры из прошлой тренировки — поправь, если нужно' : ''); },
   wedit: el => { const w = findW(el.dataset.id); if (w) openWorkout(w); },
   wsave: saveWorkout, wdel: delWorkout,
@@ -3458,7 +3526,9 @@ const ACT = {
     openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC('target', 22)}</span><div><h2 style="margin:0">Цель недели</h2><div class="cap">Неделя начинается с первой тренировки</div></div></div>
       <div class="g2">${stepper('gcount', 'Сколько тренировок', g.count, 1, 14, 1, 0, '', 'gcount')}${stepper('gdays', 'За сколько дней', g.days, 3, 14, 1, 0, '', 'gdays')}</div>
       <div style="font-weight:650;margin:4px 0 14px" id="g-prev">${goalPreview()}</div><button class="btn primary" style="width:100%;justify-content:center;min-height:50px" data-act="goaldone">Готово</button>`, {type:'goal'}); },
-  goaldone: () => { hap.ok(); closeSheet(); render(); },
+  goaldone: () => { hap.ok(); const c = stpVal('gcount'), d = stpVal('gdays');   // «Готово» сохраняет и нетронутые значения
+    if (c && d) { db.settings.goal = {count:Math.min(c, d), days:d, set:true}; touchMeta('settings'); save(); }
+    closeSheet(); render(); },
   smore: el => { hap.tap(); const k = el.dataset.k, box = el.previousElementSibling; if (!box) return;
     const open = !S[k]; S[k] = open;
     const h0 = box.offsetHeight;
@@ -3605,8 +3675,11 @@ const ACT = {
     const l = $('#f-feel-l'); l.textContent = FEEL[v][0]; l.style.color = FEEL[v][1]; hap.tap();
   },
   sex: el => { db.profile.sex = el.dataset.v; touchMeta('profile'); save(); render(); hap.tap(); },
-  theme: el => { db.settings.theme = el.dataset.v; save(); applyTheme(); render(); hap.tap(); },
-  dv: el => { db.settings.dv = el.dataset.v; save(); applyTheme(); render(); hap.tap(); },
+  theme: el => { db.settings.theme = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
+  dv: el => { db.settings.dv = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
+  looksync: () => { const on = !lookSync(); lsSet('voob_look_sync', on); hap.tap();
+    if (on) { touchMeta('settings'); save(); toast('Оформление этого устройства теперь общее'); } else toast('Теперь у телефона своё оформление');
+    render(); },
   frame: el => { const f = FRAMES.find(x => x[0] === (el.dataset.v || '')); if (f && f[2] && !frOwned(f[0])) { hap.warn(); toast('👑 Эта рамка — для подписчиков PRO'); return; }
     db.settings.frame = el.dataset.v || ''; touchMeta('settings'); save(); render(); hap.tap(); },
   accent: el => { const k = el.dataset.v;
