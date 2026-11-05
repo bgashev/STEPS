@@ -1449,6 +1449,29 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .prof .crw{display:flex}
 .crw .crt{margin-top:0}
 .prof .crw,.hero .crw{margin-top:8px}
+/* v1.481: блоки профиля — «Всего», «Личные рекорды», «По месяцам», «Последние тренировки» */
+.pstat .pst3{display:grid;grid-template-columns:repeat(3,1fr);margin-top:6px}
+.pstat .pst3>div{display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;padding:6px 4px}
+.pstat .pst3>div+div{border-left:1px solid var(--border)}
+.pstat .pst3 b{font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.pstat .pst3 span{font-size:11.5px;color:var(--muted);line-height:1.2}
+.pst-ft{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:13px;color:var(--muted)}
+.pst-ft svg{color:var(--accent);flex:none}.pst-ft span{flex:1}.pst-ft b{color:var(--text);font-weight:750}
+.prec .rrow{display:flex;align-items:center;gap:12px;padding:11px 0}
+.prec .rrow+.rrow{border-top:1px solid var(--border)}
+.prec .ri{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;flex:none;color:var(--accent);background:color-mix(in srgb,var(--accent) 13%,transparent)}
+.prec .rt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.prec .rt b{font-size:14px;font-weight:650}.prec .rt span{font-size:11.5px;color:var(--muted)}
+.prec .rrow em{font-style:normal;font-weight:800;font-size:15.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.prec .rsub{margin:12px 0 2px;font-size:10.5px;font-weight:750;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.pmon .bfill{background:color-mix(in srgb,var(--text) 22%,transparent)}
+.pmon .bar:last-child .bfill{background:linear-gradient(180deg,var(--accent2),var(--accent));box-shadow:0 0 14px color-mix(in srgb,var(--accent) 45%,transparent)}
+.pmon .bar:last-child .bv{color:var(--text)}
+.rw2{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
+.rw2+.rw2{border-top:1px solid var(--border)}
+.rw2>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.rw2 b{font-size:14px;font-weight:650}.rw2 span{font-size:11.5px;color:var(--muted)}
+.rw2 em{font-style:normal;font-size:12.5px;color:var(--muted);text-align:right;max-width:55%}
 /* v1.467: выбор значка */
 .bgl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .bgi{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;cursor:pointer;transition:transform .15s,border-color .2s,background .2s}
@@ -1484,7 +1507,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.480';
+const APP = 'VOOB (by BGASHEV) Mini App v1.481';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3034,11 +3057,22 @@ function friendSheetHTML(f, j, loading, self){
   const d = j.details, t = d.totals, r = d.records;
   if ((d.ach || []).length) h += self ? `<div class="card achlink pfin" style="--pi:${PI++}" data-act="achall"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${IC('chev', 16)}</div>${medalStrip(d.ach, 44)}</div>`
     : `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${medalStrip(d.ach, 44)}</div>`;
-  h += `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('trophy')}За всё время</h3><div class="tot"><div><b>${t.workouts}</b><span class="cap">тренировок</span></div><div><b>${fmtMin(t.minutes)}</b><span class="cap">в движении</span></div><div><b>${kmF(t.km)}</b><span class="cap">пройдено</span></div><div><b>${t.days}</b><span class="cap">активных дней</span></div></div></div>`;
-  const rec = (cap, x, v) => x ? `<div><span class="cap">${cap}</span><b>${v}</b><span class="cap">${fmtDate(dn(x.date))}</span></div>` : '';
-  h += `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('medal')}Рекорды</h3><div class="recs2">${rec('Самая долгая', r.longest, r.longest && r.longest.value + ' мин')}${rec('Самая дальняя', r.farthest, r.farthest && kmF(r.farthest.value))}${rec('Самая быстрая', r.fastest, r.fastest && num(r.fastest.value) + ' км/ч')}${rec('Самый крутой уклон', r.steepest, r.steepest && num(r.steepest.value) + ' %')}<div><span class="cap">Дней подряд</span><b>${npw(r.best_days_row, W_DAY)}</b></div></div></div>`;
-  if (d.months.some(m => m.minutes)) h += `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('stats')}Минуты по месяцам</h3>${bars(d.months.map(m => [MON[+m.m.slice(5, 7) - 1], m.minutes, fmtMin(m.minutes)]), v => String(v), 'fpm', 130)}</div>`;
-  if (d.recent.length) h += `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('walk')}Последние тренировки</h3>` + d.recent.map(w => `<div class="rw"><span>${fmtDate(dn(w.date))}, ${WD[wdOf(dn(w.date))]}</span><span class="cap">${num(w.speed)} км/ч · ${num(w.incline)}% · ${w.minutes} мин</span></div>`).join('') + `</div>`;
+  /* v1.481: «Всего», «Рекорды», «По месяцам», «Последние» — без привязки к ходьбе: главное — время и дни, дистанция и скорость только если они есть */
+  const hasKm = (+t.km || 0) > 0.05;
+  h += `<div class="card pfin pstat" style="--pi:${PI++}"><h3>${IC('trophy')}Всего</h3><div class="pst3"><div><b>${t.workouts}</b><span>тренировок</span></div><div><b>${fmtMin(t.minutes)}</b><span>в движении</span></div><div><b>${t.days}</b><span>активных дней</span></div></div>${hasKm ? `<div class="pst-ft">${IC('walk', 15)}<span>Пройдено и пробежано</span><b>${kmF(t.km)}</b></div>` : ''}</div>`;
+  const rrow = (ico, cap, x, v) => x ? `<div class="rrow"><span class="ri">${IC(ico, 17)}</span><div class="rt"><b>${cap}</b><span>${fmtDate(dn(x.date))}</span></div><em>${v}</em></div>` : '';
+  const recMain = rrow('clock', 'Самая долгая тренировка', r.longest, r.longest && r.longest.value + ' мин');
+  const recWalk = rrow('walk', 'Самая дальняя дистанция', r.farthest && r.farthest.value > 0 ? r.farthest : null, r.farthest && kmF(r.farthest.value))
+    + rrow('bolt', 'Самая высокая скорость', r.fastest && r.fastest.value > 0 ? r.fastest : null, r.fastest && num(r.fastest.value) + ' км/ч')
+    + rrow('stats', 'Самый крутой уклон', r.steepest && r.steepest.value > 0 ? r.steepest : null, r.steepest && num(r.steepest.value) + ' %');
+  h += `<div class="card pfin prec" style="--pi:${PI++}"><h3>${IC('medal')}Личные рекорды</h3>${recMain}<div class="rrow"><span class="ri">${IC('flame', 17)}</span><div class="rt"><b>Дней подряд</b><span>лучшая серия</span></div><em>${npw(r.best_days_row, W_DAY)}</em></div>${recWalk ? `<div class="rsub">Бег и ходьба</div>${recWalk}` : ''}</div>`;
+  if (d.months.some(m => m.minutes)) h += `<div class="card pfin pmon" style="--pi:${PI++}"><h3>${IC('stats')}Время тренировок по месяцам</h3>${bars(d.months.map(m => [MON[+m.m.slice(5, 7) - 1], m.minutes, fmtMin(m.minutes)]), v => String(v), 'fpm', 130)}</div>`;
+  const rline = w => { const a = w.act || 'run';
+    if (STR[a]) return strText(w);
+    if (TIMEA[a]) return `${w.minutes} мин${+w.speed > 0 ? ' · ' + num(w.speed) + ' км/ч' : ''}`;
+    return `${num(w.speed)} км/ч${+w.incline ? ' · ' + num(w.incline) + '%' : ''} · ${w.minutes} мин`; };
+  const cap1 = k => { const n = (ACTS.find(a => a[0] === k) || ACTS[0])[1]; return n; };
+  if (d.recent.length) h += `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('clock')}Последние тренировки</h3>` + d.recent.map(w => `<div class="rw2"><div><b>${esc(cap1(w.act || 'run'))}</b><span>${fmtDate(dn(w.date))}, ${WD[wdOf(dn(w.date))]}</span></div><em>${esc(rline(w))}</em></div>`).join('') + `</div>`;
   return h;
 }
 async function copyStr(s){
