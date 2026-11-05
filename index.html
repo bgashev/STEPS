@@ -882,6 +882,10 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 #fab .wd-add{transition:width .5s cubic-bezier(.22,.61,.36,1),padding .5s cubic-bezier(.22,.61,.36,1),transform .12s}
 #fab.mini .wd-add{padding:0 16px;gap:0}
 #fab.mini .fl{display:none}
+#fab .wd-add{transition:width .5s cubic-bezier(.22,.61,.36,1),padding .5s cubic-bezier(.22,.61,.36,1),transform .12s,background .45s ease,box-shadow .45s ease,opacity .45s ease,backdrop-filter .45s ease,-webkit-backdrop-filter .45s ease,border-color .45s ease}
+#fab.mini .wd-add{background:color-mix(in srgb,var(--accent) 34%,transparent)!important;-webkit-backdrop-filter:blur(14px) saturate(1.5);backdrop-filter:blur(14px) saturate(1.5);box-shadow:0 4px 18px -8px color-mix(in srgb,var(--accent) 60%,transparent),inset 0 0 0 1px rgba(255,255,255,.16)!important;opacity:.62;color:var(--text)}
+#fab.mini .wd-add svg{opacity:.9}
+#fab.mini .wd-add:active{opacity:1}
 /* увеличение фото: загрузка */
 #zoom .zi{position:relative}
 #zoom .zi.ld img{filter:blur(10px) saturate(1.2);transform:scale(1.06)}
@@ -1518,7 +1522,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.485';
+const APP = 'VOOB (by BGASHEV) Mini App v1.486';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
