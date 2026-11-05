@@ -1377,6 +1377,25 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
   background:linear-gradient(to bottom,var(--bg) 0,color-mix(in srgb,var(--bg) 88%,transparent) 50%,transparent 100%);
   -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
   -webkit-mask-image:linear-gradient(to bottom,#000 0,#000 45%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 45%,transparent 100%)}
+/* v1.466: шапка профиля — воздушнее: уровень без отдельной плашки, кнопки и иконки крупнее */
+.hero{padding:36px 22px 30px}
+.hero-av{margin-bottom:14px}
+.hero-nm{font-size:27px}
+.hero-at{margin-top:4px}
+.hero .crw{margin-top:12px}
+.hero-lv{max-width:290px;margin:26px auto 0;padding:0;border:0;background:none;border-radius:0}
+.hero-lvt{gap:10px;font-size:16.5px}
+.hero-lvt .lvn{min-width:30px;height:30px;border-radius:15px;font-size:14px}
+.hero .lvbar{height:5px;margin:14px auto 9px}
+.hero .cap{font-size:12.5px}
+.hero-row{gap:12px;margin-top:28px}
+.hero-row .fchipb{height:50px;padding:0 22px 0 8px;font-size:15.5px;gap:10px}
+.hero .fchipb.hset{padding:0 22px 0 17px}
+.hero .fchipb.hset svg{width:20px;height:20px}
+.hero .fchipb .stk .fav{width:36px;height:36px;font-size:14px}
+.hero .fchipb .stk .fav+.fav{margin-left:-11px}
+.hero .socs.ico{margin-top:24px;gap:14px}
+.hero .soci,.hero .soci .lg{width:42px;height:42px}
 @media (prefers-reduced-motion:reduce){#view.wvin>*,#pub.blurin>*,.gp.gprem::before{animation:none!important}}
 </style>
 </head>
@@ -1391,7 +1410,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.465';
+const APP = 'VOOB (by BGASHEV) Mini App v1.466';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
