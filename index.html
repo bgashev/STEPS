@@ -713,7 +713,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .hsort button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 /* выбор активности */
 .acts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:6px 0 16px}
-.act{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px 12px;border-radius:22px;border:1px solid var(--border);background:var(--surface);font-weight:700;font-size:12.5px;text-align:center;animation:actIn .6s cubic-bezier(.22,1.2,.3,1) both;animation-delay:var(--d,0ms)}
+.act{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px 12px;border-radius:22px;border:1px solid var(--border);background:var(--surface);font-weight:700;font-size:12.5px;text-align:center;animation:actIn .85s cubic-bezier(.32,.72,0,1) both;animation-delay:var(--d,0ms)}
 .act .ai{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent)}
 .sl{display:flex;flex-direction:column;gap:8px;margin-top:4px}
 .slr{display:grid;grid-template-columns:26px 44px 1fr 44px 30px;align-items:center;gap:8px;animation:plIn .25s ease both}
@@ -739,13 +739,15 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .act.pin:has(+ .act:not(.pin)){margin-bottom:8px}   /* v1.454: воздух между последней закреплённой и обычными */
 .acts.calm .act,.acts.calm .act .ai,.acts.calm .act.pin::before,.acts.calm .act.pin::after{animation:none}
 /* v1.453: выбор активности — плитки всплывают каскадом с упругим отскоком, избранные — с проявлением градиента и бликом */
-@keyframes actIn{from{opacity:0;transform:translateY(26px) scale(.86)}55%{opacity:1}}
-@keyframes actAi{from{opacity:0;transform:scale(.5) rotate(-14deg)}}
+/* v1.458: появление в стиле раскрытия PRO — из размытия, без пружины */
+@keyframes actIn{from{opacity:0;transform:translateY(14px) scale(.97);filter:blur(12px)}}
+@keyframes actAi{from{opacity:0;transform:scale(.9);filter:blur(6px)}}
 @keyframes actSheen{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
-.acts:not(.calm) .act .ai{animation:actAi .55s cubic-bezier(.3,1.5,.5,1) both;animation-delay:calc(var(--d,0ms) + 130ms)}
+.acts:not(.calm) .act .ai{animation:actAi .8s cubic-bezier(.32,.72,0,1) both;animation-delay:calc(var(--d,0ms) + 130ms)}
 .acts:not(.calm) .act.pin::before{animation:pfFade .7s ease both;animation-delay:calc(var(--d,0ms) + 60ms)}
 .acts:not(.calm) .act.pin::after{animation:actSheen .95s ease-in-out both;animation-delay:calc(var(--d,0ms) + 520ms)}
-#sheet.half>h2,#sheet.half>.cap,#sheet.half>.wstep{animation:pfFade .5s ease both}
+@keyframes actHd{from{opacity:0;filter:blur(8px);transform:translateY(6px)}}
+#sheet.half>h2,#sheet.half>.cap,#sheet.half>.wstep{animation:actHd .7s cubic-bezier(.32,.72,0,1) both}
 @media (prefers-reduced-motion:reduce){.act,.acts .act .ai,.act.pin::before,.act.pin::after,#sheet.half>h2,#sheet.half>.cap,#sheet.half>.wstep{animation:none!important}}
 .act.soon .ai{background:var(--surface2);color:var(--muted);opacity:.7}
 .act.soon::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,var(--accent-soft) 50%,transparent 70%);transform:translateX(-100%);animation:skm 3.2s ease-in-out infinite}
@@ -2973,7 +2975,7 @@ function openPlans(){
 }
 function openPlanActs(){
   openSheet(`<h2>Что планируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше параметры и дата</div><div class="acts">`
-    + ACTS.filter(a => a[2]).map(([k, l], i) => `<button type="button" class="act" data-act="plact" data-v="${k}" style="--d:${Math.min(i, 13) * 42 + 110}ms"><span class="ai">${IC(k, 24)}</span>${l}</button>`).join('') + `</div>`, {type:'planact'});
+    + ACTS.filter(a => a[2]).map(([k, l], i) => `<button type="button" class="act" data-act="plact" data-v="${k}" style="--d:${Math.min(i, 13) * 34 + 90}ms"><span class="ai">${IC(k, 24)}</span>${l}</button>`).join('') + `</div>`, {type:'planact'});
 }
 function openPlan(p, act, back){
   const src = p || {}, today = isoOf(todayN()), date = p ? p.date : today;
@@ -3806,7 +3808,7 @@ function stepBack(){
 }
 function actsHTML(){
   const f = favActs(), list = [...f.map(k => ACTS.find(a => a[0] === k)), ...ACTS.filter(a => !f.includes(a[0]))];
-  return list.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}${f.includes(k) ? ' pin' : ''}" data-k="${k}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="--d:${Math.min(i, 13) * 42 + 110}ms">`
+  return list.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}${f.includes(k) ? ' pin' : ''}" data-k="${k}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="--d:${Math.min(i, 13) * 34 + 90}ms">`
     + (ok ? `<span class="afav" data-act="actfav" data-v="${k}" role="button" aria-label="${f.includes(k) ? 'Открепить' : 'Закрепить наверху'}"><svg width="22" height="22" viewBox="0 0 24 24"><path d="m12 3.2 2.6 5.5 6 .7-4.4 4.1 1.1 6L12 16.6l-5.3 2.9 1.1-6L3.4 9.4l6-.7L12 3.2Z"/></svg></span>` : '')
     + `<span class="ai">${IC(k, 24)}</span><span class="al">${l}</span>${ok ? '' : '<em>в разработке</em>'}</button>`).join('');
 }
