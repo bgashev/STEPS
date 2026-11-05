@@ -1116,7 +1116,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
   background:linear-gradient(180deg,rgba(8,8,12,.18) 0%,rgba(8,8,12,.55) 55%,rgba(8,8,12,.78) 100%)}
 .hero.hbg::after{display:none}
 .hero.hbg{--accent:#F4F4F8;--on-accent:#1D1D24;--text:#F4F4F8}
-.hero.hbg .hero-lv{background:rgba(10,10,16,.42);border-color:rgba(255,255,255,.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.hero.hbg .hero-lv{background:none;border:0;backdrop-filter:none;-webkit-backdrop-filter:none;text-shadow:0 1px 8px rgba(0,0,0,.45)}
 .hero.hbg .lvbar{background:rgba(255,255,255,.18)}
 .hero.hbg .fp-del{color:rgba(255,255,255,.8)}
 .hero.hbg .hero-at,.hero.hbg .cap,.hero.hbg .ttl{color:rgba(255,255,255,.78)!important}
@@ -1440,6 +1440,17 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 #pm-go:disabled{background:var(--surface2);color:var(--muted);opacity:.55;box-shadow:none;cursor:default;transform:none}
 /* v1.479: статус синхронизации — отдельной тихой строкой под шапкой, не среди соцсетей */
 .prof-act:empty{display:none}
+.prof.pc{flex-direction:column;align-items:center;text-align:center;gap:12px;margin:6px 0 10px}
+.prof.pc .ava{width:104px;height:104px}
+.prof.pc>div:last-child{display:flex;flex-direction:column;align-items:center;width:100%}
+.prof.pc .nmrow{justify-content:center}
+.prof.pc .crw{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+.prof.pc .prof-act{justify-content:center}
+@keyframes mePushIn{from{opacity:0;transform:translate3d(36px,0,0) scale(.985)}to{opacity:1;transform:none}}
+@keyframes mePopIn{from{opacity:0;transform:translate3d(-36px,0,0) scale(.985)}to{opacity:1;transform:none}}
+#view.nav-in{animation:mePushIn .5s cubic-bezier(.32,.72,0,1) both}
+#view.nav-out{animation:mePopIn .5s cubic-bezier(.32,.72,0,1) both}
+@media (prefers-reduced-motion:reduce){#view.nav-in,#view.nav-out{animation:none}}
 .prof-sync{display:flex;justify-content:center;margin:-4px 0 16px}
 .prof-sync:empty{display:none}
 .prof-sync .sync2{margin:0;height:30px}
@@ -1507,7 +1518,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.483';
+const APP = 'VOOB (by BGASHEV) Mini App v1.484';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3498,7 +3509,7 @@ function viewMeSettings(){
   const age = ageOf(p.birth), kg = currentWeight(), hgt = +p.height || 0, b = bmiOf(kg, hgt), bmr = bmrOf(kg, hgt, age, p.sex);
   const lv = myLevel();
   let h = '';                                        // v1.438: PRO — под профилем и промокодом
-  h += `<div class="prof"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
+  h += `<div class="prof pc"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
     <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}<div class="prof-act">${tgUser ? socialsHTML(tgUser.id, true) : ''}</div></div></div><div class="prof-sync">${syncHTML()}</div>`;
   if (inTG) h += proCardHTML();
   if (inTG) h += `<div class="card pmc"><div class="pm-h"><span class="pm-ic">${IC('gift', 18)}</span><b>Промокод</b></div>
@@ -3774,6 +3785,11 @@ function morphEl(o, n){
   if ((o.tagName === 'INPUT' || o.tagName === 'TEXTAREA') && document.activeElement !== o && n.hasAttribute('value') && o.value !== n.getAttribute('value')) o.value = n.getAttribute('value');
   if (o.tagName === 'INPUT') o.checked = n.hasAttribute('checked');
   morphKids(o, n);
+}
+function meNav(cls){   // v1.484: плавный «пуш» между профилем и настройками, как в iOS
+  window.scrollTo(0, 0); _rTab = null; render();
+  const v = $('#view'); v.classList.remove('nav-in', 'nav-out'); void v.offsetWidth; v.classList.add(cls);
+  setTimeout(() => v.classList.remove(cls), 560);
 }
 function render(){
   const html = VIEWS[S.tab](), v = $('#view');
@@ -4126,8 +4142,8 @@ const ACT = {
   badgeset: el => { const k = el.dataset.v || 'verified'; if (!isPro()) { hap.warn(); proToast('Выбор значка — для подписчиков PRO'); return; }
     db.settings.badge = k === 'verified' ? '' : k; touchMeta('settings'); save(); hap.tap();
     document.querySelectorAll('.bdg').forEach(el => { el.innerHTML = bdgInner(+el.dataset.bid, +el.dataset.sz); }); render(); },
-  meset: () => { hap.tap(); S.meSet = true; render(); window.scrollTo(0, 0); },
-  mesback: () => { hap.tap(); S.meSet = false; render(); window.scrollTo(0, 0); },
+  meset: () => { hap.tap(); S.meSet = true; meNav('nav-in'); },
+  mesback: () => { hap.tap(); S.meSet = false; meNav('nav-out'); },
   gexp: el => { const w = el.closest('.gwrap'); if (!w) return; hap.tap(); w.classList.toggle('open');
     el.setAttribute('aria-label', w.classList.contains('open') ? 'Свернуть' : 'Показать все подарки'); },
   pladd: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.imp();
