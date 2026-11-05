@@ -1,4 +1,4 @@
-// VOOB (ранее STEPS) — серверная функция синхронизации (Supabase Edge Function) · v1.421 (PRO, все виды тренировок, разные подходы)
+// VOOB (ранее STEPS) — серверная функция синхронизации (Supabase Edge Function) · v1.451 (штанга, пресс, скакалка, степпер, плавание)
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const APP_URL = "https://bgashev.github.io/STEPS/";
@@ -25,6 +25,10 @@ const MAX_FRIENDS = 100;
 const POKE_HOURS = 12;
 const GIFT_ENERGY = 3;        // подарков в месяц на одного отправителя
 const GIFT_XP = 100;          // за первый подарок каждого вида
+// v1.462: премиум-подарки — дарить может только PRO, получатель берёт +200 вместо +100
+const GIFT_XP_PRO = 200;
+const PRO_GIFTS = new Set(["pr_diamond", "pr_goldbar", "pr_champagne", "pr_watch", "pr_perfume", "pr_orb", "pr_ring", "pr_plasma", "pr_hourglass", "pr_belt"]);
+const giftXp = (kind: string) => (PRO_GIFTS.has(kind) ? GIFT_XP_PRO : GIFT_XP);
 const FEEDBACK_PER_DAY = 5;
 // Виды подарков лежат в таблице gift_types (kind → эмодзи, название): новые добавляются без передеплоя
 let _gt: Record<string, [string, string]> = {};
@@ -47,6 +51,7 @@ const STR: Record<string, { per: "reps" | "secs"; max: number; xp: number }> = {
 // v1.421: по времени — велосипед (скорость по желанию, до 45 км/ч) и растяжка/йога (без скорости)
 const TIME: Record<string, { xp: number; maxSpeed: number }> = { bike: { xp: 0.9, maxSpeed: 45 }, yoga: { xp: 0.6, maxSpeed: 0 },
   jumprope: { xp: 1.1, maxSpeed: 0 }, stepper: { xp: 0.8, maxSpeed: 0 }, swim: { xp: 1.0, maxSpeed: 0 } };   // v1.451
+const KG_ACTS = new Set(["dumbbell", "barbell"]);   // силовые с весом
 // v1.421: подходы могут быть разными — список sl [12, 10, 8]; иначе sets × reps
 function strTotal(w: any) {
   const st = STR[w.act];
@@ -340,7 +345,7 @@ function workoutXp(w: any) {
   const st = STR[w.act];
   if (st) {
     const total = strTotal(w);
-    const kgf = (w.act === "dumbbell" || w.act === "barbell") ? 1 + Math.min(MAX_KG, Math.max(0, Number(w.kg) || 0)) / 20 : 1;
+    const kgf = KG_ACTS.has(w.act) ? 1 + Math.min(MAX_KG, Math.max(0, Number(w.kg) || 0)) / 20 : 1;
     return total > 0 ? Math.max(3, Math.min(150, Math.round(total * st.xp * kgf))) : 0;
   }
   const m = Math.max(0, Math.min(AC.maxMin, Number(w.minutes) || 0));
@@ -469,6 +474,7 @@ function detailsOf(recs: any[], today: number) {
   const recent = ws.slice().sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : (b.created ?? 0) - (a.created ?? 0))).slice(0, 5)
     .map((w) => ({ date: w.date, minutes: Number(w.minutes) || 0, speed: Number(w.speed) || 0, incline: Number(w.incline) || 0,
       act: w.act || "run", sets: Number(w.sets) || 0, reps: Number(w.reps) || 0, secs: Number(w.secs) || 0, kg: Number(w.kg) || 0,
+      ...(typeof w.ex === "string" && w.ex.length < 24 ? { ex: w.ex } : {}),
       ...(Array.isArray(w.sl) ? { sl: w.sl.slice(0, MAX_SETS).map((x: any) => Number(x) || 0) } : {}) }));
   const daysSet = new Set(ws.map((w) => dnum(w.date)!));
   let bestRun = 0, cur = 0;
@@ -519,7 +525,7 @@ async function giftStats(ids: number[]) {
   }
   return m;
 }
-const giftBonus = (s?: { kinds: string[] }) => (s?.kinds.length ?? 0) * GIFT_XP;
+const giftBonus = (s?: { kinds: string[] }) => (s?.kinds ?? []).reduce((a, k) => a + giftXp(k), 0);
 const monthStartIso = () => { const t = new Date(); return new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), 1)).toISOString(); };
 async function giftEnergy(me: number) {
   const { count } = await db.from("gifts").select("id", { count: "exact", head: true }).eq("from_id", me).neq("kind", "pro").gte("created_at", monthStartIso());
@@ -535,7 +541,7 @@ async function myGifts(me: number) {
   const row = (g: any) => ({ id: g.id, kind: GIFTS[g.kind] ? g.kind : "star", from_id: g.from_id, from_name: displayName(us.get(g.from_id)), at: g.created_at });
   const claimed = (data ?? []).filter((g: any) => g.claimed_at);
   const kinds = [...new Set(claimed.map((g: any) => g.kind).filter((k: string) => GIFTS[k]))];
-  return { pending: (data ?? []).filter((g: any) => !g.claimed_at).map(row), claimed: claimed.map(row), kinds, xp: kinds.length * GIFT_XP };
+  return { pending: (data ?? []).filter((g: any) => !g.claimed_at).map(row), claimed: claimed.map(row), kinds, xp: kinds.reduce((a: number, k: string) => a + giftXp(k), 0) };
 }
 const todayOf = (body: any) => dnum(String(body?.today ?? "")) ?? Math.floor(Date.now() / DAY);
 
@@ -723,13 +729,14 @@ async function routeGiftSend(body: any) {
   if (!GIFTS[kind]) return fail("Неизвестный подарок");
   if (kind === "pro") return fail("PRO дарится через оплату звёздами", 400);
   if (!other || other === me || !(await areFriends(me, other))) return fail("Дарить можно только друзьям", 403);
+  if (PRO_GIFTS.has(kind) && me !== ADMIN_TG_ID && !(await proStatus(me)).active) return json({ status: "pro" });
   const en = await giftEnergy(me);
   if (en.left <= 0) return json({ status: "energy", energy: en });
   const { error } = await db.from("gifts").insert({ from_id: me, to_id: other, kind });
   if (error) return fail("Ошибка записи: " + error.message, 500);
   const { data: had } = await db.from("gifts").select("id").eq("to_id", other).eq("kind", kind).not("claimed_at", "is", null).limit(1);
   const [emo, title] = GIFTS[kind];
-  const bonus = had?.length ? "" : `\n\nЭто первый такой подарок — +${GIFT_XP} очков к уровню!`;
+  const bonus = had?.length ? "" : `\n\nЭто первый такой подарок — +${giftXp(kind)} очков к уровню!`;
   notify(other, `🎁 ${displayName(await userInfo(me))} дарит тебе ${emo} «${title}»!${bonus}\n\nОткрой VOOB, чтобы получить подарок.`);
   return json({ status: "ok", energy: await giftEnergy(me) });
 }
@@ -749,7 +756,7 @@ async function routeGiftClaim(body: any) {
     const [emo, title] = GIFTS[g.kind] ?? GIFTS.star ?? ["🎁", "Подарок"];
     notify(g.from_id, `${emo} ${displayName(await userInfo(me))} получил(а) твой подарок «${title}». Приятно, правда?`);
   }
-  return json({ status: "ok", first, xp: first ? GIFT_XP : 0, gifts: await myGifts(me) });
+  return json({ status: "ok", first, xp: first ? giftXp(g.kind) : 0, gifts: await myGifts(me) });
 }
 
 /* ---------- жалобы и идеи ---------- */
@@ -1045,7 +1052,7 @@ Deno.serve(async (req) => {
   try {
     if (route === "/setup" && req.method === "GET") return await routeSetup(req);
     if (route === "/bot" && req.method === "POST") return await routeBot(req);
-    if (req.method !== "POST") return json({ app: "VOOB sync", version: "1.429", pro: true, ok: true });
+    if (req.method !== "POST") return json({ app: "VOOB sync", version: "1.451", pro: true, ok: true });
     const body = await req.json().catch(() => ({}));
     switch (route) {
       case "/tg-webapp": return await routeWebApp(body);
