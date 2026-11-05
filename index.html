@@ -320,6 +320,20 @@ input[type=date].inp{display:block}
 .rk .br{flex:1;height:9px;border-radius:5px;background:var(--off);overflow:hidden}
 .rk .br i{display:block;height:100%;border-radius:5px;background:var(--accent);transform-origin:left;animation:growX .9s cubic-bezier(.2,.8,.2,1) backwards}
 .rk .mv{width:70px;text-align:right;font-size:12.5px;font-weight:650;flex:none}
+.hdc-h{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.hdc-ic{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;flex:none;color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.hdc-h b{display:block;font-size:16px;line-height:1.2}
+.hdc-h small{display:block;margin-top:2px;font-size:12.5px;color:var(--muted)}
+.hdl{display:flex;align-items:center;height:52px;padding:0 6px 0 16px;border-radius:16px;background:var(--surface2);border:1px solid var(--border);transition:border-color .2s,box-shadow .2s}
+.hdl:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
+.hdl-at{color:var(--muted);font-size:17px;font-weight:600;margin-right:2px}
+.hdl input{flex:1;min-width:0;height:100%;border:0;outline:0;background:none;color:var(--text);font:inherit;font-size:17px;font-weight:600;letter-spacing:.01em;text-transform:none}
+.hdl input::placeholder{color:var(--muted);font-weight:500}
+.hdl-s{flex:none;height:40px;padding:0 16px;border-radius:12px;border:0;font:inherit;font-size:14px;font-weight:700;background:transparent;color:var(--muted);opacity:.0;width:0;padding:0;overflow:hidden;transition:all .3s cubic-bezier(.32,.72,0,1)}
+.hdl.dirty .hdl-s{opacity:1;width:auto;padding:0 16px;background:var(--accent);color:var(--bg)}
+.hdc-n{margin:8px 4px 0;font-size:12px;color:var(--muted)}
+.hdc-act{display:grid;grid-template-columns:1.3fr 1fr;gap:8px;margin-top:14px}
+.hdc-act .btn{width:100%;justify-content:center;white-space:nowrap}
 .codein{display:flex;gap:8px;margin-top:10px}
 .codein .inp{flex:1;min-width:0;text-transform:uppercase}.codein .inp::placeholder{text-transform:none}
 
@@ -1524,7 +1538,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.487';
+const APP = 'VOOB (by BGASHEV) Mini App v1.488';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2764,9 +2778,10 @@ async function openPublicProfile(handle){
 function handleCard(){
   if (!inTG) return '';
   const h = srvUser && srvUser.handle;
-  return `<div class="card"><h3>${IC('user')}Ник в VOOB</h3><div class="hint">По нику тебя найдут друзья. Латиница, цифры и «_», 3–20 символов.</div>
-    <div class="codein" style="margin-top:0"><input class="inp" id="p-handle" maxlength="21" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="@nickname" value="${h ? '@' + esc(h) : ''}"><button class="btn ghost small" data-act="hsave">Сохранить</button></div>
-    ${h ? `<div class="row" style="gap:8px;margin-top:10px;flex-wrap:wrap"><button class="btn primary small" data-act="pshare">${IC('share', 16)}Поделиться профилем</button><button class="btn ghost small" data-act="pcopy">Скопировать ссылку</button></div>` : ''}</div>`;
+  return `<div class="card hdc"><div class="hdc-h"><span class="hdc-ic">${IC('user', 18)}</span><div><b>Ник в VOOB</b><small>По нему тебя найдут друзья</small></div></div>
+    <div class="hdl"><span class="hdl-at">@</span><input id="p-handle" maxlength="21" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="nickname" data-v="${h ? esc(h) : ''}" value="${h ? esc(h) : ''}" oninput="this.closest('.hdl').classList.toggle('dirty',this.value.trim().replace(/^@+/,'')!==this.dataset.v)"><button type="button" class="hdl-s" data-act="hsave">Сохранить</button></div>
+    <div class="hdc-n">Латиница, цифры и «_» · 3–20 символов</div>
+    ${h ? `<div class="hdc-act"><button type="button" class="btn primary small" data-act="pshare">${IC('share', 16)}Поделиться</button><button type="button" class="btn ghost small" data-act="pcopy">${IC('link', 16)}Ссылка</button></div>` : ''}</div>`;
 }
 const profLink = h => `https://t.me/steps_v1_bot/STEPS?startapp=u_${h}`;
 
