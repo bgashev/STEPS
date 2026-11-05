@@ -808,6 +808,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 /* оттенки тёмной темы */
 .dvs{display:flex;gap:12px;margin-top:10px;align-items:center}
 .dv{width:40px;height:40px;border-radius:50%;border:1px solid var(--border);display:grid;place-items:center;color:var(--accent)}
+.dv{position:relative}.dv .prot{position:absolute;top:-5px;right:-9px;font-size:8px;font-weight:850;letter-spacing:.06em;padding:2px 5px;border-radius:999px;background:linear-gradient(120deg,#F5B23C,#FFE08A);color:#3a2600}
 .dv.on{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--accent)}
 
 /* ---- сторис ---- */
@@ -1917,8 +1918,10 @@ function accentHex(mode){
   if (k === 'mono') return mode === 'dark' ? '#EDEDF2' : '#26262C';
   const a = ACCENTS.find(x => x[0] === k); return a ? a[2] : '#B4A7EE';
 }
+/* v1.458: «чёрная» тёмная тема — только PRO (без PRO — графит; кнопка даёт короткий предпросмотр) */
+function dvEff(){ const d = db.settings.dv || 'graphite'; return d === 'black' && !(isPro() || (typeof S !== 'undefined' && S.dvPrev)) ? 'graphite' : d; }
 function applyTheme(){
-  const mode = themeMode(), th = THEMES[mode === 'dark' && db.settings.dv === 'black' ? 'black' : mode], r = document.documentElement.style;
+  const mode = themeMode(), th = THEMES[mode === 'dark' && dvEff() === 'black' ? 'black' : mode], r = document.documentElement.style;
   for (const k in th) r.setProperty('--' + k, th[k]);
   const acc = accentHex(mode), [ar, ag, ab] = hexRgb(acc);
   r.setProperty('--accent', acc);
@@ -3278,7 +3281,7 @@ function viewMeSettings(){
       <div class="bgs${S.bgAll ? '' : ' col'}"><button type="button" class="bgb${cb ? '' : ' on'}" data-act="bgset" data-v=""><span class="th none"></span>Без фона</button>${BG_KEYS.map(([k, l], i) =>
       `<button type="button" class="bgb${cb === k ? ' on' : ''}${(si >= 3 ? (i >= 2 && i !== si) : i >= 3) ? ' bmore' : ''}" data-act="bgset" data-v="${k}"><span class="th">${bgFx(k)}</span><i class="prot">PRO</i>${l}</button>`).join('')}</div><button type="button" class="frx${S.bgAll ? ' open' : ''}" data-act="smore" data-k="bgAll" data-more="Все фоны · ${BG_KEYS.length}"><span>${S.bgAll ? 'Свернуть' : 'Все фоны · ' + BG_KEYS.length}</span>${IC('chev', 14)}</button></div>`; }
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}
-    ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${(db.settings.dv || 'graphite') === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${(db.settings.dv || 'graphite') === k ? IC('check', 16) : ''}</button>`).join('')}</div>` : ''}</div>
+    ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${dvEff() === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${dvEff() === k ? IC('check', 16) : ''}${k === 'black' ? '<i class="prot">PRO</i>' : ''}</button>`).join('')}</div>` : ''}</div>
     <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}${k !== 'mono' && !isPro() ? ' lk' : ''}" data-act="accent" data-v="${k}"${k !== 'mono' && !isPro() ? ' data-lk="1"' : ''} style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div>
     ${inTG ? `<div class="tgl${lookSync() ? ' on' : ''}" data-act="looksync" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)"><span class="sw2"></span><b>Одинаково на всех устройствах</b></div>
     <div class="cap" style="margin-top:8px">${lookSync() ? 'Тема, оттенок и акцентный цвет синхронизируются с программой на компьютере.' : 'Здесь своё оформление: на телефоне и компьютере тема и цвет могут быть разными.'}</div>` : ''}</div>`;
@@ -4051,7 +4054,9 @@ const ACT = {
   },
   sex: el => { db.profile.sex = el.dataset.v; touchMeta('profile'); save(); render(); hap.tap(); },
   theme: el => { db.settings.theme = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
-  dv: el => { db.settings.dv = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
+  dv: el => { if (el.dataset.v === 'black' && !isPro()) { hap.warn(); S.dvPrev = true; applyTheme(); render(); clearTimeout(S.dvT);
+      S.dvT = setTimeout(() => { S.dvPrev = false; applyTheme(); render(); }, 3500); proToast('Чёрная тема — в PRO. Сейчас это предпросмотр'); return; }
+    S.dvPrev = false; db.settings.dv = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
   looksync: () => { const on = !lookSync(); lsSet('voob_look_sync', on); hap.tap();
     if (on) { touchMeta('settings'); save(); toast('Оформление этого устройства теперь общее'); } else toast('Теперь у телефона своё оформление');
     render(); },
