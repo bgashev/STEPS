@@ -946,6 +946,8 @@ input[type=date].inp{display:block}
 /* v1.432.2: повторная перерисовка той же вкладки — без повторных «появлений» */
 #view.rr :is(.act,.bfill,.cgc,.emb .rg,.fbar .ff,.fbar .fv,.fc,.fdb i,.fi img.fade,.fticker,.gbig,.gx-c,.gx-ring .sg,.line .draw,.lvbar i,.pfill,.plsug,.ring-p,.rk .br i,.sc,.slr,.slr.new,.wdock,.wi,.fest){animation:none!important}
 #view.rr .lvbar i,#view.rr [style*="--c"]{transition:none!important}
+/* v1.443: без анимации элемент обязан сразу стоять в конечном виде — иначе сегмент кольца недели и линия графика оставались невидимыми */
+#view.rr .gx-ring .sg,#view.rr .line .draw{stroke-dashoffset:0!important}
 
 /* ---- v1.434: рамки одной толщины везде — 7,5% размера, зазор 3,5% (размер считает скрипт) ---- */
 :is(.fav,.ava)[class*=" fr-"]{padding:var(--frw,4px)!important}
@@ -1173,7 +1175,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.442';
+const APP = 'VOOB (by BGASHEV) Mini App v1.443';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
