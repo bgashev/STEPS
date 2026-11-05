@@ -1396,6 +1396,14 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .hero .fchipb .stk .fav+.fav{margin-left:-11px}
 .hero .socs.ico{margin-top:24px;gap:14px}
 .hero .soci,.hero .soci .lg{width:42px;height:42px}
+/* v1.472: кнопки «Друзья» и «Настройки» — в один ряд */
+.hero-row{flex-wrap:nowrap;gap:8px;margin-top:22px}
+.hero-row .fchipb{height:44px;padding:0 12px 0 6px;font-size:14px;gap:8px;white-space:nowrap;min-width:0;flex:0 1 auto}
+.hero .fchipb.hset{padding:0 14px 0 12px}
+.hero .fchipb.hset svg{width:18px;height:18px}
+.hero .fchipb .stk .fav{width:30px;height:30px;font-size:12px}
+.hero .fchipb .stk .fav+.fav{margin-left:-10px}
+.hero .fchipb .stk .fav:nth-child(n+3){display:none}
 /* v1.467: выбор значка */
 .bgl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .bgi{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;cursor:pointer;transition:transform .15s,border-color .2s,background .2s}
@@ -1431,7 +1439,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.471';
+const APP = 'VOOB (by BGASHEV) Mini App v1.472';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
