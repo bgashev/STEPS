@@ -1369,6 +1369,14 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .gcf-box h3{margin:0 0 6px;font-size:18px;justify-content:center}
 .gcf-btns{display:flex;gap:8px;margin-top:16px}.gcf-btns .btn{flex:1}
 @keyframes gcfBg{from{opacity:0}}@keyframes gcfOut{to{opacity:0}}@keyframes gcfBox{from{opacity:0;transform:translateY(12px) scale(.96);filter:blur(10px)}}
+/* v1.465: закреплённая «Назад» — без резкой плашки: мягкий градиент-фейд с размытием, плавно сходит на нет */
+.mset-top{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;pointer-events:none;isolation:isolate}
+.mset-top>*{pointer-events:auto}
+.mset-top::before{content:'';position:absolute;z-index:-1;left:0;right:0;pointer-events:none;
+  top:calc(-1 * (var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px)) - 12px);bottom:-26px;
+  background:linear-gradient(to bottom,var(--bg) 0,color-mix(in srgb,var(--bg) 88%,transparent) 50%,transparent 100%);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  -webkit-mask-image:linear-gradient(to bottom,#000 0,#000 45%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 45%,transparent 100%)}
 @media (prefers-reduced-motion:reduce){#view.wvin>*,#pub.blurin>*,.gp.gprem::before{animation:none!important}}
 </style>
 </head>
@@ -1383,7 +1391,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.464';
+const APP = 'VOOB (by BGASHEV) Mini App v1.465';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
