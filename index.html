@@ -1438,6 +1438,11 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 /* v1.477: «Активировать» неактивна, пока код не введён */
 #pm-go{transition:opacity .25s,background .25s,color .25s,transform .15s}
 #pm-go:disabled{background:var(--surface2);color:var(--muted);opacity:.55;box-shadow:none;cursor:default;transform:none}
+/* v1.479: статус синхронизации — отдельной тихой строкой под шапкой, не среди соцсетей */
+.prof-act:empty{display:none}
+.prof-sync{display:flex;justify-content:center;margin:-4px 0 16px}
+.prof-sync:empty{display:none}
+.prof-sync .sync2{margin:0;height:30px}
 /* v1.467: выбор значка */
 .bgl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .bgi{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;cursor:pointer;transition:transform .15s,border-color .2s,background .2s}
@@ -1473,7 +1478,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.478';
+const APP = 'VOOB (by BGASHEV) Mini App v1.479';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3454,7 +3459,7 @@ function viewMeSettings(){
   const lv = myLevel();
   let h = '';                                        // v1.438: PRO — под профилем и промокодом
   h += `<div class="prof"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
-    <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}<div class="prof-act">${tgUser ? socialsHTML(tgUser.id, true) : ''}${syncHTML()}</div></div></div>`;
+    <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}<div class="prof-act">${tgUser ? socialsHTML(tgUser.id, true) : ''}</div></div></div><div class="prof-sync">${syncHTML()}</div>`;
   if (inTG) h += proCardHTML();
   if (inTG) h += `<div class="card pmc"><div class="pm-h"><span class="pm-ic">${IC('gift', 18)}</span><b>Промокод</b></div>
     <div class="pm-row"><input id="pm-in" class="inp" placeholder="VOOB-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="24" enterkeyhint="done">
