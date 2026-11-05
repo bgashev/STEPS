@@ -863,7 +863,7 @@ input[type=date].inp{display:block}
 .prox-top{display:flex;align-items:center;gap:12px}
 .prox-em{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#2A2110;background:linear-gradient(140deg,#FFE29A,#E9B949 55%,#B9852A);box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
 .prox-t{font-size:19px;font-weight:900;letter-spacing:.3px;background:linear-gradient(90deg,#FFE29A,#E9B949);-webkit-background-clip:text;background-clip:text;color:transparent}
-.prox-s{font-size:12.5px;color:var(--muted);margin-top:1px}
+.prox-s{font-size:12.5px;color:var(--muted);margin-top:1px;white-space:nowrap}
 .prox-pill{white-space:nowrap;margin-left:auto;align-self:flex-start;font-size:10px;font-weight:850;letter-spacing:.08em;padding:4px 9px;border-radius:999px;color:#E9B949;border:1px solid rgba(233,185,73,.4);background:rgba(233,185,73,.10)}
 .prox-pill.on{color:var(--green);border-color:rgba(95,201,138,.4);background:rgba(95,201,138,.10)}
 .prox-perks{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
@@ -1211,7 +1211,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.450';
+const APP = 'VOOB (by BGASHEV) Mini App v1.451';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -1227,12 +1227,16 @@ const THEMES = {
   light:{bg:"#F5F5F8",surface:"#FFFFFF",surface2:"#EFEFF4",border:"#E3E3EA",text:"#1D1D24",muted:"#8A8A98",off:"#DEDEE6"},
   dark:{bg:"#121216",surface:"#1A1A20",surface2:"#24242C",border:"#2C2C36",text:"#F1F1F5",muted:"#8B8B99",off:"#34343F"},
   black:{bg:"#050507",surface:"#0E0E12",surface2:"#18181D",border:"#212128",text:"#F4F4F7",muted:"#878794",off:"#27272F"}};
-const ACTS = [['run','Бег / ходьба',1],['dumbbell','Гантели',1],['squat','Приседания',1],['pushup','Отжимания',1],['bike','Велосипед',1],['yoga','Растяжка / йога',1],['plank','Планка',1],['burpee','Бёрпи',1],['pullup','Подтягивания',1]];
+const ACTS = [['run','Бег / ходьба',1],['dumbbell','Гантели',1],['squat','Приседания',1],['pushup','Отжимания',1],['bike','Велосипед',1],['yoga','Растяжка / йога',1],['plank','Планка',1],['burpee','Бёрпи',1],['pullup','Подтягивания',1],
+  ['barbell','Штанга',1],['abs','Пресс',1],['jumprope','Скакалка',1],['stepper','Степпер',1],['swim','Плавание',1]];   // v1.451
 // v1.420: силовые — act: [что в подходе, максимум, очков за единицу, MET]; те же правила, что на сервере
-const STR = {pushup:['reps', 200, 0.5, 8], squat:['reps', 300, 0.35, 5.5], pullup:['reps', 100, 1.2, 8], plank:['secs', 900, 1 / 6, 3.8], dumbbell:['reps', 100, 0.3, 6], burpee:['reps', 100, 1.0, 8]};
+const STR = {pushup:['reps', 200, 0.5, 8], squat:['reps', 300, 0.35, 5.5], pullup:['reps', 100, 1.2, 8], plank:['secs', 900, 1 / 6, 3.8], dumbbell:['reps', 100, 0.3, 6], burpee:['reps', 100, 1.0, 8],
+  barbell:['reps', 100, 0.35, 6], abs:['reps', 300, 0.3, 4]};
 const isStr = w => !!(w && STR[w.act]);
 // v1.421: по времени — act: [очков за минуту, макс. скорость (0 — без скорости), MET]
-const TIMEA = {bike:[0.9, 45, 7], yoga:[0.6, 0, 2.5]};
+const TIMEA = {bike:[0.9, 45, 7], yoga:[0.6, 0, 2.5], jumprope:[1.1, 0, 11], stepper:[0.8, 0, 8], swim:[1.0, 0, 7]};
+// v1.451: силовые с весом и выбором упражнения (гантели, штанга)
+const KG_ACT = {dumbbell:{lbl:'Вес гантели', def:5, q:'Что делаем с гантелями?'}, barbell:{lbl:'Вес штанги', def:20, q:'Что делаем со штангой?'}};
 const isTime = w => !!(w && TIMEA[w.act]);
 // подходы могут быть разными: sl = [12, 10, 8]; старые записи — sets × reps
 function slOf(w){ const st = STR[w.act]; if (!st) return []; if (Array.isArray(w.sl) && w.sl.length) return w.sl.map(x => +x || 0);
@@ -1240,8 +1244,8 @@ function slOf(w){ const st = STR[w.act]; if (!st) return []; if (Array.isArray(w
 const strTotal = w => slOf(w).reduce((a, x) => a + x, 0);
 function strMin(act, sets, per){ return Math.max(1, Math.min(240, Math.ceil((sets * per * (STR[act][0] === 'secs' ? 1 : 3) + Math.max(0, sets - 1) * 60) / 60))); }
 function strMinL(act, sl){ const tot = sl.reduce((a, x) => a + x, 0); return Math.max(1, Math.min(240, Math.ceil((tot * (STR[act][0] === 'secs' ? 1 : 3) + Math.max(0, sl.length - 1) * 60) / 60))); }
-function strText(w){ const r = strText0(w), ex = w.act === 'dumbbell' && w.ex && typeof dbxName === 'function' ? dbxName(w.ex) : ''; return ex && r ? ex + ' · ' + r : r; }
-function strText0(w){ const st = STR[w.act]; if (!st) return ''; const sl = slOf(w), u = st[0] === 'secs' ? ' сек' : '', kg = w.act === 'dumbbell' && +w.kg ? ` × ${num(+w.kg)} кг` : '';
+function strText(w){ const r = strText0(w), ex = KG_ACT[w.act] && w.ex && typeof dbxName === 'function' ? dbxName(w.ex, w.act) : ''; return ex && r ? ex + ' · ' + r : r; }
+function strText0(w){ const st = STR[w.act]; if (!st) return ''; const sl = slOf(w), u = st[0] === 'secs' ? ' сек' : '', kg = KG_ACT[w.act] && +w.kg ? ` × ${num(+w.kg)} кг` : '';
   if (sl.length && sl.some(x => x !== sl[0])) return `${sl.join(' · ')}${u}${kg} = ${strTotal(w)}${u}`;
   return `${sl.length} × ${sl[0] || 0}${u}${kg}`; }
 function strBad(w){ const st = STR[w.act], n = +w.sets, v = +(st[0] === 'secs' ? w.secs : w.reps), kg = +(w.kg || 0);
@@ -1495,6 +1499,9 @@ function achievements(){
   const [, bs] = dayStreaks(ws), [gd, gb] = goalHistory(ws);
   const early = ws.some(w => w.created && new Date(w.created * 1000).getHours() < 8);
   const wr = !!(db.weight_goal || {}).reached_on, we = weightsSorted().length;
+  const sw = ws.filter(isStr), reps = sum(sw.filter(w => STR[w.act][0] === 'reps'), strTotal), ton = Math.max(0, ...sw.filter(w => KG_ACT[w.act]).map(w => strTotal(w) * (+w.kg || 0)));
+  if (typeof isPro === 'function' && isPro() && !db.settings.pro_got) { db.settings.pro_got = 1; persist(); }   // медаль за PRO остаётся и после окончания подписки
+  const proGot = !!db.settings.pro_got;
   const a = (icon, title, desc, val, need, txt) => { const prog = need ? clamp(val / need, 0, 1) : (val ? 1 : 0);
     return {icon, title, desc, done:prog >= 1, prog, text:txt != null ? txt : `${num(Math.min(val, need), 0)} / ${num(need, 0)}`}; };
   return [
@@ -1506,7 +1513,11 @@ function achievements(){
     a('trophy','Нормальный','Выполнить недельную норму',gd,1), a('crown','Железная воля','4 нормы подряд',gb,4),
     a('sunrise','Ранняя пташка','Записать тренировку до 8 утра',early?1:0,1,early?'':'—'),
     a('scale','Взвешенное решение','10 взвешиваний',we,10), a('target','В яблочко','Достичь цели по весу',wr?1:0,1,wr?'':'—'),
-    a('friends','Своя компания','Добавь трёх друзей',+db.settings.friends_n || 0,3), a('friends','Душа компании','Добавь пять друзей',+db.settings.friends_n || 0,5)].map((x, i) => Object.assign(x, {key:ACH_KEYS[i]}))
+    a('friends','Своя компания','Добавь трёх друзей',+db.settings.friends_n || 0,3), a('friends','Душа компании','Добавь пять друзей',+db.settings.friends_n || 0,5),
+    // v1.451: силовые, PRO и большая компания
+    a('dumbbell','Железо','10 силовых тренировок',sw.length,10), a('abs','Тысяча повторов','1000 повторений суммарно',reps,1000),
+    a('barbell','Тонна','1000 кг за одну тренировку с весом',ton,1000,`${numSep(Math.round(Math.min(ton, 1000)))} / 1000 кг`),
+    a('crown','В клубе','Оформить VOOB PRO',proGot ? 1 : 0,1,proGot ? '' : '—'), a('friends','Своя тусовка','Добавь десять друзей',+db.settings.friends_n || 0,10)].map((x, i) => Object.assign(x, {key:ACH_KEYS[i]}))
     .map(x => (typeof ACHOFF !== 'undefined' && ACHOFF.has(x.key)) ? Object.assign(x, {done:false, prog:0, text:'Отозвано командой VOOB', revoked:true}) : x);   // v1.434
 }
 
@@ -1577,7 +1588,7 @@ function touchMeta(id){
 }
 function metaData(id){
   if (id === 'profile') return {name:db.profile.name || '', birth:db.profile.birth || '', sex:db.profile.sex || '', height:+db.profile.height || 0};
-  if (id === 'settings') return Object.assign({goal:db.settings.goal}, Array.isArray(db.settings.fav) ? {fav:db.settings.fav.slice(0, 3)} : {}, lookSync() ? {accent:db.settings.accent, theme:db.settings.theme, dv:db.settings.dv || 'graphite'} : {}, db.settings.frame ? {frame:db.settings.frame} : {}, db.settings.bg ? {bg:db.settings.bg} : {}, Array.isArray(db.settings.seen_ach) ? {ach:db.settings.seen_ach.slice(0, 60)} : {});
+  if (id === 'settings') return Object.assign({goal:db.settings.goal}, Array.isArray(db.settings.fav) ? {fav:db.settings.fav.slice(0, 6)} : {}, lookSync() ? {accent:db.settings.accent, theme:db.settings.theme, dv:db.settings.dv || 'graphite'} : {}, db.settings.frame ? {frame:db.settings.frame} : {}, db.settings.bg ? {bg:db.settings.bg} : {}, Array.isArray(db.settings.seen_ach) ? {ach:db.settings.seen_ach.slice(0, 60)} : {});
   return db.weight_goal || {};
 }
 function applyMeta(id, d){
@@ -1596,7 +1607,7 @@ function applyMeta(id, d){
       try { applyTheme(); } catch (e) {} }
     db.settings.frame = FRAMES.some(x => x[0] && x[0] === d.frame) ? d.frame : '';
     db.settings.bg = typeof d.bg === 'string' && d.bg.length < 24 ? d.bg : '';
-    if (Array.isArray(d.fav)) db.settings.fav = d.fav.filter(x => typeof x === 'string').slice(0, 3);
+    if (Array.isArray(d.fav)) db.settings.fav = d.fav.filter(x => typeof x === 'string').slice(0, 6);
   } else if (id === 'weight_goal') db.weight_goal = (d && typeof d === 'object') ? d : {};
 }
 function splitKey(key){ const i = key.indexOf(':'); return [key.slice(0, i), key.slice(i + 1)]; }
@@ -1741,6 +1752,11 @@ const IP = {
   dumbbell:'<path d="M5.5 9H12.5M1.6 7.4V10.6M16.4 7.4V10.6"/><rect x="3.2" y="5.2" width="2.6" height="7.6" rx="1"/><rect x="12.2" y="5.2" width="2.6" height="7.6" rx="1"/>',
   squat:'<circle cx="8.6" cy="3" r="1.6"/><path d="M8.6 5.2L7.6 9.4L12 10.4L11 15.4M8.4 6.8H14M9.4 15.6H13"/>',
   pushup:'<circle cx="14.6" cy="7.6" r="1.5"/><path d="M13.2 9.4L3 12.6M11.8 9.9L12.2 14.4M1.8 15H16.2"/>',
+  barbell:'<path d="M1 9H17"/><rect x="3" y="4.6" width="2" height="8.8" rx=".8"/><rect x="13" y="4.6" width="2" height="8.8" rx=".8"/><rect x="5.6" y="6.2" width="1.6" height="5.6" rx=".6"/><rect x="10.8" y="6.2" width="1.6" height="5.6" rx=".6"/>',
+  abs:'<rect x="5.2" y="2.4" width="7.6" height="13.2" rx="3.4"/><path d="M9 3.6V14.4M5.6 6.4H12.4M5.6 9.2H12.4M5.8 12H12.2"/>',
+  jumprope:'<circle cx="9" cy="3.6" r="1.6"/><path d="M9 5.8V10.4M9 10.4L7.4 14M9 10.4L10.6 14M9 7.4L5.4 9M9 7.4L12.6 9M5.4 9Q3 16.8 9 16.6Q15 16.8 12.6 9"/>',
+  stepper:'<path d="M2 15.6H6V12.2H10V8.8H14V5.4H16.4"/><circle cx="8.2" cy="3.4" r="1.4"/><path d="M8.2 5.2L7.6 8.2L9.6 9.6M7.6 8.2L6.2 10.6"/>',
+  swim:'<circle cx="12.6" cy="5" r="1.6"/><path d="M3.4 9.4L7.4 7.2L10.2 9.6M1.4 12.6Q3.4 11 5.4 12.6T9.4 12.6T13.4 12.6T17 12.6M1.4 15.6Q3.4 14 5.4 15.6T9.4 15.6T13.4 15.6T17 15.6"/>',
   bike:'<circle cx="4.4" cy="12.2" r="3.2"/><circle cx="13.6" cy="12.2" r="3.2"/><path d="M4.4 12.2L7.6 7H11.6L13.6 12.2M7.6 7L9.4 12.2H4.4M6.4 5.4H9M11.6 7L11 4.6H13"/>',
   yoga:'<circle cx="9" cy="3.2" r="1.6"/><path d="M9 5.4V10.4M4 6L6 8.6L9 7.4L12 8.6L14 6M3 13.6Q9 9.6 15 13.6M4.6 15.4H13.4"/>',
   plank:'<circle cx="15" cy="7.4" r="1.4"/><path d="M13.6 8.8L2.6 12.2M12.2 9.4L11.6 13.2H14.6M1.8 15H16.2"/>',
@@ -2173,18 +2189,21 @@ function tierStyle(l){ const t = tierOf(l); return t.idx ? ` tr" style="--tg:${t
 function tierColor(l){ const t = tierOf(l); return t.c1 === 'rainbow' ? '#B57BFF' : t.c1; }
 
 /* ======================================================= медали очивок === */
-const ACH_KEYS = ['first','ten','hundred','km50','marathon','km500','hours10','kcal10k','goat','long','streak7','norm','norm30','early','weigh10','wgoal','friends3','friends5'];
+const ACH_KEYS = ['first','ten','hundred','km50','marathon','km500','hours10','kcal10k','goat','long','streak7','norm','norm30','early','weigh10','wgoal','friends3','friends5','str10','reps1k','tonne','pro','friends10'];
 const ACH_INFO = {first:['steps','Первый шаг','Первая тренировка'],ten:['n:10','Десятка','10 тренировок'],hundred:['n:100','Сотня','100 тренировок'],km50:['route','Полсотни','50 км суммарно'],
   marathon:['medal','Марафон в рассрочку','42,2 км суммарно'],km500:['globe','Путешественник','500 км суммарно'],hours10:['clock','10 часов','Суммарно на дорожке'],kcal10k:['flame','Печка','10 000 ккал сожжено'],
   goat:['mountain','Горный козёл','Тренировка с уклоном от 12%'],long:['hourglass','Черепаха-марафонец','Тренировка от 60 минут'],streak7:['bolt','Неделя без пропусков','7 дней подряд'],
   norm:['trophy','Нормальный','Выполнить недельную норму'],norm30:['crown','Железная воля','4 нормы подряд'],early:['sunrise','Ранняя пташка','Тренировка до 8 утра'],
   weigh10:['scale','Взвешенное решение','10 взвешиваний'],wgoal:['target','В яблочко','Достичь цели по весу'],plan:['plan','По плану','10 тренировок по плану'],
-  friends3:['friends','Своя компания','Добавь трёх друзей'],friends5:['friends','Душа компании','Добавь пять друзей']};
+  friends3:['friends','Своя компания','Добавь трёх друзей'],friends5:['friends','Душа компании','Добавь пять друзей'],
+  str10:['dumbbell','Железо','10 силовых тренировок'],reps1k:['abs','Тысяча повторов','1000 повторений суммарно'],tonne:['barbell','Тонна','1000 кг за одну тренировку с весом'],
+  pro:['crown','В клубе','Оформить VOOB PRO'],friends10:['friends','Своя тусовка','Добавь десять друзей']};
 function medalStrip(keys, size = 46){ return `<div class="mstrip">` + keys.filter(k => ACH_INFO[k]).map(k => { const [icon, title, desc] = ACH_INFO[k]; return `<span title="${esc(title + ' — ' + desc)}">${medalHTML({key:k, icon, done:true, prog:1}, size)}</span>`; }).join('') + `</div>`; }
 const ACH_COLORS = {first:['#34C9A0','#9BF0D2'],ten:['#3E8EF7','#9CCBFF'],hundred:['#F5A524','#FFE08A'],km50:['#18B39B','#7EE8C8'],marathon:['#FF7A6B','#FFC2A8'],
   km500:['#5B5BF0','#B7A8FF'],hours10:['#B45CF0','#F0A8FF'],kcal10k:['#FF5A3C','#FFB36B'],goat:['#4F7BA6','#A8D4F5'],long:['#E89A12','#FFD66B'],
   streak7:['#F2B90C','#FF8A3D'],norm:['#8A6CFF','#D3C4FF'],norm30:['#C99A1E','#FFE9A0'],early:['#FF8A65','#FFD1A0'],weigh10:['#2FB9D9','#A3F0D0'],wgoal:['#F0507A','#FFA8C2'],
-  plan:['#4C9BF5','#C9B8FF'],friends3:['#22B8CF','#A5F3FC'],friends5:['#E8590C','#FFC078']};
+  plan:['#4C9BF5','#C9B8FF'],friends3:['#22B8CF','#A5F3FC'],friends5:['#E8590C','#FFC078'],
+  str10:['#5C6B7A','#C8D3DE'],reps1k:['#E03E6B','#FFB0C8'],tonne:['#3B3B48','#B9B9CC'],pro:['#C99A1E','#FFE08A'],friends10:['#7048E8','#C5B5FF']};
 const STAR = (() => { const n = 12, pts = []; for (let i = 0; i < n * 2; i++) { const a = Math.PI * i / n, r = i % 2 ? 40 : 50; pts.push(`${(50 + Math.cos(a) * r).toFixed(1)}% ${(50 + Math.sin(a) * r).toFixed(1)}%`); } return `polygon(${pts.join(',')})`; })();
 function medalHTML(a, size){
   const [c1, c2] = ACH_COLORS[a.key] || ['#8A6CFF','#D3C4FF'];
@@ -2233,7 +2252,7 @@ function checkRewards(){
 /* ============================================================ уровни ==== */
 function workoutXp(w){
   const st = STR[w.act];
-  if (st) { const tot = strTotal(w), kgf = w.act === 'dumbbell' ? 1 + clamp(+w.kg || 0, 0, 150) / 20 : 1;
+  if (st) { const tot = strTotal(w), kgf = KG_ACT[w.act] ? 1 + clamp(+w.kg || 0, 0, 150) / 20 : 1;
     return tot > 0 ? Math.max(3, Math.min(150, Math.round(tot * st[2] * kgf))) : 0; }
   const m = clamp(+w.minutes || 0, 0, 240); if (m < 1) return 0;
   if (TIMEA[w.act]) return Math.max(3, Math.min(150, Math.round(m * TIMEA[w.act][0])));
@@ -3085,7 +3104,7 @@ function proCardHTML(){
     <small>${best ? `≈ ${Math.round(p.stars / 12)} ⭐ в месяц` : 'в месяц'}</small>${p.bonus_days ? `<em>+${p.bonus_days} дней в подарок</em>` : ''}${best && save > 0 ? `<u>−${save}%</u>` : ''}</button>` : '';
   const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки']];
   const min = !!lsGet('voob_pro_min');            // v1.438: плашку можно свернуть, выбор запоминается
-  const sub = st.active ? `активен до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : (m ? `от ${m.stars} ⭐ в месяц · галочка и рамки` : 'больше возможностей и галочка');
+  const sub = st.active ? `до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : (m ? `от ${m.stars} ⭐ в месяц` : 'больше возможностей');   // v1.451: коротко — без обрезки
   return `<div class="prox${min ? ' min' : ''}"><div class="prox-top" data-act="promin" role="button" aria-expanded="${!min}"><div class="prox-em">${IC('crown', 22)}</div><div style="min-width:0"><div class="prox-t">VOOB PRO</div><div class="prox-s">${sub}</div></div>
     <span class="prox-pill${st.active ? ' on' : ''}">${st.active ? 'АКТИВЕН' : 'ОФОРМИТЬ'}</span><span class="prox-tg">${IC('chev', 16)}</span></div>
     <div class="prox-body"><div>
@@ -3292,11 +3311,11 @@ function feelPicker(v){
 function openWorkout(w, preset, hint, act){
   const src = w || preset || {}, date = w ? w.date : isoOf(todayN()), f = clamp(parseInt(src.feeling) || 3, 1, 5);
   act = act || actOf(src); const st = STR[act], same = src.act === act;
-  openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${w ? 'Редактирование' : 'Новая тренировка'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}${act === 'dumbbell' && src.ex && typeof dbxName === 'function' && dbxName(src.ex) ? ' · ' + dbxName(src.ex) : ''}</div></div></div>${hint ? `<div class="hint">${hint}</div>` : ''}
+  openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${w ? 'Редактирование' : 'Новая тренировка'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}${KG_ACT[act] && src.ex && typeof dbxName === 'function' && dbxName(src.ex, act) ? ' · ' + dbxName(src.ex, act) : ''}</div></div></div>${hint ? `<div class="hint">${hint}</div>` : ''}
     ${st ? `<div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label><span></span></div>
       <div class="f"><span>Подходы · ${st[0] === 'secs' ? 'секунд в каждом' : 'повторов в каждом'}</span><div class="sl" id="f-sl">${slRowsHTML(same && slOf(src).length ? slOf(src) : (act === 'pullup' ? [8, 7, 6] : st[0] === 'secs' ? [45, 45, 45] : [12, 12, 12]), st)}</div>
         <div class="sl-btns"><button type="button" class="btn ghost small" data-act="sladd">${IC('plus', 15)}Ещё подход</button><span class="cap" id="sl-sum"></span></div></div>
-    <div class="g2">${act === 'dumbbell' ? stepper('kg', 'Вес гантели', (same && +src.kg) || 5, 0, 150, 0.5, 1, 'кг') : '<span></span>'}</div>`
+    <div class="g2">${KG_ACT[act] ? stepper('kg', KG_ACT[act].lbl, (same && +src.kg) || KG_ACT[act].def, 0, 150, act === 'barbell' ? 2.5 : 0.5, 1, 'кг') : '<span></span>'}</div>`
     : TIMEA[act] ? `<div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label>${stepper('minutes', 'Время', (same && src.minutes) || (act === 'yoga' ? 20 : 40), 1, 240, 1, 0, 'мин')}</div>
     ${TIMEA[act][1] ? `<div class="g2">${stepper('speed', 'Средняя скорость', (same && +src.speed) || 18, 0, TIMEA[act][1], 0.5, 1, 'км/ч')}<span></span></div>` : ''}`
     : `<div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label>
@@ -3324,7 +3343,7 @@ function updPreview(){
   if (st) {
     const sl = slRead(), tot0 = sl.reduce((a, x) => a + x, 0), mi = strMinL(act, sl), d = ($('#f-date') || {}).value || isoOf(todayN()), kg = weightAt(d);
     const tot = st[0] === 'secs' ? (tot0 >= 60 ? `${fmtMin(Math.round(tot0 / 60))} под нагрузкой` : `${tot0} сек`) : `${tot0} повторов`;
-    const xp = workoutXp({act, sl, sets:sl.length, kg:act === 'dumbbell' ? stpVal('kg') : 0});
+    const xp = workoutXp({act, sl, sets:sl.length, kg:KG_ACT[act] ? stpVal('kg') : 0});
     const sm = $('#sl-sum'); if (sm) sm.textContent = `${sl.length} ${plural(sl.length, ['подход','подхода','подходов'])} · ${tot}`;
     el.textContent = `Всего ${tot} · ≈ ${fmtMin(mi)}` + (kg ? ` · ≈ ${kcalF(Math.round(st[3] * kg * mi / 60))}` : '') + ` · +${xp} XP`;
     return;
@@ -3391,9 +3410,9 @@ function saveWorkout(){
   if (st) {
     const sl = slRead(), n = sl.length, v = Math.round(sl.reduce((a, x) => a + x, 0) / Math.max(1, n));
     Object.assign(data, {sets:n, [st[0]]:v, sl, minutes:strMinL(act, sl), speed:0, incline:0});
-    if (act === 'dumbbell') data.kg = Math.round(stpVal('kg') * 10) / 10;
-    const ex = (sheetCtx && sheetCtx.ex) || (item && item.act === 'dumbbell' ? item.ex : null);
-    if (act === 'dumbbell' && DB_EX.some(e => e[0] === ex)) data.ex = ex;
+    if (KG_ACT[act]) data.kg = Math.round(stpVal('kg') * 10) / 10;
+    const ex = (sheetCtx && sheetCtx.ex) || (item && KG_ACT[item.act] ? item.ex : null);
+    if (KG_ACT[act] && exList(act).some(e => e[0] === ex)) data.ex = ex;
   } else if (TIMEA[act]) Object.assign(data, {minutes:Math.round(stpVal('minutes')), speed:TIMEA[act][1] ? stpVal('speed') : 0, incline:0});
   else Object.assign(data, {minutes:Math.round(stpVal('minutes')), speed:stpVal('speed'), incline:Math.round(stpVal('incline'))});
   const bad = acCheck(data, item); if (bad) { hap.warn(); toast(bad); return; }
@@ -3491,8 +3510,8 @@ async function copyBackup(){
 
 /* ============================================================ события === */
 // v1.449: избранные виды активности — до FAV_MAX, закреплённые идут первыми
-const FAV_MAX = 3;
-function favActs(){ const f = Array.isArray(db.settings.fav) ? db.settings.fav : []; return f.filter(k => ACTS.some(a => a[0] === k && a[2])).slice(0, FAV_MAX); }
+const favMax = () => isPro() ? 6 : 3;   // v1.451: с PRO — до 6
+function favActs(){ const f = Array.isArray(db.settings.fav) ? db.settings.fav : []; return f.filter(k => ACTS.some(a => a[0] === k && a[2])).slice(0, favMax()); }
 function actsHTML(){
   const f = favActs(), list = [...f.map(k => ACTS.find(a => a[0] === k)), ...ACTS.filter(a => !f.includes(a[0]))];
   return list.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}${f.includes(k) ? ' pin' : ''}" data-k="${k}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="animation-delay:${i * 30}ms">`
@@ -3503,7 +3522,7 @@ const ACT = {
   tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; S.meSet = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') loadFriends(); } },
   add: () => { hap.imp(); openSheet(`<div class="wstep"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div><h2>Что тренируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше привычная форма</div><div class="acts">` + actsHTML() + `</div>`, {type:'acts'}); },
   actfav: el => { const k = el.dataset.v, f = favActs(), on = f.includes(k);
-    if (!on && f.length >= FAV_MAX) { hap.warn(); toast(`Закрепить можно до ${FAV_MAX} видов — сначала открепи один`); return; }
+    if (!on && f.length >= favMax()) { hap.warn(); toast(isPro() ? 'Закрепить можно до 6 видов — сначала открепи один' : '👑 Больше трёх — с VOOB PRO, до 6 видов'); return; }
     hap.imp(); db.settings.fav = on ? f.filter(x => x !== k) : [...f, k]; touchMeta('settings'); save();
     const box = $('.acts'); if (!box) return;
     const was = new Map([...box.querySelectorAll('.act[data-k]')].map(b => [b.dataset.k, b.getBoundingClientRect()]));
@@ -3512,7 +3531,7 @@ const ACT = {
       const dx = a.left - n.left, dy = a.top - n.top; if (!dx && !dy) return;
       b.animate([{transform:`translate(${dx}px,${dy}px)`}, {transform:'none'}], {duration:420, easing:'cubic-bezier(.2,.85,.25,1)'}); });
     const t = box.querySelector(`.act[data-k="${k}"] .afav`); if (t && t.animate && !on) t.animate([{transform:'scale(1.6)'}, {transform:'scale(1)'}], {duration:360, easing:'cubic-bezier(.2,1.4,.4,1)'}); },
-  actpick: el => { hap.tap(); if (el.dataset.v === 'dumbbell') { openDbx(); return; } openWorkout(null, null, '', el.dataset.v); },
+  actpick: el => { hap.tap(); if (KG_ACT[el.dataset.v]) { openDbx(el.dataset.v); return; } openWorkout(null, null, '', el.dataset.v); },
   actsoon: () => { hap.warn(); toast('Скоро — уже готовим ✨'); },
   sladd: () => { const sl = slRead(); if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } sl.push(sl[sl.length - 1] || 10); hap.tap(); slRedraw(sl);
     const rows = document.querySelectorAll('#f-sl .slr'); if (rows.length) rows[rows.length - 1].classList.add('new'); },
@@ -3835,13 +3854,17 @@ const DB_EX = [['curl', 'Подъём на бицепс', 'Бицепс'], ['pre
   ['squat', 'Приседания с гантелями', 'Ноги'], ['lunge', 'Выпады', 'Ноги и ягодицы'], ['bench', 'Жим лёжа', 'Грудь'], ['triceps', 'Разгибания на трицепс', 'Трицепс'],
   ['shrug', 'Шраги', 'Трапеции'], ['rdl', 'Румынская тяга', 'Бицепс бедра']];
 const DB_EX_SVG = {"curl": "<circle cx='8' cy='4' r='2'/><path d='M8 6v8M8 14l-2 7M8 14l2 7M8 8l3 4 3-4'/><path d='M12.6 2.6l2.8 2.8M12 3.2l1.2-1.2M14.8 6l1.2-1.2'/><path d='M19 13a4 4 0 0 0 0-6M19 7l-1.6.4M19 7l.4 1.6'/>", "press": "<circle cx='12' cy='7' r='2'/><path d='M12 9v7M12 16l-2 6M12 16l2 6M12 11l-4-3V3M12 11l4-3V3'/><path d='M6 3h4M14 3h4'/>", "lateral": "<circle cx='12' cy='5' r='2'/><path d='M12 7v8M12 15l-2 6M12 15l2 6M12 9l-7 1M12 9l7 1'/><path d='M3.5 8.5v3M20.5 8.5v3'/><path d='M5 14l-1 2M19 14l1 2'/>", "row": "<circle cx='6' cy='7' r='2'/><path d='M8 8l8 3M16 11l-1 10M16 11l3 10M11 9.5v6'/><path d='M9.5 15.5h3'/><path d='M13 4v4M13 4l-1.4 1.4M13 4l1.4 1.4'/>", "squat": "<circle cx='11' cy='5' r='2'/><path d='M11 7l1 6M12 13l-4 2 1 6M12 13l4 2-1 6M11 9l3 2'/><path d='M13.5 10.5h3'/><path d='M20 8v8M20 16l-1.4-1.4M20 16l1.4-1.4'/>", "lunge": "<circle cx='11' cy='4' r='2'/><path d='M11 6v7M11 13l5 2v6M11 13l-5 4-2 4M11 8l-3 5M11 8l3 5'/><path d='M6.5 13.5h3M12.5 13.5h3'/>", "bench": "<path d='M3 17h18M5 17v4M19 17v4'/><circle cx='5' cy='14' r='2'/><path d='M7 14h9l3 3M10 14V8M14 14V8'/><path d='M8.5 7.5h3M12.5 7.5h3'/><path d='M12 3v3M12 3l-1.4 1.4M12 3l1.4 1.4'/>", "triceps": "<circle cx='12' cy='8' r='2'/><path d='M12 10v6M12 16l-2 6M12 16l2 6M12 12l-3-3 2-6M12 12l3-3-2-6'/><path d='M9.5 2.5h5'/>", "shrug": "<circle cx='12' cy='6' r='2'/><path d='M12 8v8M12 16l-2 6M12 16l2 6M8 9h8M8 9v8M16 9v8'/><path d='M6.5 17.5h3M14.5 17.5h3'/><path d='M4 7V3M4 3l-1.4 1.4M4 3l1.4 1.4M20 7V3M20 3l-1.4 1.4M20 3l1.4 1.4'/>", "rdl": "<circle cx='7' cy='6' r='2'/><path d='M8.5 7.5l6 5M14.5 12.5l-1 9M14.5 12.5l2.5 9M11 10l-1 8'/><path d='M8.5 18.5h3'/><path d='M20 15V9M20 9l-1.4 1.4M20 9l1.4 1.4'/>"};
-function dbxName(k){ const e = DB_EX.find(x => x[0] === k); return e ? e[1] : ''; }
+// v1.451: штанга — свои упражнения; 4-й элемент — какую иконку взять
+const BB_EX = [['bench', 'Жим лёжа', 'Грудь', 'bench'], ['squat', 'Приседания со штангой', 'Ноги', 'squat'], ['deadlift', 'Становая тяга', 'Спина и ноги', 'rdl'],
+  ['row', 'Тяга в наклоне', 'Спина', 'row'], ['ohp', 'Жим стоя', 'Плечи', 'press'], ['curl', 'Подъём на бицепс', 'Бицепс', 'curl'], ['lunge', 'Выпады со штангой', 'Ноги и ягодицы', 'lunge'], ['shrug', 'Шраги', 'Трапеции', 'shrug']];
+const exList = act => act === 'barbell' ? BB_EX : DB_EX;
+function dbxName(k, act){ const e = exList(act || 'dumbbell').find(x => x[0] === k); return e ? e[1] : ''; }
 function dbxIcon(k, size){ return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${(DB_EX_SVG[k] || '').replace(/'/g, '"')}</svg>`; }
-function openDbx(){
+function openDbx(act){ act = act || 'dumbbell';
   openSheet(`<div class="wstep"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></div>
     <div class="row" style="gap:12px;margin-bottom:12px"><button type="button" class="ib" data-act="add" aria-label="Назад">${IC('back', 20)}</button>
-    <div><h2 style="margin:0">Что делаем с гантелями?</h2><div class="cap">Упражнение будет видно в истории и у друзей в ленте</div></div></div>
-    <div class="dbxg">${DB_EX.map(([k, l, m], i) => `<button type="button" class="dbx" data-act="dbxpick" data-v="${k}" style="animation-delay:${i * 28}ms"><span class="di">${dbxIcon(k, 30)}</span><b>${l}</b><em>${m}</em></button>`).join('')}</div>`, {type:'dbx'});
+    <div><h2 style="margin:0">${KG_ACT[act].q}</h2><div class="cap">Упражнение будет видно в истории и у друзей в ленте</div></div></div>
+    <div class="dbxg">${exList(act).map(([k, l, m, ic], i) => `<button type="button" class="dbx" data-act="dbxpick" data-v="${k}" data-a="${act}" style="animation-delay:${i * 28}ms"><span class="di">${dbxIcon(ic || k, 30)}</span><b>${l}</b><em>${m}</em></button>`).join('')}</div>`, {type:'dbx'});
 }
 /* рамки: толщина кольца — 7,5% размера аватарки, зазор — 3,5% (как в программе и VOOB CORE) */
 const frRO = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(es => { for (const e of es) {
@@ -3895,7 +3918,7 @@ function closeNotice(after){
   setTimeout(() => { if (el && !el.classList.contains('show')) el.innerHTML = ''; after && after(); ntcOpen = false; if (NTC.length) setTimeout(showNotice, 400); }, 380);
 }
 Object.assign(ACT, {
-  dbxpick: el => { hap.tap(); const k = el.dataset.v; openWorkout(null, null, '', 'dumbbell'); if (sheetCtx) sheetCtx.ex = k;
+  dbxpick: el => { hap.tap(); const k = el.dataset.v; const wa = el.dataset.a || 'dumbbell'; openWorkout(null, null, '', wa); if (sheetCtx) sheetCtx.ex = k;
     const c = document.querySelector('#sheet .cap'); if (c) c.textContent = 'Гантели · ' + dbxName(k); },
   ntok: () => { const n = NTC[0] || {}, cta = n.cta; hap.ok();
     closeNotice(() => { if (n.kind === 'gift') { toast('Подарок уже в твоей коллекции 🎁'); scheduleSync(50); }
