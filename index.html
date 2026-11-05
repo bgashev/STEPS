@@ -221,9 +221,19 @@ input[type=date].inp{display:block}
 .tab.on .ti{background:var(--accent);color:var(--on-accent)}
 #toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:40;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:11px 12px 11px 16px;display:flex;align-items:center;gap:12px;font-weight:600;font-size:14px;transition:.25s;max-width:calc(100% - 32px);box-shadow:0 10px 30px rgba(0,0,0,.25)}
 #toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
-#toast.pro{border-color:rgba(233,185,73,.5);background:linear-gradient(120deg,color-mix(in srgb,#E9B949 14%,var(--surface2)),var(--surface2));cursor:pointer;padding:8px 8px 8px 10px;gap:10px;font-size:13.5px}
-#toast .pt-ic{flex:none;width:26px;height:26px;border-radius:9px;display:grid;place-items:center;color:#2A2110;background:linear-gradient(140deg,#FFE29A,#E9B949 55%,#B98530)}
-#toast.pro button{border:0;color:#2A2110;background:linear-gradient(90deg,#E9B949,#FFE29A);font-weight:800;padding:6px 11px;border-radius:999px}
+#toast.pro{width:min(340px,calc(100% - 32px));gap:11px;padding:9px 10px 9px 9px;border-radius:18px;font-weight:600;cursor:pointer;-webkit-tap-highlight-color:transparent;overflow:hidden;isolation:isolate;
+  border:1px solid rgba(233,185,73,.42);background:linear-gradient(115deg,color-mix(in srgb,#E9B949 16%,var(--surface2)),var(--surface2) 62%);
+  box-shadow:0 14px 32px -10px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03) inset,0 8px 24px -14px rgba(233,185,73,.55)}
+#toast.pro::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(105deg,transparent 36%,rgba(255,226,154,.14) 50%,transparent 64%);transform:translateX(-120%)}
+#toast.pro.show::after{animation:ptSheen 1.1s .35s ease-in-out both}
+@keyframes ptSheen{to{transform:translateX(120%)}}
+#toast.pro:active{transform:translate(-50%,0) scale(.985)}
+#toast .pt-ic{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;color:#2A2110;background:linear-gradient(140deg,#FFE29A,#E9B949 55%,#B98530);box-shadow:0 4px 12px -4px rgba(233,185,73,.7),inset 0 1px 0 rgba(255,255,255,.5)}
+#toast .pt-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;text-align:left}
+#toast .pt-tx small{font-size:9.5px;font-weight:850;letter-spacing:.16em;color:#E9B949}
+#toast .pt-tx span{font-size:13px;line-height:1.3;font-weight:650;color:var(--text)}
+#toast .pt-go{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#E9B949;background:rgba(233,185,73,.12);border:1px solid rgba(233,185,73,.28)}
+@media (prefers-reduced-motion:reduce){#toast.pro.show::after{animation:none}}
 .prochip{display:flex;align-items:center;gap:8px;width:100%;margin:0 0 10px;padding:9px 12px;border-radius:14px;font:inherit;font-size:12.5px;font-weight:650;text-align:left;color:var(--text);cursor:pointer;border:1px solid rgba(233,185,73,.4);background:linear-gradient(120deg,color-mix(in srgb,#E9B949 12%,var(--surface)),var(--surface));-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .prochip:active{transform:scale(.98)}.prochip svg{color:#E9B949;flex:none}.prochip span{flex:1;min-width:0}
 .prosh{text-align:center;padding-top:4px}.prosh .prox-em{margin:6px auto 10px;width:52px;height:52px;border-radius:17px}.prosh h2{margin:0 0 4px}
@@ -3306,10 +3316,10 @@ async function proBuy(plan){
 }
 /* v1.454: везде, где функция только для PRO — маленькая кликабельная плашка, ведёт в окно с подпиской */
 function proToast(msg, back){
-  toast(msg, 'Подробнее', () => openPro(back));
-  const t = $('#toast'); t.classList.add('pro');
-  t.insertAdjacentHTML('afterbegin', `<i class="pt-ic">${IC('crown', 15)}</i>`);
-  t.onclick = e => { if (e.target.closest('button')) return; t.classList.remove('show'); clearTimeout(toastTimer); openPro(back); };
+  const t = $('#toast'); t.classList.remove('pro'); t.onclick = null;
+  t.innerHTML = `<i class="pt-ic">${IC('crown', 17)}</i><div class="pt-tx"><small>VOOB PRO</small><span>${esc(msg)}</span></div><i class="pt-go">${IC('chev', 15)}</i>`;
+  t.classList.add('pro'); t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
+  t.onclick = () => { t.classList.remove('show'); clearTimeout(toastTimer); openPro(back); };
   clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 4500);
 }
 function proSheetHTML(back){
