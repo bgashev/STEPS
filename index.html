@@ -356,8 +356,10 @@ input[type=date].inp{display:block}
 .tgl{display:flex;align-items:center;gap:12px;cursor:pointer}
 .tgl .sw2{width:46px;height:28px;border-radius:14px;background:var(--off);position:relative;flex:none;transition:background .2s}
 .tgl .sw2::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s}
-.tgl.on .sw2{background:var(--accent)}
-.tgl.on .sw2::after{transform:translateX(18px)}
+.tgl .sw2{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--text) 22%,transparent)}
+.tgl .sw2::after{box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.tgl.on .sw2{background:var(--accent);box-shadow:none}
+.tgl.on .sw2::after{transform:translateX(18px);background:var(--on-accent)}   /* v1.455: ручка контрастна треку в любом акценте (раньше белое на светлом) */
 
 /* ---- скелеты загрузки ---- */
 .sk{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--border);border-radius:18px;margin-bottom:8px;display:flex;align-items:center;gap:12px;padding:14px;animation:fadeIn .3s backwards}
