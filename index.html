@@ -221,6 +221,12 @@ input[type=date].inp{display:block}
 .tab.on .ti{background:var(--accent);color:var(--on-accent)}
 #toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:40;background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:11px 12px 11px 16px;display:flex;align-items:center;gap:12px;font-weight:600;font-size:14px;transition:.25s;max-width:calc(100% - 32px);box-shadow:0 10px 30px rgba(0,0,0,.25)}
 #toast.show{opacity:1;transform:translate(-50%,0);pointer-events:auto}
+#toast.pro{border-color:rgba(233,185,73,.5);background:linear-gradient(120deg,color-mix(in srgb,#E9B949 14%,var(--surface2)),var(--surface2));cursor:pointer;padding:8px 8px 8px 10px;gap:10px;font-size:13.5px}
+#toast .pt-ic{flex:none;width:26px;height:26px;border-radius:9px;display:grid;place-items:center;color:#2A2110;background:linear-gradient(140deg,#FFE29A,#E9B949 55%,#B98530)}
+#toast.pro button{border:0;color:#2A2110;background:linear-gradient(90deg,#E9B949,#FFE29A);font-weight:800;padding:6px 11px;border-radius:999px}
+.prochip{display:flex;align-items:center;gap:8px;width:100%;margin:0 0 10px;padding:9px 12px;border-radius:14px;font:inherit;font-size:12.5px;font-weight:650;text-align:left;color:var(--text);cursor:pointer;border:1px solid rgba(233,185,73,.4);background:linear-gradient(120deg,color-mix(in srgb,#E9B949 12%,var(--surface)),var(--surface));-webkit-tap-highlight-color:transparent;transition:transform .12s}
+.prochip:active{transform:scale(.98)}.prochip svg{color:#E9B949;flex:none}.prochip span{flex:1;min-width:0}
+.prosh{text-align:center;padding-top:4px}.prosh .prox-em{margin:6px auto 10px;width:52px;height:52px;border-radius:17px}.prosh h2{margin:0 0 4px}
 #toast button{border:1px solid var(--border);background:transparent;border-radius:10px;padding:6px 10px;font-weight:650;font-size:13px;color:var(--accent)}
 #cg{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);padding:24px}
 #cg.show{display:flex;animation:fadeIn .25s}
@@ -1920,7 +1926,7 @@ const hap = {
 };
 let toastTimer;
 function toast(msg, label, cb){
-  const t = $('#toast');
+  const t = $('#toast'); t.classList.remove('pro'); t.onclick = null;
   t.innerHTML = `<span>${esc(msg)}</span>` + (label ? `<button type="button">${esc(label)}</button>` : '');
   if (label) t.querySelector('button').onclick = () => { t.classList.remove('show'); cb && cb(); };
   t.classList.add('show');
@@ -2980,7 +2986,7 @@ function savePlan(){
 function historyHTML(ws){
   let hidden = 0;
   if (!isPro()) { const lim = isoOf(todayN() - 92); hidden = ws.filter(w => w.date < lim).length; if (hidden) ws = ws.filter(w => w.date >= lim); }   // v1.434: старше 3 месяцев — в PRO
-  return (hidden ? `<div class="hint" style="margin:0 0 10px">${IC('crown', 14)} Ещё ${npw(hidden, W_WORK)} старше 3 месяцев — история целиком доступна с PRO</div>` : '') + historyHTML0(ws);
+  return (hidden ? `<button type="button" class="prochip" data-act="prosheet">${IC('crown', 14)}<span>Ещё ${npw(hidden, W_WORK)} старше 3 месяцев — вся история с PRO</span>${IC('chev', 14)}</button>` : '') + historyHTML0(ws);
 }
 function historyHTML0(ws){
   let sorted = ws.slice().sort((a, b) => a.date < b.date ? 1 : a.date > b.date ? -1 : (b.created || 0) - (a.created || 0));
@@ -3292,9 +3298,38 @@ async function proBuy(plan){
   try {
     const j = await apiAuth('/pro/invoice', {plan});
     if (!j.link) throw new Error(j.error || 'нет ссылки');
-    if (ver('6.1') && tg.openInvoice) tg.openInvoice(j.link, status => { if (status === 'paid') { hap.ok(); toast('👑 PRO включён — спасибо!'); PROM.st = null; render(); } });
+    if (ver('6.1') && tg.openInvoice) tg.openInvoice(j.link, status => { if (status === 'paid') { hap.ok(); toast('👑 PRO включён — спасибо!'); PROM.st = null; if (sheetCtx && sheetCtx.type === 'pro') closeSheet(); render(); } });
     else tg.openTelegramLink(j.link);
   } catch (e) { toast('Не получилось: ' + e.message); }
+}
+/* v1.454: везде, где функция только для PRO — маленькая кликабельная плашка, ведёт в окно с подпиской */
+function proToast(msg, back){
+  toast(msg, 'Подробнее', () => openPro(back));
+  const t = $('#toast'); t.classList.add('pro');
+  t.insertAdjacentHTML('afterbegin', `<i class="pt-ic">${IC('crown', 15)}</i>`);
+  t.onclick = e => { if (e.target.closest('button')) return; t.classList.remove('show'); clearTimeout(toastTimer); openPro(back); };
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 4500);
+}
+function proSheetHTML(back){
+  const st = PROM.st || {}, by = Object.fromEntries((st.plans || []).map(p => [p.plan, p])), m = by.month, y = by.year;
+  const save = m && y ? Math.round(100 - y.stars * 100 / (m.stars * 12)) : 0;
+  const star = '<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#E9B949" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.1l-5.7 3.2 1.2-6.4L2.8 9.5l6.4-.8L12 2.8Z"/></svg>';
+  const plan = (p, best) => p ? `<button type="button" class="prox-plan${best ? ' best' : ''}" data-act="probuy" data-v="${p.plan}"><i>${best ? 'Год' : 'Месяц'}</i><b>${p.stars}${star}</b>
+    <small>${best ? `≈ ${Math.round(p.stars / 12)} ⭐ в месяц` : 'в месяц'}</small>${p.bonus_days ? `<em>+${p.bonus_days} дней в подарок</em>` : ''}${best && save > 0 ? `<u>−${save}%</u>` : ''}</button>` : '';
+  const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки'], ['star', 'До 5 закреплённых']];
+  return (back ? `<button type="button" class="fp-back" data-act="sback" aria-label="Назад">${IC('chev', 20)}</button>` : '')
+    + `<div class="prosh"><div class="prox-em">${IC('crown', 26)}</div><h2>VOOB PRO</h2>
+    <div class="cap">${st.active ? `Подписка активна до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : 'Больше возможностей для твоих тренировок'}</div>
+    <div class="prox-perks" style="justify-content:center">${perks.map(([i, t]) => `<span>${IC(i, 13)}${t}</span>`).join('')}</div>
+    ${st.active ? '' : (st.plans || []).length ? `<div class="prox-plans">${plan(m)}${plan(y, true)}</div>` : '<div class="cap">Загружаю тарифы…</div>'}
+    <div class="prox-note">Оплата звёздами Telegram · без автопродления</div></div>`;
+}
+function openPro(back){
+  hap.tap();
+  openSheet(proSheetHTML(back), {type:'pro', back: back || ''});
+  if (!PROM.st && !PROM.busy) { PROM.busy = true;
+    apiAuth('/pro/status', {}).then(j => { PROM.st = j; if (sheetCtx && sheetCtx.type === 'pro') $('#sheet').innerHTML = '<div class="grab"></div>' + proSheetHTML(sheetCtx.back); if (S.tab === 'me' && S.meSet) render(); })
+      .catch(() => {}).finally(() => { PROM.busy = false; }); }
 }
 /* ---- соцсети (v1.423) ---- */
 function socEditHTML(){
@@ -3718,7 +3753,7 @@ async function copyBackup(){
 
 /* ============================================================ события === */
 // v1.449: избранные виды активности — до FAV_MAX, закреплённые идут первыми
-const favMax = () => isPro() ? 6 : 3;   // v1.451: с PRO — до 6
+const favMax = () => isPro() ? 5 : 1;   // v1.454: без PRO — одна закреплённая, с PRO — до 5
 function favActs(){ const f = Array.isArray(db.settings.fav) ? db.settings.fav : []; return f.filter(k => ACTS.some(a => a[0] === k && a[2])).slice(0, favMax()); }
 function openActs(calm){   // calm — вернулись «назад»: без повторного каскада, раскрытость окна восстанавливается
   openSheet(`<div class="wstep"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div><h2>Что тренируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше привычная форма</div><div class="acts${calm ? ' calm' : ''}">` + actsHTML() + `</div>`, {type:'acts'});
@@ -3727,7 +3762,7 @@ function openActs(calm){   // calm — вернулись «назад»: без
 // шаг назад из любого этапа добавления: форма → упражнение → выбор активности (и форма плана → выбор активности)
 function stepBack(){
   const c = sheetCtx; if (!c) return false;
-  if (c.type === 'dbx') { openActs(true); return true; }
+  if (c.type === 'dbx' || (c.type === 'pro' && c.back === 'acts')) { openActs(true); return true; }
   if (c.type === 'workout' && c.back) { if (c.back === 'dbx') openDbx(c.act); else openActs(true); return true; }
   if (c.type === 'plan' && c.back) { openPlanActs(); return true; }
   return false;
@@ -3743,7 +3778,7 @@ const ACT = {
   add: () => { hap.imp(); S.actsXl = false; openActs(false); },
   sback: () => { hap.tap(); stepBack(); },
   actfav: el => { const k = el.dataset.v, f = favActs(), on = f.includes(k);
-    if (!on && f.length >= favMax()) { hap.warn(); toast(isPro() ? 'Закрепить можно до 6 видов — сначала открепи один' : '👑 Больше трёх — с VOOB PRO, до 6 видов'); return; }
+    if (!on && f.length >= favMax()) { hap.warn(); if (isPro()) toast('Закрепить можно до 5 видов — сначала открепи один'); else proToast('Одна закреплённая — бесплатно, до 5 — в PRO', 'acts'); return; }
     on ? hap.med() : hap.ok(); db.settings.fav = on ? f.filter(x => x !== k) : [...f, k];   // закрепили — «успех», открепили — средний толчок touchMeta('settings'); save();
     const box = $('.acts'); if (!box) return;
     const was = new Map([...box.querySelectorAll('.act[data-k]')].map(b => [b.dataset.k, b.getBoundingClientRect()]));
@@ -3823,6 +3858,7 @@ const ACT = {
   frprof: el => { hap.tap(); openFriendProfile(+el.dataset.id); },
   achall: () => openAchFull(),
   probuy: el => proBuy(el.dataset.v),
+  prosheet: () => openPro(),
   promin: el => { hap.tap(); const c = el.closest('.prox'); if (!c) return; const m = !c.classList.contains('min');
     c.classList.toggle('min', m); el.setAttribute('aria-expanded', String(!m)); lsSet('voob_pro_min', m); },
   socedit: el => { hap.tap(); socSheet(el.dataset.net); },
@@ -3984,12 +4020,12 @@ const ACT = {
   looksync: () => { const on = !lookSync(); lsSet('voob_look_sync', on); hap.tap();
     if (on) { touchMeta('settings'); save(); toast('Оформление этого устройства теперь общее'); } else toast('Теперь у телефона своё оформление');
     render(); },
-  frame: el => { const f = FRAMES.find(x => x[0] === (el.dataset.v || '')); if (f && f[2] && !frOwned(f[0])) { hap.warn(); toast('👑 Эта рамка — для подписчиков PRO'); return; }
+  frame: el => { const f = FRAMES.find(x => x[0] === (el.dataset.v || '')); if (f && f[2] && !frOwned(f[0])) { hap.warn(); proToast('Эта рамка — для подписчиков PRO'); return; }
     db.settings.frame = el.dataset.v || ''; touchMeta('settings'); save(); render(); hap.tap(); },
   accent: el => { const k = el.dataset.v;
     if (k !== 'mono' && !isPro()) { hap.warn(); S.accPrev = k; applyTheme(); clearTimeout(S.accT);
       S.accT = setTimeout(() => { S.accPrev = null; applyTheme(); }, 3500);
-      toast('👑 Этот цвет — в PRO. Сейчас это предпросмотр'); return; }
+      proToast('Этот цвет — в PRO. Сейчас это предпросмотр'); return; }
     db.settings.accent = k; touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
   import: () => $('#file').click(),
   copy: copyBackup,
@@ -4161,10 +4197,10 @@ Object.assign(ACT, {
     const c = document.querySelector('#sheet .cap'); if (c) c.textContent = 'Гантели · ' + dbxName(k); },
   ntok: () => { const n = NTC[0] || {}, cta = n.cta; hap.ok();
     closeNotice(() => { if (n.kind === 'gift') { toast('Подарок уже в твоей коллекции 🎁'); scheduleSync(50); }
-      else if (cta === 'pro') { S.tab = 'me'; S.meSet = true; render(); }
+      else if (cta === 'pro') openPro()
       else if (cta && /^https:\/\//.test(cta)) { try { tg.openLink(cta); } catch (e) { window.open(cta, '_blank'); } } }); },
   ntlater: () => { hap.tap(); closeNotice(); },
-  bgset: el => { const k = el.dataset.v || ''; if (k && !isPro()) { hap.warn(); toast('👑 Фоны профиля — для подписчиков PRO'); return; }
+  bgset: el => { const k = el.dataset.v || ''; if (k && !isPro()) { hap.warn(); proToast('Фоны профиля — для подписчиков PRO'); return; }
     db.settings.bg = k; touchMeta('settings'); save(); render(); hap.tap(); },
 });
 if (inTG) { setTimeout(checkInbox, 2500); setInterval(checkInbox, 10 * 60000);
