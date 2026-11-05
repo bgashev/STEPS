@@ -3642,9 +3642,9 @@ function viewMeSettings(){
     h += `<div class="card"><h3>${IC('sparkle')}Персонализация</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте. Анимированные — для PRO.</div><div class="frs${S.frAll ? '' : ' col'}">${FRAMES.map(([k, l, pro], i) =>
       `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 ? ' more' : ''}${pro && !frOwned(k) ? ' lock' : ''}" data-act="frame" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="smore" data-k="frAll" data-more="Все рамки · ${FRAMES.length}"><span>${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}</span>${IC('chev', 14)}</button></div>`; }
   { const cb = bgNorm(db.settings.bg || ''), pro = isPro(), si = BG_KEYS.findIndex(x => x[0] === cb);   // v1.445: в свёрнутом виде всегда 4 плитки; выбранный дальний фон встаёт на место третьего
-    h += `<div class="card"><h3>${IC('palette')}Фон профиля</h3><div class="cap" style="margin:-6px 0 12px">Фон карточки профиля — его видят все, кто откроет твой профиль. Только для PRO.</div>
+    h += `<div class="card"><h3>${IC('palette')}Фон профиля</h3><div class="cap" style="margin:-6px 0 12px">Фон карточки профиля — его видят все, кто откроет твой профиль. Для PRO; подаренные командой VOOB фоны работают и без подписки.</div>
       <div class="bgs${S.bgAll ? '' : ' col'}"><button type="button" class="bgb${cb ? '' : ' on'}" data-act="bgset" data-v=""><span class="th none"></span>Без фона</button>${BG_KEYS.map(([k, l], i) =>
-      `<button type="button" class="bgb${cb === k ? ' on' : ''}${(si >= 3 ? (i >= 2 && i !== si) : i >= 3) ? ' bmore' : ''}" data-act="bgset" data-v="${k}"><span class="th">${bgFx(k)}</span><i class="prot">PRO</i>${l}</button>`).join('')}</div><button type="button" class="frx${S.bgAll ? ' open' : ''}" data-act="smore" data-k="bgAll" data-more="Все фоны · ${BG_KEYS.length}"><span>${S.bgAll ? 'Свернуть' : 'Все фоны · ' + BG_KEYS.length}</span>${IC('chev', 14)}</button></div>`; }
+      `<button type="button" class="bgb${cb === k ? ' on' : ''}${(si >= 3 ? (i >= 2 && i !== si) : i >= 3) ? ' bmore' : ''}" data-act="bgset" data-v="${k}"><span class="th">${bgFx(k)}</span>${bgOwned(k) && !pro ? '<i class="prot" style="background:var(--accent);color:var(--on-accent)">ПОДАРОК</i>' : '<i class="prot">PRO</i>'}${l}</button>`).join('')}</div><button type="button" class="frx${S.bgAll ? ' open' : ''}" data-act="smore" data-k="bgAll" data-more="Все фоны · ${BG_KEYS.length}"><span>${S.bgAll ? 'Свернуть' : 'Все фоны · ' + BG_KEYS.length}</span>${IC('chev', 14)}</button></div>`; }
   { const cur = db.settings.badge || 'verified', pro = isPro();
     h += `<div class="card"><h3>${IC('check')}Значок у имени${pro ? '' : '<i class="prot inl" data-act="prosheet" role="button">PRO</i>'}</h3><div class="cap" style="margin:-6px 0 12px">Маленький значок рядом с именем — его видят друзья в профиле, списках и ленте.</div>
       <div class="bgl">${BADGE_LIST.map(([k, l]) => `<button type="button" class="bgi${cur === k ? ' on' : ''}" data-act="badgeset" data-v="${k}" aria-label="${l}"><span class="bgp">${badgeHTML(k, 34)}</span><i>${l}</i></button>`).join('')}</div></div>`; }
@@ -4547,7 +4547,8 @@ async function init(){
 /* ============================================================ v1.434 ==== */
 const EXTRA_API = FEED_API.replace(/voob-feed$/, 'voob-extra');   // объявления, отзыв достижений, фоны профиля
 const ACHOFF_K = 'voob_ach_off', INBOX_K = 'voob_inbox_pro';
-let ACHOFF = new Set(), INBOX_PRO = false, INBOX_FRESH = false;
+let ACHOFF = new Set(), INBOX_PRO = false, INBOX_FRESH = false, INBOX_BGS = [];   // v1.495: INBOX_BGS — фоны профиля, подаренные командой VOOB (работают без PRO)
+try { INBOX_BGS = JSON.parse(localStorage.getItem('voob_bgs') || '[]') || []; } catch (e) {}
 try { ACHOFF = new Set(JSON.parse(localStorage.getItem(ACHOFF_K) || '[]')); INBOX_PRO = localStorage.getItem(INBOX_K) === '1'; } catch (e) {}
 const BG_KEYS = [['obsidian', 'Обсидиан'], ['liquid', 'Жидкое стекло'], ['retro', 'Ретро-сетка'], ['kawaii', 'Сердечки'], ['stardust', 'Звёздная пыль'], ['rays', 'Лучи'], ['embers', 'Угли'], ['deco', 'Арт-деко'],
   ['iso', 'Изометрия'], ['rain', 'Дождь'], ['dither', 'Дизеринг'], ['type', 'Типографика'], ['odo', 'Одометр'], ['pxstars', 'Пиксель-звёзды'], ['stickers', 'Стикербомбинг'], ['tape', 'Ограждение']];
@@ -4556,7 +4557,8 @@ const BG_SVG = Object.fromEntries(BG_KEYS.map(([k]) => [k, 1]));
 const bgNorm = k => BG_OLD[k] || k;   // v1.435: фоны живые — слои CSS с анимацией, как в программе
 function bgFx(k){ k = bgNorm(k); return BG_SVG[k] ? `<div class="hbgfx bg-${k}" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i></div>` : ''; }
 const BGS = new Map();                      // tg_id -> фон карточки профиля (только у PRO)
-function myBg(){ const k = bgNorm(db.settings.bg || ''); return BG_SVG[k] && isPro() ? k : ''; }
+function bgOwned(k){ return isPro() || INBOX_BGS.includes(bgNorm(k)); }   // v1.495: PRO или фон подарен командой VOOB
+function myBg(){ const k = bgNorm(db.settings.bg || ''); return BG_SVG[k] && bgOwned(k) ? k : ''; }
 function heroBg(){ return ''; }
 async function loadBgs(ids){
   if (!inTG || !ids.length) return;
@@ -4604,8 +4606,10 @@ async function checkInbox(){
     const j = await apiAuth(EXTRA_API, {action:'inbox'});
     if (j.status !== 'ok') return;
     const off = new Set(j.ach_off || []), pro = !!j.pro;
-    const was = INBOX_PRO, ch = [...off].sort().join() !== [...ACHOFF].sort().join() || pro !== INBOX_PRO || !INBOX_FRESH;
-    ACHOFF = off; INBOX_PRO = pro; INBOX_FRESH = true;
+    const bo = Array.isArray(j.bgs_own) ? j.bgs_own.filter(x => typeof x === 'string') : [];
+    const was = INBOX_PRO, ch = [...off].sort().join() !== [...ACHOFF].sort().join() || pro !== INBOX_PRO || !INBOX_FRESH || [...bo].sort().join() !== [...INBOX_BGS].sort().join();
+    ACHOFF = off; INBOX_PRO = pro; INBOX_FRESH = true; INBOX_BGS = bo;
+    try { localStorage.setItem('voob_bgs', JSON.stringify(bo)); } catch (e) {}
     if (!pro && tgUser) { const b = BDG.get(tgUser.id); if (b && b.pro && !b.creator) { delete b.pro; delete b.v; delete b.frame; lsSet(BDK, Object.fromEntries(BDG)); } }   // v1.460: подписка кончилась — свой PRO-кэш чистим
     try { localStorage.setItem(ACHOFF_K, JSON.stringify([...off])); localStorage.setItem(INBOX_K, pro ? '1' : '0'); } catch (e) {}
     if (ch) { invalidate(); applyTheme(); if (!sheetCtx) render(); }
@@ -4646,7 +4650,7 @@ Object.assign(ACT, {
       else if (cta === 'pro') openPro()
       else if (cta && /^https:\/\//.test(cta)) { try { tg.openLink(cta); } catch (e) { window.open(cta, '_blank'); } } }); },
   ntlater: () => { hap.tap(); closeNotice(); },
-  bgset: el => { const k = el.dataset.v || ''; if (k && !isPro()) { hap.warn(); proToast('Фоны профиля — для подписчиков PRO'); return; }
+  bgset: el => { const k = el.dataset.v || ''; if (k && !bgOwned(k)) { hap.warn(); proToast('Фоны профиля — для подписчиков PRO'); return; }
     db.settings.bg = k; touchMeta('settings'); save(); render(); hap.tap(); },
 });
 if (inTG) { setTimeout(checkInbox, 2500); setInterval(checkInbox, 10 * 60000);
