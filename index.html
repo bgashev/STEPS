@@ -1383,10 +1383,10 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .hero-nm{font-size:27px}
 .hero-at{margin-top:4px}
 .hero .crw{margin-top:12px}
-.hero-lv{max-width:none;width:100%;margin:26px auto 0;padding:0;border:0;background:none;border-radius:0}
+.hero-lv{max-width:250px;width:100%;margin:26px auto 0;padding:0;border:0;background:none;border-radius:0}
 .hero-lvt{gap:10px;font-size:16.5px}
 .hero-lvt .lvn{min-width:30px;height:30px;border-radius:15px;font-size:14px}
-.hero .lvbar{height:7px;margin:14px auto 9px;width:100%}
+.hero .lvbar{height:14px;margin:14px auto 10px;width:100%;border-radius:8px;position:relative;box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
 .hero .cap{font-size:12.5px}
 .hero-row{gap:12px;margin-top:28px}
 .hero-row .fchipb{height:50px;padding:0 22px 0 8px;font-size:15.5px;gap:10px}
@@ -1417,6 +1417,13 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .rkc .rk .mv b{font-size:14.5px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
 .rkc .rk .mv small{font-size:10.5px;font-weight:600;color:var(--muted);line-height:1}
 .rkc .rk.me{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+/* v1.474: полоса уровня — выше, с переливающимся градиентом и бликом */
+.hero .lvbar i{border-radius:8px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent));background-size:200% 100%;animation:growX .9s cubic-bezier(.2,.8,.2,1) backwards,lvFlow 5s linear infinite;box-shadow:0 0 12px color-mix(in srgb,var(--accent) 55%,transparent)}
+.hero .lvbar i::before{content:"";position:absolute;left:0;right:0;top:0;height:45%;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0));border-radius:8px 8px 0 0}
+.hero .lvbar i::after{content:"";position:absolute;top:0;bottom:0;width:38%;left:-45%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);animation:lvShine 2.8s ease-in-out 1s infinite}
+@keyframes lvFlow{to{background-position:-200% 0}}
+@keyframes lvShine{0%{left:-45%}60%,100%{left:120%}}
+@media (prefers-reduced-motion:reduce){.hero .lvbar i,.hero .lvbar i::after{animation:none!important}}
 /* v1.467: выбор значка */
 .bgl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .bgi{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;cursor:pointer;transition:transform .15s,border-color .2s,background .2s}
@@ -1452,7 +1459,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.473';
+const APP = 'VOOB (by BGASHEV) Mini App v1.474';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
