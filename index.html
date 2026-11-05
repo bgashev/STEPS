@@ -1406,7 +1406,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .hero-lv{max-width:250px;width:100%;margin:26px auto 0;padding:0;border:0;background:none;border-radius:0}
 .hero-lvt{gap:10px;font-size:16.5px}
 .hero-lvt .lvn{min-width:30px;height:30px;border-radius:15px;font-size:14px}
-.hero .lvbar{height:14px;margin:14px auto 10px;width:100%;border-radius:8px;position:relative;box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
+.hero .lvbar{height:20px;margin:14px auto 10px;width:100%;border-radius:10px;position:relative;box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
 .hero .cap{font-size:12.5px}
 .hero-row{gap:12px;margin-top:28px}
 .hero-row .fchipb{height:50px;padding:0 22px 0 8px;font-size:15.5px;gap:10px}
@@ -1441,6 +1441,15 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .hero .lvbar i{border-radius:8px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent));background-size:200% 100%;animation:growX .9s cubic-bezier(.2,.8,.2,1) backwards,lvFlow 5s linear infinite;box-shadow:0 0 12px color-mix(in srgb,var(--accent) 55%,transparent)}
 .hero .lvbar i::before{content:"";position:absolute;left:0;right:0;top:0;height:45%;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0));border-radius:8px 8px 0 0}
 .hero .lvbar i::after{content:"";position:absolute;top:0;bottom:0;width:38%;left:-45%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);animation:lvShine 2.8s ease-in-out 1s infinite}
+/* v1.491: мелкие частицы в полосе уровня — плывут слева направо */
+.hero .lvbar{border-radius:11px}.hero .lvbar i{border-radius:11px}
+.lvp{position:absolute;inset:0;display:block;pointer-events:none;overflow:hidden;border-radius:inherit;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent)}
+.lvp::before,.lvp::after{content:"";position:absolute;inset:0;background-repeat:repeat-x}
+.lvp::before{background-size:48px 100%;background-image:radial-gradient(2.7px 2.7px at 10px 6px,rgba(255,255,255,.95) 0,transparent 100%),radial-gradient(1.9px 1.9px at 34px 14px,rgba(255,255,255,.8) 0,transparent 100%),radial-gradient(3.0px 3.0px at 52px 9px,rgba(255,255,255,.9) 0,transparent 100%),radial-gradient(1.7px 1.7px at 24px 4px,rgba(255,255,255,.7) 0,transparent 100%);animation:lvPa 2.2s linear infinite}
+.lvp::after{background-size:70px 100%;background-image:radial-gradient(2.1px 2.1px at 18px 11px,rgba(255,255,255,.85) 0,transparent 100%),radial-gradient(2.8px 2.8px at 60px 6px,rgba(255,255,255,.9) 0,transparent 100%),radial-gradient(1.7px 1.7px at 78px 15px,rgba(255,255,255,.7) 0,transparent 100%),radial-gradient(2.3px 2.3px at 40px 4px,rgba(255,255,255,.75) 0,transparent 100%);animation:lvPb 3.4s linear infinite}
+@keyframes lvPa{to{background-position-x:48px}}
+@keyframes lvPb{to{background-position-x:70px}}
+@media (prefers-reduced-motion:reduce){.lvp::before,.lvp::after{animation:none}}
 @keyframes lvFlow{to{background-position:-200% 0}}
 @keyframes lvShine{0%{left:-45%}60%,100%{left:120%}}
 @media (prefers-reduced-motion:reduce){.hero .lvbar i,.hero .lvbar i::after{animation:none!important}}
@@ -1538,7 +1547,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.490';
+const APP = 'VOOB (by BGASHEV) Mini App v1.491';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2770,7 +2779,7 @@ async function openPublicProfile(handle){
     const tc = tierColor(lv.level), pct = lv.need ? Math.max(3, (lv.into || 0) / lv.need * 100) : 0;
     el.innerHTML = `<div class="hero pubh" style="--tc:${tc}"><span class="hero-av">${favHTML(j)}</span>
       <h2 class="nmrow hero-nm"><span class="nm">${esc(j.name)}</span>${bdgHTML(j.tg_id, 20)}</h2><div class="hero-at">@${esc(j.handle)}</div>${creatorHTML(j.tg_id)}
-      <div class="hero-lv"><div class="hero-lvt"><span class="lvn">${lv.level}</span><span class="ttl">${tierOf(lv.level).title}</span></div>${lv.need ? `<div class="lvbar"><i style="width:${pct}%"></i></div><div class="cap">${lv.into || 0} из ${lv.need} очков до уровня ${lv.level + 1}</div>` : ''}</div></div>
+      <div class="hero-lv"><div class="hero-lvt"><span class="lvn">${lv.level}</span><span class="ttl">${tierOf(lv.level).title}</span></div>${lv.need ? `<div class="lvbar"><i style="width:${pct}%"><b class="lvp"></b></i></div><div class="cap">${lv.into || 0} из ${lv.need} очков до уровня ${lv.level + 1}</div>` : ''}</div></div>
       <div class="card"><div class="tot"><div><b>${j.total == null ? '—' : j.total}</b><span class="cap">тренировок</span></div><div><b>${j.friends_count}</b><span class="cap">друзей</span></div><div><b>${(j.gift_kinds || []).length}/${GIFT_ALL.length}</b><span class="cap">подарков</span></div></div></div>
       ${(j.gift_kinds || []).length ? `<div class="card"><h3>${IC('gift')}Коллекция подарков</h3>${giftShelf(j.gift_kinds, 20, j.name)}</div>` : ''}${btn}`;
     el.classList.remove('blurin'); void el.offsetWidth; el.classList.add('blurin');
@@ -3073,7 +3082,7 @@ function friendSheetHTML(f, j, loading, self){
     <h2 class="nmrow hero-nm"><span class="nm">${esc(f.name)}</span>${bdgHTML(f.tg_id, 20)}</h2>
     ${f.handle || f.username ? `<div class="hero-at">@${esc(f.handle || f.username)}</div>` : ''}${creatorHTML(f.tg_id)}
     <div class="hero-lv"><div class="hero-lvt"><span class="lvn">${lv.level}</span><span class="ttl">${tierOf(lv.level).title}</span></div>
-      <div class="lvbar"><i style="width:${pct}%"></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div></div>`;
+      <div class="lvbar"><i style="width:${pct}%"><b class="lvp"></b></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div></div>`;
   if (j && j.friends) FR.prof = j.friends;
   const pw = +f.poke_wait || 0;
   const acts = self ? '' : `<div class="fp-bar"><button class="fpb poke${pw ? ' off' : ''}" data-act="frpoke" data-id="${f.tg_id}"><span>${IC('bolt', 20)}</span><b>${pw ? `через ${pw} ч` : 'Взбодрить'}</b></button>`
