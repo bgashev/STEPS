@@ -583,6 +583,7 @@ input[type=date].inp{display:block}
 .flk.own{cursor:default}
 .flk.pop svg{animation:lkPop .42s ease}
 @keyframes lkPop{35%{transform:scale(1.45)}70%{transform:scale(.9)}100%{transform:scale(1)}}
+#sheet.half{max-height:min(54vh,calc(92vh - var(--kb,0px)))}
 #sheet.full{top:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 8px);max-height:none}
 .fs-head{display:flex;align-items:center;gap:10px;margin:2px 0 6px;position:sticky;top:-10px;z-index:2;background:var(--bg);padding:6px 0}
 .fs-head .cap{margin-right:auto}
@@ -3397,6 +3398,7 @@ const sheetBack = ctx => ctx && BACK_T.has(ctx.type) ? `<button type="button" cl
 function openSheet(html, ctx){
   sheetCtx = ctx;
   $('#sheet').classList.remove('top');
+  $('#sheet').classList.toggle('half', !!ctx && (ctx.type === 'acts' || ctx.type === 'planact'));   // выбор активности — до середины экрана, избранные под большим пальцем
   $('#sheet').innerHTML = `<div class="grab"></div>` + sheetBack(ctx) + html;
   $('#sheet').scrollTop = 0;
   $('#sw').classList.add('open');
