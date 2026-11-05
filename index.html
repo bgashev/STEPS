@@ -1543,7 +1543,7 @@ function achievements(){
   return [
     a('steps','Первый шаг','Первая тренировка',n,1), a('n:10','Десятка','10 тренировок',n,10), a('n:100','Сотня','100 тренировок',n,100),
     a('route','Полсотни','50 км суммарно',km,50), a('medal','Марафон в рассрочку','42,2 км суммарно',km,42.2,`${num(Math.min(km,42.2))} / 42,2`),
-    a('globe','Путешественник','500 км суммарно',km,500), a('clock','10 часов','Суммарно на дорожке',mins/60,10),
+    a('globe','Путешественник','500 км суммарно',km,500), a('clock','10 часов','Суммарно в движении',mins/60,10),
     a('flame','Печка','10 000 ккал сожжено',kc,10000), a('mountain','Горный козёл','Тренировка с уклоном от 12%',maxInc,12),
     a('hourglass','Черепаха-марафонец','Тренировка от 60 минут',maxMin,60), a('bolt','Неделя без пропусков','7 дней подряд',bs,7),
     a('trophy','Нормальный','Выполнить недельную норму',gd,1), a('crown','Железная воля','4 нормы подряд',gb,4),
@@ -2044,8 +2044,8 @@ function accent2(hex){   // соседний оттенок для градие�
 }
 const SUM_V = {
   first:['Первые итоги — дальше будет с чем сравнить.', 'Хорошее начало. Теперь есть точка отсчёта.', 'Старт положен. Посмотрим, что будет дальше.'],
-  better:['Сильнее, чем в прошлый раз. Холодильник нервничает.', 'Прогресс налицо — и на ногах.', 'Дорожка заметила, что ты стал серьёзнее.'],
-  worse:['Чуть тише, чем в прошлый раз. Не страшно — главное не останавливаться.', 'Небольшой спад. Даже у дорожки бывают выходные.', 'Меньше, чем раньше, но больше, чем ноль. Это уже победа.'],
+  better:['Сильнее, чем в прошлый раз. Холодильник нервничает.', 'Прогресс налицо — тело уже это чувствует.', 'Даже диван заметил, что ты стал серьёзнее.'],
+  worse:['Чуть тише, чем в прошлый раз. Не страшно — главное не останавливаться.', 'Небольшой спад. Даже у чемпионов бывают выходные.', 'Меньше, чем раньше, но больше, чем ноль. Это уже победа.'],
   same:['Стабильно, как швейцарские часы.', 'Ровно держишь темп — это и есть дисциплина.', 'Без сюрпризов. Скучно? Нет — надёжно.']};
 function sumOf(ws, a, b){
   const xs = ws.filter(w => { const d = dn(w.date); return d >= a && d <= b; }), kc = xs.map(kcal);
@@ -2060,7 +2060,7 @@ function festData(a, b, key, kind){
   const pa = kind === 'm' ? monthStart(a - 1) : a - 7, pb = a - 1;
   const prev = sumOf(ws, pa, pb), hist = ws.some(w => dn(w.date) < a);
   const vk = !hist ? 'first' : !prev.minutes ? 'better' : cur.minutes / prev.minutes >= 1.1 ? 'better' : cur.minutes / prev.minutes <= .9 ? 'worse' : 'same';
-  const vs = SUM_V[vk], verdict = cur.count ? vs[[...key].reduce((x, c) => x + c.charCodeAt(0), 0) % vs.length] : (kind === 'm' ? 'Месяц без шагов. Новый — новый шанс.' : 'Неделя без шагов. Бывает — начнём заново?');
+  const vs = SUM_V[vk], verdict = cur.count ? vs[[...key].reduce((x, c) => x + c.charCodeAt(0), 0) % vs.length] : (kind === 'm' ? 'Месяц без тренировок. Новый — новый шанс.' : 'Неделя без тренировок. Бывает — начнём заново?');
   let bars = [];
   if (kind === 'm') { for (let d = a; d <= b;) { const e = Math.min(b, d + (6 - wdOf(d))); bars.push([`${ymd(d)[2]}–${ymd(e)[2]}`, sum(cur.xs.filter(w => dn(w.date) >= d && dn(w.date) <= e), w => w.minutes)]); d = e + 1; } }
   else for (let d = a; d <= b; d++) bars.push([WD[wdOf(d)], sum(cur.xs.filter(w => dn(w.date) === d), w => w.minutes)]);
@@ -2243,7 +2243,7 @@ function tierColor(l){ const t = tierOf(l); return t.c1 === 'rainbow' ? '#B57BFF
 /* ======================================================= медали очивок === */
 const ACH_KEYS = ['first','ten','hundred','km50','marathon','km500','hours10','kcal10k','goat','long','streak7','norm','norm30','early','weigh10','wgoal','friends3','friends5','str10','reps1k','tonne','pro','friends10'];
 const ACH_INFO = {first:['steps','Первый шаг','Первая тренировка'],ten:['n:10','Десятка','10 тренировок'],hundred:['n:100','Сотня','100 тренировок'],km50:['route','Полсотни','50 км суммарно'],
-  marathon:['medal','Марафон в рассрочку','42,2 км суммарно'],km500:['globe','Путешественник','500 км суммарно'],hours10:['clock','10 часов','Суммарно на дорожке'],kcal10k:['flame','Печка','10 000 ккал сожжено'],
+  marathon:['medal','Марафон в рассрочку','42,2 км суммарно'],km500:['globe','Путешественник','500 км суммарно'],hours10:['clock','10 часов','Суммарно в движении'],kcal10k:['flame','Печка','10 000 ккал сожжено'],
   goat:['mountain','Горный козёл','Тренировка с уклоном от 12%'],long:['hourglass','Черепаха-марафонец','Тренировка от 60 минут'],streak7:['bolt','Неделя без пропусков','7 дней подряд'],
   norm:['trophy','Нормальный','Выполнить недельную норму'],norm30:['crown','Железная воля','4 нормы подряд'],early:['sunrise','Ранняя пташка','Тренировка до 8 утра'],
   weigh10:['scale','Взвешенное решение','10 взвешиваний'],wgoal:['target','В яблочко','Достичь цели по весу'],plan:['plan','По плану','10 тренировок по плану'],
@@ -2925,7 +2925,7 @@ function historyHTML0(ws){
   const all = sorted.length;
   if (hf) sorted = sorted.filter(w => actOf(w) === hf);
   const hs = 'date';
-  if (!sorted.length) return `<div class="card empty"><div class="badge">${IC('steps', 30)}</div><div class="muted">Пока пусто. Добавь первую тренировку — дорожка уже заждалась.</div></div>`;
+  if (!sorted.length) return `<div class="card empty"><div class="badge">${IC('steps', 30)}</div><div class="muted">Пока пусто. Добавь первую тренировку — пора начинать.</div></div>`;
   const months = new Map();
   for (const w of sorted) { const k = w.date.slice(0, 7); if (!months.has(k)) months.set(k, []); months.get(k).push(w); }
   const actName = k => { const a = ACTS.find(x => x[0] === k); return a ? a[1] : k; };
@@ -3018,7 +3018,7 @@ function viewWeight(){
 
 function viewStats(){
   const ws = valid(), pws = filterPeriod(ws, S.sp), n = pws.length, g = G();
-  let h = `<div class="head"><div><h1>Статистика</h1><div class="sub">Всё, что накопилось на дорожке</div></div></div>
+  let h = `<div class="head"><div><h1>Статистика</h1><div class="sub">Всё, что накопилось за время тренировок</div></div></div>
     <div style="margin-bottom:12px">${seg('sp', [['7','7 дней'],['30','30 дней'],['12m','12 месяцев'],['all','Всё время']])}</div>`;
   if (n) {
     const tm = sum(pws, w => w.minutes), km = sum(pws, kmOf), kcs = pws.map(kcal), weeks = periodDays(S.sp, ws) / 7;
