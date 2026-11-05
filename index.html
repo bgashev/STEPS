@@ -2782,7 +2782,7 @@ async function copyStr(s){
 function viewHome(){
   const ws = valid(), g = G(), t = todayN(), info = goalInfo(ws), rest = restDays(ws), [cur] = dayStreaks(ws);
   const tMin = sum(ws.filter(w => dn(w.date) === t), w => w.minutes);
-  const bits = [tMin ? `сегодня уже ${fmtMin(tMin)} на дорожке` : (rest.has(t) ? 'сегодня день отдыха' : 'сегодня ещё без шагов')];
+  const bits = [tMin ? `сегодня уже ${fmtMin(tMin)} в движении` : (rest.has(t) ? 'сегодня день отдыха' : 'сегодня ещё без тренировки')];
   if (cur >= 2) bits.push(`серия ${npw(cur, W_DAY)} подряд`);
   bits.push(info.doneToday ? 'норма недели закрыта' : info.start == null ? 'новая неделя — с первой тренировки' : `до нормы ${info.remaining}`);
   const done = info.shown >= g.count, pct = Math.round(info.shown * 100 / g.count);
