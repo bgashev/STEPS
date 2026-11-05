@@ -927,13 +927,28 @@ input[type=date].inp{display:block}
 .prox-note{font-size:11px;color:var(--muted);margin-top:10px;text-align:center}
 .prox-top{cursor:pointer;-webkit-tap-highlight-color:transparent}
 .prox-tg{flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;color:#E9B949;background:rgba(233,185,73,.10);transition:transform .3s}
-.prox-tg svg{transform:rotate(-90deg);transition:transform .3s}
+.prox-tg svg{transform:rotate(-90deg);transition:transform .55s cubic-bezier(.3,1.4,.5,1)}
 .prox.min .prox-tg svg{transform:rotate(90deg)}
 .prox .prox-pill{align-self:center}
-.prox-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .32s cubic-bezier(.2,.8,.2,1),opacity .25s}
-.prox-body>div{overflow:hidden;min-height:0}
+.prox{transition:padding .55s cubic-bezier(.22,.9,.28,1)}
+.prox-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .6s cubic-bezier(.22,.9,.28,1)}
+.prox-body>div{overflow:hidden;min-height:0;opacity:1;transition:opacity .35s ease .08s}
 .prox.min{padding:12px 14px}
-.prox.min .prox-body{grid-template-rows:0fr;opacity:0}
+.prox.min .prox-body{grid-template-rows:0fr}
+.prox.min .prox-body>div{opacity:0;transition-duration:.16s;transition-delay:0s}
+/* v1.453: раскрытие «ярусами» — сначала возможности по одной, затем тарифы (годовой чуть позже и с упругим подъёмом), в конце примечание */
+@keyframes proIn{from{opacity:0;transform:translateY(14px) scale(.9)}55%{opacity:1}}
+@keyframes proUp{from{opacity:0;transform:translateY(30px) scale(.9)}60%{opacity:1}}
+@keyframes proEm{0%{transform:scale(.8) rotate(-8deg)}60%{transform:scale(1.1) rotate(3deg)}100%{transform:none}}
+.prox:not(.min) .prox-perks span{animation:proIn .6s cubic-bezier(.22,1.15,.3,1) both;animation-delay:var(--d,0s)}
+.prox:not(.min) .prox-plan{animation:proUp .7s cubic-bezier(.3,1.3,.45,1) both;animation-delay:var(--d,.4s)}
+.prox:not(.min) .prox-note,.prox:not(.min) .prox-body .cap{animation:proIn .6s ease both;animation-delay:.66s}
+.prox:not(.min) .prox-em{animation:proEm .7s cubic-bezier(.3,1.4,.5,1)}
+.prox-perks span:nth-child(1){--d:.10s}.prox-perks span:nth-child(2){--d:.15s}.prox-perks span:nth-child(3){--d:.20s}
+.prox-perks span:nth-child(4){--d:.25s}.prox-perks span:nth-child(5){--d:.30s}.prox-perks span:nth-child(6){--d:.35s}
+.prox-plan:nth-child(1){--d:.44s}.prox-plan:nth-child(2){--d:.54s}
+.prox-em,.prox-t{transition:width .4s,height .4s,border-radius .4s,font-size .4s}
+@media (prefers-reduced-motion:reduce){.prox-perks span,.prox-plan,.prox-note,.prox-em{animation:none!important}.prox,.prox-body,.prox-body>div{transition:none!important}}
 .prox.min .prox-em{width:36px;height:36px;border-radius:12px}
 .prox.min .prox-t{font-size:16px}
 .prox-s{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
