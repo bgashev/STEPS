@@ -69,7 +69,9 @@ h3 .ic{color:var(--accent)}
 /* история */
 .mh{display:flex;justify-content:space-between;align-items:baseline;margin:18px 4px 8px;font-weight:700}
 .mh span{font-size:12px;font-weight:500;color:var(--muted)}
-.wi{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:12px 14px;margin-bottom:8px;transition:transform .12s;animation:fadeUp .35s backwards}
+.wi{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:12px 14px;margin-bottom:8px;transition:transform .12s;animation:wiWave .85s cubic-bezier(.32,.72,0,1) backwards}
+@keyframes wiWave{from{opacity:0;transform:translateY(16px) scale(.97);filter:blur(12px)}60%{filter:blur(0)}}
+@media (prefers-reduced-motion:reduce){.wi{animation:none}}
 .wi:active{transform:scale(.985)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}}
 .wd{width:44px;text-align:center;flex:none}
@@ -1522,7 +1524,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.486';
+const APP = 'VOOB (by BGASHEV) Mini App v1.487';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3256,7 +3258,7 @@ function historyHTML0(ws){
       h += `<div class="mh">${MONF[m-1][0].toUpperCase() + MONF[m-1].slice(1)} ${y}<span>${npw(g.length, W_WORK)} · ${fmtMin(sum(g, x => x.minutes))} · ${kmF(sum(g, kmOf))}</span></div>`; }
     const d = dn(w.date), [, , dd] = ymd(d), f = clamp(parseInt(w.feeling) || 3, 1, 5), kc = kcal(w);
     const l2 = [isStr(w) || (isTime(w) && !+w.speed) ? `+${workoutXp(w)} XP` : `≈ ${kmF(kmOf(w))}`]; if (kc) l2.push(`≈ ${kcalF(kc)}`); if (w.note) l2.push(esc(w.note));
-    h += `<div class="wi" data-act="wedit" data-id="${esc(w.id)}" style="animation-delay:${Math.min(i, 10) * 35}ms"><span class="wa">${IC(actOf(w), 19)}</span><div class="wd"><b>${dd}</b><small>${MON[ymd(d)[1]-1]} · ${WD[wdOf(d)]}</small></div>
+    h += `<div class="wi" data-act="wedit" data-id="${esc(w.id)}" style="animation-delay:${Math.min(i, 10) * 80}ms"><span class="wa">${IC(actOf(w), 19)}</span><div class="wd"><b>${dd}</b><small>${MON[ymd(d)[1]-1]} · ${WD[wdOf(d)]}</small></div>
       <div class="wm"><div class="l1">${isStr(w) ? `${esc((ACTS.find(a => a[0] === w.act) || ACTS[0])[1])} · ${strText(w)}` : isTime(w) ? `${esc((ACTS.find(a => a[0] === w.act) || ACTS[0])[1])} · ${w.minutes} мин${+w.speed ? ` · ${num(w.speed)} км/ч` : ''}` : `${num(w.speed)} км/ч · ${num(w.incline)}% · ${w.minutes} мин`}</div><div class="l2">${l2.join(' · ')}</div></div>
       <div class="wr">${dotsHTML(f, 8)}<small style="color:${FEEL[f][1]}">${FEEL[f][0]}</small></div></div>`;
   });
