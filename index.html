@@ -1927,7 +1927,7 @@ function accentHex(mode){
   const a = ACCENTS.find(x => x[0] === k); return a ? a[2] : '#B4A7EE';
 }
 /* v1.458: «чёрная» тёмная тема — только PRO (без PRO — графит; кнопка даёт короткий предпросмотр) */
-function dvEff(){ const d = db.settings.dv || 'graphite'; return d === 'black' && !(isPro() || (typeof S !== 'undefined' && S.dvPrev)) ? 'graphite' : d; }
+function dvEff(){ if (typeof S !== 'undefined' && S.dvPrev) return 'black'; const d = db.settings.dv || 'graphite'; return d === 'black' && !isPro() ? 'graphite' : d; }   // предпросмотр: чёрная показывается, даже если в настройках не выбрана
 function applyTheme(){
   const mode = themeMode(), th = THEMES[mode === 'dark' && dvEff() === 'black' ? 'black' : mode], r = document.documentElement.style;
   for (const k in th) r.setProperty('--' + k, th[k]);
@@ -4063,7 +4063,7 @@ const ACT = {
   sex: el => { db.profile.sex = el.dataset.v; touchMeta('profile'); save(); render(); hap.tap(); },
   theme: el => { db.settings.theme = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
   dv: el => { if (el.dataset.v === 'black' && !isPro()) { hap.warn(); S.dvPrev = true; applyTheme(); render(); clearTimeout(S.dvT);
-      S.dvT = setTimeout(() => { S.dvPrev = false; applyTheme(); render(); }, 3500); proToast('Чёрная тема — в PRO. Сейчас это предпросмотр'); return; }
+      S.dvT = setTimeout(() => { S.dvPrev = false; applyTheme(); render(); }, 5000); proToast('Чёрная тема — в PRO. Сейчас это предпросмотр'); return; }
     S.dvPrev = false; db.settings.dv = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
   looksync: () => { const on = !lookSync(); lsSet('voob_look_sync', on); hap.tap();
     if (on) { touchMeta('settings'); save(); toast('Оформление этого устройства теперь общее'); } else toast('Теперь у телефона своё оформление');
