@@ -2568,7 +2568,8 @@ async function loadFriendPhotos(){
   if (got) savePhotos();
 }
 const FRAMES = [['', 'Без рамки'], ['classic', 'Стандартная'], ['aurora', 'Аврора', 1], ['gold', 'Золото', 1], ['neon', 'Неон', 1], ['flame', 'Пламя', 1], ['ocean', 'Океан', 1], ['sakura', 'Сакура', 1], ['cyber', 'Кибер', 1], ['emerald', 'Изумруд', 1], ['galaxy', 'Галактика', 1], ['ice', 'Лёд', 1], ['storm', 'Гроза', 1], ['hearts', 'Сердца', 1], ['pixel', 'Пиксель', 1], ['plasma', 'Плазма', 1], ['atom', 'Атом', 1], ['holo', 'Голограмма', 1]];
-function isPro(){ if (typeof INBOX_PRO !== 'undefined' && INBOX_PRO) return true; const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.pro || b.creator)); }
+const asFree = () => { try { return localStorage.getItem('voob_asfree') === '1'; } catch (e) { return false; } };   // только для создателя: смотреть как без PRO
+function isPro(){ { const c = tgUser && BDG.get(tgUser.id); if (c && c.creator && asFree()) return false; } if (typeof INBOX_PRO !== 'undefined' && INBOX_PRO) return true; const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.pro || b.creator)); }
 function frOwned(k){ if (isPro()) return true; const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.frames || []).includes(k)); }   // v1.433: рамка в подарок от VOOB   // v1.420: персонализация, список будет расти
 function frameOf(f){
   const mine = tgUser && f && +f.tg_id === tgUser.id, b = f ? (BDG.get(+f.tg_id) || {}) : {};
@@ -3163,6 +3164,7 @@ function viewMeSettings(){
     <button type="button" class="btn primary" id="pm-go" data-act="promo" disabled>Активировать</button></div>
     <div class="cap" id="pm-msg">Введи код — PRO, рамка или подарок сразу станут твоими</div></div>`;   // v1.436
   if (inTG) h += proCardHTML();
+  if (inTG && tgUser && (BDG.get(tgUser.id) || {}).creator) h += `<div class="card"><div class="tgl${asFree() ? ' on' : ''}" data-act="asfree"><span class="sw2"></span><b>Смотреть как без PRO</b></div><div class="cap" style="margin-top:8px">Только для создателя: на этом устройстве приложение ведёт себя как у пользователя без подписки — лимиты и закрытые функции. Выключи, чтобы вернуть всё.</div></div>`;
   if (inTG) h += socEditHTML();
   h += `<div class="card"><h3>${IC('medal')}Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></h3><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div>
     <div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1} · всего ${numSep(lv.xp)}</div>
@@ -3674,6 +3676,7 @@ const ACT = {
     const done = () => { p.skipped = true; touch('plan', p); save(); render();
       toast('План на сегодня отклонён', 'Вернуть', () => { delete p.skipped; touch('plan', p); save(); render(); }); };
     const c = $('#plsug'); if (c) { c.classList.add('out'); setTimeout(done, 260); } else done(); },
+  asfree: () => { hap.tap(); try { localStorage.setItem('voob_asfree', asFree() ? '0' : '1'); } catch (e) {} invalidate(); applyTheme(); render(); toast(asFree() ? 'Режим без PRO включён' : 'PRO вернулся'); },
   plans: () => { hap.tap(); openPlans(); },
   plnew: () => { hap.tap(); openPlanActs(); },
   plact: el => { hap.tap(); openPlan(null, el.dataset.v); },
