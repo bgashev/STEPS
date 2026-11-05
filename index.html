@@ -55,7 +55,7 @@ h3 .ic{color:var(--accent)}
 .sd{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;min-width:0}
 .sc{width:var(--cs,32px);height:var(--cs,32px);border-radius:50%;border:2px solid var(--off);display:grid;place-items:center;font-size:13px;font-weight:750;animation:pop .45s backwards}
 .sc.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.sc.rest{background:rgba(127,181,255,.18);border-color:transparent;color:var(--blue)}
+.sc.rest{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
 .sd.today .sc{box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--accent)}
 .sw{font-size:11px;color:var(--muted)}
 .sd.today .sw{color:var(--text);font-weight:700}
@@ -403,6 +403,9 @@ input[type=date].inp{display:block}
 .frb:active{transform:scale(.96)}
 .frb.on{border-color:var(--accent)}
 .frb .fav{width:52px;height:52px;font-size:20px}
+/* v1.442: скрытые рамки получали общий .more{display:block;margin:auto} и сужались */
+.frb.more{margin:0}
+.frs:not(.col) .frb.more{display:flex}
 .fav.tr,.ava.tr{padding:3px;background:var(--tg)}
 .fav.tr .fi,.ava.tr .fi{box-shadow:0 0 0 2px var(--bg)}
 .lvb.tg{background:var(--tg);color:var(--tink)}
@@ -517,6 +520,8 @@ input[type=date].inp{display:block}
 .me-prof .fp-head{margin-top:2px}
 .fitem{display:flex;align-items:center;gap:12px;padding:8px 0}
 .fitem .fav{flex:none}
+.fitem .fav.s{width:38px;height:38px;font-size:15px}   /* v1.442: аватарки в ленте крупнее */
+.fitem .fav.s:is([class*=" fr-"]){padding:3px}
 .ftx{flex:1;min-width:0}
 .ftx .fh{font-size:14px;line-height:1.3}
 .ftx .cap{display:flex;align-items:center;gap:4px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -739,7 +744,7 @@ input[type=date].inp{display:block}
   background:color-mix(in srgb,var(--text) 5%,transparent);border:1px solid color-mix(in srgb,var(--text) 8%,transparent);animation:gxIn .5s cubic-bezier(.2,1.2,.4,1) backwards}
 @keyframes gxIn{from{opacity:0;transform:translateY(8px) scale(.9)}}
 .gx-c.on{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 80%,#fff),var(--accent));border-color:transparent;color:var(--on-accent);box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 22%,transparent)}
-.gx-c.rest{background:rgba(127,181,255,.14);border-color:transparent;color:var(--blue)}
+.gx-c.rest{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
 .gx-c.fut{background:none;border:1.5px dashed color-mix(in srgb,var(--text) 16%,transparent)}
 .gx-d.today .gx-c{outline:2px solid var(--accent);outline-offset:3px}
 .gx-d.link::after{content:"";position:absolute;top:24px;left:50%;width:100%;height:3px;border-radius:2px;background:color-mix(in srgb,var(--accent) 55%,transparent);z-index:0}
@@ -763,6 +768,9 @@ input[type=date].inp{display:block}
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:zspin 1s linear infinite}
 #zoom .zi{overflow:visible}
 #zoom .zi .zclip{position:absolute;inset:0;border-radius:50%;overflow:hidden;display:grid;place-items:center}
+/* v1.442: затемнение — отдельный слой; на закрытии гаснет только он, фото летит назад непрозрачным */
+#zoom{background:none;backdrop-filter:none;-webkit-backdrop-filter:none;animation:none}
+#zoom .zbg{position:absolute;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(26px) saturate(1.4);-webkit-backdrop-filter:blur(26px) saturate(1.4);animation:fadeIn .25s}
 @keyframes zspin{to{transform:rotate(360deg)}}
 /* профиль: синхронизация под плашкой */
 .prof .crw{display:block}
@@ -1146,10 +1154,11 @@ input[type=date].inp{display:block}
 .bgs.col .bgb.bmore{display:none}
 .smx-in{animation:smxIn .38s cubic-bezier(.2,.8,.2,1) backwards}
 @keyframes smxIn{from{opacity:0;transform:translateY(8px) scale(.96)}}
-/* v1.436: соцсети — окно в верхней половине экрана, клавиатура его не двигает */
-#sheet.top{top:max(14px,env(safe-area-inset-top));bottom:auto!important;max-height:calc(56vh);border-radius:24px;margin:0 12px;
-  transform:translateY(-110%);border:1px solid var(--border)}
-#sw.open #sheet.top{transform:none}
+/* v1.442: соцсети — окно по центру видимой области; с клавиатурой центр сдвигается вверх (--kb) */
+#sheet.top{top:calc((100% - var(--kb,0px)) / 2);bottom:auto!important;max-height:calc(100% - var(--kb,0px) - 28px);border-radius:24px;margin:0 12px;
+  transform:translateY(-50%) scale(.94);opacity:0;border:1px solid var(--border);
+  transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .22s ease,top .22s ease}
+#sw.open #sheet.top{transform:translateY(-50%);opacity:1}
 #sheet.top .grab{display:none}
 </style>
 </head>
@@ -1164,7 +1173,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.441';
+const APP = 'VOOB (by BGASHEV) Mini App v1.442';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2301,7 +2310,7 @@ async function openPublicProfile(handle){
     const j = await apiAuth('/profile/public', {handle, today:isoOf(todayN())});
     const el = $('#pub'); if (!el) return; askBadges([j.tg_id]);
     if (j.status !== 'ok') { el.innerHTML = `<h2>Профиль не найден</h2><div class="muted">Похоже, @${esc(handle)} сменил(а) ник.</div>`; return; }
-    if (!FR.phTried.has(j.tg_id)) { FR.phTried.add(j.tg_id); apiAuth('/friends/photo', {tg_id:j.tg_id}).then(r => { if (r.ok) { FR.ph.set(j.tg_id, 'data:image/jpeg;base64,' + r.b64); putPhoto(j.tg_id); } }).catch(() => {}); }
+    if (!FR.phTried.has(j.tg_id)) { FR.phTried.add(j.tg_id); apiAuth('/friends/photo', {tg_id:j.tg_id}).then(r => { if (r.ok) { FR.ph.set(j.tg_id, 'data:image/jpeg;base64,' + r.b64); FR.phAt.set(+j.tg_id, Date.now()); putPhoto(j.tg_id); } }).catch(() => {}); }
     const lv = j.level, btn = j.state === 'me' ? `<div class="cap" style="text-align:center">Это твой профиль 🙂</div>`
       : j.state === 'friend' ? `<button class="btn ghost" style="width:100%" data-act="frprof" data-id="${j.tg_id}">${IC('check', 16)}Вы друзья — открыть профиль</button>`
       : j.state === 'requested' ? `<div class="cap" style="text-align:center">Заявка уже отправлена</div>`
@@ -2322,17 +2331,18 @@ function handleCard(){
 const profLink = h => `https://t.me/steps_v1_bot/STEPS?startapp=u_${h}`;
 
 /* ============================================================ друзья ==== */
-const FR = {data:null, loading:false, err:'', ph:new Map(), phTried:new Set()};
+const FR = {data:null, loading:false, err:'', ph:new Map(), phAt:new Map(), phTried:new Set()};
 /* v1.420: кэш — «Друзья», лента и аватарки показываются мгновенно, свежие данные догружаются фоном */
 const UK = (tgUser && tgUser.id) || 0;   // кэш у каждого аккаунта Telegram свой
-const FRK = 'voob_fr_cache_' + UK, PHK = 'voob_ph_cache_' + UK, FDK = 'voob_feed_cache_' + UK, PH_TTL = 7 * 864e5, PH_MAX = 40;
+const FRK = 'voob_fr_cache_' + UK, PHK = 'voob_ph_cache_' + UK, FDK = 'voob_feed_cache_' + UK, PH_TTL = 7 * 864e5, PH_FRESH = 6 * 36e5, PH_MAX = 40;
 const lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } };
 const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
 { const c = lsGet(FRK); if (c && c.friends) { FR.data = c; FR.sig = JSON.stringify(c); } }
-{ const c = lsGet(PHK) || {}; for (const [id, [at, src]] of Object.entries(c)) if (Date.now() - at < PH_TTL) { FR.ph.set(+id, src); FR.phTried.add(+id); } }
+{ const c = lsGet(PHK) || {}; for (const [id, [at, src]] of Object.entries(c)) if (Date.now() - at < PH_TTL) { FR.ph.set(+id, src); FR.phAt.set(+id, at);
+    if (Date.now() - at < PH_FRESH && +id !== +UK) FR.phTried.add(+id); } }   // v1.442: фото из Telegram обновляются, кэш больше не «вечный»
 function savePhotos(){
   const out = {}; let n = 0;
-  for (const [id, src] of FR.ph) { if (n++ >= PH_MAX) break; if (String(src).startsWith('data:')) out[id] = [Date.now(), src]; }
+  for (const [id, src] of FR.ph) { if (n++ >= PH_MAX) break; if (String(src).startsWith('data:')) out[id] = [FR.phAt.get(+id) || Date.now(), src]; }
   lsSet(PHK, out);
 }
 const PRIV = {v:null, hf:false, loading:false};
@@ -2364,18 +2374,22 @@ function zoomFlip(zi, src, back){
   const a = (src.querySelector('.fi') || src).getBoundingClientRect(), b = zi.getBoundingClientRect();
   if (!a.width || !b.width) return null;
   const dx = a.left + a.width / 2 - (b.left + b.width / 2), dy = a.top + a.height / 2 - (b.top + b.height / 2), sc = a.width / b.width;
-  const home = {transform:'translate(0,0) scale(1)'}, away = {transform:`translate(${dx}px,${dy}px) scale(${sc})`};
-  return zi.animate(back ? [home, away] : [away, home], {duration: back ? 420 : 480, easing:'cubic-bezier(.2,.85,.25,1)', fill:'both'});
+  const sh = getComputedStyle(zi).boxShadow;
+  const home = {transform:'translate(0,0) scale(1)', boxShadow:sh}, away = {transform:`translate(${dx}px,${dy}px) scale(${sc})`, boxShadow:'0 0 0 rgba(0,0,0,0)'};
+  return zi.animate(back ? [home, away] : [away, home], back
+    ? {duration:440, easing:'cubic-bezier(.32,.72,.16,1)', fill:'both'}
+    : {duration:480, easing:'cubic-bezier(.2,.85,.25,1)', fill:'both'});
 }
 function closeZoom(){
   const z = $('#zoom'); if (!z || z.dataset.closing) return; z.dataset.closing = '1';
-  const src = z._src, zi = z.querySelector('.zi'), lb = z.querySelector('b');
-  const end = () => { if (src) src.style.visibility = ''; z.remove(); };
+  const src = z._src, hid = z._hid, zi = z.querySelector('.zi'), lb = z.querySelector('b'), bg = z.querySelector('.zbg');
+  let ended = false;
+  const end = () => { if (ended) return; ended = true; if (hid) { hid.style.visibility = ''; delete hid.dataset.zh; } z.remove(); };   // в одном кадре: оригинал виден, копия исчезла
   const fl = zi ? zoomFlip(zi, src, true) : null;
-  z.style.animation = 'none';
-  z.animate([{opacity:1}, {opacity:0}], {duration: 420, easing:'ease-in', fill:'forwards'});
-  if (lb) lb.animate([{opacity:1}, {opacity:0}], {duration: 180, fill:'forwards'});
-  if (fl) { fl.onfinish = end; setTimeout(end, 700); } else setTimeout(end, 260);
+  if (bg) bg.animate([{opacity:1}, {opacity:0}], {duration:400, easing:'cubic-bezier(.4,0,.2,1)', fill:'forwards'});
+  if (lb) lb.animate([{opacity:1}, {opacity:0}], {duration:160, fill:'forwards'});
+  if (fl) { fl.onfinish = end; setTimeout(end, 720); }
+  else { if (zi) zi.animate([{opacity:1, transform:'scale(1)'}, {opacity:0, transform:'scale(.9)'}], {duration:220, easing:'ease-in', fill:'forwards'}); setTimeout(end, 240); }
 }
 async function openZoom(id, from){
   const f = (FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me.tg_id === id ? FR.data.me : null))); if (!f) return;
@@ -2383,16 +2397,18 @@ async function openZoom(id, from){
   const z = document.createElement('div'); z.id = 'zoom'; z.dataset.act = 'zclose';
   FR.big = FR.big || new Map();
   const big = FR.big.get(id), src = big || FR.ph.get(id), loading = !big;
-  z.innerHTML = `<div class="zi${loading ? ' ld' : ''}"><div class="zring"></div><div class="zclip">${src ? `<img src="${src}" alt="">` : esc((f.name || '?')[0].toUpperCase())}</div></div><b>${esc(f.name)}</b>`;
+  z.innerHTML = `<div class="zbg"></div><div class="zi${loading ? ' ld' : ''}"><div class="zring"></div><div class="zclip">${src ? `<img src="${src}" alt="">` : esc((f.name || '?')[0].toUpperCase())}</div></div><b>${esc(f.name)}</b>`;
   document.body.appendChild(z);
   z._src = from || null;
-  { const zi0 = z.querySelector('.zi'); if (from && zi0 && zi0.animate) { zi0.style.animation = 'none'; if (zoomFlip(zi0, from, false)) from.style.visibility = 'hidden'; } }
+  { const zi0 = z.querySelector('.zi'); if (from && zi0 && zi0.animate) { zi0.style.animation = 'none'; if (zoomFlip(zi0, from, false)) { z._hid = from.querySelector('.fi') || from; z._hid.style.visibility = 'hidden'; z._hid.dataset.zh = 1; } } }   // рамка остаётся на месте — фото улетает из неё и возвращается в неё
   if (!loading) return;
   const done = () => { const zi = z.querySelector('.zi'); if (zi) zi.classList.remove('ld'); };
   try {
     const j = await apiAuth('/friends/photo', {tg_id:id, big:true});
     if (!j.ok) { done(); return; }
     FR.big.set(id, 'data:image/jpeg;base64,' + j.b64);
+    { const im = z._hid && z._hid.querySelector('img'); if (im) im.src = FR.big.get(id); }   // v1.442: на место вернётся уже актуальное фото
+    FR.phTried.delete(id); apiAuth('/friends/photo', {tg_id:id}).then(r => { if (r.ok) { FR.ph.set(id, 'data:image/jpeg;base64,' + r.b64); FR.phAt.set(+id, Date.now()); putPhoto(id); savePhotos(); } }).catch(() => {});
     const clip = z.querySelector('.zclip'); if (!clip || !document.body.contains(z)) return;
     const im = new Image(); im.className = 'hi'; im.alt = ''; im.src = FR.big.get(id);
     const show = () => { clip.appendChild(im); requestAnimationFrame(() => { im.classList.add('in'); done(); }); };
@@ -2405,7 +2421,7 @@ async function loadFriendPhotos(){
   ids.forEach(id => FR.phTried.add(id));
   let got = false;
   const worker = async () => { while (ids.length) { const id = ids.shift();
-    try { const j = await apiAuth('/friends/photo', {tg_id:id}); if (j.ok) { FR.ph.set(id, 'data:image/jpeg;base64,' + j.b64); putPhoto(id); got = true; } } catch (e) {} } };
+    try { const j = await apiAuth('/friends/photo', {tg_id:id}); if (j.ok) { FR.ph.set(id, 'data:image/jpeg;base64,' + j.b64); FR.phAt.set(+id, Date.now()); putPhoto(id); got = true; } } catch (e) {} } };
   await Promise.all([worker(), worker(), worker(), worker()]);
   if (got) savePhotos();
 }
@@ -2427,7 +2443,9 @@ function favHTML(f, small){
 }
 function putPhoto(id){   // точечно, без перерисовки всей страницы
   const src = FR.ph.get(id); if (!src) return;
-  document.querySelectorAll(`.fav[data-fid="${id}"] .fi`).forEach(el => { if (!el.querySelector('img')) el.innerHTML = `<img class="fade" src="${src}" alt="">`; });
+  const put = el => { const im = el.querySelector('img'); if (!im) el.innerHTML = `<img class="fade" src="${src}" alt="">`; else if (im.getAttribute('src') !== src) im.src = src; };
+  document.querySelectorAll(`.fav[data-fid="${id}"] .fi`).forEach(put);
+  if (+id === +UK) document.querySelectorAll('.prof .ava .fi, .frb .fav .fi').forEach(el => { if (el.querySelector('img')) put(el); });   // своё фото: шапка «Я» и плашки рамок
 }
 function pm(f){ return f.month && f.month.minutes != null ? f.month.minutes : (f.week ? f.week.minutes : 0); }
 function agoText(iso){ const d = dn(iso), k = todayN() - d; return k <= 0 ? 'сегодня' : k === 1 ? 'вчера' : fmtDate(d); }
@@ -2575,7 +2593,7 @@ async function loadFofPhotos(j){
   askBadges([j && j.tg_id, ...((j && j.friends) || []).map(x => x.tg_id)]);
   for (const x of (j.friends || [])) {
     if (FR.phTried.has(x.tg_id)) continue; FR.phTried.add(x.tg_id);
-    try { const r = await apiAuth('/friends/photo', {tg_id:x.tg_id}); if (r.ok) { FR.ph.set(x.tg_id, 'data:image/jpeg;base64,' + r.b64); putPhoto(x.tg_id); } } catch (e) {}
+    try { const r = await apiAuth('/friends/photo', {tg_id:x.tg_id}); if (r.ok) { FR.ph.set(x.tg_id, 'data:image/jpeg;base64,' + r.b64); FR.phAt.set(+x.tg_id, Date.now()); putPhoto(x.tg_id); } } catch (e) {}
   }
 }
 function friendSheetHTML(f, j, loading, self){
@@ -3101,13 +3119,37 @@ function updFab(){
   }, 140);
 }
 let _rTab = null, _rHtml = '';
+/* v1.442: морфинг DOM. Повторный render той же вкладки (пришли друзья, значки, фото…) больше не пересоздаёт
+   страницу целиком: кольца, полоски, фон профиля и аватарки остаются теми же узлами, анимации не стартуют заново. */
+const KEEP_ATTR = new Set(['data-done', 'data-zh']);   // ставит сам скрипт (счётчик минут уже отыграл)
+function morphKids(from, to){
+  const a = [...from.childNodes], b = [...to.childNodes];
+  b.forEach((n, i) => {
+    const o = a[i];
+    if (!o) { from.appendChild(n); return; }
+    if (o.nodeType !== n.nodeType || (o.nodeType === 1 && (o.tagName !== n.tagName || (o.id || n.id) && o.id !== n.id))) { o.replaceWith(n); return; }
+    if (o.nodeType !== 1) { if (o.nodeValue !== n.nodeValue) o.nodeValue = n.nodeValue; return; }
+    morphEl(o, n);
+  });
+  for (let i = b.length; i < a.length; i++) a[i].remove();
+}
+function morphEl(o, n){
+  if (o.isEqualNode(n)) return;
+  const hold = o.dataset && o.dataset.zh;   // фото сейчас открыто крупно — не трогаем его видимость
+  for (const at of [...o.attributes]) if (!n.hasAttribute(at.name) && !KEEP_ATTR.has(at.name) && !(hold && at.name === 'style')) o.removeAttribute(at.name);
+  for (const at of n.attributes) if (o.getAttribute(at.name) !== at.value && !(hold && at.name === 'style')) o.setAttribute(at.name, at.value);
+  if ((o.tagName === 'INPUT' || o.tagName === 'TEXTAREA') && document.activeElement !== o && n.hasAttribute('value') && o.value !== n.getAttribute('value')) o.value = n.getAttribute('value');
+  if (o.tagName === 'INPUT') o.checked = n.hasAttribute('checked');
+  morphKids(o, n);
+}
 function render(){
   const html = VIEWS[S.tab](), v = $('#view');
   const same = _rTab === S.tab;
   if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
   v.classList.toggle('rr', same);                          // та же вкладка: обновляем без повторных «появлений»
   _rTab = S.tab; _rHtml = html;
-  v.innerHTML = html;
+  if (same) { const t = document.createElement('template'); t.innerHTML = html; morphKids(v, t.content); }   // v1.442: та же вкладка — правим только изменившееся, без мерцаний
+  else v.innerHTML = html;
   updFab();
   festCountUp();
   setTimeout(checkRewards, 700);
