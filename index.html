@@ -3335,7 +3335,7 @@ function proSheetHTML(back){
   const plan = (p, best) => p ? `<button type="button" class="prox-plan${best ? ' best' : ''}" data-act="probuy" data-v="${p.plan}"><i>${best ? 'Год' : 'Месяц'}</i><b>${p.stars}${star}</b>
     <small>${best ? `≈ ${Math.round(p.stars / 12)} ⭐ в месяц` : 'в месяц'}</small>${p.bonus_days ? `<em>+${p.bonus_days} дней в подарок</em>` : ''}${best && save > 0 ? `<u>−${save}%</u>` : ''}</button>` : '';
   const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки'], ['star', 'До 5 закреплённых']];
-  return (back ? `<button type="button" class="fp-back" data-act="sback" aria-label="Назад">${IC('chev', 20)}</button>` : '')
+  return (back && !(inTG && ver('6.1')) ? `<button type="button" class="fp-back" data-act="sback" aria-label="Назад">${IC('chev', 20)}</button>` : '')
     + `<div class="prosh"><div class="prox-em">${IC('crown', 26)}</div><h2>VOOB PRO</h2>
     <div class="cap">${st.active ? `Подписка активна до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : 'Больше возможностей для твоих тренировок'}</div>
     <div class="prox-perks" style="justify-content:center">${perks.map(([i, t]) => `<span>${IC(i, 13)}${t}</span>`).join('')}</div>
@@ -3513,7 +3513,7 @@ function render(){
 /* ============================================================ шторки ==== */
 // v1.447: в профилях — аккуратная кнопка «назад» слева сверху (липкая, не уезжает при прокрутке)
 const BACK_T = new Set(['fprof', 'pub']);
-const sheetBack = ctx => ctx && BACK_T.has(ctx.type) ? `<button type="button" class="fp-back" data-act="close" aria-label="Назад">${IC('chev', 20)}</button>` : '';
+const sheetBack = ctx => ctx && BACK_T.has(ctx.type) && !(inTG && ver('6.1')) ? `<button type="button" class="fp-back" data-act="close" aria-label="Назад">${IC('chev', 20)}</button>` : '';
 function openSheet(html, ctx){
   sheetCtx = ctx;
   $('#sheet').classList.remove('top');
