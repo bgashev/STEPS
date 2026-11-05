@@ -651,9 +651,9 @@ input[type=date].inp{display:block}
 .act.soon{border-style:dashed;color:var(--muted);background:transparent}
 .act .afav{position:absolute;top:6px;right:6px;z-index:2;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:var(--muted);opacity:.55;transition:opacity .2s,color .2s}
 .act .afav svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
-.act.fav{border-color:color-mix(in srgb,var(--accent) 55%,var(--border))}
-.act.fav .afav{opacity:1;color:var(--accent)}
-.act.fav .afav svg{fill:currentColor}
+.act.pin{border-color:color-mix(in srgb,var(--accent) 55%,var(--border));background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
+.act.pin .afav{opacity:1;color:var(--accent)}
+.act.pin .afav svg{fill:currentColor}
 .acts.calm .act{animation:none}
 .act.soon .ai{background:var(--surface2);color:var(--muted);opacity:.7}
 .act.soon::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,var(--accent-soft) 50%,transparent 70%);transform:translateX(-100%);animation:skm 3.2s ease-in-out infinite}
@@ -1211,7 +1211,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.449';
+const APP = 'VOOB (by BGASHEV) Mini App v1.450';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3495,7 +3495,7 @@ const FAV_MAX = 3;
 function favActs(){ const f = Array.isArray(db.settings.fav) ? db.settings.fav : []; return f.filter(k => ACTS.some(a => a[0] === k && a[2])).slice(0, FAV_MAX); }
 function actsHTML(){
   const f = favActs(), list = [...f.map(k => ACTS.find(a => a[0] === k)), ...ACTS.filter(a => !f.includes(a[0]))];
-  return list.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}${f.includes(k) ? ' fav' : ''}" data-k="${k}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="animation-delay:${i * 30}ms">`
+  return list.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}${f.includes(k) ? ' pin' : ''}" data-k="${k}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="animation-delay:${i * 30}ms">`
     + (ok ? `<span class="afav" data-act="actfav" data-v="${k}" role="button" aria-label="${f.includes(k) ? 'Открепить' : 'Закрепить наверху'}"><svg width="15" height="15" viewBox="0 0 24 24"><path d="m12 3.2 2.6 5.5 6 .7-4.4 4.1 1.1 6L12 16.6l-5.3 2.9 1.1-6L3.4 9.4l6-.7L12 3.2Z"/></svg></span>` : '')
     + `<span class="ai">${IC(k, 24)}</span>${l}${ok ? '' : '<em>в разработке</em>'}</button>`).join('');
 }
