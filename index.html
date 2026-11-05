@@ -1443,6 +1443,12 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .prof-sync{display:flex;justify-content:center;margin:-4px 0 16px}
 .prof-sync:empty{display:none}
 .prof-sync .sync2{margin:0;height:30px}
+/* v1.480: FOUNDER + PRO рядом */
+.crw{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hero .crw{display:flex;justify-content:center}
+.prof .crw{display:flex}
+.crw .crt{margin-top:0}
+.prof .crw,.hero .crw{margin-top:8px}
 /* v1.467: выбор значка */
 .bgl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .bgi{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;cursor:pointer;transition:transform .15s,border-color .2s,background .2s}
@@ -1478,7 +1484,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.479';
+const APP = 'VOOB (by BGASHEV) Mini App v1.480';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3374,7 +3380,7 @@ function bdgInner(id, size = 16){ const b = BDG.get(+id); if (b && b.creator) re
   const k = +id === +UK ? (db.settings.badge || '') : (b.badge || ''); return badgeHTML(BADGE_LIST.some(x => x[0] === k) ? k : 'verified', size); }
 function crownHTML(size = 16){ return `<span class="nbadge crown" title="Создатель VOOB" style="width:${size}px;height:${size}px"><svg viewBox="0 0 100 100" width="${size}" height="${size}"><polygon points="50.00,4.00 60.09,12.33 73.00,10.16 77.58,22.42 89.84,27.00 87.67,39.91 96.00,50.00 87.67,60.09 89.84,73.00 77.58,77.58 73.00,89.84 60.09,87.67 50.00,96.00 39.91,87.67 27.00,89.84 22.42,77.58 10.16,73.00 12.33,60.09 4.00,50.00 12.33,39.91 10.16,27.00 22.42,22.42 27.00,10.16 39.91,12.33" style="fill:var(--accent);stroke:var(--accent)" stroke-width="5" stroke-linejoin="round"/><g transform="translate(23.6 22.6) scale(2.2)" style="fill:var(--on-accent)"><path d="M2.6 8.2 7.3 11.6 12 4.9l4.7 6.7 4.7-3.4-1.8 9.4H4.4Z"/><rect x="4.4" y="18.2" width="15.2" height="2.2" rx="1.1"/></g></svg></span>`; }
 function creatorHTML(id){ return `<span class="crw" data-cid="${+id || 0}">${creatorInner(id)}</span>`; }
-function creatorInner(id){ const b = BDG.get(+id); return b && b.creator ? '<span class="crt"><i class="s1"></i><i class="s2"></i>FOUNDER</span>' : (b && b.pro ? '<span class="crt pro">PRO</span>' : ''); }
+function creatorInner(id){ const b = BDG.get(+id); return b && b.creator ? '<span class="crt"><i class="s1"></i><i class="s2"></i>FOUNDER</span><span class="crt pro">PRO</span>' : (b && b.pro ? '<span class="crt pro">PRO</span>' : ''); }   /* v1.480: у создателя — две плашки */
 function askBadges(ids){
   if (!inTG) return;
   for (const id of ids || []) { const n = +id; if (n && !BDG_ASKED.has(n)) bdgQueue.add(n); }
