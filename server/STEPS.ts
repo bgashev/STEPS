@@ -528,7 +528,7 @@ async function giftStats(ids: number[]) {
 const giftBonus = (s?: { kinds: string[] }) => (s?.kinds ?? []).reduce((a, k) => a + giftXp(k), 0);
 const monthStartIso = () => { const t = new Date(); return new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth(), 1)).toISOString(); };
 async function giftEnergy(me: number) {
-  const { count } = await db.from("gifts").select("id", { count: "exact", head: true }).eq("from_id", me).neq("kind", "pro").gte("created_at", monthStartIso());
+  const { count } = await db.from("gifts").select("id", { count: "exact", head: true }).eq("from_id", me).neq("kind", "pro").not("kind", "in", `(${[...PRO_GIFTS].join(",")})`).gte("created_at", monthStartIso());   // v1.483: премиум-подарки энергию не тратят
   const t = new Date();
   const reset = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth() + 1, 1)).toISOString().slice(0, 10);
   return { left: Math.max(0, GIFT_ENERGY - (count ?? 0)), total: GIFT_ENERGY, reset };
@@ -731,7 +731,7 @@ async function routeGiftSend(body: any) {
   if (!other || other === me || !(await areFriends(me, other))) return fail("Дарить можно только друзьям", 403);
   if (PRO_GIFTS.has(kind) && me !== ADMIN_TG_ID && !(await proStatus(me)).active) return json({ status: "pro" });
   const en = await giftEnergy(me);
-  if (en.left <= 0) return json({ status: "energy", energy: en });
+  if (en.left <= 0 && !PRO_GIFTS.has(kind)) return json({ status: "energy", energy: en });
   const { error } = await db.from("gifts").insert({ from_id: me, to_id: other, kind });
   if (error) return fail("Ошибка записи: " + error.message, 500);
   const { data: had } = await db.from("gifts").select("id").eq("to_id", other).eq("kind", kind).not("claimed_at", "is", null).limit(1);

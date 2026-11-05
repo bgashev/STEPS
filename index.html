@@ -1507,7 +1507,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.482';
+const APP = 'VOOB (by BGASHEV) Mini App v1.483';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2688,8 +2688,8 @@ function openGiftPicker(id){
   openSheet(`<div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px"><h2 style="margin:0">Подарить: ${esc(f.name)}</h2>${energyHTML(en)}</div>
     <div class="cap" style="margin-bottom:12px">${en.left ? 'Энергии хватит ещё на ' + npw(en.left, ['подарок','подарка','подарков']) + ' в этом месяце. Отмеченные точкой у друга уже есть — новый вид даст ему +100 очков.' : 'Энергия кончилась — новые подарки с 1-го числа.'}</div>
     <div class="gpick">` + GIFT_KEYS.map(k => `<button type="button" class="gp${has.has(k) ? ' has' : ''}${k === 'pro' ? ' gpro' : ''}" data-act="${k === 'pro' ? 'giftpro' : 'gsend'}" data-id="${id}" data-k="${k}"${en.left || k === 'pro' ? '' : ' disabled'}><span class="gi">${giftArt(k)}</span><i>${GIFT_T[k][1]}</i></button>`).join('') + `</div>
-    <div class="gpsec">${IC('crown', 13)}<b>Премиум</b><span>только для PRO · +200 очков</span></div>
-    <div class="gpick prem">` + PGIFTS.map(k => `<button type="button" class="gp gprem${has.has(k) ? ' has' : ''}${pro ? '' : ' plk'}" data-act="${pro ? 'gsend' : 'gprolock'}" data-id="${id}" data-k="${k}"${pro && !en.left ? ' disabled' : ''}><span class="gi">${giftArt(k)}</span><i>${GIFT_T[k][1]}</i>${pro ? '' : '<u class="prot">PRO</u>'}</button>`).join('') + `</div>`, {type:'gpick', id});
+    <div class="gpsec">${IC('crown', 13)}<b>Премиум</b><span>только для PRO · без траты энергии · +200 очков</span></div>
+    <div class="gpick prem">` + PGIFTS.map(k => `<button type="button" class="gp gprem${has.has(k) ? ' has' : ''}${pro ? '' : ' plk'}" data-act="${pro ? 'gsend' : 'gprolock'}" data-id="${id}" data-k="${k}"><span class="gi">${giftArt(k)}</span><i>${GIFT_T[k][1]}</i>${pro ? '' : '<u class="prot">PRO</u>'}</button>`).join('') + `</div>`, {type:'gpick', id});
 }
 /* v1.429: VOOB PRO в подарок другу — оплата звёздами */
 async function openGiftPro(id){
