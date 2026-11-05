@@ -754,7 +754,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 @keyframes actSheen{from{transform:translateX(-120%)}to{transform:translateX(120%)}}
 @keyframes actHd{from{opacity:0;filter:blur(20px);transform:translateY(14px) scale(.98)}40%{opacity:1}}
 /* v1.459: одна общая анимация на всё окно — шапка и вся сетка тренировок проявляются из размытия как единое целое */
-#sheet.half>h2,#sheet.half>.cap,#sheet.half>.wstep,#sheet.half>.acts:not(.calm){animation:actHd 1.05s cubic-bezier(.22,.61,.36,1) both}
+#sheet.half>h2,#sheet.half>.cap,#sheet.half>.wstep,#sheet.half>.acts:not(.calm){animation:actHd .8s cubic-bezier(.22,.61,.36,1) both}
 @media (prefers-reduced-motion:reduce){#sheet.half>h2,#sheet.half>.cap,#sheet.half>.wstep,#sheet.half>.acts{animation:none!important}}
 .act.soon .ai{background:var(--surface2);color:var(--muted);opacity:.7}
 .act.soon::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,var(--accent-soft) 50%,transparent 70%);transform:translateX(-100%);animation:skm 3.2s ease-in-out infinite}
@@ -1383,7 +1383,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.463';
+const APP = 'VOOB (by BGASHEV) Mini App v1.464';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
