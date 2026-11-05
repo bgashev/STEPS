@@ -559,13 +559,12 @@ input[type=date].inp{display:block}
 /* v1.453: профиль — всё, что подгружается, проявляется плавно */
 @keyframes pfIn{from{opacity:0;transform:translateY(14px) scale(.985)}}
 @keyframes pfFade{from{opacity:0}}
-.pfin{animation:pfIn .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--pi,0) * 80ms)}
 .hero{transition:background-color .6s ease,border-color .6s ease}
 .hero .fchipb{animation:pfFade .6s ease both}
 .hero .socs .soc{animation:pfIn .55s cubic-bezier(.2,.8,.2,1) both}
 .hero .bdg .nbadge,.hero .crw .crt{animation:pfFade .7s ease both}
 .hbgfx{animation:pfFade .9s ease both}
-@media (prefers-reduced-motion:reduce){.pfin,.hero .fchipb,.hero .socs .soc,.hero .bdg .nbadge,.hero .crw .crt,.hbgfx{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.hero .fchipb,.hero .socs .soc,.hero .bdg .nbadge,.hero .crw .crt,.hbgfx{animation:none!important}}
 .fitem .fav{flex:none}
 .fitem .fav.s{width:38px;height:38px;font-size:15px}   /* v1.442: аватарки в ленте крупнее */
 .fitem .fav.s:is([class*=" fr-"]){padding:3px}
@@ -2779,10 +2778,10 @@ const FPC = new Map();   // кэш профилей друзей: открыва
 async function openFriendProfile(id){
   const f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
   const c = FPC.get(id), cj = c && c.j;
-  openSheet(friendSheetHTML(f, cj || null, !cj), {type:'fprof', id});
+  openSheet(friendSheetHTML(f, cj || null, !cj), {type:'fprof', id}); revealNew($('#sheet'));
   if (cj) { loadFofPhotos(cj); if (Date.now() - c.at < 60000) return; }
   try { const j = await apiAuth('/friends/profile', {tg_id:id, today:isoOf(todayN())}); FPC.set(id, {j, at:Date.now()});
-    if (sheetCtx && sheetCtx.type === 'fprof' && sheetCtx.id === id) { const sh = $('#sheet'), st = sh.scrollTop; sh.innerHTML = '<div class="grab"></div>' + sheetBack(sheetCtx) + friendSheetHTML(f, j, false); sh.scrollTop = st; loadFofPhotos(j); } }
+    if (sheetCtx && sheetCtx.type === 'fprof' && sheetCtx.id === id) { morphSoft($('#sheet'), '<div class="grab"></div>' + sheetBack(sheetCtx) + friendSheetHTML(f, j, false), () => loadFofPhotos(j)); } }
   catch (e) { const el = $('#fp-load'); if (el) el.textContent = 'Не удалось загрузить: ' + e.message; }
 }
 async function loadFofPhotos(j){
@@ -2814,7 +2813,7 @@ function friendSheetHTML(f, j, loading, self){
     + (self ? `<button type="button" class="fchipb hset" data-act="meset" aria-label="Настройки профиля и приложения">${IC('gear', 16)}Настройки</button>` : '')
     + `</div>` + socialsHTML(f.tg_id, true) + `</div>` + acts;
   h += weekCard(f, g, ok, shown, j && j.week && j.week.days, loading);
-  if ((f.gift_kinds || []).length) h += `<div class="card${loading ? '' : ' pfin'}" style="--pi:${PI++}"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из ${GIFT_KEYS.length}</h3>${giftShelf(f.gift_kinds, 20, f.name)}</div>`;
+  if ((f.gift_kinds || []).length) h += `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из ${GIFT_KEYS.length}</h3>${giftShelf(f.gift_kinds, 20, f.name)}</div>`;
   if (!loading && !self) h += `<button class="btn ghost small" style="width:100%;margin-bottom:12px;color:var(--muted)" data-act="frrep" data-id="${f.tg_id}">Пожаловаться</button>`;
   if (loading) return h + `<div id="fp-load">` + [100, 120, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('') + `</div>`;
   if (!j.details) return h + `<div class="card muted pfin" style="--pi:${PI++}">${IC('lock', 16)} ${self ? 'Твой профиль закрыт — друзья видят только основное. Открыть можно в настройках.' : esc(f.name) + ' закрыл(а) профиль — видно только основное.'}</div>`;
@@ -3384,6 +3383,31 @@ let _rTab = null, _rHtml = '';
 /* v1.442: морфинг DOM. Повторный render той же вкладки (пришли друзья, значки, фото…) больше не пересоздаёт
    страницу целиком: кольца, полоски, фон профиля и аватарки остаются теми же узлами, анимации не стартуют заново. */
 const KEEP_ATTR = new Set(['data-done', 'data-zh', 'data-ph']);   // ставит сам скрипт (счётчик минут уже отыграл)
+/* v1.453: новое появляется «раскрытием» — карточка плавно вырастает по высоте, всплывает и проявляется; прежнее содержимое остаётся на месте */
+const RV = new WeakSet(), reducedMotion = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+function revealNew(root){
+  if (!root || reducedMotion()) return;
+  let k = 0;
+  root.querySelectorAll('.pfin').forEach(el => {
+    if (RV.has(el)) return; RV.add(el);
+    const h = el.offsetHeight; if (!el.animate || !h) return;
+    const cs = getComputedStyle(el), from = {height:'0px', opacity:0, transform:'translateY(18px) scale(.985)'}, to = {height:h + 'px', opacity:1, transform:'none'};
+    ['paddingTop', 'paddingBottom', 'marginTop', 'marginBottom'].forEach(p => { from[p] = '0px'; to[p] = cs[p]; });
+    el.style.overflow = 'hidden';
+    const fin = () => { el.style.overflow = ''; };
+    const a = el.animate([from, to], {duration:760, delay:Math.min(k++, 6) * 90, easing:'cubic-bezier(.2,.8,.2,1)', fill:'backwards'}); a.onfinish = fin; a.oncancel = fin;
+  });
+}
+// обновление «на месте»: скелет сначала мягко сворачивается, затем правится только изменившееся — ничего не мигает и не пересоздаётся
+function morphSoft(box, html, after){
+  const t = document.createElement('template'); t.innerHTML = html;
+  const go = () => { morphKids(box, t.content); revealNew(box); if (after) after(); };
+  const fp = box.querySelector('#fp-load');
+  if (fp && !t.content.querySelector('#fp-load') && fp.animate && !reducedMotion()) {
+    fp.style.overflow = 'hidden';
+    fp.animate([{height:fp.offsetHeight + 'px', opacity:1}, {height:'0px', opacity:0}], {duration:300, easing:'ease-in', fill:'forwards'}).onfinish = go;
+  } else go();
+}
 function morphKids(from, to){
   const a = [...from.childNodes], b = [...to.childNodes];
   b.forEach((n, i) => {
@@ -3410,8 +3434,8 @@ function render(){
   if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
   v.classList.toggle('rr', same);                          // та же вкладка: обновляем без повторных «появлений»
   _rTab = S.tab; _rHtml = html;
-  if (same) { const t = document.createElement('template'); t.innerHTML = html; morphKids(v, t.content); }   // v1.442: та же вкладка — правим только изменившееся, без мерцаний
-  else v.innerHTML = html;
+  if (same) morphSoft(v, html);   // v1.442: та же вкладка — правим только изменившееся, без мерцаний
+  else { v.innerHTML = html; revealNew(v); }
   updFab();
   festCountUp();
   document.querySelectorAll('.prox:not([data-ph])').forEach(el => { el.dataset.ph = 1; el.style.setProperty('--ph', -Math.round(performance.now() % 5000) + 'ms'); });   // блик PRO не начинается заново
