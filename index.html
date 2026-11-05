@@ -3177,9 +3177,11 @@ function askBadges(ids){
         const so = (j.socials || {})[id]; if (so) SOC.set(id, so); else SOC.delete(id); }
       lsSet(BDK, Object.fromEntries(BDG)); lsSet('voob_soc_' + ((tgUser && tgUser.id) || 0), Object.fromEntries(SOC));
       if (j.creator) { CREATOR = j.creator; lsSet('voob_creator', CREATOR); }
-      document.querySelectorAll('.socs[data-soc]').forEach(el => { el.innerHTML = socialsInner(el.dataset.soc, el.dataset.ico); });
-      document.querySelectorAll('.bdg[data-bid]').forEach(el => { el.innerHTML = bdgInner(el.dataset.bid, +el.dataset.sz || 16); });
-      document.querySelectorAll('.crw[data-cid]').forEach(el => { el.innerHTML = creatorInner(el.dataset.cid); });
+      // v1.454: трогаем только то, что реально изменилось — иначе уже показанные значки пересоздаются и мигают
+      const tp = document.createElement('div'), put = (el, html) => { tp.innerHTML = html; if (el.innerHTML !== tp.innerHTML) el.innerHTML = html; };   // сравниваем в одной сериализации браузера
+      document.querySelectorAll('.socs[data-soc]').forEach(el => put(el, socialsInner(el.dataset.soc, el.dataset.ico)));
+      document.querySelectorAll('.bdg[data-bid]').forEach(el => put(el, bdgInner(el.dataset.bid, +el.dataset.sz || 16)));
+      document.querySelectorAll('.crw[data-cid]').forEach(el => put(el, creatorInner(el.dataset.cid)));
       if (fch && !sheetCtx) render();                         // пришли рамки PRO — перерисуем аватарки
     } catch (e) { list.forEach(x => BDG_ASKED.delete(x)); }
   }, 120);
