@@ -1934,7 +1934,12 @@ const hap = {
   imp(){ try { if (ver('6.1')) tg.HapticFeedback.impactOccurred('light'); } catch (e) {} },
   med(){ try { if (ver('6.1')) tg.HapticFeedback.impactOccurred('medium'); } catch (e) {} },
   ok(){ try { if (ver('6.1')) tg.HapticFeedback.notificationOccurred('success'); } catch (e) {} },
-  warn(){ try { if (ver('6.1')) tg.HapticFeedback.notificationOccurred('warning'); } catch (e) {} }
+  warn(){ try { if (ver('6.1')) tg.HapticFeedback.notificationOccurred('warning'); } catch (e) {} },
+  // v1.455: «рисунок» из нескольких касаний; запускается после перерисовки (сразу после тяжёлой анимации телефон мог пропустить одиночный отклик)
+  seq(list){ try { if (!ver('6.1')) return; const H = tg.HapticFeedback; let t = 0;
+    list.forEach(([kind, v, gap]) => { t += gap || 0; setTimeout(() => { try { kind === 'n' ? H.notificationOccurred(v) : kind === 's' ? H.selectionChanged() : H.impactOccurred(v); } catch (e) {} }, t); }); } catch (e) {} },
+  pinOn(){ this.seq([['i', 'heavy', 40], ['n', 'success', 110]]); },        // закрепили: сильный удар и «успех»
+  pinOff(){ this.seq([['i', 'soft', 40], ['i', 'light', 90]]); }              // открепили: два мягких касания
 };
 let toastTimer;
 function toast(msg, label, cb){
@@ -3791,7 +3796,8 @@ const ACT = {
   sback: () => { hap.tap(); stepBack(); },
   actfav: el => { const k = el.dataset.v, f = favActs(), on = f.includes(k);
     if (!on && f.length >= favMax()) { hap.warn(); if (isPro()) toast('Закрепить можно до 5 видов — сначала открепи один'); else proToast('Одна закреплённая — бесплатно, до 5 — в PRO', 'acts'); return; }
-    on ? hap.med() : hap.ok(); db.settings.fav = on ? f.filter(x => x !== k) : [...f, k];   // закрепили — «успех», открепили — средний толчок touchMeta('settings'); save();
+    db.settings.fav = on ? f.filter(x => x !== k) : [...f, k]; touchMeta('settings'); save();
+    on ? hap.pinOff() : hap.pinOn();   // разные отклики: закрепили — сильный + «успех», открепили — два мягких
     const box = $('.acts'); if (!box) return;
     const was = new Map([...box.querySelectorAll('.act[data-k]')].map(b => [b.dataset.k, b.getBoundingClientRect()]));
     box.classList.add('calm'); box.innerHTML = actsHTML();
