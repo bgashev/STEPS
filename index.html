@@ -595,6 +595,9 @@ input[type=date].inp{display:block}
 .flk.pop svg{animation:lkPop .42s ease}
 @keyframes lkPop{35%{transform:scale(1.45)}70%{transform:scale(.9)}100%{transform:scale(1)}}
 #sheet.half{max-height:min(54vh,calc(92vh - var(--kb,0px)))}
+/* v1.453: «до середины» — список не прокручивается, а раскрывается свайпом вверх на весь экран (и сворачивается обратно свайпом вниз) */
+#sheet.half:not(.xl){overflow-y:hidden;-webkit-mask-image:linear-gradient(#000 calc(100% - 34px),transparent);mask-image:linear-gradient(#000 calc(100% - 34px),transparent)}
+#sheet.half.xl{max-height:calc(92vh - var(--kb,0px))}
 #sheet.full{top:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 8px);max-height:none}
 .fs-head{display:flex;align-items:center;gap:10px;margin:2px 0 6px;position:sticky;top:-10px;z-index:2;background:var(--bg);padding:6px 0}
 .fs-head .cap{margin-right:auto}
@@ -1132,7 +1135,7 @@ input[type=date].inp{display:block}
 .nt-no{position:relative;width:100%;margin-top:8px;justify-content:center}
 
 /* v1.434: лист с полем ввода всегда над клавиатурой (высоту клавиатуры даёт visualViewport) */
-#sheet{bottom:var(--kb,0px);max-height:calc(92vh - var(--kb,0px));transition:transform .32s cubic-bezier(.2,.8,.2,1),bottom .22s ease}
+#sheet{bottom:var(--kb,0px);max-height:calc(92vh - var(--kb,0px));transition:transform .32s cubic-bezier(.2,.8,.2,1),bottom .22s ease,max-height .45s cubic-bezier(.2,.8,.2,1)}
 .ssh-save{width:100%;min-height:52px;justify-content:center;margin-top:12px}
 .ssh-hint.bad{color:var(--red)}
 /* v1.434: «Цель недели» на главной */
@@ -3453,6 +3456,7 @@ const sheetBack = ctx => ctx && BACK_T.has(ctx.type) ? `<button type="button" cl
 function openSheet(html, ctx){
   sheetCtx = ctx;
   $('#sheet').classList.remove('top');
+  $('#sheet').classList.remove('xl');
   $('#sheet').classList.toggle('half', !!ctx && (ctx.type === 'acts' || ctx.type === 'planact'));   // выбор активности — до середины экрана, избранные под большим пальцем
   $('#sheet').innerHTML = `<div class="grab"></div>` + sheetBack(ctx) + html;
   $('#sheet').scrollTop = 0;
@@ -3471,19 +3475,25 @@ function openSheet(html, ctx){
   sh.addEventListener('touchmove', e => {
     if (!on) return; const t = e.touches[0], my = t.clientY - y0, mx = t.clientX - x0;
     if (lock === null) { if (Math.abs(my) < 8 && Math.abs(mx) < 8) return;
-      lock = my > 0 && Math.abs(my) > Math.abs(mx) * 1.2 && sh.scrollTop <= 0;
+      const vert = Math.abs(my) > Math.abs(mx) * 1.2, half = sh.classList.contains('half'), xl = sh.classList.contains('xl');
+      lock = vert && my < 0 && half && !xl ? 'up' : (my > 0 && vert && sh.scrollTop <= 0);   // v1.453: вверх по окну «до середины» — раскрыть на весь экран
       if (!lock) { on = false; return; }
-      sh.classList.add('drag'); sw.classList.add('dragging'); y0 = t.clientY; t0 = Date.now(); }
+      if (lock === true && !xl) { sh.classList.add('drag'); sw.classList.add('dragging'); }
+      y0 = t.clientY; t0 = Date.now(); }
     e.preventDefault();
+    if (lock === 'up') { dy = Math.min(0, t.clientY - y0); return; }
     dy = Math.max(0, t.clientY - y0);
+    if (sh.classList.contains('xl')) return;   // раскрытое окно при смахивании вниз сначала сворачивается до половины, без сдвига
     sh.style.transform = `translateY(${dy}px)`;
     bd.style.opacity = String(Math.max(.15, 1 - dy / Math.max(320, sh.offsetHeight)));
   }, {passive:false});
   const fin = () => { if (!on) return; on = false; if (!lock) return;
-    const v = dy / Math.max(1, Date.now() - t0), close = dy > 120 || (v > .55 && dy > 36);
+    const up = lock === 'up', v = Math.abs(dy) / Math.max(1, Date.now() - t0);
     sh.classList.remove('drag'); sw.classList.remove('dragging');
     sh.style.transform = ''; bd.style.opacity = '';
-    if (close) { hap.tap(); closeSheet(); } };
+    if (up) { if (-dy > 36 || (v > .5 && -dy > 14)) { sh.classList.add('xl'); hap.imp(); } return; }
+    const close = dy > 120 || (v > .55 && dy > 36);
+    if (close) { hap.tap(); if (sh.classList.contains('xl')) sh.classList.remove('xl'); else closeSheet(); } };
   sh.addEventListener('touchend', fin); sh.addEventListener('touchcancel', fin);
 })();
 function closeSheet(){
