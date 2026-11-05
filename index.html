@@ -2938,11 +2938,11 @@ function openPlanActs(){
   openSheet(`<h2>Что планируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше параметры и дата</div><div class="acts">`
     + ACTS.filter(a => a[2]).map(([k, l], i) => `<button type="button" class="act" data-act="plact" data-v="${k}" style="--d:${Math.min(i, 13) * 42 + 110}ms"><span class="ai">${IC(k, 24)}</span>${l}</button>`).join('') + `</div>`, {type:'planact'});
 }
-function openPlan(p, act){
+function openPlan(p, act, back){
   const src = p || {}, today = isoOf(todayN()), date = p ? p.date : today;
   act = act || actOf(src); const st = STR[act], same = !!p && actOf(p) === act;
   const dateF = `<label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}" min="${date < today ? date : today}"></label>`;
-  openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${p ? 'Редактирование плана' : 'Новый план'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}</div></div></div>
+  openSheet(`<div class="row" style="gap:12px;margin-bottom:14px">${back ? `<button type="button" class="ib" data-act="sback" aria-label="Назад">${IC('back', 20)}</button>` : ''}<span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${p ? 'Редактирование плана' : 'Новый план'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}</div></div></div>
     ${st ? `<div class="g2">${dateF}<span></span></div>
       <div class="f"><span>Подходы · ${st[0] === 'secs' ? 'секунд в каждом' : 'повторов в каждом'}</span><div class="sl" id="f-sl">${slRowsHTML(same && slOf(src).length ? slOf(src) : (act === 'pullup' ? [8, 7, 6] : st[0] === 'secs' ? [45, 45, 45] : [12, 12, 12]), st)}</div>
         <div class="sl-btns"><button type="button" class="btn ghost small" data-act="sladd">${IC('plus', 15)}Ещё подход</button><span class="cap" id="sl-sum"></span></div></div>
@@ -2952,7 +2952,7 @@ function openPlan(p, act){
     : `<div class="g2">${dateF}${stepper('incline', 'Уклон', same && src.incline != null ? src.incline : 0, 0, 15, 1, 0, '%')}</div>
       <div class="g2">${stepper('minutes', 'Время', (same && src.minutes) || 30, 1, 240, 1, 0, 'мин')}${stepper('speed', 'Скорость', (same && src.speed) || 4.5, 0.5, 12, 0.1, 1, 'км/ч')}</div>`}
     <div class="preview" id="f-prev"></div>
-    <div class="sheet-btns">${p ? `<button class="btn ghost danger" data-act="pldel" data-id="${esc(p.id)}">${IC('trash')}</button>` : ''}<button class="btn primary" data-act="plsave">Сохранить</button></div>`, {type:'plan', item:p, act});
+    <div class="sheet-btns">${p ? `<button class="btn ghost danger" data-act="pldel" data-id="${esc(p.id)}">${IC('trash')}</button>` : ''}<button class="btn primary" data-act="plsave">Сохранить</button></div>`, {type:'plan', item:p, act, back});
   updPreview();
 }
 function savePlan(){
@@ -3508,10 +3508,10 @@ function feelPicker(v){
     [1,2,3,4,5].map(i => `<button type="button" class="${i <= v ? 'on' : ''}" style="--c:${FEEL[i][1]}" data-act="feel" data-v="${i}" aria-label="${FEEL[i][0]}"></button>`).join('') +
     `</div><span class="feel-l" id="f-feel-l" style="color:${FEEL[v][1]}">${FEEL[v][0]}</span></div></div>`;
 }
-function openWorkout(w, preset, hint, act){
+function openWorkout(w, preset, hint, act, back){
   const src = w || preset || {}, date = w ? w.date : isoOf(todayN()), f = clamp(parseInt(src.feeling) || 3, 1, 5);
   act = act || actOf(src); const st = STR[act], same = src.act === act;
-  openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${w ? 'Редактирование' : 'Новая тренировка'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}${KG_ACT[act] && src.ex && typeof dbxName === 'function' && dbxName(src.ex, act) ? ' · ' + dbxName(src.ex, act) : ''}</div></div></div>${hint ? `<div class="hint">${hint}</div>` : ''}
+  openSheet(`${back ? '<div class="wstep"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></div>' : ''}<div class="row" style="gap:12px;margin-bottom:14px">${back ? `<button type="button" class="ib" data-act="sback" aria-label="Назад">${IC('back', 20)}</button>` : ''}<span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${w ? 'Редактирование' : 'Новая тренировка'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}${KG_ACT[act] && src.ex && typeof dbxName === 'function' && dbxName(src.ex, act) ? ' · ' + dbxName(src.ex, act) : ''}</div></div></div>${hint ? `<div class="hint">${hint}</div>` : ''}
     ${st ? `<div class="g2"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label><span></span></div>
       <div class="f"><span>Подходы · ${st[0] === 'secs' ? 'секунд в каждом' : 'повторов в каждом'}</span><div class="sl" id="f-sl">${slRowsHTML(same && slOf(src).length ? slOf(src) : (act === 'pullup' ? [8, 7, 6] : st[0] === 'secs' ? [45, 45, 45] : [12, 12, 12]), st)}</div>
         <div class="sl-btns"><button type="button" class="btn ghost small" data-act="sladd">${IC('plus', 15)}Ещё подход</button><span class="cap" id="sl-sum"></span></div></div>
@@ -3524,7 +3524,7 @@ function openWorkout(w, preset, hint, act){
     <div class="preview" id="f-prev"></div>
     ${feelPicker(f)}
     <label class="f"><span>Заметка</span><input class="inp" id="f-note" maxlength="140" placeholder="Необязательно" value="${esc(w ? w.note || '' : '')}"></label>
-    <div class="sheet-btns">${w ? `<button class="btn ghost danger" data-act="wdel">${IC('trash')}</button>` : ''}${acLocked(w) ? `<div class="hint" style="margin:0;align-self:center">${IC('lock', 13)} Старше 2 дней — менять нельзя, только удалить</div>` : `<button class="btn primary" data-act="wsave">Сохранить</button>`}</div>`, {type:'workout', item:w, act});
+    <div class="sheet-btns">${w ? `<button class="btn ghost danger" data-act="wdel">${IC('trash')}</button>` : ''}${acLocked(w) ? `<div class="hint" style="margin:0;align-self:center">${IC('lock', 13)} Старше 2 дней — менять нельзя, только удалить</div>` : `<button class="btn primary" data-act="wsave">Сохранить</button>`}</div>`, {type:'workout', item:w, act, back});
   updPreview();
 }
 function slRowsHTML(sl, st){
@@ -3712,6 +3712,18 @@ async function copyBackup(){
 // v1.449: избранные виды активности — до FAV_MAX, закреплённые идут первыми
 const favMax = () => isPro() ? 6 : 3;   // v1.451: с PRO — до 6
 function favActs(){ const f = Array.isArray(db.settings.fav) ? db.settings.fav : []; return f.filter(k => ACTS.some(a => a[0] === k && a[2])).slice(0, favMax()); }
+function openActs(calm){   // calm — вернулись «назад»: без повторного каскада, раскрытость окна восстанавливается
+  openSheet(`<div class="wstep"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div><h2>Что тренируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше привычная форма</div><div class="acts${calm ? ' calm' : ''}">` + actsHTML() + `</div>`, {type:'acts'});
+  if (calm && S.actsXl) $('#sheet').classList.add('xl');
+}
+// шаг назад из любого этапа добавления: форма → упражнение → выбор активности (и форма плана → выбор активности)
+function stepBack(){
+  const c = sheetCtx; if (!c) return false;
+  if (c.type === 'dbx') { openActs(true); return true; }
+  if (c.type === 'workout' && c.back) { if (c.back === 'dbx') openDbx(c.act); else openActs(true); return true; }
+  if (c.type === 'plan' && c.back) { openPlanActs(); return true; }
+  return false;
+}
 function actsHTML(){
   const f = favActs(), list = [...f.map(k => ACTS.find(a => a[0] === k)), ...ACTS.filter(a => !f.includes(a[0]))];
   return list.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}${f.includes(k) ? ' pin' : ''}" data-k="${k}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="--d:${Math.min(i, 13) * 42 + 110}ms">`
@@ -3720,7 +3732,8 @@ function actsHTML(){
 }
 const ACT = {
   tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; S.meSet = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') loadFriends(); } },
-  add: () => { hap.imp(); openSheet(`<div class="wstep"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div><h2>Что тренируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше привычная форма</div><div class="acts">` + actsHTML() + `</div>`, {type:'acts'}); },
+  add: () => { hap.imp(); S.actsXl = false; openActs(false); },
+  sback: () => { hap.tap(); stepBack(); },
   actfav: el => { const k = el.dataset.v, f = favActs(), on = f.includes(k);
     if (!on && f.length >= favMax()) { hap.warn(); toast(isPro() ? 'Закрепить можно до 6 видов — сначала открепи один' : '👑 Больше трёх — с VOOB PRO, до 6 видов'); return; }
     on ? hap.med() : hap.ok(); db.settings.fav = on ? f.filter(x => x !== k) : [...f, k];   // закрепили — «успех», открепили — средний толчок touchMeta('settings'); save();
@@ -3740,7 +3753,7 @@ const ACT = {
         b.animate([{transform:'translateX(-120%)'}, {transform:'translateX(120%)'}], {duration:820, delay:420, easing:'ease-in-out', pseudoElement:'::after'});   // один мягкий блик
       } catch (e) {} } });
     const t = box.querySelector(`.act[data-k="${k}"] .afav`); if (t && t.animate && !on) t.animate([{transform:'scale(.3) rotate(-120deg)', opacity:.2}, {transform:'scale(1.55) rotate(18deg)', opacity:1, offset:.55}, {transform:'scale(1) rotate(0deg)', opacity:1}], {duration:640, delay:180, easing:'cubic-bezier(.2,.9,.3,1)', fill:'backwards'}); },
-  actpick: el => { hap.tap(); if (KG_ACT[el.dataset.v]) { openDbx(el.dataset.v); return; } openWorkout(null, null, '', el.dataset.v); },
+  actpick: el => { hap.tap(); S.actsXl = $('#sheet').classList.contains('xl'); if (KG_ACT[el.dataset.v]) { openDbx(el.dataset.v); return; } openWorkout(null, null, '', el.dataset.v, 'acts'); },
   actsoon: () => { hap.warn(); toast('Скоро — уже готовим ✨'); },
   sladd: () => { const sl = slRead(); if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } sl.push(sl[sl.length - 1] || 10); hap.tap(); slRedraw(sl);
     const rows = document.querySelectorAll('#f-sl .slr'); if (rows.length) rows[rows.length - 1].classList.add('new'); },
@@ -3774,7 +3787,7 @@ const ACT = {
   asfree: () => { hap.tap(); try { localStorage.setItem('voob_asfree', asFree() ? '0' : '1'); } catch (e) {} invalidate(); applyTheme(); render(); toast(asFree() ? 'Режим без PRO включён' : 'PRO вернулся'); },
   plans: () => { hap.tap(); openPlans(); },
   plnew: () => { hap.tap(); openPlanActs(); },
-  plact: el => { hap.tap(); openPlan(null, el.dataset.v); },
+  plact: el => { hap.tap(); openPlan(null, el.dataset.v, true); },
   pledit: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.tap(); openPlan(p, actOf(p)); },
   plsave: savePlan,
   pldel: el => { const p = findPlan(el.dataset.id); if (!p) return; const idx = db.plans.indexOf(p), inForm = sheetCtx && sheetCtx.type === 'plan';
@@ -4022,7 +4035,7 @@ async function init(){
     try { tg.ready(); tg.expand(); } catch (e) {}
     try { if (ver('7.7')) tg.disableVerticalSwipes(); } catch (e) {}
     try { tg.onEvent('themeChanged', () => { if (db.settings.theme === 'auto') { applyTheme(); render(); } }); } catch (e) {}
-    try { if (ver('6.1')) tg.BackButton.onClick(() => { if ($('#cg').classList.contains('show')) $('#cg').classList.remove('show'); else closeSheet(); }); } catch (e) {}
+    try { if (ver('6.1')) tg.BackButton.onClick(() => { if ($('#cg').classList.contains('show')) $('#cg').classList.remove('show'); else if (!stepBack()) closeSheet(); }); } catch (e) {}
   }
   try { const s = localStorage.getItem(LS); if (s) db = normalize(JSON.parse(s)); } catch (e) {}
   invalidate(); applyTheme(); render();
@@ -4080,7 +4093,7 @@ function dbxName(k, act){ const e = exList(act || 'dumbbell').find(x => x[0] ===
 function dbxIcon(k, size){ return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${(DB_EX_SVG[k] || '').replace(/'/g, '"')}</svg>`; }
 function openDbx(act){ act = act || 'dumbbell';
   openSheet(`<div class="wstep"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></div>
-    <div class="row" style="gap:12px;margin-bottom:12px"><button type="button" class="ib" data-act="add" aria-label="Назад">${IC('back', 20)}</button>
+    <div class="row" style="gap:12px;margin-bottom:12px"><button type="button" class="ib" data-act="sback" aria-label="Назад">${IC('back', 20)}</button>
     <div><h2 style="margin:0">${KG_ACT[act].q}</h2><div class="cap">Упражнение будет видно в истории и у друзей в ленте</div></div></div>
     <div class="dbxg">${exList(act).map(([k, l, m, ic], i) => `<button type="button" class="dbx" data-act="dbxpick" data-v="${k}" data-a="${act}" style="animation-delay:${i * 28}ms"><span class="di">${dbxIcon(ic || k, 30)}</span><b>${l}</b><em>${m}</em></button>`).join('')}</div>`, {type:'dbx'});
 }
@@ -4136,7 +4149,7 @@ function closeNotice(after){
   setTimeout(() => { if (el && !el.classList.contains('show')) el.innerHTML = ''; after && after(); ntcOpen = false; if (NTC.length) setTimeout(showNotice, 400); }, 380);
 }
 Object.assign(ACT, {
-  dbxpick: el => { hap.tap(); const k = el.dataset.v; const wa = el.dataset.a || 'dumbbell'; openWorkout(null, null, '', wa); if (sheetCtx) sheetCtx.ex = k;
+  dbxpick: el => { hap.tap(); const k = el.dataset.v; const wa = el.dataset.a || 'dumbbell'; openWorkout(null, null, '', wa, 'dbx'); if (sheetCtx) sheetCtx.ex = k;
     const c = document.querySelector('#sheet .cap'); if (c) c.textContent = 'Гантели · ' + dbxName(k); },
   ntok: () => { const n = NTC[0] || {}, cta = n.cta; hap.ok();
     closeNotice(() => { if (n.kind === 'gift') { toast('Подарок уже в твоей коллекции 🎁'); scheduleSync(50); }
