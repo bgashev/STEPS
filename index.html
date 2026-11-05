@@ -1205,7 +1205,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.447';
+const APP = 'VOOB (by BGASHEV) Mini App v1.448';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -1354,7 +1354,21 @@ function ageOf(birth){
   return t.getFullYear() - y - ((t.getMonth() + 1 < m || (t.getMonth() + 1 === m && t.getDate() < d)) ? 1 : 0);
 }
 function bmiOf(kg, h){ if (!kg || !h) return null; const m = h / 100; return kg / (m * m); }
-function bmiCat(b){ return b < 18.5 ? ['Дефицит', BLUE] : b < 25 ? ['Норма', GREEN] : b < 30 ? ['Избыток', YELLOW] : ['Ожирение', RED]; }
+// v1.448: ИМТ с учётом возраста и пола. Сама формула у всех одна, а вот оценка — разная:
+// до 18 лет — только по таблицам ВОЗ для возраста; после 65 норма сдвигается вверх (22–27);
+// у взрослых — шкала ВОЗ плюс ориентир-оптимум по полу и оценка доли жира (формула Дойренберга: учитывает пол и возраст)
+function bmiZones(){
+  const a = ageOf(db.profile.birth), sx = db.profile.sex;
+  if (a != null && a < 18) return {teen:true, a};
+  if (a != null && a >= 65) return {lo:22, hi:27, ob:30, a, old:true};
+  return {lo:18.5, hi:25, ob:30, a, opt:sx === 'm' ? [20, 25] : sx === 'f' ? [19, 24] : null};
+}
+function bmiCat(b){ const z = bmiZones();
+  if (z.teen) return ['Подростковая шкала', BLUE];
+  return b < z.lo ? ['Дефицит', BLUE] : b < z.hi ? ['Норма', GREEN] : b < z.ob ? ['Избыток', YELLOW] : ['Ожирение', RED]; }
+function bodyFat(b){ const a = ageOf(db.profile.birth), sx = db.profile.sex;
+  if (!b || a == null || a < 18 || !(sx === 'm' || sx === 'f')) return null;
+  return clamp(1.2 * b + 0.23 * a - 10.8 * (sx === 'm' ? 1 : 0) - 5.4, 3, 60); }
 function bmrOf(kg, h, age, sex){
   if (!(kg && h && age != null && (sex === 'm' || sex === 'f'))) return null;
   return 10 * kg + 6.25 * h - 5 * age + (sex === 'm' ? 5 : -161);
@@ -2493,6 +2507,9 @@ function putPhoto(id){   // точечно, без перерисовки все
   if (+id === +UK) document.querySelectorAll('.prof .ava .fi, .frb .fav .fi').forEach(el => { if (el.querySelector('img')) put(el); });   // своё фото: шапка «Я» и плашки рамок
 }
 function pm(f){ return f.month && f.month.minutes != null ? f.month.minutes : (f.week ? f.week.minutes : 0); }
+// v1.448: рейтинг месяца — в XP: каждая активность +RATE_XP, подпункты (упражнения, подходы) отдельно не считаются
+const RATE_XP = 50;
+function mxp(f){ const n = f.month && f.month.workouts != null ? +f.month.workouts : (f.week ? +f.week.workouts || 0 : 0); return n * RATE_XP; }
 function agoText(iso){ const d = dn(iso), k = todayN() - d; return k <= 0 ? 'сегодня' : k === 1 ? 'вчера' : fmtDate(d); }
 /* ============================================================ лента ==== */
 const FEED = {ev:null, at:0, busy:false, err:'', tick:null, i:0};
@@ -2517,7 +2534,7 @@ function feedText(ev){
     else { if (d.speed && d.minutes) sub.push(kmF(d.speed * d.minutes / 60)); if (d.speed) sub.push(`${num(d.speed)} км/ч`); if (d.incline) sub.push(`уклон ${num(d.incline)}%`); }
     return [`<b>${n}</b> · ${esc(actName(d.act || 'run'))}${d.sets ? '' : ', ' + fmtMin(d.minutes || 0)}`, sub, ACTS.some(a => a[0] === d.act) ? d.act : 'run'];
   }
-  if (ev.type === 'gift') { const f = d.from || {}; return [`<b>${n}</b> ${u.me ? 'получаешь' : 'получает'} подарок «${esc(d.title || '')}» от ${f.me ? 'тебя' : esc(f.name || '?')}`, [], 'gift']; }
+  if (ev.type === 'gift') { const f = d.from || {}; return [`<b>${n}</b> ${u.me ? 'получаешь' : 'получает'} подарок «${esc(d.title || '')}» от ${f.voob ? '<b>VOOB</b>' : f.me ? 'тебя' : esc(f.name || '?')}`, [], 'gift']; }   // v1.448: подарки по промокоду и от команды — «от VOOB»
   return [`Вы с <b>${n}</b> теперь друзья 🤝`, [], 'friends'];
 }
 function feedAva(u){
@@ -2605,10 +2622,10 @@ function viewFriends(){
       <h3 style="margin:0;white-space:nowrap">${IC('gift')}Подарки <span class="cap" style="font-weight:600">${(mg.kinds || []).length}/${GIFT_KEYS.length}</span></h3>
       ${pn ? `<button class="btn primary small" data-act="ginbox">${IC('gift', 14)}Ждут ${pn}</button>` : energyHTML(en)}</div></div>`; }
   if (fr.length) {
-    const people = fr.map(f => [f, false]).concat([[d.me, true]]).sort((a, b) => (pm(b[0]) - pm(a[0])) || (b[1] - a[1]));
-    const mx = Math.max(1, ...people.map(p => pm(p[0])));
-    h += `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:6px"><h3 style="margin:0">${IC('trophy')}Рейтинг месяца</h3><span class="cap">минуты с 1-го числа</span></div>` +
-      people.slice(0, 10).map(([f, me], i) => `<div class="rk${me ? ' me' : ''}" ${me ? 'data-act="tab" data-tab="me"' : `data-act="frprof" data-id="${f.tg_id}"`}><span class="pl${i < 3 ? ' m' + (i + 1) : ''}">${i + 1}</span>${favHTML(f, true)}<span class="nm">${esc(f.name)}${me ? ' · ты' : ''}${f.level ? ` <span class="cap">ур. ${f.level.level}</span>` : ''}</span><span class="br"><i style="width:${Math.max(pm(f) ? 4 : 0, pm(f) / mx * 100)}%;animation-delay:${i * 60}ms"></i></span><span class="mv">${fmtMin(pm(f))}</span></div>`).join('') + `</div>`;
+    const people = fr.map(f => [f, false]).concat([[d.me, true]]).sort((a, b) => (mxp(b[0]) - mxp(a[0])) || (pm(b[0]) - pm(a[0])) || (b[1] - a[1]));
+    const mx = Math.max(1, ...people.map(p => mxp(p[0])));
+    h += `<div class="card"><div class="row" style="justify-content:space-between;margin-bottom:6px"><h3 style="margin:0">${IC('trophy')}Рейтинг месяца</h3><span class="cap">XP с 1-го числа · +${RATE_XP} за активность</span></div>` +
+      people.slice(0, 10).map(([f, me], i) => `<div class="rk${me ? ' me' : ''}" ${me ? 'data-act="tab" data-tab="me"' : `data-act="frprof" data-id="${f.tg_id}"`}><span class="pl${i < 3 ? ' m' + (i + 1) : ''}">${i + 1}</span>${favHTML(f, true)}<span class="nm">${esc(f.name)}${me ? ' · ты' : ''}${f.level ? ` <span class="cap">ур. ${f.level.level}</span>` : ''}</span><span class="br"><i style="width:${Math.max(mxp(f) ? 4 : 0, mxp(f) / mx * 100)}%;animation-delay:${i * 60}ms"></i></span><span class="mv">${numSep(mxp(f))} XP</span></div>`).join('') + `</div>`;
   }
   h += `<div class="mh">Друзья · ${fr.length}<span>за 7 дней · последняя тренировка</span></div>`;
   if (!fr.length) h += `<div class="card muted">Пока никого. Отправь ссылку первому другу — вдвоём ходить веселее.</div>`;
@@ -2835,10 +2852,14 @@ function viewWeight(){
   // ИМТ
   const hgt = +db.profile.height || 0, b = bmiOf(cur, hgt);
   if (b) {
-    const [cat, col] = bmiCat(b), pos = v => clamp((v - 15) / 25 * 100, 0, 100), m = hgt / 100;
+    const [cat, col] = bmiCat(b), pos = v => clamp((v - 15) / 25 * 100, 0, 100), m = hgt / 100, z = bmiZones(), bf = bodyFat(b);
+    const zg = z.teen ? '' : ` style="background:linear-gradient(90deg,#7FB5FF 0 ${pos(z.lo)}%,#5FC98A ${pos(z.lo)}% ${pos(z.hi)}%,#F2D064 ${pos(z.hi)}% ${pos(z.ob)}%,#EF6B73 ${pos(z.ob)}%)"`;
+    const sexW = db.profile.sex === 'm' || db.profile.sex === 'f' ? '' : ' Укажи пол и дату рождения в профиле — оценка станет точнее.';
+    const zNote = z.teen ? `До 18 лет ИМТ оценивают по таблицам ВОЗ для возраста и пола, взрослая шкала тут не подходит.`
+      : `Здоровый вес для твоего роста${z.old ? ' и возраста' : ''}: ${num(z.lo*m*m)}–${num((z.hi - .1)*m*m)} кг${z.opt ? ` · оптимум для ${db.profile.sex === 'm' ? 'мужчин' : 'женщин'}: ${num(z.opt[0]*m*m)}–${num((z.opt[1] - .1)*m*m)} кг` : ''}.${z.old ? ' После 65 лет норма ИМТ выше — 22–27.' : ''}${sexW}`;
     h += `<div class="card tint" style="--tc:${rgba(col, .22)};--tb:${rgba(col, .45)}"><div class="cap">ИМТ</div><div class="row" style="align-items:baseline"><div class="huge" style="font-size:32px">${num(b)}</div><b style="color:${col}">${cat}</b></div>
-      <div class="bmi"><div class="pmark" style="left:${pos(b)}%"></div>${[18.5, 25, 30].map(v => `<span class="bmi-t" style="left:${pos(v)}%">${num(v)}</span>`).join('')}</div>
-      <div class="cap">Здоровый вес для твоего роста: ${num(18.5*m*m)}–${num(24.9*m*m)} кг</div></div>`;
+      <div class="bmi"${zg}><div class="pmark" style="left:${pos(b)}%"></div>${z.teen ? '' : [z.lo, z.hi, z.ob].map(v => `<span class="bmi-t" style="left:${pos(v)}%">${num(v)}</span>`).join('')}</div>
+      <div class="cap">${zNote}</div>${bf ? `<div class="cap" style="margin-top:6px">Доля жира ≈ ${Math.round(bf)}% — грубая оценка по ИМТ, полу и возрасту</div>` : ''}</div>`;
   } else {
     h += `<div class="card"><div class="cap">ИМТ</div><div class="muted" style="margin:4px 0 10px">Укажи рост в профиле — посчитаю ИМТ и здоровый диапазон веса.</div><button class="btn ghost small" data-act="tab" data-tab="me">Указать рост</button></div>`;
   }
@@ -3059,7 +3080,7 @@ function proCardHTML(){
   const min = !!lsGet('voob_pro_min');            // v1.438: плашку можно свернуть, выбор запоминается
   const sub = st.active ? `активен до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : (m ? `от ${m.stars} ⭐ в месяц · галочка и рамки` : 'больше возможностей и галочка');
   return `<div class="prox${min ? ' min' : ''}"><div class="prox-top" data-act="promin" role="button" aria-expanded="${!min}"><div class="prox-em">${IC('crown', 22)}</div><div style="min-width:0"><div class="prox-t">VOOB PRO</div><div class="prox-s">${sub}</div></div>
-    <span class="prox-pill${st.active ? ' on' : ''}">${st.active ? 'АКТИВЕН' : 'БЕТА · ОТКРЫТО'}</span><span class="prox-tg">${IC('chev', 16)}</span></div>
+    <span class="prox-pill${st.active ? ' on' : ''}">${st.active ? 'АКТИВЕН' : 'ОФОРМИТЬ'}</span><span class="prox-tg">${IC('chev', 16)}</span></div>
     <div class="prox-body"><div>
     <div class="prox-perks">${perks.map(([i, t]) => `<span>${IC(i, 13)}${t}</span>`).join('')}</div>
     ${(st.plans || []).length ? `<div class="prox-plans">${plan(m)}${plan(y, true)}</div>` : '<div class="cap">Загружаю тарифы…</div>'}
