@@ -1538,7 +1538,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.489';
+const APP = 'VOOB (by BGASHEV) Mini App v1.490';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3496,6 +3496,25 @@ const _lobs = new MutationObserver(ms => {
   seen.forEach(n => applyLang(n)); _lobs.takeRecords();
 });
 _lobs.observe(document.body, {childList:true, characterData:true, subtree:true});
+// v1.490: смена языка — размытая волна от нажатой кнопки на весь экран, под ней интерфейс «перетекает» в новый язык
+function langWave(el, change){
+  if (reducedMotion() || !document.body.animate) { change(); return; }
+  const r = el && el.getBoundingClientRect ? el.getBoundingClientRect() : {left:innerWidth / 2, top:innerHeight / 2, width:0, height:0};
+  const x = Math.round(r.left + r.width / 2), y = Math.round(r.top + r.height / 2), R = Math.ceil(Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))) + 40;
+  const ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;z-index:99999;pointer-events:none;-webkit-backdrop-filter:blur(26px) saturate(1.6);backdrop-filter:blur(26px) saturate(1.6);background:radial-gradient(circle at ' + x + 'px ' + y + 'px,color-mix(in srgb,var(--accent) 38%,transparent),color-mix(in srgb,var(--accent) 10%,transparent) 55%,transparent 80%);clip-path:circle(0px at ' + x + 'px ' + y + 'px);will-change:clip-path,opacity';
+  const ring = document.createElement('div');
+  ring.style.cssText = 'position:fixed;left:' + x + 'px;top:' + y + 'px;z-index:100000;pointer-events:none;width:' + R * 2 + 'px;height:' + R * 2 + 'px;margin:' + (-R) + 'px 0 0 ' + (-R) + 'px;border-radius:50%;border:2px solid color-mix(in srgb,var(--accent) 70%,#fff);box-shadow:0 0 60px 8px color-mix(in srgb,var(--accent) 45%,transparent),inset 0 0 60px 6px color-mix(in srgb,var(--accent) 30%,transparent);transform:scale(0);opacity:.9;will-change:transform,opacity';
+  document.body.append(ov, ring);
+  const ease = 'cubic-bezier(.32,.72,0,1)', T = 520;
+  ov.animate([{clipPath:'circle(0px at ' + x + 'px ' + y + 'px)'}, {clipPath:'circle(' + R + 'px at ' + x + 'px ' + y + 'px)'}], {duration:T, easing:ease, fill:'forwards'});
+  ring.animate([{transform:'scale(0)', opacity:.95}, {transform:'scale(1)', opacity:0}], {duration:T + 120, easing:ease, fill:'forwards'});
+  setTimeout(() => {
+    change();
+    const v = $('#view'); if (v && v.animate) v.animate([{filter:'blur(10px)', transform:'scale(1.02)', opacity:.6}, {filter:'blur(0)', transform:'none', opacity:1}], {duration:620, easing:ease});
+    ov.animate([{opacity:1}, {opacity:0}], {duration:620, easing:'ease-out', fill:'forwards'}).onfinish = () => { ov.remove(); ring.remove(); };
+  }, T - 140);
+}
 function langChanged(){ document.documentElement.lang = curLang(); _rHtml = ''; render(); applyLang(document.body); }
 function langCardHTML(){
   const sync = langSync(), cur = curLang();
@@ -4161,8 +4180,8 @@ const ACT = {
     el.classList.toggle('on', ev.liked); el.querySelector('i').textContent = ev.likes || ''; },
   syncinfo: () => { hap.tap(); S.syncOpen = !S.syncOpen; const e = $('#sync'); if (e) e.classList.toggle('open', S.syncOpen);
     clearTimeout(S.syncT); if (S.syncOpen) S.syncT = setTimeout(() => { S.syncOpen = false; const x = $('#sync'); if (x) x.classList.remove('open'); }, 4500); },
-  lang: el => { hap.tap(); try { localStorage.setItem(LK, el.dataset.v); localStorage.setItem(LTK, '0'); } catch (e) {} langChanged(); },
-  langtg: () => { hap.tap(); const was = langSync(), cur = curLang(); try { if (was) localStorage.setItem(LK, cur); localStorage.setItem(LTK, was ? '0' : '1'); } catch (e) {} langChanged(); },
+  lang: el => { if (el.classList.contains('on') && !langSync()) return; hap.tap(); try { localStorage.setItem(LK, el.dataset.v); localStorage.setItem(LTK, '0'); } catch (e) {} langWave(el, langChanged); },
+  langtg: el => { hap.tap(); const was = langSync(), cur = curLang(); try { if (was) localStorage.setItem(LK, cur); localStorage.setItem(LTK, was ? '0' : '1'); } catch (e) {} langWave(el, langChanged); },
   badgeset: el => { const k = el.dataset.v || 'verified'; if (!isPro()) { hap.warn(); proToast('Выбор значка — для подписчиков PRO'); return; }
     db.settings.badge = k === 'verified' ? '' : k; touchMeta('settings'); save(); hap.tap();
     document.querySelectorAll('.bdg').forEach(el => { el.innerHTML = bdgInner(+el.dataset.bid, +el.dataset.sz); }); render(); },
