@@ -2666,7 +2666,7 @@ async function loadFriendPhotos(){
 }
 const FRAMES = [['', 'Без рамки'], ['classic', 'Стандартная'], ['aurora', 'Аврора', 1], ['gold', 'Золото', 1], ['neon', 'Неон', 1], ['flame', 'Пламя', 1], ['ocean', 'Океан', 1], ['sakura', 'Сакура', 1], ['cyber', 'Кибер', 1], ['emerald', 'Изумруд', 1], ['galaxy', 'Галактика', 1], ['ice', 'Лёд', 1], ['storm', 'Гроза', 1], ['hearts', 'Сердца', 1], ['pixel', 'Пиксель', 1], ['plasma', 'Плазма', 1], ['atom', 'Атом', 1], ['holo', 'Голограмма', 1]];
 const asFree = () => { try { return localStorage.getItem('voob_asfree') === '1'; } catch (e) { return false; } };   // только для создателя: смотреть как без PRO
-function isPro(){ { const c = tgUser && BDG.get(tgUser.id); if (c && c.creator && asFree()) return false; } if (typeof INBOX_PRO !== 'undefined' && INBOX_PRO) return true; const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.pro || b.creator)); }
+function isPro(){ { const c = tgUser && BDG.get(tgUser.id); if (c && c.creator && asFree()) return false; } if (typeof INBOX_FRESH !== 'undefined' && INBOX_FRESH) return INBOX_PRO;   /* v1.460: как только сервер ответил — верим только ему (устаревший кэш не держит PRO) */ if (typeof INBOX_PRO !== 'undefined' && INBOX_PRO) return true; const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.pro || b.creator)); }
 function frOwned(k){ if (isPro()) return true; const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.frames || []).includes(k)); }   // v1.433: рамка в подарок от VOOB   // v1.420: персонализация, список будет расти
 function frameOf(f){
   const mine = tgUser && f && +f.tg_id === tgUser.id, b = f ? (BDG.get(+f.tg_id) || {}) : {};
@@ -4154,7 +4154,7 @@ async function init(){
 /* ============================================================ v1.434 ==== */
 const EXTRA_API = FEED_API.replace(/voob-feed$/, 'voob-extra');   // объявления, отзыв достижений, фоны профиля
 const ACHOFF_K = 'voob_ach_off', INBOX_K = 'voob_inbox_pro';
-let ACHOFF = new Set(), INBOX_PRO = false;
+let ACHOFF = new Set(), INBOX_PRO = false, INBOX_FRESH = false;
 try { ACHOFF = new Set(JSON.parse(localStorage.getItem(ACHOFF_K) || '[]')); INBOX_PRO = localStorage.getItem(INBOX_K) === '1'; } catch (e) {}
 const BG_KEYS = [['obsidian', 'Обсидиан'], ['aurora', 'Сияние'], ['silk', 'Шёлк'], ['mirage', 'Мираж'], ['lagoon', 'Лагуна'], ['pulse', 'Пульс'], ['dune', 'Дюна'], ['sunset', 'Закат'], ['dots', 'Точки'], ['stripe', 'Штрих'], ['surf', 'Прибой']];
 const BG_SVG = Object.fromEntries(BG_KEYS.map(([k]) => [k, 1]));   // v1.435: фоны живые — слои CSS с анимацией, как в программе
@@ -4208,10 +4208,12 @@ async function checkInbox(){
     const j = await apiAuth(EXTRA_API, {action:'inbox'});
     if (j.status !== 'ok') return;
     const off = new Set(j.ach_off || []), pro = !!j.pro;
-    const ch = [...off].sort().join() !== [...ACHOFF].sort().join() || pro !== INBOX_PRO;
-    ACHOFF = off; INBOX_PRO = pro;
+    const was = INBOX_PRO, ch = [...off].sort().join() !== [...ACHOFF].sort().join() || pro !== INBOX_PRO || !INBOX_FRESH;
+    ACHOFF = off; INBOX_PRO = pro; INBOX_FRESH = true;
+    if (!pro && tgUser) { const b = BDG.get(tgUser.id); if (b && b.pro && !b.creator) { delete b.pro; delete b.v; delete b.frame; lsSet(BDK, Object.fromEntries(BDG)); } }   // v1.460: подписка кончилась — свой PRO-кэш чистим
     try { localStorage.setItem(ACHOFF_K, JSON.stringify([...off])); localStorage.setItem(INBOX_K, pro ? '1' : '0'); } catch (e) {}
     if (ch) { invalidate(); applyTheme(); if (!sheetCtx) render(); }
+    if (was && !pro) setTimeout(() => proToast('Подписка PRO закончилась — рамка, фон и цвета вернулись к бесплатным'), 900);
     NTC = (j.notices || []).filter(n => n && n.id);
     if (NTC.length) setTimeout(showNotice, 700);
   } catch (e) {}
