@@ -32,7 +32,11 @@ h3 .ic{color:var(--accent)}
 .small{padding:8px 12px;font-size:13px;border-radius:11px}
 .danger{color:var(--red)}
 .actions{display:flex;gap:8px;margin:0 0 14px}
-.actions .btn{flex:1}
+.actions .btn{flex:1 1 0;min-width:0;padding-left:10px;padding-right:10px}
+.actions .pn{min-width:20px;height:20px;padding:0 6px;border-radius:10px;display:inline-grid;place-items:center;font-size:11.5px;font-weight:800;background:var(--accent-soft);color:var(--accent)}
+.plr{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s}
+.plr:active{transform:scale(.985)}
+.plx{flex:none;width:38px;height:38px;border-radius:12px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer}
 .seg{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .seg::-webkit-scrollbar{display:none}
 .seg button{flex:none;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:12px;padding:7px 12px;font-size:13px;font-weight:650;transition:.18s}
@@ -93,6 +97,38 @@ h3 .ic{color:var(--accent)}
 .bl{height:18px;font-size:10px;color:var(--muted);text-align:center;white-space:nowrap;overflow:visible;padding-top:4px}
 .chartcap{font-size:12px;color:var(--muted);margin-top:8px;min-height:17px}
 .chart-empty{height:150px;display:grid;place-items:center;color:var(--muted);font-size:14px}
+/* v1.452: недельная плашка профиля */
+.wk{position:relative;margin:12px 0;padding:18px 16px 14px;border-radius:26px;overflow:hidden;isolation:isolate;background:radial-gradient(120% 80% at 0% 0%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 62%),var(--surface);border:1px solid color-mix(in srgb,var(--accent) 14%,var(--border));box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 14px 34px -20px rgba(0,0,0,.7)}
+.wk-top{display:flex;align-items:center;gap:16px}
+.wk-rw{position:relative;width:92px;height:92px;flex:none}
+.wk-ring{display:block;filter:drop-shadow(0 0 7px color-mix(in srgb,var(--wk) 40%,transparent))}
+.wk-sg{animation:fadeIn .6s backwards}
+.wk-num{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.wk-num b{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums}
+.wk-num i{font-style:normal;font-size:14px;font-weight:650;color:var(--muted);letter-spacing:0;margin-left:1px}
+.wk-hd{min-width:0;flex:1}
+.wk-eye{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.wk-ttl{margin-top:6px;font-size:24px;font-weight:780;letter-spacing:-.025em;line-height:1.1}
+.wk-pill{display:inline-flex;margin-top:10px;padding:4px 10px;border-radius:999px;font-size:11.5px;font-weight:600;color:var(--muted);background:color-mix(in srgb,var(--text) 7%,transparent)}
+.wk-st{display:grid;grid-template-columns:repeat(3,1fr);margin:18px 0 0;padding:12px 0;border-top:1px solid var(--border)}
+.wk-st>div{min-width:0}
+.wk-st>div+div{border-left:1px solid var(--border);padding-left:14px}
+.wk-st b{display:block;font-size:16px;font-weight:750;letter-spacing:-.01em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.wk-st span{display:block;margin-top:3px;font-size:11px;color:var(--muted)}
+.wk-ch{display:flex;justify-content:space-between;margin:8px 0 4px;font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.wkb{position:relative;display:flex;gap:4px;height:128px}
+.wkb::before{content:"";position:absolute;left:0;right:0;top:20px;bottom:24px;pointer-events:none;background:linear-gradient(to bottom,color-mix(in srgb,var(--text) 7%,transparent) 1px,transparent 1px) 0 0/100% 33.34%;border-bottom:1px solid color-mix(in srgb,var(--text) 12%,transparent)}
+.wkc{position:relative;border-radius:14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.wkc.today{background:linear-gradient(180deg,transparent 30%,var(--accent-soft))}
+.wkv{height:20px;line-height:20px;font-size:11.5px;font-weight:750;text-align:center;font-variant-numeric:tabular-nums;transition:color .15s}
+.wkcol{flex:1;display:flex;align-items:flex-end;justify-content:center}
+.wkcol i{display:block;width:min(64%,20px);border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 38%,transparent));transform-origin:bottom;animation:grow .7s cubic-bezier(.2,.8,.2,1) backwards;transition:filter .15s,box-shadow .2s}
+.wkc:not(.on) .wkcol i{height:4px!important;width:4px;border-radius:50%;background:var(--off);animation:none}
+.wkl{height:24px;line-height:24px;font-size:11px;color:var(--muted);text-align:center}
+.wkc.today .wkl{color:var(--text);font-weight:700}
+.wkc.sel .wkcol i{box-shadow:0 0 16px color-mix(in srgb,var(--accent) 55%,transparent);filter:brightness(1.12)}
+.wkc.sel .wkv{color:var(--accent)}
+.wkcap{margin-top:10px;text-align:center}
 .line{width:100%;height:auto;display:block;margin-top:10px}
 .line .draw{stroke-dasharray:2000;stroke-dashoffset:2000;animation:draw 1.2s ease forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
@@ -969,7 +1005,7 @@ input[type=date].inp{display:block}
 .af-bar{margin-top:14px!important}
 .foot a{color:var(--accent);text-decoration:none;font-weight:700;cursor:pointer}
 /* v1.432.2: повторная перерисовка той же вкладки — без повторных «появлений» */
-#view.rr :is(.act,.bfill,.cgc,.emb .rg,.fbar .ff,.fbar .fv,.fc,.fdb i,.fi img.fade,.fticker,.gbig,.gx-c,.gx-ring .sg,.line .draw,.lvbar i,.pfill,.plsug,.ring-p,.rk .br i,.sc,.slr,.slr.new,.wdock,.wi,.fest){animation:none!important}
+#view.rr :is(.act,.bfill,.cgc,.emb .rg,.fbar .ff,.fbar .fv,.fc,.fdb i,.fi img.fade,.fticker,.gbig,.gx-c,.gx-ring .sg,.line .draw,.lvbar i,.pfill,.plsug,.ring-p,.rk .br i,.sc,.slr,.slr.new,.wdock,.wi,.fest,.wkcol i,.wk-sg){animation:none!important}
 #view.rr .lvbar i,#view.rr [style*="--c"]{transition:none!important}
 /* v1.443: без анимации элемент обязан сразу стоять в конечном виде — иначе сегмент кольца недели и линия графика оставались невидимыми */
 #view.rr .gx-ring .sg,#view.rr .line .draw{stroke-dashoffset:0!important}
@@ -1729,6 +1765,7 @@ const IP = {
   plus:'<path d="M9 4V14M4 9H14"/>', minus:'<path d="M4 9H14"/>',
   check:'<path d="M4 9.5L7.5 13L14.5 5.5"/>', close:'<path d="M5 5L13 13M13 5L5 13"/>',
   repeat:'<path d="M14.3 10.4A5.5 5.5 0 1 1 13 5.3"/><path d="M13.6 2.4L13.2 5.6L10 5.2"/>',
+  plan:'<rect x="2.4" y="3.6" width="13.2" height="11.8" rx="3.2"/><path d="M2.4 7.8h13.2M6 2v3M12 2v3"/>',
   trash:'<path d="M3.5 5H14.5M7 5V3H11V5"/><rect x="5" y="5" width="8" height="10.5" rx="2"/><path d="M7.7 8V12.5M10.3 8V12.5"/>',
   target:'<circle cx="9" cy="9" r="7"/><circle cx="9" cy="9" r="3.8"/><circle cx="9" cy="9" r="1.2" fill="currentColor" stroke="none"/>',
   flame:'<path d="M9 16C5.2 16 3.5 13 4.6 10C5.4 7.8 7.6 6.8 7.4 2.8C10.6 4.6 13.6 7.8 13.6 11.4C13.6 14.2 11.6 16 9 16Z"/><path d="M9 16C7.6 16 7 14.7 7.6 13.5C8.1 12.5 9 12 9.2 10.6C10.4 11.6 11 12.9 10.8 14"/>',
@@ -1918,6 +1955,31 @@ function bars(items, fmt, cid, h = 170){
     const v = it[1], ht = v > 0 ? Math.max(4, v / mx * 100) : 3;
     return `<div class="bar" data-act="bar" data-cap="${cid}" data-tip="${esc(it[2])}"><div class="bv">${showV && v > 0 ? esc(fmt(v)) : ''}</div><div class="bcol"><div class="bfill${v > 0 ? '' : ' zero'}" style="height:${ht}%;animation-delay:${i * 18}ms"></div></div><div class="bl">${i % stride === 0 ? esc(it[0]) : ''}</div></div>`;
   }).join('') + `</div><div class="chartcap" id="${cid}">Нажми на столбик — покажу детали</div>`;
+}
+/* v1.452: недельная плашка профиля — сегментное кольцо нормы, три показателя, столбики по дням */
+function wkRing(done, n, ok){
+  if (n > 10) return ring(done / n, `${done}/${n}`, '', ok, 92);
+  const S = 92, c = S / 2, r = 39, sw = 7, C = 2 * Math.PI * r, gap = n > 1 ? sw + 6 : 0, len = Math.max(2, C / n - gap);
+  let s = `<div class="wk-rw"><svg class="wk-ring" width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" aria-hidden="true">`;
+  for (let i = 0; i < n; i++) {
+    const on = i < done, rot = (-90 + i * 360 / n + (gap / 2) / C * 360).toFixed(2);
+    s += `<circle${on ? ` class="wk-sg" style="animation-delay:${i * 90}ms"` : ''} cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${on ? (ok ? GREEN : 'var(--accent)') : 'var(--off)'}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${len.toFixed(1)} ${C.toFixed(1)}" transform="rotate(${rot} ${c} ${c})"/>`;
+  }
+  return s + `</svg><div class="wk-num"><b>${Math.min(done, n)}<i>/${n}</i></b></div></div>`;
+}
+function weekCard(f, g, ok, shown, days){
+  const w = f.week, n = Math.max(1, g.target || 1), t = todayN();
+  const ttl = g.done_today ? 'Норма выполнена' : g.prev_ok ? 'Норма закрыта' : 'До нормы ' + Math.max(0, g.target - g.shown);
+  let h = `<div class="wk" style="--wk:${ok ? GREEN : 'var(--accent)'}"><div class="wk-top">${wkRing(shown, n, ok)}<div class="wk-hd">
+    <div class="wk-eye">Норма · 7 дней</div><div class="wk-ttl"${ok ? ' style="color:var(--green)"' : ''}>${ttl}</div>${g.best ? `<div class="wk-pill">лучшая серия · ${g.best}</div>` : ''}</div></div>
+    <div class="wk-st"><div><b>${fmtMin(w.minutes)}</b><span>в движении</span></div><div><b>${w.workouts}</b><span>${npw(w.workouts, W_WORK).replace(/^\d+\s*/, '')}</span></div><div><b>${kmF(w.km)}</b><span>пройдено</span></div></div>`;
+  if (days && days.some(Boolean)) {
+    const mx = Math.max(...days, 1);
+    h += `<div class="wk-ch"><span>Минуты по дням</span><span>пик · ${mx}</span></div><div class="wkb">` + days.map((m, i) => { const d = t - 6 + i, ht = m > 0 ? Math.max(10, m / mx * 100) : 0;
+      return `<div class="bar wkc${m > 0 ? ' on' : ''}${i === 6 ? ' today' : ''}" data-act="bar" data-cap="fpw" data-tip="${esc(WDF[wdOf(d)] + ': ' + fmtMin(m))}"><div class="wkv">${m > 0 ? m : ''}</div><div class="wkcol"><i style="height:${ht}%;animation-delay:${i * 45}ms"></i></div><div class="wkl">${WD[wdOf(d)]}</div></div>`; }).join('')
+      + `</div><div class="chartcap wkcap" id="fpw">Нажми на столбик — покажу детали</div>`;
+  }
+  return h + `</div>`;
 }
 function lineChart(pts, goal){
   if (!pts.length) return `<div class="chart-empty">Добавь взвешивания — и здесь появится график</div>`;
@@ -2706,11 +2768,7 @@ function friendSheetHTML(f, j, loading, self){
     : `<button type="button" class="fchipb" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · ${j.friends_count}${(j.friends || []).length ? IC('chev', 14) : ''}</button>`)
     + (self ? `<button type="button" class="fchipb hset" data-act="meset" aria-label="Настройки профиля и приложения">${IC('gear', 16)}Настройки</button>` : '')
     + `</div>` + socialsHTML(f.tg_id, true) + `</div>` + acts;
-  h += `<div class="card" style="margin-top:12px"><div class="row" style="gap:14px">${ring(shown / g.target, `${shown}/${g.target}`, '', ok, 64)}<div><div style="font-weight:700;color:${ok ? 'var(--green)' : 'var(--text)'}">${g.done_today ? 'Норма выполнена' : g.prev_ok ? 'Норма закрыта' : 'До нормы ' + Math.max(0, g.target - g.shown)}</div>
-    <div class="cap">${fmtMin(f.week.minutes)} за 7 дней · ${npw(f.week.workouts, W_WORK)} · ${kmF(f.week.km)}</div>${g.best ? `<div class="cap">лучшая серия: ${npw(g.best, W_TIMES)}</div>` : ''}</div></div>`;
-  const days = j && j.week && j.week.days;
-  if (days && days.some(Boolean)) { const t = todayN(); h += bars(days.map((m, i) => [WD[wdOf(t - 6 + i)], m, `${WDF[wdOf(t - 6 + i)]}: ${fmtMin(m)}`]), v => String(v), 'fpw', 110); }
-  h += `</div>`;
+  h += weekCard(f, g, ok, shown, j && j.week && j.week.days);
   if ((f.gift_kinds || []).length) h += `<div class="card"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из ${GIFT_KEYS.length}</h3>${giftShelf(f.gift_kinds, 20, f.name)}</div>`;
   if (!loading && !self) h += `<button class="btn ghost small" style="width:100%;margin-bottom:12px;color:var(--muted)" data-act="frrep" data-id="${f.tg_id}">Пожаловаться</button>`;
   if (loading) return h + `<div id="fp-load">` + [100, 120, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('') + `</div>`;
@@ -2762,7 +2820,7 @@ function viewHome(){
       <div class="gx2-t">Цель недели<small>${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</small></div>
       <button type="button" class="gx2-ed" data-act="goaled" aria-label="Изменить цель">${IC('edit', 17)}</button></div>
     <div class="gx-top">${segRing(info.shown, g.count, done, pct)}<div class="gx-txt">${gtxt}<div class="gx2-bar"><i style="width:${Math.min(100, pct)}%"></i></div>${gsBtn}</div></div>${goalStrip(ws, g.days)}${note}</div>`}
-  ${ws.length ? `<div class="actions"><button class="btn ghost" data-act="repeat">${IC('repeat')}Повторить последнюю</button></div>` : ''}`;
+  <div class="actions"><button class="btn ghost" data-act="plans">${IC('plan')}План${upPlans(ws).length ? `<span class="pn">${upPlans(ws).length}</span>` : ''}</button>${ws.length ? `<button class="btn ghost" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat')}Повторить</button>` : ''}</div>`;
   h += planSuggestHTML(ws);
   h += feedTickerHTML();
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
@@ -2790,9 +2848,10 @@ function todayPlans(ws){
 // параметры плана чипами в один ряд: только те, что есть у тренировки, и не больше четырёх
 function planParams(p){
   const out = [];
+  if (Array.isArray(p.sl) && p.sl.length) { const s = p.sl; out.push(['repeat', s.every(x => x === s[0]) ? `${s.length}×${s[0]}` : `${s.length} ${plural(s.length, ['подход', 'подхода', 'подходов'])}`, 'Подходы']); if (+p.kg) out.push(['dumbbell', `${num(+p.kg)} кг`, 'Вес']); }
   if (+p.minutes) out.push(['clock', fmtMin(+p.minutes), 'Время']);
   if (+p.speed) out.push(['bolt', `${num(+p.speed)} км/ч`, 'Скорость']);
-  if (p.incline != null && (+p.incline || +p.speed)) out.push(['mountain', `${num(+p.incline || 0)}%`, 'Уклон']);
+  if (!TIMEA[p.act] && !STR[p.act] && p.incline != null && (+p.incline || +p.speed)) out.push(['mountain', `${num(+p.incline || 0)}%`, 'Уклон']);
   if (+p.speed && +p.minutes) out.push(['route', kmF(+p.speed * +p.minutes / 60), 'Дистанция']);
   return out.slice(0, 4);
 }
@@ -2808,6 +2867,62 @@ function planSuggestHTML(ws){
     ${par ? `<div class="pv">${par}</div>` : ''}</div>`;
 }
 function findPlan(id){ return (db.plans || []).find(p => String(p.id) === String(id)); }
+
+/* v1.452: планы в мобильной версии — список, создание, правка, удаление (формат записи тот же, что на ПК) */
+function upPlans(ws){   // ближайшие планы: сегодняшние (ещё не закрытые тренировкой) и будущие
+  const t = isoOf(todayN());
+  const fut = (db.plans || []).filter(p => p && ISO_RE.test(p.date || '') && p.date > t && !p.skipped && !p.done_id);
+  return [...todayPlans(ws || []), ...fut].sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : (a.created || 0) - (b.created || 0));
+}
+function planDay(iso){
+  const n = dn(iso), t = todayN();
+  if (n === t) return 'Сегодня'; if (n === t + 1) return 'Завтра';
+  const w = WDF[wdOf(n)]; return `${w[0].toUpperCase()}${w.slice(1)}, ${fmtDate(n)}`;
+}
+function openPlans(){
+  const list = upPlans(valid());
+  openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC('plan', 22)}</span><div><h2 style="margin:0">План</h2><div class="cap">Что собираешься сделать — в нужный день появится на главной</div></div></div>`
+    + (list.length ? list.map(p => { const a = actOf(p), par = planParams(p).map(x => x[1]).join(' · ');
+        return `<div class="wi plr" data-act="pledit" data-id="${esc(p.id)}"><span class="wa">${IC(a, 20)}</span><div style="flex:1;min-width:0"><div style="font-weight:700">${planDay(p.date)}</div><div class="cap">${(ACTS.find(x => x[0] === a) || ACTS[0])[1]}${par ? ' · ' + esc(par) : ''}</div></div><button type="button" class="plx" data-act="pldel" data-id="${esc(p.id)}" aria-label="Удалить план">${IC('trash', 18)}</button></div>`; }).join('')
+      : `<div class="hint">Планов пока нет — добавь первый.</div>`)
+    + `<button class="btn primary" style="width:100%;justify-content:center;min-height:50px;margin-top:6px" data-act="plnew">${IC('plus', 18)}Новый план</button>`, {type:'plans'});
+}
+function openPlanActs(){
+  openSheet(`<h2>Что планируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше параметры и дата</div><div class="acts">`
+    + ACTS.filter(a => a[2]).map(([k, l], i) => `<button type="button" class="act" data-act="plact" data-v="${k}" style="animation-delay:${i * 30}ms"><span class="ai">${IC(k, 24)}</span>${l}</button>`).join('') + `</div>`, {type:'planact'});
+}
+function openPlan(p, act){
+  const src = p || {}, today = isoOf(todayN()), date = p ? p.date : today;
+  act = act || actOf(src); const st = STR[act], same = !!p && actOf(p) === act;
+  const dateF = `<label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}" min="${date < today ? date : today}"></label>`;
+  openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${p ? 'Редактирование плана' : 'Новый план'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}</div></div></div>
+    ${st ? `<div class="g2">${dateF}<span></span></div>
+      <div class="f"><span>Подходы · ${st[0] === 'secs' ? 'секунд в каждом' : 'повторов в каждом'}</span><div class="sl" id="f-sl">${slRowsHTML(same && slOf(src).length ? slOf(src) : (act === 'pullup' ? [8, 7, 6] : st[0] === 'secs' ? [45, 45, 45] : [12, 12, 12]), st)}</div>
+        <div class="sl-btns"><button type="button" class="btn ghost small" data-act="sladd">${IC('plus', 15)}Ещё подход</button><span class="cap" id="sl-sum"></span></div></div>
+      <div class="g2">${KG_ACT[act] ? stepper('kg', KG_ACT[act].lbl, (same && +src.kg) || KG_ACT[act].def, 0, 150, act === 'barbell' ? 2.5 : 0.5, 1, 'кг') : '<span></span>'}</div>`
+    : TIMEA[act] ? `<div class="g2">${dateF}${stepper('minutes', 'Время', (same && src.minutes) || (act === 'yoga' ? 20 : 40), 1, 240, 1, 0, 'мин')}</div>
+      ${TIMEA[act][1] ? `<div class="g2">${stepper('speed', 'Средняя скорость', (same && +src.speed) || 18, 0, TIMEA[act][1], 0.5, 1, 'км/ч')}<span></span></div>` : ''}`
+    : `<div class="g2">${dateF}${stepper('incline', 'Уклон', same && src.incline != null ? src.incline : 0, 0, 15, 1, 0, '%')}</div>
+      <div class="g2">${stepper('minutes', 'Время', (same && src.minutes) || 30, 1, 240, 1, 0, 'мин')}${stepper('speed', 'Скорость', (same && src.speed) || 4.5, 0.5, 12, 0.1, 1, 'км/ч')}</div>`}
+    <div class="preview" id="f-prev"></div>
+    <div class="sheet-btns">${p ? `<button class="btn ghost danger" data-act="pldel" data-id="${esc(p.id)}">${IC('trash')}</button>` : ''}<button class="btn primary" data-act="plsave">Сохранить</button></div>`, {type:'plan', item:p, act});
+  updPreview();
+}
+function savePlan(){
+  const item = sheetCtx.item, act = sheetCtx.act || 'run', st = STR[act];
+  const data = {date:ISO_RE.test($('#f-date').value) ? $('#f-date').value : isoOf(todayN()), act};
+  if (st) {
+    const sl = slRead(), n = sl.length, v = Math.round(sl.reduce((a, x) => a + x, 0) / Math.max(1, n));
+    Object.assign(data, {sets:n, [st[0]]:v, sl, minutes:strMinL(act, sl), speed:0, incline:0});
+    if (KG_ACT[act]) data.kg = Math.round(stpVal('kg') * 10) / 10;
+  } else if (TIMEA[act]) Object.assign(data, {minutes:Math.round(stpVal('minutes')), speed:TIMEA[act][1] ? stpVal('speed') : 0, incline:0});
+  else Object.assign(data, {minutes:Math.round(stpVal('minutes')), speed:stpVal('speed'), incline:Math.round(stpVal('incline'))});
+  let p = item;
+  if (p) { ['sets', 'reps', 'secs', 'kg', 'sl'].forEach(k => delete p[k]); Object.assign(p, data); delete p.skipped; }
+  else { p = Object.assign({id:uid(), created:nowSec()}, data); db.plans.push(p); }
+  touch('plan', p); save(); closeSheet(); render(); hap.ok();
+  toast(item ? 'План обновлён' : data.date === isoOf(todayN()) ? 'План на сегодня добавлен' : `План сохранён · ${planDay(data.date).toLowerCase()}`);
+}
 
 function historyHTML(ws){
   let hidden = 0;
@@ -3388,7 +3503,7 @@ function updGoalInfo(){
 }
 function onStp(el){
   const key = el.dataset.key, bind = el.dataset.bind;
-  if (sheetCtx) { if (sheetCtx.type === 'workout') updPreview(); if (sheetCtx.type === 'wgoal') updGoalInfo(); }
+  if (sheetCtx) { if (sheetCtx.type === 'workout' || sheetCtx.type === 'plan') updPreview(); if (sheetCtx.type === 'wgoal') updGoalInfo(); }
   if (!bind) return;
   const v = readStp(el);
   if (bind === 'height') {
@@ -3566,6 +3681,14 @@ const ACT = {
     const done = () => { p.skipped = true; touch('plan', p); save(); render();
       toast('План на сегодня отклонён', 'Вернуть', () => { delete p.skipped; touch('plan', p); save(); render(); }); };
     const c = $('#plsug'); if (c) { c.classList.add('out'); setTimeout(done, 260); } else done(); },
+  plans: () => { hap.tap(); openPlans(); },
+  plnew: () => { hap.tap(); openPlanActs(); },
+  plact: el => { hap.tap(); openPlan(null, el.dataset.v); },
+  pledit: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.tap(); openPlan(p, actOf(p)); },
+  plsave: savePlan,
+  pldel: el => { const p = findPlan(el.dataset.id); if (!p) return; const idx = db.plans.indexOf(p), inForm = sheetCtx && sheetCtx.type === 'plan';
+    db.plans.splice(idx, 1); tombstone('plan', p); save(); hap.warn(); render(); if (inForm) closeSheet(); else openPlans();
+    toast('План удалён', 'Отменить', () => { db.plans.splice(Math.min(idx, db.plans.length), 0, p); touch('plan', p); save(); render(); if (sheetCtx && sheetCtx.type === 'plans') openPlans(); }); },
   frload: () => { FR.err = ''; hap.tap(); const b = document.querySelector('[data-act=frload]'); if (b) b.classList.add('spin'); loadFriends(true); },
   frinv: el => { S.inv = !S.inv; hap.imp(); el.classList.toggle('on', S.inv); const r = $('#inv'); if (r) r.classList.toggle('open', S.inv); },
   frzoom: el => openZoom(+el.dataset.id, el),
@@ -3783,7 +3906,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id
 document.addEventListener('input', e => {
   if (e.target.id === 'soc-in') { const b = $('#soc-go'); if (b && b.dataset.act === 'socsave') { b.dataset.act = 'socfind'; b.textContent = 'Найти'; const r = $('#soc-res'); if (r) r.innerHTML = ''; } }
   const st = e.target.closest('.stp');
-  if (st && sheetCtx) { if (sheetCtx.type === 'workout') updPreview(); if (sheetCtx.type === 'wgoal') updGoalInfo(); }
+  if (st && sheetCtx) { if (sheetCtx.type === 'workout' || sheetCtx.type === 'plan') updPreview(); if (sheetCtx.type === 'wgoal') updGoalInfo(); }
   if (e.target.id === 'f-date' || e.target.classList.contains('sli')) updPreview();
 });
 document.addEventListener('change', e => {
