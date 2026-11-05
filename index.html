@@ -1411,7 +1411,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .gvx.prem .gvglow{background:radial-gradient(circle,rgba(255,244,200,.85) 0%,#F5B23C 34%,transparent 70%);opacity:.6}
 .nt-art.prem .nt-rays{background:repeating-conic-gradient(from 0deg,rgba(255,214,110,.5) 0 6deg,transparent 6deg 24deg)}
 .gspk{position:absolute;inset:0;pointer-events:none}
-.gspk i{position:absolute;left:50%;top:50%;width:var(--s);height:var(--s);margin:calc(var(--s)/-2) 0 0 calc(var(--s)/-2);border-radius:50%;background:radial-gradient(circle,#FFF8DC 0,#FFD56B 45%,rgba(245,178,60,0) 72%);box-shadow:0 0 6px 1px rgba(255,205,90,.75);opacity:0;
+.gspk i{position:absolute;left:50%;top:50%;width:var(--s);height:var(--s);margin:calc(var(--s)/-2) 0 0 calc(var(--s)/-2);border-radius:50%;background:radial-gradient(circle,#FFF8DC 0,#FFD56B 45%,rgba(245,178,60,0) 72%);box-shadow:0 0 3px rgba(255,205,90,.7);opacity:0;
   animation:gspk var(--du) cubic-bezier(.2,.6,.3,1) var(--dl) infinite}
 .gspk i:nth-child(3n){border-radius:1px;transform:rotate(45deg)}
 @keyframes gspk{0%{opacity:0;transform:rotate(var(--a)) translateY(0) scale(.3)}12%{opacity:1}70%{opacity:.9}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(1)}}
@@ -1431,7 +1431,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.468';
+const APP = 'VOOB (by BGASHEV) Mini App v1.469';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2571,7 +2571,7 @@ function giftShelf(kinds, size, who){
 }
 // Подарок крупно: свечение и вращающиеся лучи
 /* v1.468: золотая пыльца для премиум-подарков */
-function sparkHTML(n){ let h = '<div class="gspk">'; for (let i = 0; i < n; i++) { const a = Math.random() * 360, d = 90 + Math.random() * 90, sz = 2 + Math.random() * 3.6, dl = (Math.random() * 3.2).toFixed(2), du = (2.2 + Math.random() * 2.2).toFixed(2);
+function sparkHTML(n){ let h = '<div class="gspk">'; for (let i = 0; i < n; i++) { const a = Math.random() * 360, d = 90 + Math.random() * 90, sz = 1.3 + Math.random() * 1.9, dl = (Math.random() * 3.2).toFixed(2), du = (2.2 + Math.random() * 2.2).toFixed(2);
     h += `<i style="--a:${a.toFixed(0)}deg;--d:${d.toFixed(0)}px;--s:${sz.toFixed(1)}px;--dl:${dl}s;--du:${du}s"></i>`; } return h + '</div>'; }
 function openGiftView(k, who){
   const old = $('#gview'); if (old) old.remove();
@@ -2582,7 +2582,7 @@ function openGiftView(k, who){
   else meta = `в коллекции ${esc(who)}`;
   const z = document.createElement('div'); z.id = 'gview'; z.dataset.act = 'gvclose';
   const pm = PGIFTS.includes(k);
-  z.innerHTML = `<div class="gvx${pm ? ' prem' : ''}"><div class="gvray"></div><div class="gvray b"></div><div class="gvglow"></div>${pm ? sparkHTML(26) : ''}<div class="gvart">${giftArt(k)}</div></div>
+  z.innerHTML = `<div class="gvx${pm ? ' prem' : ''}"><div class="gvray"></div><div class="gvray b"></div><div class="gvglow"></div>${pm ? sparkHTML(34) : ''}<div class="gvart">${giftArt(k)}</div></div>
     <b class="gvt">${esc(ttl)}</b>${meta ? `<div class="gvm">${meta}</div>` : ''}<div class="gvh">нажми, чтобы закрыть</div>`;
   document.body.appendChild(z); hap.imp();
 }
@@ -4412,7 +4412,7 @@ function showNotice(){
   let el = $('#ntc'); if (!el) { el = document.createElement('div'); el.id = 'ntc'; document.body.appendChild(el); }
   el.className = 'k-' + k;
   el.innerHTML = `<div class="nt-bg" data-act="ntlater"></div><div class="nt-sh" role="dialog" aria-modal="true"><div class="grab"></div>
-    <div class="nt-art${k === 'gift' && PGIFTS.includes(n.gift_kind) ? ' prem' : ''}"><i class="nt-rays"></i>${k === 'gift' && PGIFTS.includes(n.gift_kind) ? sparkHTML(18) : ''}${art}</div><div class="nt-cap">${cap}</div><h2 class="nt-t">${esc(n.title || '')}</h2>
+    <div class="nt-art${k === 'gift' && PGIFTS.includes(n.gift_kind) ? ' prem' : ''}"><i class="nt-rays"></i>${k === 'gift' && PGIFTS.includes(n.gift_kind) ? sparkHTML(24) : ''}${art}</div><div class="nt-cap">${cap}</div><h2 class="nt-t">${esc(n.title || '')}</h2>
     ${n.body ? `<div class="nt-b">${esc(n.body)}</div>` : ''}<div class="nt-s">— команда VOOB</div>
     <button class="btn primary nt-ok" data-act="ntok">${btn}</button>${cta && k !== 'gift' ? '<button class="btn ghost nt-no" data-act="ntlater">Не сейчас</button>' : ''}</div>`;
   requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
