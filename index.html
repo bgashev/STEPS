@@ -98,7 +98,9 @@ h3 .ic{color:var(--accent)}
 .chartcap{font-size:12px;color:var(--muted);margin-top:8px;min-height:17px}
 .chart-empty{height:150px;display:grid;place-items:center;color:var(--muted);font-size:14px}
 /* v1.452: недельная плашка профиля */
-.wk{position:relative;margin:12px 0;padding:18px 16px 14px;border-radius:26px;overflow:hidden;isolation:isolate;background:radial-gradient(120% 80% at 0% 0%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 62%),var(--surface);border:1px solid color-mix(in srgb,var(--accent) 14%,var(--border));box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 14px 34px -20px rgba(0,0,0,.7)}
+@keyframes wkIn{from{opacity:0;transform:translateY(8px)}}
+@keyframes wkFade{from{opacity:0}}
+.wk{animation:wkIn .6s cubic-bezier(.2,.8,.2,1) backwards;position:relative;margin:12px 0;padding:18px 16px 14px;border-radius:26px;overflow:hidden;isolation:isolate;background:radial-gradient(120% 80% at 0% 0%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 62%),var(--surface);border:1px solid color-mix(in srgb,var(--accent) 14%,var(--border));box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 14px 34px -20px rgba(0,0,0,.7)}
 .wk-top{display:flex;align-items:center;gap:16px}
 .wk-hd{min-width:0;flex:1}
 .wk-eye{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
@@ -117,12 +119,15 @@ h3 .ic{color:var(--accent)}
 .wkv{height:20px;line-height:20px;font-size:11.5px;font-weight:750;text-align:center;font-variant-numeric:tabular-nums;transition:color .15s}
 .wkcol{flex:1;display:flex;align-items:flex-end;justify-content:center}
 .wkcol i{display:block;width:min(64%,20px);border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,var(--accent),color-mix(in srgb,var(--accent) 38%,transparent));transform-origin:bottom;animation:grow .7s cubic-bezier(.2,.8,.2,1) backwards;transition:filter .15s,box-shadow .2s}
-.wkc:not(.on) .wkcol i{height:4px!important;width:4px;border-radius:50%;background:var(--off);animation:none}
+.wkc:not(.on) .wkcol i{height:4px!important;width:4px;border-radius:50%;background:var(--off);animation:wkFade .7s ease backwards}
 .wkl{height:24px;line-height:24px;font-size:11px;color:var(--muted);text-align:center}
 .wkc.today .wkl{color:var(--text);font-weight:700}
 .wkc.sel .wkcol i{box-shadow:0 0 16px color-mix(in srgb,var(--accent) 55%,transparent);filter:brightness(1.12)}
 .wkc.sel .wkv{color:var(--accent)}
 .wkcap{margin-top:10px;text-align:center}
+.wkv b{font-weight:inherit;animation:wkFade .6s .25s ease backwards}
+.wk-pk{animation:wkFade .6s ease backwards}
+@media (prefers-reduced-motion:reduce){.wk,.wkcol i,.wkv b,.wk-pk{animation:none!important}}
 .line{width:100%;height:auto;display:block;margin-top:10px}
 .line .draw{stroke-dasharray:2000;stroke-dashoffset:2000;animation:draw 1.2s ease forwards}
 @keyframes draw{to{stroke-dashoffset:0}}
@@ -1003,7 +1008,7 @@ input[type=date].inp{display:block}
 .af-bar{margin-top:14px!important}
 .foot a{color:var(--accent);text-decoration:none;font-weight:700;cursor:pointer}
 /* v1.432.2: повторная перерисовка той же вкладки — без повторных «появлений» */
-#view.rr :is(.act,.bfill,.cgc,.emb .rg,.fbar .ff,.fbar .fv,.fc,.fdb i,.fi img.fade,.fticker,.gbig,.gx-c,.gx-ring .sg,.line .draw,.lvbar i,.pfill,.plsug,.ring-p,.rk .br i,.sc,.slr,.slr.new,.wdock,.wi,.fest,.wkcol i){animation:none!important}
+#view.rr :is(.act,.bfill,.cgc,.emb .rg,.fbar .ff,.fbar .fv,.fc,.fdb i,.fi img.fade,.fticker,.gbig,.gx-c,.gx-ring .sg,.line .draw,.lvbar i,.pfill,.plsug,.ring-p,.rk .br i,.sc,.slr,.slr.new,.wdock,.wi,.fest){animation:none!important}
 #view.rr .lvbar i,#view.rr [style*="--c"]{transition:none!important}
 /* v1.443: без анимации элемент обязан сразу стоять в конечном виде — иначе сегмент кольца недели и линия графика оставались невидимыми */
 #view.rr .gx-ring .sg,#view.rr .line .draw{stroke-dashoffset:0!important}
@@ -1955,16 +1960,16 @@ function bars(items, fmt, cid, h = 170){
   }).join('') + `</div><div class="chartcap" id="${cid}">Нажми на столбик — покажу детали</div>`;
 }
 /* v1.452: недельная плашка профиля — сегментное кольцо нормы, три показателя, столбики по дням */
-function weekCard(f, g, ok, shown, days){
+function weekCard(f, g, ok, shown, days, loading){
   const w = f.week, n = Math.max(1, g.target || 1), t = todayN();
   const ttl = g.done_today ? 'Норма выполнена' : g.prev_ok ? 'Норма закрыта' : 'До нормы ' + Math.max(0, g.target - g.shown);
   let h = `<div class="wk" style="--wk:${ok ? GREEN : 'var(--accent)'}"><div class="wk-top">${segRing(Math.min(shown, n), n, ok, 0, 96)}<div class="wk-hd">
     <div class="wk-eye">Норма · 7 дней</div><div class="wk-ttl"${ok ? ' style="color:var(--green)"' : ''}>${ttl}</div>${g.best ? `<div class="wk-pill">лучшая серия · ${g.best}</div>` : ''}</div></div>
     <div class="wk-st"><div><b>${fmtMin(w.minutes)}</b><span>в движении</span></div><div><b>${w.workouts}</b><span>${npw(w.workouts, W_WORK).replace(/^\d+\s*/, '')}</span></div><div><b>${kmF(w.km)}</b><span>пройдено</span></div></div>`;
-  if (days && days.some(Boolean)) {
-    const mx = Math.max(...days, 1);
-    h += `<div class="wk-ch"><span>Минуты по дням</span><span>пик · ${mx}</span></div><div class="wkb">` + days.map((m, i) => { const d = t - 6 + i, ht = m > 0 ? Math.max(10, m / mx * 100) : 0;
-      return `<div class="bar wkc${m > 0 ? ' on' : ''}${i === 6 ? ' today' : ''}" data-act="bar" data-cap="fpw" data-tip="${esc(WDF[wdOf(d)] + ': ' + fmtMin(m))}"><div class="wkv">${m > 0 ? m : ''}</div><div class="wkcol"><i style="height:${ht}%;animation-delay:${i * 45}ms"></i></div><div class="wkl">${WD[wdOf(d)]}</div></div>`; }).join('')
+  if (loading || (days && days.some(Boolean))) {   // пока профиль грузится — рамка графика без столбиков, потом они вырастают
+    const dd = loading || !days ? [0, 0, 0, 0, 0, 0, 0] : days, mx = Math.max(...dd, 1);
+    h += `<div class="wk-ch"><span>Минуты по дням</span>${loading ? '' : `<span class="wk-pk">пик · ${mx}</span>`}</div><div class="wkb">` + dd.map((m, i) => { const d = t - 6 + i, ht = m > 0 ? Math.max(10, m / mx * 100) : 0;
+      return `<div class="bar wkc${m > 0 ? ' on' : ''}${i === 6 ? ' today' : ''}"${loading ? '' : ` data-act="bar" data-cap="fpw" data-tip="${esc(WDF[wdOf(d)] + ': ' + fmtMin(m))}"`}><div class="wkv">${m > 0 && !loading ? `<b>${m}</b>` : ''}</div><div class="wkcol">${loading ? '' : `<i style="height:${ht}%;animation-delay:${i * 45}ms"></i>`}</div><div class="wkl">${WD[wdOf(d)]}</div></div>`; }).join('')
       + `</div><div class="chartcap wkcap" id="fpw">Нажми на столбик — покажу детали</div>`;
   }
   return h + `</div>`;
@@ -2756,7 +2761,7 @@ function friendSheetHTML(f, j, loading, self){
     : `<button type="button" class="fchipb" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · ${j.friends_count}${(j.friends || []).length ? IC('chev', 14) : ''}</button>`)
     + (self ? `<button type="button" class="fchipb hset" data-act="meset" aria-label="Настройки профиля и приложения">${IC('gear', 16)}Настройки</button>` : '')
     + `</div>` + socialsHTML(f.tg_id, true) + `</div>` + acts;
-  h += weekCard(f, g, ok, shown, j && j.week && j.week.days);
+  h += weekCard(f, g, ok, shown, j && j.week && j.week.days, loading);
   if ((f.gift_kinds || []).length) h += `<div class="card"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из ${GIFT_KEYS.length}</h3>${giftShelf(f.gift_kinds, 20, f.name)}</div>`;
   if (!loading && !self) h += `<button class="btn ghost small" style="width:100%;margin-bottom:12px;color:var(--muted)" data-act="frrep" data-id="${f.tg_id}">Пожаловаться</button>`;
   if (loading) return h + `<div id="fp-load">` + [100, 120, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('') + `</div>`;
