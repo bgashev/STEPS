@@ -714,6 +714,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .act.pin .ai{width:42px;height:42px;background:color-mix(in srgb,var(--on-accent) 14%,transparent);color:var(--on-accent)}
 .act.pin .afav{top:calc(50% - 19px);right:8px;opacity:1;color:var(--on-accent)}
 .act.pin .afav svg{fill:currentColor}
+.act.pin:has(+ .act:not(.pin)){margin-bottom:8px}   /* v1.454: воздух между последней закреплённой и обычными */
 .acts.calm .act,.acts.calm .act .ai,.acts.calm .act.pin::before,.acts.calm .act.pin::after{animation:none}
 /* v1.453: выбор активности — плитки всплывают каскадом с упругим отскоком, избранные — с проявлением градиента и бликом */
 @keyframes actIn{from{opacity:0;transform:translateY(26px) scale(.86)}55%{opacity:1}}
