@@ -1158,10 +1158,15 @@ input[type=date].inp{display:block}
 .smx-in{animation:smxIn .38s cubic-bezier(.2,.8,.2,1) backwards}
 @keyframes smxIn{from{opacity:0;transform:translateY(8px) scale(.96)}}
 /* v1.442: соцсети — окно по центру видимой области; с клавиатурой центр сдвигается вверх (--kb) */
-#sheet.top{top:calc((100% - var(--kb,0px)) / 2);bottom:auto!important;max-height:calc(100% - var(--kb,0px) - 28px);border-radius:24px;margin:0 12px;
+#sheet.top{top:calc(var(--sht,50%) + var(--hdr) / 2);bottom:auto!important;max-height:calc(var(--shm,100vh) - var(--hdr) - 28px);--hdr:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px));border-radius:24px;margin:0 12px;
   transform:translateY(-50%) scale(.94);opacity:0;border:1px solid var(--border);
-  transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .22s ease,top .22s ease}
+  transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .22s ease}   /* v1.446: центр видимой области считает скрипт (visualViewport) — iOS-клавиатура больше не уносит окно */
 #sw.open #sheet.top{transform:translateY(-50%);opacity:1}
+/* с клавиатурой шапка окна компактнее — всё помещается без прокрутки */
+.kbo #sheet.top .ssh-hero{padding:0 0 10px}
+.kbo #sheet.top .ssh-hero .lg{width:44px;height:44px}
+.kbo #sheet.top .ssh-hero h2{margin-top:8px;font-size:19px}
+.kbo #sheet.top .ssh-hero::before{display:none}
 #sheet.top .grab{display:none}
 </style>
 </head>
@@ -1176,7 +1181,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.445';
+const APP = 'VOOB (by BGASHEV) Mini App v1.446';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3055,7 +3060,7 @@ function socSheet(net){
     if (h) { h.className = 'ssh-hint' + (v && !ok ? ' bad' : ''); h.innerHTML = !v ? '&nbsp;' : ok ? `${esc(socUrl(k, v).replace(/^https:\/\/(www\.)?/, ''))}` : `Так ник не пишется: ${SOC_RULE[k]}`; } };
   setTimeout(() => { const i = $('#soc-in'); if (!i) return; i.addEventListener('input', chk);
     i.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const b = $('#soc-go'); if (b && !b.disabled) b.click(); } });
-    chk(); i.focus(); }, 250);
+    chk(); i.focus({preventScroll:true}); }, 380);   // фокус — после анимации появления, иначе iOS дёргает окно
 }
 // ссылка на профиль именно этой сети или @ник -> ник (для поля ввода; окончательная проверка — на сервере)
 function socNick(net, raw){
@@ -3786,9 +3791,13 @@ if (inTG) { setTimeout(checkInbox, 2500); setInterval(checkInbox, 10 * 60000);
 fitFrames();
 
 (function(){ const vv = window.visualViewport; if (!vv) return;
-  const upd = () => { const kb = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
-    document.documentElement.style.setProperty('--kb', (kb > 60 ? kb : 0) + 'px');
-    const a = document.activeElement; if (kb > 60 && a && a.matches('input,textarea') && a.closest('#sheet')) setTimeout(() => a.scrollIntoView({block:'center', behavior:'smooth'}), 60); };
+  const upd = () => { const kb = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)), rs = document.documentElement.style;
+    rs.setProperty('--kb', (kb > 60 ? kb : 0) + 'px');
+    rs.setProperty('--sht', Math.round(vv.offsetTop + vv.height / 2) + 'px');   // центр того, что реально видно (iOS сдвигает страницу под клавиатуру)
+    rs.setProperty('--shm', Math.round(vv.height) + 'px');
+    document.documentElement.classList.toggle('kbo', kb > 60);
+    const a = document.activeElement; if (kb > 60 && a && a.matches('input,textarea') && a.closest('#sheet') && !$('#sheet').classList.contains('top')) setTimeout(() => a.scrollIntoView({block:'center', behavior:'smooth'}), 60); };
+  upd();
   vv.addEventListener('resize', upd); vv.addEventListener('scroll', upd);
   document.addEventListener('focusin', e => { if (e.target.matches && e.target.matches('#sheet input,#sheet textarea')) setTimeout(upd, 300); });
   document.addEventListener('focusout', () => setTimeout(upd, 200)); })();
