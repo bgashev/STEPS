@@ -1383,10 +1383,10 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .hero-nm{font-size:27px}
 .hero-at{margin-top:4px}
 .hero .crw{margin-top:12px}
-.hero-lv{max-width:290px;margin:26px auto 0;padding:0;border:0;background:none;border-radius:0}
+.hero-lv{max-width:none;width:100%;margin:26px auto 0;padding:0;border:0;background:none;border-radius:0}
 .hero-lvt{gap:10px;font-size:16.5px}
 .hero-lvt .lvn{min-width:30px;height:30px;border-radius:15px;font-size:14px}
-.hero .lvbar{height:5px;margin:14px auto 9px}
+.hero .lvbar{height:7px;margin:14px auto 9px;width:100%}
 .hero .cap{font-size:12.5px}
 .hero-row{gap:12px;margin-top:28px}
 .hero-row .fchipb{height:50px;padding:0 22px 0 8px;font-size:15.5px;gap:10px}
@@ -1431,7 +1431,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.470';
+const APP = 'VOOB (by BGASHEV) Mini App v1.471';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3420,9 +3420,6 @@ function viewMeSettings(){
     <div class="cap" id="pm-msg">Введи код — PRO, рамка или подарок сразу станут твоими</div></div>`;   // v1.436
   if (inTG && tgUser && (BDG.get(tgUser.id) || {}).creator) h += `<div class="card"><div class="tgl${asFree() ? ' on' : ''}" data-act="asfree"><span class="sw2"></span><b>Смотреть как без PRO</b></div><div class="cap" style="margin-top:8px">Только для создателя: на этом устройстве приложение ведёт себя как у пользователя без подписки — лимиты и закрытые функции. Выключи, чтобы вернуть всё.</div></div>`;
   if (inTG) h += socEditHTML();
-  h += `<div class="card"><h3>${IC('medal')}Уровень ${lv.level} <span class="ttl" style="color:${tierColor(lv.level)}">${tierOf(lv.level).title}</span></h3><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div>
-    <div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1} · всего ${numSep(lv.xp)}</div>
-    <div class="cap" style="margin-top:6px">Очки дают тренировки: чем дольше, быстрее и круче уклон — тем больше. Ещё +100 за каждый новый вид подарка от друзей. С каждым уровнем следующий чуть дороже.</div></div>`;
   // v1.447: «Мои подарки» и «Достижения» убраны из настроек — они показываются в самом профиле выше
   h += handleCard();
   h += `<div class="card"><h3>${IC('user')}Профиль</h3>
