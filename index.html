@@ -688,8 +688,10 @@ input[type=date].inp{display:block}
 .act.soon{border-style:dashed;color:var(--muted);background:transparent}
 .act .afav{position:absolute;top:6px;right:6px;z-index:2;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:var(--muted);opacity:.55;transition:opacity .2s,color .2s}
 .act .afav svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
-.act.pin{border-color:color-mix(in srgb,var(--accent) 55%,var(--border));background:color-mix(in srgb,var(--accent) 8%,var(--surface))}
-.act.pin .afav{opacity:1;color:var(--accent)}
+.act.pin{grid-column:1/-1;flex-direction:row;justify-content:flex-start;text-align:left;gap:14px;padding:12px 52px 12px 12px;font-size:15px;color:var(--on-accent);border-color:transparent;isolation:isolate;box-shadow:0 14px 28px -16px color-mix(in srgb,var(--accent) 85%,transparent)}
+.act.pin::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(120% 160% at 0% 0%,rgba(255,255,255,.30),transparent 55%),linear-gradient(120deg,var(--accent),var(--accent2))}
+.act.pin .ai{width:42px;height:42px;background:color-mix(in srgb,var(--on-accent) 14%,transparent);color:var(--on-accent)}
+.act.pin .afav{top:calc(50% - 14px);right:12px;opacity:1;color:var(--on-accent)}
 .act.pin .afav svg{fill:currentColor}
 .acts.calm .act{animation:none}
 .act.soon .ai{background:var(--surface2);color:var(--muted);opacity:.7}
@@ -3630,7 +3632,7 @@ function actsHTML(){
   const f = favActs(), list = [...f.map(k => ACTS.find(a => a[0] === k)), ...ACTS.filter(a => !f.includes(a[0]))];
   return list.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}${f.includes(k) ? ' pin' : ''}" data-k="${k}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="animation-delay:${i * 30}ms">`
     + (ok ? `<span class="afav" data-act="actfav" data-v="${k}" role="button" aria-label="${f.includes(k) ? 'Открепить' : 'Закрепить наверху'}"><svg width="15" height="15" viewBox="0 0 24 24"><path d="m12 3.2 2.6 5.5 6 .7-4.4 4.1 1.1 6L12 16.6l-5.3 2.9 1.1-6L3.4 9.4l6-.7L12 3.2Z"/></svg></span>` : '')
-    + `<span class="ai">${IC(k, 24)}</span>${l}${ok ? '' : '<em>в разработке</em>'}</button>`).join('');
+    + `<span class="ai">${IC(k, 24)}</span><span class="al">${l}</span>${ok ? '' : '<em>в разработке</em>'}</button>`).join('');
 }
 const ACT = {
   tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; S.meSet = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') loadFriends(); } },
@@ -3641,9 +3643,14 @@ const ACT = {
     const box = $('.acts'); if (!box) return;
     const was = new Map([...box.querySelectorAll('.act[data-k]')].map(b => [b.dataset.k, b.getBoundingClientRect()]));
     box.classList.add('calm'); box.innerHTML = actsHTML();
-    box.querySelectorAll('.act[data-k]').forEach(b => { const a = was.get(b.dataset.k), n = b.getBoundingClientRect(); if (!a || !b.animate) return;
-      const dx = a.left - n.left, dy = a.top - n.top; if (!dx && !dy) return;
-      b.animate([{transform:`translate(${dx}px,${dy}px)`}, {transform:'none'}], {duration:420, easing:'cubic-bezier(.2,.85,.25,1)'}); });
+    const EZ = 'cubic-bezier(.2,.85,.25,1)', still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!still) box.querySelectorAll('.act[data-k]').forEach(b => { const a = was.get(b.dataset.k), n = b.getBoundingClientRect(); if (!a || !b.animate) return;
+      const dx = a.left - n.left, dy = a.top - n.top, sx = a.width / n.width, sy = a.height / n.height, morph = Math.abs(sx - 1) > .02 || Math.abs(sy - 1) > .02;
+      if (!morph) { if (dx || dy) b.animate([{transform:`translate(${dx}px,${dy}px)`}, {transform:'none'}], {duration:420, easing:EZ}); return; }
+      b.style.transformOrigin = '0 0';   // квадрат растягивается в широкую кнопку (и обратно), содержимое проявляется чуть позже
+      b.animate([{transform:`translate(${dx}px,${dy}px) scale(${sx},${sy})`}, {transform:'none'}], {duration:540, easing:EZ}).onfinish = () => { b.style.transformOrigin = ''; };
+      b.querySelectorAll('.ai,.al').forEach(c => c.animate([{opacity:0}, {opacity:1}], {duration:280, delay:170, easing:'ease-out', fill:'backwards'}));
+      if (b.classList.contains('pin')) { try { b.animate([{opacity:0}, {opacity:1}], {duration:420, easing:'ease-out', pseudoElement:'::before'}); } catch (e) {} } });
     const t = box.querySelector(`.act[data-k="${k}"] .afav`); if (t && t.animate && !on) t.animate([{transform:'scale(1.6)'}, {transform:'scale(1)'}], {duration:360, easing:'cubic-bezier(.2,1.4,.4,1)'}); },
   actpick: el => { hap.tap(); if (KG_ACT[el.dataset.v]) { openDbx(el.dataset.v); return; } openWorkout(null, null, '', el.dataset.v); },
   actsoon: () => { hap.warn(); toast('Скоро — уже готовим ✨'); },
