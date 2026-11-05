@@ -626,6 +626,8 @@ input[type=date].inp{display:block}
 .wa{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
 .hflt{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:10px -18px 2px;padding:0 18px 2px}
 .hflt::-webkit-scrollbar{display:none}
+.hhd{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:22px 0 2px}
+.hhd h3{margin:0}
 .hflt button{flex:none;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:999px;padding:7px 12px;font:inherit;font-size:13px;font-weight:650;transition:background .2s,color .2s,border-color .2s}
 .hflt button i{font-style:normal;font-size:11px;font-weight:800;opacity:.6}
 .hflt button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
@@ -1211,7 +1213,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.451';
+const APP = 'VOOB (by BGASHEV) Mini App v1.452';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2769,9 +2771,11 @@ function viewHome(){
   if (dueM) h += festHTML(dueM[1], dueM[2], dueM[0], 'ИТОГИ МЕСЯЦА', 'sumhide', 'm');
   if (due) h += festHTML(due[1], due[2], due[0], 'ИТОГИ НЕДЕЛИ', 'sumhide');
   if (ws.length) {
+    const hf0 = S.hflt && ws.some(w => actOf(w) === S.hflt) ? S.hflt : '', ws0 = ws;
+    { const ws = hf0 ? ws0.filter(w => actOf(w) === hf0) : ws0;   // v1.452: цифры сверху — по выбранному виду
     const kcs = ws.map(kcal);
-    h += `<div class="kpis">${kpi(ws.length, 'Тренировок')}${kpi(fmtMin(sum(ws, w => w.minutes)), 'Всего времени')}${kpi(kmF(sum(ws, kmOf)), 'Пройдено, примерно')}${kpi(kcs.some(Boolean) ? kcalF(sum(kcs, k => k || 0)) : '—', kcs.some(Boolean) ? 'Сожжено, примерно' : 'Ккал: укажи вес')}</div>`;
-  }
+    h += `<div class="kpis">${kpi(ws.length, 'Тренировок')}${kpi(fmtMin(sum(ws, w => w.minutes)), 'Всего времени')}${hf0 && STR[hf0] ? kpi(numSep(sum(ws, strTotal)) + (STR[hf0][0] === 'secs' ? ' сек' : ''), STR[hf0][0] === 'secs' ? 'Под нагрузкой' : 'Повторений') : hf0 && !['run', 'bike'].includes(hf0) ? kpi(numSep(sum(ws, workoutXp)), 'XP заработано') : kpi(kmF(sum(ws, kmOf)), 'Пройдено, примерно')}${kpi(kcs.some(Boolean) ? kcalF(sum(kcs, k => k || 0)) : '—', kcs.some(Boolean) ? 'Сожжено, примерно' : 'Ккал: укажи вес')}</div>`;
+  } }
   h += historyHTML(ws);
   return h + '<div class="wdock-sp"></div>';   // место под кнопку «Тренировка»
 }
@@ -2822,8 +2826,8 @@ function historyHTML0(ws){
   const months = new Map();
   for (const w of sorted) { const k = w.date.slice(0, 7); if (!months.has(k)) months.set(k, []); months.get(k).push(w); }
   const actName = k => { const a = ACTS.find(x => x[0] === k); return a ? a[1] : k; };
-  let h = kinds.size > 1 ? `<div class="hflt">` + [['', 'Все', all], ...[...kinds].sort((a, b) => b[1] - a[1]).map(([k, n]) => [k, actName(k), n])]
-    .map(([k, l, n]) => `<button type="button" class="${hf === k ? 'on' : ''}" data-act="hflt" data-v="${esc(k)}">${k ? IC(k, 14) : ''}${esc(l)}<i>${n}</i></button>`).join('') + `</div>` : '', prev = null;
+  let h = `<div class="hhd"><h3>${IC('clock', 17)}История</h3>${kinds.size > 1 ? `<span class="cap">${hf ? esc(actName(hf)) : 'все виды'} · ${npw(sorted.length, W_WORK)}</span>` : ''}</div>` + (kinds.size > 1 ? `<div class="hflt">` + [['', 'Все', all], ...[...kinds].sort((a, b) => b[1] - a[1]).map(([k, n]) => [k, actName(k), n])]
+    .map(([k, l, n]) => `<button type="button" class="${hf === k ? 'on' : ''}" data-act="hflt" data-v="${esc(k)}">${k ? IC(k, 14) : ''}${esc(l)}<i>${n}</i></button>`).join('') + `</div>` : ''), prev = null;
   sorted.slice(0, S.limit).forEach((w, i) => {
     const k = w.date.slice(0, 7);
     if (hs === 'date' && k !== prev) { prev = k; const g = months.get(k), [y, m] = k.split('-').map(Number);
