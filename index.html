@@ -1538,7 +1538,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.488';
+const APP = 'VOOB (by BGASHEV) Mini App v1.489';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2035,6 +2035,7 @@ async function syncNow(){
     srvUser = res.user || srvUser;
     setGifts(res.gifts);
     lastSync = Date.now();
+    if (rows.length) { ME.at = 0; if (S.tab === 'me' && !S.meSet && FR.data && FR.data.me && !ME.busy) loadMyProfile(FR.data.me.tg_id); }
     persist();
     if (changed && !sheetCtx) { applyTheme(); render(); }
     setSrv(Object.keys(db.sync.dirty).length ? 'load' : 'ok');
@@ -3514,8 +3515,8 @@ function viewMe(){
   let h = '';
   if (!me) return h + (FR.err ? `<div class="card muted">Не удалось загрузить профиль: ${esc(FR.err)}</div>`
     : [110, 90, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join(''));
-  const f = Object.assign({}, me, {name: displayName() || me.name, gift_kinds: (GIFTS_IN && GIFTS_IN.kinds) || me.gift_kinds || []});
-  return h + `<div class="me-prof">${friendSheetHTML(f, ME.prof, !ME.prof, true)}</div>`;
+  const f = Object.assign({}, me, {name: displayName() || me.name, gift_kinds: (GIFTS_IN && GIFTS_IN.kinds) || me.gift_kinds || [], level: myLevel()});   // v1.489: уровень и XP считаем у себя — без ожидания сервера
+  return h + `<div class="me-prof">${friendSheetHTML(f, ME.prof ? Object.assign({}, ME.prof, {level: f.level}) : ME.prof, !ME.prof, true)}</div>`;
 }
 async function loadMyProfile(id){
   askBadges([id]);
@@ -3997,13 +3998,15 @@ function saveWorkout(){
   } else if (TIMEA[act]) Object.assign(data, {minutes:Math.round(stpVal('minutes')), speed:TIMEA[act][1] ? stpVal('speed') : 0, incline:0});
   else Object.assign(data, {minutes:Math.round(stpVal('minutes')), speed:stpVal('speed'), incline:Math.round(stpVal('incline'))});
   const bad = acCheck(data, item); if (bad) { hap.warn(); toast(bad); return; }
-  const g = G(), before = goalCycles(valid()).done;
+  const g = G(), before = goalCycles(valid()).done, xp0 = myLevel().xp;
   let w = item;
   if (w) { if (!st) ['sets', 'reps', 'secs', 'kg', 'sl'].forEach(k => delete w[k]); else ['reps', 'secs'].forEach(k => { if (!(k in data)) delete w[k]; }); Object.assign(w, data); } else { w = Object.assign({id:uid(), created:nowSec()}, data); db.workouts.push(w); }
   if (plan && !item) { if (plan.act && !w.act) w.act = plan.act; plan.done_id = w.id; delete plan.skipped; touch('plan', plan); }
   touch('workout', w);
+  const xp1 = myLevel().xp; ME.at = 0;
   save(); closeSheet(); render(); hap.ok();
-  toast(item ? 'Тренировка обновлена' : 'Тренировка сохранена');
+  const dx = xp1 - xp0;
+  toast((item ? 'Тренировка обновлена' : 'Тренировка сохранена') + (dx > 0 ? ` · +${dx} XP` : ''));
   const after = goalCycles(valid()).done;
   if (after > before) setTimeout(() => celebrate('trophy', 'Норма выполнена!', `${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}`, CG_LINES), 350);
 }
