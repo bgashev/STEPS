@@ -974,6 +974,15 @@ input[type=date].inp{display:block}
 .prox.min .prox-em{width:36px;height:36px;border-radius:12px}
 .prox.min .prox-t{font-size:16px}
 .prox-s{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* v1.453: пока тарифы грузятся — спокойный «скелет» вместо подписи и плашки, потом всё проявляется плавно, без смены текста на глазах */
+.prox-s{position:relative}
+.prox-s span{transition:opacity .6s ease}
+.prox-s.ld span{opacity:0}
+.prox-s.ld::before{content:"";position:absolute;left:0;top:4px;width:118px;height:9px;border-radius:5px;background:color-mix(in srgb,var(--text) 10%,transparent);animation:proLd 1.3s ease-in-out infinite}
+@keyframes proLd{50%{opacity:.45}}
+.prox-pill{transition:opacity .6s ease,color .3s,border-color .3s,background .3s}
+.prox-pill.ld{opacity:0}
+@media (prefers-reduced-motion:reduce){.prox-s span,.prox-pill{transition:none!important}.prox-s.ld::before{animation:none}}
 /* соцсети */
 .socs{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .socs:empty{display:none}
@@ -3261,8 +3270,8 @@ function proCardHTML(){
   const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки']];
   const min = !!lsGet('voob_pro_min');            // v1.438: плашку можно свернуть, выбор запоминается
   const sub = st.active ? `до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : (m ? `от ${m.stars} ⭐ в месяц` : 'больше возможностей');   // v1.451: коротко — без обрезки
-  return `<div class="prox${min ? ' min' : ''}"><div class="prox-top" data-act="promin" role="button" aria-expanded="${!min}"><div class="prox-em">${IC('crown', 22)}</div><div style="min-width:0"><div class="prox-t">VOOB PRO</div><div class="prox-s">${sub}</div></div>
-    <span class="prox-pill${st.active ? ' on' : ''}">${st.active ? 'АКТИВЕН' : 'ОФОРМИТЬ'}</span><span class="prox-tg">${IC('chev', 16)}</span></div>
+  return `<div class="prox${min ? ' min' : ''}"><div class="prox-top" data-act="promin" role="button" aria-expanded="${!min}"><div class="prox-em">${IC('crown', 22)}</div><div style="min-width:0"><div class="prox-t">VOOB PRO</div><div class="prox-s${PROM.st ? '' : ' ld'}"><span>${sub}</span></div></div>
+    <span class="prox-pill${st.active ? ' on' : ''}${PROM.st ? '' : ' ld'}">${st.active ? 'АКТИВЕН' : 'ОФОРМИТЬ'}</span><span class="prox-tg">${IC('chev', 16)}</span></div>
     <div class="prox-body"><div>
     <div class="prox-perks">${perks.map(([i, t]) => `<span>${IC(i, 13)}${t}</span>`).join('')}</div>
     ${(st.plans || []).length ? `<div class="prox-plans">${plan(m)}${plan(y, true)}</div>` : '<div class="cap">Загружаю тарифы…</div>'}
