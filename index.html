@@ -1176,7 +1176,7 @@ input[type=date].inp{display:block}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.444';
+const APP = 'VOOB (by BGASHEV) Mini App v1.445';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2983,10 +2983,10 @@ function viewMeSettings(){
   { const cur = frameOf(tgUser ? {tg_id:tgUser.id} : null);
     h += `<div class="card"><h3>${IC('sparkle')}Персонализация</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте. Анимированные — для PRO.</div><div class="frs${S.frAll ? '' : ' col'}">${FRAMES.map(([k, l, pro], i) =>
       `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 ? ' more' : ''}${pro && !frOwned(k) ? ' lock' : ''}" data-act="frame" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="smore" data-k="frAll" data-more="Все рамки · ${FRAMES.length}"><span>${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}</span>${IC('chev', 14)}</button></div>`; }
-  { const cb = db.settings.bg || '', pro = isPro();
+  { const cb = db.settings.bg || '', pro = isPro(), si = BG_KEYS.findIndex(x => x[0] === cb);   // v1.445: в свёрнутом виде всегда 4 плитки; выбранный дальний фон встаёт на место третьего
     h += `<div class="card"><h3>${IC('palette')}Фон профиля</h3><div class="cap" style="margin:-6px 0 12px">Фон карточки профиля — его видят все, кто откроет твой профиль. Только для PRO.</div>
       <div class="bgs${S.bgAll ? '' : ' col'}"><button type="button" class="bgb${cb ? '' : ' on'}" data-act="bgset" data-v=""><span class="th none"></span>Без фона</button>${BG_KEYS.map(([k, l], i) =>
-      `<button type="button" class="bgb${cb === k ? ' on' : ''}${i >= 3 && cb !== k ? ' bmore' : ''}" data-act="bgset" data-v="${k}"><span class="th">${bgFx(k)}</span>${pro ? '' : `<span class="lk">${IC('lock', 11)}</span>`}${l}</button>`).join('')}</div><button type="button" class="frx${S.bgAll ? ' open' : ''}" data-act="smore" data-k="bgAll" data-more="Все фоны · ${BG_KEYS.length}"><span>${S.bgAll ? 'Свернуть' : 'Все фоны · ' + BG_KEYS.length}</span>${IC('chev', 14)}</button></div>`; }
+      `<button type="button" class="bgb${cb === k ? ' on' : ''}${(si >= 3 ? (i >= 2 && i !== si) : i >= 3) ? ' bmore' : ''}" data-act="bgset" data-v="${k}"><span class="th">${bgFx(k)}</span>${pro ? '' : `<span class="lk">${IC('lock', 11)}</span>`}${l}</button>`).join('')}</div><button type="button" class="frx${S.bgAll ? ' open' : ''}" data-act="smore" data-k="bgAll" data-more="Все фоны · ${BG_KEYS.length}"><span>${S.bgAll ? 'Свернуть' : 'Все фоны · ' + BG_KEYS.length}</span>${IC('chev', 14)}</button></div>`; }
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}
     ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${(db.settings.dv || 'graphite') === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${(db.settings.dv || 'graphite') === k ? IC('check', 16) : ''}</button>`).join('')}</div>` : ''}</div>
     <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}${k !== 'mono' && !isPro() ? ' lk' : ''}" data-act="accent" data-v="${k}"${k !== 'mono' && !isPro() ? ' data-lk="1"' : ''} style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div></div>`;
