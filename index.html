@@ -233,6 +233,13 @@ input[type=date].inp{display:block}
 #toast .pt-go{flex:none;display:grid;place-items:center;color:#E9B949;opacity:.9;margin-left:2px}
 .prochip{display:flex;align-items:center;gap:8px;width:100%;margin:0 0 10px;padding:9px 12px;border-radius:14px;font:inherit;font-size:12.5px;font-weight:650;text-align:left;color:var(--text);cursor:pointer;border:1px solid rgba(233,185,73,.4);background:linear-gradient(120deg,color-mix(in srgb,#E9B949 12%,var(--surface)),var(--surface));-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .prochip:active{transform:scale(.98)}.prochip svg{color:#E9B949;flex:none}.prochip span{flex:1;min-width:0}
+.prosh .prox-perks span{animation:proIn .8s cubic-bezier(.32,.72,0,1) both;animation-delay:var(--d,0s)}
+.prosh .prox-perks span:nth-child(1){--d:.05s}.prosh .prox-perks span:nth-child(2){--d:.09s}.prosh .prox-perks span:nth-child(3){--d:.13s}.prosh .prox-perks span:nth-child(4){--d:.17s}.prosh .prox-perks span:nth-child(5){--d:.21s}.prosh .prox-perks span:nth-child(6){--d:.25s}.prosh .prox-perks span:nth-child(7){--d:.29s}
+.prosh #pro-pl{min-height:148px}
+.prosh #pro-pl.in .prox-plan{animation:proUp .9s cubic-bezier(.32,.72,0,1) both}.prosh #pro-pl.in .prox-plan:nth-child(2){animation-delay:.1s}
+.prosh .prox-plans.pl-sk .prox-plan{pointer-events:none;border-color:var(--border);animation:proLd 1.4s ease-in-out infinite}
+.prosh .prox-plans.pl-sk .prox-plan>*{visibility:hidden}
+.prosh .prox-plans.pl-sk .prox-plan:nth-child(2){animation-delay:.2s}
 .prosh{text-align:center;padding-top:4px}.prosh .prox-em{margin:6px auto 10px;width:52px;height:52px;border-radius:17px}.prosh h2{margin:0 0 4px}
 #toast button{border:1px solid var(--border);background:transparent;border-radius:10px;padding:6px 10px;font-weight:650;font-size:13px;color:var(--accent)}
 #cg{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);padding:24px}
@@ -994,7 +1001,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .prox-perks span:nth-child(4){--d:.20s}.prox-perks span:nth-child(5){--d:.24s}.prox-perks span:nth-child(6){--d:.28s}
 .prox-plan:nth-child(1){--d:.34s}.prox-plan:nth-child(2){--d:.44s}
 .prox-em,.prox-t{transition:width .6s cubic-bezier(.32,.72,0,1),height .6s cubic-bezier(.32,.72,0,1),border-radius .6s cubic-bezier(.32,.72,0,1),font-size .6s cubic-bezier(.32,.72,0,1)}
-@media (prefers-reduced-motion:reduce){.prox-perks span,.prox-plan,.prox-note,.prox-em{animation:none!important}.prox,.prox-body,.prox-body>div{transition:none!important}}
+@media (prefers-reduced-motion:reduce){.prox-perks span,.prox-plan,.prox-note,.prox-em,.prosh .prox-perks span,.prosh #pro-pl.in .prox-plan{animation:none!important}.prox,.prox-body,.prox-body>div{transition:none!important}}
 .prox.min .prox-em{width:36px;height:36px;border-radius:12px}
 .prox.min .prox-t{font-size:16px}
 .prox-s{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -3331,19 +3338,31 @@ function proSheetHTML(back){
   const star = '<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#E9B949" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.1l-5.7 3.2 1.2-6.4L2.8 9.5l6.4-.8L12 2.8Z"/></svg>';
   const plan = (p, best) => p ? `<button type="button" class="prox-plan${best ? ' best' : ''}" data-act="probuy" data-v="${p.plan}"><i>${best ? 'Год' : 'Месяц'}</i><b>${p.stars}${star}</b>
     <small>${best ? `≈ ${Math.round(p.stars / 12)} ⭐ в месяц` : 'в месяц'}</small>${p.bonus_days ? `<em>+${p.bonus_days} дней в подарок</em>` : ''}${best && save > 0 ? `<u>−${save}%</u>` : ''}</button>` : '';
-  const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки'], ['star', 'До 5 закреплённых']];
+  const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки'], ['bolt', 'До 5 закреплённых']];
   return (back && !(inTG && ver('6.1')) ? `<button type="button" class="fp-back" data-act="sback" aria-label="Назад">${IC('chev', 20)}</button>` : '')
     + `<div class="prosh"><div class="prox-em">${IC('crown', 26)}</div><h2>VOOB PRO</h2>
     <div class="cap">${st.active ? `Подписка активна до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : 'Больше возможностей для твоих тренировок'}</div>
     <div class="prox-perks" style="justify-content:center">${perks.map(([i, t]) => `<span>${IC(i, 13)}${t}</span>`).join('')}</div>
-    ${st.active ? '' : (st.plans || []).length ? `<div class="prox-plans">${plan(m)}${plan(y, true)}</div>` : '<div class="cap">Загружаю тарифы…</div>'}
+    <div id="pro-pl">${proPlansHTML()}</div>
     <div class="prox-note">Оплата звёздами Telegram · без автопродления</div></div>`;
+}
+// блок тарифов: пока цены грузятся — «скелет» того же размера, потом цены проявляются из размытия (без скачка высоты)
+function proPlansHTML(){
+  const st = PROM.st || {};
+  if (st.active) return '';
+  const by = Object.fromEntries((st.plans || []).map(p => [p.plan, p])), m = by.month, y = by.year;
+  if (!(st.plans || []).length) return `<div class="prox-plans pl-sk"><div class="prox-plan"><i>&nbsp;</i><b>&nbsp;</b><small>&nbsp;</small><em>&nbsp;</em></div><div class="prox-plan best"><i>&nbsp;</i><b>&nbsp;</b><small>&nbsp;</small><em>&nbsp;</em></div></div>`;
+  const save = m && y ? Math.round(100 - y.stars * 100 / (m.stars * 12)) : 0;
+  const star = '<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#E9B949" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.1l-5.7 3.2 1.2-6.4L2.8 9.5l6.4-.8L12 2.8Z"/></svg>';
+  const plan = (p, best) => p ? `<button type="button" class="prox-plan${best ? ' best' : ''}" data-act="probuy" data-v="${p.plan}"><i>${best ? 'Год' : 'Месяц'}</i><b>${p.stars}${star}</b>
+    <small>${best ? `≈ ${Math.round(p.stars / 12)} ⭐ в месяц` : 'в месяц'}</small>${p.bonus_days ? `<em>+${p.bonus_days} дней в подарок</em>` : ''}${best && save > 0 ? `<u>−${save}%</u>` : ''}</button>` : '';
+  return `<div class="prox-plans">${plan(m)}${plan(y, true)}</div>`;
 }
 function openPro(back){
   hap.tap();
   openSheet(proSheetHTML(back), {type:'pro', back: back || ''});
   if (!PROM.st && !PROM.busy) { PROM.busy = true;
-    apiAuth('/pro/status', {}).then(j => { PROM.st = j; if (sheetCtx && sheetCtx.type === 'pro') $('#sheet').innerHTML = '<div class="grab"></div>' + proSheetHTML(sheetCtx.back); if (S.tab === 'me' && S.meSet) render(); })
+    apiAuth('/pro/status', {}).then(j => { PROM.st = j; if (sheetCtx && sheetCtx.type === 'pro') { const bx = $('#pro-pl'); if (bx) { bx.innerHTML = proPlansHTML(); bx.classList.add('in'); } } if (S.tab === 'me' && S.meSet) render(); })
       .catch(() => {}).finally(() => { PROM.busy = false; }); }
 }
 /* ---- соцсети (v1.423) ---- */
