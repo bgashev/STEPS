@@ -1387,10 +1387,10 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .smx-in{animation:smxIn .38s cubic-bezier(.2,.8,.2,1) backwards}
 @keyframes smxIn{from{opacity:0;transform:translateY(8px) scale(.96)}}
 /* v1.442: соцсети — окно по центру видимой области; с клавиатурой центр сдвигается вверх (--kb) */
-#sheet.top{top:calc(50% + var(--hdr) / 2);bottom:auto!important;max-height:calc(var(--shm,100vh) - var(--hdr) - 28px);--hdr:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px));border-radius:24px;margin:0 12px;
-  transform:translateY(calc(-50% + var(--shd,0px))) scale(.94);opacity:0;border:1px solid var(--border);
-  transition:transform .42s cubic-bezier(.22,.8,.24,1),max-height .42s cubic-bezier(.22,.8,.24,1),opacity .22s ease}   /* v1.446: центр видимой области считает скрипт (visualViewport) — iOS-клавиатура больше не уносит окно */
-#sw.open #sheet.top{transform:translateY(calc(-50% + var(--shd,0px)));opacity:1}
+#sheet.top{top:0;bottom:auto!important;max-height:calc(var(--shmh,100vh) - var(--hdr) - 28px);--hdr:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px));border-radius:24px;margin:0 12px;
+  transform:translateY(calc(var(--shy,50vh) + var(--hdr) / 2 - 50%));scale:.94;opacity:0;border:1px solid var(--border);
+  transition:scale .42s cubic-bezier(.22,.8,.24,1),opacity .22s ease}   /* v1.497: положение и высоту окна ведёт скрипт покадрово (--shy/--shmh), чтобы клавиатура не дёргала его: мгновенный пересчёт области здесь не виден */
+#sw.open #sheet.top{transform:translateY(calc(var(--shy,50vh) + var(--hdr) / 2 - 50%));scale:1;opacity:1}
 /* с клавиатурой шапка окна компактнее — всё помещается без прокрутки */
 .kbo #sheet.top .ssh-hero{padding:0 0 10px}
 .kbo #sheet.top .ssh-hero .lg{width:44px;height:44px}
@@ -5406,12 +5406,28 @@ if (inTG) { setTimeout(checkInbox, 2500); setInterval(checkInbox, 10 * 60000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkInbox(); }); }
 fitFrames();
 
+/* v1.497: плавное ведение центрального окна при смене видимой области (клавиатура): экспоненциальное сглаживание по кадрам */
+const SG = {y:null, m:null, ty:0, tm:0, raf:0, t:0};
+function sheetGlide(ty, tm){
+  const rs = document.documentElement.style, sh = $('#sheet'), live = sh && sh.classList.contains('top') && $('#sw') && $('#sw').classList.contains('open') && !reducedMotion();
+  SG.ty = ty; SG.tm = tm;
+  const put = () => { rs.setProperty('--shy', SG.y.toFixed(1) + 'px'); rs.setProperty('--shmh', SG.m.toFixed(1) + 'px'); };
+  if (SG.y === null || !live) { SG.y = ty; SG.m = tm; put(); return; }      // окно закрыто / первый показ — без анимации
+  if (SG.raf) return;
+  SG.t = performance.now();
+  const step = now => {
+    const dt = Math.min(40, now - SG.t); SG.t = now;
+    const k = 1 - Math.exp(-dt / 95);                                   // ~0,35 с до почти полного доезда
+    SG.y += (SG.ty - SG.y) * k; SG.m += (SG.tm - SG.m) * k;
+    if (Math.abs(SG.ty - SG.y) < .4 && Math.abs(SG.tm - SG.m) < .4) { SG.y = SG.ty; SG.m = SG.tm; SG.raf = 0; put(); return; }
+    put(); SG.raf = requestAnimationFrame(step);
+  };
+  SG.raf = requestAnimationFrame(step);
+}
 (function(){ const vv = window.visualViewport; if (!vv) return;
   const upd = () => { const kb = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)), rs = document.documentElement.style;
     rs.setProperty('--kb', (kb > 60 ? kb : 0) + 'px');
-    rs.setProperty('--sht', Math.round(vv.offsetTop + vv.height / 2) + 'px');
-    rs.setProperty('--shd', Math.round(vv.offsetTop + vv.height / 2 - window.innerHeight / 2) + 'px');   // сдвиг окна относительно центра — через transform, чтобы он плавно «ехал», а не прыгал   // центр того, что реально видно (iOS сдвигает страницу под клавиатуру)
-    rs.setProperty('--shm', Math.round(vv.height) + 'px');
+    sheetGlide(vv.offsetTop + vv.height / 2, vv.height);   // окно-по-центру не прыгает вслед за клавиатурой, а плавно «доезжает»
     document.documentElement.classList.toggle('kbo', kb > 60);
     const a = document.activeElement; if (kb > 60 && a && a.matches('input,textarea') && a.closest('#sheet') && !$('#sheet').classList.contains('top')) setTimeout(() => a.scrollIntoView({block:'center', behavior:'smooth'}), 60); };
   upd();
