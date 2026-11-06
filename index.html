@@ -1798,13 +1798,13 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .card.rkc{background:none;border-color:transparent;box-shadow:none;padding-left:2px;padding-right:2px}
 .hero:not(.hbg){background:none;border-color:transparent;overflow:visible}
 .hero:not(.hbg)::before{top:-90px;width:520px;height:340px;opacity:.75}
-.hero.hbg{border:0;border-radius:0;padding-bottom:104px;background:none;overflow:visible}
+.hero.hbg{border:0;border-radius:0;padding-bottom:44px;background:none;overflow:visible}
 /* фон профиля — на всю ширину экрана (и под шапку Telegram на вкладке «Я»), низ уходит в затемнение и блюр без резких краёв */
 #view .hero.hbg{margin-left:-16px;margin-right:-16px;margin-top:calc(-1 * (var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 18px));
   padding-top:calc(36px + var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 18px)}
 #sheet .hero.hbg{margin-left:-18px;margin-right:-18px}
-.hero.hbg::before{border-radius:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 150px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 150px),transparent 100%)}
-.hero.hbg>.hbgfx{border-radius:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 150px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 150px),transparent 100%)}
+.hero.hbg::before{border-radius:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 110px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 110px),transparent 100%)}
+.hero.hbg>.hbgfx{border-radius:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 110px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 110px),transparent 100%)}
 .hero.hbg::after{display:block;content:"";position:absolute;left:0;right:0;top:auto;bottom:0;height:250px;z-index:-1;pointer-events:none;border-radius:0;
   -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:linear-gradient(to bottom,transparent 0,color-mix(in srgb,var(--bgt,var(--bg)) 45%,transparent) 35%,color-mix(in srgb,var(--bgt,var(--bg)) 62%,var(--bg)) 100%);
   -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 40%);mask-image:linear-gradient(to bottom,transparent 0,#000 40%)}
@@ -1946,7 +1946,7 @@ body.frozen .stp .sb{opacity:.45}
 @media (prefers-reduced-motion:reduce){#fzbar,.fz-orb,#fz-stage.in,.fz-code.bad{animation:none!important}}
 /* v1.490: шапка профиля компактнее; фон проявляется сверху через градиент и размытие */
 #view .hero{padding:30px 20px 22px}
-#view .hero.hbg{padding-top:calc(46px + var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 18px);padding-bottom:64px}
+#view .hero.hbg{padding-top:calc(46px + var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 18px);padding-bottom:14px}
 #view .hero-av{margin-bottom:8px}
 #view .hero-av .fav{width:104px;height:104px;font-size:40px}
 #view .hero-nm{font-size:24px}
@@ -2408,7 +2408,7 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
  html.web #tabs .tbi{top:92px;left:12px;right:12px;width:auto;height:48px;border-radius:16px;transform:translateY(calc(var(--ti,0) * 52px))}
  html.web .tab{flex:none;height:48px;flex-direction:row;justify-content:flex-start;gap:14px;padding:0 18px;font-size:14.5px;border-radius:16px;cursor:pointer}
  html.web .tab:hover:not(.on){background:color-mix(in srgb,var(--text) 6%,transparent)}
- html.web #view .hero.hbg{--hx:max(28px,calc((100vw - 264px - 760px) / 2));margin:-34px calc(-1 * var(--hx)) 0 calc(-264px - var(--hx));padding:70px calc(18px + var(--hx)) 104px calc(18px + 264px + var(--hx))}
+ html.web #view .hero.hbg{--hx:max(28px,calc((100vw - 264px - 760px) / 2));margin:-34px calc(-1 * var(--hx)) 0 calc(-264px - var(--hx));padding:70px calc(18px + var(--hx)) 48px calc(18px + 264px + var(--hx))}
  html.web body::after{display:none}
  html.web #view .hero.hbg>.hbgfx::after{display:none}
  html.web #view{max-width:none;margin:0;padding-top:34px;padding-bottom:60px;padding-left:calc(264px + max(28px,(100vw - 264px - 760px) / 2));padding-right:max(28px,calc((100vw - 264px - 760px) / 2))}
@@ -2435,7 +2435,7 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.580';
+const APP = 'VOOB (by BGASHEV) Mini App v1.581';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
