@@ -2325,6 +2325,14 @@ body.frozen .stp .sb{opacity:.45}
 .sr .t{flex:1;width:auto;gap:0}.sr b{font-size:13.5px;line-height:1.2}.sr em{font-size:12px;line-height:1.25}
 .sr .pl{position:static;width:18px;height:18px;flex:none}.sr .pl svg{width:10px;height:10px}
 .frpv-cap{text-align:center;margin-top:8px}
+/* v1.528: стрелки к краям сцены + плавная смена рамки через блюр */
+.frpv-stage .frpv-nav{position:absolute;top:50%;margin-top:-19px;left:10px;z-index:6;width:36px;height:36px;margin-top:-18px}
+.frpv-stage .frpv-nav.r{left:auto;right:10px}
+.frpv-stage .frpv-nav{opacity:.8}
+.frpv-out,.frpv-pre{opacity:0;filter:blur(14px);transform:translateX(calc(var(--d,1) * -18px)) scale(.97)}
+.frpv-pre{transform:translateX(calc(var(--d,1) * 18px)) scale(.97)}
+.frpv-out{transition:opacity .17s ease-in,filter .17s ease-in,transform .17s ease-in;pointer-events:none}
+.frpv-in{transition:opacity .42s cubic-bezier(.22,1,.36,1),filter .42s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)}
 .frpv-wrap{position:relative;margin:4px 0 18px}.frpv-wrap .frpv-nav{position:absolute;top:50%;margin-top:-19px;z-index:6;left:8px}.frpv-wrap .frpv-nav.r{left:auto;right:8px}
 .frpv .hero.bgpv,#sheet .frpv .hero.hbg{margin-left:0;margin-right:0;border-radius:24px}#sheet .frpv .hero.hbg{padding-bottom:26px;overflow:hidden;background:#0b0b10}#sheet .frpv .hero.hbg::before,#sheet .frpv .hero.hbg::after{display:none}#sheet .frpv .hero.hbg>.hbgfx{-webkit-mask-image:none;mask-image:none}
 .frpv .hero.bgpv{margin-top:0;margin-bottom:0;padding:34px 18px 22px}.frpv .bgpv .hero-av .fav{width:100px;height:100px;font-size:38px}
@@ -4572,7 +4580,7 @@ function frPrevHTML(k){
     : `<button type="button" class="btn primary frpv-go" data-act="frapply" data-v="${k}">${IC('check', 18)}Применить</button>`;
   return `<div class="frpv"><div class="frpv-h"><h2>${esc(e[1])}</h2>${pro ? '<i class="prot inl">PRO</i>' : ''}</div>
     <div class="frpv-sub">${k ? (pro ? 'Анимированная рамка' : 'Простое кольцо') : 'Аватарка без оформления'} · ${i + 1} из ${FRAMES.length}</div>
-    <div class="frpv-stage"><button type="button" class="frpv-nav l" data-act="frnav" data-v="${prev}" aria-label="Предыдущая">${IC('chev', 18)}</button>${frAv(k, 150, lv, photo, name)}<button type="button" class="frpv-nav" data-act="frnav" data-v="${next}" aria-label="Следующая">${IC('chev', 18)}</button></div>
+    <div class="frpv-stage"><button type="button" class="frpv-nav l" data-act="frnav" data-v="${prev}" aria-label="Предыдущая">${IC('chev', 18)}</button>${frAv(k, 150, lv, photo, name)}<button type="button" class="frpv-nav r" data-act="frnav" data-v="${next}" aria-label="Следующая">${IC('chev', 18)}</button></div>
     <div class="frpv-lb">В профиле</div>
     <div class="hero me${hb ? ' hbg' : ''}" style="--tc:${tierColor(lv.level)}">${bgFx(hb)}<span class="hero-av">${frAv(k, 84, lv, photo, name)}</span>
       <h2 class="nmrow hero-nm"><span class="nm">${esc(name)}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h2><div class="hero-lv"><div class="hero-lvt"><span class="lvn">${lv.level}</span><span class="ttl">${tierOf(lv.level).title}</span></div></div></div>
@@ -4580,7 +4588,25 @@ function frPrevHTML(k){
     <div class="frpv-row">${frAv(k, 40, lv, photo, name)}<div><b>${esc(name)}</b><span>Ур. ${lv.level}</span></div></div>${btn}</div>`;
 }
 function openFramePrev(k){ hap.tap(); openSheet(frPrevHTML(k), {type:'frprev', v:k}); }
-function frPrevShow(k){ if (!sheetCtx || sheetCtx.type !== 'frprev') return; sheetCtx.v = k; const sh = $('#sheet'); sh.innerHTML = '<div class="grab"></div>' + frPrevHTML(k); sh.scrollTop = 0; }
+let frPvT = 0;
+function frPrevShow(k){
+  if (!sheetCtx || sheetCtx.type !== 'frprev') return;
+  const sh = $('#sheet'), el = sh.querySelector('.frpv'), from = sheetCtx.v;
+  const dir = FRAMES.findIndex(x => x[0] === k) >= FRAMES.findIndex(x => x[0] === from) ? 1 : -1;
+  sheetCtx.v = k;
+  const tok = ++frPvT;
+  if (!el || matchMedia('(prefers-reduced-motion:reduce)').matches) { sh.innerHTML = '<div class="grab"></div>' + frPrevHTML(k); sh.scrollTop = 0; return; }
+  el.style.setProperty('--d', dir);
+  el.classList.add('frpv-out');
+  setTimeout(() => {
+    if (tok !== frPvT || !sheetCtx || sheetCtx.type !== 'frprev') return;
+    const t = document.createElement('div'); t.innerHTML = frPrevHTML(k);
+    const n = t.firstElementChild; n.style.setProperty('--d', dir); n.classList.add('frpv-pre');
+    el.replaceWith(n); sh.scrollTop = 0;
+    void n.offsetWidth; n.classList.remove('frpv-pre'); n.classList.add('frpv-in');
+    setTimeout(() => n.classList.remove('frpv-in'), 520);
+  }, 170);
+}
 /* v1.525: фон профиля — предпросмотр целиком (как будет выглядеть шапка), «Применить» внизу */
 function bgPrevHTML(k){
   const list = [''].concat(BG_KEYS.map(x => x[0])), i = Math.max(0, list.indexOf(k)), e = BG_KEYS.find(x => x[0] === k);
