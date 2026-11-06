@@ -1,4 +1,4 @@
-// VOOB (ранее STEPS) — серверная функция синхронизации (Supabase Edge Function) · v1.451 (штанга, пресс, скакалка, степпер, плавание)
+// VOOB (ранее STEPS) — серверная функция синхронизации (Supabase Edge Function) · v1.452 (заморозка PRO, удаление аккаунта)
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const APP_URL = "https://bgashev.github.io/STEPS/";
