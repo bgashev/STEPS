@@ -2448,6 +2448,11 @@ html.web #tabs .wver{position:absolute;left:0;right:0;bottom:4px;text-align:cent
 .rkc .rk .fav{flex:none}
 .rkc .rk .fav.s{width:38px;height:38px;font-size:15px}
 .rkc .rk .fav.s:is([class*=" fr-"]){padding:3px}
+
+/* тумблеры — справа, как везде */
+.tgl{justify-content:space-between}
+.tgl .sw2{order:2;margin-left:auto}
+.tgl>b,.tgl>span:not(.sw2){flex:1;min-width:0}
 </style>
 </head>
 <body>
@@ -2462,7 +2467,7 @@ html.web #tabs .wver{position:absolute;left:0;right:0;bottom:4px;text-align:cent
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.597';
+const APP = 'VOOB (by BGASHEV) Mini App v1.598';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
