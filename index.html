@@ -1856,8 +1856,8 @@ body.frozen .stp .sb{opacity:.45}
 .lgo-cols{position:absolute;inset:0;display:flex;justify-content:space-evenly;align-items:flex-start;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent)}
 .lgo-col{height:100%;overflow:hidden;flex:0 0 auto}
 .lgo-col>div{margin-top:100vh;display:flex;flex-direction:column;gap:30px;align-items:center;will-change:transform}
-.lgo-col span{opacity:0;animation:lgw 1150ms cubic-bezier(.22,.8,.24,1) both;font-size:var(--sz);font-weight:700;letter-spacing:-.3px;white-space:nowrap;color:var(--text)}
-@keyframes lgw{0%{opacity:0;filter:blur(12px);transform:scale(.94)}32%{opacity:var(--op);filter:blur(0);transform:scale(1)}68%{opacity:var(--op);filter:blur(0);transform:scale(1)}100%{opacity:0;filter:blur(12px);transform:scale(.97)}}
+.lgo-col span{opacity:0;animation:lgw 700ms cubic-bezier(.22,.8,.24,1) both;font-size:var(--sz);font-weight:700;letter-spacing:-.3px;white-space:nowrap;color:var(--text)}
+@keyframes lgw{0%{opacity:0;filter:blur(12px);transform:scale(.94)}100%{opacity:var(--op);filter:blur(0);transform:scale(1)}}
 .lgo-col:nth-child(odd) span{color:var(--accent)}
 .lgo-main{position:relative;font-size:46px;font-weight:850;letter-spacing:-1.2px;opacity:0;color:var(--text);will-change:transform,filter,opacity}
 @media (prefers-reduced-motion:reduce){#lgo{display:none}}
@@ -3999,7 +3999,7 @@ function langWave(el, change){
   if (reducedMotion() || !document.body.animate) { change(); return; }
   const old = document.getElementById('lgo'); if (old) old.remove();
   const pick = (n, off) => Array.from({length:n}, (_, i) => HELLOS[(off + i * 7) % HELLOS.length]);
-  const cols = [[26, 0.6, 1900, 3], [34, 1, 1600, 11], [22, 0.5, 2000, 19], [30, 0.8, 1750, 5], [24, 0.55, 1950, 23]];
+  const cols = [[26, 0.6, 2900, 3], [34, 1, 2500, 11], [22, 0.5, 3000, 19], [30, 0.8, 2700, 5], [24, 0.55, 2950, 23]];
   const ov = document.createElement('div'); ov.id = 'lgo';
   ov.innerHTML = '<div class="lgo-cols">' + cols.map(([sz, op, , off]) => {
     const w = pick(12, off); return `<div class="lgo-col" style="--sz:${sz}px;--op:${op}"><div>${w.concat(w).map(x => `<span style="animation-delay:${Math.round(Math.random() * 520)}ms">${x}</span>`).join('')}</div></div>`; }).join('') + '</div><div class="lgo-main"></div>';
@@ -4015,7 +4015,7 @@ function langWave(el, change){
   // слово выбранного языка — одно из бегущих: поднимается снизу вместе с остальными, замедляется и остаётся в центре
   m.animate([{transform:'translateY(62vh) scale(.9)', opacity:0, filter:'blur(14px)', offset:0}, {opacity:1, filter:'blur(0)', offset:.45},
     {transform:'translateY(0) scale(1)', opacity:1, filter:'blur(0)', offset:1}], {duration:1650, easing:'cubic-bezier(.16,.84,.3,1)', fill:'forwards'});
-  setTimeout(() => cs.animate([{opacity:1}, {opacity:0}], {duration:450, easing:'ease-out', fill:'forwards'}), 1250);
+  setTimeout(() => cs.animate([{opacity:1, filter:'blur(0) brightness(1)'}, {opacity:0, filter:'blur(12px) brightness(.45)'}], {duration:1000, easing:'cubic-bezier(.4,0,.4,1)', fill:'forwards'}), 2000);   // последняя секунда: слова уходят в размытие и темнеют
   setTimeout(() => m.animate([{opacity:1, filter:'blur(0)', transform:'scale(1)'}, {opacity:0, filter:'blur(16px)', transform:'scale(1.04)'}], {duration:500, easing:'cubic-bezier(.4,0,.6,1)', fill:'forwards'}), 2300);
   setTimeout(() => { const o = ov.animate([{opacity:1}, {opacity:0}], {duration:450, easing:'ease-in-out', fill:'forwards'}); o.onfinish = () => ov.remove(); }, 2550);
 }
