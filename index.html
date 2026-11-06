@@ -5422,7 +5422,7 @@ function sheetGlide(ty, tm){
   SG.t = performance.now();
   const step = now => {
     const dt = Math.min(40, now - SG.t); SG.t = now;
-    const k = 1 - Math.exp(-dt / 95);                                   // ~0,35 с до почти полного доезда
+    const k = 1 - Math.exp(-dt / 52);                                   // ~0,2 с до почти полного доезда
     SG.y += (SG.ty - SG.y) * k; SG.m += (SG.tm - SG.m) * k;
     if (Math.abs(SG.ty - SG.y) < .4 && Math.abs(SG.tm - SG.m) < .4) { SG.y = SG.ty; SG.m = SG.tm; SG.raf = 0; put(); return; }
     put(); SG.raf = requestAnimationFrame(step);
