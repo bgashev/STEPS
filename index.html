@@ -901,7 +901,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 /* v1.496: цвет кнопки меняется плавно ТОЛЬКО при сворачивании/разворачивании; при старте, смене темы и акцента он не «переливается» (раньше мелькал на первом запуске) */
 #fab.anim .wd-add{transition:width .5s cubic-bezier(.22,.61,.36,1),padding .5s cubic-bezier(.22,.61,.36,1),transform .12s,background .45s ease,box-shadow .45s ease,border-color .45s ease,color .45s ease}
 #fab.first{transition:none!important;animation:fabIn .75s cubic-bezier(.2,.9,.25,1) both}
-@keyframes fabIn{from{opacity:0;transform:translate(-50%,18px) scale(.92);filter:blur(7px)}to{opacity:1;transform:translateX(-50%);filter:blur(0)}}
+@keyframes fabIn{from{opacity:0;transform:translate(-50%,18px) scale(.92)}to{opacity:1;transform:translateX(-50%)}}
 @media (prefers-reduced-motion:reduce){#fab.first{animation:none!important}}
 #fab.mini .wd-add{background:var(--tabs-bg,var(--surface))!important;border:1px solid var(--border);box-shadow:0 14px 40px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.06)!important;color:var(--text)}
 #fab.mini .wd-add svg{opacity:.9}
@@ -4561,6 +4561,7 @@ const FAB = {home:['add', 'Тренировка'], weight:['kadd', 'Взвеси
 let fabY = 0, fabMiniOn = false;
 function fabMini(on){
   const box = $('#fab'); if (!box || on === fabMiniOn) return;
+  if (!updFab.ok || box.classList.contains('first') || box.classList.contains('hide')) return;   // пока кнопка не показана полностью — размер не трогаем
   fabMiniOn = on;
   box.classList.add('anim'); clearTimeout(fabMini.t); fabMini.t = setTimeout(() => box.classList.remove('anim'), 800);
   const b = box.querySelector('button'); if (!b) { box.classList.toggle('mini', on); return; }
@@ -4570,7 +4571,7 @@ function fabMini(on){
   b.style.width = from + 'px'; void b.offsetWidth; b.style.width = to + 'px';
 }
 // кнопка сворачивается только от прокрутки самим пользователем; восстановление позиции после перезагрузки — не в счёт
-let fabInputT = 0;
+let fabInputT = -1e9;
 ['touchstart','touchmove','wheel','keydown','pointerdown'].forEach(ev => window.addEventListener(ev, () => { fabInputT = performance.now(); }, {passive:true, capture:true}));
 window.addEventListener('scroll', () => {
   const y = window.scrollY || 0, dy = y - fabY;
