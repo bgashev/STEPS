@@ -1854,7 +1854,7 @@ body.frozen .stp .sb{opacity:.45}
 #view .hero.hbg>.hbgfx::after{content:"";position:absolute;left:0;right:0;top:0;height:200px;pointer-events:none;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(to bottom,#000,transparent);mask-image:linear-gradient(to bottom,#000,transparent)}
 #lgo{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;opacity:0;pointer-events:all;background:color-mix(in srgb,var(--bg) 95%,transparent);-webkit-backdrop-filter:blur(26px);backdrop-filter:blur(26px)}
 .lgo-cols{position:absolute;inset:0;display:flex;justify-content:space-evenly;align-items:flex-start;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent)}
-.lgo-col{height:100%;overflow:hidden;flex:0 0 auto}
+.lgo-col{height:100%;overflow:visible;flex:0 0 auto}
 .lgo-col>div{margin-top:100vh;display:flex;flex-direction:column;gap:30px;align-items:center;will-change:transform}
 .lgo-col span{opacity:0;animation:lgw 700ms cubic-bezier(.22,.8,.24,1) both;font-size:var(--sz);font-weight:700;letter-spacing:-.3px;white-space:nowrap;color:var(--text)}
 @keyframes lgw{0%{opacity:0;filter:blur(12px);transform:scale(.94)}100%{opacity:var(--op);filter:blur(0);transform:scale(1)}}
@@ -3999,29 +3999,39 @@ function langWave(el, change){
   if (reducedMotion() || !document.body.animate) { change(); return; }
   const old = document.getElementById('lgo'); if (old) old.remove();
   const pick = (n, off) => Array.from({length:n}, (_, i) => HELLOS[(off + i * 7) % HELLOS.length]);
-  const cols = [[26, 0.6, 2900, 3], [34, 1, 2500, 11], [22, 0.5, 3000, 19], [30, 0.8, 2700, 5], [24, 0.55, 2950, 23]];
+  // [размер, прозрачность, длительность хода, сдвиг по списку]; колонка №1 — «главная»: в ней едет приветствие выбранного языка
+  const cols = [[26, 0.6, 2900, 3], [34, 1, 2000, 11], [22, 0.5, 3000, 19], [30, 0.8, 2700, 5], [24, 0.55, 2950, 23]], MC = 1;
+  const hello = HELLO_MAIN[curLang()] || 'Hello';
   const ov = document.createElement('div'); ov.id = 'lgo';
-  ov.innerHTML = '<div class="lgo-cols">' + cols.map(([sz, op, , off]) => {
-    const w = pick(12, off); return `<div class="lgo-col" style="--sz:${sz}px;--op:${op}"><div>${w.concat(w).map(x => `<span style="animation-delay:${Math.round(Math.random() * 520)}ms">${x}</span>`).join('')}</div></div>`; }).join('') + '</div><div class="lgo-main"></div>';
+  ov.innerHTML = '<div class="lgo-cols">' + cols.map(([sz, op, , off], ci) => {
+    const w = pick(12, off); return `<div class="lgo-col" style="--sz:${sz}px;--op:${op}"><div>${w.concat(w).map((x, k) => `<span${ci === MC && k === 9 ? ' class="lgo-hi"' : ''} style="animation-delay:${Math.round(Math.random() * 520)}ms">${ci === MC && k === 9 ? hello : (x === hello ? 'Hi' : x)}</span>`).join('')}</div></div>`; }).join('') + '</div>';
   document.body.appendChild(ov);
-  const ease = 'cubic-bezier(.22,.8,.24,1)';                       // мягкое замедление в духе Apple
+  const ease = 'cubic-bezier(.22,.8,.24,1)', vh = innerHeight;
   ov.animate([{opacity:0}, {opacity:1}], {duration:380, easing:ease, fill:'forwards'});
-  const dist = Math.round(innerHeight * 1.3);
-  ov.querySelectorAll('.lgo-col').forEach((c, i) => c.firstElementChild.animate([{transform:'translateY(0)'}, {transform:`translateY(-${dist}px)`}],
-    {duration:cols[i][2], easing:'cubic-bezier(.3,.55,.3,1)', fill:'forwards'}));
+  const hi = ov.querySelector('.lgo-hi'), hr = hi.getBoundingClientRect();
+  ov.querySelectorAll('.lgo-col').forEach((c, i) => {
+    const inner = c.firstElementChild;
+    // главная колонка едет ровно настолько, чтобы слово остановилось в центре экрана; остальные — как раньше
+    const dist = i === MC ? Math.round(hr.top + hr.height / 2 - vh / 2) : Math.round(vh * 1.3);
+    inner.animate([{transform:'translateY(0)'}, {transform:`translateY(-${dist}px)`}], {duration:cols[i][2], easing:'cubic-bezier(.3,.55,.3,1)', fill:'forwards'});
+  });
   setTimeout(() => change(), 500);                                  // интерфейс переключается под вуалью
-  const cs = ov.querySelector('.lgo-cols'), m = ov.querySelector('.lgo-main');
-  m.textContent = HELLO_MAIN[curLang()] || 'Hello';
-  // слово выбранного языка сначала неотличимо от остальных (тот же размер и ход), потом останавливается в центре и плавно вырастает
-  m.animate([{transform:'translateY(55vh)', opacity:0, filter:'blur(12px)', offset:0}, {opacity:1, filter:'blur(0)', offset:.3},
-    {transform:'translateY(0)', opacity:1, filter:'blur(0)', offset:1}], {duration:1500, easing:'cubic-bezier(.3,.55,.3,1)', fill:'forwards'});
+  // фон: с первой секунды потихоньку размывается и приглушается, к концу уходит совсем (само слово не трогаем)
+  const fade = [{opacity:1, filter:'blur(0) brightness(1)', offset:0}, {opacity:.85, filter:'blur(3px) brightness(.88)', offset:.25},
+    {opacity:.55, filter:'blur(6px) brightness(.68)', offset:.5}, {opacity:0, filter:'blur(12px) brightness(.45)', offset:1}];
   setTimeout(() => {
-    m.animate([{transform:'translateY(0) scale(1)'}, {transform:'translateY(0) scale(1.65)'}], {duration:850, easing:'cubic-bezier(.22,.8,.24,1)', fill:'forwards'});
-  }, 1500);
-  setTimeout(() => cs.animate([{opacity:1, filter:'blur(0) brightness(1)', offset:0}, {opacity:.85, filter:'blur(3px) brightness(.88)', offset:.25},
-    {opacity:.55, filter:'blur(6px) brightness(.68)', offset:.5}, {opacity:0, filter:'blur(12px) brightness(.45)', offset:1}],
-    {duration:2000, easing:'cubic-bezier(.3,0,.5,1)', fill:'forwards'}), 1000);     // с первой секунды фон потихоньку размывается и приглушается, к концу уходит совсем
-  setTimeout(() => m.animate([{opacity:1, filter:'blur(0)', transform:'scale(1.65)'}, {opacity:0, filter:'blur(16px)', transform:'scale(1.72)'}], {duration:500, easing:'cubic-bezier(.4,0,.6,1)', fill:'forwards'}), 2350);
+    ov.querySelectorAll('.lgo-col').forEach((c, i) => {
+      if (i !== MC) { c.animate(fade, {duration:2000, easing:'cubic-bezier(.3,0,.5,1)', fill:'forwards'}); return; }
+      c.querySelectorAll('span:not(.lgo-hi)').forEach(x => x.animate(fade, {duration:2000, easing:'cubic-bezier(.3,0,.5,1)', fill:'forwards'}));
+    });
+  }, 1000);
+  // закрепившись в центре, слово плавно и неспешно увеличивается
+  setTimeout(() => {
+    const r = hi.getBoundingClientRect(), dx = Math.round(innerWidth / 2 - (r.left + r.width / 2));
+    hi.animate([{transform:'translateX(0) scale(1)'}, {transform:`translateX(${dx}px) scale(1.6)`}], {duration:1100, easing:'cubic-bezier(.4,.05,.2,1)', fill:'forwards'});
+  }, 1400);
+  setTimeout(() => { const r = hi.getBoundingClientRect(), dx = Math.round(innerWidth / 2 - (r.left + r.width / 2));
+    hi.animate([{opacity:1, filter:'blur(0)'}, {opacity:0, filter:'blur(16px)'}], {duration:500, easing:'cubic-bezier(.4,0,.6,1)', fill:'forwards', composite:'replace'}); }, 2450);
   setTimeout(() => { const o = ov.animate([{opacity:1}, {opacity:0}], {duration:450, easing:'ease-in-out', fill:'forwards'}); o.onfinish = () => ov.remove(); }, 2550);
 }
 function langChanged(){ document.documentElement.lang = curLang(); _rHtml = ''; render(); applyLang(document.body); }
