@@ -1214,8 +1214,8 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .gx2 .gt{font-size:21px;line-height:1.15;font-weight:800;letter-spacing:-.4px}
 .gx2 .gt.ok{color:var(--green)}
 .gx2 .gs{margin-top:5px;color:var(--muted);font-size:13px;line-height:1.35}
-.gx2-bar{height:6px;border-radius:3px;background:color-mix(in srgb,var(--text) 8%,transparent);margin-top:12px;overflow:hidden}
-.gx2-bar i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));animation:gx2Bar .8s cubic-bezier(.3,.9,.3,1) both}
+.gx2-bar{height:12px;border-radius:6px;background:color-mix(in srgb,var(--text) 8%,transparent);margin-top:12px;overflow:hidden}
+.gx2-bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--accent),var(--accent2));animation:gx2Bar .8s cubic-bezier(.3,.9,.3,1) both}
 .gx2.done .gx2-bar i{background:var(--green)}
 @keyframes gx2Bar{from{width:0}}
 .gx2 .gx-strip{margin-top:14px;padding:12px 8px 10px;border-top:0;border-radius:18px;background:color-mix(in srgb,var(--text) 4%,transparent)}
@@ -2783,7 +2783,7 @@ function giftConfirm(f, k){
 }
 function openGiftPicker(id){
   const f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
-  const en = FR.data.gift_energy || {left:0, total:3}, has = new Set(f.gift_kinds || []), pro = isPro();
+  const en = FR.data.gift_energy || {left:0, total:isPro() ? 5 : 3}, has = new Set(f.gift_kinds || []), pro = isPro();
   openSheet(`<div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px"><h2 style="margin:0">Подарить: ${esc(f.name)}</h2>${energyHTML(en)}</div>
     <div class="cap" style="margin-bottom:12px">${en.left ? 'Энергии хватит ещё на ' + npw(en.left, ['подарок','подарка','подарков']) + ' в этом месяце. Отмеченные точкой у друга уже есть — новый вид даст ему +100 очков.' : 'Энергия кончилась — новые подарки с 1-го числа.'}</div>
     <div class="gpick">` + GIFT_KEYS.map(k => `<button type="button" class="gp${has.has(k) ? ' has' : ''}${k === 'pro' ? ' gpro' : ''}" data-act="${k === 'pro' ? 'giftpro' : 'gsend'}" data-id="${id}" data-k="${k}"${en.left || k === 'pro' ? '' : ' disabled'}><span class="gi">${giftArt(k)}</span><i>${GIFT_T[k][1]}</i></button>`).join('') + `</div>
@@ -2854,6 +2854,7 @@ function handleCard(){
 const profLink = h => `https://t.me/steps_v1_bot/STEPS?startapp=u_${h}`;
 
 /* ============================================================ друзья ==== */
+let FR_TAB_T = 0;   // М1: когда открыли вкладку «Друзья»
 const FR = {data:null, loading:false, err:'', ph:new Map(), phAt:new Map(), phTried:new Set()};
 /* v1.420: кэш — «Друзья», лента и аватарки показываются мгновенно, свежие данные догружаются фоном */
 const UK = (tgUser && tgUser.id) || 0;   // кэш у каждого аккаунта Telegram свой
@@ -2877,12 +2878,19 @@ async function apiAuth(route, body){
 async function loadFriends(){
   if (!inTG || FR.loading) return;
   FR.loading = true;
+  const hadSkeleton = !FR.data;
   let changed = true;
   try { const j = await apiAuth('/friends', {today:isoOf(todayN())}); const sig = JSON.stringify(j); changed = sig !== FR.sig || !!FR.err; FR.sig = sig; FR.data = j; FR.err = ''; askBadges([...(j.friends || []).map(x => x.tg_id), j.me && j.me.tg_id, ...(j.requests || []).map(x => x.tg_id)]); if (changed) lsSet(FRK, j); if (j.my_gifts) setGifts(j.my_gifts);
     const n = (j.friends || []).length; if (db.settings.friends_n !== n) { db.settings.friends_n = n; persist(); } }
   catch (e) { FR.err = e.message || 'нет связи'; }
   FR.loading = false;
-  if (S.tab === 'friends') { if (changed) render(); else document.querySelectorAll('.ib.spin').forEach(b => b.classList.remove('spin')); }
+  if (S.tab === 'friends') {
+    if (changed) {
+      // М1: ответ сервера не перестраивает вкладку, пока играет анимация её появления — иначе высота прыгает (рывок)
+      const wait = FR_TAB_T ? Math.max(0, 1100 - (performance.now() - FR_TAB_T)) : 0;
+      if (wait > 60 && !hadSkeleton) setTimeout(() => { if (S.tab === 'friends') render(); }, wait); else render();
+    } else document.querySelectorAll('.ib.spin').forEach(b => b.classList.remove('spin'));
+  }
   loadFriendPhotos();
 }
 function fofHTML(x){
@@ -2900,7 +2908,7 @@ function zoomFlip(zi, src, back){
   const sh = getComputedStyle(zi).boxShadow;
   const home = {transform:'translate(0,0) scale(1)', boxShadow:sh}, away = {transform:`translate(${dx}px,${dy}px) scale(${sc})`, boxShadow:'0 0 0 rgba(0,0,0,0)'};
   return zi.animate(back ? [home, away] : [away, home], back
-    ? {duration:440, easing:'cubic-bezier(.32,.72,.16,1)', fill:'both'}
+    ? {duration:640, easing:'cubic-bezier(.32,.72,.16,1)', fill:'both'}
     : {duration:480, easing:'cubic-bezier(.2,.85,.25,1)', fill:'both'});
 }
 function closeZoom(){
@@ -2910,13 +2918,13 @@ function closeZoom(){
   // v1.444: «посадка» без стыка — летящая копия растворяется, а фото в рамке проявляется из размытия
   const end = () => { if (ended) return; ended = true;
     if (hid) { hid.style.visibility = ''; delete hid.dataset.zh;
-      if (hid.animate) hid.animate([{filter:'blur(8px)', opacity:.35, transform:'scale(.94)'}, {filter:'blur(0)', opacity:1, transform:'scale(1)'}], {duration:360, easing:'cubic-bezier(.2,.8,.2,1)'}); }
-    if (zi && zi.animate) { zi.animate([{opacity:1, filter:'blur(0)'}, {opacity:0, filter:'blur(6px)'}], {duration:200, easing:'ease-out', fill:'forwards'}).onfinish = () => z.remove(); setTimeout(() => z.remove(), 260); }
+      if (hid.animate) hid.animate([{filter:'blur(8px)', opacity:.35, transform:'scale(.94)'}, {filter:'blur(0)', opacity:1, transform:'scale(1)'}], {duration:540, easing:'cubic-bezier(.2,.8,.2,1)'}); }   // М1: длиннее (было 360)
+    if (zi && zi.animate) { zi.animate([{opacity:1, filter:'blur(0)'}, {opacity:0, filter:'blur(6px)'}], {duration:300, easing:'ease-out', fill:'forwards'}).onfinish = () => z.remove(); setTimeout(() => z.remove(), 380); }
     else z.remove(); };
   const fl = zi ? zoomFlip(zi, src, true) : null;
-  if (bg) bg.animate([{opacity:1}, {opacity:0}], {duration:400, easing:'cubic-bezier(.4,0,.2,1)', fill:'forwards'});
+  if (bg) bg.animate([{opacity:1}, {opacity:0}], {duration:580, easing:'cubic-bezier(.4,0,.2,1)', fill:'forwards'});
   if (lb) lb.animate([{opacity:1}, {opacity:0}], {duration:160, fill:'forwards'});
-  if (fl) { setTimeout(end, 380); setTimeout(end, 720); }   // стартуем проявление чуть раньше конца полёта — переход внахлёст
+  if (fl) { setTimeout(end, 560); setTimeout(end, 1000); }   // стартуем проявление чуть раньше конца полёта — переход внахлёст
   else { if (zi) zi.animate([{opacity:1, transform:'scale(1)'}, {opacity:0, transform:'scale(.9)'}], {duration:220, easing:'ease-in', fill:'forwards'}); setTimeout(end, 240); }
 }
 async function openZoom(id, from){
@@ -3241,10 +3249,10 @@ function todayPlans(ws){
 function planParams(p){
   const out = [];
   if (Array.isArray(p.sl) && p.sl.length) { const s = p.sl; out.push(['repeat', s.every(x => x === s[0]) ? `${s.length}×${s[0]}` : `${s.length} ${plural(s.length, ['подход', 'подхода', 'подходов'])}`, 'Подходы']); if (+p.kg) out.push(['dumbbell', `${num(+p.kg)} кг`, 'Вес']); }
-  if (+p.minutes) out.push(['clock', fmtMin(+p.minutes), 'Время']);
+  if (+p.minutes && !(Array.isArray(p.sl) && p.sl.length)) out.push(['clock', fmtMin(+p.minutes), 'Время']);   // М1: у силовых время — оценка, не данные плана
   if (+p.speed) out.push(['bolt', `${num(+p.speed)} км/ч`, 'Скорость']);
   if (!TIMEA[p.act] && !STR[p.act] && p.incline != null && (+p.incline || +p.speed)) out.push(['mountain', `${num(+p.incline || 0)}%`, 'Уклон']);
-  if (+p.speed && +p.minutes) out.push(['route', kmF(+p.speed * +p.minutes / 60), 'Дистанция']);
+   // М1: расчётную дистанцию не показываем — только то, что задано в плане
   return out.slice(0, 4);
 }
 function planSuggestHTML(ws){
@@ -3456,7 +3464,10 @@ function viewStats(){
 }
 function openAchFull(){
   hap.imp();
-  const achs = achievements(), got = achs.filter(a => a.done).length;
+  const achs0 = achievements(), got = achs0.filter(a => a.done).length;
+  // М1: полученные → ближайшие к получению (по убыванию прогресса) → ещё не начатые; при равенстве порядок исходный
+  const rank = a => a.done ? 0 : a.prog > 0 ? 1 : 2;
+  const achs = achs0.map((a, i) => [a, i]).sort((x, y) => rank(x[0]) - rank(y[0]) || (rank(x[0]) === 1 ? y[0].prog - x[0].prog : 0) || x[1] - y[1]).map(x => x[0]);
   const el = document.createElement('div'); el.id = 'achfull';
   el.innerHTML = `<div class="af-top"><div><h2>Достижения</h2><div class="cap">${got} из ${achs.length} · медали за тренировки, серии и рекорды</div></div>
     <button type="button" class="af-x" data-act="achclose" aria-label="Закрыть">${IC('close', 20)}</button></div>
@@ -4201,7 +4212,7 @@ function actsHTML(){
     + `<span class="ai">${IC(k, 24)}</span><span class="al">${l}</span>${ok ? '' : '<em>в разработке</em>'}</button>`).join('');
 }
 const ACT = {
-  tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; S.meSet = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') loadFriends(); } },
+  tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; S.meSet = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') { FR_TAB_T = performance.now(); loadFriends(); } } },
   add: () => { hap.imp(); S.actsXl = false; openActs(false); },
   sback: () => { hap.tap(); stepBack(); },
   actfav: el => { const k = el.dataset.v, f = favActs(), on = f.includes(k);

@@ -23,7 +23,8 @@ const INITDATA_MAX_AGE = 172800;
 const MAX_ROWS = 3000;
 const MAX_FRIENDS = 100;
 const POKE_HOURS = 12;
-const GIFT_ENERGY = 3;        // подарков в месяц на одного отправителя
+const GIFT_ENERGY = 3;        // подарков в месяц на одного отправителя (без PRO)
+const GIFT_ENERGY_PRO = 5;    // М1: с PRO — 5 в месяц, не безлимит
 const GIFT_XP = 100;          // за первый подарок каждого вида
 // v1.462: премиум-подарки — дарить может только PRO, получатель берёт +200 вместо +100
 const GIFT_XP_PRO = 200;
@@ -531,7 +532,8 @@ async function giftEnergy(me: number) {
   const { count } = await db.from("gifts").select("id", { count: "exact", head: true }).eq("from_id", me).neq("kind", "pro").not("kind", "in", `(${[...PRO_GIFTS].join(",")})`).gte("created_at", monthStartIso());   // v1.483: премиум-подарки энергию не тратят
   const t = new Date();
   const reset = new Date(Date.UTC(t.getUTCFullYear(), t.getUTCMonth() + 1, 1)).toISOString().slice(0, 10);
-  return { left: Math.max(0, GIFT_ENERGY - (count ?? 0)), total: GIFT_ENERGY, reset };
+  const total = (me === ADMIN_TG_ID || (await proStatus(me)).active) ? GIFT_ENERGY_PRO : GIFT_ENERGY;
+  return { left: Math.max(0, total - (count ?? 0)), total, reset };
 }
 async function myGifts(me: number) {
   const GIFTS = await giftTypes();
