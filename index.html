@@ -4010,12 +4010,13 @@ function langWave(el, change){
   ov.querySelectorAll('.lgo-col').forEach((c, i) => c.firstElementChild.animate([{transform:'translateY(0)'}, {transform:`translateY(-${dist}px)`}],
     {duration:cols[i][2], easing:'cubic-bezier(.3,.55,.3,1)', fill:'forwards'}));
   setTimeout(() => change(), 500);                                  // интерфейс переключается под вуалью
-  setTimeout(() => {
-    const cs = ov.querySelector('.lgo-cols'), m = ov.querySelector('.lgo-main');
-    cs.animate([{opacity:1}, {opacity:0}], {duration:260, easing:'ease-out', fill:'forwards'});
-    m.textContent = HELLO_MAIN[curLang()] || 'Hello';
-    m.animate([{opacity:0, transform:'scale(.94)', filter:'blur(14px)'}, {opacity:1, transform:'scale(1)', filter:'blur(0)'}], {duration:620, easing:ease, delay:120, fill:'forwards'});
-  }, 800);
+  const cs = ov.querySelector('.lgo-cols'), m = ov.querySelector('.lgo-main');
+  m.textContent = HELLO_MAIN[curLang()] || 'Hello';
+  // слово выбранного языка — одно из бегущих: поднимается снизу вместе с остальными, замедляется и остаётся в центре
+  m.animate([{transform:'translateY(62vh) scale(.9)', opacity:0, filter:'blur(14px)', offset:0}, {opacity:1, filter:'blur(0)', offset:.45},
+    {transform:'translateY(0) scale(1)', opacity:1, filter:'blur(0)', offset:1}], {duration:1650, easing:'cubic-bezier(.16,.84,.3,1)', fill:'forwards'});
+  setTimeout(() => cs.animate([{opacity:1}, {opacity:0}], {duration:450, easing:'ease-out', fill:'forwards'}), 1250);
+  setTimeout(() => m.animate([{opacity:1, filter:'blur(0)', transform:'scale(1)'}, {opacity:0, filter:'blur(16px)', transform:'scale(1.04)'}], {duration:500, easing:'cubic-bezier(.4,0,.6,1)', fill:'forwards'}), 2300);
   setTimeout(() => { const o = ov.animate([{opacity:1}, {opacity:0}], {duration:450, easing:'ease-in-out', fill:'forwards'}); o.onfinish = () => ov.remove(); }, 2550);
 }
 function langChanged(){ document.documentElement.lang = curLang(); _rHtml = ''; render(); applyLang(document.body); }
