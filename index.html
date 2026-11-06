@@ -1884,6 +1884,72 @@ body.frozen .stp .sb{opacity:.45}
 .mset-top .sync2.open{padding:0 13px 0 10px}
 :root[data-mode=light] .prox-t{background:linear-gradient(90deg,#7A4E00,#A86F0A);-webkit-background-clip:text;background-clip:text;color:transparent}
 :root[data-mode=light] .prox-s{color:color-mix(in srgb,var(--text) 62%,transparent)}
+/* v1.494: соцсети — плитки с состояниями, плавное окно ввода, галочка вместо резкого закрытия */
+.soc-card h3{display:flex;align-items:center;gap:8px}
+.soc-cnt{margin-left:auto;font-size:11.5px;font-weight:750;color:var(--muted);padding:3px 9px;border-radius:999px;background:var(--surface2);transition:color .4s,background .4s}
+.soc-cnt.on{color:var(--accent);background:var(--accent-soft)}
+.soc-ed{gap:10px}
+.soc-b{position:relative;overflow:hidden;isolation:isolate;border-radius:20px;padding:14px 4px 12px;border:1px dashed color-mix(in srgb,var(--text) 18%,transparent);background:var(--surface2);-webkit-tap-highlight-color:transparent;
+  transition:transform .55s cubic-bezier(.34,1.56,.64,1),border-color .4s,box-shadow .5s,background .4s}
+.soc-b::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;background:radial-gradient(120% 95% at 50% -5%,color-mix(in srgb,var(--sc) 26%,transparent),transparent 72%);transition:opacity .6s}
+.soc-b.on{border-style:solid;border-color:color-mix(in srgb,var(--sc) 36%,var(--border));box-shadow:0 10px 24px -14px color-mix(in srgb,var(--sc) 75%,transparent)}
+.soc-b.on::before{opacity:1}
+.soc-b .lg{position:relative;width:40px;height:40px;border-radius:50%;transition:filter .6s,opacity .6s,transform .7s cubic-bezier(.34,1.56,.64,1)}
+.soc-b:not(.on) .lg{filter:grayscale(1) saturate(.3) brightness(1.05);opacity:.5}
+.soc-b:active{transform:scale(.93);transition-duration:.14s}
+.soc-b:active .lg{transform:scale(.92)}
+.soc-b b{font-size:12.5px;font-weight:750}
+.soc-b small{font-size:11px;transition:color .4s}
+.soc-b:not(.on) small{color:var(--accent);font-weight:650}
+.soc-b::after{content:"+";position:absolute;top:7px;right:7px;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:14px;font-weight:700;line-height:1;color:var(--muted);background:var(--surface);border:1px solid var(--border);transition:background .4s,color .4s,transform .5s cubic-bezier(.34,1.56,.64,1)}
+.soc-b.on::after{content:"";border-color:transparent;background:var(--sc) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5.5 12.5l4.3 4.3L18.5 8'/%3E%3C/svg%3E") center/11px no-repeat}
+#view:not(.rr) .soc-b{animation:socTile .8s cubic-bezier(.2,.9,.25,1.05) both;animation-delay:calc(var(--i) * 70ms + 120ms)}
+@keyframes socTile{from{opacity:0;transform:translateY(16px) scale(.9);filter:blur(7px)}}
+.soc-b.pop{animation:socRing 1.1s cubic-bezier(.2,.7,.2,1)}
+.soc-b.pop .lg{animation:socPop .9s cubic-bezier(.3,1.5,.5,1)}
+@keyframes socRing{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--sc) 55%,transparent)}100%{box-shadow:0 0 0 22px transparent}}
+@keyframes socPop{0%{transform:scale(.7) rotate(-14deg)}55%{transform:scale(1.22) rotate(5deg)}100%{transform:none}}
+/* окно ввода */
+.ssh-hero::before{animation:sshGlow 5s ease-in-out infinite alternate}
+.ssh-hero .lg{animation:sshLogo .95s cubic-bezier(.2,1.1,.3,1) both,sshFloat 5.5s ease-in-out 1.1s infinite}
+.ssh-hero h2{animation:sshRise .7s cubic-bezier(.2,.8,.2,1) .1s both}
+.ssh-hero .cap{animation:sshRise .7s cubic-bezier(.2,.8,.2,1) .18s both}
+.ssh-in{animation:sshRise .7s cubic-bezier(.2,.8,.2,1) .26s both;transition:border-color .3s,box-shadow .4s,background .3s}
+.ssh-in.bad{border-color:var(--red,#ff5a5f);box-shadow:0 0 0 4px color-mix(in srgb,var(--red,#ff5a5f) 14%,transparent)}
+.ssh-in.bad i.at{color:var(--red,#ff5a5f)}
+.ssh-in.shake{animation:sshShake .5s cubic-bezier(.36,.07,.19,.97)}
+.ssh-hint{min-height:18px;transition:color .3s;animation:sshHintIn .4s ease both}
+.ssh-hint.bad{color:var(--red,#ff5a5f)}
+.ssh-pv{display:grid;grid-template-rows:0fr;opacity:0;margin-top:0;transition:grid-template-rows .55s cubic-bezier(.22,.8,.24,1),opacity .4s,margin .55s cubic-bezier(.22,.8,.24,1)}
+.ssh-pv.on{grid-template-rows:1fr;opacity:1;margin-top:4px}
+.ssh-pv>div{overflow:hidden;min-height:0}
+.ssh-pvc{display:flex;align-items:center;gap:12px;padding:10px 14px;margin:6px 0 4px;border-radius:18px;background:color-mix(in srgb,var(--sc) 10%,var(--surface2));border:1px solid color-mix(in srgb,var(--sc) 22%,var(--border))}
+.ssh-pvc .lg{width:34px;height:34px;border-radius:50%;box-shadow:0 4px 14px color-mix(in srgb,var(--sc) 45%,transparent)}
+.ssh-pvc .t{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.ssh-pvc b{font-size:15px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ssh-pvc em{font-style:normal;font-size:11.5px;color:var(--muted)}
+.ssh-save{position:relative;overflow:hidden;transition:opacity .35s,transform .3s cubic-bezier(.34,1.56,.64,1),background .45s,filter .3s;animation:sshRise .7s cubic-bezier(.2,.8,.2,1) .34s both}
+.ssh-save:disabled{opacity:.38;filter:saturate(.5)}
+.ssh-save:not(:disabled):active{transform:scale(.97)}
+.ssh-save:not(:disabled)::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);animation:sshShine 2.6s ease-in-out .5s infinite}
+.ssh-save.busy,.ssh-save.done{opacity:1!important}
+.ssh-save.done{background:var(--green,#34c759)!important;color:#fff!important}
+.ssh-save.done::after,.ssh-save.busy::after{display:none}
+.ssh-save .spin{width:16px;height:16px;border-radius:50%;border:2.4px solid currentColor;border-right-color:transparent;margin-right:8px;display:inline-block;vertical-align:-3px;animation:sshOrb .7s linear infinite}
+.ssh-save .ck{margin-right:6px;vertical-align:-4px}
+.ssh-save .ck path{stroke-dasharray:26;stroke-dashoffset:26;animation:sshDraw .5s cubic-bezier(.3,.7,.3,1) .05s forwards}
+.ssh-del{transition:color .3s,transform .3s cubic-bezier(.34,1.56,.64,1);animation:sshRise .7s cubic-bezier(.2,.8,.2,1) .42s both}
+.ssh-del.arm{color:var(--red,#ff5a5f);font-weight:700;animation:sshArm .35s ease}
+@keyframes sshLogo{from{opacity:0;transform:translateY(16px) scale(.55) rotate(-14deg);filter:blur(9px)}}
+@keyframes sshRise{from{opacity:0;transform:translateY(12px);filter:blur(5px)}}
+@keyframes sshFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes sshGlow{from{opacity:.65;transform:translateX(-50%) scale(.92)}to{opacity:1;transform:translateX(-50%) scale(1.08)}}
+@keyframes sshShake{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(3px)}30%,50%,70%{transform:translateX(-5px)}40%,60%{transform:translateX(5px)}}
+@keyframes sshHintIn{from{opacity:0;transform:translateY(4px);filter:blur(3px)}}
+@keyframes sshShine{0%{left:-60%}55%,100%{left:130%}}
+@keyframes sshDraw{to{stroke-dashoffset:0}}
+@keyframes sshArm{0%{transform:scale(.94)}60%{transform:scale(1.05)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.soc-b,.soc-b.pop,.soc-b.pop .lg,.ssh-hero::before,.ssh-hero .lg,.ssh-hero h2,.ssh-hero .cap,.ssh-in,.ssh-save,.ssh-save::after,.ssh-del,.ssh-hint{animation:none!important}}
 </style>
 </head>
 <body>
@@ -4361,25 +4427,35 @@ function fzDone(pro){
 
 /* ---- соцсети (v1.423) ---- */
 function socEditHTML(){
-  const me = tgUser && SOC.get(tgUser.id) || {};
-  return `<div class="card"><h3>${IC('link', 18)}Соцсети</h3><div class="cap" style="margin:-6px 0 12px">Друзья увидят их в твоём профиле. Только ник — без сторонних ссылок.</div>
-    <div class="soc-ed">${SOC_NETS.map(([k, l]) => `<button type="button" class="soc-b${me[k] ? ' on' : ''}" data-act="socedit" data-net="${k}"><span class="lg ${k}">${SOC_LOGO[k]}</span><b>${l}</b><small>${me[k] ? '@' + esc(me[k]) : 'добавить'}</small></button>`).join('')}</div></div>`;
+  const me = tgUser && SOC.get(tgUser.id) || {}, n = SOC_NETS.filter(([k]) => me[k]).length;
+  return `<div class="card soc-card"><h3>${IC('link', 18)}Соцсети<span class="soc-cnt${n ? ' on' : ''}">${n} из ${SOC_NETS.length}</span></h3><div class="cap" style="margin:-6px 0 14px">Друзья увидят их в твоём профиле. Только ник — без сторонних ссылок.</div>
+    <div class="soc-ed">${SOC_NETS.map(([k, l], i) => `<button type="button" class="soc-b${me[k] ? ' on' : ''}" data-act="socedit" data-net="${k}" style="--sc:${SOC_COL[k]};--i:${i}"><span class="lg ${k}">${SOC_LOGO[k]}</span><b>${l}</b><small>${me[k] ? '@' + esc(me[k]) : 'добавить'}</small></button>`).join('')}</div></div>`;
 }
 const SOC_RE = {ig:/^[A-Za-z0-9._]{1,30}$/, tg:/^[A-Za-z][A-Za-z0-9_]{3,31}$/, tt:/^[A-Za-z0-9._]{2,24}$/, yt:/^[A-Za-z0-9._-]{3,30}$/};
 const SOC_RULE = {ig:'буквы, цифры, точка и _', tg:'от 4 символов, с буквы; буквы, цифры и _', tt:'от 2 символов: буквы, цифры, точка и _', yt:'от 3 символов: буквы, цифры, точка, _ и -'};
 function socSheet(net){
   const [k, l] = SOC_NETS.find(n => n[0] === net), cur = (tgUser && SOC.get(tgUser.id) || {})[k];
   openSheet(`<div class="ssh" style="--sc:${SOC_COL[k]}"><div class="ssh-hero"><span class="lg ${k}">${SOC_LOGO[k]}</span><h2>${l}</h2><div class="cap">${cur ? 'Сейчас в профиле: @' + esc(cur) : 'Впиши ник или вставь ссылку на профиль'}</div></div>
-    <div class="ssh-in"><i class="at">@</i><input id="soc-in" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" placeholder="nickname" value="${cur ? esc(cur) : ''}"></div>
+    <div class="ssh-in" id="soc-box"><i class="at">@</i><input id="soc-in" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" placeholder="nickname" value="${cur ? esc(cur) : ''}"></div>
     <div class="ssh-hint" id="soc-hint">&nbsp;</div>
+    <div class="ssh-pv" id="soc-pv"><div><div class="ssh-pvc"><span class="lg ${k}">${SOC_LOGO[k]}</span><span class="t"><b></b><em>так увидят друзья</em></span></div></div></div>
     <button type="button" class="btn primary ssh-save" id="soc-go" data-act="socok" data-net="${k}" disabled>${IC('check', 18)}Сохранить</button>
-    ${cur ? `<button type="button" class="ssh-del" data-act="socdel" data-net="${k}">Убрать ${l} из профиля</button>` : ''}</div>`, {type:'soc', net:k});
+    ${cur ? `<button type="button" class="ssh-del" data-act="socdel" data-net="${k}" data-t="Убрать ${l} из профиля">Убрать ${l} из профиля</button>` : ''}</div>`, {type:'soc', net:k});
   $('#sheet').classList.add('top');
-  const chk = () => { const i = $('#soc-in'), b = $('#soc-go'), h = $('#soc-hint'); if (!i) return;
-    const v = socNick(k, i.value); if (v !== null && v !== i.value) i.value = v;
-    const ok = !!v && SOC_RE[k].test(v);
-    if (b) b.disabled = !ok || v === cur;
-    if (h) { h.className = 'ssh-hint' + (v && !ok ? ' bad' : ''); h.innerHTML = !v ? '&nbsp;' : ok ? `${esc(socUrl(k, v).replace(/^https:\/\/(www\.)?/, ''))}` : `Так ник не пишется: ${SOC_RULE[k]}`; } };
+  let lastBad = false, lastKey = '';
+  const chk = () => { const i = $('#soc-in'), b = $('#soc-go'), h = $('#soc-hint'), bx = $('#soc-box'), pv = $('#soc-pv'); if (!i) return;
+    const raw = i.value, v = socNick(k, raw); if (v !== null && v !== raw) { i.value = v; if (/\//.test(raw)) hap.tap(); }
+    const ok = !!v && SOC_RE[k].test(v), bad = !!v && !ok;
+    if (b && !b.classList.contains('busy') && !b.classList.contains('done')) b.disabled = !ok || v === cur;
+    const key = !v ? '' : ok ? 'ok:' + v : 'bad';
+    if (h && key !== lastKey) {
+      h.className = 'ssh-hint' + (bad ? ' bad' : '');
+      h.innerHTML = !v ? '&nbsp;' : ok ? `${esc(socUrl(k, v).replace(/^https:\/\/(www\.)?/, ''))}` : `Так ник не пишется: ${SOC_RULE[k]}`;
+      h.style.animation = 'none'; void h.offsetWidth; h.style.animation = '';
+    }
+    if (bx) { bx.classList.toggle('bad', bad); if (bad && !lastBad) { bx.classList.remove('shake'); void bx.offsetWidth; bx.classList.add('shake'); hap.warn(); } }
+    if (pv) { pv.classList.toggle('on', ok); if (ok) pv.querySelector('b').textContent = '@' + v; }
+    lastBad = bad; lastKey = key; };
   setTimeout(() => { const i = $('#soc-in'); if (!i) return; i.addEventListener('input', chk);
     i.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); const b = $('#soc-go'); if (b && !b.disabled) b.click(); } });
     chk(); i.focus({preventScroll:true}); }, 380);   // фокус — после анимации появления, иначе iOS дёргает окно
@@ -4391,14 +4467,24 @@ function socNick(net, raw){
   if (m) v = m[1];
   return v.replace(/^@+/, '').replace(/[\/?#].*$/, '');
 }
-async function socSave(net, value){
+const SOC_CHECK = '<svg class="ck" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.6 4.6L19 7.6"/></svg>';
+async function socSave(net, value, btn){
+  if (btn) { btn.classList.add('busy'); btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Сохраняю'; }
+  const back = () => { if (btn && btn.isConnected) { btn.classList.remove('busy'); btn.disabled = false; btn.innerHTML = IC('check', 18) + 'Сохранить'; } };
   try {
     const j = await apiAuth(BADGES_API, {action:'social_set', net, value});
-    if (j.status !== 'ok') { toast('Не получилось сохранить'); return; }
+    if (j.status !== 'ok') { back(); toast('Не получилось сохранить'); return; }
     if (tgUser) SOC.set(tgUser.id, j.socials || {});
     lsSet('voob_soc_' + ((tgUser && tgUser.id) || 0), Object.fromEntries(SOC));
-    hap.ok(); closeSheet(); render(); toast(value ? 'Добавлено в профиль' : 'Убрано из профиля');
-  } catch (e) { toast('Нет связи: ' + e.message); }
+    hap.ok();
+    if (btn && btn.isConnected) {            // кнопка превращается в галочку, и только потом окно закрывается
+      btn.classList.remove('busy'); btn.classList.add('done'); btn.innerHTML = SOC_CHECK + 'Готово';
+      await new Promise(r => setTimeout(r, reducedMotion() ? 0 : 650));
+    }
+    closeSheet(); render();
+    setTimeout(() => { const t = document.querySelector('.soc-b[data-net="' + net + '"]'); if (t && value) { t.classList.remove('pop'); void t.offsetWidth; t.classList.add('pop'); setTimeout(() => t.classList.remove('pop'), 1300); } }, 60);
+    toast(value ? 'Добавлено в профиль' : 'Убрано из профиля');
+  } catch (e) { back(); toast('Нет связи: ' + e.message); }
 }
 function seg2(act, items, cur){ return `<div class="seg">` + items.map(([v, l]) => `<button type="button" class="${cur === v ? 'on' : ''}" data-act="${act}" data-v="${v}">${l}</button>`).join('') + `</div>`; }
 function chips(age, b, bmr){
@@ -4957,7 +5043,7 @@ const ACT = {
       box.style.height = box.style.overflow = box.style.transition = ''; };
     box.addEventListener('transitionend', end); setTimeout(end, 520);
     el.classList.toggle('open', open); const sp = el.querySelector('span'); if (sp) sp.textContent = open ? 'Свернуть' : el.dataset.more; },
-  socok: el => { const v = socNick(el.dataset.net, ($('#soc-in') || {}).value || ''); if (v && SOC_RE[el.dataset.net].test(v)) { el.disabled = true; socSave(el.dataset.net, v); } },
+  socok: el => { const v = socNick(el.dataset.net, ($('#soc-in') || {}).value || ''); if (v && SOC_RE[el.dataset.net].test(v)) { hap.imp(); socSave(el.dataset.net, v, el); } },
   frmore: () => { hap.tap(); S.frAll = !S.frAll; render(); },
   giftpro: el => { hap.tap(); openGiftPro(+el.dataset.id); },
   gpbuy: el => buyGiftPro(+el.dataset.id, GP.plan, el),
@@ -4965,7 +5051,10 @@ const ACT = {
   gprdx: () => { hap.tap(); closeProOverlay(); },
   socno: () => { hap.tap(); const r = $('#soc-res'), i = $('#soc-in'); if (r) r.innerHTML = ''; if (i) { i.focus(); i.select(); } },
   socsave: el => socSave(el.dataset.net, el.dataset.h),
-  socdel: el => socSave(el.dataset.net, null),
+  socdel: el => {                       // удаление — в два касания: сначала «Точно убрать?», через 3 с кнопка возвращается
+    if (!el.classList.contains('arm')) { hap.warn(); el.classList.add('arm'); el.textContent = 'Точно убрать? Нажми ещё раз';
+      clearTimeout(el._t); el._t = setTimeout(() => { if (el.isConnected) { el.classList.remove('arm'); el.textContent = el.dataset.t; } }, 3200); return; }
+    clearTimeout(el._t); hap.med(); socSave(el.dataset.net, null); },
   socopen: el => { const u = socUrl(el.dataset.net, el.dataset.h); hap.tap();
     try { if (el.dataset.net === 'tg') tg.openTelegramLink(u); else tg.openLink(u); } catch (e) { window.open(u, '_blank'); } },
   creator: () => { hap.tap(); const c = CREATOR; if (c && c.handle) openPublicProfile(c.handle); else { askBadges([]); toast('Секунду…'); } },
