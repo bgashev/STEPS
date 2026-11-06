@@ -2059,6 +2059,14 @@ body.frozen .stp .sb{opacity:.45}
   #view:not(.rr) .stv>*:nth-child(6){animation-delay:.2s}#view:not(.rr) .stv>*:nth-child(7){animation-delay:.25s}#view:not(.rr) .stv>*:nth-child(n+8){animation-delay:.3s}
 }
 @keyframes stvIn{from{opacity:0;transform:translateY(14px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
+/* v1.504: «Друзья» — содержимое не должно вылезать за кнопку (слева обрезались аватарки) */
+#view .hero-row .fchipb{padding:0 10px 0 7px;gap:7px;font-size:14px}
+#view .hero-row .fchipb .stk .fav{width:28px;height:28px}
+#view .hero-row .fchipb .stk .fav+.fav{margin-left:-9px}
+#view .hero-row .fchipb svg:last-child{margin-left:-2px}
+.hero .fchipb .fcn{margin-left:0}
+.hero .fchipb:not(.hset){overflow:visible}
+.hero .fchipb:not(.hset)::after{overflow:hidden}
 </style>
 </head>
 <body>
