@@ -1958,6 +1958,34 @@ body.frozen .stp .sb{opacity:.45}
 @keyframes sshDraw{to{stroke-dashoffset:0}}
 @keyframes sshArm{0%{transform:scale(.94)}60%{transform:scale(1.05)}100%{transform:none}}
 @media (prefers-reduced-motion:reduce){.soc-b,.soc-b.pop,.soc-b.pop .lg,.ssh-hero::before,.ssh-hero .lg,.ssh-hero h2,.ssh-hero .cap,.ssh-in,.ssh-save,.ssh-save::after,.ssh-del,.ssh-hint{animation:none!important}}
+
+/* v1.499: карточка «Профиль» в настройках — поля в одну сетку, ниже «Расчёт» плитками и шкалой ИМТ */
+.pfc .psec{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:2px 0 10px}
+.pfc .psec:not(:first-of-type){margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
+.pfc .f{margin-bottom:10px}
+.pf2{display:grid;grid-template-columns:1.25fr 1fr;gap:10px}
+.pf2 .inp{text-align:left;padding:0 12px;display:flex;align-items:center;min-width:0}
+.pf2 input[type=date].inp::-webkit-date-and-time-value{text-align:left}
+.pf-sex{background:var(--surface2);border-radius:14px;padding:5px;gap:4px;min-height:50px;box-sizing:border-box;overflow:hidden}
+.pf-sex button{border:0;border-radius:10px;padding:0 4px;font-size:14px;transition:background .25s ease,color .25s ease,transform .12s}
+.pf-sex button:active{transform:scale(.96)}
+.bmg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bmt{background:var(--surface2);border-radius:16px;padding:12px 14px 11px;min-width:0}
+.bml{font-size:11px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.bmv{margin-top:5px;font-size:26px;line-height:1.05;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bmv em{font-style:normal;font-size:13px;font-weight:650;color:var(--muted);margin-left:5px;letter-spacing:0}
+.bms{margin-top:5px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;min-height:16px}
+.bms i{width:8px;height:8px;border-radius:50%;flex:none}
+.bmb{margin-top:16px;padding:0 2px}
+.bmbt{position:relative;height:10px;border-radius:99px}
+.bmo{position:absolute;top:-4px;bottom:-4px;border-radius:99px;border:2px solid var(--text);opacity:.55;box-sizing:border-box;pointer-events:none}
+.bmk{position:absolute;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:50%;background:var(--surface);border:3px solid var(--text);box-shadow:0 3px 10px rgba(0,0,0,.28);box-sizing:border-box;animation:bmkIn .6s cubic-bezier(.2,.9,.25,1.2) both}
+@keyframes bmkIn{from{transform:scale(.3);opacity:0}to{transform:none;opacity:1}}
+.bmbl{position:relative;height:14px;margin-top:9px;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+.bmbl span{position:absolute;top:0;transform:translateX(-50%)}
+.bmbl span:first-child{transform:none}.bmbl span:last-child{transform:translateX(-100%)}
+.bmn{margin-top:10px;font-size:12.5px;line-height:1.4;color:var(--muted)}
+.bmn b{color:var(--text);font-weight:700}
 </style>
 </head>
 <body>
@@ -4197,13 +4225,16 @@ function viewMeSettings(){
   if (inTG) h += socEditHTML();
   // v1.447: «Мои подарки» и «Достижения» убраны из настроек — они показываются в самом профиле выше
   h += handleCard();
-  h += `<div class="card"><h3>${IC('user')}Профиль</h3>
+  h += `<div class="card pfc"><h3>${IC('user')}Профиль</h3>
+    <div class="psec">О тебе</div>
     <label class="f"><span>Имя</span><input class="inp" id="p-name" maxlength="32" placeholder="${esc((tgUser && tgUser.first_name) || 'Как тебя зовут?')}" value="${esc(p.name || '')}" data-ch="pname"></label>
-    <div class="g2"><label class="f"><span>Дата рождения</span><input class="inp" type="date" id="p-birth" value="${esc(p.birth || '')}" max="${isoOf(todayN())}" data-ch="pbirth"></label>
-    <div class="f"><span>Пол</span><div class="seg fill" style="min-height:50px;align-items:center">${[['m','Мужской'],['f','Женский']].map(([v, l]) => `<button type="button" class="${p.sex === v ? 'on' : ''}" data-act="sex" data-v="${v}">${l}</button>`).join('')}</div></div></div>
+    <div class="pf2">
+      <label class="f"><span>Дата рождения</span><input class="inp" type="date" id="p-birth" value="${esc(p.birth || '')}" max="${isoOf(todayN())}" data-ch="pbirth"></label>
+      <div class="f"><span>Пол</span><div class="seg fill pf-sex">${[['m','Муж.'],['f','Жен.']].map(([v, l]) => `<button type="button" class="${p.sex === v ? 'on' : ''}" data-act="sex" data-v="${v}">${l}</button>`).join('')}</div></div>
+    </div>
     ${stepper('height', 'Рост', hgt, 0, 230, 1, 0, 'см', 'height').replace('data-bind', 'data-jump="175" data-bind')}
-    <div class="chips" id="p-chips">${chips(age, b, bmr)}</div>
-    <div class="cap" style="margin-top:10px">Вес меняется в разделе «Вес». Эти данные нужны для калорий, ИМТ и базового обмена.</div></div>`;
+    <div class="psec">Расчёт · вес берётся из раздела «Вес»</div>
+    <div class="bm" id="p-chips">${chips(age, b, bmr)}</div></div>`;
   h += `<div class="card"><h3>${IC('target')}Цель недели</h3><div class="cap" style="margin:-6px 0 12px">Неделя начинается с первой тренировки и длится N дней. Выполнил норму — следующая начнётся с новой тренировки.</div>
     <div class="g2">${stepper('gcount', 'Сколько тренировок', g.count, 1, 14, 1, 0, '', 'gcount')}${stepper('gdays', 'За сколько дней', g.days, 3, 14, 1, 0, '', 'gdays')}</div>
     <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
@@ -4496,21 +4527,29 @@ async function socSave(net, value, btn){
 }
 function seg2(act, items, cur){ return `<div class="seg">` + items.map(([v, l]) => `<button type="button" class="${cur === v ? 'on' : ''}" data-act="${act}" data-v="${v}">${l}</button>`).join('') + `</div>`; }
 function chips(age, b, bmr){
-  // М1/п.12: чипы, зависящие от пола, — меняются сразу при выборе «Мужской» / «Женский»
-  let sexChips = '';
-  if (b) {
-    const z = bmiZones(), sx = db.profile.sex, h = +db.profile.height || 0, m = h / 100;
-    if (z.teen) sexChips = '';
-    else if (sx !== 'm' && sx !== 'f') sexChips = `<span class="chip">Укажи пол — покажу оптимум ИМТ и долю жира</span>`;
-    else if (z.opt) {
-      const [o0, o1] = z.opt, who = sx === 'm' ? 'мужчин' : 'женщин';
-      const v = b < o0 ? 'ниже оптимума' : b <= o1 ? 'в оптимуме' : 'выше оптимума';
-      const kg = h ? ` · ${num(o0 * m * m, 0)}–${num((o1 - .1) * m * m, 0)} кг` : '';
-      const bf = bodyFat(b);
-      sexChips = `<span class="chip">Оптимум для ${who}: ИМТ ${o0}–${o1}${kg} · ${v}</span>` + (bf ? `<span class="chip">Доля жира ≈ ${Math.round(bf)}%</span>` : '');
-    }
+  // v1.499: «Расчёт» — четыре плитки и шкала ИМТ с зонами; меняется сразу при смене роста, даты рождения и пола
+  const z = bmiZones(), sx = db.profile.sex, h = +db.profile.height || 0, m = h / 100;
+  const bf = b ? bodyFat(b) : null, cat = b ? bmiCat(b) : null;
+  const tile = (lab, val, unit, sub, dot) => `<div class="bmt"><div class="bml">${lab}</div><div class="bmv">${val}${unit ? `<em>${unit}</em>` : ''}</div><div class="bms">${dot ? `<i style="background:${dot}"></i>` : ''}${sub}</div></div>`;
+  let h2 = `<div class="bmg">`
+    + tile('Возраст', age != null ? age : '—', age != null ? plural(age, W_YEAR) : '', age != null ? '' : 'укажи дату рождения')
+    + tile('ИМТ', b ? num(b) : '—', '', b ? cat[0] : 'нужен рост', b ? cat[1] : '')
+    + tile('Доля жира', bf ? '≈ ' + Math.round(bf) : '—', bf ? '%' : '', bf ? 'грубая оценка' : (z.teen ? 'со взрослого возраста' : 'нужен пол и возраст'))
+    + tile('Базовый обмен', bmr ? numSep(bmr) : '—', bmr ? 'ккал' : '', bmr ? 'в день' : 'пол, возраст, рост, вес')
+    + `</div>`;
+  if (b && !z.teen) {
+    const LO = 15, HI = 40, P = v => (clamp(v, LO, HI) - LO) / (HI - LO) * 100;
+    const stops = `${BLUE} 0 ${P(z.lo)}%,${GREEN} ${P(z.lo)}% ${P(z.hi)}%,${YELLOW} ${P(z.hi)}% ${P(z.ob)}%,${RED} ${P(z.ob)}% 100%`;
+    let opt = '', note = '';
+    if (z.opt) {
+      const [o0, o1] = z.opt, who = sx === 'm' ? 'мужчин' : 'женщин', v = b < o0 ? 'ниже оптимума' : b <= o1 ? 'в оптимуме' : 'выше оптимума';
+      opt = `<i class="bmo" style="left:${P(o0)}%;width:${P(o1) - P(o0)}%"></i>`;
+      note = `Оптимум для ${who}: ИМТ ${o0}–${o1}${h ? ` · ${num(o0 * m * m, 0)}–${num((o1 - .1) * m * m, 0)} кг` : ''} · <b>${v}</b>`;
+    } else if (!z.old) note = 'Укажи пол — покажу оптимум ИМТ и долю жира';
+    h2 += `<div class="bmb"><div class="bmbt" style="background:linear-gradient(90deg,${stops})">${opt}<span class="bmk" style="left:${P(b)}%"></span></div>
+      <div class="bmbl">${[LO, z.lo, z.hi, z.ob, HI].map(v => `<span style="left:${P(v)}%">${v}</span>`).join('')}</div></div>${note ? `<div class="bmn">${note}</div>` : ''}`;
   }
-  return `<span class="chip">Возраст: ${age != null ? npw(age, W_YEAR) : '—'}</span><span class="chip">${b ? `ИМТ ${num(b)} · ${bmiCat(b)[0].toLowerCase()}` : 'ИМТ: —'}</span>${sexChips}<span class="chip">${bmr ? `Базовый обмен ≈ ${numSep(bmr)} ккал/день` : 'Базовый обмен: нужны пол, возраст, рост и вес'}</span>`;
+  return h2;
 }
 function goalPreview(){ const g = G(); return `${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)} ≈ ${num(g.count * 7 / g.days)} в неделю`; }
 
