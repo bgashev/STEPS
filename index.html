@@ -2023,6 +2023,42 @@ body.frozen .stp .sb{opacity:.45}
 .ppl.fnd .ppl-em i{border-color:rgba(205,210,228,.55)}
 .ppl.fnd .ppl-k{color:var(--muted)}
 .fnd-t{margin:14px 6px 12px;font-size:14.5px;line-height:1.45;color:var(--text);animation:lvRow .6s .34s both}
+
+/* v1.503 · «Итоги»: единый язык — стеклянные карточки, «глазные» подписи капсом, скруглённые градиентные столбики, плитки, каскадное появление */
+.stv .st-hero{position:relative;overflow:hidden;margin-top:10px;padding:26px 14px 14px;border-radius:30px;border:1px solid var(--border);
+  background:radial-gradient(120% 90% at 50% -10%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 62%),linear-gradient(180deg,color-mix(in srgb,var(--accent) 6%,var(--surface)),var(--surface));
+  box-shadow:0 18px 40px -26px color-mix(in srgb,var(--accent) 55%,#000)}
+.stv .st-k{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stv .st-big{font-size:60px;letter-spacing:-2.6px;margin-top:10px}
+.stv .st-row{margin:22px 0 4px;padding-top:14px}
+.stv .st-row b{font-size:26px}
+.stv .kpis{gap:10px;margin:12px 0 0}
+.stv .kpi{display:flex;flex-direction:column-reverse;gap:6px;padding:15px 16px 14px;border-radius:24px;position:relative;overflow:hidden}
+.stv .kpi .kc{font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.stv .kpi .kv{font-size:23px;font-weight:850;letter-spacing:-.6px;font-variant-numeric:tabular-nums}
+.stv .kpi:first-child{grid-column:1/-1;background:linear-gradient(120deg,color-mix(in srgb,var(--accent) 12%,var(--surface)),var(--surface))}
+.stv .kpi:first-child .kv{font-size:30px}
+.stv .st-sec,.stv>.card{margin:12px 0 0;padding:18px 16px 16px;border-radius:28px;background:var(--surface);border:1px solid var(--border)}
+.stv .st-sec>h3,.stv>.card>h3{display:flex;align-items:center;gap:9px;margin:0 2px 14px;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.stv .st-sec>h3 svg,.stv>.card>h3 svg{width:26px;height:26px;padding:6px;border-radius:9px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);box-sizing:border-box;flex:none}
+.stv .st-sec>h3 span{letter-spacing:.02em;text-transform:none;font-size:12px}
+.stv .st-stack{height:10px;border-radius:99px;gap:3px;margin-bottom:8px}.stv .st-stack i{border-radius:99px}
+.stv .bfill{border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,var(--accent2,var(--accent)),var(--accent))!important;width:68%;opacity:.92}
+.stv .bfill.zero{background:var(--off)!important;opacity:1}
+.stv .bar.sel .bfill{opacity:1;box-shadow:0 8px 20px -8px var(--accent)}
+.stv .fdb{height:10px;border-radius:99px}.stv .fdb i{border-radius:99px}
+.stv .recs{gap:10px}
+.stv .recs>div{background:var(--surface2);border-radius:20px;padding:13px 14px;display:flex;flex-direction:column;gap:3px}
+.stv .recs .cap:first-child{font-size:10.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase}
+.stv .recs .rv{font-size:17px;line-height:1.2;font-weight:850;letter-spacing:-.3px;margin:2px 0}
+.stv .recs>div{justify-content:space-between}
+.stv .hm-c{border-radius:7px}
+@media (prefers-reduced-motion:no-preference){
+  #view:not(.rr) .stv>*{animation:stvIn .7s cubic-bezier(.2,.8,.25,1) both}
+  #view:not(.rr) .stv>*:nth-child(3){animation-delay:.05s}#view:not(.rr) .stv>*:nth-child(4){animation-delay:.1s}#view:not(.rr) .stv>*:nth-child(5){animation-delay:.15s}
+  #view:not(.rr) .stv>*:nth-child(6){animation-delay:.2s}#view:not(.rr) .stv>*:nth-child(7){animation-delay:.25s}#view:not(.rr) .stv>*:nth-child(n+8){animation-delay:.3s}
+}
+@keyframes stvIn{from{opacity:0;transform:translateY(14px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
 </style>
 </head>
 <body>
@@ -3975,9 +4011,9 @@ function heatHTML(ws){
 function viewStats(){
   const ws = valid(), pws = filterPeriod(ws, S.sp), n = pws.length, g = G();
   const PN = {'7': 'за 7 дней', '30': 'за 30 дней', '12m': 'за 12 месяцев', 'all': 'за всё время'}[S.sp] || '';
-  let h = `<div class="head"><div><h1>Итоги</h1><div class="sub">${ws.length ? 'Всё, что ты сделал — по любым видам активности' : 'Здесь соберётся вся твоя активность'}</div></div></div>
+  let h = `<div class="stv"><div class="head"><div><h1>Итоги</h1><div class="sub">${ws.length ? 'Всё, что ты сделал — по любым видам активности' : 'Здесь соберётся вся твоя активность'}</div></div></div>
     <div style="margin-bottom:6px">${seg('sp', [['7', '7 дней'], ['30', '30 дней'], ['12m', '12 месяцев'], ['all', 'Всё время']])}</div>`;
-  if (!ws.length) return h + `<div class="card empty"><div class="badge">${IC('stats', 30)}</div><h3 style="justify-content:center">Пока нечего подводить</h3><div class="muted">Добавь первую тренировку — любой вид: бег, силовые, йога, плавание. Итоги появятся здесь.</div></div><div class="wdock-sp"></div>`;
+  if (!ws.length) return h + `<div class="card empty"><div class="badge">${IC('stats', 30)}</div><h3 style="justify-content:center">Пока нечего подводить</h3><div class="muted">Добавь первую тренировку — любой вид: бег, силовые, йога, плавание. Итоги появятся здесь.</div></div></div><div class="wdock-sp"></div>`;
   if (n) {
     const tm = sum(pws, w => w.minutes), weeks = periodDays(S.sp, ws) / 7, kcs = pws.map(kcal), kc = sum(kcs, k => k || 0);
     const days = new Set(pws.map(w => w.date)).size, kinds = new Set(pws.map(actOf)).size, xp = sum(pws, workoutXp);
@@ -4021,7 +4057,7 @@ function viewStats(){
   const sp = ws.filter(w => +w.speed > 0 && !isStr(w)); if (sp.length) { const b = mxBy(sp, w => +w.speed); recs.push(['Самая быстрая', num(b.speed) + ' км/ч', stName(actOf(b)) + ' · ' + dd(b)]); }
   const ic = ws.filter(w => actOf(w) === 'run' && +w.incline > 0); if (ic.length) { const b = mxBy(ic, w => +w.incline); recs.push(['Самый крутой уклон', num(b.incline) + ' %', dd(b)]); }
   h += `<div class="recs">` + recs.map(r => `<div><div class="cap">${r[0]}</div><div class="rv">${r[1]}</div><div class="cap">${r[2]}</div></div>`).join('') + `</div></div>`;
-  return h + '<div class="wdock-sp"></div>';
+  return h + '</div><div class="wdock-sp"></div>';
 }
 function openAchFull(){
   hap.imp();
