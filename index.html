@@ -2432,6 +2432,10 @@ html.web #achfull .ach{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))
 #sw.open #sheet.fr{filter:none;opacity:1}
 #sheet.half.fr:not(.xl){overflow-y:auto;-webkit-mask-image:none;mask-image:none;max-height:min(60vh,calc(92vh - var(--kb,0px)));min-height:min(56vh,calc(92vh - var(--kb,0px)))}
 @media(prefers-reduced-motion:reduce){#sheet.fr{filter:none;transition:transform .2s}}
+
+/* WEB: окно списка друзей по размеру содержимого, а не на всю высоту */
+html.web #sheet.pf.fr{height:auto;min-height:0;max-height:min(72vh,680px);padding-top:18px}
+html.web #sheet.pf.fr.half:not(.xl){min-height:0;max-height:min(72vh,680px)}
 </style>
 </head>
 <body>
@@ -2446,7 +2450,7 @@ html.web #achfull .ach{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.588';
+const APP = 'VOOB (by BGASHEV) Mini App v1.589';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3832,7 +3836,7 @@ async function loadFriends(){
   FR.loading = true;
   const hadSkeleton = !FR.data;
   let changed = true;
-  try { const j = await apiAuth('/friends', {today:isoOf(todayN())}); const sig = JSON.stringify(j); changed = sig !== FR.sig || !!FR.err; FR.sig = sig; FR.data = j; FR.err = ''; askBadges([...(j.friends || []).map(x => x.tg_id), j.me && j.me.tg_id, ...(j.requests || []).map(x => x.tg_id)]); if (changed) lsSet(FRK, j); if (j.my_gifts) setGifts(j.my_gifts);
+  try { const j = await apiAuth('/friends', {today:isoOf(todayN())}); const sig = JSON.stringify(j); changed = sig !== FR.sig || !!FR.err; FR.sig = sig; FR.data = j; FR.err = ''; FR.at = Date.now(); askBadges([...(j.friends || []).map(x => x.tg_id), j.me && j.me.tg_id, ...(j.requests || []).map(x => x.tg_id)]); if (changed) lsSet(FRK, j); if (j.my_gifts) setGifts(j.my_gifts);
     const n = (j.friends || []).length; if (db.settings.friends_n !== n) { db.settings.friends_n = n; persist(); } }
   catch (e) { FR.err = e.message || 'нет связи'; }
   FR.loading = false;
@@ -5611,7 +5615,7 @@ function actsHTML(){
     + `<span class="ai">${IC(k, 24)}</span><span class="al">${l}</span>${ok ? '' : '<em>в разработке</em>'}</button>`).join('');
 }
 const ACT = {
-  tab: el => { if (S.fprof) { S.fprof = null; _rTab = null; if (!sheetCtx) { try { if (ver('6.1')) tg.BackButton.hide(); } catch (e) {} } } if (S.tab !== el.dataset.tab || _rTab === null) { S.tab = el.dataset.tab; S.meSet = false; S.pers = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') { FR_TAB_T = performance.now(); loadFriends(); } } },
+  tab: el => { if (S.fprof) { S.fprof = null; _rTab = null; if (!sheetCtx) { try { if (ver('6.1')) tg.BackButton.hide(); } catch (e) {} } } if (S.tab !== el.dataset.tab || _rTab === null) { S.tab = el.dataset.tab; S.meSet = false; S.pers = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') { FR_TAB_T = performance.now(); if (!FR.data || Date.now() - (FR.at || 0) > 20000) loadFriends(); } } },
   add: () => { hap.imp(); S.actsXl = false; openActs(false); },
   sback: () => { hap.tap(); stepBack(); },
   actfav: el => { const k = el.dataset.v, f = favActs(), on = f.includes(k);
