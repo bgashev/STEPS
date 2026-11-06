@@ -2369,6 +2369,30 @@ body.frozen .stp .sb{opacity:.45}
 .ava .lvb[data-t="4"],.fp-head .fav .lvb[data-t="4"]{width:32px!important;min-width:32px!important;height:32px!important;font-size:11.5px!important}
 .lvn[data-t="4"]{width:36px!important;min-width:36px!important;height:36px!important;font-size:11.5px!important}
 .lvs-b[data-t="4"]{--sz:66px;font-size:22px}.lvr-n[data-t="4"],.lvt-d[data-t="4"]{--sz:44px;font-size:13px}
+/* v1.538: Итоги — bento: кольцо видов в шапке, ровные плитки, свечение акцентом, рекорды лентой */
+.stv .st-hero{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;padding:22px 18px 22px 20px}
+.stv .st-hl{min-width:0;position:relative}.stv .st-big{font-size:46px;letter-spacing:-2px;margin-top:12px}
+.stv .st-big i{font-size:17px;margin:0 6px 0 2px}.stv .st-d{margin-top:12px}.stv .st-d em{display:none}
+.stv .st-dn{position:relative;flex:none;width:124px;height:124px}.stv .st-dn svg{display:block}
+.stv .st-dn circle{animation:stvRing .9s cubic-bezier(.2,.8,.2,1) both}@keyframes stvRing{from{opacity:0;stroke-width:4}}
+.stv .st-dc{position:absolute;inset:0;display:grid;place-content:center;text-align:center;line-height:1.15}.stv .st-dc b{font-size:24px;font-weight:850;letter-spacing:-.6px}.stv .st-dc span{font-size:11px;color:var(--muted)}
+.stv .kpis{gap:12px}.stv .kpi,.stv .kpi:first-child{grid-column:auto;background:var(--surface);border-radius:26px;padding:18px 18px 16px;position:relative;overflow:hidden;border:1px solid color-mix(in srgb,var(--text) 6%,var(--border))}
+.stv .kpi::before{content:"";position:absolute;width:120px;height:120px;right:-44px;top:-52px;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 20%,transparent),transparent 70%);pointer-events:none}
+.stv .kpi .kv,.stv .kpi:first-child .kv{font-size:27px;letter-spacing:-.9px;font-weight:850}
+.stv .kpi .kc{text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:600}
+.stv .st-sec,.stv>.card{position:relative;overflow:hidden;margin-top:12px;border-radius:30px;padding:20px 18px 18px}
+.stv .st-sec::before,.stv>.card::before{content:"";position:absolute;width:200px;height:200px;right:-70px;top:-90px;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 16%,transparent),transparent 70%);pointer-events:none}
+.stv .st-sec>*,.stv>.card>*{position:relative}
+.stv .st-sec>h3,.stv>.card>h3{text-transform:none;letter-spacing:-.2px;font-size:17px;font-weight:750}
+.stv .st-ai{width:40px;height:40px;border-radius:14px;background:var(--c);color:#14141a}
+.stv .st-act{gap:13px;padding:11px 2px}.stv .st-act+.st-act{border-top:0}
+.stv .st-am b{margin-bottom:6px}.stv .st-tr{height:6px;border-radius:3px;background:color-mix(in srgb,var(--text) 8%,transparent);overflow:hidden;margin-bottom:6px}
+.stv .st-tr i{display:block;height:100%;border-radius:3px;background:var(--c);animation:growX .8s cubic-bezier(.2,.8,.2,1) both;transform-origin:left}
+.stv .seg button{border-radius:999px}.stv .seg button.on{background:linear-gradient(135deg,var(--accent),var(--accent2,var(--accent)));border-color:transparent}
+.stv .recs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:0 18px 4px;scrollbar-width:none}.stv .recs::-webkit-scrollbar{display:none}
+.stv .recs>div{flex:none;width:154px;scroll-snap-align:start;border-radius:24px;padding:16px;background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 15%,transparent),color-mix(in srgb,var(--text) 3%,transparent));border:1px solid color-mix(in srgb,var(--text) 8%,transparent)}
+.stv .recs .rv{font-size:21px;letter-spacing:-.5px;margin:12px 0 5px}
+@media (prefers-reduced-motion:reduce){.stv .st-dn circle,.stv .st-tr i{animation:none}}
 .frpv-wrap{position:relative;margin:4px 0 18px}.frpv-wrap .frpv-nav{position:absolute;top:50%;margin-top:-19px;z-index:6;left:8px}.frpv-wrap .frpv-nav.r{left:auto;right:8px}
 .frpv .hero.bgpv,#sheet .frpv .hero.hbg{margin-left:0;margin-right:0;border-radius:24px}#sheet .frpv .hero.hbg{padding-bottom:26px;overflow:hidden;background:#0b0b10}#sheet .frpv .hero.hbg::before,#sheet .frpv .hero.hbg::after{display:none}#sheet .frpv .hero.hbg>.hbgfx{-webkit-mask-image:none;mask-image:none}
 .frpv .hero.bgpv{margin-top:0;margin-bottom:0;padding:34px 18px 22px}.frpv .bgpv .hero-av .fav{width:100px;height:100px;font-size:38px}
@@ -4338,17 +4362,21 @@ function viewStats(){
     const days = new Set(pws.map(w => w.date)).size, kinds = new Set(pws.map(actOf)).size, xp = sum(pws, workoutXp);
     const dl = periodDelta(ws, S.sp, tm);
     const dh = dl == null ? '' : `<span class="st-d ${dl >= 0 ? 'up' : 'dn'}">${IC(dl >= 0 ? 'arrow_up' : 'arrow_down', 12)}${Math.abs(dl)}%<em>к прошлому периоду</em></span>`;
-    h += `<div class="st-hero"><div class="st-k">В движении ${PN}</div><div class="st-big">${fmtMin(tm).replace(/(\d+) (ч|мин)/g, '$1<i>$2</i>')}</div>${dh}
-      <div class="st-row"><div><b>${n}</b><span>${plural(n, W_WORK)}</span></div><div><b>${days}</b><span>${plural(days, W_DAY)} с активностью</span></div><div><b>${kinds}</b><span>${plural(kinds, ['вид', 'вида', 'видов'])} активности</span></div></div></div>`;
+    const by0 = new Map(); for (const w of pws) { const a = actOf(w); by0.set(a, (by0.get(a) || 0) + w.minutes); }
+    const dn0 = [...by0.entries()].sort((x, y) => y[1] - x[1]), tot0 = sum(dn0, x => x[1]) || 1, R0 = 54, C0 = 2 * Math.PI * R0; let off0 = 0;
+    const donut = `<svg viewBox="0 0 140 140" width="124" height="124" aria-hidden="true">${dn0.map(([a, m]) => { const L = Math.max(1, C0 * m / tot0 - 3), o = off0; off0 += C0 * m / tot0;
+      return `<circle r="${R0}" cx="70" cy="70" fill="none" stroke="${actCol(a)}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${L.toFixed(1)} ${C0.toFixed(1)}" stroke-dashoffset="${(-o).toFixed(1)}" transform="rotate(-90 70 70)"/>`; }).join('')}</svg>`;
+    h += `<div class="st-hero"><div class="st-hl"><div class="st-k">В движении ${PN}</div><div class="st-big">${fmtMin(tm).replace(/(\d+) (ч|мин)/g, '$1<i>$2</i>')}</div>${dh}</div>
+      <div class="st-dn">${donut}<div class="st-dc"><b>${kinds}</b><span>${plural(kinds, ['вид', 'вида', 'видов'])}</span></div></div></div>`;
     const ex = [kpi(num(n / weeks), 'Тренировок в неделю'), kpi(fmtMin(tm / n), 'Средняя тренировка'), kpi(numSep(xp), 'Очков заработано'),
       kpi(kc ? kcalF(kc) : '—', kc ? 'Сожжено, примерно' : 'Ккал: укажи вес'), kpi(num(sum(pws, w => +w.feeling || 3) / n) + ' / 5', 'Среднее состояние')];
     const km = sum(pws, kmOf); if (km > 0.05) ex.splice(3, 0, kpi(kmF(km), 'Пройдено, примерно'));
-    h += `<div class="kpis">${ex.slice(0, 6).join('')}</div>`;
+    h += `<div class="kpis">${[kpi(n, plural(n, W_WORK)), kpi(days, plural(days, W_DAY) + ' с активностью')].concat(ex.slice(0, 6)).join('')}</div>`;
     // по видам активности
     const by = new Map(); for (const w of pws) { const a = actOf(w); if (!by.has(a)) by.set(a, []); by.get(a).push(w); }
     const rows = [...by.entries()].map(([a, gl]) => [a, gl, sum(gl, w => w.minutes)]).sort((x, y) => y[2] - x[2]);
-    h += `<div class="st-sec"><h3>${IC('sparkle')}По видам активности</h3><div class="st-stack">${rows.map(([a, , m]) => `<i style="flex:${Math.max(m, 1)};background:${actCol(a)}"></i>`).join('')}</div>` +
-      rows.map(([a, gl, m], i) => `<div class="st-act" style="--c:${actCol(a)};animation-delay:${i * 50}ms"><span class="st-ai">${IC(a, 18)}</span><div class="st-am"><b>${esc(stName(a))}</b><small>${npw(gl.length, W_WORK)} · ${actFacts(gl, a)}</small></div><div class="st-av"><b>${fmtMin(m)}</b><small>${tm ? Math.round(m * 100 / tm) : 0}%</small></div></div>`).join('') + `</div>`;
+    h += `<div class="st-sec"><h3>${IC('sparkle')}По видам активности</h3>` +
+      rows.map(([a, gl, m], i) => `<div class="st-act" style="--c:${actCol(a)};animation-delay:${i * 50}ms"><span class="st-ai">${IC(a, 18)}</span><div class="st-am"><b>${esc(stName(a))}</b><div class="st-tr"><i style="width:${Math.max(3, tm ? m * 100 / tm : 0)}%"></i></div><small>${npw(gl.length, W_WORK)} · ${actFacts(gl, a)}</small></div><div class="st-av"><b>${fmtMin(m)}</b><small>${tm ? Math.round(m * 100 / tm) : 0}%</small></div></div>`).join('') + `</div>`;
   } else h += `<div class="card muted" style="margin-top:12px">За этот период тренировок нет — выбери другой или добавь тренировку.</div>`;
   // календарь активности
   h += `<div class="st-sec"><h3>${IC('clock')}Календарь активности<span>12 недель</span></h3>${heatHTML(ws)}</div>`;
