@@ -1089,7 +1089,7 @@ const ACT_TTL_MIN = 10, ACT_TRIES = 5;
 async function routeFreezeStart(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
-  const action = body?.action === "unfreeze" ? "unfreeze" : "freeze";
+  const action = ["unfreeze", "delete"].includes(body?.action) ? body.action : "freeze";
   const st = await proStatus(me);
   if (action === "freeze" && !st.can_freeze) return fail(st.frozen ? "Подписка уже заморожена" : "Заморозка недоступна", 409);
   if (action === "unfreeze" && !st.frozen) return fail("Подписка не заморожена", 409);
@@ -1098,7 +1098,9 @@ async function routeFreezeStart(body: any) {
   const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 10000).padStart(4, "0");
   await db.from("action_codes").upsert({ tg_id: me, action, code_hash: await sha256(`act:${action}:${me}:${code}`), tries: 0,
     created_at: new Date().toISOString() }, { onConflict: "tg_id,action" });
-  const text = action === "freeze"
+  const text = action === "delete"
+    ? `🗑 Код для удаления аккаунта VOOB: <b>${code}</b>\n\nВсе твои тренировки, друзья, подарки и настройки будут удалены безвозвратно. Оплаченные звёзды не возвращаются автоматически.\n\nДействует ${ACT_TTL_MIN} минут. Если это не ты — не называй код никому и проигнорируй сообщение.`
+    : action === "freeze"
     ? `❄️ Код для заморозки VOOB PRO: <b>${code}</b>\n\nПодписка встанет на паузу на ${st.freeze_days} дн., оставшиеся дни сохранятся. Пока идёт заморозка, данные в приложении можно только смотреть. Заморозка доступна один раз.\n\nДействует ${ACT_TTL_MIN} минут. Если это не ты — проигнорируй сообщение.`
     : `☀️ Код для разморозки VOOB PRO: <b>${code}</b>\n\nПодписка продолжится с того места, где остановилась.\n\nДействует ${ACT_TTL_MIN} минут. Если это не ты — проигнорируй сообщение.`;
   const r = await tg("sendMessage", { chat_id: me, parse_mode: "HTML", text }).catch(() => null);
@@ -1107,7 +1109,7 @@ async function routeFreezeStart(body: any) {
 async function routeFreezeVerify(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
-  const action = body?.action === "unfreeze" ? "unfreeze" : "freeze";
+  const action = ["unfreeze", "delete"].includes(body?.action) ? body.action : "freeze";
   const code = String(body?.code ?? "").trim();
   const { data: r } = await db.from("action_codes").select("code_hash, tries, created_at").eq("tg_id", me).eq("action", action).maybeSingle();
   if (!r || Date.now() - new Date(r.created_at).getTime() > ACT_TTL_MIN * 60000) return json({ status: "expired" });
@@ -1117,6 +1119,12 @@ async function routeFreezeVerify(body: any) {
     return json({ status: r.tries + 1 >= ACT_TRIES ? "locked" : "wrong", left: ACT_TRIES - r.tries - 1 });
   }
   await db.from("action_codes").delete().eq("tg_id", me).eq("action", action);
+  if (action === "delete") {
+    const { error } = await db.rpc("delete_account", { p_tg: me });
+    if (error) { console.error(error); return fail("Не удалось удалить аккаунт", 500); }
+    tg("sendMessage", { chat_id: me, text: "Аккаунт VOOB удалён. Если захочешь вернуться — просто открой приложение, начнёшь с чистого листа. Спасибо, что был с нами 💛" }).catch(() => {});
+    return json({ status: "ok", deleted: true });
+  }
   const { data: row } = await db.from("pro_subs").select(SUB_COLS).eq("tg_id", me).maybeSingle();
   const st = await proStatus(me);
   if (action === "freeze") {
