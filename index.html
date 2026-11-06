@@ -1879,6 +1879,11 @@ body.frozen .stp .sb{opacity:.45}
 :root.thz-fin body::after{animation:thzBlurB .8s cubic-bezier(.3,.6,.3,1) both}
 @keyframes thzBlurT{from{-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}to{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}}
 @keyframes thzBlurB{from{-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}to{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}}
+/* v1.493: статус синхронизации — справа в шапке настроек, напротив «Назад»; «VOOB» в плашке PRO читается на светлой теме */
+.mset-top .sync2{margin-left:auto;height:36px;padding:0 10px;border-radius:18px;flex:none}
+.mset-top .sync2.open{padding:0 13px 0 10px}
+:root[data-mode=light] .prox-t{background:linear-gradient(90deg,#7A4E00,#A86F0A);-webkit-background-clip:text;background-clip:text;color:transparent}
+:root[data-mode=light] .prox-s{color:color-mix(in srgb,var(--text) 62%,transparent)}
 </style>
 </head>
 <body>
@@ -2487,6 +2492,7 @@ function dvEff(){ if (typeof S !== 'undefined' && S.dvPrev) return 'black'; cons
 function applyTheme(){
   const mode = themeMode(), th = THEMES[mode === 'dark' && dvEff() === 'black' ? 'black' : mode], r = document.documentElement.style;
   for (const k in th) r.setProperty('--' + k, th[k]);
+  document.documentElement.dataset.mode = mode;
   const acc = accentHex(mode), [ar, ag, ab] = hexRgb(acc);
   r.setProperty('--accent', acc);
   r.setProperty('--on-accent', (0.299*ar + 0.587*ag + 0.114*ab) > 140 ? '#1D1D24' : '#FFFFFF');
@@ -4081,7 +4087,7 @@ function langCardHTML(){
 }
 document.documentElement.lang = curLang();
 function viewMe(){
-  if (S.meSet || !inTG) return (inTG ? `<div class="mset-top"><button class="ib round" data-act="mesback" aria-label="Назад к профилю">${IC('back', 20)}</button><b>Настройки</b></div>` : '') + viewMeSettings();
+  if (S.meSet || !inTG) return (inTG ? `<div class="mset-top"><button class="ib round" data-act="mesback" aria-label="Назад к профилю">${IC('back', 20)}</button><b>Настройки</b>${syncHTML()}</div>` : '') + viewMeSettings();
   const me = FR.data && FR.data.me;
   if (!me) { loadFriends().then(() => { if (S.tab === 'me' && !S.meSet) render(); }); }
   else if (!ME.busy && (!ME.prof || Date.now() - ME.at > 60000)) loadMyProfile(me.tg_id);
@@ -4107,7 +4113,7 @@ function viewMeSettings(){
   const lv = myLevel();
   let h = '';                                        // v1.438: PRO — под профилем и промокодом
   h += `<div class="prof pc"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}">${lv.level}</span></div>
-    <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}<div class="prof-act">${tgUser ? socialsHTML(tgUser.id, true) : ''}</div></div></div><div class="prof-sync">${syncHTML()}</div>`;
+    <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}<div class="prof-act">${tgUser ? socialsHTML(tgUser.id, true) : ''}</div></div></div>${inTG ? '' : `<div class="prof-sync">${syncHTML()}</div>`}`;
   if (inTG) h += proCardHTML();
   if (inTG) h += `<div class="card pmc"><div class="pm-top"><span class="pm-ic">${IC('gift', 20)}</span><div><b>Промокод</b><small>PRO, рамка или подарок</small></div></div>
     <div class="pm-field"><input id="pm-in" class="inp" placeholder="VOOB-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="24" enterkeyhint="done">
