@@ -4530,8 +4530,12 @@ function fabMini(on){
   b.style.width = 'auto'; const to = b.getBoundingClientRect().width;
   b.style.width = from + 'px'; void b.offsetWidth; b.style.width = to + 'px';
 }
+// кнопка сворачивается только от прокрутки самим пользователем; восстановление позиции после перезагрузки — не в счёт
+let fabInputT = 0;
+['touchstart','touchmove','wheel','keydown','pointerdown'].forEach(ev => window.addEventListener(ev, () => { fabInputT = performance.now(); }, {passive:true, capture:true}));
 window.addEventListener('scroll', () => {
   const y = window.scrollY || 0, dy = y - fabY;
+  if (performance.now() - fabInputT > 1800) { fabY = y; return; }   // не рукой: просто запоминаем позицию
   if (Math.abs(dy) < 6) return;
   fabMini(dy > 0 && y > 60);
   fabY = y;
