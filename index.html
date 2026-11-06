@@ -2430,7 +2430,7 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.573';
+const APP = 'VOOB (by BGASHEV) Mini App v1.574';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5941,7 +5941,7 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
 
 /* VOOB «Кольца»: общий переход voob.kz ↔ app.voob.kz. Из точки клика раскрывается ирис со светящейся кромкой, два кольца логотипа (сайт и приложение) сближаются по спирали, сцепляются со вспышкой и анаморфным бликом, собирается имя, затем камера пролетает сквозь кольцо. 'in' стартует с того же кадра, на котором закончился 'out' */
 (function (w) {
-  var CSS = '#luv{position:fixed;inset:0;z-index:2147483000;background:#010206;overflow:hidden;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#f4f6fb;display:grid;place-items:center;pointer-events:all}'
+  var CSS = '#luv{position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:2147483000;background:#010206;overflow:hidden;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#f4f6fb;display:grid;place-items:center;pointer-events:all}'
     + '#luv .l_lg{position:absolute;inset:0;background:radial-gradient(55vmax circle at 50% 48%,rgba(139,92,246,.13),transparent 62%),radial-gradient(38vmax circle at 64% 36%,rgba(34,211,238,.055),transparent 60%),radial-gradient(40vmax circle at 36% 64%,rgba(244,114,182,.05),transparent 60%)}'
     + '#luv .l_vg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 48%,transparent 38%,rgba(0,0,0,.88) 100%);pointer-events:none}'
     + '#luv .l_au{position:absolute;left:50%;top:48%;width:150vmax;height:150vmax;margin:-75vmax;background:conic-gradient(from 20deg,transparent 0,rgba(139,92,246,.30) 12%,transparent 30%,rgba(34,211,238,.22) 48%,transparent 62%,rgba(244,114,182,.24) 80%,transparent);filter:blur(70px);opacity:.14}'
@@ -5968,7 +5968,10 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
       + '<g class="l_g2"><circle class="l_c2" cx="63" cy="30" r="20" pathLength="100" stroke="#f1f2f6"/><circle class="l_h2" cx="63" cy="30" r="20" pathLength="100" stroke="#22d3ee" style="stroke-dasharray:5 95;opacity:0"/></g>'
       + '<circle class="l_c3" cx="37" cy="30" r="20" pathLength="100" stroke="#8b5cf6" clip-path="url(#lucp)"/></svg><i class="l_fz"></i><i class="l_fl"></i></div>'
       + '<div class="l_wm"><i>V</i><i>O</i><i>O</i><i>B</i></div></div>';
-    D.body.appendChild(o);
+    var ob = D.getElementById('luvb'); if (ob) ob.remove();
+    var bl = D.createElement('div'); bl.id = 'luvb'; bl.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:2147482999;pointer-events:none;-webkit-backdrop-filter:blur(0px);backdrop-filter:blur(0px)';
+    D.body.appendChild(bl); D.body.appendChild(o);
+    var BL = function (a, b, dur, dl) { bl.animate([{ backdropFilter: 'blur(' + a + 'px)', webkitBackdropFilter: 'blur(' + a + 'px)' }, { backdropFilter: 'blur(' + b + 'px)', webkitBackdropFilter: 'blur(' + b + 'px)' }], { duration: dur, delay: dl || 0, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' }); };
     var g = D.getElementById('lu-g'); if (g) g.remove();
     var q = function (s) { return o.querySelector(s); }, rg = q('.l_rg'), g1 = q('.l_g1'), g2 = q('.l_g2'), c1 = q('.l_c1'), c2 = q('.l_c2'), c3 = q('.l_c3'), h1 = q('.l_h1'), h2 = q('.l_h2'), fl = q('.l_fl'), fz = q('.l_fz'), au = q('.l_au'), ls = [].slice.call(o.querySelectorAll('.l_wm i'));
     var A = function (el, k, op) { return el.animate(k, Object.assign({ fill: 'forwards' }, op)); };
@@ -5976,7 +5979,7 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
     if (out) {
       var W = innerWidth, H = innerHeight, x = pt && pt.x != null ? pt.x : W / 2, y = pt && pt.y != null ? pt.y : H / 2,
           R = Math.hypot(Math.max(x, W - x), Math.max(y, H - y)) + 40;
-      c3.style.opacity = 0;
+      c3.style.opacity = 0; BL(0, 22, 900);
       /* ирис из точки клика со светящейся кромкой */
       A(o, [{ clipPath: 'circle(0px at ' + x + 'px ' + y + 'px)' }, { clipPath: 'circle(' + R + 'px at ' + x + 'px ' + y + 'px)' }], { duration: 760, easing: 'cubic-bezier(.65,0,.2,1)' });
       var rim = D.createElement('div'); rim.id = 'luvr'; rim.style.cssText = 'left:' + (x - R) + 'px;top:' + (y - R) + 'px;width:' + (2 * R) + 'px;height:' + (2 * R) + 'px';
@@ -5984,7 +5987,7 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
       var ra = A(rim, [{ transform: 'scale(0)', opacity: 1 }, { transform: 'scale(1)', opacity: 1, offset: .85 }, { transform: 'scale(1.03)', opacity: 0 }], { duration: 860, easing: 'cubic-bezier(.65,0,.2,1)' }); ra.onfinish = function () { rim.remove(); };
       A(au, [{ opacity: 0, transform: 'rotate(-40deg) scale(.8)' }, { opacity: .14, transform: 'none' }], { duration: 1700, delay: 300, easing: 'cubic-bezier(.2,.7,.2,1)' });
       /* кольца летят навстречу по спирали и дорисовываются, за каждым — светящаяся «комета» */
-      A(q('.l_st'), [{ transform: 'scale(1.1)' }, { transform: 'scale(1)' }], { duration: 2600, delay: 300, easing: 'cubic-bezier(.16,.8,.2,1)' });
+      A(q('.l_st'), [{ transform: 'scale(1.1)' }, { transform: 'scale(1)' }], { duration: 2050, delay: 300, easing: 'cubic-bezier(.16,.8,.2,1)' });
       var T0 = 420, TD = 950;
       A(c1, [{ strokeDashoffset: 100, opacity: .25 }, { strokeDashoffset: 8, opacity: 1, offset: .8 }, { strokeDashoffset: 0, opacity: 1 }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
       A(c2, [{ strokeDashoffset: 100, opacity: .25 }, { strokeDashoffset: 8, opacity: 1, offset: .8 }, { strokeDashoffset: 0, opacity: 1 }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
@@ -6017,9 +6020,10 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
       ls.forEach(function (l) { l.style.opacity = 1; });
       setTimeout(function () {
         var r = rg.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, H = innerHeight, W = innerWidth,
-            R = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 220, done = function () { o.remove(); };
+            R = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 220, done = function () { o.remove(); bl.remove(); };
         ls.forEach(function (l, k) { A(l, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-14px)' }], { duration: 300, delay: k * 30 }); });
         A(rg, [{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(1.1)', opacity: 1, offset: .15 }, { transform: 'scale(9)', opacity: 0 }], { duration: 950, easing: 'cubic-bezier(.55,0,.75,.35)' });
+        BL(26, 0, 1150, 120);
         var ok = false;
         try { CSS.registerProperty({ name: '--lur', syntax: '<length>', inherits: false, initialValue: '0px' }); ok = true; } catch (e) { ok = !!(e && e.name === 'InvalidModificationError'); }
         if (ok) {
