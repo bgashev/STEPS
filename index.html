@@ -2458,6 +2458,10 @@ html.web #tabs .wver:hover{opacity:.85}
 /* WEB: «Отправить ссылку» и «Мой код» в один ряд */
 @media(min-width:900px){html.web .inv-row{display:grid;grid-template-columns:1.25fr 1fr;gap:10px}
 html.web .inv-row .inv-code{margin-top:0;min-width:0}html.web .inv-row .inv-share{min-width:0}}
+
+/* WEB: плитки «Итоги» — ровная сетка вместо горизонтальной ленты */
+@media(min-width:900px){html.web .stv .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px;overflow:visible;margin:14px 0 0;padding:0;-webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
+html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 </style>
 </head>
 <body>
@@ -2472,7 +2476,7 @@ html.web .inv-row .inv-code{margin-top:0;min-width:0}html.web .inv-row .inv-shar
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.600';
+const APP = 'VOOB (by BGASHEV) Mini App v1.601';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
