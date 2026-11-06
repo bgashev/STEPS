@@ -4569,6 +4569,7 @@ function fabMini(on){
   box.classList.toggle('mini', on);
   b.style.width = 'auto'; const to = b.getBoundingClientRect().width;
   b.style.width = from + 'px'; void b.offsetWidth; b.style.width = to + 'px';
+  clearTimeout(fabMini.w); fabMini.w = setTimeout(() => { if (fabMiniOn === on) b.style.width = ''; }, 650);   // после анимации — снова авто-ширина, без «залипшего» размера
 }
 // кнопка сворачивается только от прокрутки самим пользователем; восстановление позиции после перезагрузки — не в счёт
 let fabInputT = -1e9;
@@ -4589,7 +4590,7 @@ function updFab(){
   if (!updFab.ok) { b.dataset.act = cfg[0]; fl.textContent = cfg[1]; return; }   // пока приложение не «устоялось» (шрифты, размер окна Telegram, восстановление прокрутки) кнопка скрыта и не двигается
   const wasHidden = box.classList.contains('hide');
   if (wasHidden && !updFab.shown) {          // самый первый показ: кнопка появляется один раз, мягко, уже с готовыми цветом и текстом
-    updFab.shown = true; box.classList.add('first');
+    updFab.shown = true; box.classList.add('first'); b.style.width = ''; box.classList.remove('mini'); fabMiniOn = false;
     box.addEventListener('animationend', () => box.classList.remove('first'), {once:true});
     setTimeout(() => box.classList.remove('first'), 1000);
   }
@@ -4617,7 +4618,7 @@ function updFab(){
 Promise.all([
   document.fonts && document.fonts.ready ? document.fonts.ready.catch(() => {}) : 0,
   new Promise(r => document.readyState === 'complete' ? r() : window.addEventListener('load', r, {once:true}))
-]).then(() => new Promise(r => setTimeout(r, 500))).then(() => { updFab.ok = true; fabY = window.scrollY || 0; fabMiniOn = false; const bx = $('#fab'); if (bx) bx.classList.remove('mini'); updFab(); });
+]).then(() => new Promise(r => setTimeout(r, 500))).then(() => { updFab.ok = true; fabY = window.scrollY || 0; fabMiniOn = false; const bx = $('#fab'); if (bx) { bx.classList.remove('mini'); const bb = bx.querySelector('button'); if (bb) bb.style.width = ''; } updFab(); });
 setTimeout(() => { if (!updFab.ok) { updFab.ok = true; updFab(); } }, 3000);
 /* v1.462: раздел «Вес» — карточки проявляются каскадом из размытия, текущий вес «набегает» */
 function weightIntro(v){
