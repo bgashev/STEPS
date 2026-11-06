@@ -2424,7 +2424,7 @@ body.frozen .stp .sb{opacity:.45}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.561';
+const APP = 'VOOB (by BGASHEV) Mini App v1.562';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5292,7 +5292,7 @@ function render(){
   document.querySelectorAll('.prox:not([data-ph])').forEach(el => { el.dataset.ph = 1; el.style.setProperty('--ph', -Math.round(performance.now() % 5000) + 'ms'); });   // блик PRO не начинается заново
   setTimeout(checkRewards, 700);
   const tb = $('#tabs'), ti = TABS.findIndex(t => t[0] === S.tab);
-  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + LOGO_SVG(50) + '<b>VOOB</b></span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb" data-act="tosite"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>На сайт VOOB</button>' : '');
+  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + LOGO_SVG(50) + '<b>VOOB</b></span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb" data-act="tosite"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>VOOB.KZ</button>' : '');
   tb.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   tb.style.setProperty('--ti', ti);
 }
