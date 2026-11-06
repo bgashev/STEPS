@@ -2300,6 +2300,23 @@ body.frozen .stp .sb{opacity:.45}
 @media (prefers-reduced-motion:no-preference){#view:not(.rr) .sr{animation:srIn .7s cubic-bezier(.2,.8,.25,1) both;animation-delay:calc(var(--i) * 70ms + 100ms)}}
 @keyframes srIn{from{opacity:0;transform:translateY(12px) scale(.96);filter:blur(6px)}}
 @media (prefers-reduced-motion:reduce){.sr.pop,.sr.pop .lg{animation:none}}
+/* v1.524: предпросмотр рамки */
+.frpv{padding:2px 2px 6px}
+.frpv-h{display:flex;align-items:center;justify-content:center;gap:8px;margin:2px 0 2px}.frpv-h h2{margin:0;font-size:21px}
+.frpv-sub{text-align:center;font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.frpv-stage{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;height:214px;border-radius:24px;margin:4px 0 16px;background:radial-gradient(70% 70% at 50% 46%,color-mix(in srgb,var(--accent) 24%,transparent),transparent 74%),var(--surface2);border:1px solid var(--border)}
+.frpv-nav{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 80%,transparent);color:var(--text);display:grid;place-items:center;flex:none;transition:transform .12s}
+.frpv-nav:active{transform:scale(.9)}.frpv-nav.l svg{transform:scaleX(-1)}
+.frpv-lb{font-size:11.5px;font-weight:750;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 4px 8px}
+.frpv .hero{margin:0 0 16px;padding:20px 14px 14px}
+.frpv .hero-av{cursor:default;margin-bottom:10px}
+.frpv .hero-nm{font-size:20px}
+.frpv-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:18px;background:var(--surface2);margin-bottom:18px}
+.frpv-row b{display:block;font-size:14px}.frpv-row span{font-size:12px;color:var(--muted)}
+.frpv-go,.frpv-pro{width:100%;padding:14px}
+.frpv-go:disabled{background:var(--surface2);color:var(--muted);opacity:1}
+.frpv-pro{background:linear-gradient(120deg,#F5B23C,#FFE08A);color:#3a2600;font-weight:800}
+.frpv-cap{text-align:center;margin-top:8px}
 </style>
 </head>
 <body>
@@ -4529,6 +4546,30 @@ async function loadMyProfile(id){
   ME.busy = false;
   if (S.tab === 'me' && !S.meSet) render();
 }
+/* v1.524: рамка — сначала предпросмотр (крупно + в профиле + в списке), «Применить» внизу; без PRO — кнопка открытия PRO */
+function frAv(k, px, lv, photo, name){
+  return `<div class="fav${frameCls(k, k ? 0 : lv.level)}" style="width:${px}px;height:${px}px;font-size:${Math.round(px * .38)}px"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>`;
+}
+function frPrevHTML(k){
+  const i = Math.max(0, FRAMES.findIndex(x => x[0] === k)), e = FRAMES[i], pro = !!e[2], owned = !pro || frOwned(k);
+  const cur = frameOf(tgUser ? {tg_id:tgUser.id} : null), lv = myLevel(), name = displayName() || 'Гость';
+  const photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url) || '';
+  const prev = FRAMES[(i + FRAMES.length - 1) % FRAMES.length][0], next = FRAMES[(i + 1) % FRAMES.length][0];
+  const hb = myBg();
+  const btn = !owned ? `<button type="button" class="btn frpv-pro" data-act="frpro">${IC('crown', 18)}Разблокировать с PRO</button><div class="cap frpv-cap">Сейчас это только предпросмотр — рамка станет твоей с подпиской</div>`
+    : cur === k ? `<button type="button" class="btn frpv-go" disabled>${IC('check', 18)}Сейчас выбрана</button>`
+    : `<button type="button" class="btn primary frpv-go" data-act="frapply" data-v="${k}">${IC('check', 18)}Применить</button>`;
+  return `<div class="frpv"><div class="frpv-h"><h2>${esc(e[1])}</h2>${pro ? '<i class="prot inl">PRO</i>' : ''}</div>
+    <div class="frpv-sub">${k ? (pro ? 'Анимированная рамка' : 'Простое кольцо') : 'Аватарка без оформления'} · ${i + 1} из ${FRAMES.length}</div>
+    <div class="frpv-stage"><button type="button" class="frpv-nav l" data-act="frnav" data-v="${prev}" aria-label="Предыдущая">${IC('chev', 18)}</button>${frAv(k, 150, lv, photo, name)}<button type="button" class="frpv-nav" data-act="frnav" data-v="${next}" aria-label="Следующая">${IC('chev', 18)}</button></div>
+    <div class="frpv-lb">В профиле</div>
+    <div class="hero me${hb ? ' hbg' : ''}" style="--tc:${tierColor(lv.level)}">${bgFx(hb)}<span class="hero-av">${frAv(k, 84, lv, photo, name)}</span>
+      <h2 class="nmrow hero-nm"><span class="nm">${esc(name)}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h2><div class="hero-lv"><div class="hero-lvt"><span class="lvn">${lv.level}</span><span class="ttl">${tierOf(lv.level).title}</span></div></div></div>
+    <div class="frpv-lb">В списке друзей</div>
+    <div class="frpv-row">${frAv(k, 40, lv, photo, name)}<div><b>${esc(name)}</b><span>Ур. ${lv.level}</span></div></div>${btn}</div>`;
+}
+function openFramePrev(k){ hap.tap(); openSheet(frPrevHTML(k), {type:'frprev', v:k}); }
+function frPrevShow(k){ if (!sheetCtx || sheetCtx.type !== 'frprev') return; sheetCtx.v = k; const sh = $('#sheet'); sh.innerHTML = '<div class="grab"></div>' + frPrevHTML(k); sh.scrollTop = 0; }
 function viewMeSettings(){
   const p = db.profile, g = G(), name = displayName(), photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url);
   const age = ageOf(p.birth), kg = currentWeight(), hgt = +p.height || 0, b = bmiOf(kg, hgt), bmr = bmrOf(kg, hgt, age, p.sex);
@@ -4560,7 +4601,7 @@ function viewMeSettings(){
     <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
   { const cur = frameOf(tgUser ? {tg_id:tgUser.id} : null);
     h += `<div class="card"><h3>${IC('sparkle')}Персонализация</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте. Анимированные — для PRO.</div><div class="frs${S.frAll ? '' : ' col'}">${FRAMES.map(([k, l, pro], i) =>
-      `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 ? ' more' : ''}${pro && !frOwned(k) ? ' lock' : ''}" data-act="frame" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="smore" data-k="frAll" data-more="Все рамки · ${FRAMES.length}"><span>${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}</span>${IC('chev', 14)}</button></div>`; }
+      `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 ? ' more' : ''}${pro && !frOwned(k) ? ' lock' : ''}" data-act="frprev" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="smore" data-k="frAll" data-more="Все рамки · ${FRAMES.length}"><span>${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}</span>${IC('chev', 14)}</button></div>`; }
   { const cb = bgNorm(db.settings.bg || ''), pro = isPro(), si = BG_KEYS.findIndex(x => x[0] === cb);   // v1.445: в свёрнутом виде всегда 4 плитки; выбранный дальний фон встаёт на место третьего
     h += `<div class="card"><h3>${IC('palette')}Фон профиля</h3><div class="cap" style="margin:-6px 0 12px">Фон карточки профиля — его видят все, кто откроет твой профиль. Для PRO; подаренные командой VOOB фоны работают и без подписки.</div>
       <div class="bgs${S.bgAll ? '' : ' col'}"><button type="button" class="bgb${cb ? '' : ' on'}" data-act="bgset" data-v=""><span class="th none"></span>Без фона</button>${BG_KEYS.map(([k, l], i) =>
@@ -5604,6 +5645,11 @@ const ACT = {
   looksync: () => { const on = !lookSync(); lsSet('voob_look_sync', on); hap.tap();
     if (on) { touchMeta('settings'); save(); toast('Оформление этого устройства теперь общее'); } else toast('Теперь у телефона своё оформление');
     render(); },
+  frprev: el => openFramePrev(el.dataset.v || ''),
+  frnav: el => { frPrevShow(el.dataset.v || ''); hap.tap(); },
+  frpro: () => openPro(),
+  frapply: el => { const k = el.dataset.v || '', f = FRAMES.find(x => x[0] === k); if (f && f[2] && !frOwned(k)) { hap.warn(); return; }
+    db.settings.frame = k; touchMeta('settings'); save(); closeSheet(); render(); hap.imp(); toast('Рамка «' + (f ? f[1] : 'Без рамки') + '» применена'); },
   frame: el => { const f = FRAMES.find(x => x[0] === (el.dataset.v || '')); if (f && f[2] && !frOwned(f[0])) { hap.warn(); proToast('Эта рамка — для подписчиков PRO'); return; }
     db.settings.frame = el.dataset.v || ''; touchMeta('settings'); save(); render(); hap.tap(); },
   accent: el => { const k = el.dataset.v;
