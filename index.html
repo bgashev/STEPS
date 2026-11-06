@@ -1834,6 +1834,24 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .fz-okt{font-size:18px;font-weight:750}
 body.frozen .stp .sb{opacity:.45}
 @media (prefers-reduced-motion:reduce){#fzbar,.fz-orb,#fz-stage.in,.fz-code.bad{animation:none!important}}
+/* v1.490: шапка профиля компактнее; фон проявляется сверху через градиент и размытие */
+#view .hero{padding:30px 20px 22px}
+#view .hero.hbg{padding-top:calc(46px + var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 18px);padding-bottom:64px}
+#view .hero-av{margin-bottom:8px}
+#view .hero-av .fav{width:104px;height:104px;font-size:40px}
+#view .hero-nm{font-size:24px}
+#view .hero .crw{margin-top:8px}
+#view .hero-lv{margin-top:14px;max-width:240px}
+#view .hero-lvt{font-size:15px}
+#view .hero-lvt .lvn{min-width:26px;height:26px;border-radius:13px;font-size:13px}
+#view .hero .lvbar{height:16px;margin:10px auto 6px;border-radius:8px}
+#view .hero .lvbar i{border-radius:8px}
+#view .hero-row{margin-top:14px}
+#view .hero-row .fchipb{height:42px}
+#view .hero .socs.ico{margin-top:14px}
+#view .hero .soci,#view .hero .soci .lg{width:38px;height:38px}
+#view .hero.hbg::before,#view .hero.hbg>.hbgfx{-webkit-mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.35) 60px,#000 190px,#000 calc(100% - 120px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.35) 60px,#000 190px,#000 calc(100% - 120px),transparent 100%)}
+#view .hero.hbg>.hbgfx::after{content:"";position:absolute;left:0;right:0;top:0;height:200px;pointer-events:none;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(to bottom,#000,transparent);mask-image:linear-gradient(to bottom,#000,transparent)}
 </style>
 </head>
 <body>
