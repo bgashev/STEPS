@@ -1383,15 +1383,15 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .smx-in{animation:smxIn .38s cubic-bezier(.2,.8,.2,1) backwards}
 @keyframes smxIn{from{opacity:0;transform:translateY(8px) scale(.96)}}
 /* v1.442: соцсети — окно по центру видимой области; с клавиатурой центр сдвигается вверх (--kb) */
-#sheet.top{top:calc(var(--sht,50%) + var(--hdr) / 2);bottom:auto!important;max-height:calc(var(--shm,100vh) - var(--hdr) - 28px);--hdr:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px));border-radius:24px;margin:0 12px;
-  transform:translateY(-50%) scale(.94);opacity:0;border:1px solid var(--border);
-  transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .22s ease}   /* v1.446: центр видимой области считает скрипт (visualViewport) — iOS-клавиатура больше не уносит окно */
-#sw.open #sheet.top{transform:translateY(-50%);opacity:1}
+#sheet.top{top:calc(50% + var(--hdr) / 2);bottom:auto!important;max-height:calc(var(--shm,100vh) - var(--hdr) - 28px);--hdr:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px));border-radius:24px;margin:0 12px;
+  transform:translateY(calc(-50% + var(--shd,0px))) scale(.94);opacity:0;border:1px solid var(--border);
+  transition:transform .42s cubic-bezier(.22,.8,.24,1),max-height .42s cubic-bezier(.22,.8,.24,1),opacity .22s ease}   /* v1.446: центр видимой области считает скрипт (visualViewport) — iOS-клавиатура больше не уносит окно */
+#sw.open #sheet.top{transform:translateY(calc(-50% + var(--shd,0px)));opacity:1}
 /* с клавиатурой шапка окна компактнее — всё помещается без прокрутки */
 .kbo #sheet.top .ssh-hero{padding:0 0 10px}
 .kbo #sheet.top .ssh-hero .lg{width:44px;height:44px}
 .kbo #sheet.top .ssh-hero h2{margin-top:8px;font-size:19px}
-.kbo #sheet.top .ssh-hero::before{display:none}
+.kbo #sheet.top .ssh-hero::before{opacity:0}
 #sheet.top .grab{display:none}
 /* v1.447: «назад» в профиле + свайп вниз для закрытия шторок */
 .fp-back{position:sticky;top:6px;z-index:6;width:36px;height:36px;margin:-23px 0 0 -4px;border-radius:50%;border:1px solid var(--border);
@@ -1910,7 +1910,10 @@ body.frozen .stp .sb{opacity:.45}
 @keyframes socRing{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--sc) 55%,transparent)}100%{box-shadow:0 0 0 22px transparent}}
 @keyframes socPop{0%{transform:scale(.7) rotate(-14deg)}55%{transform:scale(1.22) rotate(5deg)}100%{transform:none}}
 /* окно ввода */
-.ssh-hero::before{animation:sshGlow 5s ease-in-out infinite alternate}
+.ssh-hero::before{animation:sshGlow 5s ease-in-out infinite alternate;opacity:1;transition:opacity .42s ease}
+#sheet.top .ssh-hero{transition:padding .42s cubic-bezier(.22,.8,.24,1)}
+#sheet.top .ssh-hero .lg{transition:width .42s cubic-bezier(.22,.8,.24,1),height .42s cubic-bezier(.22,.8,.24,1)}
+#sheet.top .ssh-hero h2{transition:font-size .42s cubic-bezier(.22,.8,.24,1),margin .42s cubic-bezier(.22,.8,.24,1)}
 .ssh-hero .lg{animation:sshLogo .95s cubic-bezier(.2,1.1,.3,1) both,sshFloat 5.5s ease-in-out 1.1s infinite}
 .ssh-hero h2{animation:sshRise .7s cubic-bezier(.2,.8,.2,1) .1s both}
 .ssh-hero .cap{animation:sshRise .7s cubic-bezier(.2,.8,.2,1) .18s both}
@@ -1943,7 +1946,7 @@ body.frozen .stp .sb{opacity:.45}
 @keyframes sshLogo{from{opacity:0;transform:translateY(16px) scale(.55) rotate(-14deg);filter:blur(9px)}}
 @keyframes sshRise{from{opacity:0;transform:translateY(12px);filter:blur(5px)}}
 @keyframes sshFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-@keyframes sshGlow{from{opacity:.65;transform:translateX(-50%) scale(.92)}to{opacity:1;transform:translateX(-50%) scale(1.08)}}
+@keyframes sshGlow{from{transform:translateX(-50%) scale(.92)}to{transform:translateX(-50%) scale(1.08)}}
 @keyframes sshShake{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(3px)}30%,50%,70%{transform:translateX(-5px)}40%,60%{transform:translateX(5px)}}
 @keyframes sshHintIn{from{opacity:0;transform:translateY(4px);filter:blur(3px)}}
 @keyframes sshShine{0%{left:-60%}55%,100%{left:130%}}
@@ -5396,7 +5399,8 @@ fitFrames();
 (function(){ const vv = window.visualViewport; if (!vv) return;
   const upd = () => { const kb = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop)), rs = document.documentElement.style;
     rs.setProperty('--kb', (kb > 60 ? kb : 0) + 'px');
-    rs.setProperty('--sht', Math.round(vv.offsetTop + vv.height / 2) + 'px');   // центр того, что реально видно (iOS сдвигает страницу под клавиатуру)
+    rs.setProperty('--sht', Math.round(vv.offsetTop + vv.height / 2) + 'px');
+    rs.setProperty('--shd', Math.round(vv.offsetTop + vv.height / 2 - window.innerHeight / 2) + 'px');   // сдвиг окна относительно центра — через transform, чтобы он плавно «ехал», а не прыгал   // центр того, что реально видно (iOS сдвигает страницу под клавиатуру)
     rs.setProperty('--shm', Math.round(vv.height) + 'px');
     document.documentElement.classList.toggle('kbo', kb > 60);
     const a = document.activeElement; if (kb > 60 && a && a.matches('input,textarea') && a.closest('#sheet') && !$('#sheet').classList.contains('top')) setTimeout(() => a.scrollIntoView({block:'center', behavior:'smooth'}), 60); };
