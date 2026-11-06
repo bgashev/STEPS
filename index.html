@@ -1810,8 +1810,8 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
   -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 40%);mask-image:linear-gradient(to bottom,transparent 0,#000 40%)}
 /* фон профиля продолжается вниз по странице: не цвет темы, а тот же оттенок, плавно растворяющийся */
 #view{position:relative;isolation:isolate}
-#view.bgt::before{content:"";position:absolute;z-index:-1;top:0;left:50%;width:100vw;height:1300px;transform:translateX(-50%);pointer-events:none;
-  background:linear-gradient(to bottom,color-mix(in srgb,var(--bgt) 62%,var(--bg)) 0,color-mix(in srgb,var(--bgt) 56%,var(--bg)) 330px,color-mix(in srgb,var(--bgt) 22%,var(--bg)) 520px,color-mix(in srgb,var(--bgt) 8%,var(--bg)) 800px,var(--bg) 1100px)}
+#view.bgt::before{content:"";position:absolute;z-index:-1;top:0;left:50%;width:100vw;height:calc(var(--hb,400px) + 1000px);transform:translateX(-50%);pointer-events:none;
+  background:linear-gradient(to bottom,color-mix(in srgb,var(--bgt) 62%,var(--bg)) 0,color-mix(in srgb,var(--bgt) 62%,var(--bg)) var(--hb,400px),color-mix(in srgb,var(--bgt) 36%,var(--bg)) calc(var(--hb,400px) + 150px),color-mix(in srgb,var(--bgt) 16%,var(--bg)) calc(var(--hb,400px) + 380px),color-mix(in srgb,var(--bgt) 5%,var(--bg)) calc(var(--hb,400px) + 700px),var(--bg) calc(var(--hb,400px) + 1000px))}
 /* п.18 · итоги */
 .st-hero{text-align:center;padding:22px 6px 8px}
 .st-k{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
@@ -2434,7 +2434,7 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.578';
+const APP = 'VOOB (by BGASHEV) Mini App v1.579';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5309,6 +5309,8 @@ function render(){
   const hh = v.querySelector('.hero.hbg'), bt = hh ? hh.style.getPropertyValue('--bgt') : '';
   if (bt) v.style.setProperty('--bgt', bt); else v.style.removeProperty('--bgt');
   v.classList.toggle('bgt', !!bt);
+  if (window._hbRO) { _hbRO.disconnect(); }
+  if (hh && bt) { const setHb = () => v.style.setProperty('--hb', Math.round(hh.offsetTop + hh.offsetHeight) + 'px'); setHb(); if (window.ResizeObserver) { window._hbRO = new ResizeObserver(setHb); window._hbRO.observe(hh); } }
 }
 
 /* ============================================================ шторки ==== */
