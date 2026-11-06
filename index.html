@@ -2426,6 +2426,12 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
 @media(min-width:900px){html.web #achfull{padding-left:max(28px,calc((100vw - 1080px)/2));padding-right:max(28px,calc((100vw - 1080px)/2))}
 html.web #achfull .af-top{margin:0!important;padding-left:0!important;padding-right:0!important}
 html.web #achfull .ach{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}}
+
+/* список друзей: до середины экрана, плавно, с лёгким размытием на старте */
+#sheet.fr{filter:blur(14px);opacity:0;transition:transform .55s cubic-bezier(.2,.85,.2,1),filter .5s ease,opacity .32s ease,bottom .22s ease,max-height .45s cubic-bezier(.2,.8,.2,1)}
+#sw.open #sheet.fr{filter:none;opacity:1}
+#sheet.half.fr:not(.xl){overflow-y:auto;-webkit-mask-image:none;mask-image:none;max-height:min(56vh,calc(92vh - var(--kb,0px)))}
+@media(prefers-reduced-motion:reduce){#sheet.fr{filter:none;transition:transform .2s}}
 </style>
 </head>
 <body>
@@ -2440,7 +2446,7 @@ html.web #achfull .ach{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.582';
+const APP = 'VOOB (by BGASHEV) Mini App v1.583';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5328,7 +5334,8 @@ function openSheet(html, ctx){
   $('#sheet').classList.remove('top');
   $('#sheet').classList.remove('xl');
   $('#sheet').classList.toggle('pf', !!ctx && BACK_T.has(ctx.type));
-  $('#sheet').classList.toggle('half', !!ctx && (ctx.type === 'acts' || ctx.type === 'planact'));   // выбор активности — до середины экрана, избранные под большим пальцем
+  $('#sheet').classList.toggle('half', !!ctx && (ctx.type === 'acts' || ctx.type === 'planact' || ctx.type === 'frall'));
+  $('#sheet').classList.toggle('fr', !!ctx && ctx.type === 'frall');   // выбор активности — до середины экрана, избранные под большим пальцем
   $('#sheet').innerHTML = `<div class="grab"></div>` + sheetBack(ctx) + html;
   $('#sheet').scrollTop = 0;
   $('#sw').classList.add('open');
