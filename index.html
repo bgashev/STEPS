@@ -630,7 +630,7 @@ input[type=date].inp{display:block}
 .fticker:active{transform:scale(.99)}
 .ft-cap{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
 .ft-cap svg{color:var(--accent)}.ft-cap span{margin-left:auto;display:flex}
-.ft-win{overflow:hidden;height:58px}
+.ft-win{overflow:visible;height:58px;margin-left:6px}
 .ft-slot .fitem{height:58px;padding:0;margin:0}   /* v1.454: .tap давал margin:-8px и обрезал аватар/подарок */
 .ft-slot .ftx{flex:1;min-width:0}
 .ft-slot .fh,.ft-slot .cap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2446,7 +2446,7 @@ html.web #achfull .ach{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.584';
+const APP = 'VOOB (by BGASHEV) Mini App v1.585';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
