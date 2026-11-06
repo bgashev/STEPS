@@ -548,6 +548,12 @@ input[type=date].inp{display:block}
 .me-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
 .me-top h1{margin:0}
 .mset-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:17px}
+.perst{width:100%;display:flex;align-items:center;gap:14px;padding:14px;text-align:left;border:0;color:inherit;font:inherit}
+.perst-pv{position:relative;flex:none;width:96px;height:62px;border-radius:16px;overflow:hidden;display:grid;place-items:center;background:var(--surface2);isolation:isolate}
+.perst-pv .hbgfx{z-index:0;inset:auto;left:0;top:0;width:260%;height:260%;transform:scale(.385);transform-origin:0 0}
+.perst-pv .fav{position:relative;z-index:1}
+.perst-t{flex:1;min-width:0}.perst-t b{display:block;font-size:16px}.perst-t small{display:block;margin-top:3px;color:var(--muted);font-size:12.5px;line-height:1.35}
+.perst-go{color:var(--muted);display:grid;place-items:center}
 .ib.round{flex:none;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;
   border:1px solid var(--border);background:var(--surface);color:var(--text);transition:transform .12s}
 .ib.round:active{transform:scale(.92)}
@@ -4481,6 +4487,7 @@ function langCardHTML(){
 }
 document.documentElement.lang = curLang();
 function viewMe(){
+  if (S.meSet && S.pers && inTG) return `<div class="mset-top"><button class="ib round" data-act="persback" aria-label="Назад к настройкам">${IC('back', 20)}</button><b>Персонализация</b>${syncHTML()}</div>` + viewPersonalization();
   if (S.meSet || !inTG) return (inTG ? `<div class="mset-top"><button class="ib round" data-act="mesback" aria-label="Назад к профилю">${IC('back', 20)}</button><b>Настройки</b>${syncHTML()}</div>` : '') + viewMeSettings();
   const me = FR.data && FR.data.me;
   if (!me) { loadFriends().then(() => { if (S.tab === 'me' && !S.meSet) render(); }); }
@@ -4548,6 +4555,21 @@ function bgPrevHTML(k){
 }
 function openBgPrev(k){ hap.tap(); openSheet(bgPrevHTML(k), {type:'bgprev', v:k}); }
 function bgPrevShow(k){ if (!sheetCtx || sheetCtx.type !== 'bgprev') return; sheetCtx.v = k; const sh = $('#sheet'); sh.innerHTML = '<div class="grab"></div>' + bgPrevHTML(k); sh.scrollTop = 0; }
+function viewPersonalization(){
+  const name = displayName(), photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url), lv = myLevel();
+  let h = '';
+  { const cur = frameOf(tgUser ? {tg_id:tgUser.id} : null);
+    h += `<div class="card"><h3>${IC('sparkle')}Рамка аватарки</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте. Анимированные — для PRO.</div><div class="frs${S.frAll ? '' : ' col'}">${FRAMES.map(([k, l, pro], i) =>
+      `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 ? ' more' : ''}${pro && !frOwned(k) ? ' lock' : ''}" data-act="frprev" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="smore" data-k="frAll" data-more="Все рамки · ${FRAMES.length}"><span>${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}</span>${IC('chev', 14)}</button></div>`; }
+  { const cb = bgNorm(db.settings.bg || ''), pro = isPro(), si = BG_KEYS.findIndex(x => x[0] === cb);   // v1.445: в свёрнутом виде всегда 4 плитки; выбранный дальний фон встаёт на место третьего
+    h += `<div class="card"><h3>${IC('palette')}Фон профиля</h3><div class="cap" style="margin:-6px 0 12px">Фон карточки профиля — его видят все, кто откроет твой профиль. Для PRO; подаренные командой VOOB фоны работают и без подписки.</div>
+      <div class="bgs${S.bgAll ? '' : ' col'}"><button type="button" class="bgb${cb ? '' : ' on'}" data-act="bgprev" data-v=""><span class="th none"></span>Без фона</button>${BG_KEYS.map(([k, l], i) =>
+      `<button type="button" class="bgb${cb === k ? ' on' : ''}${(si >= 3 ? (i >= 2 && i !== si) : i >= 3) ? ' bmore' : ''}" data-act="bgprev" data-v="${k}"><span class="th">${bgFx(k)}</span>${bgOwned(k) && !pro ? '<i class="prot" style="background:var(--accent);color:var(--on-accent)">ПОДАРОК</i>' : '<i class="prot">PRO</i>'}${l}</button>`).join('')}</div><button type="button" class="frx${S.bgAll ? ' open' : ''}" data-act="smore" data-k="bgAll" data-more="Все фоны · ${BG_KEYS.length}"><span>${S.bgAll ? 'Свернуть' : 'Все фоны · ' + BG_KEYS.length}</span>${IC('chev', 14)}</button></div>`; }
+  { const cur = db.settings.badge || 'verified', pro = isPro();
+    h += `<div class="card"><h3>${IC('check')}Значок у имени${pro ? '' : '<i class="prot inl" data-act="prosheet" role="button">PRO</i>'}</h3><div class="cap" style="margin:-6px 0 12px">Маленький значок рядом с именем — его видят друзья в профиле, списках и ленте.</div>
+      <div class="bgl">${BADGE_LIST.map(([k, l]) => `<button type="button" class="bgi${cur === k ? ' on' : ''}" data-act="badgeset" data-v="${k}" aria-label="${l}"><span class="bgp">${badgeHTML(k, 34)}</span><i>${l}</i></button>`).join('')}</div></div>`; }
+  return h;
+}
 function viewMeSettings(){
   const p = db.profile, g = G(), name = displayName(), photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url);
   const age = ageOf(p.birth), kg = currentWeight(), hgt = +p.height || 0, b = bmiOf(kg, hgt), bmr = bmrOf(kg, hgt, age, p.sex);
@@ -4577,16 +4599,8 @@ function viewMeSettings(){
   h += `<div class="card"><h3>${IC('target')}Цель недели</h3><div class="cap" style="margin:-6px 0 12px">Неделя начинается с первой тренировки и длится N дней. Выполнил норму — следующая начнётся с новой тренировки.</div>
     <div class="g2">${stepper('gcount', 'Сколько тренировок', g.count, 1, 14, 1, 0, '', 'gcount')}${stepper('gdays', 'За сколько дней', g.days, 3, 14, 1, 0, '', 'gdays')}</div>
     <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
-  { const cur = frameOf(tgUser ? {tg_id:tgUser.id} : null);
-    h += `<div class="card"><h3>${IC('sparkle')}Персонализация</h3><div class="cap" style="margin:-6px 0 12px">Рамка аватарки — её видят друзья в профиле, списках и ленте. Анимированные — для PRO.</div><div class="frs${S.frAll ? '' : ' col'}">${FRAMES.map(([k, l, pro], i) =>
-      `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 ? ' more' : ''}${pro && !frOwned(k) ? ' lock' : ''}" data-act="frprev" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="smore" data-k="frAll" data-more="Все рамки · ${FRAMES.length}"><span>${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}</span>${IC('chev', 14)}</button></div>`; }
-  { const cb = bgNorm(db.settings.bg || ''), pro = isPro(), si = BG_KEYS.findIndex(x => x[0] === cb);   // v1.445: в свёрнутом виде всегда 4 плитки; выбранный дальний фон встаёт на место третьего
-    h += `<div class="card"><h3>${IC('palette')}Фон профиля</h3><div class="cap" style="margin:-6px 0 12px">Фон карточки профиля — его видят все, кто откроет твой профиль. Для PRO; подаренные командой VOOB фоны работают и без подписки.</div>
-      <div class="bgs${S.bgAll ? '' : ' col'}"><button type="button" class="bgb${cb ? '' : ' on'}" data-act="bgprev" data-v=""><span class="th none"></span>Без фона</button>${BG_KEYS.map(([k, l], i) =>
-      `<button type="button" class="bgb${cb === k ? ' on' : ''}${(si >= 3 ? (i >= 2 && i !== si) : i >= 3) ? ' bmore' : ''}" data-act="bgprev" data-v="${k}"><span class="th">${bgFx(k)}</span>${bgOwned(k) && !pro ? '<i class="prot" style="background:var(--accent);color:var(--on-accent)">ПОДАРОК</i>' : '<i class="prot">PRO</i>'}${l}</button>`).join('')}</div><button type="button" class="frx${S.bgAll ? ' open' : ''}" data-act="smore" data-k="bgAll" data-more="Все фоны · ${BG_KEYS.length}"><span>${S.bgAll ? 'Свернуть' : 'Все фоны · ' + BG_KEYS.length}</span>${IC('chev', 14)}</button></div>`; }
-  { const cur = db.settings.badge || 'verified', pro = isPro();
-    h += `<div class="card"><h3>${IC('check')}Значок у имени${pro ? '' : '<i class="prot inl" data-act="prosheet" role="button">PRO</i>'}</h3><div class="cap" style="margin:-6px 0 12px">Маленький значок рядом с именем — его видят друзья в профиле, списках и ленте.</div>
-      <div class="bgl">${BADGE_LIST.map(([k, l]) => `<button type="button" class="bgi${cur === k ? ' on' : ''}" data-act="badgeset" data-v="${k}" aria-label="${l}"><span class="bgp">${badgeHTML(k, 34)}</span><i>${l}</i></button>`).join('')}</div></div>`; }
+  { const fk = frameOf(tgUser ? {tg_id:tgUser.id} : null), bk = myBg();   // v1.540: рамка, фон и значок — на отдельной странице «Персонализация»
+    h += `<button type="button" class="card perst" data-act="persopen"><span class="perst-pv${bk ? ' hbg' : ''}">${bgFx(bk)}${frAv(fk, 46, lv, photo, name)}</span><div class="perst-t"><b>Персонализация</b><small>Рамка, фон и значок профиля</small></div><span class="perst-go">${IC('chev', 18)}</span></button>`; }
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}
     ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${dvEff() === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${dvEff() === k ? IC('check', 16) : ''}${k === 'black' ? '<i class="prot">PRO</i>' : ''}</button>`).join('')}</div>` : ''}</div>
     <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}${isPro() ? '' : '<i class="prot inl" data-act="prosheet" role="button">PRO</i>'}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}" data-act="accent" data-v="${k}" style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div>
@@ -5349,7 +5363,7 @@ function actsHTML(){
     + `<span class="ai">${IC(k, 24)}</span><span class="al">${l}</span>${ok ? '' : '<em>в разработке</em>'}</button>`).join('');
 }
 const ACT = {
-  tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; S.meSet = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') { FR_TAB_T = performance.now(); loadFriends(); } } },
+  tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; S.meSet = false; S.pers = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') { FR_TAB_T = performance.now(); loadFriends(); } } },
   add: () => { hap.imp(); S.actsXl = false; openActs(false); },
   sback: () => { hap.tap(); stepBack(); },
   actfav: el => { const k = el.dataset.v, f = favActs(), on = f.includes(k);
@@ -5405,7 +5419,9 @@ const ACT = {
   delopen: () => openRestore(),
   delrestore: () => doRestore(),
   meset: () => { hap.tap(); S.meSet = true; meNav('nav-in'); },
-  mesback: () => { hap.tap(); S.meSet = false; meNav('nav-out'); },
+  mesback: () => { hap.tap(); S.meSet = false; S.pers = false; meNav('nav-out'); },
+  persopen: () => { hap.tap(); S.pers = true; meNav('nav-in'); },
+  persback: () => { hap.tap(); S.pers = false; meNav('nav-out'); },
   gexp: el => { const w = el.closest('.gwrap'); if (!w) return; hap.tap(); w.classList.toggle('open');
     el.setAttribute('aria-label', w.classList.contains('open') ? 'Свернуть' : 'Показать все подарки'); },
   pladd: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.imp();
