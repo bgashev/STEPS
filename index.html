@@ -2069,25 +2069,34 @@ body.frozen .stp .sb{opacity:.45}
 .hero .fchipb:not(.hset){overflow:visible}
 .hero .fchipb:not(.hset)::after{overflow:hidden}
 
-/* v1.506: «Соцсети» в настройках — тихий список: логотип, название, ник; без рамок, пунктиров и свечения */
-.soc-card2{padding:16px 16px 4px}
+/* v1.508: «Соцсети» — компактные плитки 2×2: логотип, сеть, ник; заполненные чуть подкрашены цветом сети, пустые — тихие слоты */
+.soc-card2{padding:16px 16px 16px}
 .soc-card2>h3{margin-bottom:6px}
-.sr-cap{font-size:13px;color:var(--muted);margin:0 0 6px;line-height:1.4}
-.sr-list{display:flex;flex-direction:column}
-.sr{display:flex;align-items:center;gap:13px;width:100%;padding:13px 0;background:none;border:0;border-top:1px solid color-mix(in srgb,var(--text) 8%,transparent);color:var(--text);font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .15s;border-radius:0}
-.sr:first-child{border-top:0}
-.sr .lg{width:32px;height:32px;border-radius:50%;flex:none;transition:filter .6s ease,opacity .6s ease,transform .6s cubic-bezier(.3,1.4,.5,1)}
-.sr:not(.on) .lg{filter:grayscale(1);opacity:.42}
-.sr b{flex:1;min-width:0;font-size:15px;font-weight:650}
-.sr em{font-style:normal;font-size:14px;color:var(--muted);max-width:48%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-cap{font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.4}
+.sr-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sr{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-width:0;padding:14px 14px 13px;border-radius:20px;text-align:left;color:var(--text);font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  background:var(--surface2);border:1px solid color-mix(in srgb,var(--text) 7%,transparent);
+  transition:transform .5s cubic-bezier(.3,1.4,.5,1),border-color .5s,background .5s}
+.sr::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;background:linear-gradient(135deg,color-mix(in srgb,var(--sc) 17%,transparent),transparent 62%);transition:opacity .6s}
+.sr.on{border-color:color-mix(in srgb,var(--sc) 28%,transparent)}
+.sr.on::before{opacity:1}
+.sr .lg{width:34px;height:34px;border-radius:50%;flex:none;transition:filter .6s ease,opacity .6s ease,transform .6s cubic-bezier(.3,1.4,.5,1)}
+.sr:not(.on) .lg{filter:grayscale(1);opacity:.4}
+.sr .t{display:flex;flex-direction:column;gap:2px;min-width:0;width:100%}
+.sr b{font-size:14px;font-weight:700;letter-spacing:-.01em}
+.sr em{font-style:normal;font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr.on em{color:color-mix(in srgb,var(--text) 72%,transparent)}
 .sr em.add{color:var(--accent);font-weight:650}
-.sr-ch{display:flex;color:var(--muted);opacity:.55;flex:none}
-.sr:active{opacity:.5}
+.sr .pl{position:absolute;top:12px;right:12px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:var(--muted);background:color-mix(in srgb,var(--text) 6%,transparent);transition:background .5s,color .5s,transform .5s cubic-bezier(.3,1.4,.5,1)}
+.sr.on .pl{background:var(--sc);color:#fff}
+.sr .pl svg{display:block}
+.sr:active{transform:scale(.95);transition-duration:.14s}
+.sr:active .lg{transform:scale(.92)}
+.sr.pop{animation:srRing 1.1s cubic-bezier(.2,.7,.2,1)}
 .sr.pop .lg{animation:socPop .9s cubic-bezier(.3,1.5,.5,1)}
-.sr.pop{animation:srFlash 1.3s ease-out}
-@keyframes srFlash{0%{background:color-mix(in srgb,var(--sc) 14%,transparent)}100%{background:transparent}}
-@media (prefers-reduced-motion:no-preference){#view:not(.rr) .sr{animation:srIn .6s cubic-bezier(.2,.8,.25,1) both;animation-delay:calc(var(--i) * 60ms + 100ms)}}
-@keyframes srIn{from{opacity:0;transform:translateY(8px)}}
+@keyframes srRing{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--sc) 45%,transparent)}100%{box-shadow:0 0 0 18px transparent}}
+@media (prefers-reduced-motion:no-preference){#view:not(.rr) .sr{animation:srIn .7s cubic-bezier(.2,.8,.25,1) both;animation-delay:calc(var(--i) * 70ms + 100ms)}}
+@keyframes srIn{from{opacity:0;transform:translateY(12px) scale(.96);filter:blur(6px)}}
 @media (prefers-reduced-motion:reduce){.sr.pop,.sr.pop .lg{animation:none}}
 </style>
 </head>
@@ -4575,7 +4584,7 @@ function socEditHTML(){
   const me = tgUser && SOC.get(tgUser.id) || {}, n = SOC_NETS.filter(([k]) => me[k]).length;
   return `<div class="card soc-card2"><h3>${IC('link', 18)}Соцсети<span class="soc-cnt${n ? ' on' : ''}">${n} из ${SOC_NETS.length}</span></h3>
     <div class="sr-cap">Друзья увидят их в твоём профиле. Только ник, без ссылок.</div>
-    <div class="sr-list">${SOC_NETS.map(([k, l], i) => `<button type="button" class="sr${me[k] ? ' on' : ''}" data-act="socedit" data-net="${k}" style="--sc:${SOC_COL[k]};--i:${i}"><span class="lg ${k}">${SOC_LOGO[k]}</span><b>${l}</b>${me[k] ? `<em>@${esc(me[k])}</em>` : '<em class="add">Добавить</em>'}<span class="sr-ch">${IC('chev', 14)}</span></button>`).join('')}</div></div>`;
+    <div class="sr-list">${SOC_NETS.map(([k, l], i) => `<button type="button" class="sr${me[k] ? ' on' : ''}" data-act="socedit" data-net="${k}" style="--sc:${SOC_COL[k]};--i:${i}"><span class="lg ${k}">${SOC_LOGO[k]}</span><span class="pl">${me[k] ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4.3 4.3L18.5 8"/></svg>' : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'}</span><span class="t"><b>${l}</b>${me[k] ? `<em>@${esc(me[k])}</em>` : '<em class="add">Добавить</em>'}</span></button>`).join('')}</div></div>`;
 }
 const SOC_RE = {ig:/^[A-Za-z0-9._]{1,30}$/, tg:/^[A-Za-z][A-Za-z0-9_]{3,31}$/, tt:/^[A-Za-z0-9._]{2,24}$/, yt:/^[A-Za-z0-9._-]{3,30}$/};
 const SOC_RULE = {ig:'буквы, цифры, точка и _', tg:'от 4 символов, с буквы; буквы, цифры и _', tt:'от 2 символов: буквы, цифры, точка и _', yt:'от 3 символов: буквы, цифры, точка, _ и -'};
