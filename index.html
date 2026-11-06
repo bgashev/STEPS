@@ -2437,7 +2437,7 @@ html.web #achfull .ach{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))
 html.web #sheet.pf.fr{height:auto;min-height:0;max-height:min(72vh,680px);padding-top:18px}
 html.web #sheet.pf.fr.half:not(.xl){min-height:0;max-height:min(72vh,680px)}
 
-html.web #tabs .wver{position:absolute;left:0;right:0;bottom:1px;text-align:center;font-size:8px;letter-spacing:.08em;font-weight:400;opacity:.2;user-select:none;color:var(--muted);transition:opacity .35s ease;padding:4px 0 2px;cursor:default}
+html.web #tabs .wver{position:absolute;left:0;right:0;bottom:1px;text-align:center;font-size:8px;letter-spacing:.08em;font-weight:400;opacity:.2;user-select:none;color:var(--muted);transition:opacity .35s ease;padding:4px 0 2px;cursor:pointer}
 html.web #tabs .wver:hover{opacity:.85}
 
 /* список друзей: кнопка «Назад» прижата к низу шторки, а не висит посреди пустоты */
@@ -2476,7 +2476,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.602';
+const APP = 'VOOB (by BGASHEV) Mini App v1.603';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5346,7 +5346,7 @@ function render(){
   document.querySelectorAll('.prox:not([data-ph])').forEach(el => { el.dataset.ph = 1; el.style.setProperty('--ph', -Math.round(performance.now() % 5000) + 'ms'); });   // блик PRO не начинается заново
   setTimeout(checkRewards, 700);
   const tb = $('#tabs'), ti = TABS.findIndex(t => t[0] === S.tab);
-  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + LOGO_SVG(50) + '<b>VOOB</b></span>' : '') + (inWeb ? '<span class="wver">WEB ' + ((APP.match(/v[\d.]+/) || [''])[0]) + '</span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${inWeb && k === 'me' ? 'Профиль' : l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb stb" data-act="webset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.3a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.4a2 2 0 0 0 .7 2.7l.2.1a2 2 0 0 1 1 1.7v.5a2 2 0 0 1-1 1.7l-.2.1a2 2 0 0 0-.7 2.7l.2.4a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.3a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.3a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.4a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.7v-.5a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.4a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.3a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span>Настройки</span></button><button type="button" class="siteb phb" data-act="tophone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10.5 18.5h3"/></svg><span>Открыть на телефоне</span></button><button type="button" class="siteb" data-act="tosite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.7 2.7 4 5.9 4 9.5s-1.3 6.8-4 9.5c-2.7-2.7-4-5.9-4-9.5s1.3-6.8 4-9.5z"/></svg><span>VOOB.KZ</span></button>' : '');
+  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + LOGO_SVG(50) + '<b>VOOB</b></span>' : '') + (inWeb ? '<span class="wver" data-act="copyver" title="Скопировать версию">WEB ' + ((APP.match(/v[\d.]+/) || [''])[0]) + '</span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${inWeb && k === 'me' ? 'Профиль' : l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb stb" data-act="webset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.3a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.4a2 2 0 0 0 .7 2.7l.2.1a2 2 0 0 1 1 1.7v.5a2 2 0 0 1-1 1.7l-.2.1a2 2 0 0 0-.7 2.7l.2.4a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.3a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.3a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.4a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.7v-.5a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.4a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.3a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span>Настройки</span></button><button type="button" class="siteb phb" data-act="tophone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10.5 18.5h3"/></svg><span>Открыть на телефоне</span></button><button type="button" class="siteb" data-act="tosite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.7 2.7 4 5.9 4 9.5s-1.3 6.8-4 9.5c-2.7-2.7-4-5.9-4-9.5s1.3-6.8 4-9.5z"/></svg><span>VOOB.KZ</span></button>' : '');
   tb.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   tb.style.setProperty('--ti', ti);
   const hh = v.querySelector('.hero.hbg'), bt = hh ? hh.style.getPropertyValue('--bgt') : '';
@@ -5866,6 +5866,7 @@ const ACT = {
   frshare: () => { if (!FR.data) return; hap.imp();
     const url = 'https://t.me/share/url?url=' + encodeURIComponent(FR.data.link) + '&text=' + encodeURIComponent('Давай вместе тренироваться в VOOB 👟 Добавь меня в друзья:');
     try { tg.openTelegramLink(url); } catch (e) { copyStr(FR.data.link).then(ok => toast(ok ? 'Ссылка скопирована' : 'Не получилось')); } },
+  copyver: async el => { const t = (el.textContent || '').trim(); if (t && await copyStr(t)) { hap.ok(); toast('Версия скопирована: ' + t); } },
   frcode: async () => { if (FR.data && await copyStr(FR.data.code)) { hap.ok(); toast('Код скопирован — продиктуй его другу'); } },
   fradd: async () => {
     const code = ($('#fr-code').value || '').trim(); if (!code) return;
