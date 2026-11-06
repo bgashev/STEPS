@@ -550,20 +550,24 @@ input[type=date].inp{display:block}
 .me-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
 .me-top h1{margin:0}
 .mset-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-size:17px}
-.perst{width:100%;position:relative;overflow:hidden;isolation:isolate;display:flex;align-items:center;gap:14px;padding:14px;text-align:left;border:0;color:inherit;font:inherit;background:linear-gradient(112deg,color-mix(in srgb,var(--accent) 17%,var(--surface)) 0,var(--surface) 64%)}
-.perst::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(105deg,transparent 35%,color-mix(in srgb,var(--accent) 16%,transparent) 50%,transparent 65%);transform:translateX(-120%);animation:perstSheen 7s ease-in-out 1.2s infinite}
+.perst{width:100%;position:relative;overflow:hidden;isolation:isolate;display:flex;align-items:center;gap:14px;padding:14px 14px 14px 12px;text-align:left;border:0;color:inherit;font:inherit;background:var(--surface);transition:transform .2s cubic-bezier(.2,.8,.2,1);-webkit-tap-highlight-color:transparent}
+.perst:active{transform:scale(.985)}
+.perst>*{position:relative;z-index:2}
+.perst-bg{position:absolute!important;inset:0;z-index:0!important;pointer-events:none;overflow:hidden;border-radius:inherit;-webkit-mask-image:linear-gradient(90deg,#000 0,#000 28%,rgba(0,0,0,.35) 62%,transparent 92%);mask-image:linear-gradient(90deg,#000 0,#000 28%,rgba(0,0,0,.35) 62%,transparent 92%)}
+.perst-bg::before{content:"";position:absolute;inset:-30% -10%;background:radial-gradient(60% 90% at 14% 50%,color-mix(in srgb,var(--accent) 42%,transparent),transparent 70%),radial-gradient(40% 70% at 50% 0%,color-mix(in srgb,var(--accent) 18%,transparent),transparent 70%)}
+.perst-bg .hbgfx{z-index:1;inset:auto;left:0;top:0;width:170%;height:260%;transform:scale(.6);transform-origin:0 0;border-radius:0}
+.perst::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.1) 50%,transparent 62%);transform:translateX(-120%);animation:perstSheen 7s ease-in-out 1.2s infinite}
 @keyframes perstSheen{0%,70%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
-.perst::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(125deg,color-mix(in srgb,var(--accent) 60%,transparent),transparent 42%,color-mix(in srgb,var(--accent) 28%,transparent));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
-.perst>*{position:relative;z-index:1}
-.perst-pv{position:relative;flex:none;width:96px;height:62px;border-radius:18px;overflow:hidden;display:grid;place-items:center;background:var(--surface2);isolation:isolate;box-shadow:0 10px 24px -10px color-mix(in srgb,var(--accent) 70%,transparent),inset 0 0 0 1px rgba(255,255,255,.1)}
-.perst-pv .hbgfx{z-index:0;inset:auto;left:0;top:0;width:260%;height:260%;transform:scale(.385);transform-origin:0 0}
-.perst-pv .fav{position:relative;z-index:1}
-.perst-t{flex:1;min-width:0}.perst-t b{display:block;font-size:16px;letter-spacing:-.2px}
-.perst-ch{display:flex;flex-wrap:nowrap;gap:5px;margin-top:8px}
-.perst-ch i{display:inline-flex;align-items:center;padding:3px 9px;white-space:nowrap;border-radius:999px;font-style:normal;font-size:11.5px;font-weight:700;color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
-.perst-ch svg{width:12px;height:12px}
-.perst-go{flex:none;width:32px;height:32px;border-radius:50%;color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent);display:grid;place-items:center;transition:transform .2s}
-.perst:active .perst-go{transform:translateX(3px)}
+.perst::after{content:"";position:absolute;inset:0;z-index:3;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(125deg,color-mix(in srgb,var(--accent) 70%,transparent),rgba(255,255,255,.06) 40%,color-mix(in srgb,var(--accent) 35%,transparent));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+.perst-av{flex:none;width:68px;height:68px;display:grid;place-items:center;filter:drop-shadow(0 8px 14px rgba(0,0,0,.35))}
+.perst-t{flex:1;min-width:0}
+.perst-t small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.perst-t b{display:block;font-size:17px;letter-spacing:-.25px}
+.perst-ch{display:flex;flex-wrap:nowrap;gap:5px;margin-top:9px}
+.perst-ch i{display:inline-flex;align-items:center;gap:4px;padding:4px 9px 4px 7px;white-space:nowrap;border-radius:999px;font-style:normal;font-size:11.5px;font-weight:700;color:var(--text);background:color-mix(in srgb,var(--text) 9%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 12%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.perst-ch svg{width:12px;height:12px;color:var(--accent)}
+.perst-go{flex:none;width:34px;height:34px;border-radius:50%;color:var(--text);background:color-mix(in srgb,var(--text) 10%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--text) 14%,transparent);display:grid;place-items:center;transition:transform .25s cubic-bezier(.2,.8,.2,1),background .2s}
+.perst:active .perst-go{transform:translateX(4px);background:var(--accent);color:var(--on-accent,#fff)}
 @media (prefers-reduced-motion:reduce){.perst::before{animation:none;display:none}}
 .ib.round{flex:none;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;
   border:1px solid var(--border);background:var(--surface);color:var(--text);transition:transform .12s}
@@ -4663,7 +4667,7 @@ function viewMeSettings(){
     <button type="button" class="btn primary" id="pm-go" data-act="promo" disabled>Активировать</button></div>
     <div class="cap" id="pm-msg">Введи код — PRO или подарок сразу станут твоими</div></div>`;   // v1.436 · М2: оформление
   { const fk = frameOf(tgUser ? {tg_id:tgUser.id} : null), bk = myBg();   // v1.540: рамка, фон и значок — на отдельной странице «Персонализация»
-    h += `<button type="button" class="card perst" data-act="persopen"><span class="perst-pv${bk ? ' hbg' : ''}">${bgFx(bk)}${frAv(fk, 46, lv, photo, name)}</span><div class="perst-t"><b>Персонализация</b><div class="perst-ch"><i>Рамка</i><i>Фон</i><i>Значок</i></div></div><span class="perst-go">${IC('chev', 16)}</span></button>`; }
+    h += `<button type="button" class="card perst" data-act="persopen"><span class="perst-bg${bk ? ' hbg' : ''}" aria-hidden="true">${bgFx(bk)}</span><span class="perst-av">${frAv(fk, 52, lv, photo, name)}</span><div class="perst-t"><small>Твой стиль</small><b>Персонализация</b><div class="perst-ch"><i>${IC('sparkle')}Рамка</i><i>${IC('palette')}Фон</i><i>${IC('crown')}Значок</i></div></div><span class="perst-go">${IC('chev', 16)}</span></button>`; }
   if (inTG && tgUser && (BDG.get(tgUser.id) || {}).creator) h += `<div class="card"><div class="tgl${asFree() ? ' on' : ''}" data-act="asfree"><span class="sw2"></span><b>Смотреть как без PRO</b></div><div class="cap" style="margin-top:8px">Только для создателя: на этом устройстве приложение ведёт себя как у пользователя без подписки — лимиты и закрытые функции. Выключи, чтобы вернуть всё.</div></div>`;
   if (inTG) h += socEditHTML();
   // v1.447: «Мои подарки» и «Достижения» убраны из настроек — они показываются в самом профиле выше
