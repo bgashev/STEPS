@@ -1805,9 +1805,9 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 #sheet .hero.hbg{margin-left:-18px;margin-right:-18px}
 .hero.hbg::before{border-radius:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 150px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 150px),transparent 100%)}
 .hero.hbg>.hbgfx{border-radius:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 150px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 150px),transparent 100%)}
-.hero.hbg::after{display:block;content:"";position:absolute;left:0;right:0;top:auto;bottom:0;height:130px;z-index:-1;pointer-events:none;border-radius:0;
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--bg) 70%,transparent) 65%,var(--bg));
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 55%);mask-image:linear-gradient(to bottom,transparent 0,#000 55%)}
+.hero.hbg::after{display:block;content:"";position:absolute;left:0;right:0;top:auto;bottom:0;height:250px;z-index:-1;pointer-events:none;border-radius:0;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:linear-gradient(to bottom,transparent 0,color-mix(in srgb,var(--bgt,var(--bg)) 50%,transparent) 32%,color-mix(in srgb,var(--bgt,var(--bg)) 30%,var(--bg)) 66%,var(--bg) 100%);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 40%);mask-image:linear-gradient(to bottom,transparent 0,#000 40%)}
 /* п.18 · итоги */
 .st-hero{text-align:center;padding:22px 6px 8px}
 .st-k{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
@@ -2430,7 +2430,7 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.574';
+const APP = 'VOOB (by BGASHEV) Mini App v1.575';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4104,7 +4104,7 @@ function friendSheetHTML(f, j, loading, self){
   const hb = self ? myBg() : (BGS.get(+f.tg_id) || '');
   if (!self) { loadBgs.asked = loadBgs.asked || new Map(); const t = loadBgs.asked.get(+f.tg_id) || 0;
     if (Date.now() - t > 300000) { loadBgs.asked.set(+f.tg_id, Date.now()); loadBgs([+f.tg_id]); } }
-  let h = `<div class="hero${self ? ' me' : ''}${hb ? ' hbg' : ''}" data-hid="${+f.tg_id || 0}" style="--tc:${tc}">${bgFx(hb)}${self ? '' : `<button class="fp-del" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button>`}
+  let h = `<div class="hero${self ? ' me' : ''}${hb ? ' hbg' : ''}" data-hid="${+f.tg_id || 0}" style="--tc:${tc}${hb && bgTint(hb) ? ';--bgt:' + bgTint(hb) : ''}">${bgFx(hb)}${self ? '' : `<button class="fp-del" data-act="frdel" data-id="${f.tg_id}" aria-label="Убрать из друзей">${IC('trash', 18)}</button>`}
     <span class="hero-av" data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span>
     <h2 class="nmrow hero-nm"><span class="nm">${esc(f.name)}</span>${bdgHTML(f.tg_id, 20)}</h2>
     ${f.handle || f.username ? `<div class="hero-at">@${esc(f.handle || f.username)}</div>` : ''}${creatorHTML(f.tg_id)}
@@ -4725,7 +4725,7 @@ function frPrevHTML(k, st){
     : same ? `<button type="button" class="btn frpv-go" disabled>${IC('check', 18)}Сейчас выбрана</button>`
     : `<button type="button" class="btn primary frpv-go" data-act="frapply" data-v="${k}">${IC('check', 18)}${kitSel ? 'Применить с фоном' : 'Применить'}</button>`;
   const body = mode === 'pf'
-    ? `<div class="hero me${bg ? ' hbg' : ''}" style="--tc:${tierColor(lv.level)}">${bgFx(bg)}<span class="hero-av">${frAv(k, 84, lv, photo, name)}</span>
+    ? `<div class="hero me${bg ? ' hbg' : ''}" style="--tc:${tierColor(lv.level)}${bg && bgTint(bg) ? ';--bgt:' + bgTint(bg) : ''}">${bgFx(bg)}<span class="hero-av">${frAv(k, 84, lv, photo, name)}</span>
       <h2 class="nmrow hero-nm"><span class="nm">${esc(name)}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h2><div class="hero-lv"><div class="hero-lvt"><span class="lvn" data-t="${tierOf(lv.level).idx}">${lv.level}</span><span class="ttl">${tierOf(lv.level).title}</span></div></div></div>`
     : mode === 'ls'
     ? `<div class="frpv-row big">${frAv(k, 56, lv, photo, name)}<div><b>${esc(name)}</b><span>Ур. ${lv.level}</span></div></div>`
@@ -6217,6 +6217,7 @@ const BG_CSS = {"ears":".bg-ears{background:linear-gradient(175deg,#f6a8c8,#d58a
 const bgEnsure = k => { if (!BG_CSS[k] || document.getElementById('bgc-' + k)) return; const s = document.createElement('style'); s.id = 'bgc-' + k; s.textContent = BG_CSS[k]; document.head.appendChild(s); };
 const bgNorm = k => BG_OLD[k] || k;   // v1.435: фоны живые — слои CSS с анимацией, как в программе
 function bgFx(k){ k = bgNorm(k); if (BG_SVG[k]) bgEnsure(k); return BG_SVG[k] ? `<div class="hbgfx bg-${k}" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i></div>` : ''; }
+function bgTint(k){ try { k = bgNorm(k); const css = BG_CSS[k] || '', m = css.match(new RegExp('\\.bg-' + k + '\\{background:([^}]*)\\}')), cs = m ? (m[1].match(/#[0-9a-fA-F]{6}/g) || []) : []; return cs.length ? cs[cs.length > 1 ? 1 : 0] : ''; } catch (e) { return ''; } }
 const BGS = new Map();                      // tg_id -> фон карточки профиля (только у PRO)
 function bgOwned(k){ return isPro(); }   // фоны профиля — только PRO (отдельной выдачи фонов больше нет)
 function myBg(){ const k = bgNorm(db.settings.bg || ''); return BG_SVG[k] && bgOwned(k) ? k : ''; }
