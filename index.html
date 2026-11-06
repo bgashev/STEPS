@@ -1854,8 +1854,9 @@ body.frozen .stp .sb{opacity:.45}
 #view .hero-row .fchipb{height:42px}
 #view .hero .socs.ico{margin-top:14px}
 #view .hero .soci,#view .hero .soci .lg{width:38px;height:38px}
-#view .hero.hbg::before,#view .hero.hbg>.hbgfx{-webkit-mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.35) 60px,#000 190px,#000 calc(100% - 120px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.35) 60px,#000 190px,#000 calc(100% - 120px),transparent 100%)}
-#view .hero.hbg>.hbgfx::after{content:"";position:absolute;left:0;right:0;top:0;height:200px;pointer-events:none;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(to bottom,#000,transparent);mask-image:linear-gradient(to bottom,#000,transparent)}
+/* v1.498: верх шапки профиля с фоном — всегда чёрный (и на светлой, и на тёмной теме), плавно переходит в фон */
+#view .hero.hbg>.hbgfx::after{content:"";position:absolute;left:0;right:0;top:0;height:calc(210px + var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px));pointer-events:none;
+  background:linear-gradient(to bottom,#000 0,#000 22%,rgba(0,0,0,.72) 48%,rgba(0,0,0,.3) 76%,rgba(0,0,0,0) 100%)}
 #lgo{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;opacity:0;pointer-events:all;background:color-mix(in srgb,var(--bg) 95%,transparent);-webkit-backdrop-filter:blur(26px);backdrop-filter:blur(26px)}
 .lgo-cols{position:absolute;inset:0;display:flex;justify-content:space-evenly;align-items:flex-start;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent)}
 .lgo-col{height:100%;overflow:visible;flex:0 0 auto}
