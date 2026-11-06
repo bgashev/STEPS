@@ -2424,7 +2424,7 @@ body.frozen .stp .sb{opacity:.45}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.558';
+const APP = 'VOOB (by BGASHEV) Mini App v1.559';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4058,13 +4058,29 @@ function viewFriends(){
   return h;
 }
 const FPC = new Map();   // кэш профилей друзей: открываются мгновенно, свежие данные догружаются фоном
+// v1.559: профиль друга — полноценная страница в основном окне (как «Я»), а не шторка
+function viewFProf(){
+  const f = FR.data && FR.data.friends.find(x => x.tg_id === S.fprof);
+  if (!f) { S.fprof = null; return VIEWS[S.tab](); }
+  const c = FPC.get(S.fprof), j = c && c.j;
+  return `<div class="mset-top"><button class="ib round" data-act="fpback" aria-label="Назад">${IC('back', 20)}</button><b>Профиль</b></div><div class="me-prof">${friendSheetHTML(f, j || null, !j)}</div>`;
+}
+function fpBack(){
+  if (!S.fprof) return;
+  S.fprof = null; render(); window.scrollTo(0, S.fprofY || 0);
+  if (!sheetCtx) { try { if (ver('6.1')) tg.BackButton.hide(); } catch (e) {} }
+}
 async function openFriendProfile(id){
   const f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
   const c = FPC.get(id), cj = c && c.j;
-  openSheet(friendSheetHTML(f, cj || null, !cj), {type:'fprof', id}); revealNew($('#sheet'));
+  if (!S.fprof) S.fprofY = window.scrollY;
+  S.fprof = id;
+  if (sheetCtx) closeSheet();
+  render(); window.scrollTo(0, 0);
+  try { if (ver('6.1')) tg.BackButton.show(); } catch (e) {}
   if (cj) { loadFofPhotos(cj); if (Date.now() - c.at < 60000) return; }
   try { const j = await apiAuth('/friends/profile', {tg_id:id, today:isoOf(todayN())}); FPC.set(id, {j, at:Date.now()});
-    if (sheetCtx && sheetCtx.type === 'fprof' && sheetCtx.id === id) { morphSoft($('#sheet'), '<div class="grab"></div>' + sheetBack(sheetCtx) + friendSheetHTML(f, j, false), () => loadFofPhotos(j)); } }
+    if (S.fprof === id) { render(); loadFofPhotos(j); } }
   catch (e) { const el = $('#fp-load'); if (el) el.textContent = 'Не удалось загрузить: ' + e.message; }
 }
 async function loadFofPhotos(j){
@@ -5263,11 +5279,11 @@ function meNav(cls){   // v1.484: плавный «пуш» между проф�
   setTimeout(() => v.classList.remove(cls), 1000);
 }
 function render(){
-  const html = VIEWS[S.tab](), v = $('#view');
-  const same = _rTab === S.tab;
+  const html = S.fprof ? viewFProf() : VIEWS[S.tab](), v = $('#view'), rkey = S.fprof ? 'fp' : S.tab;
+  const same = _rTab === rkey;
   if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
   v.classList.toggle('rr', same);                          // та же вкладка: обновляем без повторных «появлений»
-  _rTab = S.tab; _rHtml = html;
+  _rTab = rkey; _rHtml = html;
   if (same) morphSoft(v, html);   // v1.442: та же вкладка — правим только изменившееся, без мерцаний
   else { v.innerHTML = html; revealNew(v); if (S.tab === 'weight') weightIntro(v); if (S.tab === 'stats') statsIntro(v); }
   updFab();
@@ -5334,7 +5350,7 @@ function closeSheet(){
   setTimeout(() => { if (!sheetCtx) $('#sheet').classList.remove('full'); }, 340);
   sheetCtx = null;
   if (document.activeElement) document.activeElement.blur();
-  try { if (ver('6.1')) tg.BackButton.hide(); } catch (e) {}
+  try { if (ver('6.1') && !S.fprof) tg.BackButton.hide(); } catch (e) {}
 }
 function feelPicker(v){
   return `<div class="f"><span>Состояние во время тренировки</span><div class="row"><div class="feel" id="f-feel" data-v="${v}">` +
@@ -5566,7 +5582,7 @@ function actsHTML(){
     + `<span class="ai">${IC(k, 24)}</span><span class="al">${l}</span>${ok ? '' : '<em>в разработке</em>'}</button>`).join('');
 }
 const ACT = {
-  tab: el => { if (S.tab !== el.dataset.tab) { S.tab = el.dataset.tab; S.meSet = false; S.pers = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') { FR_TAB_T = performance.now(); loadFriends(); } } },
+  tab: el => { if (S.fprof) { S.fprof = null; _rTab = null; if (!sheetCtx) { try { if (ver('6.1')) tg.BackButton.hide(); } catch (e) {} } } if (S.tab !== el.dataset.tab || _rTab === null) { S.tab = el.dataset.tab; S.meSet = false; S.pers = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') { FR_TAB_T = performance.now(); loadFriends(); } } },
   add: () => { hap.imp(); S.actsXl = false; openActs(false); },
   sback: () => { hap.tap(); stepBack(); },
   actfav: el => { const k = el.dataset.v, f = favActs(), on = f.includes(k);
@@ -5712,7 +5728,8 @@ const ACT = {
   creator: () => { hap.tap(); const c = CREATOR; if (c && c.handle) openPublicProfile(c.handle); else { askBadges([]); toast('Секунду…'); } },
   achclose: () => { hap.tap(); closeAchFull(); },
   pubprof: el => { hap.tap(); openPublicProfile(el.dataset.h); },
-  gome: () => { hap.tap(); closeSheet(); if (S.tab !== 'me') { S.tab = 'me'; S.meSet = false; render(); } },
+  fpback: () => { hap.tap(); fpBack(); },
+  gome: () => { hap.tap(); S.fprof = null; closeSheet(); if (S.tab !== 'me') { S.tab = 'me'; S.meSet = false; render(); } },
   gift: el => { hap.tap(); openGiftPicker(+el.dataset.id); },
   ginbox: () => openGiftInbox(),
   gview: el => openGiftView(el.dataset.k, el.dataset.who),
@@ -5814,7 +5831,7 @@ const ACT = {
   frdel: async el => {
     const id = +el.dataset.id, f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
     if (!(await ask(`Убрать ${f.name} из друзей? Вы перестанете видеть успехи друг друга.`))) return;
-    try { await apiAuth('/friends/remove', {tg_id:id}); FR.data.friends = FR.data.friends.filter(x => x.tg_id !== id); if (sheetCtx && sheetCtx.type === 'fprof') closeSheet(); render(); toast(`${f.name} больше не в друзьях`); }
+    try { await apiAuth('/friends/remove', {tg_id:id}); FR.data.friends = FR.data.friends.filter(x => x.tg_id !== id); if (S.fprof === id) { S.fprof = null; try { if (ver('6.1') && !sheetCtx) tg.BackButton.hide(); } catch (e) {} } if (sheetCtx && sheetCtx.type === 'fprof') closeSheet(); render(); toast(`${f.name} больше не в друзьях`); }
     catch (e) { toast('Нет связи: ' + e.message); }
   },
   gsum: () => { S.gsum = !S.gsum; hap.imp(); render(); },
@@ -6065,7 +6082,7 @@ async function init(){
     try { tg.ready(); tg.expand(); } catch (e) {}
     try { if (ver('7.7')) tg.disableVerticalSwipes(); } catch (e) {}
     try { tg.onEvent('themeChanged', () => { if (db.settings.theme === 'auto') { applyTheme(); render(); } }); } catch (e) {}
-    try { if (ver('6.1')) tg.BackButton.onClick(() => { if ($('#cg').classList.contains('show')) $('#cg').classList.remove('show'); else if (!stepBack()) closeSheet(); }); } catch (e) {}
+    try { if (ver('6.1')) tg.BackButton.onClick(() => { if ($('#cg').classList.contains('show')) $('#cg').classList.remove('show'); else if (sheetCtx) { if (!stepBack()) closeSheet(); } else if (S.fprof) fpBack(); else closeSheet(); }); } catch (e) {}
   }
   try { const s = localStorage.getItem(LS); if (s) db = normalize(JSON.parse(s)); } catch (e) {}
   invalidate(); applyTheme(); render();
