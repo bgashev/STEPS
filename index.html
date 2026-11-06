@@ -2453,6 +2453,10 @@ html.web #tabs .wver{position:absolute;left:0;right:0;bottom:4px;text-align:cent
 .tgl{justify-content:space-between}
 .tgl .sw2{order:2;margin-left:auto}
 .tgl>b,.tgl>span:not(.sw2){flex:1;min-width:0}
+
+/* WEB: «Отправить ссылку» и «Мой код» в один ряд */
+@media(min-width:900px){html.web .inv-row{display:grid;grid-template-columns:1.25fr 1fr;gap:10px}
+html.web .inv-row .inv-code{margin-top:0;min-width:0}html.web .inv-row .inv-share{min-width:0}}
 </style>
 </head>
 <body>
@@ -2467,7 +2471,7 @@ html.web #tabs .wver{position:absolute;left:0;right:0;bottom:4px;text-align:cent
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.598';
+const APP = 'VOOB (by BGASHEV) Mini App v1.599';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4071,8 +4075,9 @@ function viewFriends(){
   if (S.inv == null) S.inv = !fr.length;
   h += `<div class="reveal${S.inv ? ' open' : ''}" id="inv"><div><div class="card inv2">
     <div class="inv-h"><span class="inv-ic">${IC('friends', 20)}</span><div><b>Пригласить друга</b><small>Ссылка или код — и вы сразу друзья</small></div></div>
+    <div class="inv-row">
     <button type="button" class="inv-share" data-act="frshare">${IC('export', 18)}<span>Отправить ссылку в Telegram</span>${IC('chev', 16)}</button>
-    <button type="button" class="inv-code" data-act="frcode" aria-label="Скопировать код"><small>Мой код</small><b>${esc(d.code)}</b><i>${IC('link', 17)}</i></button>
+    <button type="button" class="inv-code" data-act="frcode" aria-label="Скопировать код"><small>Мой код</small><b>${esc(d.code)}</b><i>${IC('link', 17)}</i></button></div>
     <div class="inv-or"><span>или найди друга</span></div>
     <div class="inv-find"><span class="at">@</span><input class="inp" id="fr-code" placeholder="Код или ник друга" maxlength="24" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"><button class="btn primary small" data-act="fradd">${IC('plus', 16)}Добавить</button></div></div></div></div>`;
   { const en = d.gift_energy, mg = d.my_gifts || {};
