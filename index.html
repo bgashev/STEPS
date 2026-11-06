@@ -4585,6 +4585,7 @@ function updFab(){
   const cfg = FAB[S.tab];
   if (!fi.innerHTML) fi.innerHTML = IC('plus', 20);
   if (!cfg) { box.classList.add('hide'); return; }
+  if (!updFab.ok) { b.dataset.act = cfg[0]; fl.textContent = cfg[1]; return; }   // пока приложение не «устоялось» (шрифты, размер окна Telegram, восстановление прокрутки) кнопка скрыта и не двигается
   const wasHidden = box.classList.contains('hide');
   if (wasHidden && !updFab.shown) {          // самый первый показ: кнопка появляется один раз, мягко, уже с готовыми цветом и текстом
     updFab.shown = true; box.classList.add('first');
@@ -4611,6 +4612,12 @@ function updFab(){
     setTimeout(() => { if (fl.textContent === cfg[1]) b.style.width = ''; }, 560);
   }, 210);
 }
+// кнопка показывается один раз, когда страница уже стабильна: шрифты загружены, окно Telegram раскрыто, прокрутка восстановлена
+Promise.all([
+  document.fonts && document.fonts.ready ? document.fonts.ready.catch(() => {}) : 0,
+  new Promise(r => document.readyState === 'complete' ? r() : window.addEventListener('load', r, {once:true}))
+]).then(() => new Promise(r => setTimeout(r, 500))).then(() => { updFab.ok = true; fabY = window.scrollY || 0; fabMiniOn = false; const bx = $('#fab'); if (bx) bx.classList.remove('mini'); updFab(); });
+setTimeout(() => { if (!updFab.ok) { updFab.ok = true; updFab(); } }, 3000);
 /* v1.462: раздел «Вес» — карточки проявляются каскадом из размытия, текущий вес «набегает» */
 function weightIntro(v){
   if (reducedMotion()) return;
