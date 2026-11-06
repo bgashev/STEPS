@@ -2416,7 +2416,7 @@ body.frozen .stp .sb{opacity:.45}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.551';
+const APP = 'VOOB (by BGASHEV) Mini App v1.552';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2840,7 +2840,7 @@ function markAllDirty(){
   // пустое новое устройство должно принять данные с сервера, а не затереть их
   const g = db.settings.goal || {};
   const has = {profile:!!(db.profile.name || db.profile.birth || db.profile.sex || +db.profile.height),
-    settings:(g.count && +g.count !== 5) || (g.days && +g.days !== 7) || db.settings.accent !== 'lavender',
+    settings:!!g.set || db.settings.accent !== 'lavender' || !!(db.settings.frame || db.settings.bg || db.settings.badge),   // v1.552: раньше сравнивалось с устаревшим 5 — пустое устройство затирало рамку, фон и значок на сервере
     weight_goal:!!(db.weight_goal && db.weight_goal.target)};
   for (const id of Object.keys(has)) if (has[id] || db.metaU[id]) { if (!db.metaU[id]) db.metaU[id] = 1; db.sync.dirty['meta:' + id] = 1; }
 }
