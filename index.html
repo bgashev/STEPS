@@ -4567,7 +4567,8 @@ async function loadMyProfile(id){
 }
 /* v1.524: рамка — сначала предпросмотр (крупно + в профиле + в списке), «Применить» внизу; без PRO — кнопка открытия PRO */
 function frAv(k, px, lv, photo, name){
-  return `<div class="fav${frameCls(k, k ? 0 : lv.level)}" style="width:${px}px;height:${px}px;font-size:${Math.round(px * .38)}px"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>`;
+  const fc = frameCls(k, k ? 0 : lv.level), sp = fc.indexOf('" style="'), cls = sp < 0 ? fc : fc.slice(0, sp), extra = sp < 0 ? '' : fc.slice(sp + 9) + ';';   // v1.529: tierStyle даёт свой style — сливаем, иначе размер терялся
+  return `<div class="fav${cls}" style="${extra}width:${px}px;height:${px}px;font-size:${Math.round(px * .38)}px"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>`;
 }
 function frPrevHTML(k){
   const i = Math.max(0, FRAMES.findIndex(x => x[0] === k)), e = FRAMES[i], pro = !!e[2], owned = !pro || frOwned(k);
