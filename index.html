@@ -1692,12 +1692,16 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .card.rkc{background:none;border-color:transparent;box-shadow:none;padding-left:2px;padding-right:2px}
 .hero:not(.hbg){background:none;border-color:transparent;overflow:visible}
 .hero:not(.hbg)::before{top:-90px;width:520px;height:340px;opacity:.75}
-.hero.hbg{border-color:transparent;border-radius:0 0 40px 40px;padding-bottom:64px;background:none;overflow:visible}
-.hero.hbg::before{border-radius:inherit;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 55%,transparent 100%)}
-.hero.hbg>.hbgfx{border-radius:inherit;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 52%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 52%,transparent 100%)}
-.hero.hbg::after{display:block;content:"";position:absolute;left:0;right:0;bottom:0;height:46%;z-index:-1;pointer-events:none;border-radius:inherit;
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--bg) 55%,transparent) 70%,var(--bg));
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 60%);mask-image:linear-gradient(to bottom,transparent 0,#000 60%)}
+.hero.hbg{border-color:transparent;border-radius:0;padding-bottom:104px;background:none;overflow:visible}
+/* фон профиля — на всю ширину экрана (и под шапку Telegram на вкладке «Я»), низ уходит в затемнение и блюр без резких краёв */
+#view .hero.hbg{margin-left:-16px;margin-right:-16px;margin-top:calc(-1 * (var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 18px));
+  padding-top:calc(36px + var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 18px)}
+#sheet .hero.hbg{margin-left:-18px;margin-right:-18px}
+.hero.hbg::before{border-radius:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 150px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 150px),transparent 100%)}
+.hero.hbg>.hbgfx{border-radius:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 150px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 150px),transparent 100%)}
+.hero.hbg::after{display:block;content:"";position:absolute;left:0;right:0;top:auto;bottom:0;height:130px;z-index:-1;pointer-events:none;border-radius:0;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--bg) 70%,transparent) 65%,var(--bg));
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 55%);mask-image:linear-gradient(to bottom,transparent 0,#000 55%)}
 /* п.18 · итоги */
 .st-hero{text-align:center;padding:22px 6px 8px}
 .st-k{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
