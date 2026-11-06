@@ -2019,6 +2019,10 @@ body.frozen .stp .sb{opacity:.45}
 @media (prefers-reduced-motion:reduce){.hero .fchipb::after,.hero .fchipb .stk .fav,.hero .fchipb .fcn{animation:none!important}}
 @keyframes hbchip{from{transform:translateY(6px)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){.hero .fchipb,.hero.hbg .fchipb{animation:none!important}}
+.ppl.fnd .ppl-em span{color:#1c1d26;background:linear-gradient(135deg,#FFFFFF,#E3E5EE 55%,#B9BDCC);box-shadow:0 14px 34px -10px rgba(210,214,230,.55),inset 0 1px 0 rgba(255,255,255,.8)}
+.ppl.fnd .ppl-em i{border-color:rgba(205,210,228,.55)}
+.ppl.fnd .ppl-k{color:var(--muted)}
+.fnd-t{margin:14px 6px 12px;font-size:14.5px;line-height:1.45;color:var(--text);animation:lvRow .6s .34s both}
 </style>
 </head>
 <body>
@@ -4082,7 +4086,7 @@ function bdgInner(id, size = 16){ const b = BDG.get(+id); if (b && b.creator) re
   const k = +id === +UK ? (db.settings.badge || '') : (b.badge || ''); return badgeHTML(BADGE_LIST.some(x => x[0] === k) ? k : 'verified', size); }
 function crownHTML(size = 16){ return `<span class="nbadge crown" title="Создатель VOOB" style="width:${size}px;height:${size}px"><svg viewBox="0 0 100 100" width="${size}" height="${size}"><polygon points="50.00,4.00 60.09,12.33 73.00,10.16 77.58,22.42 89.84,27.00 87.67,39.91 96.00,50.00 87.67,60.09 89.84,73.00 77.58,77.58 73.00,89.84 60.09,87.67 50.00,96.00 39.91,87.67 27.00,89.84 22.42,77.58 10.16,73.00 12.33,60.09 4.00,50.00 12.33,39.91 10.16,27.00 22.42,22.42 27.00,10.16 39.91,12.33" style="fill:var(--accent);stroke:var(--accent)" stroke-width="5" stroke-linejoin="round"/><g transform="translate(23.6 22.6) scale(2.2)" style="fill:var(--on-accent)"><path d="M2.6 8.2 7.3 11.6 12 4.9l4.7 6.7 4.7-3.4-1.8 9.4H4.4Z"/><rect x="4.4" y="18.2" width="15.2" height="2.2" rx="1.1"/></g></svg></span>`; }
 function creatorHTML(id){ return `<span class="crw" data-cid="${+id || 0}">${creatorInner(id)}</span>`; }
-function creatorInner(id){ const b = BDG.get(+id); return b && b.creator ? '<span class="crt"><i class="s1"></i><i class="s2"></i>FOUNDER</span><span class="crt pro" data-act="proplate" role="button" aria-label="О подписке PRO">PRO</span>' : (b && b.pro ? '<span class="crt pro" data-act="proplate" role="button" aria-label="О подписке PRO">PRO</span>' : ''); }   /* v1.480: у создателя — две плашки */
+function creatorInner(id){ const b = BDG.get(+id); return b && b.creator ? '<span class="crt" data-act="foundplate" role="button" aria-label="О плашке FOUNDER"><i class="s1"></i><i class="s2"></i>FOUNDER</span><span class="crt pro" data-act="proplate" role="button" aria-label="О подписке PRO">PRO</span>' : (b && b.pro ? '<span class="crt pro" data-act="proplate" role="button" aria-label="О подписке PRO">PRO</span>' : ''); }   /* v1.480: у создателя — две плашки */
 function askBadges(ids){
   if (!inTG) return;
   for (const id of ids || []) { const n = +id; if (n && !BDG_ASKED.has(n)) bdgQueue.add(n); }
@@ -5577,6 +5581,17 @@ function proPlateHTML(name){
 ACT.proplate = el => {
   const box = el.closest('.hero, .prof'), nm = box && box.querySelector('.nm');
   hap.imp(); openSheet(proPlateHTML(nm ? nm.textContent.trim() : ''), {type:'proplate'}); $('#sheet').classList.add('top');
+};
+// плашка «FOUNDER» по нажатию: коротко, почему она у создателя
+function foundPlateHTML(name){
+  return `<div class="ppl fnd"><div class="ppl-em"><i></i><i></i><span>${IC('sparkle', 34)}</span></div><div class="ppl-k">FOUNDER</div>
+    <h2>${name ? esc(name) : 'Создатель VOOB'}</h2><div class="cap">создатель VOOB</div>
+    <div class="fnd-t">Приложение придумано и сделано одним человеком. Эта плашка есть только у автора.</div>
+    <button type="button" class="ppl-x" data-act="close">Закрыть</button></div>`;
+}
+ACT.foundplate = el => {
+  const box = el.closest('.hero, .prof'), nm = box && box.querySelector('.nm');
+  hap.imp(); openSheet(foundPlateHTML(nm ? nm.textContent.trim() : ''), {type:'foundplate'}); $('#sheet').classList.add('top');
 };
 ACT.promo = async el => {
   const i = $('#pm-in'), m = $('#pm-msg'), card = el.closest('.pmc'); if (!i || !m) return;
