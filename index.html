@@ -2249,30 +2249,53 @@ body.frozen .stp .sb{opacity:.45}
 .ava .lvb[data-t="4"],.fp-head .fav .lvb[data-t="4"]{width:32px!important;min-width:32px!important;height:32px!important;font-size:11.5px!important}
 .lvn[data-t="4"]{width:36px!important;min-width:36px!important;height:36px!important;font-size:11.5px!important}
 .lvs-b[data-t="4"]{--sz:66px;font-size:22px}.lvr-n[data-t="4"],.lvt-d[data-t="4"]{--sz:44px;font-size:13px}
-/* v1.538: Итоги — bento: кольцо видов в шапке, ровные плитки, свечение акцентом, рекорды лентой */
-.stv .st-hero{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;padding:22px 18px 22px 20px}
-.stv .st-hl{min-width:0;position:relative}.stv .st-big{font-size:46px;letter-spacing:-2px;margin-top:12px}
-.stv .st-big i{font-size:17px;margin:0 6px 0 2px}.stv .st-d{margin-top:12px}.stv .st-d em{display:none}
-.stv .st-dn{position:relative;flex:none;width:124px;height:124px}.stv .st-dn svg{display:block}
-.stv .st-dn circle{animation:stvRing .9s cubic-bezier(.2,.8,.2,1) both}@keyframes stvRing{from{opacity:0;stroke-width:4}}
-.stv .st-dc{position:absolute;inset:0;display:grid;place-content:center;text-align:center;line-height:1.15}.stv .st-dc b{font-size:24px;font-weight:850;letter-spacing:-.6px}.stv .st-dc span{font-size:11px;color:var(--muted)}
-.stv .kpis{gap:12px}.stv .kpi,.stv .kpi:first-child{grid-column:auto;background:var(--surface);border-radius:26px;padding:18px 18px 16px;position:relative;overflow:hidden;border:1px solid color-mix(in srgb,var(--text) 6%,var(--border))}
-.stv .kpi::before{content:"";position:absolute;width:120px;height:120px;right:-44px;top:-52px;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 20%,transparent),transparent 70%);pointer-events:none}
-.stv .kpi .kv,.stv .kpi:first-child .kv{font-size:27px;letter-spacing:-.9px;font-weight:850}
-.stv .kpi .kc{text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:600}
-.stv .st-sec,.stv>.card{position:relative;overflow:hidden;margin-top:12px;border-radius:30px;padding:20px 18px 18px}
-.stv .st-sec::before,.stv>.card::before{content:"";position:absolute;width:200px;height:200px;right:-70px;top:-90px;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 16%,transparent),transparent 70%);pointer-events:none}
+/* v1.542: Итоги — «Кольца»: кольцо по каждому виду, стеклянные поверхности с тонкой обводкой-градиентом, цифры с табличными знаками */
+.stv{--gl:color-mix(in srgb,var(--surface) 72%,transparent);--hl:color-mix(in srgb,var(--text) 11%,transparent)}
+.stv .st-hero{position:relative;overflow:visible;margin-top:6px;padding:8px 0 6px;border:0;background:none;text-align:center;display:block}
+.stv .st-hero::before{content:"";position:absolute;left:50%;top:92px;width:360px;height:360px;transform:translate(-50%,0);background:radial-gradient(closest-side,color-mix(in srgb,var(--accent) 26%,transparent),transparent 72%);filter:blur(10px);pointer-events:none;z-index:-1}
+.stv .st-k{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:6px 0 10px}
+.stv .st-rg{position:relative;width:min(300px,86vw);aspect-ratio:1;margin:0 auto}.stv .st-rg svg{display:block;width:100%;height:100%;overflow:visible}
+.stv .st-rg .tk line{stroke:var(--text);stroke-opacity:.2}
+.stv .st-rg .ra{animation:stvArc 1.2s cubic-bezier(.2,.8,.2,1) both;animation-delay:var(--d,0ms)}
+.stv .st-rg g{--d:0ms}
+@keyframes stvArc{from{stroke-dasharray:0 var(--C)}}
+.stv .st-rg .re{filter:drop-shadow(0 0 3px var(--c)) drop-shadow(0 0 7px var(--c));animation:stvDot .5s ease both;animation-delay:calc(var(--d,0ms) + .9s)}@keyframes stvDot{from{opacity:0}}
+.stv .st-ct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center}
+.stv .st-ct b{font-size:46px;line-height:1;font-weight:700;letter-spacing:-2.4px;font-variant-numeric:tabular-nums;color:var(--text)}
+.stv .st-ct b i{font-style:normal;font-weight:300;color:var(--muted);margin:0 1px;position:relative;top:-2px}
+.stv .st-ct span{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);max-width:110px;line-height:1.3}
+.stv .st-d{margin:16px auto 0;padding:6px 12px 6px 10px;font-size:12.5px;font-weight:700;letter-spacing:.01em;backdrop-filter:blur(8px)}.stv .st-d em{display:inline;font-weight:600;margin-left:6px;opacity:.75}
+.stv .st-lg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:22px 0 4px;text-align:left}
+.stv .st-lg>div{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:20px;background:var(--gl);box-shadow:inset 0 0 0 1px var(--hl);animation:lvRow .5s cubic-bezier(.2,.8,.2,1) both}
+.stv .st-lg>div:last-child:nth-child(odd){grid-column:1/-1}
+.stv .st-lg u{flex:none;width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 20%,transparent),0 0 12px var(--c)}
+.stv .st-lg p{min-width:0}.stv .st-lg b{display:block;font-size:14px;font-weight:650;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stv .st-lg span{display:block;margin-top:1px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.stv .kpis{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;margin:14px -16px 0;padding:2px 16px 6px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,transparent 0,#000 16px,#000 calc(100% - 28px),transparent)}.stv .kpis::-webkit-scrollbar{display:none}
+.stv .kpi,.stv .kpi:first-child{grid-column:auto;flex:none;min-width:116px;scroll-snap-align:start;display:flex;flex-direction:column;gap:5px;padding:14px 16px 13px;border-radius:22px;border:0;background:linear-gradient(165deg,color-mix(in srgb,var(--text) 7%,transparent),color-mix(in srgb,var(--text) 2%,transparent));box-shadow:inset 0 0 0 1px var(--hl)}
+.stv .kpi::before{display:none}
+.stv .kpi .kv,.stv .kpi:first-child .kv{font-size:24px;font-weight:700;letter-spacing:-.9px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stv .kpi .kc{font-size:11.5px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted);white-space:nowrap}
+.stv .st-sec,.stv>.card{position:relative;overflow:hidden;margin-top:14px;padding:20px 18px 18px;border-radius:30px;border:0;background:var(--gl);box-shadow:inset 0 0 0 1px var(--hl);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.stv .st-sec::before,.stv>.card::before{content:"";position:absolute;left:-1px;top:-1px;right:-1px;height:90px;border-radius:30px 30px 0 0;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 10%,transparent),transparent);pointer-events:none}
 .stv .st-sec>*,.stv>.card>*{position:relative}
-.stv .st-sec>h3,.stv>.card>h3{text-transform:none;letter-spacing:-.2px;font-size:17px;font-weight:750}
-.stv .st-ai{width:40px;height:40px;border-radius:14px;background:var(--c);color:#14141a}
-.stv .st-act{gap:13px;padding:11px 2px}.stv .st-act+.st-act{border-top:0}
-.stv .st-am b{margin-bottom:6px}.stv .st-tr{height:6px;border-radius:3px;background:color-mix(in srgb,var(--text) 8%,transparent);overflow:hidden;margin-bottom:6px}
-.stv .st-tr i{display:block;height:100%;border-radius:3px;background:var(--c);animation:growX .8s cubic-bezier(.2,.8,.2,1) both;transform-origin:left}
-.stv .seg button{border-radius:999px}.stv .seg button.on{background:linear-gradient(135deg,var(--accent),var(--accent2,var(--accent)));border-color:transparent}
-.stv .recs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:0 18px 4px;scrollbar-width:none}.stv .recs::-webkit-scrollbar{display:none}
-.stv .recs>div{flex:none;width:154px;scroll-snap-align:start;border-radius:24px;padding:16px;background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 15%,transparent),color-mix(in srgb,var(--text) 3%,transparent));border:1px solid color-mix(in srgb,var(--text) 8%,transparent)}
-.stv .recs .rv{font-size:21px;letter-spacing:-.5px;margin:12px 0 5px}
-@media (prefers-reduced-motion:reduce){.stv .st-dn circle,.stv .st-tr i{animation:none}}
+.stv .st-sec>h3,.stv>.card>h3{display:flex;align-items:center;gap:9px;margin:0 0 16px;font-size:17px;font-weight:700;letter-spacing:-.3px;text-transform:none;color:var(--text)}
+.stv .st-sec>h3 svg,.stv>.card>h3 svg{width:18px;height:18px;padding:0;background:none;color:var(--accent);flex:none}
+.stv .st-sec>h3 span{margin-left:auto;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0}
+.stv .st-act{gap:14px;padding:11px 0}.stv .st-act+.st-act{border-top:1px solid color-mix(in srgb,var(--text) 6%,transparent)}
+.stv .st-ai{position:relative;width:44px;height:44px;border-radius:0;background:none;color:var(--c)}.stv .st-ai svg:first-child{position:absolute;inset:0;width:44px;height:44px}.stv .st-ai svg:last-child{position:absolute;left:13.5px;top:13.5px}
+.stv .st-am b{font-size:15px;font-weight:650;letter-spacing:-.15px;margin:0 0 2px}.stv .st-av b{font-size:15px;font-weight:700;letter-spacing:-.2px}
+.stv .seg{padding:3px;border-radius:999px;background:color-mix(in srgb,var(--text) 6%,transparent);box-shadow:inset 0 0 0 1px var(--hl);border:0}
+.stv .seg button{border-radius:999px;font-weight:650;border:0}.stv .seg button.on{background:linear-gradient(135deg,var(--accent),var(--accent2,var(--accent)));color:var(--on-accent);box-shadow:0 4px 14px -4px var(--accent)}
+.stv .hm{display:flex;gap:10px;align-items:stretch}
+.stv .hm-c{border-radius:50%}
+.stv .hm-lg{display:flex;align-items:center;justify-content:flex-end;gap:5px;margin-top:10px;font-size:11px;color:var(--muted)}.stv .hm-lg .hm-c{width:10px;height:10px;aspect-ratio:auto;animation:none}
+.stv .bfill{border-radius:99px;width:56%;background:linear-gradient(180deg,var(--accent2,var(--accent)),var(--accent))!important;opacity:.95}
+.stv .fdb{height:8px;border-radius:99px}.stv .fdb i{border-radius:99px}
+.stv .recs{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -18px;padding:0 18px 4px;scrollbar-width:none}.stv .recs::-webkit-scrollbar{display:none}
+.stv .recs>div{flex:none;width:156px;scroll-snap-align:start;border-radius:24px;padding:16px;background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 16%,transparent),color-mix(in srgb,var(--text) 2%,transparent));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 22%,var(--hl))}
+.stv .recs .cap:first-child{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.stv .recs .rv{font-size:22px;font-weight:700;letter-spacing:-.7px;margin:12px 0 5px;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){.stv .st-rg .ra,.stv .st-rg .re{animation:none}}
 .frpv-wrap{position:relative;margin:4px 0 18px}.frpv-wrap .frpv-nav{position:absolute;top:50%;margin-top:-19px;z-index:6;left:8px}.frpv-wrap .frpv-nav.r{left:auto;right:8px}
 .frpv .hero.bgpv,#sheet .frpv .hero.hbg{margin-left:0;margin-right:0;border-radius:24px}#sheet .frpv .hero.hbg{padding-bottom:26px;overflow:hidden;background:#0b0b10}#sheet .frpv .hero.hbg::before,#sheet .frpv .hero.hbg::after{display:none}#sheet .frpv .hero.hbg>.hbgfx{-webkit-mask-image:none;mask-image:none}
 .frpv .hero.bgpv{margin-top:0;margin-bottom:0;padding:34px 18px 22px}.frpv .bgpv .hero-av .fav{width:100px;height:100px;font-size:38px}
@@ -4243,11 +4266,17 @@ function viewStats(){
     const dl = periodDelta(ws, S.sp, tm);
     const dh = dl == null ? '' : `<span class="st-d ${dl >= 0 ? 'up' : 'dn'}">${IC(dl >= 0 ? 'arrow_up' : 'arrow_down', 12)}${Math.abs(dl)}%<em>к прошлому периоду</em></span>`;
     const by0 = new Map(); for (const w of pws) { const a = actOf(w); by0.set(a, (by0.get(a) || 0) + w.minutes); }
-    const dn0 = [...by0.entries()].sort((x, y) => y[1] - x[1]), tot0 = sum(dn0, x => x[1]) || 1, R0 = 54, C0 = 2 * Math.PI * R0; let off0 = 0;
-    const donut = `<svg viewBox="0 0 140 140" width="124" height="124" aria-hidden="true">${dn0.map(([a, m]) => { const L = Math.max(1, C0 * m / tot0 - 3), o = off0; off0 += C0 * m / tot0;
-      return `<circle r="${R0}" cx="70" cy="70" fill="none" stroke="${actCol(a)}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${L.toFixed(1)} ${C0.toFixed(1)}" stroke-dashoffset="${(-o).toFixed(1)}" transform="rotate(-90 70 70)"/>`; }).join('')}</svg>`;
-    h += `<div class="st-hero"><div class="st-hl"><div class="st-k">В движении ${PN}</div><div class="st-big">${fmtMin(tm).replace(/(\d+) (ч|мин)/g, '$1<i>$2</i>')}</div>${dh}</div>
-      <div class="st-dn">${donut}<div class="st-dc"><b>${kinds}</b><span>${plural(kinds, ['вид', 'вида', 'видов'])}</span></div></div></div>`;
+    const dn0 = [...by0.entries()].sort((x, y) => y[1] - x[1]), top = dn0.slice(0, 5), mx0 = top[0] ? top[0][1] : 1;   // v1.542: «Кольца» — по кольцу на вид активности, длина дуги относительно самого частого вида
+    const RG = [118, 104, 90, 76, 62], rings = top.map(([a, m], i) => { const r = RG[i], C = 2 * Math.PI * r, f = Math.max(.04, m / mx0 * .86), L = C * f, col = actCol(a), ang = f * 2 * Math.PI - Math.PI / 2, ex = 150 + r * Math.cos(ang), ey = 150 + r * Math.sin(ang);
+      return `<g style="--c:${col};--d:${i * 90}ms"><defs><linearGradient id="stg${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".45"/><stop offset="1" stop-color="${col}"/></linearGradient></defs>
+        <circle class="rt" r="${r}" cx="150" cy="150" fill="none" stroke="${col}" stroke-opacity=".13" stroke-width="9"/>
+        <circle class="ra" r="${r}" cx="150" cy="150" fill="none" stroke="url(#stg${i})" stroke-width="9" stroke-linecap="round" stroke-dasharray="${L.toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 150 150)" style="--L:${L.toFixed(1)};--C:${C.toFixed(1)}"/>
+        <circle class="re" cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="2.6" fill="#fff"/></g>`; }).join('');
+    const ticks = Array.from({length: 60}, (_, k) => { const a = k * 6 * Math.PI / 180, big = k % 5 === 0, r1 = 139, r2 = big ? 144.5 : 142; return `<line x1="${(150 + r1 * Math.sin(a)).toFixed(1)}" y1="${(150 - r1 * Math.cos(a)).toFixed(1)}" x2="${(150 + r2 * Math.sin(a)).toFixed(1)}" y2="${(150 - r2 * Math.cos(a)).toFixed(1)}" stroke-width="${big ? 1.4 : 1}"/>`; }).join('');
+    const ctr = tm >= 60 ? `<b>${Math.floor(tm / 60)}<i>:</i>${String(Math.round(tm % 60)).padStart(2, '0')}</b><span>часов в движении</span>` : `<b>${Math.round(tm)}</b><span>минут в движении</span>`;
+    h += `<div class="st-hero"><div class="st-k">${PN}</div>
+      <div class="st-rg"><svg viewBox="0 0 300 300" aria-hidden="true"><g class="tk">${ticks}</g>${rings}</svg><div class="st-ct">${ctr}</div></div>${dh}
+      <div class="st-lg">${top.map(([a, m], i) => `<div style="--c:${actCol(a)};animation-delay:${i * 60}ms"><u></u><p><b>${esc(stName(a))}</b><span>${fmtMin(m)} · ${Math.round(m * 100 / ((sum(dn0, x => x[1]) || 1)))}%</span></p></div>`).join('')}</div></div>`;
     const ex = [kpi(num(n / weeks), 'Тренировок в неделю'), kpi(fmtMin(tm / n), 'Средняя тренировка'), kpi(numSep(xp), 'Очков заработано'),
       kpi(kc ? kcalF(kc) : '—', kc ? 'Сожжено, примерно' : 'Ккал: укажи вес'), kpi(num(sum(pws, w => +w.feeling || 3) / n) + ' / 5', 'Среднее состояние')];
     const km = sum(pws, kmOf); if (km > 0.05) ex.splice(3, 0, kpi(kmF(km), 'Пройдено, примерно'));
@@ -4256,7 +4285,7 @@ function viewStats(){
     const by = new Map(); for (const w of pws) { const a = actOf(w); if (!by.has(a)) by.set(a, []); by.get(a).push(w); }
     const rows = [...by.entries()].map(([a, gl]) => [a, gl, sum(gl, w => w.minutes)]).sort((x, y) => y[2] - x[2]);
     h += `<div class="st-sec"><h3>${IC('sparkle')}По видам активности</h3>` +
-      rows.map(([a, gl, m], i) => `<div class="st-act" style="--c:${actCol(a)};animation-delay:${i * 50}ms"><span class="st-ai">${IC(a, 18)}</span><div class="st-am"><b>${esc(stName(a))}</b><div class="st-tr"><i style="width:${Math.max(3, tm ? m * 100 / tm : 0)}%"></i></div><small>${npw(gl.length, W_WORK)} · ${actFacts(gl, a)}</small></div><div class="st-av"><b>${fmtMin(m)}</b><small>${tm ? Math.round(m * 100 / tm) : 0}%</small></div></div>`).join('') + `</div>`;
+      rows.map(([a, gl, m], i) => `<div class="st-act" style="--c:${actCol(a)};animation-delay:${i * 50}ms"><span class="st-ai"><svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="19" fill="none" stroke="var(--c)" stroke-opacity=".16" stroke-width="3"/><circle cx="22" cy="22" r="19" fill="none" stroke="var(--c)" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(119.4 * Math.max(.03, tm ? m / tm : 0)).toFixed(1)} 119.4" transform="rotate(-90 22 22)"/></svg>${IC(a, 17)}</span><div class="st-am"><b>${esc(stName(a))}</b><small>${npw(gl.length, W_WORK)} · ${actFacts(gl, a)}</small></div><div class="st-av"><b>${fmtMin(m)}</b><small>${tm ? Math.round(m * 100 / tm) : 0}%</small></div></div>`).join('') + `</div>`;
   } else h += `<div class="card muted" style="margin-top:12px">За этот период тренировок нет — выбери другой или добавь тренировку.</div>`;
   // календарь активности
   h += `<div class="st-sec"><h3>${IC('clock')}Календарь активности<span>12 недель</span></h3>${heatHTML(ws)}</div>`;
