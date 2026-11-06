@@ -2000,7 +2000,21 @@ body.frozen .stp .sb{opacity:.45}
 .hero.hbg .fchipb.hset{animation:hbchip .6s cubic-bezier(.2,.8,.25,1) both}
 .hero.hbg .fchipb:not(.hset){animation:hbload .85s cubic-bezier(.2,.8,.25,1) both}
 .hero .fchipb:not(.hset){animation:hbload .85s cubic-bezier(.2,.8,.25,1) both}
-@keyframes hbload{from{opacity:0;filter:blur(10px);transform:translateY(6px) scale(.94)}60%{filter:blur(2px)}to{opacity:1;filter:blur(0);transform:none}}
+@keyframes hbload{from{opacity:0;filter:blur(14px);transform:translateY(8px) scale(.9)}45%{opacity:.9;filter:blur(4px)}to{opacity:1;filter:blur(0);transform:none}}
+/* v1.501: «Друзья» — премиальное проявление: блюр → резкость, блик-«лучик» по кнопке и поочерёдное появление аватаров; места в ряду зарезервированы, соседи не двигаются */
+.hskl{width:150px;height:38px;border-radius:19px}
+#view .hero-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#view .hero-row .hskl{width:100%;height:42px;border-radius:21px}
+#view .hero-row .fchipb{width:100%;min-width:0;justify-content:center;white-space:nowrap}
+.hero .fchipb:not(.hset){position:relative;overflow:hidden}
+.hero .fchipb:not(.hset)::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.38) 50%,transparent 70%);transform:translateX(-130%);animation:hbsheen 1.1s cubic-bezier(.4,.1,.2,1) .45s both}
+@keyframes hbsheen{from{transform:translateX(-130%)}to{transform:translateX(130%)}}
+.hero .fchipb:not(.hset) .stk>*{animation:hbav .7s cubic-bezier(.2,.9,.25,1.15) both}
+.hero .fchipb:not(.hset) .stk>*:nth-child(1){animation-delay:.18s}
+.hero .fchipb:not(.hset) .stk>*:nth-child(2){animation-delay:.28s}
+.hero .fchipb:not(.hset) .stk>*:nth-child(3){animation-delay:.38s}
+@keyframes hbav{from{opacity:0;transform:scale(.5);filter:blur(5px)}to{opacity:1;transform:none;filter:blur(0)}}
+@media (prefers-reduced-motion:reduce){.hero .fchipb::after,.hero .fchipb .stk>*{animation:none!important}}
 @keyframes hbchip{from{transform:translateY(6px)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){.hero .fchipb,.hero.hbg .fchipb{animation:none!important}}
 </style>
@@ -3643,7 +3657,7 @@ function friendSheetHTML(f, j, loading, self){
   const pw = +f.poke_wait || 0;
   const acts = self ? '' : `<div class="fp-bar"><button class="fpb poke${pw ? ' off' : ''}" data-act="frpoke" data-id="${f.tg_id}"><span>${IC('bolt', 20)}</span><b>${pw ? `через ${pw} ч` : 'Взбодрить'}</b></button>`
     + `<button class="fpb gift" data-act="gift" data-id="${f.tg_id}"><span>${IC('gift', 20)}</span><b>Подарок</b></button></div>`;
-  h += `<div class="hero-row">` + (loading ? `<span class="skl" style="width:150px;height:38px;border-radius:19px"></span>`
+  h += `<div class="hero-row">` + (loading ? `<span class="skl hskl"></span>`
     : `<button type="button" class="fchipb" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · ${j.friends_count}${(j.friends || []).length ? IC('chev', 14) : ''}</button>`)
     + (self ? `<button type="button" class="fchipb hset" data-act="meset" aria-label="Настройки профиля и приложения">${IC('gear', 16)}Настройки</button>` : '')
     + `</div>` + socialsHTML(f.tg_id, true) + `</div>` + acts;
