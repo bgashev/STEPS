@@ -2317,6 +2317,9 @@ body.frozen .stp .sb{opacity:.45}
 .frpv-go:disabled{background:var(--surface2);color:var(--muted);opacity:1}
 .frpv-pro{background:linear-gradient(120deg,#F5B23C,#FFE08A);color:#3a2600;font-weight:800}
 .frpv-cap{text-align:center;margin-top:8px}
+.frpv-wrap{position:relative;margin:4px 0 18px}.frpv-wrap .frpv-nav{position:absolute;top:50%;margin-top:-19px;z-index:6;left:8px}.frpv-wrap .frpv-nav.r{left:auto;right:8px}
+.frpv .hero.bgpv,#sheet .frpv .hero.hbg{margin-left:0;margin-right:0;border-radius:24px}#sheet .frpv .hero.hbg{padding-bottom:26px;overflow:hidden;background:#0b0b10}#sheet .frpv .hero.hbg::before,#sheet .frpv .hero.hbg::after{display:none}#sheet .frpv .hero.hbg>.hbgfx{-webkit-mask-image:none;mask-image:none}
+.frpv .hero.bgpv{margin-top:0;margin-bottom:0;padding:34px 18px 22px}.frpv .bgpv .hero-av .fav{width:100px;height:100px;font-size:38px}
 </style>
 </head>
 <body>
@@ -4570,6 +4573,25 @@ function frPrevHTML(k){
 }
 function openFramePrev(k){ hap.tap(); openSheet(frPrevHTML(k), {type:'frprev', v:k}); }
 function frPrevShow(k){ if (!sheetCtx || sheetCtx.type !== 'frprev') return; sheetCtx.v = k; const sh = $('#sheet'); sh.innerHTML = '<div class="grab"></div>' + frPrevHTML(k); sh.scrollTop = 0; }
+/* v1.525: фон профиля — предпросмотр целиком (как будет выглядеть шапка), «Применить» внизу */
+function bgPrevHTML(k){
+  const list = [''].concat(BG_KEYS.map(x => x[0])), i = Math.max(0, list.indexOf(k)), e = BG_KEYS.find(x => x[0] === k);
+  const owned = !k || bgOwned(k), cur = bgNorm(db.settings.bg || '') === k, pro = isPro();
+  const lv = myLevel(), name = displayName() || 'Гость', photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url) || '';
+  const fk = frameOf(tgUser ? {tg_id:tgUser.id} : null);
+  const prev = list[(i + list.length - 1) % list.length], next = list[(i + 1) % list.length];
+  const btn = !owned ? `<button type="button" class="btn frpv-pro" data-act="frpro">${IC('crown', 18)}Разблокировать с PRO</button><div class="cap frpv-cap">Сейчас это только предпросмотр — фон станет твоим с подпиской</div>`
+    : cur ? `<button type="button" class="btn frpv-go" disabled>${IC('check', 18)}Сейчас выбран</button>`
+    : `<button type="button" class="btn primary frpv-go" data-act="bgapply" data-v="${k}">${IC('check', 18)}Применить</button>`;
+  return `<div class="frpv"><div class="frpv-h"><h2>${e ? esc(e[1]) : 'Без фона'}</h2>${k && !pro && owned ? '<i class="prot inl" style="background:var(--accent);color:var(--on-accent)">ПОДАРОК</i>' : k ? '<i class="prot inl">PRO</i>' : ''}</div>
+    <div class="frpv-sub">${k ? 'Анимированный фон шапки профиля' : 'Обычная шапка профиля'} · ${i + 1} из ${list.length}</div>
+    <div class="frpv-wrap"><button type="button" class="frpv-nav l" data-act="bgnav" data-v="${prev}" aria-label="Предыдущий">${IC('chev', 18)}</button><button type="button" class="frpv-nav r" data-act="bgnav" data-v="${next}" aria-label="Следующий">${IC('chev', 18)}</button>
+    <div class="hero me${k ? ' hbg' : ''} bgpv" style="--tc:${tierColor(lv.level)}">${bgFx(k)}<span class="hero-av">${frAv(fk, 100, lv, photo, name)}</span>
+      <h2 class="nmrow hero-nm"><span class="nm">${esc(name)}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h2>${tgUser && tgUser.username ? `<div class="hero-at">@${esc(tgUser.username)}</div>` : ''}
+      <div class="hero-lv"><div class="hero-lvt"><span class="lvn">${lv.level}</span><span class="ttl">${tierOf(lv.level).title}</span></div><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"><b class="lvp"></b></i></div></div></div></div>${btn}</div>`;
+}
+function openBgPrev(k){ hap.tap(); openSheet(bgPrevHTML(k), {type:'bgprev', v:k}); }
+function bgPrevShow(k){ if (!sheetCtx || sheetCtx.type !== 'bgprev') return; sheetCtx.v = k; const sh = $('#sheet'); sh.innerHTML = '<div class="grab"></div>' + bgPrevHTML(k); sh.scrollTop = 0; }
 function viewMeSettings(){
   const p = db.profile, g = G(), name = displayName(), photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url);
   const age = ageOf(p.birth), kg = currentWeight(), hgt = +p.height || 0, b = bmiOf(kg, hgt), bmr = bmrOf(kg, hgt, age, p.sex);
@@ -4604,8 +4626,8 @@ function viewMeSettings(){
       `<button type="button" class="frb${cur === k ? ' on' : ''}${i >= 3 ? ' more' : ''}${pro && !frOwned(k) ? ' lock' : ''}" data-act="frprev" data-v="${k}">${pro ? '<i class="prot">PRO</i>' : ''}<div class="fav${frameCls(k, k ? 0 : lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>${l}</button>`).join('')}</div><button type="button" class="frx${S.frAll ? ' open' : ''}" data-act="smore" data-k="frAll" data-more="Все рамки · ${FRAMES.length}"><span>${S.frAll ? 'Свернуть' : 'Все рамки · ' + FRAMES.length}</span>${IC('chev', 14)}</button></div>`; }
   { const cb = bgNorm(db.settings.bg || ''), pro = isPro(), si = BG_KEYS.findIndex(x => x[0] === cb);   // v1.445: в свёрнутом виде всегда 4 плитки; выбранный дальний фон встаёт на место третьего
     h += `<div class="card"><h3>${IC('palette')}Фон профиля</h3><div class="cap" style="margin:-6px 0 12px">Фон карточки профиля — его видят все, кто откроет твой профиль. Для PRO; подаренные командой VOOB фоны работают и без подписки.</div>
-      <div class="bgs${S.bgAll ? '' : ' col'}"><button type="button" class="bgb${cb ? '' : ' on'}" data-act="bgset" data-v=""><span class="th none"></span>Без фона</button>${BG_KEYS.map(([k, l], i) =>
-      `<button type="button" class="bgb${cb === k ? ' on' : ''}${(si >= 3 ? (i >= 2 && i !== si) : i >= 3) ? ' bmore' : ''}" data-act="bgset" data-v="${k}"><span class="th">${bgFx(k)}</span>${bgOwned(k) && !pro ? '<i class="prot" style="background:var(--accent);color:var(--on-accent)">ПОДАРОК</i>' : '<i class="prot">PRO</i>'}${l}</button>`).join('')}</div><button type="button" class="frx${S.bgAll ? ' open' : ''}" data-act="smore" data-k="bgAll" data-more="Все фоны · ${BG_KEYS.length}"><span>${S.bgAll ? 'Свернуть' : 'Все фоны · ' + BG_KEYS.length}</span>${IC('chev', 14)}</button></div>`; }
+      <div class="bgs${S.bgAll ? '' : ' col'}"><button type="button" class="bgb${cb ? '' : ' on'}" data-act="bgprev" data-v=""><span class="th none"></span>Без фона</button>${BG_KEYS.map(([k, l], i) =>
+      `<button type="button" class="bgb${cb === k ? ' on' : ''}${(si >= 3 ? (i >= 2 && i !== si) : i >= 3) ? ' bmore' : ''}" data-act="bgprev" data-v="${k}"><span class="th">${bgFx(k)}</span>${bgOwned(k) && !pro ? '<i class="prot" style="background:var(--accent);color:var(--on-accent)">ПОДАРОК</i>' : '<i class="prot">PRO</i>'}${l}</button>`).join('')}</div><button type="button" class="frx${S.bgAll ? ' open' : ''}" data-act="smore" data-k="bgAll" data-more="Все фоны · ${BG_KEYS.length}"><span>${S.bgAll ? 'Свернуть' : 'Все фоны · ' + BG_KEYS.length}</span>${IC('chev', 14)}</button></div>`; }
   { const cur = db.settings.badge || 'verified', pro = isPro();
     h += `<div class="card"><h3>${IC('check')}Значок у имени${pro ? '' : '<i class="prot inl" data-act="prosheet" role="button">PRO</i>'}</h3><div class="cap" style="margin:-6px 0 12px">Маленький значок рядом с именем — его видят друзья в профиле, списках и ленте.</div>
       <div class="bgl">${BADGE_LIST.map(([k, l]) => `<button type="button" class="bgi${cur === k ? ' on' : ''}" data-act="badgeset" data-v="${k}" aria-label="${l}"><span class="bgp">${badgeHTML(k, 34)}</span><i>${l}</i></button>`).join('')}</div></div>`; }
@@ -5839,6 +5861,10 @@ Object.assign(ACT, {
       else if (cta === 'pro') openPro()
       else if (cta && /^https:\/\//.test(cta)) { try { tg.openLink(cta); } catch (e) { window.open(cta, '_blank'); } } }); },
   ntlater: () => { hap.tap(); closeNotice(); },
+  bgprev: el => openBgPrev(el.dataset.v || ''),
+  bgnav: el => { bgPrevShow(el.dataset.v || ''); hap.tap(); },
+  bgapply: el => { const k = el.dataset.v || ''; if (k && !bgOwned(k)) { hap.warn(); return; }
+    db.settings.bg = k; touchMeta('settings'); save(); closeSheet(); render(); hap.imp(); const e = BG_KEYS.find(x => x[0] === k); toast('Фон «' + (e ? e[1] : 'Без фона') + '» применён'); },
   bgset: el => { const k = el.dataset.v || ''; if (k && !bgOwned(k)) { hap.warn(); proToast('Фоны профиля — для подписчиков PRO'); return; }
     db.settings.bg = k; touchMeta('settings'); save(); render(); hap.tap(); },
 });
