@@ -1871,7 +1871,8 @@ body.frozen .stp .sb{opacity:.45}
   -webkit-mask-size:100% 300%;mask-size:100% 300%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 /* маска считается в долях самого снимка (а не vh): в финале он закрыт целиком с запасом, без «вспышки» на последнем кадре */
 @keyframes thzMask{from{-webkit-mask-position:0 32.5%;mask-position:0 32.5%}to{-webkit-mask-position:0 95%;mask-position:0 95%}}
-#thz{position:fixed;left:0;top:0;width:100vw;height:220px;pointer-events:none;view-transition-name:thz-line}
+#thz{display:none;position:fixed;left:0;top:0;width:100vw;height:220px;pointer-events:none;view-transition-name:thz-line}
+:root.thz-go #thz{display:block}
 #thz.dusk{background:linear-gradient(to bottom,transparent 0,rgba(255,196,120,.5) 26%,rgba(255,98,142,.72) 50%,rgba(98,82,255,.55) 76%,transparent 100%)}
 #thz.dawn{background:linear-gradient(to bottom,transparent 0,rgba(120,164,255,.45) 24%,rgba(255,176,128,.75) 50%,rgba(255,240,196,.7) 76%,transparent 100%)}
 :root.thz-go::view-transition-group(thz-line){animation:thzLine 1600ms cubic-bezier(.5,.05,.25,1) both}
@@ -2520,7 +2521,8 @@ function themeWave(go, toDark){
   root.classList.add('thz-go');
   let vt = null;
   try { vt = document.startViewTransition(() => { go(); document.body.appendChild(ln); }); } catch (e) { root.classList.remove('thz-go'); go(); return; }
-  const done = () => { root.classList.remove('thz-go'); ln.remove(); };
+  const done = () => { clearTimeout(tl); ln.remove(); root.classList.remove('thz-go'); };
+  const tl = setTimeout(() => ln.remove(), 1480);        // линия к этому моменту уже невидима — убираем элемент до конца перехода, чтобы он не мелькнул обычным блоком
   vt.finished.then(done, done);
   hap.seq([['i', 'soft', 120], ['i', 'soft', 240], ['i', 'light', 260], ['i', 'light', 260], ['i', 'medium', 300]]);   // лёгкий «прокат» отклика вслед за линией
 }
