@@ -429,6 +429,7 @@ input[type=date].inp{display:block}
 .ava{position:relative}
 .lvb{z-index:2}
 .frs.col .frb.more{display:none}
+.bgl.col .bgi.more{display:none}
 .frx{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:10px;padding:10px;border-radius:14px;border:1px dashed var(--border);background:none;color:var(--muted);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
 .frx svg{transition:transform .25s}.frx.open svg{transform:rotate(-90deg)}
 .frb{position:relative}
@@ -4565,9 +4566,9 @@ function viewPersonalization(){
     h += `<div class="card"><h3>${IC('palette')}Фон профиля</h3><div class="cap" style="margin:-6px 0 12px">Фон карточки профиля — его видят все, кто откроет твой профиль. Для PRO; подаренные командой VOOB фоны работают и без подписки.</div>
       <div class="bgs${S.bgAll ? '' : ' col'}"><button type="button" class="bgb${cb ? '' : ' on'}" data-act="bgprev" data-v=""><span class="th none"></span>Без фона</button>${BG_KEYS.map(([k, l], i) =>
       `<button type="button" class="bgb${cb === k ? ' on' : ''}${(si >= 3 ? (i >= 2 && i !== si) : i >= 3) ? ' bmore' : ''}" data-act="bgprev" data-v="${k}"><span class="th">${bgFx(k)}</span>${bgOwned(k) && !pro ? '<i class="prot" style="background:var(--accent);color:var(--on-accent)">ПОДАРОК</i>' : '<i class="prot">PRO</i>'}${l}</button>`).join('')}</div><button type="button" class="frx${S.bgAll ? ' open' : ''}" data-act="smore" data-k="bgAll" data-more="Все фоны · ${BG_KEYS.length}"><span>${S.bgAll ? 'Свернуть' : 'Все фоны · ' + BG_KEYS.length}</span>${IC('chev', 14)}</button></div>`; }
-  { const cur = db.settings.badge || 'verified', pro = isPro();
+  { const cur = db.settings.badge || 'verified', pro = isPro(), si = BADGE_LIST.findIndex(x => x[0] === cur);
     h += `<div class="card"><h3>${IC('check')}Значок у имени${pro ? '' : '<i class="prot inl" data-act="prosheet" role="button">PRO</i>'}</h3><div class="cap" style="margin:-6px 0 12px">Маленький значок рядом с именем — его видят друзья в профиле, списках и ленте.</div>
-      <div class="bgl">${BADGE_LIST.map(([k, l]) => `<button type="button" class="bgi${cur === k ? ' on' : ''}" data-act="badgeset" data-v="${k}" aria-label="${l}"><span class="bgp">${badgeHTML(k, 34)}</span><i>${l}</i></button>`).join('')}</div></div>`; }
+      <div class="bgl${S.bdAll ? '' : ' col'}">${BADGE_LIST.map(([k, l], i) => `<button type="button" class="bgi${cur === k ? ' on' : ''}${(si >= 10 ? (i >= 9 && i !== si) : i >= 10) ? ' more' : ''}" data-act="badgeset" data-v="${k}" aria-label="${l}"><span class="bgp">${badgeHTML(k, 34)}</span><i>${l}</i></button>`).join('')}</div><button type="button" class="frx${S.bdAll ? ' open' : ''}" data-act="smore" data-k="bdAll" data-more="Все значки · ${BADGE_LIST.length}"><span>${S.bdAll ? 'Свернуть' : 'Все значки · ' + BADGE_LIST.length}</span>${IC('chev', 14)}</button></div>`; }
   return h;
 }
 function viewMeSettings(){
