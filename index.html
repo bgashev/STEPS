@@ -2404,6 +2404,7 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
  html.web #tabs .tbi{top:92px;left:12px;right:12px;width:auto;height:48px;border-radius:16px;transform:translateY(calc(var(--ti,0) * 52px))}
  html.web .tab{flex:none;height:48px;flex-direction:row;justify-content:flex-start;gap:14px;padding:0 18px;font-size:14.5px;border-radius:16px;cursor:pointer}
  html.web .tab:hover:not(.on){background:color-mix(in srgb,var(--text) 6%,transparent)}
+ html.web #view .hero.hbg{--hx:max(28px,calc((100vw - 264px - 760px) / 2));margin:-34px calc(-1 * var(--hx)) 0 calc(-264px - var(--hx));padding:70px calc(18px + var(--hx)) 104px calc(18px + 264px + var(--hx))}
  html.web body::after{display:none}
  html.web #view{max-width:none;margin:0;padding-top:34px;padding-bottom:60px;padding-left:calc(264px + max(28px,(100vw - 264px - 760px) / 2));padding-right:max(28px,calc((100vw - 264px - 760px) / 2))}
  html.web #fab.wdock{left:calc(50% + 132px);bottom:28px}
@@ -2429,7 +2430,7 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.571';
+const APP = 'VOOB (by BGASHEV) Mini App v1.572';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
