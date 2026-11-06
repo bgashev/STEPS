@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<script>try{if(/[?&]from=site\b/.test(location.search)){document.write('<style id="lu-g">html{background:#07080c!important}body{visibility:hidden}</style>');setTimeout(function(){var g=document.getElementById("lu-g");if(g)g.remove()},4000)}}catch(e){}</script>
+<script>try{if(/[?&]from=site\b/.test(location.search)){document.write('<style id="lu-g">html{background:#030409!important}body{visibility:hidden}</style>');setTimeout(function(){var g=document.getElementById("lu-g");if(g)g.remove()},4000)}}catch(e){}</script>
 <meta charset="utf-8">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -2365,6 +2365,7 @@ body.frozen .stp .sb{opacity:.45}
 .wl-brand{font-size:18px;color:var(--text)}.wl-brand .vlogo{filter:drop-shadow(0 0 12px color-mix(in srgb,var(--accent) 55%,transparent))}
 #tabs .brand{display:none}
 #tabs .siteb{display:none}
+.phqr{text-align:center}.phqr h2{margin:6px 0 14px}.phqr .qrb{width:min(260px,72%);margin:0 auto 14px;padding:10px;background:#fff;border-radius:22px;box-shadow:0 20px 50px -20px rgba(139,92,246,.6)}.phqr .qrb svg{display:block;width:100%;height:auto}.phqr .cap{margin:0 0 16px}
 .wl-l h1{font-size:40px;line-height:1.05;margin:0 0 12px;letter-spacing:-.02em}
 .wl-l p.sub{margin:0 0 26px;color:var(--muted);font-size:16px;line-height:1.45;max-width:380px}
 .wl-st{list-style:none;margin:0 0 26px;padding:0;display:grid;gap:14px;counter-reset:s}
@@ -2393,7 +2394,8 @@ body.frozen .stp .sb{opacity:.45}
 @media (min-width:900px){
  html.web #tabs{left:0;right:auto;top:0;bottom:0;width:236px;max-width:none;margin:0;border-radius:0;border:0;border-right:1px solid var(--border);box-shadow:none;flex-direction:column;justify-content:flex-start;gap:4px;padding:92px 12px 16px;background:color-mix(in srgb,var(--surface) 70%,var(--bg))}
  html.web #tabs .brand{display:flex;align-items:center;gap:12px;position:absolute;left:22px;top:26px;color:var(--text)}
- html.web #tabs .siteb{background:none;border:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:12px;position:absolute;left:12px;right:12px;bottom:18px;height:46px;padding:0 14px;border-radius:14px;color:var(--muted,var(--text));font-weight:700;font-size:14px;opacity:.8;transition:background .2s,opacity .2s}
+ html.web #tabs .siteb{white-space:nowrap;background:none;border:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:12px;position:absolute;left:12px;right:12px;bottom:18px;height:46px;padding:0 14px;border-radius:14px;color:var(--muted,var(--text));font-weight:700;font-size:13.5px;opacity:.8;transition:background .2s,opacity .2s}
+ html.web #tabs .siteb.phb{bottom:70px}
  html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacity:1}
  html.web #tabs .brand b{font-weight:900;font-size:19px;letter-spacing:.28em}
  html.web #tabs .tbi{top:92px;left:12px;right:12px;width:auto;height:48px;border-radius:16px;transform:translateY(calc(var(--ti,0) * 52px))}
@@ -2424,13 +2426,14 @@ body.frozen .stp .sb{opacity:.45}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.563';
+const APP = 'VOOB (by BGASHEV) Mini App v1.564';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
 const REALTG = !!(tg && tg.initData);
 const WEBK = 'voob_web_sess';   // v1.550 WEB: сессия, полученная входом по QR
 let webSess = null;
+if (!REALTG) { try { const m = /[#&]vs=([A-Za-z0-9_-]+)/.exec(location.hash); if (m) { const v = JSON.parse(decodeURIComponent(escape(atob(m[1].replace(/-/g, '+').replace(/_/g, '/'))))); if (v && v.token && v.user) localStorage.setItem(WEBK, JSON.stringify({token:v.token, user:v.user})); history.replaceState(null, '', location.pathname + location.search); } } catch (e) {} }   // v1.564: вход по QR прямо с сайта voob.kz
 if (!REALTG) { try { webSess = JSON.parse(localStorage.getItem(WEBK) || 'null'); if (!(webSess && webSess.token && webSess.user)) webSess = null; } catch (e) { webSess = null; } }
 const inWeb = !REALTG, inWebApp = !!webSess;
 const inTG = REALTG || inWebApp;
@@ -5292,7 +5295,7 @@ function render(){
   document.querySelectorAll('.prox:not([data-ph])').forEach(el => { el.dataset.ph = 1; el.style.setProperty('--ph', -Math.round(performance.now() % 5000) + 'ms'); });   // блик PRO не начинается заново
   setTimeout(checkRewards, 700);
   const tb = $('#tabs'), ti = TABS.findIndex(t => t[0] === S.tab);
-  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + LOGO_SVG(50) + '<b>VOOB</b></span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb" data-act="tosite"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>VOOB.KZ</button>' : '');
+  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + LOGO_SVG(50) + '<b>VOOB</b></span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb phb" data-act="tophone"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.6"/><path d="M11 18.5h2"/></svg>Открыть на телефоне</button><button type="button" class="siteb" data-act="tosite"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>VOOB.KZ</button>' : '');
   tb.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   tb.style.setProperty('--ti', ti);
 }
@@ -5722,6 +5725,7 @@ const ACT = {
   wlnew: () => wlStart(),
   wlskip: () => { try { sessionStorage.setItem('voob_web_skip', '1'); } catch (e) {} clearInterval(WL.timer); clearInterval(WL.tick); const w = $('#wl'); if (w) w.classList.remove('show'); },
   weblogout: () => { hap.tap(); webLogout(); },
+  tophone: () => { hap.tap(); openSheet(`<div class="phqr"><h2>Открыть на телефоне</h2><div class="qrb">${qrSvg('https://t.me/voobkz_bot/VOOB')}</div><p class="cap">Наведи камеру телефона на QR-код: VOOB откроется в Telegram.</p><button type="button" class="btn ghost" data-act="close" style="width:100%">Закрыть</button></div>`, {type:'phqr'}); },
   tosite: el => { hap.tap(); const r = el.getBoundingClientRect(); VOOB_LU('out', '', () => { location.href = 'https://voob.kz/?from=app&t=' + Date.now(); }, {x:r.left + r.width / 2, y:r.top + r.height / 2}); },
   ctopen: el => { const u = el.dataset.u; hap.tap();
     try { if (el.dataset.tg) tg.openTelegramLink(u); else tg.openLink(u); } catch (e) { window.open(u, '_blank'); } },
@@ -5932,9 +5936,10 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
 
 /* VOOB «Кольца»: общий переход voob.kz ↔ app.voob.kz. Из точки клика раскрывается ирис со светящейся кромкой, два кольца логотипа (сайт и приложение) сближаются по спирали, сцепляются со вспышкой и анаморфным бликом, собирается имя, затем камера пролетает сквозь кольцо. 'in' стартует с того же кадра, на котором закончился 'out' */
 (function (w) {
-  var CSS = '#luv{position:fixed;inset:0;z-index:2147483000;background:#07080c;overflow:hidden;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#f4f6fb;display:grid;place-items:center;pointer-events:all}'
-    + '#luv .l_lg{position:absolute;inset:0;background:radial-gradient(55vmax circle at 50% 48%,rgba(139,92,246,.30),transparent 62%),radial-gradient(38vmax circle at 64% 36%,rgba(34,211,238,.14),transparent 60%),radial-gradient(40vmax circle at 36% 64%,rgba(244,114,182,.12),transparent 60%)}'
-    + '#luv .l_au{position:absolute;left:50%;top:48%;width:150vmax;height:150vmax;margin:-75vmax;background:conic-gradient(from 20deg,transparent 0,rgba(139,92,246,.30) 12%,transparent 30%,rgba(34,211,238,.22) 48%,transparent 62%,rgba(244,114,182,.24) 80%,transparent);filter:blur(70px);opacity:.55}'
+  var CSS = '#luv{position:fixed;inset:0;z-index:2147483000;background:#030409;overflow:hidden;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#f4f6fb;display:grid;place-items:center;pointer-events:all}'
+    + '#luv .l_lg{position:absolute;inset:0;background:radial-gradient(55vmax circle at 50% 48%,rgba(139,92,246,.20),transparent 62%),radial-gradient(38vmax circle at 64% 36%,rgba(34,211,238,.09),transparent 60%),radial-gradient(40vmax circle at 36% 64%,rgba(244,114,182,.08),transparent 60%)}'
+    + '#luv .l_vg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 48%,transparent 38%,rgba(0,0,0,.72) 100%);pointer-events:none}'
+    + '#luv .l_au{position:absolute;left:50%;top:48%;width:150vmax;height:150vmax;margin:-75vmax;background:conic-gradient(from 20deg,transparent 0,rgba(139,92,246,.30) 12%,transparent 30%,rgba(34,211,238,.22) 48%,transparent 62%,rgba(244,114,182,.24) 80%,transparent);filter:blur(70px);opacity:.34}'
     + '#luv .l_st{position:relative;display:grid;justify-items:center;gap:34px}'
     + '#luv .l_rg{position:relative;width:min(320px,70vw);aspect-ratio:100/60}'
     + '#luv svg{width:100%;height:100%;overflow:visible;display:block;filter:drop-shadow(0 0 14px rgba(139,92,246,.55))}'
@@ -5953,7 +5958,7 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
     var old = D.getElementById('luv'); if (old) old.remove(); var oldr = D.getElementById('luvr'); if (oldr) oldr.remove();
     if (!D.getElementById('lu-css')) { var st = D.createElement('style'); st.id = 'lu-css'; st.textContent = CSS; D.head.appendChild(st); }
     var o = D.createElement('div'); o.id = 'luv';
-    o.innerHTML = '<div class="l_lg"></div><div class="l_au"></div><div class="l_st"><div class="l_rg"><svg viewBox="0 0 100 60"><defs><clipPath id="lucp"><rect x="0" y="0" width="100" height="30"/></clipPath></defs>'
+    o.innerHTML = '<div class="l_lg"></div><div class="l_au"></div><div class="l_vg"></div><div class="l_st"><div class="l_rg"><svg viewBox="0 0 100 60"><defs><clipPath id="lucp"><rect x="0" y="0" width="100" height="30"/></clipPath></defs>'
       + '<g class="l_g1"><circle class="l_c1" cx="37" cy="30" r="20" pathLength="100" stroke="#8b5cf6"/><circle class="l_h1" cx="37" cy="30" r="20" pathLength="100" stroke="#fff" style="stroke-dasharray:5 95;opacity:0"/></g>'
       + '<g class="l_g2"><circle class="l_c2" cx="63" cy="30" r="20" pathLength="100" stroke="#f1f2f6"/><circle class="l_h2" cx="63" cy="30" r="20" pathLength="100" stroke="#22d3ee" style="stroke-dasharray:5 95;opacity:0"/></g>'
       + '<circle class="l_c3" cx="37" cy="30" r="20" pathLength="100" stroke="#8b5cf6" clip-path="url(#lucp)"/></svg><i class="l_fz"></i><i class="l_fl"></i></div>'
@@ -5972,8 +5977,9 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
       var rim = D.createElement('div'); rim.id = 'luvr'; rim.style.cssText = 'left:' + (x - R) + 'px;top:' + (y - R) + 'px;width:' + (2 * R) + 'px;height:' + (2 * R) + 'px';
       D.body.appendChild(rim);
       var ra = A(rim, [{ transform: 'scale(0)', opacity: 1 }, { transform: 'scale(1)', opacity: 1, offset: .85 }, { transform: 'scale(1.03)', opacity: 0 }], { duration: 860, easing: 'cubic-bezier(.65,0,.2,1)' }); ra.onfinish = function () { rim.remove(); };
-      A(au, [{ opacity: 0, transform: 'rotate(-40deg) scale(.8)' }, { opacity: .55, transform: 'none' }], { duration: 1700, delay: 300, easing: 'cubic-bezier(.2,.7,.2,1)' });
+      A(au, [{ opacity: 0, transform: 'rotate(-40deg) scale(.8)' }, { opacity: .34, transform: 'none' }], { duration: 1700, delay: 300, easing: 'cubic-bezier(.2,.7,.2,1)' });
       /* кольца летят навстречу по спирали и дорисовываются, за каждым — светящаяся «комета» */
+      A(q('.l_st'), [{ transform: 'scale(1.1)' }, { transform: 'scale(1)' }], { duration: 2600, delay: 300, easing: 'cubic-bezier(.16,.8,.2,1)' });
       var T0 = 420, TD = 950;
       A(c1, [{ strokeDashoffset: 100, opacity: .25 }, { strokeDashoffset: 8, opacity: 1, offset: .8 }, { strokeDashoffset: 0, opacity: 1 }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
       A(c2, [{ strokeDashoffset: 100, opacity: .25 }, { strokeDashoffset: 8, opacity: 1, offset: .8 }, { strokeDashoffset: 0, opacity: 1 }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
