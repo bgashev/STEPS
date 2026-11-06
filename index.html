@@ -1987,6 +1987,12 @@ body.frozen .stp .sb{opacity:.45}
 .bmbl span:first-child{transform:none}.bmbl span:last-child{transform:translateX(-100%)}
 .bmn{margin-top:10px;font-size:12.5px;line-height:1.4;color:var(--muted)}
 .bmn b{color:var(--text);font-weight:700}
+.pf-sex{position:relative}
+.pf-th{position:absolute;left:5px;top:5px;bottom:5px;width:calc((100% - 14px) / 2);border-radius:999px;background:var(--accent);box-shadow:0 4px 14px rgba(0,0,0,.18);opacity:0;pointer-events:none;transition:transform .5s cubic-bezier(.3,1.25,.4,1),opacity .25s ease}
+.pf-sex[data-i="0"] .pf-th{opacity:1;transform:none}
+.pf-sex[data-i="1"] .pf-th{opacity:1;transform:translateX(calc(100% + 4px))}
+.pf-sex button{position:relative;z-index:1}
+.pf-sex button.on{background:transparent;border-color:transparent;color:var(--on-accent)}
 </style>
 </head>
 <body>
@@ -4231,7 +4237,7 @@ function viewMeSettings(){
     <label class="f"><span>Имя</span><input class="inp" id="p-name" maxlength="32" placeholder="${esc((tgUser && tgUser.first_name) || 'Как тебя зовут?')}" value="${esc(p.name || '')}" data-ch="pname"></label>
     <div class="pf2">
       <label class="f"><span>Дата рождения</span><input class="inp" type="date" id="p-birth" value="${esc(p.birth || '')}" max="${isoOf(todayN())}" data-ch="pbirth"></label>
-      <div class="f"><span>Пол</span><div class="seg fill pf-sex">${[['m','Муж.'],['f','Жен.']].map(([v, l]) => `<button type="button" class="${p.sex === v ? 'on' : ''}" data-act="sex" data-v="${v}">${l}</button>`).join('')}</div></div>
+      <div class="f"><span>Пол</span><div class="seg fill pf-sex" data-i="${p.sex === 'm' ? 0 : p.sex === 'f' ? 1 : -1}"><i class="pf-th"></i>${[['m','Муж.'],['f','Жен.']].map(([v, l]) => `<button type="button" class="${p.sex === v ? 'on' : ''}" data-act="sex" data-v="${v}">${l}</button>`).join('')}</div></div>
     </div>
     ${stepper('height', 'Рост', hgt, 0, 230, 1, 0, 'см', 'height').replace('data-bind', 'data-jump="175" data-bind')}
     <div class="psec">Расчёт · вес берётся из раздела «Вес»</div>
