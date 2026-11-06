@@ -1110,7 +1110,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 :is(.fav,.ava)[class*=" fr-"]:not(.fr-classic) .fi{box-shadow:0 0 0 calc(var(--frg,2.5px) * var(--fgk,.75)) var(--bg)!important}
 :is(.fav,.ava)[class*=" fr-"]:not(.fr-classic)::before,:is(.fav,.ava)[class*=" fr-"]:not(.fr-classic)::after{content:"";position:absolute;inset:calc(var(--fi,18%) * -1);background-position:center;background-size:100% 100%;background-repeat:no-repeat;pointer-events:none;z-index:1;will-change:transform}
 :is(.fav,.ava)[class*=" fr-"]:not(.fr-classic){--fra:0deg;overflow:visible}
-.stk .fav::before,.stk .fav::after,.fstrip .fav::before,.stk .fav::after,.fav.s:not(.fitem .fav)::before,.fav.s:not(.fitem .fav)::after{display:none!important}
+.stk .fav::before,.stk .fav::after,.fstrip .fav::before,.stk .fav::after,.fav.s:not(.fitem .fav):not(.rk .fav)::before,.fav.s:not(.fitem .fav):not(.rk .fav)::after{display:none!important}
 @keyframes frRot{to{transform:rotate(360deg)}}
 @keyframes frRotR{to{transform:rotate(-360deg)}}
 @keyframes frBob{0%,100%{transform:translateY(0) rotate(-2.5deg)}50%{transform:translateY(-3.5%) rotate(2.5deg)}}
@@ -2443,6 +2443,11 @@ html.web #tabs .wver{position:absolute;left:0;right:0;bottom:4px;text-align:cent
 #sheet.fr{display:flex;flex-direction:column}
 #sheet.fr>.btn.ghost:last-child{margin-top:auto!important;flex:none}
 #sheet.fr>.fof:last-of-type{margin-bottom:12px}
+
+/* рейтинг месяца: аватарки с рамками, как в ленте */
+.rkc .rk .fav{flex:none}
+.rkc .rk .fav.s{width:38px;height:38px;font-size:15px}
+.rkc .rk .fav.s:is([class*=" fr-"]){padding:3px}
 </style>
 </head>
 <body>
@@ -2457,7 +2462,7 @@ html.web #tabs .wver{position:absolute;left:0;right:0;bottom:4px;text-align:cent
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.596';
+const APP = 'VOOB (by BGASHEV) Mini App v1.597';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
