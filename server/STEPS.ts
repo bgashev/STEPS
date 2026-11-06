@@ -1,7 +1,7 @@
 // VOOB (ранее STEPS) — серверная функция синхронизации (Supabase Edge Function) · v1.453 (заморозка PRO, отложенное удаление аккаунта)
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const APP_URL = "https://bgashev.github.io/STEPS/";
+const APP_URL = "https://app.voob.kz/";
 const BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN") ?? "";
 const ADMIN_TG_ID = Number(Deno.env.get("ADMIN_TG_ID") ?? 0) || 0;
 const SB_URL = Deno.env.get("SUPABASE_URL") ?? "";
