@@ -2416,7 +2416,7 @@ body.frozen .stp .sb{opacity:.45}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.555';
+const APP = 'VOOB (by BGASHEV) Mini App v1.556';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2767,6 +2767,32 @@ async function flush(){
   } catch (e) { dirty = true; setSync('err'); }
   saving = false;
   if (dirty) saveTimer = setTimeout(flush, 2000);
+}
+// v1.556: облачный слепок новее локальной копии → берём его за основу, но то, что на этом устройстве ещё не дошло до сервера (dirty), переносим поверх
+function carryLocal(cd, loc){
+  const ARR = {workout:'workouts', weight:'weights', plan:'plans'};
+  cd.tomb = cd.tomb || {}; cd.metaU = cd.metaU || {}; cd.sync = cd.sync || {rev:0, dirty:{}, init:false}; cd.sync.dirty = cd.sync.dirty || {};
+  for (const key of Object.keys((loc.sync && loc.sync.dirty) || {})) {
+    const [kind, id] = splitKey(key);
+    if (kind === 'meta') {
+      const lu = (loc.metaU || {})[id] || 0;
+      if (lu > (cd.metaU[id] || 0)) {
+        if (id === 'profile') cd.profile = loc.profile; else if (id === 'settings') cd.settings = loc.settings; else if (id === 'weight_goal') cd.weight_goal = loc.weight_goal;
+        cd.metaU[id] = lu; cd.sync.dirty[key] = 1;
+      }
+      continue;
+    }
+    const a = ARR[kind]; if (!a) continue;
+    cd[a] = cd[a] || [];
+    const li = (loc[a] || []).find(x => String(x.id) === id), ci = cd[a].findIndex(x => String(x.id) === id);
+    if (li) {
+      if (ci < 0 || (li.updated || 0) > (cd[a][ci].updated || 0)) { if (ci >= 0) cd[a][ci] = li; else cd[a].push(li); delete cd.tomb[key]; cd.sync.dirty[key] = 1; }
+    } else if ((loc.tomb || {})[key]) {
+      const tu = loc.tomb[key];
+      if (ci < 0 || tu > (cd[a][ci].updated || 0)) { if (ci >= 0) cd[a].splice(ci, 1); cd.tomb[key] = Math.max(tu, cd.tomb[key] || 0); cd.sync.dirty[key] = 1; }
+    }
+  }
+  return cd;
 }
 async function cloudLoad(){
   const ptr = await cs('getItem', 'ptr');
@@ -5900,8 +5926,12 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
   } catch (e) {}
 })();
 const WL = {code:'', link:'', t0:0, exp:600, timer:0, tick:0};
-function webLogout(silent){
+async function webLogout(silent){
   const tok = webSess && webSess.token;
+  if (!silent) {   // v1.556: перед выходом дотолкнуть несохранённое; локальную копию стираем, только если на сервере всё
+    try { await Promise.race([syncNow(), new Promise(r => setTimeout(r, 5000))]); } catch (e) {}
+    try { if (!Object.keys(db.sync.dirty).length && srvState === 'ok') localStorage.removeItem(LS); } catch (e) {}
+  }
   try { localStorage.removeItem(WEBK); sessionStorage.removeItem('voob_web_skip'); } catch (e) {}
   const go = () => location.reload();
   if (!silent && tok) api('/logout', {token:tok}).catch(() => {}).then(go); else go();
@@ -5989,7 +6019,7 @@ async function init(){
       cloudPtr = c.ptr;
       const cd = normalize(c.data);
       if ((cd.updated || 0) > (db.updated || 0)) {
-        db = cd; invalidate();
+        db = carryLocal(cd, db); invalidate();   // v1.556: несинхронизированные правки этого устройства не теряем
         try { localStorage.setItem(LS, JSON.stringify(db)); } catch (e) {}
         applyTheme(); if (!sheetCtx) render();
       } else if ((db.updated || 0) > (cd.updated || 0)) { dirty = true; flush(); }
