@@ -330,8 +330,9 @@ input[type=date].inp{display:block}
 .hdl-at{color:var(--muted);font-size:17px;font-weight:600;margin-right:2px}
 .hdl input{flex:1;min-width:0;height:100%;border:0;outline:0;background:none;color:var(--text);font:inherit;font-size:17px;font-weight:600;letter-spacing:.01em;text-transform:none}
 .hdl input::placeholder{color:var(--muted);font-weight:500}
-.hdl-s{flex:none;height:40px;padding:0 16px;border-radius:12px;border:0;font:inherit;font-size:14px;font-weight:700;background:transparent;color:var(--muted);opacity:.0;width:0;padding:0;overflow:hidden;transition:all .3s cubic-bezier(.32,.72,0,1)}
-.hdl.dirty .hdl-s{opacity:1;width:auto;padding:0 16px;background:var(--accent);color:var(--bg)}
+.hdl-s{flex:none;height:40px;max-width:0;padding:0;margin-left:0;border-radius:999px;border:0;font:inherit;font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;background:var(--accent);color:var(--bg);opacity:0;filter:blur(10px);transform:scale(.82);pointer-events:none;transition:max-width .5s cubic-bezier(.32,.72,0,1),padding .5s cubic-bezier(.32,.72,0,1),margin .5s cubic-bezier(.32,.72,0,1),opacity .4s ease,filter .5s ease,transform .5s cubic-bezier(.32,.72,0,1)}
+.hdl.dirty .hdl-s{max-width:140px;padding:0 20px;margin-left:8px;opacity:1;filter:blur(0);transform:none;pointer-events:auto}
+.hdl:has(.hdl-s){padding-right:6px}
 .hdc-n{margin:8px 4px 0;font-size:12px;color:var(--muted)}
 .hdc-act{display:grid;grid-template-columns:1.3fr 1fr;gap:8px;margin-top:14px}
 .hdc-act .btn{width:100%;justify-content:center;white-space:nowrap}
