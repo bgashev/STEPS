@@ -2424,7 +2424,7 @@ body.frozen .stp .sb{opacity:.45}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.559';
+const APP = 'VOOB (by BGASHEV) Mini App v1.560';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4635,7 +4635,7 @@ function langWave(el, change){
   const old = document.getElementById('lgo'); if (old) old.remove();
   const pick = (n, off) => Array.from({length:n}, (_, i) => HELLOS[(off + i * 7) % HELLOS.length]);
   // [размер, прозрачность, длительность хода, сдвиг по списку]; колонка №1 — «главная»: в ней едет приветствие выбранного языка
-  const cols = [[26, 0.6, 2900, 3], [34, 1, 2000, 11], [22, 0.5, 3000, 19], [30, 0.8, 2700, 5], [24, 0.55, 2950, 23]], MC = 1;
+  const cols = [[26, 0.6, 2900, 3], [22, 0.5, 3000, 19], [34, 1, 2000, 11], [30, 0.8, 2700, 5], [24, 0.55, 2950, 23]], MC = 2;   // v1.560: главное слово — в центральном столбце
   const hello = HELLO_MAIN[curLang()] || 'Hello';
   const ov = document.createElement('div'); ov.id = 'lgo';
   ov.innerHTML = '<div class="lgo-cols">' + cols.map(([sz, op, , off], ci) => {
