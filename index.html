@@ -2333,6 +2333,18 @@ body.frozen .stp .sb{opacity:.45}
 .frpv-pre{transform:translateX(calc(var(--d,1) * 18px)) scale(.97)}
 .frpv-out{transition:opacity .17s ease-in,filter .17s ease-in,transform .17s ease-in;pointer-events:none}
 .frpv-in{transition:opacity .42s cubic-bezier(.22,1,.36,1),filter .42s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.22,1,.36,1)}
+.hm{display:contents}
+/* v1.531: Главная — больше воздуха (отступы, ритм блоков), функции и кнопки те же */
+.hm .head{margin-bottom:26px}.hm .head h1{margin-bottom:6px}.hm .head .sub{line-height:1.5}
+.hm>.card{margin-bottom:22px}
+.hm .gx2{padding:22px 20px 18px}.hm .gx2 .gx-top{gap:22px}.hm .gx2-h{margin-bottom:18px}
+.hm .gx2 .gx-strip{margin-top:24px;padding-top:20px}.hm .gx2 .gsbtn{margin-top:14px}.hm .gx2 .note{margin-top:16px}
+.hm .actions{gap:12px;margin:0 0 22px}
+.hm .plsug{margin-bottom:22px}
+.hm .kpis{gap:12px;margin-bottom:8px}.hm .kpi{padding:18px 18px}
+.hm .hhd{margin:40px 4px 4px}.hm .hflt{margin-top:16px;margin-bottom:6px}
+.hm .mh{margin:32px 6px 14px}
+.hm .wi{padding:17px 16px;margin-bottom:12px;gap:12px}.hm .wi .l1{text-wrap:balance}.hm .wi .wd{min-width:34px}.hm .wi .wm .l1{line-height:1.4}.hm .wi .wm .l2{margin-top:5px}
 .frpv-wrap{position:relative;margin:4px 0 18px}.frpv-wrap .frpv-nav{position:absolute;top:50%;margin-top:-19px;z-index:6;left:8px}.frpv-wrap .frpv-nav.r{left:auto;right:8px}
 .frpv .hero.bgpv,#sheet .frpv .hero.hbg{margin-left:0;margin-right:0;border-radius:24px}#sheet .frpv .hero.hbg{padding-bottom:26px;overflow:hidden;background:#0b0b10}#sheet .frpv .hero.hbg::before,#sheet .frpv .hero.hbg::after{display:none}#sheet .frpv .hero.hbg>.hbgfx{-webkit-mask-image:none;mask-image:none}
 .frpv .hero.bgpv{margin-top:0;margin-bottom:0;padding:34px 18px 22px}.frpv .bgpv .hero-av .fav{width:100px;height:100px;font-size:38px}
@@ -4064,7 +4076,7 @@ function viewHome(){
     h += `<div class="kpis">${kpi(ws.length, 'Тренировок')}${kpi(fmtMin(sum(ws, w => w.minutes)), 'Всего времени')}${hf0 && STR[hf0] ? kpi(numSep(sum(ws, strTotal)) + (STR[hf0][0] === 'secs' ? ' сек' : ''), STR[hf0][0] === 'secs' ? 'Под нагрузкой' : 'Повторений') : hf0 && !['run', 'bike'].includes(hf0) ? kpi(numSep(sum(ws, workoutXp)), 'XP заработано') : kpi(kmF(sum(ws, kmOf)), 'Пройдено, примерно')}${kpi(kcs.some(Boolean) ? kcalF(sum(kcs, k => k || 0)) : '—', kcs.some(Boolean) ? 'Сожжено, примерно' : 'Ккал: укажи вес')}</div>`;
   } }
   h += historyHTML(ws);
-  return h + '<div class="wdock-sp"></div>';   // место под кнопку «Тренировка»
+  return `<div class="hm">${h}</div>` + '<div class="wdock-sp"></div>';   // место под кнопку «Тренировка»
 }
 /* план на сегодня: пунктирная карточка-предложение (полного раздела «План» в мобильной версии нет) */
 function todayPlans(ws){
