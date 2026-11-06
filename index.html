@@ -438,7 +438,8 @@ input[type=date].inp{display:block}
 .frb{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px 6px 10px;min-width:0;border-radius:18px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:13px;font-weight:650;cursor:pointer;transition:border-color .2s,transform .12s}
 .frb:active{transform:scale(.96)}
 .frb.on{border-color:var(--accent)}
-.frb .fav{width:52px;height:52px;font-size:20px}
+.frb .fav{box-sizing:border-box;flex:none;width:52px;height:52px;font-size:20px}
+.frb{justify-content:flex-start;height:104px;line-height:1.2;text-align:center}
 /* v1.442: скрытые рамки получали общий .more{display:block;margin:auto} и сужались */
 .frb.more{margin:0}
 .frs:not(.col) .frb.more{display:flex}
@@ -1658,6 +1659,8 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .rw2 em{font-style:normal;font-size:12.5px;color:var(--muted);text-align:right;max-width:55%}
 /* v1.467: выбор значка */
 .bgl{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.bgl .bgi.more{display:flex;margin:0}
+.bgl .bgi{min-height:76px;justify-content:flex-start;min-width:0;width:100%}
 .bgi{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 2px 8px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;cursor:pointer;transition:transform .15s,border-color .2s,background .2s}
 .bgi:active{transform:scale(.94)}
 .bgi i{font-style:normal;font-size:10px;color:var(--muted);text-align:center;line-height:1.15}
@@ -4612,6 +4615,8 @@ function viewMeSettings(){
     <div class="pm-field"><input id="pm-in" class="inp" placeholder="VOOB-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="24" enterkeyhint="done">
     <button type="button" class="btn primary" id="pm-go" data-act="promo" disabled>Активировать</button></div>
     <div class="cap" id="pm-msg">Введи код — PRO, рамка или подарок сразу станут твоими</div></div>`;   // v1.436 · М2: оформление
+  { const fk = frameOf(tgUser ? {tg_id:tgUser.id} : null), bk = myBg();   // v1.540: рамка, фон и значок — на отдельной странице «Персонализация»
+    h += `<button type="button" class="card perst" data-act="persopen"><span class="perst-pv${bk ? ' hbg' : ''}">${bgFx(bk)}${frAv(fk, 46, lv, photo, name)}</span><div class="perst-t"><b>Персонализация</b><small>Рамка, фон и значок профиля</small></div><span class="perst-go">${IC('chev', 18)}</span></button>`; }
   if (inTG && tgUser && (BDG.get(tgUser.id) || {}).creator) h += `<div class="card"><div class="tgl${asFree() ? ' on' : ''}" data-act="asfree"><span class="sw2"></span><b>Смотреть как без PRO</b></div><div class="cap" style="margin-top:8px">Только для создателя: на этом устройстве приложение ведёт себя как у пользователя без подписки — лимиты и закрытые функции. Выключи, чтобы вернуть всё.</div></div>`;
   if (inTG) h += socEditHTML();
   // v1.447: «Мои подарки» и «Достижения» убраны из настроек — они показываются в самом профиле выше
@@ -4629,8 +4634,6 @@ function viewMeSettings(){
   h += `<div class="card"><h3>${IC('target')}Цель недели</h3><div class="cap" style="margin:-6px 0 12px">Неделя начинается с первой тренировки и длится N дней. Выполнил норму — следующая начнётся с новой тренировки.</div>
     <div class="g2">${stepper('gcount', 'Сколько тренировок', g.count, 1, 14, 1, 0, '', 'gcount')}${stepper('gdays', 'За сколько дней', g.days, 3, 14, 1, 0, '', 'gdays')}</div>
     <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
-  { const fk = frameOf(tgUser ? {tg_id:tgUser.id} : null), bk = myBg();   // v1.540: рамка, фон и значок — на отдельной странице «Персонализация»
-    h += `<button type="button" class="card perst" data-act="persopen"><span class="perst-pv${bk ? ' hbg' : ''}">${bgFx(bk)}${frAv(fk, 46, lv, photo, name)}</span><div class="perst-t"><b>Персонализация</b><small>Рамка, фон и значок профиля</small></div><span class="perst-go">${IC('chev', 18)}</span></button>`; }
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}
     ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${dvEff() === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${dvEff() === k ? IC('check', 16) : ''}${k === 'black' ? '<i class="prot">PRO</i>' : ''}</button>`).join('')}</div>` : ''}</div>
     <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}${isPro() ? '' : '<i class="prot inl" data-act="prosheet" role="button">PRO</i>'}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}" data-act="accent" data-v="${k}" style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div>
