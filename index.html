@@ -1874,6 +1874,11 @@ body.frozen .stp .sb{opacity:.45}
 #thz{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:99999;opacity:0;filter:blur(7px);will-change:transform,opacity}
 #thz.dusk{background:linear-gradient(to bottom,rgba(255,206,140,0) 0,rgba(255,196,120,.8) 3%,rgba(255,98,142,.72) 11%,rgba(98,82,255,.55) 19%,transparent 27%)}
 #thz.dawn{background:linear-gradient(to bottom,rgba(255,240,196,0) 0,rgba(255,240,196,.8) 3%,rgba(255,176,128,.75) 11%,rgba(120,164,255,.5) 19%,transparent 27%)}
+/* после смены темы размытие у градиентов (шапка настроек сверху, панель вкладок снизу) набирается плавно, а не включается рывком */
+:root.thz-fin .mset-top::before{animation:thzBlurT .8s cubic-bezier(.3,.6,.3,1) both}
+:root.thz-fin body::after{animation:thzBlurB .8s cubic-bezier(.3,.6,.3,1) both}
+@keyframes thzBlurT{from{-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}to{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}}
+@keyframes thzBlurB{from{-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}to{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}}
 </style>
 </head>
 <body>
@@ -2518,7 +2523,7 @@ function themeWave(go, toDark){
   let vt = null;
   try { vt = document.startViewTransition(() => { go(); document.body.appendChild(ln); }); } catch (e) { root.classList.remove('thz-go'); go(); return; }
   let gone = false;
-  const done = () => { if (gone) return; gone = true; ln.remove(); root.classList.remove('thz-go'); };
+  const done = () => { if (gone) return; gone = true; ln.remove(); root.classList.remove('thz-go'); root.classList.add('thz-fin'); setTimeout(() => root.classList.remove('thz-fin'), 900); };   // после перехода размытие у верхнего и нижнего градиента набирается плавно
   const ease = 'cubic-bezier(.5,.05,.25,1)';
   vt.ready.then(() => {     // стартуем вместе с маской — по готовности перехода
     ln.animate([{transform:'translateY(115%)'}, {transform:'translateY(-10%)'}], {duration:1600, delay:-70, easing:ease, fill:'both'});
