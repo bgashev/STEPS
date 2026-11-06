@@ -1,4 +1,4 @@
-// VOOB (ранее STEPS) — серверная функция синхронизации (Supabase Edge Function) · v1.452 (заморозка PRO, удаление аккаунта)
+// VOOB (ранее STEPS) — серверная функция синхронизации (Supabase Edge Function) · v1.453 (заморозка PRO, отложенное удаление аккаунта)
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const APP_URL = "https://bgashev.github.io/STEPS/";
@@ -251,6 +251,25 @@ async function freezeUsed(tgId: number, usedAt: string | null) {
     .eq("tg_id", tgId).gt("created_at", usedAt).is("refunded_at", null);
   return !count;                                  // новая оплата открывает заморозку заново
 }
+const DELETE_GRACE_DAYS = 7;
+async function isLocked(tgId: number) {            // заморозка PRO или удаление аккаунта в ожидании — только просмотр
+  const [{ data: s }, { data: u }] = await Promise.all([db.from("pro_subs").select("frozen_at").eq("tg_id", tgId).maybeSingle(),
+    db.from("users").select("delete_at").eq("tg_id", tgId).maybeSingle()]);
+  return !!s?.frozen_at || !!u?.delete_at;
+}
+async function deactivatedSet(ids: number[]) {
+  if (!ids.length) return new Set<number>();
+  const { data } = await db.from("users").select("tg_id").in("tg_id", ids).not("delete_at", "is", null);
+  return new Set<number>((data ?? []).map((x: any) => x.tg_id));
+}
+async function purgeDue() {                        // отложенное удаление: срок вышел — стираем окончательно
+  const { data } = await db.from("users").select("tg_id").lt("delete_at", new Date().toISOString()).limit(20);
+  for (const u of data ?? []) {
+    const { error } = await db.rpc("delete_account", { p_tg: u.tg_id });
+    if (error) { console.error(error); continue; }
+    tg("sendMessage", { chat_id: u.tg_id, text: "Аккаунт VOOB удалён окончательно. Если захочешь вернуться — просто открой приложение, начнёшь с чистого листа. Спасибо, что был с нами 💛" }).catch(() => {});
+  }
+}
 async function isFrozen(tgId: number) {
   const { data } = await db.from("pro_subs").select("frozen_at").eq("tg_id", tgId).maybeSingle();
   return !!data?.frozen_at;
@@ -265,9 +284,10 @@ async function proStatus(tgId: number) {
     bonus_days: data?.bonus_used ? 0 : p.first_bonus_days }));
   const fd = freezeDaysFor(data?.plan ?? null);
   const canFreeze = active && fd > 0 && !(await freezeUsed(tgId, data?.freeze_used_at ?? null));
+  const { data: du } = await db.from("users").select("delete_at").eq("tg_id", tgId).maybeSingle();
   const leftMs = frozen ? Number(data.frozen_left_ms ?? 0) : active ? until!.getTime() - Date.now() : 0;
   return { active, frozen, until: until ? until.toISOString() : null, plan: data?.plan ?? null,
-    days_left: Math.ceil(leftMs / DAY), plans,
+    days_left: Math.ceil(leftMs / DAY), plans, del_at: du?.delete_at ?? null,
     frozen_until: frozen ? data.frozen_until : null, freeze_days: fd, can_freeze: canFreeze,
     freeze_used: !!data?.freeze_used_at && !canFreeze && !frozen && fd > 0 };
 }
@@ -285,7 +305,7 @@ async function routeProInvoice(body: any) {
   const plan = String(body?.plan ?? "");
   const p = (await proPlans()).find((x: any) => x.plan === plan);
   if (!p) return fail("Неизвестный тариф");
-  if (await isFrozen(me)) return fail("Подписка заморожена — оплата доступна после разморозки", 423);
+  if (await isLocked(me)) return fail("Оплата недоступна, пока подписка заморожена или аккаунт ждёт удаления", 423);
   const to = Number(body?.for ?? 0);
   if (to) {                                                  // v1.429: PRO в подарок другу
     if (to === me || !(await areFriends(me, to))) return fail("Дарить можно только друзьям", 403);
@@ -598,8 +618,9 @@ async function routeFriends(body: any) {
     db.from("friend_requests").select("from_id, created_at").eq("to_id", me), db.from("friend_requests").select("to_id").eq("from_id", me),
     db.from("friend_pokes").select("to_id, at").eq("from_id", me)]);
   const links = lr.data, inc = ir.data, out = or.data, pk = pr.data;
-  const ids = (links ?? []).map((l: any) => l.b);
-  const incIds = (inc ?? []).map((r: any) => r.from_id);
+  const dead = await deactivatedSet([...new Set([...(links ?? []).map((l: any) => l.b), ...(inc ?? []).map((r: any) => r.from_id)])]);
+  const ids = (links ?? []).map((l: any) => l.b).filter((id: number) => !dead.has(id));
+  const incIds = (inc ?? []).map((r: any) => r.from_id).filter((id: number) => !dead.has(id));
   const all = [...new Set([me, ...ids, ...incIds])];
   const [users, by, gs] = await Promise.all([usersMap(all), loadRecs(all), giftStats(all)]);
   const card = (id: number) => {
@@ -628,6 +649,7 @@ async function routeFriendProfile(body: any) {
   if (!me) return noSession();
   const other = Number(body?.tg_id);
   if (!other) return fail("Нет друга");
+  if (other !== me && (await deactivatedSet([other])).size) return fail("Пользователь не найден", 404);
   const today = todayOf(body);
   const [friendsOk, users, by, gsm, fc, theirs, mineArr, outR, incR] = await Promise.all([
     other === me ? Promise.resolve(true) : areFriends(me, other), usersMap([other]), loadRecs([other]), giftStats([other]),
@@ -661,7 +683,7 @@ async function routePublicProfile(body: any) {
   const h = normHandle(body?.handle);
   if (!HANDLE_RE.test(h)) return json({ status: "notfound" });
   const { data: u } = await db.from("users").select("tg_id, first_name, username, handle, private").ilike("handle", h).maybeSingle();
-  if (!u) return json({ status: "notfound" });
+  if (!u || (await deactivatedSet([u.tg_id])).size) return json({ status: "notfound" });
   const today = todayOf(body);
   const g = (await giftStats([u.tg_id])).get(u.tg_id);
   const pr = (await loadRecs([u.tg_id])).get(u.tg_id) ?? [];
@@ -705,7 +727,7 @@ async function routeFriendRequest(body: any) {
   if (!other || other === me) return json({ status: "self" });
   if (await areFriends(me, other)) return json({ status: "already" });
   const { data: target } = await db.from("users").select("handle").eq("tg_id", other).maybeSingle();
-  if (!target) return fail("Пользователь не найден", 404);
+  if (!target || (await deactivatedSet([other])).size) return fail("Пользователь не найден", 404);
   // по ссылке «Поделиться профилем» можно постучаться к любому, у кого есть @username
   if (!target.handle) {
     const mine = await friendIds(me);
@@ -773,6 +795,7 @@ async function routeGiftSend(body: any) {
   if (!GIFTS[kind]) return fail("Неизвестный подарок");
   if (kind === "pro") return fail("PRO дарится через оплату звёздами", 400);
   if (!other || other === me || !(await areFriends(me, other))) return fail("Дарить можно только друзьям", 403);
+  if ((await deactivatedSet([other])).size) return fail("Пользователь недоступен", 404);
   if (PRO_GIFTS.has(kind) && me !== ADMIN_TG_ID && !(await proStatus(me)).active) return json({ status: "pro" });
   const en = await giftEnergy(me);
   if (en.left <= 0 && !PRO_GIFTS.has(kind)) return json({ status: "energy", energy: en });
@@ -994,6 +1017,7 @@ async function routeBot(req: Request) {
 async function routeWebApp(body: any) {
   const user = await verifyInitData(String(body?.initData ?? ""));
   if (!user) return fail("Подпись Telegram не прошла проверку", 401);
+  await purgeDue().catch(() => {});
   await upsertUser(user);
   const token = await createSession(user.id, "miniapp");
   return json({ token, user: await userInfo(user.id) });
@@ -1025,7 +1049,8 @@ async function routeSync(body: any) {
   const rows = Array.isArray(body?.rows) ? body.rows : [];
   if (rows.length > MAX_ROWS) return fail(`Слишком много записей за раз (максимум ${MAX_ROWS})`);
   let pushed = 0;
-  const frozenNow = await isFrozen(tgId);          // М6: во время заморозки записи не принимаются
+  purgeDue().catch(() => {});
+  const frozenNow = await isLocked(tgId);          // М6: во время заморозки записи не принимаются
   if (rows.length && !frozenNow) {
     const { data, error } = await db.rpc("sync_push", { p_tg: tgId, p_rows: rows });
     if (error) return fail("Ошибка записи: " + error.message, 500);
@@ -1093,13 +1118,14 @@ async function routeFreezeStart(body: any) {
   const st = await proStatus(me);
   if (action === "freeze" && !st.can_freeze) return fail(st.frozen ? "Подписка уже заморожена" : "Заморозка недоступна", 409);
   if (action === "unfreeze" && !st.frozen) return fail("Подписка не заморожена", 409);
+  if (action === "delete" && st.del_at) return fail("Удаление уже запланировано", 409);
   const { data: old } = await db.from("action_codes").select("created_at").eq("tg_id", me).eq("action", action).maybeSingle();
   if (old && Date.now() - new Date(old.created_at).getTime() < 60000) return json({ status: "soon", ttl: ACT_TTL_MIN * 60 });
   const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 10000).padStart(4, "0");
   await db.from("action_codes").upsert({ tg_id: me, action, code_hash: await sha256(`act:${action}:${me}:${code}`), tries: 0,
     created_at: new Date().toISOString() }, { onConflict: "tg_id,action" });
   const text = action === "delete"
-    ? `🗑 Код для удаления аккаунта VOOB: <b>${code}</b>\n\nВсе твои тренировки, друзья, подарки и настройки будут удалены безвозвратно. Оплаченные звёзды не возвращаются автоматически.\n\nДействует ${ACT_TTL_MIN} минут. Если это не ты — не называй код никому и проигнорируй сообщение.`
+    ? `🗑 Код для удаления аккаунта VOOB: <b>${code}</b>\n\nАккаунт сразу отключится, а через ${DELETE_GRACE_DAYS} дней все тренировки, друзья, подарки и настройки будут удалены безвозвратно. До этого можно передумать и отменить удаление в приложении. Оплаченные звёзды не возвращаются автоматически.\n\nДействует ${ACT_TTL_MIN} минут. Если это не ты — не называй код никому и проигнорируй сообщение.`
     : action === "freeze"
     ? `❄️ Код для заморозки VOOB PRO: <b>${code}</b>\n\nПодписка встанет на паузу на ${st.freeze_days} дн., оставшиеся дни сохранятся. Пока идёт заморозка, данные в приложении можно только смотреть. Заморозка доступна один раз.\n\nДействует ${ACT_TTL_MIN} минут. Если это не ты — проигнорируй сообщение.`
     : `☀️ Код для разморозки VOOB PRO: <b>${code}</b>\n\nПодписка продолжится с того места, где остановилась.\n\nДействует ${ACT_TTL_MIN} минут. Если это не ты — проигнорируй сообщение.`;
@@ -1120,10 +1146,13 @@ async function routeFreezeVerify(body: any) {
   }
   await db.from("action_codes").delete().eq("tg_id", me).eq("action", action);
   if (action === "delete") {
-    const { error } = await db.rpc("delete_account", { p_tg: me });
-    if (error) { console.error(error); return fail("Не удалось удалить аккаунт", 500); }
-    tg("sendMessage", { chat_id: me, text: "Аккаунт VOOB удалён. Если захочешь вернуться — просто открой приложение, начнёшь с чистого листа. Спасибо, что был с нами 💛" }).catch(() => {});
-    return json({ status: "ok", deleted: true });
+    const at = new Date(Date.now() + DELETE_GRACE_DAYS * DAY).toISOString();
+    const { data: u } = await db.from("users").select("hide_feed, delete_at").eq("tg_id", me).maybeSingle();
+    if (u?.delete_at) return fail("Удаление уже запланировано", 409);
+    await db.from("users").update({ delete_at: at, hide_feed_prev: !!u?.hide_feed, hide_feed: true }).eq("tg_id", me);
+    tg("sendMessage", { chat_id: me, parse_mode: "HTML", reply_markup: openBtnMk(),
+      text: `🗑 Аккаунт VOOB отключён и будет удалён <b>${fmtRu(at)}</b>.\n\nДо этого дня можно передумать: открой приложение и нажми «Отменить удаление».` }).catch(() => {});
+    return json({ status: "ok", scheduled: true, delete_at: at, pro: await proStatus(me) });
   }
   const { data: row } = await db.from("pro_subs").select(SUB_COLS).eq("tg_id", me).maybeSingle();
   const st = await proStatus(me);
@@ -1138,6 +1167,16 @@ async function routeFreezeVerify(body: any) {
     tg("sendMessage", { chat_id: me, parse_mode: "HTML", reply_markup: openBtnMk(),
       text: `☀️ VOOB PRO снова активен до <b>${fmtRu(u.until)}</b>.` }).catch(() => {});
   }
+  return json({ status: "ok", pro: await proStatus(me) });
+}
+
+async function routeAccountRestore(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const { data: u } = await db.from("users").select("delete_at, hide_feed_prev").eq("tg_id", me).maybeSingle();
+  if (!u?.delete_at) return json({ status: "none", pro: await proStatus(me) });
+  await db.from("users").update({ delete_at: null, hide_feed: !!u.hide_feed_prev, hide_feed_prev: null }).eq("tg_id", me);
+  tg("sendMessage", { chat_id: me, reply_markup: openBtnMk(), text: "✅ Удаление отменено — аккаунт VOOB снова активен. С возвращением!" }).catch(() => {});
   return json({ status: "ok", pro: await proStatus(me) });
 }
 
@@ -1157,11 +1196,11 @@ Deno.serve(async (req) => {
   try {
     if (route === "/setup" && req.method === "GET") return await routeSetup(req);
     if (route === "/bot" && req.method === "POST") return await routeBot(req);
-    if (req.method !== "POST") return json({ app: "VOOB sync", version: "1.452", pro: true, ok: true });
+    if (req.method !== "POST") return json({ app: "VOOB sync", version: "1.453", pro: true, ok: true });
     const body = await req.json().catch(() => ({}));
     if (FROZEN_BLOCK.has(route)) {                       // М6: пока подписка заморожена — только просмотр
       const who = await sessionUser(body?.token);
-      if (who && await isFrozen(who)) return fail("Подписка заморожена — изменения временно недоступны", 423);
+      if (who && await isLocked(who)) return fail("Аккаунт на паузе — изменения временно недоступны", 423);
     }
     switch (route) {
       case "/tg-webapp": return await routeWebApp(body);
@@ -1190,6 +1229,7 @@ Deno.serve(async (req) => {
       case "/pro/invoice": return await routeProInvoice(body);
       case "/pro/freeze/start": return await routeFreezeStart(body);
       case "/pro/freeze/verify": return await routeFreezeVerify(body);
+      case "/account/restore": return await routeAccountRestore(body);
     }
     return fail("Неизвестный маршрут " + route, 404);
   } catch (e) {
