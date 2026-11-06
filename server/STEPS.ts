@@ -175,7 +175,7 @@ let _botName = "";
 async function botName() {
   if (_botName) return _botName;
   const me = await tg("getMe", {});
-  _botName = me?.result?.username ?? "steps_v1_bot";
+  _botName = me?.result?.username ?? "voobkz_bot";
   return _botName;
 }
 const shareLink = async (handle: string) => `https://t.me/${await botName()}/STEPS?startapp=u_${handle}`;
