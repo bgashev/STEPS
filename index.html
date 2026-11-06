@@ -1993,6 +1993,8 @@ body.frozen .stp .sb{opacity:.45}
 .pf-sex[data-i="1"] .pf-th{opacity:1;transform:translateX(calc(100% + 4px))}
 .pf-sex button{position:relative;z-index:1}
 .pf-sex button.on{background:transparent;border-color:transparent;color:var(--on-accent)}
+.bmk{transition:left .6s cubic-bezier(.3,1.1,.4,1)}
+.bmo{transition:left .5s ease,width .5s ease,opacity .4s ease}
 </style>
 </head>
 <body>
@@ -4537,12 +4539,12 @@ function chips(age, b, bmr){
   // v1.499: «Расчёт» — четыре плитки и шкала ИМТ с зонами; меняется сразу при смене роста, даты рождения и пола
   const z = bmiZones(), sx = db.profile.sex, h = +db.profile.height || 0, m = h / 100;
   const bf = b ? bodyFat(b) : null, cat = b ? bmiCat(b) : null;
-  const tile = (lab, val, unit, sub, dot) => `<div class="bmt"><div class="bml">${lab}</div><div class="bmv">${val}${unit ? `<em>${unit}</em>` : ''}</div><div class="bms">${dot ? `<i style="background:${dot}"></i>` : ''}${sub}</div></div>`;
+  const tile = (lab, val, unit, sub, dot, n, f) => `<div class="bmt"><div class="bml">${lab}</div><div class="bmv"${n != null ? ` data-n="${n}" data-f="${f}"` : ''}>${val}${unit ? `<em>${unit}</em>` : ''}</div><div class="bms">${dot ? `<i style="background:${dot}"></i>` : ''}${sub}</div></div>`;
   let h2 = `<div class="bmg">`
-    + tile('Возраст', age != null ? age : '—', age != null ? plural(age, W_YEAR) : '', age != null ? '' : 'укажи дату рождения')
-    + tile('ИМТ', b ? num(b) : '—', '', b ? cat[0] : 'нужен рост', b ? cat[1] : '')
-    + tile('Доля жира', bf ? '≈ ' + Math.round(bf) : '—', bf ? '%' : '', bf ? 'грубая оценка' : (z.teen ? 'со взрослого возраста' : 'нужен пол и возраст'))
-    + tile('Базовый обмен', bmr ? numSep(bmr) : '—', bmr ? 'ккал' : '', bmr ? 'в день' : 'пол, возраст, рост, вес')
+    + tile('Возраст', age != null ? age : '—', age != null ? plural(age, W_YEAR) : '', age != null ? '' : 'укажи дату рождения', '', age != null ? age : null, 'i')
+    + tile('ИМТ', b ? num(b) : '—', '', b ? cat[0] : 'нужен рост', b ? cat[1] : '', b ? b.toFixed(3) : null, 'd')
+    + tile('Доля жира', bf ? '≈ ' + Math.round(bf) : '—', bf ? '%' : '', bf ? 'грубая оценка' : (z.teen ? 'со взрослого возраста' : 'нужен пол и возраст'), '', bf ? bf.toFixed(2) : null, 'bf')
+    + tile('Базовый обмен', bmr ? numSep(bmr) : '—', bmr ? 'ккал' : '', bmr ? 'в день' : 'пол, возраст, рост, вес', '', bmr ? Math.round(bmr) : null, 's')
     + `</div>`;
   if (b && !z.teen) {
     const LO = 15, HI = 40, P = v => (clamp(v, LO, HI) - LO) / (HI - LO) * 100;
@@ -4557,6 +4559,25 @@ function chips(age, b, bmr){
       <div class="bmbl">${[LO, z.lo, z.hi, z.ob, HI].map(v => `<span style="left:${P(v)}%">${v}</span>`).join('')}</div></div>${note ? `<div class="bmn">${note}</div>` : ''}`;
   }
   return h2;
+}
+// цифры в «Расчёте» плавно «докручиваются» от прежнего значения к новому (смена пола, роста, даты рождения)
+const BM_PREV = {};
+function bmTween(){
+  const FM = {i: v => String(Math.round(v)), d: v => num(v), bf: v => '≈ ' + Math.round(v), s: v => numSep(v)};
+  document.querySelectorAll('#p-chips .bmv[data-n]').forEach((el, i) => {
+    const to = +el.dataset.n, f = FM[el.dataset.f], key = el.dataset.f, from = BM_PREV[key];
+    BM_PREV[key] = to;
+    const tx = el.firstChild; if (!f || !tx || tx.nodeType !== 3) return;
+    cancelAnimationFrame(el._bmr || 0);
+    if (from == null || from === to || reducedMotion()) { tx.nodeValue = f(to); return; }
+    const t0 = performance.now(), D = 650;
+    const step = now => {
+      const k = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - k, 3);
+      tx.nodeValue = f(from + (to - from) * e);
+      if (k < 1) el._bmr = requestAnimationFrame(step); else tx.nodeValue = f(to);
+    };
+    tx.nodeValue = f(from); el._bmr = requestAnimationFrame(step);
+  });
 }
 function goalPreview(){ const g = G(); return `${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)} ≈ ${num(g.count * 7 / g.days)} в неделю`; }
 
@@ -4703,6 +4724,7 @@ function render(){
   if (same) morphSoft(v, html);   // v1.442: та же вкладка — правим только изменившееся, без мерцаний
   else { v.innerHTML = html; revealNew(v); if (S.tab === 'weight') weightIntro(v); }
   updFab();
+  bmTween();
   festCountUp();
   document.querySelectorAll('.prox:not([data-ph])').forEach(el => { el.dataset.ph = 1; el.style.setProperty('--ph', -Math.round(performance.now() % 5000) + 'ms'); });   // блик PRO не начинается заново
   setTimeout(checkRewards, 700);
@@ -4852,7 +4874,7 @@ function onStp(el){
   const v = readStp(el);
   if (bind === 'height') {
     db.profile.height = Math.round(v); touchMeta('profile'); save();
-    const c = $('#p-chips'); if (c) { const kg = currentWeight(), age = ageOf(db.profile.birth); c.innerHTML = chips(age, bmiOf(kg, v), bmrOf(kg, v, age, db.profile.sex)); }
+    const c = $('#p-chips'); if (c) { const kg = currentWeight(), age = ageOf(db.profile.birth); morphSoft(c, chips(age, bmiOf(kg, v), bmrOf(kg, v, age, db.profile.sex))); bmTween(); }
   } else if (bind === 'gcount' || bind === 'gdays') {
     let c = bind === 'gcount' ? v : stpVal('gcount'), d = bind === 'gdays' ? v : stpVal('gdays');
     if (c > d) { c = d; const ce = document.querySelector('.stp[data-key="gcount"] input'); if (ce) ce.value = String(c); }
@@ -5313,7 +5335,7 @@ document.addEventListener('change', e => {
   const ch = e.target.dataset.ch;
   if (ch === 'pname') { db.profile.name = e.target.value.trim().slice(0, 32); touchMeta('profile'); save(); toast('Сохранено'); }
   if (ch === 'pbirth') { db.profile.birth = ISO_RE.test(e.target.value) ? e.target.value : ''; touchMeta('profile'); save();
-    const c = $('#p-chips'); if (c) { const kg = currentWeight(), h = +db.profile.height || 0, age = ageOf(db.profile.birth); c.innerHTML = chips(age, bmiOf(kg, h), bmrOf(kg, h, age, db.profile.sex)); } }
+    const c = $('#p-chips'); if (c) { const kg = currentWeight(), h = +db.profile.height || 0, age = ageOf(db.profile.birth); morphSoft(c, chips(age, bmiOf(kg, h), bmrOf(kg, h, age, db.profile.sex))); bmTween(); } }
 });
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') e.target.blur(); });
 $('#file').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; if (f) importFile(f); e.target.value = ''; });
