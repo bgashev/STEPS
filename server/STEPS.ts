@@ -178,7 +178,7 @@ async function botName() {
   _botName = me?.result?.username ?? "voobkz_bot";
   return _botName;
 }
-const shareLink = async (handle: string) => `https://t.me/${await botName()}/STEPS?startapp=u_${handle}`;
+const shareLink = async (handle: string) => `https://t.me/${await botName()}/VOOB?startapp=u_${handle}`;
 const displayName = (u: any) => u?.first_name || (u?.handle ? "@" + u.handle : u?.username ? "@" + u.username : "Друг");
 
 async function friendIds(id: number): Promise<number[]> {
