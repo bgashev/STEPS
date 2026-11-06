@@ -2421,6 +2421,11 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
  html.web #sbd{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 }
 .web-out{width:100%;margin:16px 0}
+
+/* WEB: достижения на большом экране — центрированная колонка и компактная сетка */
+@media(min-width:900px){html.web #achfull{padding-left:max(28px,calc((100vw - 1080px)/2));padding-right:max(28px,calc((100vw - 1080px)/2))}
+html.web #achfull .af-top{margin:0!important;padding-left:0!important;padding-right:0!important}
+html.web #achfull .ach{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}}
 </style>
 </head>
 <body>
@@ -2435,7 +2440,7 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.581';
+const APP = 'VOOB (by BGASHEV) Mini App v1.582';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
