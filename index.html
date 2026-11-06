@@ -3791,7 +3791,21 @@ async function socSave(net, value){
 }
 function seg2(act, items, cur){ return `<div class="seg">` + items.map(([v, l]) => `<button type="button" class="${cur === v ? 'on' : ''}" data-act="${act}" data-v="${v}">${l}</button>`).join('') + `</div>`; }
 function chips(age, b, bmr){
-  return `<span class="chip">Возраст: ${age != null ? npw(age, W_YEAR) : '—'}</span><span class="chip">${b ? `ИМТ ${num(b)} · ${bmiCat(b)[0].toLowerCase()}` : 'ИМТ: —'}</span><span class="chip">${bmr ? `Базовый обмен ≈ ${numSep(bmr)} ккал/день` : 'Базовый обмен: нужны пол, возраст, рост и вес'}</span>`;
+  // М1/п.12: чипы, зависящие от пола, — меняются сразу при выборе «Мужской» / «Женский»
+  let sexChips = '';
+  if (b) {
+    const z = bmiZones(), sx = db.profile.sex, h = +db.profile.height || 0, m = h / 100;
+    if (z.teen) sexChips = '';
+    else if (sx !== 'm' && sx !== 'f') sexChips = `<span class="chip">Укажи пол — покажу оптимум ИМТ и долю жира</span>`;
+    else if (z.opt) {
+      const [o0, o1] = z.opt, who = sx === 'm' ? 'мужчин' : 'женщин';
+      const v = b < o0 ? 'ниже оптимума' : b <= o1 ? 'в оптимуме' : 'выше оптимума';
+      const kg = h ? ` · ${num(o0 * m * m, 0)}–${num((o1 - .1) * m * m, 0)} кг` : '';
+      const bf = bodyFat(b);
+      sexChips = `<span class="chip">Оптимум для ${who}: ИМТ ${o0}–${o1}${kg} · ${v}</span>` + (bf ? `<span class="chip">Доля жира ≈ ${Math.round(bf)}%</span>` : '');
+    }
+  }
+  return `<span class="chip">Возраст: ${age != null ? npw(age, W_YEAR) : '—'}</span><span class="chip">${b ? `ИМТ ${num(b)} · ${bmiCat(b)[0].toLowerCase()}` : 'ИМТ: —'}</span>${sexChips}<span class="chip">${bmr ? `Базовый обмен ≈ ${numSep(bmr)} ккал/день` : 'Базовый обмен: нужны пол, возраст, рост и вес'}</span>`;
 }
 function goalPreview(){ const g = G(); return `${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)} ≈ ${num(g.count * 7 / g.days)} в неделю`; }
 
