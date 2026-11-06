@@ -3099,7 +3099,7 @@ const profLink = h => `https://t.me/steps_v1_bot/STEPS?startapp=u_${h}`;
 
 /* ============================================================ друзья ==== */
 let FR_TAB_T = 0;   // М1: когда открыли вкладку «Друзья»
-const FR = {data:null, loading:false, err:'', ph:new Map(), phAt:new Map(), phTried:new Set()};
+const FR = {data:null, loading:false, err:'', profBy:new Map(), ph:new Map(), phAt:new Map(), phTried:new Set()};
 /* v1.420: кэш — «Друзья», лента и аватарки показываются мгновенно, свежие данные догружаются фоном */
 const UK = (tgUser && tgUser.id) || 0;   // кэш у каждого аккаунта Telegram свой
 const FRK = 'voob_fr_cache_' + UK, PHK = 'voob_ph_cache_' + UK, FDK = 'voob_feed_cache_' + UK, PH_TTL = 7 * 864e5, PH_FRESH = 6 * 36e5, PH_MAX = 40;
@@ -3396,7 +3396,7 @@ function friendSheetHTML(f, j, loading, self){
     ${f.handle || f.username ? `<div class="hero-at">@${esc(f.handle || f.username)}</div>` : ''}${creatorHTML(f.tg_id)}
     <div class="hero-lv"><div class="hero-lvt"><span class="lvn">${lv.level}</span><span class="ttl">${tierOf(lv.level).title}</span></div>
       <div class="lvbar"><i style="width:${pct}%"><b class="lvp"></b></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div></div>`;
-  if (j && j.friends) FR.prof = j.friends;
+  if (j && j.friends) FR.profBy.set(+f.tg_id, j.friends);   // список друзей — у каждого профиля свой (раньше один общий, и его перезаписывал любой другой открытый профиль)
   const pw = +f.poke_wait || 0;
   const acts = self ? '' : `<div class="fp-bar"><button class="fpb poke${pw ? ' off' : ''}" data-act="frpoke" data-id="${f.tg_id}"><span>${IC('bolt', 20)}</span><b>${pw ? `через ${pw} ч` : 'Взбодрить'}</b></button>`
     + `<button class="fpb gift" data-act="gift" data-id="${f.tg_id}"><span>${IC('gift', 20)}</span><b>Подарок</b></button></div>`;
@@ -4637,8 +4637,8 @@ const ACT = {
   frinv: el => { S.inv = !S.inv; hap.imp(); el.classList.toggle('on', S.inv); const r = $('#inv'); if (r) r.classList.toggle('open', S.inv); },
   frzoom: el => openZoom(+el.dataset.id, el),
   zclose: () => closeZoom(),
-  frall: el => { const id = +el.dataset.id, f = FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me && FR.data.me.tg_id === id ? FR.data.me : null)); if (!f || !FR.prof) return; hap.tap();
-    openSheet(`<h2>Друзья ${esc(f.name)}</h2>` + FR.prof.map(x => fofHTML(x)).join('') + `<button class="btn ghost" style="width:100%;margin-top:12px" data-act="frprof" data-id="${id}">Назад к профилю</button>`, {type:'frall', id}); },
+  frall: el => { const id = +el.dataset.id, f = FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me && FR.data.me.tg_id === id ? FR.data.me : null)); const fl = FR.profBy.get(id); if (!f || !fl) return; hap.tap();
+    openSheet(`<h2>Друзья ${esc(f.name)}</h2>` + fl.map(x => fofHTML(x)).join('') + `<button class="btn ghost" style="width:100%;margin-top:12px" data-act="frprof" data-id="${id}">Назад к профилю</button>`, {type:'frall', id}); },
   rwok: () => { $('#cg').classList.remove('show'); setTimeout(showNextReward, 250); },
   frpoke: async el => {
     const id = +el.dataset.id, f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
