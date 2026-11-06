@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ru">
 <head>
+<script>try{if(/[?&]from=site\b/.test(location.search)){document.write('<style id="lu-g">html{background:#07080c!important}body{visibility:hidden}</style>');setTimeout(function(){var g=document.getElementById("lu-g");if(g)g.remove()},4000)}}catch(e){}</script>
 <meta charset="utf-8">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -2360,6 +2361,7 @@ body.frozen .stp .sb{opacity:.45}
 .wl-brand{display:inline-flex;align-items:center;gap:10px;font-weight:900;font-size:15px;letter-spacing:.28em;color:var(--accent);margin-bottom:22px}
 .wl-brand{font-size:18px;color:var(--text)}.wl-brand .vlogo{filter:drop-shadow(0 0 12px color-mix(in srgb,var(--accent) 55%,transparent))}
 #tabs .brand{display:none}
+#tabs .siteb{display:none}
 .wl-l h1{font-size:40px;line-height:1.05;margin:0 0 12px;letter-spacing:-.02em}
 .wl-l p.sub{margin:0 0 26px;color:var(--muted);font-size:16px;line-height:1.45;max-width:380px}
 .wl-st{list-style:none;margin:0 0 26px;padding:0;display:grid;gap:14px;counter-reset:s}
@@ -2388,6 +2390,8 @@ body.frozen .stp .sb{opacity:.45}
 @media (min-width:900px){
  html.web #tabs{left:0;right:auto;top:0;bottom:0;width:236px;max-width:none;margin:0;border-radius:0;border:0;border-right:1px solid var(--border);box-shadow:none;flex-direction:column;justify-content:flex-start;gap:4px;padding:92px 12px 16px;background:color-mix(in srgb,var(--surface) 70%,var(--bg))}
  html.web #tabs .brand{display:flex;align-items:center;gap:12px;position:absolute;left:22px;top:26px;color:var(--text)}
+ html.web #tabs .siteb{background:none;border:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:12px;position:absolute;left:12px;right:12px;bottom:18px;height:46px;padding:0 14px;border-radius:14px;color:var(--muted,var(--text));font-weight:700;font-size:14px;opacity:.8;transition:background .2s,opacity .2s}
+ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacity:1}
  html.web #tabs .brand b{font-weight:900;font-size:19px;letter-spacing:.28em}
  html.web #tabs .tbi{top:92px;left:12px;right:12px;width:auto;height:48px;border-radius:16px;transform:translateY(calc(var(--ti,0) * 52px))}
  html.web .tab{flex:none;height:48px;flex-direction:row;justify-content:flex-start;gap:14px;padding:0 18px;font-size:14.5px;border-radius:16px;cursor:pointer}
@@ -2416,7 +2420,7 @@ body.frozen .stp .sb{opacity:.45}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.556';
+const APP = 'VOOB (by BGASHEV) Mini App v1.557';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5268,7 +5272,7 @@ function render(){
   document.querySelectorAll('.prox:not([data-ph])').forEach(el => { el.dataset.ph = 1; el.style.setProperty('--ph', -Math.round(performance.now() % 5000) + 'ms'); });   // блик PRO не начинается заново
   setTimeout(checkRewards, 700);
   const tb = $('#tabs'), ti = TABS.findIndex(t => t[0] === S.tab);
-  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + LOGO_SVG(50) + '<b>VOOB</b></span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${l}</button>`).join('');
+  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + LOGO_SVG(50) + '<b>VOOB</b></span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb" data-act="tosite"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>На сайт VOOB</button>' : '');
   tb.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   tb.style.setProperty('--ti', ti);
 }
@@ -5697,6 +5701,7 @@ const ACT = {
   wlnew: () => wlStart(),
   wlskip: () => { try { sessionStorage.setItem('voob_web_skip', '1'); } catch (e) {} clearInterval(WL.timer); clearInterval(WL.tick); const w = $('#wl'); if (w) w.classList.remove('show'); },
   weblogout: () => { hap.tap(); webLogout(); },
+  tosite: () => { hap.tap(); VOOB_LU('out', 'Новый уровень', () => { location.href = 'https://voob.kz/?from=app'; }); },
   ctopen: el => { const u = el.dataset.u; hap.tap();
     try { if (el.dataset.tg) tg.openTelegramLink(u); else tg.openLink(u); } catch (e) { window.open(u, '_blank'); } },
   creator: () => { hap.tap(); const c = CREATOR; if (c && c.handle) openPublicProfile(c.handle); else { askBadges([]); toast('Секунду…'); } },
@@ -5903,28 +5908,79 @@ setInterval(() => { if (!document.hidden) syncNow(); }, 15000);   // пока п
 /* ============================================== WEB: вход по QR (v1.550) == */
 const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w}" height="${Math.round(w * .6)}" aria-hidden="true"><defs><clipPath id="vlu"><rect x="0" y="0" width="100" height="30"/></clipPath></defs><circle cx="37" cy="30" r="20" fill="none" stroke="var(--accent)" stroke-width="8"/><circle cx="63" cy="30" r="20" fill="none" stroke="var(--text)" stroke-width="8"/><circle cx="37" cy="30" r="20" fill="none" stroke="var(--accent)" stroke-width="8" clip-path="url(#vlu)"/></svg>`;
 
-// v1.554: прилёт с сайта (voob.kz → app.voob.kz): мокап на сайте разворачивается в экран с кольцами, здесь он растворяется и открывает приложение
-(function () {
-  try {
-    if (!/[?&]from=site\b/.test(location.search)) return;
+/* VOOB «Level Up»: общий переход между voob.kz и app.voob.kz. mode 'out' — уход, 'in' — прилёт (стартует с того же кадра, на котором уход закончился) */
+(function (w) {
+  var CSS = '#luv{position:fixed;inset:0;z-index:2147483000;background:#07080c;overflow:hidden;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#f4f6fb;display:grid;place-items:center;pointer-events:all}'
+    + '#luv .l_lg{position:absolute;inset:0;background:radial-gradient(55vmax circle at 50% 46%,rgba(139,92,246,.34),transparent 62%),radial-gradient(38vmax circle at 62% 38%,rgba(34,211,238,.16),transparent 60%),radial-gradient(40vmax circle at 38% 62%,rgba(244,114,182,.14),transparent 60%)}'
+    + '#luv .l_st{position:relative;display:grid;justify-items:center;gap:30px}'
+    + '#luv .l_rg{position:relative;width:min(240px,56vw);aspect-ratio:1}'
+    + '#luv svg{width:100%;height:100%;overflow:visible;transform:rotate(-90deg);display:block}'
+    + '#luv .l_tk{fill:none;stroke:rgba(255,255,255,.1);stroke-width:9}'
+    + '#luv .l_pr{fill:none;stroke:url(#lug);stroke-width:9;stroke-linecap:round;stroke-dasharray:528;stroke-dashoffset:528;filter:drop-shadow(0 0 10px rgba(139,92,246,.85))}'
+    + '#luv .l_nm{position:absolute;inset:0;display:grid;place-items:center;font-weight:900;font-size:min(92px,22vw);letter-spacing:-.04em;font-variant-numeric:tabular-nums;line-height:1}'
+    + '#luv .l_lb{font-weight:800;font-size:13px;letter-spacing:.34em;padding-left:.34em;text-transform:uppercase;color:#f1f2f6;opacity:0}'
+    + '#luv .l_fl{position:absolute;left:50%;top:50%;width:10px;height:10px;margin:-5px;border-radius:50%;background:#fff;opacity:0}'
+    + '#luv .l_sk{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,255,255,.75);opacity:0}'
+    + '#luv .l_sp{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;opacity:0}';
+  w.VOOB_LU = function (mode, label, cb) {
+    var D = document, out = mode === 'out';
+    if (out && (matchMedia('(prefers-reduced-motion:reduce)').matches || !D.body.animate)) { cb && cb(); return; }
+    var old = D.getElementById('luv'); if (old) old.remove();
+    if (!D.getElementById('lu-css')) { var st = D.createElement('style'); st.id = 'lu-css'; st.textContent = CSS; D.head.appendChild(st); }
+    var o = D.createElement('div'); o.id = 'luv';
+    o.innerHTML = '<div class="l_lg"></div><div class="l_st"><div class="l_rg"><svg viewBox="0 0 200 200"><defs><linearGradient id="lug" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22d3ee"/><stop offset=".55" stop-color="#8b5cf6"/><stop offset="1" stop-color="#f472b6"/></linearGradient></defs><circle class="l_tk" cx="100" cy="100" r="84"/><circle class="l_pr" cx="100" cy="100" r="84"/></svg><div class="l_nm">' + (out ? '12' : '13') + '</div><i class="l_fl"></i></div><div class="l_lb"></div></div>';
+    o.querySelector('.l_lb').textContent = label || 'Новый уровень';
+    D.body.appendChild(o);
+    var g = D.getElementById('lu-g'); if (g) g.remove();
+    var q = function (s) { return o.querySelector(s); }, rg = q('.l_rg'), pr = q('.l_pr'), nm = q('.l_nm'), lb = q('.l_lb'), fl = q('.l_fl'), lg = q('.l_lg');
+    var A = function (el, k, op) { return el.animate(k, Object.assign({ fill: 'forwards' }, op)); };
+    if (out) {
+      A(o, [{ opacity: 0 }, { opacity: 1 }], { duration: 450, easing: 'ease-out' });
+      A(pr, [{ strokeDashoffset: 528 }, { strokeDashoffset: 0 }], { duration: 950, delay: 300, easing: 'cubic-bezier(.5,0,.2,1)' });
+      A(rg, [{ transform: 'scale(.9)' }, { transform: 'scale(1)' }], { duration: 900, delay: 100, easing: 'cubic-bezier(.2,.7,.2,1)' });
+      setTimeout(function () {
+        A(nm, [{ transform: 'scale(1.8)', filter: 'blur(9px)', opacity: .1 }, { transform: 'scale(1)', filter: 'blur(0)', opacity: 1 }], { duration: 440, easing: 'cubic-bezier(.2,.9,.2,1)' });
+        nm.textContent = '13';
+        A(fl, [{ opacity: .95, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(70)' }], { duration: 650, easing: 'ease-out' });
+        A(rg, [{ transform: 'scale(1)' }, { transform: 'scale(1.08)', offset: .35 }, { transform: 'scale(1)' }], { duration: 520, easing: 'ease-out' });
+        for (var i = 0; i < 2; i++) { var s = D.createElement('i'); s.className = 'l_sk'; rg.appendChild(s); A(s, [{ opacity: .85, transform: 'scale(.9)' }, { opacity: 0, transform: 'scale(2.4)' }], { duration: 950, delay: i * 140, easing: 'cubic-bezier(.2,.7,.2,1)' }); }
+        var cols = ['#22d3ee', '#8b5cf6', '#f472b6', '#ffffff', '#fbbf24'];
+        for (var j = 0; j < 30; j++) {
+          var p = D.createElement('i'); p.className = 'l_sp'; p.style.background = cols[j % 5]; p.style.boxShadow = '0 0 10px ' + cols[j % 5]; rg.appendChild(p);
+          var an = Math.random() * 6.283, d = 130 + Math.random() * 230, sz = .6 + Math.random() * 1.2;
+          A(p, [{ opacity: 1, transform: 'translate(0,0) scale(' + sz + ')' }, { opacity: 1, offset: .55 }, { opacity: 0, transform: 'translate(' + Math.cos(an) * d + 'px,' + Math.sin(an) * d + 'px) scale(0)' }], { duration: 850 + Math.random() * 500, easing: 'cubic-bezier(.1,.7,.3,1)' });
+        }
+        A(lb, [{ opacity: 0, transform: 'translateY(12px)', letterSpacing: '.7em' }, { opacity: 1, transform: 'none', letterSpacing: '.34em' }], { duration: 650, delay: 160, easing: 'cubic-bezier(.2,.7,.2,1)' });
+      }, 1280);
+      setTimeout(function () { cb && cb(); }, 2300);
+    } else {
+      pr.style.strokeDashoffset = 0; lb.style.opacity = 1;
+      setTimeout(function () {
+        var r = rg.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, H = innerHeight, W = innerWidth,
+            R = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 220, done = function () { o.remove(); };
+        A(lb, [{ opacity: 1 }, { opacity: 0 }], { duration: 260 });
+        A(rg, [{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(3.2)', opacity: 0 }], { duration: 800, easing: 'cubic-bezier(.5,0,.8,.4)' });
+        var ok = false;
+        try { CSS.registerProperty({ name: '--lur', syntax: '<length>', inherits: false, initialValue: '0px' }); ok = true; } catch (e) { ok = !!(w.CSS && CSS.supports && CSS.supports('(--x:0)') && /^\d/.test(String(getComputedStyle(o).getPropertyValue('--lur') || '')) ); }
+        if (ok) {
+          var m = 'radial-gradient(circle at ' + cx + 'px ' + cy + 'px,transparent var(--lur),#000 calc(var(--lur) + 170px))';
+          o.style.webkitMaskImage = m; o.style.maskImage = m;
+          A(o, [{ '--lur': '0px' }, { '--lur': R + 'px' }], { duration: 1050, easing: 'cubic-bezier(.55,0,.2,1)' }).onfinish = done;
+        } else { A(o, [{ opacity: 1 }, { opacity: 0 }], { duration: 700, easing: 'ease-in-out' }).onfinish = done; }
+        setTimeout(done, 1700);
+      }, 260);
+    }
+  };
+})(window);
+// v1.557: переход voob.kz ↔ app.voob.kz «Level Up»; прилёт с сайта стартует с того же кадра, на котором закончился уход
+try {
+  if (/[?&]from=site\b/.test(location.search)) {
     history.replaceState(null, '', location.pathname + location.hash);
-    if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-    const go = () => {
-      const o = document.createElement('div');
-      o.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#07080c;display:grid;place-items:center;pointer-events:all';
-      o.innerHTML = '<div style="position:absolute;inset:0;background:radial-gradient(60vmax circle at 50% 50%,rgba(139,92,246,.35),transparent 60%)"></div><svg viewBox="0 0 100 60" style="position:relative;width:min(220px,50vw);overflow:visible"><circle cx="37" cy="30" r="20" fill="none" stroke="#8b5cf6" stroke-width="8"/><circle cx="63" cy="30" r="20" fill="none" stroke="#f1f2f6" stroke-width="8"/></svg>';
-      document.body.appendChild(o);
-      const sv = o.querySelector('svg');
-      sv.animate([{ transform: 'scale(.92)', opacity: .6 }, { transform: 'scale(1)', opacity: 1 }], { duration: 380, easing: 'ease-out', fill: 'forwards' });
-      setTimeout(() => {
-        sv.animate([{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(1.5)', opacity: 0 }], { duration: 650, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' });
-        const a = o.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 700, easing: 'ease-in-out', fill: 'forwards' });
-        a.onfinish = () => o.remove();
-      }, 420);
-    };
-    document.body ? go() : addEventListener('DOMContentLoaded', go);
-  } catch (e) {}
-})();
+    const arr = () => VOOB_LU('in', 'Новый уровень');
+    document.body ? arr() : addEventListener('DOMContentLoaded', arr);
+  }
+} catch (e) {}
+addEventListener('pageshow', ev => { if (ev.persisted) { const o = document.getElementById('luv'); if (o) o.remove(); } });
 const WL = {code:'', link:'', t0:0, exp:600, timer:0, tick:0};
 async function webLogout(silent){
   const tok = webSess && webSess.token;
