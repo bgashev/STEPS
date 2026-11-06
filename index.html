@@ -1852,13 +1852,14 @@ body.frozen .stp .sb{opacity:.45}
 #view .hero .soci,#view .hero .soci .lg{width:38px;height:38px}
 #view .hero.hbg::before,#view .hero.hbg>.hbgfx{-webkit-mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.35) 60px,#000 190px,#000 calc(100% - 120px),transparent 100%);mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.35) 60px,#000 190px,#000 calc(100% - 120px),transparent 100%)}
 #view .hero.hbg>.hbgfx::after{content:"";position:absolute;left:0;right:0;top:0;height:200px;pointer-events:none;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(to bottom,#000,transparent);mask-image:linear-gradient(to bottom,#000,transparent)}
-#lgo{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;opacity:0;pointer-events:all;background:color-mix(in srgb,var(--bg) 62%,transparent);-webkit-backdrop-filter:blur(22px) saturate(1.3);backdrop-filter:blur(22px) saturate(1.3)}
+#lgo{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;opacity:0;pointer-events:all;background:color-mix(in srgb,var(--bg) 95%,transparent);-webkit-backdrop-filter:blur(26px);backdrop-filter:blur(26px)}
 .lgo-cols{position:absolute;inset:0;display:flex;justify-content:space-evenly;align-items:flex-start;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent)}
 .lgo-col{height:100%;overflow:hidden;flex:0 0 auto}
 .lgo-col>div{margin-top:100vh;display:flex;flex-direction:column;gap:30px;align-items:center;will-change:transform}
-.lgo-col span{font-size:var(--sz);font-weight:700;letter-spacing:-.3px;white-space:nowrap;color:var(--text);opacity:var(--op)}
+.lgo-col span{opacity:0;animation:lgw 1150ms cubic-bezier(.22,.8,.24,1) both;font-size:var(--sz);font-weight:700;letter-spacing:-.3px;white-space:nowrap;color:var(--text)}
+@keyframes lgw{0%{opacity:0;filter:blur(12px);transform:scale(.94)}32%{opacity:var(--op);filter:blur(0);transform:scale(1)}68%{opacity:var(--op);filter:blur(0);transform:scale(1)}100%{opacity:0;filter:blur(12px);transform:scale(.97)}}
 .lgo-col:nth-child(odd) span{color:var(--accent)}
-.lgo-main{position:relative;font-size:46px;font-weight:850;letter-spacing:-1.2px;opacity:0;color:var(--text);text-shadow:0 4px 30px color-mix(in srgb,var(--accent) 45%,transparent)}
+.lgo-main{position:relative;font-size:46px;font-weight:850;letter-spacing:-1.2px;opacity:0;color:var(--text);will-change:transform,filter,opacity}
 @media (prefers-reduced-motion:reduce){#lgo{display:none}}
 </style>
 </head>
@@ -3998,23 +3999,24 @@ function langWave(el, change){
   if (reducedMotion() || !document.body.animate) { change(); return; }
   const old = document.getElementById('lgo'); if (old) old.remove();
   const pick = (n, off) => Array.from({length:n}, (_, i) => HELLOS[(off + i * 7) % HELLOS.length]);
-  const cols = [[26, 0.62, 3200, 3], [34, 1, 2600, 11], [22, 0.5, 3600, 19], [30, 0.8, 2900, 5], [24, 0.55, 3400, 23]];
+  const cols = [[26, 0.6, 1900, 3], [34, 1, 1600, 11], [22, 0.5, 2000, 19], [30, 0.8, 1750, 5], [24, 0.55, 1950, 23]];
   const ov = document.createElement('div'); ov.id = 'lgo';
   ov.innerHTML = '<div class="lgo-cols">' + cols.map(([sz, op, , off]) => {
-    const w = pick(12, off); return `<div class="lgo-col" style="--sz:${sz}px;--op:${op}"><div>${w.concat(w).map(x => `<span>${x}</span>`).join('')}</div></div>`; }).join('') + '</div><div class="lgo-main"></div>';
+    const w = pick(12, off); return `<div class="lgo-col" style="--sz:${sz}px;--op:${op}"><div>${w.concat(w).map(x => `<span style="animation-delay:${Math.round(Math.random() * 520)}ms">${x}</span>`).join('')}</div></div>`; }).join('') + '</div><div class="lgo-main"></div>';
   document.body.appendChild(ov);
-  const T = 3000, ease = 'cubic-bezier(.32,.72,0,1)';
-  ov.animate([{opacity:0}, {opacity:1}], {duration:450, easing:'ease-out', fill:'forwards'});
-  const dist = Math.round(innerHeight * 1.45);   // все колонки бегут снизу вверх, с разной скоростью
+  const ease = 'cubic-bezier(.22,.8,.24,1)';                       // мягкое замедление в духе Apple
+  ov.animate([{opacity:0}, {opacity:1}], {duration:380, easing:ease, fill:'forwards'});
+  const dist = Math.round(innerHeight * 1.3);
   ov.querySelectorAll('.lgo-col').forEach((c, i) => c.firstElementChild.animate([{transform:'translateY(0)'}, {transform:`translateY(-${dist}px)`}],
-    {duration:cols[i][2], easing:'cubic-bezier(.25,.6,.35,1)', fill:'forwards'}));
+    {duration:cols[i][2], easing:'cubic-bezier(.3,.55,.3,1)', fill:'forwards'}));
+  setTimeout(() => change(), 800);                                  // интерфейс переключается под вуалью
   setTimeout(() => {
-    change();
-    const m = ov.querySelector('.lgo-main'); m.textContent = HELLO_MAIN[curLang()] || 'Hello';
-    ov.querySelector('.lgo-cols').animate([{opacity:1, filter:'blur(0)'}, {opacity:.18, filter:'blur(6px)'}], {duration:700, easing:ease, fill:'forwards'});
-    m.animate([{opacity:0, transform:'translateY(26px) scale(.94)', filter:'blur(14px)'}, {opacity:1, transform:'none', filter:'blur(0)'}], {duration:800, easing:ease, fill:'forwards'});
-  }, 1100);
-  setTimeout(() => { const o = ov.animate([{opacity:1}, {opacity:0}], {duration:650, easing:'ease-in', fill:'forwards'}); o.onfinish = () => ov.remove(); }, T);
+    const cs = ov.querySelector('.lgo-cols'), m = ov.querySelector('.lgo-main');
+    cs.animate([{opacity:1}, {opacity:0}], {duration:260, easing:'ease-out', fill:'forwards'});
+    m.textContent = HELLO_MAIN[curLang()] || 'Hello';
+    m.animate([{opacity:0, transform:'scale(.94)', filter:'blur(14px)'}, {opacity:1, transform:'scale(1)', filter:'blur(0)'}], {duration:620, easing:ease, delay:120, fill:'forwards'});
+  }, 1450);
+  setTimeout(() => { const o = ov.animate([{opacity:1}, {opacity:0}], {duration:450, easing:'ease-in-out', fill:'forwards'}); o.onfinish = () => ov.remove(); }, 2050);
 }
 function langChanged(){ document.documentElement.lang = curLang(); _rHtml = ''; render(); applyLang(document.body); }
 function langCardHTML(){
