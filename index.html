@@ -1494,6 +1494,9 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .kbo #sheet.top .ssh-hero h2{margin-top:8px;font-size:19px}
 .kbo #sheet.top .ssh-hero::before{opacity:0}
 #sheet.top .grab{display:none}
+/* v1.558: профили (друга и по ссылке) — полноценная страница на весь экран, а не шторка */
+#sheet.pf{top:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px));max-height:none;max-width:none;border-radius:0;border-top:0;padding-top:12px}
+#sheet.pf .grab{display:none}
 /* v1.447: «назад» в профиле + свайп вниз для закрытия шторок */
 .fp-back{position:sticky;top:6px;z-index:6;width:36px;height:36px;margin:-23px 0 0 -4px;border-radius:50%;border:1px solid var(--border);
   background:color-mix(in srgb,var(--surface2) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);color:var(--text);
@@ -2402,6 +2405,7 @@ body.frozen .stp .sb{opacity:.45}
  html.web #toast{bottom:32px;left:calc(50% + 118px)}
  html.web #sheet{top:50%;bottom:auto;left:50%;right:auto;width:calc(100% - 48px);max-width:560px;max-height:86vh;border-radius:28px;border:1px solid var(--border);padding-bottom:24px;transform:translate(-50%,-46%) scale(.97);opacity:0;transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .24s}
  html.web #sw.open #sheet{transform:translate(-50%,-50%);opacity:1}
+ html.web #sheet.pf{top:50%;width:min(780px,calc(100% - 48px));height:calc(100vh - 56px);max-height:none;border-radius:28px;border:1px solid var(--border);padding-top:14px}
  html.web .grab{display:none}
  html.web #sbd{backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 }
@@ -2420,7 +2424,7 @@ body.frozen .stp .sb{opacity:.45}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.557';
+const APP = 'VOOB (by BGASHEV) Mini App v1.558';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5285,6 +5289,7 @@ function openSheet(html, ctx){
   sheetCtx = ctx;
   $('#sheet').classList.remove('top');
   $('#sheet').classList.remove('xl');
+  $('#sheet').classList.toggle('pf', !!ctx && BACK_T.has(ctx.type));
   $('#sheet').classList.toggle('half', !!ctx && (ctx.type === 'acts' || ctx.type === 'planact'));   // выбор активности — до середины экрана, избранные под большим пальцем
   $('#sheet').innerHTML = `<div class="grab"></div>` + sheetBack(ctx) + html;
   $('#sheet').scrollTop = 0;
