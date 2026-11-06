@@ -2476,7 +2476,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.603';
+const APP = 'VOOB (by BGASHEV) Mini App v1.604';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -6142,7 +6142,7 @@ async function wlPoll(){
   if (document.hidden || !WL.code) return;
   if (Date.now() - WL.t0 > WL.exp * 1000) { clearInterval(WL.timer); clearInterval(WL.tick); wlSet('expired'); return; }
   try {
-    const j = await api('/login/poll', {code:WL.code});
+    const j = await api('/login/poll', {code:WL.code, client:'web'});
     if (j.status === 'ok') {
       clearInterval(WL.timer); clearInterval(WL.tick);
       try { localStorage.setItem(WEBK, JSON.stringify({token:j.token, user:j.user})); } catch (e) {}

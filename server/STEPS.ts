@@ -1039,7 +1039,7 @@ async function routeLoginPoll(body: any) {
   if (!data || data.created_at < since) return json({ status: "expired" });
   if (!data.tg_id) return json({ status: "pending" });
   await db.from("login_codes").delete().eq("code", code);
-  const token = await createSession(data.tg_id, "desktop");
+  const token = await createSession(data.tg_id, body?.client === "web" ? "web" : "desktop");   // v1.604: WEB-версия помечается отдельно от программы для Windows
   return json({ status: "ok", token, user: await userInfo(data.tg_id) });
 }
 
