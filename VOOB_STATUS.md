@@ -4,7 +4,7 @@
 
 ## Где что
 - Мобильное приложение: `index.html` (один файл, vanilla JS, Telegram Mini App), в репозитории `bgashev/STEPS`, GitHub Pages из ветки `main`: https://bgashev.github.io/STEPS/
-- Сервер: `server/STEPS.ts` → Supabase Edge Function `STEPS` (проект `nszndchtspjtlravojda`), задеплоена v25 = сервер 1.453. Деплой целиком через MCP Supabase.
+- Сервер: `server/STEPS.ts` → Supabase Edge Function `STEPS` (проект `nszndchtspjtlravojda`), задеплоена v27 = сервер 1.453 (новое приветствие /start задеплоено 6 нояб). Деплой целиком через MCP Supabase.
 - Версия в приложении: v1.495 (строка `APP` в index.html); внутри CSS правки помечены v1.49x–v1.50x.
 - Бот: @voobkz_bot (переезд с @steps_v1_bot = Б1; секрет TELEGRAM_BOT_TOKEN заменён, вебхук подключён 6 нояб; старый бот отключён). Версия для ПК на паузе, в мобильном интерфейсе её не упоминать.
 

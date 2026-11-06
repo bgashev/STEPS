@@ -1004,7 +1004,7 @@ async function routeBot(req: Request) {
     await upsertUser(msg.from);
     await tg("sendMessage", {
       chat_id: msg.chat.id,
-      text: `Привет, ${msg.from.first_name ?? "друг"}! 👟\n\nVOOB — трекер тренировок: ходьба и бег, силовые, цель недели, вес, статистика и друзья.\n\nДанные синхронизируются между телефоном и программой на компьютере.`,
+      text: `Привет, ${msg.from.first_name ?? "друг"} ⚡\n\nVOOB — трекер тренировок, в котором приятно жить.\nЗапиши первую тренировку!`,
       reply_markup: openBtn,
     });
     return new Response("ok");
