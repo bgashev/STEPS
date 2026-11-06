@@ -1730,7 +1730,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .inv-or::before,.inv-or::after{content:"";flex:1;height:1px;background:var(--border)}
 .inv-find{display:flex;align-items:center;gap:6px;padding:5px 5px 5px 14px;border-radius:18px;background:var(--surface2);border:1.5px solid transparent;transition:border-color .25s,box-shadow .25s}
 .inv-find:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
-.inv-find .at{color:var(--muted);font-weight:800}
+.inv-find .at{color:var(--muted);font-weight:800;display:inline;min-height:0;padding:0;border:0;border-radius:0;background:none;text-align:left}   /* не наследуем плитку достижений .at */
 .inv-find .inp{flex:1;min-width:0;background:transparent;border:0;padding:0;min-height:44px;font-size:15px;font-weight:650;text-transform:uppercase}
 .inv-find .inp::placeholder{text-transform:none;font-weight:500;color:var(--muted)}
 .inv-find .btn{flex:none;min-height:44px;padding:0 14px;border-radius:14px}
@@ -2457,7 +2457,7 @@ html.web #tabs .wver{position:absolute;left:0;right:0;bottom:4px;text-align:cent
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.595';
+const APP = 'VOOB (by BGASHEV) Mini App v1.596';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
