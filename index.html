@@ -11,7 +11,7 @@
 :root{--bg:#121216;--surface:#1A1A20;--surface2:#24242C;--border:#2C2C36;--text:#F1F1F5;--muted:#8B8B99;--off:#34343F;--accent:#B4A7EE;--on-accent:#1D1D24;--accent-soft:rgba(180,167,238,.16);--green:#5FC98A;--red:#EF6B73;--blue:#7FB5FF}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
-html,body{overflow-x:hidden;max-width:100%;overscroll-behavior-x:none}   /* v1.507: страница не двигается вбок */
+html{overflow-x:hidden}body{overflow-x:clip}html,body{max-width:100%;overscroll-behavior-x:none}   /* v1.507: страница не двигается вбок; v1.523: у body clip вместо hidden — иначе body становится скролл-контейнером и ломает sticky (кнопка «Назад» в настройках) */
 body{overscroll-behavior-y:none;transition:background .25s}
 button{font:inherit;color:inherit;cursor:pointer}
 #view{max-width:560px;margin:0 auto;padding:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 18px) 16px calc(100px + env(safe-area-inset-bottom))}
