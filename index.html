@@ -1682,6 +1682,59 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 @keyframes pplIn{from{opacity:0;transform:scale(.55) rotate(-8deg)}to{opacity:1;transform:none}}
 @keyframes pplRing{from{transform:scale(.8);opacity:.9}to{transform:scale(1.55);opacity:0}}
 @media (prefers-reduced-motion:reduce){.ppl-em i{animation:none;opacity:0}.lvr,.lvt,.lvs-b{animation:none}}
+
+/* ===== М3 ===== */
+/* п.13 · без плашек: цель недели, шапка профиля, рейтинг месяца «в воздухе» */
+.gx2,.gx2.gnew{background:none;border-color:transparent;box-shadow:none;overflow:visible;padding-left:2px;padding-right:2px}
+.gx2.done{background:radial-gradient(70% 70% at 80% 10%,rgba(95,201,138,.16),transparent 70%)}
+.gx2::after{display:none}
+.gx2 .gx-strip{background:none;padding:12px 0 6px;border-top:1px solid color-mix(in srgb,var(--text) 8%,transparent);border-radius:0}
+.card.rkc{background:none;border-color:transparent;box-shadow:none;padding-left:2px;padding-right:2px}
+.hero:not(.hbg){background:none;border-color:transparent;overflow:visible}
+.hero:not(.hbg)::before{top:-90px;width:520px;height:340px;opacity:.75}
+.hero.hbg{border-color:transparent;border-radius:0 0 40px 40px;padding-bottom:64px;background:none;overflow:visible}
+.hero.hbg::before{border-radius:inherit;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 55%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 55%,transparent 100%)}
+.hero.hbg>.hbgfx{border-radius:inherit;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 52%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 52%,transparent 100%)}
+.hero.hbg::after{display:block;content:"";position:absolute;left:0;right:0;bottom:0;height:46%;z-index:-1;pointer-events:none;border-radius:inherit;
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--bg) 55%,transparent) 70%,var(--bg));
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 60%);mask-image:linear-gradient(to bottom,transparent 0,#000 60%)}
+/* п.18 · итоги */
+.st-hero{text-align:center;padding:22px 6px 8px}
+.st-k{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.st-big{margin-top:6px;font-size:54px;line-height:1;font-weight:850;letter-spacing:-2px;background:linear-gradient(135deg,var(--text),color-mix(in srgb,var(--accent) 70%,var(--text)));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:lvRow .6s both}
+.st-big i{font-style:normal;font-size:20px;font-weight:700;letter-spacing:0;margin:0 8px 0 3px;-webkit-text-fill-color:var(--muted);color:var(--muted)}
+.st-d{display:inline-flex;align-items:center;gap:4px;margin-top:10px;padding:5px 11px;border-radius:999px;font-size:13px;font-weight:800}
+.st-d em{font-style:normal;font-weight:600;color:var(--muted);margin-left:4px}
+.st-d.up{background:rgba(95,201,138,.15);color:var(--green)}.st-d.dn{background:rgba(239,107,115,.14);color:var(--red)}
+.st-row{display:flex;margin:22px 0 10px;border-top:1px solid color-mix(in srgb,var(--text) 8%,transparent);padding-top:16px}
+.st-row>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.st-row>div+div{border-left:1px solid color-mix(in srgb,var(--text) 8%,transparent)}
+.st-row b{font-size:24px;font-weight:850;letter-spacing:-.6px}.st-row span{font-size:11.5px;color:var(--muted);line-height:1.2;padding:0 4px}
+.st-sec{margin:18px 0 6px}
+.st-sec>h3{display:flex;align-items:center;gap:8px;margin:0 4px 12px}
+.st-sec>h3 span{margin-left:auto;font-size:12px;font-weight:650;color:var(--muted)}
+.st-stack{display:flex;gap:3px;height:12px;border-radius:6px;overflow:hidden;margin:0 2px 14px}
+.st-stack i{display:block;min-width:6px;border-radius:3px}
+.st-act{display:flex;align-items:center;gap:12px;padding:10px 4px;animation:lvRow .5s cubic-bezier(.2,.8,.2,1) both}
+.st-act+.st-act{border-top:1px solid color-mix(in srgb,var(--text) 6%,transparent)}
+.st-ai{flex:none;width:38px;height:38px;border-radius:13px;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 16%,transparent)}
+.st-am{flex:1;min-width:0}.st-am b{display:block;font-size:14.5px}
+.st-am small,.st-av small{display:block;margin-top:1px;font-size:12px;color:var(--muted)}
+.st-av{text-align:right;flex:none}.st-av b{display:block;font-size:14.5px;font-variant-numeric:tabular-nums}
+.hm{display:flex;gap:8px;align-items:stretch}
+.hm-wd{display:grid;grid-template-rows:repeat(7,1fr);gap:4px;font-size:10px;color:var(--muted);font-weight:700;padding:1px 0}
+.hm-wd span{align-self:center}
+.hm-g{flex:1;display:flex;gap:4px;min-width:0}
+.hm-col{flex:1;display:grid;grid-template-rows:repeat(7,1fr);gap:4px;min-width:0}
+.hm-c{display:block;aspect-ratio:1;border-radius:6px;background:color-mix(in srgb,var(--text) 7%,transparent);animation:hmIn .4s both}
+.hm-c.fut{background:none}
+.hm-c.l1{background:color-mix(in srgb,var(--accent) 28%,transparent)}.hm-c.l2{background:color-mix(in srgb,var(--accent) 50%,transparent)}
+.hm-c.l3{background:color-mix(in srgb,var(--accent) 74%,transparent)}.hm-c.l4{background:var(--accent)}
+.hm-c.today{outline:1.5px solid var(--text);outline-offset:1px}.hm-c.sel{box-shadow:0 0 0 2px var(--text)}
+.hm-lg{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:8px;font-size:10.5px;color:var(--muted)}
+.hm-lg .hm-c{width:12px;height:12px;border-radius:4px;animation:none}.hm-lg span{margin:0 3px}
+@keyframes hmIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.hm-c,.st-act,.st-big{animation:none}}
 </style>
 </head>
 <body>
@@ -3521,17 +3574,67 @@ function viewWeight(){
   return h + '<div class="wdock-sp"></div>';   // отступ в самом низу, чтобы кнопка не закрывала историю
 }
 
+/* М3 п.18: «Итоги» не привязаны к бегу — всё считается через время, дни и виды активности; дистанция и скорость появляются, только если они есть */
+const ST_COL = ['#5B8DEF', '#34C9A0', '#F5A524', '#EF6B73', '#A78BFA', '#2AABEE', '#F472B6', '#84CC16', '#FB923C', '#22D3EE', '#E879F9', '#FACC15', '#14B8A6', '#F87171'];
+const stName = a => (ACTS.find(x => x[0] === a) || ['', a])[1];
+const actCol = a => { const i = ACTS.findIndex(x => x[0] === a); return ST_COL[(i < 0 ? 0 : i) % ST_COL.length]; };
+function actFacts(g, a){   // «своя» цифра вида: повторения, дистанция или очки
+  const st = STR[a];
+  if (st) { const t = sum(g, strTotal); return numSep(t) + (st[0] === 'secs' ? ' сек под нагрузкой' : ' повторений'); }
+  const km = sum(g, kmOf); if (km > 0.05) return kmF(km);
+  return '+' + numSep(sum(g, workoutXp)) + ' очков';
+}
+function periodDelta(ws, key, cur){
+  const s = periodSince(key); if (s == null) return null;
+  const len = todayN() - s + 1, pm = sum(ws.filter(w => { const d = dn(w.date); return d >= s - len && d < s; }), w => w.minutes);
+  return pm ? Math.round((cur - pm) / pm * 100) : null;
+}
+function heatHTML(ws){
+  const t = todayN(), weeks = 12, mon0 = t - wdOf(t) - (weeks - 1) * 7, per = new Map();
+  for (const w of ws) { const d = dn(w.date); per.set(d, (per.get(d) || 0) + (+w.minutes || 0)); }
+  const mx = Math.max(1, ...per.values());
+  let cols = '';
+  for (let c = 0; c < weeks; c++) {
+    let col = '';
+    for (let r = 0; r < 7; r++) {
+      const d = mon0 + c * 7 + r;
+      if (d > t) { col += '<i class="hm-c fut"></i>'; continue; }
+      const m = per.get(d) || 0, lv = !m ? 0 : m < mx * .25 ? 1 : m < mx * .5 ? 2 : m < mx * .75 ? 3 : 4;
+      col += `<i class="hm-c l${lv}${d === t ? ' today' : ''}" data-act="hmc" data-tip="${esc(fmtDate(d) + ', ' + WD[wdOf(d)] + ': ' + (m ? fmtMin(m) : 'без тренировок'))}" style="animation-delay:${(c * 7 + r) * 5}ms"></i>`;
+    }
+    cols += `<div class="hm-col">${col}</div>`;
+  }
+  return `<div class="hm"><div class="hm-wd">${[0, 2, 4, 6].map(i => `<span style="grid-row:${i + 1}">${WD[i]}</span>`).join('')}</div><div class="hm-g">${cols}</div></div>
+    <div class="chartcap" id="hmcap">Нажми на день — покажу детали</div>
+    <div class="hm-lg"><span>меньше</span>${[0, 1, 2, 3, 4].map(l => `<i class="hm-c l${l}"></i>`).join('')}<span>больше</span></div>`;
+}
 function viewStats(){
   const ws = valid(), pws = filterPeriod(ws, S.sp), n = pws.length, g = G();
-  let h = `<div class="head"><div><h1>Статистика</h1><div class="sub">Всё, что накопилось за время тренировок</div></div></div>
-    <div style="margin-bottom:12px">${seg('sp', [['7','7 дней'],['30','30 дней'],['12m','12 месяцев'],['all','Всё время']])}</div>`;
+  const PN = {'7': 'за 7 дней', '30': 'за 30 дней', '12m': 'за 12 месяцев', 'all': 'за всё время'}[S.sp] || '';
+  let h = `<div class="head"><div><h1>Итоги</h1><div class="sub">${ws.length ? 'Всё, что ты сделал — по любым видам активности' : 'Здесь соберётся вся твоя активность'}</div></div></div>
+    <div style="margin-bottom:6px">${seg('sp', [['7', '7 дней'], ['30', '30 дней'], ['12m', '12 месяцев'], ['all', 'Всё время']])}</div>`;
+  if (!ws.length) return h + `<div class="card empty"><div class="badge">${IC('stats', 30)}</div><h3 style="justify-content:center">Пока нечего подводить</h3><div class="muted">Добавь первую тренировку — любой вид: бег, силовые, йога, плавание. Итоги появятся здесь.</div></div><div class="wdock-sp"></div>`;
   if (n) {
-    const tm = sum(pws, w => w.minutes), km = sum(pws, kmOf), kcs = pws.map(kcal), weeks = periodDays(S.sp, ws) / 7;
-    h += `<div class="kpis">${kpi(n, 'Тренировок')}${kpi(fmtMin(tm), 'Всего времени')}${kpi(kmF(km), 'Пройдено, примерно')}${kpi(kcs.some(Boolean) ? kcalF(sum(kcs, k => k || 0)) : '—', 'Сожжено, примерно')}
-      ${kpi(num(n / weeks), 'Тренировок в неделю')}${(() => { const cw = pws.filter(w => !isStr(w)), ct = sum(cw, w => w.minutes); return ct ? kpi(num(sum(cw, kmOf) / (ct / 60)) + ' км/ч', 'Средняя скорость') + kpi(num(sum(cw, w => w.incline * w.minutes) / ct) + ' %', 'Средний уклон') : kpi('—', 'Средняя скорость') + kpi('—', 'Средний уклон'); })()}${kpi(num(sum(pws, w => +w.feeling || 3) / n) + ' / 5', 'Среднее состояние')}</div>`;
-  } else h += `<div class="card muted">За этот период тренировок нет.</div>`;
-  const [items, fmt] = bucketData(ws, S.sp, S.sm);
-  h += `<div class="card"><h3>Динамика</h3>${seg('sm', [['min','Минуты'],['km','Километры'],['kcal','Калории'],['cnt','Тренировки']])}${bars(items, fmt, 'cap1')}</div>`;
+    const tm = sum(pws, w => w.minutes), weeks = periodDays(S.sp, ws) / 7, kcs = pws.map(kcal), kc = sum(kcs, k => k || 0);
+    const days = new Set(pws.map(w => w.date)).size, kinds = new Set(pws.map(actOf)).size, xp = sum(pws, workoutXp);
+    const dl = periodDelta(ws, S.sp, tm);
+    const dh = dl == null ? '' : `<span class="st-d ${dl >= 0 ? 'up' : 'dn'}">${IC(dl >= 0 ? 'arrow_up' : 'arrow_down', 12)}${Math.abs(dl)}%<em>к прошлому периоду</em></span>`;
+    h += `<div class="st-hero"><div class="st-k">В движении ${PN}</div><div class="st-big">${fmtMin(tm).replace(/(\d+) (ч|мин)/g, '$1<i>$2</i>')}</div>${dh}
+      <div class="st-row"><div><b>${n}</b><span>${plural(n, W_WORK)}</span></div><div><b>${days}</b><span>${plural(days, W_DAY)} с активностью</span></div><div><b>${kinds}</b><span>${plural(kinds, ['вид', 'вида', 'видов'])} активности</span></div></div></div>`;
+    const ex = [kpi(num(n / weeks), 'Тренировок в неделю'), kpi(fmtMin(tm / n), 'Средняя тренировка'), kpi(numSep(xp), 'Очков заработано'),
+      kpi(kc ? kcalF(kc) : '—', kc ? 'Сожжено, примерно' : 'Ккал: укажи вес'), kpi(num(sum(pws, w => +w.feeling || 3) / n) + ' / 5', 'Среднее состояние')];
+    const km = sum(pws, kmOf); if (km > 0.05) ex.splice(3, 0, kpi(kmF(km), 'Пройдено, примерно'));
+    h += `<div class="kpis">${ex.slice(0, 6).join('')}</div>`;
+    // по видам активности
+    const by = new Map(); for (const w of pws) { const a = actOf(w); if (!by.has(a)) by.set(a, []); by.get(a).push(w); }
+    const rows = [...by.entries()].map(([a, gl]) => [a, gl, sum(gl, w => w.minutes)]).sort((x, y) => y[2] - x[2]);
+    h += `<div class="st-sec"><h3>${IC('sparkle')}По видам активности</h3><div class="st-stack">${rows.map(([a, , m]) => `<i style="flex:${Math.max(m, 1)};background:${actCol(a)}"></i>`).join('')}</div>` +
+      rows.map(([a, gl, m], i) => `<div class="st-act" style="--c:${actCol(a)};animation-delay:${i * 50}ms"><span class="st-ai">${IC(a, 18)}</span><div class="st-am"><b>${esc(stName(a))}</b><small>${npw(gl.length, W_WORK)} · ${actFacts(gl, a)}</small></div><div class="st-av"><b>${fmtMin(m)}</b><small>${tm ? Math.round(m * 100 / tm) : 0}%</small></div></div>`).join('') + `</div>`;
+  } else h += `<div class="card muted" style="margin-top:12px">За этот период тренировок нет — выбери другой или добавь тренировку.</div>`;
+  // календарь активности
+  h += `<div class="st-sec"><h3>${IC('clock')}Календарь активности<span>12 недель</span></h3>${heatHTML(ws)}</div>`;
+  const hasKm = ws.some(w => kmOf(w) > 0.05), [items, fmt] = bucketData(ws, S.sp, S.sm);
+  h += `<div class="card"><h3>Динамика</h3>${seg('sm', [['min', 'Минуты'], ['cnt', 'Тренировки'], ['kcal', 'Калории']].concat(hasKm ? [['km', 'Километры']] : []))}${bars(items, fmt, 'cap1')}</div>`;
   if (n) {
     const counts = {1:0, 2:0, 3:0, 4:0, 5:0}; pws.forEach(w => counts[clamp(parseInt(w.feeling) || 3, 1, 5)]++);
     const mx = Math.max(...Object.values(counts)) || 1;
@@ -3539,21 +3642,22 @@ function viewStats(){
     const wd = [0,0,0,0,0,0,0]; pws.forEach(w => wd[wdOf(dn(w.date))]++);
     h += `<div class="card"><h3>По дням недели</h3>${bars(wd.map((v, i) => [WD[i], v, `${WDF[i]}: ${npw(v, W_WORK)}`]), v => String(v), 'cap2', 140)}</div>`;
   }
-  // рекорды
+  // рекорды: только то, что есть у твоих видов активности
   h += `<div class="card"><h3>${IC('trophy')}Рекорды и серии</h3>`;
-  if (ws.length) {
-    const mxBy = f => ws.reduce((a, b) => f(b) > f(a) ? b : a);
-    const lo = mxBy(w => w.minutes), fa = mxBy(kmOf), fs = mxBy(w => w.speed), st = mxBy(w => w.incline);
-    const [bw, bwd] = bestWindow(ws), [cs, bs] = dayStreaks(ws), [gd, gb] = goalHistory(ws);
-    const wdc = [0,0,0,0,0,0,0]; ws.forEach(w => wdc[wdOf(dn(w.date))]++); const fav = wdc.indexOf(Math.max(...wdc));
-    const dd = w => fmtDate(dn(w.date));
-    const recs = [['Самая долгая', fmtMin(lo.minutes), dd(lo)], ['Самая дальняя', kmF(kmOf(fa)), dd(fa)], ['Самая быстрая', num(fs.speed) + ' км/ч', dd(fs)],
-      ['Самый крутой уклон', num(st.incline) + ' %', dd(st)], [`Больше всего за ${npw(g.days, W_DAY)}`, npw(bw, W_WORK), bwd != null ? 'по ' + fmtDate(bwd) : ''],
-      ['Дней подряд', npw(bs, W_DAY), 'сейчас: ' + npw(cs, W_DAY)], ['Норм выполнено', npw(gd, W_TIMES), 'лучшая серия: ' + npw(gb, W_TIMES)], ['Любимый день', WDF[fav], npw(wdc[fav], W_WORK)]];
-    h += `<div class="recs">` + recs.map(r => `<div><div class="cap">${r[0]}</div><div class="rv">${r[1]}</div><div class="cap">${r[2]}</div></div>`).join('') + `</div>`;
-  } else h += `<div class="muted">Рекорды появятся после первой тренировки.</div>`;
-  h += `</div>`;
-  return h;
+  const mxBy = (a, f) => a.reduce((x, y) => f(y) > f(x) ? y : x);
+  const [bw, bwd] = bestWindow(ws), [cs, bs] = dayStreaks(ws), [gd, gb] = goalHistory(ws), dd = w => fmtDate(dn(w.date));
+  const wdc = [0,0,0,0,0,0,0]; ws.forEach(w => wdc[wdOf(dn(w.date))]++); const fav = wdc.indexOf(Math.max(...wdc));
+  const lo = mxBy(ws, w => w.minutes), cnt = new Map(); ws.forEach(w => cnt.set(actOf(w), (cnt.get(actOf(w)) || 0) + 1));
+  const [fa0, fa1] = [...cnt.entries()].sort((x, y) => y[1] - x[1])[0];
+  const recs = [['Самая долгая', fmtMin(lo.minutes), stName(actOf(lo)) + ' · ' + dd(lo)], ['Любимая активность', stName(fa0), npw(fa1, W_WORK)],
+    [`Больше всего за ${npw(g.days, W_DAY)}`, npw(bw, W_WORK), bwd != null ? 'по ' + fmtDate(bwd) : ''], ['Дней подряд', npw(bs, W_DAY), 'сейчас: ' + npw(cs, W_DAY)],
+    ['Норм выполнено', npw(gd, W_TIMES), 'лучшая серия: ' + npw(gb, W_TIMES)], ['Любимый день', WDF[fav], npw(wdc[fav], W_WORK)]];
+  const sw = ws.filter(isStr); if (sw.length) { const b = mxBy(sw, strTotal); recs.push(['Рекорд силовой', numSep(strTotal(b)) + (STR[b.act][0] === 'secs' ? ' сек' : ' повт.'), stName(b.act) + ' · ' + dd(b)]); }
+  const kw = ws.filter(w => kmOf(w) > 0.05); if (kw.length) { const b = mxBy(kw, kmOf); recs.push(['Самая дальняя', kmF(kmOf(b)), stName(actOf(b)) + ' · ' + dd(b)]); }
+  const sp = ws.filter(w => +w.speed > 0 && !isStr(w)); if (sp.length) { const b = mxBy(sp, w => +w.speed); recs.push(['Самая быстрая', num(b.speed) + ' км/ч', stName(actOf(b)) + ' · ' + dd(b)]); }
+  const ic = ws.filter(w => actOf(w) === 'run' && +w.incline > 0); if (ic.length) { const b = mxBy(ic, w => +w.incline); recs.push(['Самый крутой уклон', num(b.incline) + ' %', dd(b)]); }
+  h += `<div class="recs">` + recs.map(r => `<div><div class="cap">${r[0]}</div><div class="rv">${r[1]}</div><div class="cap">${r[2]}</div></div>`).join('') + `</div></div>`;
+  return h + '<div class="wdock-sp"></div>';
 }
 function openAchFull(){
   hap.imp();
@@ -4562,6 +4666,7 @@ const ACT = {
   kgoal: openWeightGoal, gsave: saveGoal,
   gdel: () => { db.weight_goal = {}; touchMeta('weight_goal'); save(); closeSheet(); render(); toast('Цель удалена'); },
   seg: el => { S[el.dataset.k] = el.dataset.v; render(); hap.tap(); },
+  hmc: el => { const c = $('#hmcap'); if (c) c.textContent = el.dataset.tip; el.closest('.hm-g').querySelectorAll('.hm-c.sel').forEach(b => b.classList.remove('sel')); el.classList.add('sel'); hap.tap(); },
   bar: el => {
     const cap = document.getElementById(el.dataset.cap); if (cap) cap.textContent = el.dataset.tip;
     el.parentElement.querySelectorAll('.bar.sel').forEach(b => b.classList.remove('sel')); el.classList.add('sel'); hap.tap();
