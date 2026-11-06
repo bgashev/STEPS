@@ -2005,7 +2005,9 @@ body.frozen .stp .sb{opacity:.45}
 .hero .fchipb:not(.hset){position:relative;overflow:hidden;animation:none}
 .hero .fchipb:not(.hset).ld::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.38) 50%,transparent 70%);transform:translateX(-130%);animation:hbsheen 1.1s cubic-bezier(.4,.1,.2,1) .35s both}
 @keyframes hbsheen{from{transform:translateX(-130%)}to{transform:translateX(130%)}}
-.hero .fchipb .stk .fav.skl{border-radius:50%;background:rgba(127,127,127,.28)}
+.hero .fchipb .stk .fav.skl{border-radius:50%;border:0;background:var(--off);box-shadow:0 0 0 2px var(--surface2);overflow:hidden}
+.hero.hbg .fchipb .stk .fav.skl{background:#5b5d70;box-shadow:0 0 0 2px #3b3d4e}
+.hero .fchipb .stk .fav.skl::before,.hero .fchipb .stk .fav.skl::after{display:none}
 .hero .fchipb .stk .fav:not(.skl){animation:hbav .75s cubic-bezier(.2,.9,.25,1.1) both}
 .hero .fchipb .stk .fav:nth-child(2):not(.skl){animation-delay:.1s}
 .hero .fchipb .stk .fav:nth-child(3):not(.skl){animation-delay:.2s}
