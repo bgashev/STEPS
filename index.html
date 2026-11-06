@@ -2424,7 +2424,7 @@ body.frozen .stp .sb{opacity:.45}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.562';
+const APP = 'VOOB (by BGASHEV) Mini App v1.563';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5722,7 +5722,7 @@ const ACT = {
   wlnew: () => wlStart(),
   wlskip: () => { try { sessionStorage.setItem('voob_web_skip', '1'); } catch (e) {} clearInterval(WL.timer); clearInterval(WL.tick); const w = $('#wl'); if (w) w.classList.remove('show'); },
   weblogout: () => { hap.tap(); webLogout(); },
-  tosite: () => { hap.tap(); VOOB_LU('out', 'Новый уровень', () => { location.href = 'https://voob.kz/?from=app'; }); },
+  tosite: el => { hap.tap(); const r = el.getBoundingClientRect(); VOOB_LU('out', '', () => { location.href = 'https://voob.kz/?from=app&t=' + Date.now(); }, {x:r.left + r.width / 2, y:r.top + r.height / 2}); },
   ctopen: el => { const u = el.dataset.u; hap.tap();
     try { if (el.dataset.tg) tg.openTelegramLink(u); else tg.openLink(u); } catch (e) { window.open(u, '_blank'); } },
   creator: () => { hap.tap(); const c = CREATOR; if (c && c.handle) openPublicProfile(c.handle); else { askBadges([]); toast('Секунду…'); } },
@@ -5930,7 +5930,7 @@ setInterval(() => { if (!document.hidden) syncNow(); }, 15000);   // пока п
 /* ============================================== WEB: вход по QR (v1.550) == */
 const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w}" height="${Math.round(w * .6)}" aria-hidden="true"><defs><clipPath id="vlu"><rect x="0" y="0" width="100" height="30"/></clipPath></defs><circle cx="37" cy="30" r="20" fill="none" stroke="var(--accent)" stroke-width="8"/><circle cx="63" cy="30" r="20" fill="none" stroke="var(--text)" stroke-width="8"/><circle cx="37" cy="30" r="20" fill="none" stroke="var(--accent)" stroke-width="8" clip-path="url(#vlu)"/></svg>`;
 
-/* VOOB «Кольца»: общий переход voob.kz ↔ app.voob.kz. Два кольца логотипа (сайт и приложение) сближаются, сцепляются, вспыхивают — и камера пролетает сквозь них. 'in' стартует с того же кадра, на котором закончился 'out' */
+/* VOOB «Кольца»: общий переход voob.kz ↔ app.voob.kz. Из точки клика раскрывается ирис со светящейся кромкой, два кольца логотипа (сайт и приложение) сближаются по спирали, сцепляются со вспышкой и анаморфным бликом, собирается имя, затем камера пролетает сквозь кольцо. 'in' стартует с того же кадра, на котором закончился 'out' */
 (function (w) {
   var CSS = '#luv{position:fixed;inset:0;z-index:2147483000;background:#07080c;overflow:hidden;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#f4f6fb;display:grid;place-items:center;pointer-events:all}'
     + '#luv .l_lg{position:absolute;inset:0;background:radial-gradient(55vmax circle at 50% 48%,rgba(139,92,246,.30),transparent 62%),radial-gradient(38vmax circle at 64% 36%,rgba(34,211,238,.14),transparent 60%),radial-gradient(40vmax circle at 36% 64%,rgba(244,114,182,.12),transparent 60%)}'
@@ -5938,54 +5938,76 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
     + '#luv .l_st{position:relative;display:grid;justify-items:center;gap:34px}'
     + '#luv .l_rg{position:relative;width:min(320px,70vw);aspect-ratio:100/60}'
     + '#luv svg{width:100%;height:100%;overflow:visible;display:block;filter:drop-shadow(0 0 14px rgba(139,92,246,.55))}'
-    + '#luv svg circle{fill:none;stroke-width:8;transform-box:fill-box;transform-origin:center;stroke-dasharray:100;stroke-dashoffset:0}'
+    + '#luv svg g,#luv svg circle{transform-box:fill-box;transform-origin:center}'
+    + '#luv svg circle{fill:none;stroke-width:8;stroke-dasharray:100;stroke-dashoffset:0}'
     + '#luv .l_wm{display:flex;font-weight:900;font-size:min(46px,11.5vw);letter-spacing:.5em;padding-left:.5em;color:#f1f2f6;text-shadow:0 0 28px rgba(139,92,246,.6);line-height:1}'
     + '#luv .l_wm i{font-style:normal;display:inline-block;opacity:0}'
     + '#luv .l_fl{position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px;border-radius:50%;background:#fff;opacity:0;box-shadow:0 0 40px 12px rgba(255,255,255,.7)}'
+    + '#luv .l_fz{position:absolute;left:50%;top:50%;width:190%;height:3px;margin:-1.5px 0 0 -95%;border-radius:3px;background:linear-gradient(90deg,transparent,rgba(139,92,246,.8) 25%,#fff 50%,rgba(34,211,238,.8) 75%,transparent);filter:blur(.6px);box-shadow:0 0 22px 4px rgba(167,139,250,.6);opacity:0;transform:scaleX(0)}'
     + '#luv .l_sk{position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px;border-radius:50%;border:2px solid rgba(255,255,255,.8);opacity:0}'
-    + '#luv .l_sp{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;opacity:0}';
-  w.VOOB_LU = function (mode, label, cb) {
+    + '#luv .l_sp{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;opacity:0}'
+    + '#luvr{position:fixed;z-index:2147483001;pointer-events:none;border-radius:50%;background:radial-gradient(circle closest-side,transparent calc(100% - 70px),rgba(139,92,246,.55) calc(100% - 22px),rgba(255,255,255,.95) calc(100% - 3px),transparent 100%);filter:drop-shadow(0 0 18px rgba(139,92,246,.9))}';
+  w.VOOB_LU = function (mode, label, cb, pt) {
     var D = document, out = mode === 'out';
     if (out && (matchMedia('(prefers-reduced-motion:reduce)').matches || !D.body.animate)) { cb && cb(); return; }
-    var old = D.getElementById('luv'); if (old) old.remove();
+    var old = D.getElementById('luv'); if (old) old.remove(); var oldr = D.getElementById('luvr'); if (oldr) oldr.remove();
     if (!D.getElementById('lu-css')) { var st = D.createElement('style'); st.id = 'lu-css'; st.textContent = CSS; D.head.appendChild(st); }
     var o = D.createElement('div'); o.id = 'luv';
     o.innerHTML = '<div class="l_lg"></div><div class="l_au"></div><div class="l_st"><div class="l_rg"><svg viewBox="0 0 100 60"><defs><clipPath id="lucp"><rect x="0" y="0" width="100" height="30"/></clipPath></defs>'
-      + '<circle class="l_c1" cx="37" cy="30" r="20" pathLength="100" stroke="#8b5cf6"/><circle class="l_c2" cx="63" cy="30" r="20" pathLength="100" stroke="#f1f2f6"/><circle class="l_c3" cx="37" cy="30" r="20" pathLength="100" stroke="#8b5cf6" clip-path="url(#lucp)"/></svg><i class="l_fl"></i></div>'
+      + '<g class="l_g1"><circle class="l_c1" cx="37" cy="30" r="20" pathLength="100" stroke="#8b5cf6"/><circle class="l_h1" cx="37" cy="30" r="20" pathLength="100" stroke="#fff" style="stroke-dasharray:5 95;opacity:0"/></g>'
+      + '<g class="l_g2"><circle class="l_c2" cx="63" cy="30" r="20" pathLength="100" stroke="#f1f2f6"/><circle class="l_h2" cx="63" cy="30" r="20" pathLength="100" stroke="#22d3ee" style="stroke-dasharray:5 95;opacity:0"/></g>'
+      + '<circle class="l_c3" cx="37" cy="30" r="20" pathLength="100" stroke="#8b5cf6" clip-path="url(#lucp)"/></svg><i class="l_fz"></i><i class="l_fl"></i></div>'
       + '<div class="l_wm"><i>V</i><i>O</i><i>O</i><i>B</i></div></div>';
     D.body.appendChild(o);
     var g = D.getElementById('lu-g'); if (g) g.remove();
-    var q = function (s) { return o.querySelector(s); }, rg = q('.l_rg'), c1 = q('.l_c1'), c2 = q('.l_c2'), c3 = q('.l_c3'), fl = q('.l_fl'), au = q('.l_au'), ls = [].slice.call(o.querySelectorAll('.l_wm i'));
+    var q = function (s) { return o.querySelector(s); }, rg = q('.l_rg'), g1 = q('.l_g1'), g2 = q('.l_g2'), c1 = q('.l_c1'), c2 = q('.l_c2'), c3 = q('.l_c3'), h1 = q('.l_h1'), h2 = q('.l_h2'), fl = q('.l_fl'), fz = q('.l_fz'), au = q('.l_au'), ls = [].slice.call(o.querySelectorAll('.l_wm i'));
     var A = function (el, k, op) { return el.animate(k, Object.assign({ fill: 'forwards' }, op)); };
+    var flare = function (dur) { A(fz, [{ opacity: 0, transform: 'scaleX(.02)' }, { opacity: 1, transform: 'scaleX(.55)', offset: .3 }, { opacity: 0, transform: 'scaleX(1.25)' }], { duration: dur || 900, easing: 'cubic-bezier(.2,.7,.2,1)' }); };
     if (out) {
+      var W = innerWidth, H = innerHeight, x = pt && pt.x != null ? pt.x : W / 2, y = pt && pt.y != null ? pt.y : H / 2,
+          R = Math.hypot(Math.max(x, W - x), Math.max(y, H - y)) + 40;
       c3.style.opacity = 0;
-      A(o, [{ opacity: 0 }, { opacity: 1 }], { duration: 450, easing: 'ease-out' });
-      A(au, [{ opacity: 0, transform: 'rotate(-40deg) scale(.8)' }, { opacity: .55, transform: 'none' }], { duration: 1600, easing: 'cubic-bezier(.2,.7,.2,1)' });
-      /* кольца летят навстречу, закручиваясь и дорисовываясь */
-      A(c1, [{ transform: 'translateX(-150px) rotate(-420deg)', strokeDashoffset: 100, opacity: .2 }, { transform: 'translateX(-8px) rotate(-30deg)', strokeDashoffset: 8, opacity: 1, offset: .8 }, { transform: 'none', strokeDashoffset: 0, opacity: 1 }], { duration: 1000, delay: 250, easing: 'cubic-bezier(.3,.7,.25,1)' });
-      A(c2, [{ transform: 'translateX(150px) rotate(420deg)', strokeDashoffset: 100, opacity: .2 }, { transform: 'translateX(8px) rotate(30deg)', strokeDashoffset: 8, opacity: 1, offset: .8 }, { transform: 'none', strokeDashoffset: 0, opacity: 1 }], { duration: 1000, delay: 250, easing: 'cubic-bezier(.3,.7,.25,1)' });
-      A(rg, [{ transform: 'scale(.82)' }, { transform: 'scale(1)' }], { duration: 1200, delay: 200, easing: 'cubic-bezier(.2,.7,.2,1)' });
+      /* ирис из точки клика со светящейся кромкой */
+      A(o, [{ clipPath: 'circle(0px at ' + x + 'px ' + y + 'px)' }, { clipPath: 'circle(' + R + 'px at ' + x + 'px ' + y + 'px)' }], { duration: 760, easing: 'cubic-bezier(.65,0,.2,1)' });
+      var rim = D.createElement('div'); rim.id = 'luvr'; rim.style.cssText = 'left:' + (x - R) + 'px;top:' + (y - R) + 'px;width:' + (2 * R) + 'px;height:' + (2 * R) + 'px';
+      D.body.appendChild(rim);
+      var ra = A(rim, [{ transform: 'scale(0)', opacity: 1 }, { transform: 'scale(1)', opacity: 1, offset: .85 }, { transform: 'scale(1.03)', opacity: 0 }], { duration: 860, easing: 'cubic-bezier(.65,0,.2,1)' }); ra.onfinish = function () { rim.remove(); };
+      A(au, [{ opacity: 0, transform: 'rotate(-40deg) scale(.8)' }, { opacity: .55, transform: 'none' }], { duration: 1700, delay: 300, easing: 'cubic-bezier(.2,.7,.2,1)' });
+      /* кольца летят навстречу по спирали и дорисовываются, за каждым — светящаяся «комета» */
+      var T0 = 420, TD = 950;
+      A(c1, [{ strokeDashoffset: 100, opacity: .25 }, { strokeDashoffset: 8, opacity: 1, offset: .8 }, { strokeDashoffset: 0, opacity: 1 }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
+      A(c2, [{ strokeDashoffset: 100, opacity: .25 }, { strokeDashoffset: 8, opacity: 1, offset: .8 }, { strokeDashoffset: 0, opacity: 1 }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
+      A(g1, [{ transform: 'translateX(-160px) rotate(-480deg) scale(.5)' }, { transform: 'translateX(-10px) rotate(-30deg) scale(1.02)', offset: .82 }, { transform: 'none' }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
+      A(g2, [{ transform: 'translateX(160px) rotate(480deg) scale(.5)' }, { transform: 'translateX(10px) rotate(30deg) scale(1.02)', offset: .82 }, { transform: 'none' }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
+      [h1, h2].forEach(function (h, i) { A(h, [{ opacity: 1, strokeDashoffset: 0 }, { opacity: 1, offset: .9 }, { opacity: 0, strokeDashoffset: i ? 260 : -260 }], { duration: TD + 120, delay: T0, easing: 'cubic-bezier(.3,.5,.4,1)' }); });
+      A(rg, [{ transform: 'scale(.8)' }, { transform: 'scale(1)' }], { duration: 1200, delay: 320, easing: 'cubic-bezier(.2,.7,.2,1)' });
+      var LK = T0 + TD - 40;
       setTimeout(function () {
-        /* сцепление: вспышка, ударные волны, искры */
+        /* сцепление: вспышка, анаморфный блик, ударные волны, искры */
         c3.style.opacity = 1; A(c3, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
         A(fl, [{ opacity: 1, transform: 'scale(.4)' }, { opacity: 0, transform: 'scale(55)' }], { duration: 700, easing: 'cubic-bezier(.2,.6,.3,1)' });
+        flare(1000);
         A(rg, [{ transform: 'scale(1)' }, { transform: 'scale(1.09)', offset: .3 }, { transform: 'scale(1)' }], { duration: 600, easing: 'ease-out' });
         for (var i = 0; i < 3; i++) { var s = D.createElement('i'); s.className = 'l_sk'; rg.appendChild(s); A(s, [{ opacity: .9, transform: 'scale(.5)' }, { opacity: 0, transform: 'scale(' + (3.2 + i * .9) + ')' }], { duration: 1000 + i * 120, delay: i * 120, easing: 'cubic-bezier(.15,.7,.3,1)' }); }
         var cols = ['#22d3ee', '#8b5cf6', '#f472b6', '#ffffff', '#fbbf24'];
-        for (var j = 0; j < 44; j++) {
+        for (var j = 0; j < 48; j++) {
           var p = D.createElement('i'); p.className = 'l_sp'; p.style.background = cols[j % 5]; p.style.boxShadow = '0 0 10px ' + cols[j % 5]; rg.appendChild(p);
-          var an = Math.random() * 6.283, d = 150 + Math.random() * 300, sz = .5 + Math.random() * 1.3;
+          var an = Math.random() * 6.283, d = 150 + Math.random() * 320, sz = .5 + Math.random() * 1.3;
           A(p, [{ opacity: 1, transform: 'translate(0,0) scale(' + sz + ')' }, { opacity: 1, offset: .5 }, { opacity: 0, transform: 'translate(' + Math.cos(an) * d + 'px,' + Math.sin(an) * d * .8 + 'px) scale(0)' }], { duration: 900 + Math.random() * 600, easing: 'cubic-bezier(.1,.75,.3,1)' });
         }
-        /* имя собирается по буквам */
-        ls.forEach(function (l, k) { A(l, [{ opacity: 0, transform: 'translateY(26px) scale(1.4)', filter: 'blur(10px)' }, { opacity: 1, transform: 'none', filter: 'blur(0)' }], { duration: 650, delay: 120 + k * 90, easing: 'cubic-bezier(.2,.8,.2,1)' }); });
-      }, 1180);
-      setTimeout(function () { cb && cb(); }, 2450);
+        /* имя собирается по буквам, затем по нему пробегает волна света */
+        ls.forEach(function (l, k) {
+          A(l, [{ opacity: 0, transform: 'translateY(26px) scale(1.4)', filter: 'blur(10px) brightness(1)' }, { opacity: 1, transform: 'none', filter: 'blur(0) brightness(1)' }], { duration: 650, delay: 100 + k * 90, easing: 'cubic-bezier(.2,.8,.2,1)' });
+          A(l, [{ filter: 'blur(0) brightness(1)' }, { filter: 'blur(0) brightness(2.6) drop-shadow(0 0 14px #fff)', offset: .4 }, { filter: 'blur(0) brightness(1)' }], { duration: 650, delay: 900 + k * 110 });
+        });
+      }, LK);
+      setTimeout(function () { cb && cb(); }, LK + 1500);
     } else {
       ls.forEach(function (l) { l.style.opacity = 1; });
       setTimeout(function () {
         var r = rg.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, H = innerHeight, W = innerWidth,
             R = Math.hypot(Math.max(cx, W - cx), Math.max(cy, H - cy)) + 220, done = function () { o.remove(); };
+        flare(900);
         ls.forEach(function (l, k) { A(l, [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-14px)' }], { duration: 300, delay: k * 30 }); });
         A(rg, [{ transform: 'scale(1)', opacity: 1 }, { transform: 'scale(1.1)', opacity: 1, offset: .15 }, { transform: 'scale(9)', opacity: 0 }], { duration: 950, easing: 'cubic-bezier(.55,0,.75,.35)' });
         var ok = false;
@@ -6004,7 +6026,7 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
 try {
   if (/[?&]from=site\b/.test(location.search)) {
     history.replaceState(null, '', location.pathname + location.hash);
-    const arr = () => VOOB_LU('in', 'Новый уровень');
+    const arr = () => VOOB_LU('in', '');
     document.body ? arr() : addEventListener('DOMContentLoaded', arr);
   }
 } catch (e) {}
