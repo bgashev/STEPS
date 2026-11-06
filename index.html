@@ -4630,7 +4630,7 @@ function viewMeSettings(){
     <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}<div class="prof-act">${tgUser ? socialsHTML(tgUser.id, true) : ''}</div></div></div>${inTG ? '' : `<div class="prof-sync">${syncHTML()}</div>`}`;
   if (inTG) h += proCardHTML();
   if (inTG) h += `<div class="card pmc"><div class="pm-top"><span class="pm-ic">${IC('gift', 20)}</span><div><b>Промокод</b><small>PRO, рамка или подарок</small></div></div>
-    <div class="pm-field"><input id="pm-in" class="inp" placeholder="VOOB-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="24" enterkeyhint="done">
+    <div class="pm-field"><input id="pm-in" class="inp" placeholder="VOOB-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="16" enterkeyhint="done">
     <button type="button" class="btn primary" id="pm-go" data-act="promo" disabled>Активировать</button></div>
     <div class="cap" id="pm-msg">Введи код — PRO, рамка или подарок сразу станут твоими</div></div>`;   // v1.436 · М2: оформление
   { const fk = frameOf(tgUser ? {tg_id:tgUser.id} : null), bk = myBg();   // v1.540: рамка, фон и значок — на отдельной странице «Персонализация»
@@ -5998,6 +5998,7 @@ function sheetGlide(ty, tm){
 document.addEventListener('input', e => { if (e.target.id !== 'pm-in') return;
   const i = e.target; let v = i.value.toUpperCase().replace(/[^A-Z0-9-]/g, ''); const f = v.replace(/-/g, '');
   if (f.startsWith('VOOB') && f.length > 4) { const b = f.slice(4, 12); v = 'VOOB-' + b.slice(0, 4) + (b.length > 4 ? '-' + b.slice(4) : ''); }
+  else if (f.length > 12) { let c = 0, o = ''; for (const ch of v) { if (ch !== '-' && ++c > 12) break; o += ch; } v = o; }   // лимит: 12 букв/цифр, дефисы не считаются (в т.ч. при вставке)
   if (v !== i.value) i.value = v;
   const g = $('#pm-go'); if (g) g.disabled = v.replace(/-/g, '').length < 4;
   const m = $('#pm-msg'); if (m && m.className) { m.className = 'cap'; m.textContent = 'Введи код — PRO, рамка или подарок сразу станут твоими'; } });
