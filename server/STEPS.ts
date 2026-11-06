@@ -222,14 +222,54 @@ async function proPlans(onlyActive = true) {
   const { data } = await q;
   return data ?? [];
 }
+/* ---------- М6: заморозка PRO ----------
+   Пауза = until сдвигается на «сейчас», остаток хранится в frozen_left_ms.
+   Так остальные функции (значки, лента, промокоды) сами считают человека не-PRO. */
+const freezeDaysFor = (plan: string | null) => plan === "year" ? 30 : plan === "month" ? 7 : 0;
+const SUB_COLS = "until, plan, bonus_used, frozen_at, frozen_until, frozen_left_ms, freeze_used_at";
+async function doUnfreeze(tgId: number, row: any, auto: boolean) {
+  const base = Math.max(row.until ? new Date(row.until).getTime() : 0, Date.now());
+  const until = new Date(base + Math.max(0, Number(row.frozen_left_ms ?? 0))).toISOString();
+  const upd = { until, frozen_at: null, frozen_until: null, frozen_left_ms: null, updated_at: new Date().toISOString() };
+  await db.from("pro_subs").update(upd).eq("tg_id", tgId).not("frozen_at", "is", null);
+  if (auto) tg("sendMessage", { chat_id: tgId, parse_mode: "HTML", reply_markup: openBtnMk(),
+    text: `☀️ Заморозка закончилась — VOOB PRO снова активен до <b>${fmtRu(until)}</b>. С возвращением!` }).catch(() => {});
+  return { ...row, ...upd };
+}
+async function doFreeze(tgId: number, row: any) {
+  const now = Date.now();
+  const left = Math.max(0, new Date(row.until).getTime() - now);
+  const to = new Date(now + freezeDaysFor(row.plan) * DAY).toISOString();
+  await db.from("pro_subs").update({ until: new Date(now).toISOString(), frozen_at: new Date(now).toISOString(), frozen_until: to,
+    frozen_left_ms: left, freeze_used_at: new Date(now).toISOString(), updated_at: new Date(now).toISOString() })
+    .eq("tg_id", tgId).is("frozen_at", null);
+  return to;
+}
+async function freezeUsed(tgId: number, usedAt: string | null) {
+  if (!usedAt) return false;
+  const { count } = await db.from("pro_payments").select("id", { count: "exact", head: true })
+    .eq("tg_id", tgId).gt("created_at", usedAt).is("refunded_at", null);
+  return !count;                                  // новая оплата открывает заморозку заново
+}
+async function isFrozen(tgId: number) {
+  const { data } = await db.from("pro_subs").select("frozen_at").eq("tg_id", tgId).maybeSingle();
+  return !!data?.frozen_at;
+}
 async function proStatus(tgId: number) {
-  const { data } = await db.from("pro_subs").select("until, plan, bonus_used").eq("tg_id", tgId).maybeSingle();
+  let { data } = await db.from("pro_subs").select(SUB_COLS).eq("tg_id", tgId).maybeSingle();
+  if (data?.frozen_at && data.frozen_until && new Date(data.frozen_until).getTime() <= Date.now()) data = await doUnfreeze(tgId, data, true);
+  const frozen = !!data?.frozen_at;
   const until = data?.until ? new Date(data.until) : null;
-  const active = !!until && until.getTime() > Date.now();
+  const active = !frozen && !!until && until.getTime() > Date.now();
   const plans = (await proPlans()).map((p: any) => ({ plan: p.plan, title: p.title, stars: p.stars, days: p.days,
     bonus_days: data?.bonus_used ? 0 : p.first_bonus_days }));
-  return { active, until: until ? until.toISOString() : null, plan: data?.plan ?? null,
-    days_left: active ? Math.ceil((until!.getTime() - Date.now()) / DAY) : 0, plans };
+  const fd = freezeDaysFor(data?.plan ?? null);
+  const canFreeze = active && fd > 0 && !(await freezeUsed(tgId, data?.freeze_used_at ?? null));
+  const leftMs = frozen ? Number(data.frozen_left_ms ?? 0) : active ? until!.getTime() - Date.now() : 0;
+  return { active, frozen, until: until ? until.toISOString() : null, plan: data?.plan ?? null,
+    days_left: Math.ceil(leftMs / DAY), plans,
+    frozen_until: frozen ? data.frozen_until : null, freeze_days: fd, can_freeze: canFreeze,
+    freeze_used: !!data?.freeze_used_at && !canFreeze && !frozen && fd > 0 };
 }
 const fmtRu = (iso: string) => { const d = new Date(iso); return `${String(d.getUTCDate()).padStart(2, "0")}.${String(d.getUTCMonth() + 1).padStart(2, "0")}.${d.getUTCFullYear()}`; };
 
@@ -245,6 +285,7 @@ async function routeProInvoice(body: any) {
   const plan = String(body?.plan ?? "");
   const p = (await proPlans()).find((x: any) => x.plan === plan);
   if (!p) return fail("Неизвестный тариф");
+  if (await isFrozen(me)) return fail("Подписка заморожена — оплата доступна после разморозки", 423);
   const to = Number(body?.for ?? 0);
   if (to) {                                                  // v1.429: PRO в подарок другу
     if (to === me || !(await areFriends(me, to))) return fail("Дарить можно только друзьям", 403);
@@ -277,7 +318,8 @@ async function onPreCheckout(q: any) {
   const pl = parseProPayload(q.invoice_payload);
   const p = pl ? (await proPlans()).find((x: any) => x.plan === pl.plan) : null;
   const ok = !!(pl && p && pl.tg === q.from?.id && q.currency === "XTR" && q.total_amount === p.stars)
-    && (!pl!.to || await areFriends(pl!.tg, pl!.to));
+    && (!pl!.to || await areFriends(pl!.tg, pl!.to))
+    && !(await isFrozen(pl!.tg)) && !(pl!.to && await isFrozen(pl!.to));
   await tg("answerPreCheckoutQuery", ok ? { pre_checkout_query_id: q.id, ok: true }
     : { pre_checkout_query_id: q.id, ok: false, error_message: "Счёт устарел — открой оплату в VOOB ещё раз." });
 }
@@ -983,7 +1025,8 @@ async function routeSync(body: any) {
   const rows = Array.isArray(body?.rows) ? body.rows : [];
   if (rows.length > MAX_ROWS) return fail(`Слишком много записей за раз (максимум ${MAX_ROWS})`);
   let pushed = 0;
-  if (rows.length) {
+  const frozenNow = await isFrozen(tgId);          // М6: во время заморозки записи не принимаются
+  if (rows.length && !frozenNow) {
     const { data, error } = await db.rpc("sync_push", { p_tg: tgId, p_rows: rows });
     if (error) return fail("Ошибка записи: " + error.message, 500);
     pushed = data ?? 0;
@@ -1003,7 +1046,7 @@ async function routeSync(body: any) {
   let gifts = null, pro = null;
   try { gifts = await myGifts(tgId); } catch { gifts = null; }
   try { pro = await proStatus(tgId); } catch { pro = null; }
-  return json({ pushed, rows: out, rev: cursor, user: await userInfo(tgId), server_time: Date.now(), gifts, pro });
+  return json({ pushed, rows: out, rev: cursor, user: await userInfo(tgId), server_time: Date.now(), gifts, pro, frozen: frozenNow });
 }
 
 async function routeAvatar(body: any) {
@@ -1041,6 +1084,58 @@ async function routePinVerify(body: any) {
   return json({ status: "ok" });
 }
 
+/* ---------- М6: коды из бота для заморозки / разморозки ---------- */
+const ACT_TTL_MIN = 10, ACT_TRIES = 5;
+async function routeFreezeStart(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const action = body?.action === "unfreeze" ? "unfreeze" : "freeze";
+  const st = await proStatus(me);
+  if (action === "freeze" && !st.can_freeze) return fail(st.frozen ? "Подписка уже заморожена" : "Заморозка недоступна", 409);
+  if (action === "unfreeze" && !st.frozen) return fail("Подписка не заморожена", 409);
+  const { data: old } = await db.from("action_codes").select("created_at").eq("tg_id", me).eq("action", action).maybeSingle();
+  if (old && Date.now() - new Date(old.created_at).getTime() < 60000) return json({ status: "soon", ttl: ACT_TTL_MIN * 60 });
+  const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 10000).padStart(4, "0");
+  await db.from("action_codes").upsert({ tg_id: me, action, code_hash: await sha256(`act:${action}:${me}:${code}`), tries: 0,
+    created_at: new Date().toISOString() }, { onConflict: "tg_id,action" });
+  const text = action === "freeze"
+    ? `❄️ Код для заморозки VOOB PRO: <b>${code}</b>\n\nПодписка встанет на паузу на ${st.freeze_days} дн., оставшиеся дни сохранятся. Пока идёт заморозка, данные в приложении можно только смотреть. Заморозка доступна один раз.\n\nДействует ${ACT_TTL_MIN} минут. Если это не ты — проигнорируй сообщение.`
+    : `☀️ Код для разморозки VOOB PRO: <b>${code}</b>\n\nПодписка продолжится с того места, где остановилась.\n\nДействует ${ACT_TTL_MIN} минут. Если это не ты — проигнорируй сообщение.`;
+  const r = await tg("sendMessage", { chat_id: me, parse_mode: "HTML", text }).catch(() => null);
+  return json({ status: r?.ok ? "sent" : "undelivered", ttl: ACT_TTL_MIN * 60 });
+}
+async function routeFreezeVerify(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const action = body?.action === "unfreeze" ? "unfreeze" : "freeze";
+  const code = String(body?.code ?? "").trim();
+  const { data: r } = await db.from("action_codes").select("code_hash, tries, created_at").eq("tg_id", me).eq("action", action).maybeSingle();
+  if (!r || Date.now() - new Date(r.created_at).getTime() > ACT_TTL_MIN * 60000) return json({ status: "expired" });
+  if (r.tries >= ACT_TRIES) return json({ status: "locked" });
+  if (!/^\d{4}$/.test(code) || !safeEqual(await sha256(`act:${action}:${me}:${code}`), r.code_hash)) {
+    await db.from("action_codes").update({ tries: r.tries + 1 }).eq("tg_id", me).eq("action", action);
+    return json({ status: r.tries + 1 >= ACT_TRIES ? "locked" : "wrong", left: ACT_TRIES - r.tries - 1 });
+  }
+  await db.from("action_codes").delete().eq("tg_id", me).eq("action", action);
+  const { data: row } = await db.from("pro_subs").select(SUB_COLS).eq("tg_id", me).maybeSingle();
+  const st = await proStatus(me);
+  if (action === "freeze") {
+    if (!row || !st.can_freeze) return fail("Заморозка недоступна", 409);
+    const to = await doFreeze(me, row);
+    tg("sendMessage", { chat_id: me, parse_mode: "HTML", reply_markup: openBtnMk(),
+      text: `❄️ VOOB PRO заморожен до <b>${fmtRu(to)}</b>. Оставшиеся дни сохранены. Разморозить раньше можно в приложении.` }).catch(() => {});
+  } else {
+    if (!row?.frozen_at) return fail("Подписка не заморожена", 409);
+    const u = await doUnfreeze(me, row, false);
+    tg("sendMessage", { chat_id: me, parse_mode: "HTML", reply_markup: openBtnMk(),
+      text: `☀️ VOOB PRO снова активен до <b>${fmtRu(u.until)}</b>.` }).catch(() => {});
+  }
+  return json({ status: "ok", pro: await proStatus(me) });
+}
+
+const FROZEN_BLOCK = new Set(["/friends/add", "/friends/remove", "/friends/request", "/friends/respond", "/friends/privacy",
+  "/friends/poke", "/gifts/send", "/gifts/claim", "/profile/handle"]);
+
 async function routeLogout(body: any) {
   if (typeof body?.token === "string") await db.from("sessions").delete().eq("token_hash", await sha256(body.token));
   return json({ ok: true });
@@ -1054,8 +1149,12 @@ Deno.serve(async (req) => {
   try {
     if (route === "/setup" && req.method === "GET") return await routeSetup(req);
     if (route === "/bot" && req.method === "POST") return await routeBot(req);
-    if (req.method !== "POST") return json({ app: "VOOB sync", version: "1.451", pro: true, ok: true });
+    if (req.method !== "POST") return json({ app: "VOOB sync", version: "1.452", pro: true, ok: true });
     const body = await req.json().catch(() => ({}));
+    if (FROZEN_BLOCK.has(route)) {                       // М6: пока подписка заморожена — только просмотр
+      const who = await sessionUser(body?.token);
+      if (who && await isFrozen(who)) return fail("Подписка заморожена — изменения временно недоступны", 423);
+    }
     switch (route) {
       case "/tg-webapp": return await routeWebApp(body);
       case "/login/start": return await routeLoginStart();
@@ -1081,6 +1180,8 @@ Deno.serve(async (req) => {
       case "/pin/reset/start": return await routePinStart(body);
       case "/pin/reset/verify": return await routePinVerify(body);
       case "/pro/invoice": return await routeProInvoice(body);
+      case "/pro/freeze/start": return await routeFreezeStart(body);
+      case "/pro/freeze/verify": return await routeFreezeVerify(body);
     }
     return fail("Неизвестный маршрут " + route, 404);
   } catch (e) {
