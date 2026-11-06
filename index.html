@@ -3976,7 +3976,7 @@ function friendSheetHTML(f, j, loading, self){
     <span class="hero-av" data-act="frzoom" data-id="${f.tg_id}">${favHTML(f)}</span>
     <h2 class="nmrow hero-nm"><span class="nm">${esc(f.name)}</span>${bdgHTML(f.tg_id, 20)}</h2>
     ${f.handle || f.username ? `<div class="hero-at">@${esc(f.handle || f.username)}</div>` : ''}${creatorHTML(f.tg_id)}
-    <div class="hero-lv"><div class="hero-lvt"><span class="lvn">${lv.level}</span><span class="ttl">${tierOf(lv.level).title}</span></div>
+    <div class="hero-lv" data-act="lvinfo" data-xp="${lv.xp}" data-nm="${esc(f.name)}" role="button" aria-label="Уровни и звания"><div class="hero-lvt"><span class="lvn">${lv.level}</span><span class="ttl">${tierOf(lv.level).title}</span></div>
       <div class="lvbar"><i style="width:${pct}%"><b class="lvp"></b></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div></div>`;
   if (j && j.friends) FR.profBy.set(+f.tg_id, j.friends);   // список друзей — у каждого профиля свой (раньше один общий, и его перезаписывал любой другой открытый профиль)
   const pw = +f.poke_wait || 0;
