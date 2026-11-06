@@ -1995,6 +1995,11 @@ body.frozen .stp .sb{opacity:.45}
 .pf-sex button.on{background:transparent;border-color:transparent;color:var(--on-accent)}
 .bmk{transition:left .6s cubic-bezier(.3,1.1,.4,1)}
 .bmo{transition:left .5s ease,width .5s ease,opacity .4s ease}
+/* v1.500: кнопки «Друзья»/«Настройки» на фоне профиля сразу с блюром: анимация прозрачности у родителей отключала backdrop-filter до конца и он «выскакивал» */
+.hero.hbg>*:not(.hbgfx){animation:none!important}
+.hero.hbg .fchipb{animation:hbchip .6s cubic-bezier(.2,.8,.25,1) both}
+@keyframes hbchip{from{transform:translateY(6px)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.hero.hbg .fchipb{animation:none!important}}
 </style>
 </head>
 <body>
