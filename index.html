@@ -1771,7 +1771,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 @keyframes lvRow{from{opacity:0;transform:translateY(14px);filter:blur(6px)}to{opacity:1;transform:none;filter:blur(0)}}
 @keyframes lvPop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
 /* п.10 · плашка подписчика PRO */
-.crt.pro[data-act]{cursor:pointer;transition:transform .15s}.crt.pro[data-act]:active{transform:scale(.94)}
+.crt[data-act]{cursor:pointer;transition:transform .15s}.crt[data-act]:active{transform:scale(.94)}
 .ppl{text-align:center;padding:10px 6px 4px}
 .ppl-em{position:relative;width:92px;height:92px;margin:4px auto 12px;display:grid;place-items:center}
 .ppl-em span{position:relative;z-index:2;width:76px;height:76px;border-radius:26px;display:grid;place-items:center;color:#2A2108;background:linear-gradient(135deg,#FFE79A,#E9B949 55%,#C48A1C);box-shadow:0 14px 34px -10px rgba(233,185,73,.7),inset 0 1px 0 rgba(255,255,255,.55);animation:pplIn .7s cubic-bezier(.2,.9,.25,1.15) both}
@@ -2430,7 +2430,7 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.575';
+const APP = 'VOOB (by BGASHEV) Mini App v1.576';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
