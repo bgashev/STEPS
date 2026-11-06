@@ -2396,6 +2396,7 @@ body.frozen .stp .sb{opacity:.45}
  html.web #tabs .brand{display:flex;align-items:center;gap:12px;position:absolute;left:22px;top:26px;color:var(--text)}
  html.web #tabs .siteb{white-space:nowrap;background:none;border:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:12px;position:absolute;left:12px;right:12px;bottom:18px;height:46px;padding:0 14px;border-radius:14px;color:var(--muted,var(--text));font-weight:700;font-size:13.5px;opacity:.8;transition:background .2s,opacity .2s}
  html.web #tabs .siteb.phb{bottom:70px}
+html.web #tabs .siteb.stb{bottom:122px}
  html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacity:1}
  html.web #tabs .brand b{font-weight:900;font-size:19px;letter-spacing:.28em}
  html.web #tabs .tbi{top:92px;left:12px;right:12px;width:auto;height:48px;border-radius:16px;transform:translateY(calc(var(--ti,0) * 52px))}
@@ -2426,7 +2427,7 @@ body.frozen .stp .sb{opacity:.45}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.565';
+const APP = 'VOOB (by BGASHEV) Mini App v1.566';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5295,7 +5296,7 @@ function render(){
   document.querySelectorAll('.prox:not([data-ph])').forEach(el => { el.dataset.ph = 1; el.style.setProperty('--ph', -Math.round(performance.now() % 5000) + 'ms'); });   // блик PRO не начинается заново
   setTimeout(checkRewards, 700);
   const tb = $('#tabs'), ti = TABS.findIndex(t => t[0] === S.tab);
-  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + LOGO_SVG(50) + '<b>VOOB</b></span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb phb" data-act="tophone"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1.5" width="14" height="21" rx="3.4"/><path d="M10 18.8h4"/></svg>Открыть на телефоне</button><button type="button" class="siteb" data-act="tosite"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>VOOB.KZ</button>' : '');
+  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + LOGO_SVG(50) + '<b>VOOB</b></span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb stb" data-act="webset">'+IC('gear', 22)+'Настройки</button><button type="button" class="siteb phb" data-act="tophone"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="1.5" width="14" height="21" rx="3.4"/><path d="M10 18.8h4"/></svg>Открыть на телефоне</button><button type="button" class="siteb" data-act="tosite"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>VOOB.KZ</button>' : '');
   tb.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   tb.style.setProperty('--ti', ti);
 }
@@ -5640,6 +5641,7 @@ const ACT = {
   fzsend: () => fzSend(),
   delopen: () => openRestore(),
   delrestore: () => doRestore(),
+  webset: () => { ACT.tab({dataset:{tab:'me'}}); if (!S.meSet) ACT.meset(); },
   meset: () => { hap.tap(); S.meSet = true; meNav('nav-in'); },
   mesback: () => { hap.tap(); S.meSet = false; S.pers = false; meNav('nav-out'); },
   persopen: () => { hap.tap(); S.pers = true; meNav('nav-in'); },
