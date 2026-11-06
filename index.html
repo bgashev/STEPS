@@ -4017,9 +4017,10 @@ function langWave(el, change){
     {transform:'translateY(0)', opacity:1, filter:'blur(0)', offset:1}], {duration:1500, easing:'cubic-bezier(.3,.55,.3,1)', fill:'forwards'});
   setTimeout(() => {
     m.animate([{transform:'translateY(0) scale(1)'}, {transform:'translateY(0) scale(1.65)'}], {duration:850, easing:'cubic-bezier(.22,.8,.24,1)', fill:'forwards'});
-    cs.animate([{opacity:1, filter:'blur(0) brightness(1)', offset:0}, {opacity:.55, filter:'blur(5px) brightness(.7)', offset:.34}, {opacity:0, filter:'blur(12px) brightness(.45)', offset:1}],
-      {duration:1500, easing:'cubic-bezier(.4,0,.4,1)', fill:'forwards'});     // фон размывается и приглушается, последняя секунда — уходит совсем
   }, 1500);
+  setTimeout(() => cs.animate([{opacity:1, filter:'blur(0) brightness(1)', offset:0}, {opacity:.85, filter:'blur(3px) brightness(.88)', offset:.25},
+    {opacity:.55, filter:'blur(6px) brightness(.68)', offset:.5}, {opacity:0, filter:'blur(12px) brightness(.45)', offset:1}],
+    {duration:2000, easing:'cubic-bezier(.3,0,.5,1)', fill:'forwards'}), 1000);     // с первой секунды фон потихоньку размывается и приглушается, к концу уходит совсем
   setTimeout(() => m.animate([{opacity:1, filter:'blur(0)', transform:'scale(1.65)'}, {opacity:0, filter:'blur(16px)', transform:'scale(1.72)'}], {duration:500, easing:'cubic-bezier(.4,0,.6,1)', fill:'forwards'}), 2350);
   setTimeout(() => { const o = ov.animate([{opacity:1}, {opacity:0}], {duration:450, easing:'ease-in-out', fill:'forwards'}); o.onfinish = () => ov.remove(); }, 2550);
 }
