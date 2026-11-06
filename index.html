@@ -898,7 +898,11 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 #fab .wd-add{transition:width .5s cubic-bezier(.22,.61,.36,1),padding .5s cubic-bezier(.22,.61,.36,1),transform .12s}
 #fab.mini .wd-add{padding:0 16px;gap:0}
 #fab.mini .fl{display:none}
-#fab .wd-add{transition:width .5s cubic-bezier(.22,.61,.36,1),padding .5s cubic-bezier(.22,.61,.36,1),transform .12s,background .45s ease,box-shadow .45s ease,border-color .45s ease,color .45s ease}
+/* v1.496: цвет кнопки меняется плавно ТОЛЬКО при сворачивании/разворачивании; при старте, смене темы и акцента он не «переливается» (раньше мелькал на первом запуске) */
+#fab.anim .wd-add{transition:width .5s cubic-bezier(.22,.61,.36,1),padding .5s cubic-bezier(.22,.61,.36,1),transform .12s,background .45s ease,box-shadow .45s ease,border-color .45s ease,color .45s ease}
+#fab.first{transition:none!important;animation:fabIn .75s cubic-bezier(.2,.9,.25,1) both}
+@keyframes fabIn{from{opacity:0;transform:translate(-50%,18px) scale(.92);filter:blur(7px)}to{opacity:1;transform:translateX(-50%);filter:blur(0)}}
+@media (prefers-reduced-motion:reduce){#fab.first{animation:none!important}}
 #fab.mini .wd-add{background:var(--tabs-bg,var(--surface))!important;border:1px solid var(--border);box-shadow:0 14px 40px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.06)!important;color:var(--text)}
 #fab.mini .wd-add svg{opacity:.9}
 #fab.mini .wd-add:active{opacity:1}
@@ -4518,6 +4522,7 @@ let fabY = 0, fabMiniOn = false;
 function fabMini(on){
   const box = $('#fab'); if (!box || on === fabMiniOn) return;
   fabMiniOn = on;
+  box.classList.add('anim'); clearTimeout(fabMini.t); fabMini.t = setTimeout(() => box.classList.remove('anim'), 800);
   const b = box.querySelector('button'); if (!b) { box.classList.toggle('mini', on); return; }
   const from = b.getBoundingClientRect().width;
   box.classList.toggle('mini', on);
@@ -4537,6 +4542,11 @@ function updFab(){
   if (!fi.innerHTML) fi.innerHTML = IC('plus', 20);
   if (!cfg) { box.classList.add('hide'); return; }
   const wasHidden = box.classList.contains('hide');
+  if (wasHidden && !updFab.shown) {          // самый первый показ: кнопка появляется один раз, мягко, уже с готовыми цветом и текстом
+    updFab.shown = true; box.classList.add('first');
+    box.addEventListener('animationend', () => box.classList.remove('first'), {once:true});
+    setTimeout(() => box.classList.remove('first'), 1000);
+  }
   box.classList.remove('hide');
   b.dataset.act = cfg[0];
   if (fl.textContent === cfg[1]) return;
