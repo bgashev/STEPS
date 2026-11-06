@@ -1964,10 +1964,11 @@ body.frozen .stp .sb{opacity:.45}
 .pfc .psec:not(:first-of-type){margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
 .pfc .f{margin-bottom:10px}
 .pf2{display:grid;grid-template-columns:1.25fr 1fr;gap:10px}
-.pf2 .inp{text-align:left;padding:0 12px;display:flex;align-items:center;min-width:0}
-.pf2 input[type=date].inp::-webkit-date-and-time-value{text-align:left}
-.pf-sex{background:var(--surface2);border-radius:14px;padding:5px;gap:4px;min-height:50px;box-sizing:border-box;overflow:hidden}
-.pf-sex button{border:0;border-radius:10px;padding:0 4px;font-size:14px;transition:background .25s ease,color .25s ease,transform .12s}
+.pf2 .inp{text-align:left;padding:0 16px;display:block;height:50px;line-height:50px;min-width:0;border-radius:999px}
+.pf2 input[type=date].inp::-webkit-date-and-time-value{text-align:left;margin:0;height:50px;line-height:50px;min-height:0}
+.pf2 input[type=date].inp::-webkit-datetime-edit{padding:0;line-height:50px}
+.pf-sex{background:var(--surface2);border-radius:999px;padding:5px;gap:4px;min-height:50px;box-sizing:border-box;overflow:hidden}
+.pf-sex button{border:0;border-radius:999px;padding:0 4px;font-size:14px;transition:background .25s ease,color .25s ease,transform .12s}
 .pf-sex button:active{transform:scale(.96)}
 .bmg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .bmt{background:var(--surface2);border-radius:16px;padding:12px 14px 11px;min-width:0}
