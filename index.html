@@ -2438,6 +2438,11 @@ html.web #sheet.pf.fr{height:auto;min-height:0;max-height:min(72vh,680px);paddin
 html.web #sheet.pf.fr.half:not(.xl){min-height:0;max-height:min(72vh,680px)}
 
 html.web #tabs .wver{position:absolute;left:0;right:0;bottom:4px;text-align:center;font-size:10px;letter-spacing:.08em;font-weight:600;opacity:.32;pointer-events:none;user-select:none;color:var(--muted)}
+
+/* список друзей: кнопка «Назад» прижата к низу шторки, а не висит посреди пустоты */
+#sheet.fr{display:flex;flex-direction:column}
+#sheet.fr>.btn.ghost:last-child{margin-top:auto!important;flex:none}
+#sheet.fr>.fof:last-of-type{margin-bottom:12px}
 </style>
 </head>
 <body>
@@ -2452,7 +2457,7 @@ html.web #tabs .wver{position:absolute;left:0;right:0;bottom:4px;text-align:cent
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.591';
+const APP = 'VOOB (by BGASHEV) Mini App v1.592';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5699,7 +5704,7 @@ const ACT = {
   frzoom: el => openZoom(+el.dataset.id, el),
   zclose: () => closeZoom(),
   frall: el => { const id = +el.dataset.id, f = FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me && FR.data.me.tg_id === id ? FR.data.me : null)); const fl = FR.profBy.get(id); if (!f || !fl) return; hap.tap();
-    openSheet(`<h2>Друзья ${esc(f.name)}</h2>` + fl.map(x => fofHTML(x)).join('') + `<button class="btn ghost" style="width:100%;margin-top:12px" data-act="frprof" data-id="${id}">Назад к профилю</button>`, {type:'frall', id}); },
+    openSheet(`<h2>Друзья ${esc(f.name)}</h2>` + fl.map(x => fofHTML(x)).join('') + `<button class="btn ghost" style="width:100%;margin-top:12px" data-act="frback" data-id="${id}">Назад к профилю</button>`, {type:'frall', id}); },
   rwok: () => { $('#cg').classList.remove('show'); setTimeout(showNextReward, 250); },
   frpoke: async el => {
     const id = +el.dataset.id, f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
@@ -5714,6 +5719,7 @@ const ACT = {
   stsave: () => saveStory(),
   stshare: () => shareStory(),
   frprof: el => { hap.tap(); openFriendProfile(+el.dataset.id); },
+  frback: el => { hap.tap(); const id = +el.dataset.id; closeSheet(); if (S.fprof !== id && !(FR.data && FR.data.me && FR.data.me.tg_id === id)) openFriendProfile(id); },
   achall: () => openAchFull(),
   probuy: el => proBuy(el.dataset.v),
   prosheet: () => openPro(),
