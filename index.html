@@ -2795,6 +2795,20 @@ html.web .me-l,html.web .me-r{display:contents}
   html.web #view.w2 .me-l .hero.hbg::after{display:none}
 }
 
+/* v1.688 WEB: чужой профиль в два столбца (слева — шапка, подарки, достижения; справа — статистика сеткой) */
+@media (min-width:1320px){
+ html.web #view.w2:has(> .mset-top + .me-prof.fp2 .hero.hbg){padding-top:34px}
+ html.web #view.w2 .mset-top:has(+ .me-prof.fp2 .hero.hbg){height:auto;margin:0 0 14px;padding:0;top:0}
+ html.web #view.w2 .mset-top:has(+ .me-prof.fp2 .hero.hbg)>*{top:0}
+ html.web #view.w2 .mset-top:has(+ .me-prof.fp2 .hero.hbg)::before{display:none}
+ html.web #view.w2 .fp2 .me-r{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-content:start}
+ html.web #view.w2 .fp2 .me-r>*{grid-column:1/-1;margin:0!important;max-width:none}
+ html.web #view.w2 .fp2 .me-r>.prec:not(.pfull),html.web #view.w2 .fp2 .me-r>.card.pfin:not(.pstat):not(.pmon):not(.prec){grid-column:auto}
+ html.web #view.w2 .fp2 .me-r>.pmon{order:5}
+ html.web #view.w2 .fp2 .me-r>.btn{order:9}
+ html.web #view.w2 .fp2 .me-r>.wk{padding:22px}
+ html.web #view.w2 .fp2 .me-l .fp-bar{margin:14px 0 0}
+}
 html.web .mset-top:has(> [data-act="fpback"])>*{display:none}   /* WEB: подпись «Профиль» в шапке не нужна, стрелка «назад» остаётся */
  html.web #view{max-width:none;margin:0;padding-top:34px;padding-bottom:60px;padding-left:calc(264px + max(28px,(100vw - 264px - 760px) / 2));padding-right:max(28px,calc((100vw - 264px - 760px) / 2))}
  html.web #fab.wdock{left:calc(50% + 132px);bottom:28px}
@@ -2926,7 +2940,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.687';
+const APP = 'VOOB (by BGASHEV) Mini App v1.688';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4688,7 +4702,13 @@ function viewFProf(){
   const f = FR.data && FR.data.friends.find(x => x.tg_id === S.fprof);
   if (!f) { S.fprof = null; return VIEWS[S.tab](); }
   const c = FPC.get(S.fprof), j = c && c.j;
-  return `<div class="mset-top"><button class="ib round" data-act="fpback" aria-label="Назад">${IC('back', 20)}</button><b>Профиль</b></div><div class="me-prof">${friendSheetHTML(f, j || null, !j)}</div>`;
+  const body = friendSheetHTML(f, j || null, !j), top = `<div class="mset-top"><button class="ib round" data-act="fpback" aria-label="Назад">${IC('back', 20)}</button><b>Профиль</b></div>`;
+  if (inWeb) {   // v1.688 WEB: чужой профиль — как «Главная»: слева шапка, подарки и достижения, справа статистика
+    const cut = body.indexOf('<!--hs-->'); let left = body.slice(0, cut > 0 ? cut : 0);
+    const right = body.slice(cut + 9).replace(/<!--L-->([\s\S]*?)<!--\/L-->/g, (m, x) => { left += x; return ''; });
+    return top + `<div class="me-prof fp2"><div class="me-l">${left}</div><div class="me-r">${right}</div></div>`;
+  }
+  return top + `<div class="me-prof">${body}</div>`;
 }
 function fpBack(){
   if (!S.fprof) return;
@@ -4751,15 +4771,15 @@ function friendSheetHTML(f, j, loading, self){
     + `<button type="button" class="fchipb hset" data-act="meset" aria-label="Настройки профиля и приложения">${IC('gear', 16)}Настройки</button>`
     + `</div>`;
   h += socialsHTML(f.tg_id, true) + `</div>` + acts;
-  if (self) h += '<!--hs-->';   // v1.634 WEB: граница «зона профиля | лента карточек» для двух столбцов
+  h += '<!--hs-->';   // v1.634 WEB: граница «зона профиля | лента карточек» для двух столбцов
   h += weekCard(f, g, ok, shown, j && j.week && j.week.days, loading);
-  if ((f.gift_kinds || []).length) h += (self ? '<!--L-->' : '') + `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из ${GIFT_ALL.length}</h3>${giftShelf(f.gift_kinds, 20, f.name)}</div>` + (self ? '<!--/L-->' : '');
+  if ((f.gift_kinds || []).length) h += '<!--L-->' + `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из ${GIFT_ALL.length}</h3>${giftShelf(f.gift_kinds, 20, f.name)}</div>` + '<!--/L-->';
   if (!loading && !self) h += `<button class="btn ghost small" style="width:100%;margin-bottom:12px;color:var(--muted)" data-act="frrep" data-id="${f.tg_id}">Пожаловаться</button>`;
   if (loading) return h + `<div id="fp-load">` + [100, 120, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('') + `</div>`;
   if (!j.details) return h + `<div class="card muted pfin" style="--pi:${PI++}">${IC('lock', 16)} ${self ? 'Твой профиль закрыт — друзья видят только основное. Открыть можно в настройках.' : esc(f.name) + ' закрыл(а) профиль — видно только основное.'}</div>`;
   const d = j.details, t = d.totals, r = d.records;
   if ((d.ach || []).length) h += self ? `<!--L--><div class="card achlink pfin" style="--pi:${PI++}" data-act="achall"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${IC('chev', 16)}</div>${medalStrip(d.ach, 44)}</div><!--/L-->`
-    : `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${medalStrip(d.ach, 44)}</div>`;
+    : `<!--L--><div class="card pfin" style="--pi:${PI++}"><h3>${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${medalStrip(d.ach, 44)}</div><!--/L-->`;
   /* v1.481: «Всего», «Рекорды», «По месяцам», «Последние» — без привязки к ходьбе: главное — время и дни, дистанция и скорость только если они есть */
   const hasKm = (+t.km || 0) > 0.05;
   h += `<div class="card pfin pstat" style="--pi:${PI++}"><h3>${IC('trophy')}Всего</h3><div class="pst3"><div><b>${t.workouts}</b><span>тренировок</span></div><div><b>${fmtMin(t.minutes)}</b><span>в движении</span></div><div><b>${t.days}</b><span>активных дней</span></div></div>${hasKm ? `<div class="pst-ft">${IC('walk', 15)}<span>Пройдено и пробежано</span><b>${kmF(t.km)}</b></div>` : ''}</div>`;
@@ -4768,7 +4788,7 @@ function friendSheetHTML(f, j, loading, self){
   const recWalk = rrow('walk', 'Самая дальняя дистанция', r.farthest && r.farthest.value > 0 ? r.farthest : null, r.farthest && kmF(r.farthest.value))
     + rrow('bolt', 'Самая высокая скорость', r.fastest && r.fastest.value > 0 ? r.fastest : null, r.fastest && num(r.fastest.value) + ' км/ч')
     + rrow('stats', 'Самый крутой уклон', r.steepest && r.steepest.value > 0 ? r.steepest : null, r.steepest && num(r.steepest.value) + ' %');
-  h += `<div class="card pfin prec" style="--pi:${PI++}"><h3>${IC('medal')}Личные рекорды</h3>${recMain}<div class="rrow"><span class="ri">${IC('flame', 17)}</span><div class="rt"><b>Дней подряд</b><span>лучшая серия</span></div><em>${npw(r.best_days_row, W_DAY)}</em></div>${recWalk ? `<div class="rsub">Бег и ходьба</div>${recWalk}` : ''}</div>`;
+  h += `<div class="card pfin prec${d.recent.length ? '' : ' pfull'}" style="--pi:${PI++}"><h3>${IC('medal')}Личные рекорды</h3>${recMain}<div class="rrow"><span class="ri">${IC('flame', 17)}</span><div class="rt"><b>Дней подряд</b><span>лучшая серия</span></div><em>${npw(r.best_days_row, W_DAY)}</em></div>${recWalk ? `<div class="rsub">Бег и ходьба</div>${recWalk}` : ''}</div>`;
   if (d.months.some(m => m.minutes)) h += `<div class="card pfin pmon" style="--pi:${PI++}"><h3>${IC('stats')}Время тренировок по месяцам</h3>${bars(d.months.map(m => [MON[+m.m.slice(5, 7) - 1], m.minutes, fmtMin(m.minutes)]), v => String(v), 'fpm', 130)}</div>`;
   const rline = w => { const a = w.act || 'run';
     if (STR[a]) return strText(w);
