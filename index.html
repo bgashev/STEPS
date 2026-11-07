@@ -2731,7 +2731,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.663';
+const APP = 'VOOB (by BGASHEV) Mini App v1.664';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5244,13 +5244,13 @@ function viewMeSettings(){
   h += `<div class="prof pc"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}" data-t="${tierOf(lv.level).idx}">${lv.level}</span></div>
     <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}<div class="prof-act">${tgUser ? socialsHTML(tgUser.id, true) : ''}</div></div></div>${inTG ? '' : `<div class="prof-sync">${syncHTML()}</div>`}`;
   if (inTG) h += proCardHTML();
+  if (inTG && tgUser && (BDG.get(tgUser.id) || {}).creator) h += `<div class="card"><div class="tgl${asFree() ? ' on' : ''}" data-act="asfree"><span class="sw2"></span><b>Смотреть как без PRO</b></div><div class="cap" style="margin-top:8px">Только для создателя: на этом устройстве приложение ведёт себя как у пользователя без подписки — лимиты и закрытые функции. Выключи, чтобы вернуть всё.</div></div>`;
   if (inTG) h += `<div class="card pmc"><div class="pm-top"><span class="pm-ic">${IC('gift', 20)}</span><div><b>Промокод</b><small>PRO или подарок</small></div></div>
     <div class="pm-field"><input id="pm-in" class="inp" placeholder="VOOB-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="16" enterkeyhint="done">
     <button type="button" class="btn primary" id="pm-go" data-act="promo" disabled>Активировать</button></div>
     <div class="cap" id="pm-msg">Введи код — PRO или подарок сразу станут твоими</div></div>`;   // v1.436 · М2: оформление
   { const fk = frameOf(tgUser ? {tg_id:tgUser.id} : null), bk = myBg();   // v1.540: рамка, фон и значок — на отдельной странице «Персонализация»
     h += `<button type="button" class="card perst" data-act="persopen"><span class="perst-bg${bk ? ' hbg' : ''}" aria-hidden="true">${bgFx(bk)}</span><span class="perst-av">${frAv(fk, 52, lv, photo, name)}</span><div class="perst-t"><small>Твой стиль</small><b>Персонализация</b><div class="perst-ch"><i>${IC('sparkle')}Рамка</i><i>${IC('palette')}Фон</i><i>${IC('crown')}Значок</i></div></div><span class="perst-go">${IC('chev', 16)}</span></button>`; }
-  if (inTG && tgUser && (BDG.get(tgUser.id) || {}).creator) h += `<div class="card"><div class="tgl${asFree() ? ' on' : ''}" data-act="asfree"><span class="sw2"></span><b>Смотреть как без PRO</b></div><div class="cap" style="margin-top:8px">Только для создателя: на этом устройстве приложение ведёт себя как у пользователя без подписки — лимиты и закрытые функции. Выключи, чтобы вернуть всё.</div></div>`;
   if (inTG) h += socEditHTML();
   // v1.447: «Мои подарки» и «Достижения» убраны из настроек — они показываются в самом профиле выше
   h += handleCard();
