@@ -394,7 +394,17 @@ input[type=date].inp{display:block}
 .fof.tap{cursor:pointer;border-radius:14px;transition:background .15s}
 .fof.tap:active{background:var(--surface2)}
 .fofc{display:flex;color:var(--muted);opacity:.6}
-.fof .nm{flex:1;min-width:0;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fof .nm{flex:1;min-width:0;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:1.1em}
+.fof .fav{width:51px;height:51px;font-size:20px}.fof{gap:11px;padding:7px 0}
+/* ожидание ответа сервера: кнопка мягко «задумывается» — блик + кольцо, текст гаснет, размер не прыгает */
+.pend{position:relative;pointer-events:none;color:transparent!important;overflow:hidden;transform:scale(.97);transition:transform .25s cubic-bezier(.3,1.4,.5,1),color .15s}
+.pend svg{opacity:0;transition:opacity .15s}
+.pend::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.28) 50%,transparent 80%);transform:translateX(-100%);animation:pendSh 1.15s ease-in-out infinite;pointer-events:none}
+.pend::after{content:"";position:absolute;left:50%;top:50%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;border:2px solid color-mix(in srgb,var(--pdot,var(--text)) 28%,transparent);border-top-color:var(--pdot,var(--text));animation:pendSp .7s cubic-bezier(.5,.2,.5,.8) infinite;opacity:0;animation-fill-mode:both}
+.pend::after{animation:pendSp .7s cubic-bezier(.5,.2,.5,.8) infinite,pendIn .25s ease .1s forwards}
+.btn.primary.pend,.pend.primary{--pdot:var(--on-accent)}
+@keyframes pendSh{to{transform:translateX(100%)}}@keyframes pendSp{to{rotate:360deg}}@keyframes pendIn{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.pend::before{animation:none}.pend{transform:none}}
 .tgl{display:flex;align-items:center;gap:12px;cursor:pointer}
 .tgl .sw2{width:46px;height:28px;border-radius:14px;background:var(--off);position:relative;flex:none;transition:background .2s}
 .tgl .sw2::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s}
@@ -2508,7 +2518,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.614';
+const APP = 'VOOB (by BGASHEV) Mini App v1.615';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5004,6 +5014,7 @@ function openPro(back){
 }
 
 /* ============ М6: заморозка PRO (код из бота) ============ */
+const PEND_ACT = new Set(['frreq','frresp','fradd','frdel','frpoke','gsend','gdo','gclaim','gno','fbsend','gift','giftpro','gpbuy','probuy','pshare2','frcode']);
 const FZ_BLOCK = new Set(['add','sladd','sldel','slstep','wedit','wsave','repeat','pladd','plskip','plnew','plact','pledit','plsave','pldel','stsave','socedit','socsave','socdel','goaled','goaldone','gsend','gdo','gclaim','gno','fbsend','frdel','fradd','frreq','frresp','frpoke','frcode','hidefeed','privacy','ksave','kadd','kedit','kgoal','gdel','feel','sex','hsave','import','badgeset','frame','accent','flike','actfav','gift','giftpro','gpbuy','probuy','creator']);
 const isFrozen = () => !!(PROM.st && (PROM.st.frozen || PROM.st.del_at));
 const isDeleting = () => !!(PROM.st && PROM.st.del_at);
@@ -6053,7 +6064,11 @@ const ACT = {
 };
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]');
-  if (el && ACT[el.dataset.act]) { if (isFrozen() && FZ_BLOCK.has(el.dataset.act)) { fzDeny(); return; } ACT[el.dataset.act](el); }
+  if (el && ACT[el.dataset.act]) { if (isFrozen() && FZ_BLOCK.has(el.dataset.act)) { fzDeny(); return; }
+    const an = el.dataset.act, pend = PEND_ACT.has(an) && el.tagName === 'BUTTON';
+    if (pend && el.classList.contains('pend')) return;
+    const r = ACT[an](el);
+    if (pend && r && typeof r.then === 'function') { el.classList.add('pend'); const done = () => { if (el.isConnected) el.classList.remove('pend'); }; r.then(done, done); } }
 });
 // степперы: нажал — шаг, держишь — повторяется
 let rep = null;
