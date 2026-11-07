@@ -3218,6 +3218,17 @@ html.web .pcard .pc-id{gap:6px}
 html.web .pcard .pc-cr{margin:0}
 html.web #tabs{padding-top:262px}
 html.web #tabs .tbi{top:262px}
+/* v742: на широком экране «Вход через Google» и «Аккаунт» стоят в левом столбце под остальными карточками; правый столбец тянется рядом. На узком — как раньше, внизу */
+@media (min-width:1320px){
+  html.web #view.w2 .mset2{grid-template-areas:"h h" "l r" "f r";grid-template-rows:auto auto 1fr}
+  html.web #view.w2 .mset2 .ms-h{grid-area:h}
+  html.web #view.w2 .mset2 .ms-l{grid-area:l}
+  html.web #view.w2 .mset2 .ms-r{grid-area:r}
+  html.web #view.w2 .mset2 .ms-f{grid-area:f;margin-top:-4px}
+}
+/* кнопка «Привязать»: был белый текст на белом */
+.gsc-b#gs-link{background:var(--text);color:var(--bg);border:0;font-weight:700}
+.gsc-b#gs-link:hover{opacity:.9}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -3232,7 +3243,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.741';
+const APP = 'VOOB (by BGASHEV) Mini App v1.742';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
