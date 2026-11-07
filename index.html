@@ -2940,7 +2940,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.688';
+const APP = 'VOOB (by BGASHEV) Mini App v1.689';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4659,13 +4659,13 @@ function viewFriends(){
     h += `<div class="card" style="padding:12px 16px"><div class="row" style="justify-content:space-between;align-items:center;gap:10px">
       <h3 style="margin:0;white-space:nowrap">${IC('gift')}Подарки <span class="cap" style="font-weight:600">${(mg.kinds || []).length}/${GIFT_ALL.length}</span></h3>
       ${pn ? `<button class="btn primary small" data-act="ginbox">${IC('gift', 14)}Ждут ${pn}</button>` : energyHTML(en)}</div></div>`; }
-  if (inWeb && fr.length) h += feedShortHTML(7, 3);   // v1.667: лента друзей снова слева
   if (fr.length) {
     const people = fr.map(f => [f, false]).concat([[d.me, true]]).sort((a, b) => (mxp(b[0]) - mxp(a[0])) || (pm(b[0]) - pm(a[0])) || (b[1] - a[1]));
     const mx = Math.max(1, ...people.map(p => mxp(p[0])));
     h += `<div class="card rkc"><h3 style="margin:0">${IC('trophy')}Рейтинг месяца</h3><div class="cap rkcap">XP с 1-го числа · +${RATE_XP} за активность</div>` +
       people.slice(0, 10).map(([f, me], i) => `<div class="rk${me ? ' me' : ''}" ${me ? 'data-act="tab" data-tab="me"' : `data-act="frprof" data-id="${f.tg_id}"`}><span class="pl${i < 3 ? ' m' + (i + 1) : ''}">${i + 1}</span>${favHTML(f, true)}<span class="rkm"><span class="nm">${esc(f.name)}${me ? '<em class="you">ты</em>' : ''}</span><span class="br"><i style="width:${Math.max(mxp(f) ? 4 : 0, mxp(f) / mx * 100)}%;animation-delay:${i * 60}ms"><b class="lvp"></b></i></span></span><span class="mv"><b>${numSep(mxp(f))}</b><small>${f.level ? 'ур. ' + f.level.level : 'XP'}</small></span></div>`).join('') + `</div>`;
   }
+  if (inWeb && fr.length) h += feedShortHTML(7, 3);   // v1.689: лента друзей — под рейтингом месяца
   h += '<!--/L-->';
   if (inWeb && fr.length) {   // v1.667: сводка по друзьям над списком
     const dn0 = fr.filter(f => f.goal.done_today).length, mins = fr.reduce((a, f) => a + (f.week.minutes || 0), 0), top = fr.reduce((a, f) => (f.goal.run || 0) > ((a && a.goal.run) || 0) ? f : a, null);
