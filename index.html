@@ -796,6 +796,13 @@ html.web .stv .gl .recs>div:last-child:nth-child(odd){grid-column:1/-1}
 html.web .stv .gl .recs .ri{display:grid;place-items:center;position:absolute;right:12px;top:12px;width:30px;height:30px;border-radius:50%;z-index:1;color:#fff;background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 40%,#000));box-shadow:0 0 14px -2px var(--c)}
 html.web .stv .gl .recs .cap:first-child{padding-right:34px;min-height:26px}
 html.web .stv .gl .recs .rv{font-size:21px;letter-spacing:-.5px;margin:6px 0 2px;position:relative;z-index:1}
+@media (min-width:1320px){
+ /* v1.649 WEB · Настройки в два столбца: карточки сами распределяются по колонкам, шапка и подвал — на всю ширину */
+ html.web #view.w2 .mset2{column-count:2;column-gap:22px}
+ html.web #view.w2 .mset2>*{break-inside:avoid;-webkit-column-break-inside:avoid;margin-top:0;margin-bottom:16px;max-width:none}
+ html.web #view.w2 .mset2>.prof.pc,html.web #view.w2 .mset2>.foot,html.web #view.w2 .mset2>.web-out{column-span:all}
+ html.web #view.w2 .mset2>.web-out{width:100%}
+}
 html.web .head{position:relative}
 .invpop{position:absolute;right:0;top:calc(100% + 4px);width:320px;z-index:30;pointer-events:none;visibility:hidden;
   clip-path:inset(-20px -20px -40px 100% round 22px);opacity:0;transform:translateX(18px);
@@ -2689,7 +2696,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.648';
+const APP = 'VOOB (by BGASHEV) Mini App v1.649';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5206,7 +5213,7 @@ function viewMeSettings(){
     : `<div class="card dz"><h3>${IC('trash')}Аккаунт</h3><div class="cap" style="margin:-6px 0 12px">Удалить аккаунт и все данные из VOOB. Аккаунт отключится сразу, а удалится через 7 дней — до этого срока удаление можно отменить. Нужен код из Telegram-бота.</div>
     <button type="button" class="btn dz-b" data-act="fzopen" data-v="delete">${IC('trash', 16)}Удалить аккаунт</button></div>`;
   h += `<div class="foot">VOOB <a data-act="creator">by BGASHEV</a> · ${APP.split(' ').pop()}<br>Тренировок: ${valid().length} · взвешиваний: ${weightsSorted().length}</div>`;
-  return h;
+  return inWeb ? `<div class="mset2">${h}</div>` : h;
 }
 /* ---- PRO (v1.423) ---- */
 const PROM = {st:null, busy:false};
@@ -5755,7 +5762,7 @@ function render(){
   const html = S.fprof ? viewFProf() : VIEWS[S.tab](), v = $('#view'), rkey = S.fprof ? 'fp' : S.tab;
   const same = _rTab === rkey;
   if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
-  v.classList.toggle('w2', inWeb && html.indexOf('class="me-l"') > -1);   // v1.636: ширину столбцов задаём до вставки — иначе страница сначала рисуется узкой и «прыгает»
+  v.classList.toggle('w2', inWeb && (html.indexOf('class="me-l"') > -1 || html.indexOf('class="mset2"') > -1));   // v1.636: ширину столбцов задаём до вставки — иначе страница сначала рисуется узкой и «прыгает»
   v.classList.toggle('rr', same);                          // та же вкладка: обновляем без повторных «появлений»
   _rTab = rkey; _rHtml = html;
   if (same) morphSoft(v, html);   // v1.442: та же вкладка — правим только изменившееся, без мерцаний
