@@ -3049,7 +3049,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.701';
+const APP = 'VOOB (by BGASHEV) Mini App v1.702';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6291,13 +6291,15 @@ function meNav(cls){   // v1.484: плавный «пуш» между проф�
 /* v1.646 WEB, «Главная»: вместо текстуры — свой фон профиля на весь экран, сильно размытый, матовый и притемнённый */
 function updWBg(){
   const el = document.getElementById('wbg'); if (!el) return;
-  const pz = inWeb && inTG && S.meSet && S.pers, k = pz ? (pzEff().eff.bg || '') : (inWeb && inTG && S.fprof && !S.meSet ? (BGS.get(+S.fprof) || '') : inWeb && inTG && S.tab === 'home' && !S.fprof && !S.meSet && !S.pers ? myBg() : '');
+  const pz = inWeb && inTG && S.meSet && S.pers; let k = pz ? (pzEff().eff.bg || '') : (inWeb && inTG && S.fprof && !S.meSet ? (BGS.get(+S.fprof) || '') : inWeb && inTG && S.tab === 'home' && !S.fprof && !S.meSet && !S.pers ? myBg() : '');
+  if (k && !BG_SVG[bgNorm(k)]) k = '';   // неизвестный фон — без фона, а не чёрный экран
   if ((el.dataset.k || '') === k) return;
   if (pz && k && el.dataset.k && el.classList.contains('on')) {   // v1.682: между фонами — перекрёстное растворение, без провала в чёрное
     if (!el.querySelector(':scope > .wbl')) { const w = document.createElement('div'); w.className = 'wbl'; while (el.firstChild) w.appendChild(el.firstChild); el.appendChild(w); }
-    el.dataset.k = k; const L = document.createElement('div'); L.className = 'wbl nw'; L.innerHTML = bgFx(k) + '<u class="wbm"></u>'; el.appendChild(L);
-    setTimeout(() => { [...el.children].forEach(c => { if (c !== L && c.classList.contains('wbl')) c.remove(); }); L.classList.remove('nw'); }, 700); return; }
-  clearTimeout(updWBg.t);
+    el.dataset.k = k; const L = document.createElement('div'); L.className = 'wbl nw'; L.innerHTML = bgFx(k) + '<u class="wbm"></u>'; el.appendChild(L); el._wl = L;
+    clearTimeout(el._wt);   // v1.702: таймер старой смены фона удалял НОВЫЙ слой (при быстром наведении на комплекты) — отсюда чёрный экран
+    el._wt = setTimeout(() => { const cur = el._wl; [...el.children].forEach(c => { if (c !== cur && c.classList.contains('wbl')) c.remove(); }); if (cur) cur.classList.remove('nw'); }, 700); return; }
+  clearTimeout(updWBg.t); clearTimeout(el._wt); el._wl = null;
   if (!k) { el.classList.remove('on'); document.documentElement.classList.remove('hbgl'); updWBg.t = setTimeout(() => { if (!el.classList.contains('on')) { el.innerHTML = ''; el.dataset.k = ''; } }, 1100); el.dataset.k = ''; return; }
   el.dataset.k = k; el.classList.remove('on');
   el.innerHTML = bgFx(k) + '<u class="wbm"></u>';
