@@ -799,24 +799,14 @@ html.web .stv .gl .recs .rv{font-size:21px;letter-spacing:-.5px;margin:6px 0 2px
 @media (min-width:1320px){
  /* v1.649 WEB · Настройки в два столбца: карточки сами распределяются по колонкам, шапка и подвал — на всю ширину */
  html.web #view.w2 .sp-wrap{margin-left:416px}   /* переключатель периода начинается над правым столбцом */
- html.web #view.w2 .mset2{column-count:2;column-gap:22px}
- html.web #view.w2 .mset2>*{break-inside:avoid;-webkit-column-break-inside:avoid;margin-top:0;margin-bottom:16px;max-width:none}
- html.web #view.w2 .mset2>.prof.pc,html.web #view.w2 .mset2>.foot,html.web #view.w2 .mset2>.web-out{column-span:all}
- html.web #view.w2 .mset2>.web-out{width:100%}
+ html.web #view.w2 .mset2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 22px;align-items:start}
+ html.web #view.w2 .mset2 .ms-h,html.web #view.w2 .mset2 .ms-f{grid-column:1/-1}
+ html.web #view.w2 .mset2 .ms-l,html.web #view.w2 .mset2 .ms-r{min-width:0}
+ html.web #view.w2 .mset2 .ms-l>*,html.web #view.w2 .mset2 .ms-r>*,html.web #view.w2 .mset2 .ms-f>*{margin-top:0;margin-bottom:16px;max-width:none}
+ html.web #view.w2 .mset2 .web-out{width:100%}
 }
-.rz{display:none}
-html.web .stv .gl .recs .rz{display:flex;position:absolute;right:18px;bottom:14px;z-index:1;color:var(--c)}
-html.web .stv .gl .recs .rz.bars{align-items:flex-end;gap:5px;height:50px;width:96px}
-html.web .stv .gl .recs .rz.bars i{flex:1;border-radius:99px;background:color-mix(in srgb,var(--c) 28%,transparent);min-height:6px}
-html.web .stv .gl .recs .rz.bars i.hi{background:linear-gradient(180deg,color-mix(in srgb,var(--c) 70%,#fff),var(--c));box-shadow:0 0 14px -1px var(--c)}
-html.web .stv .gl .recs .rz.ring{width:58px;height:58px;align-items:center;justify-content:center;right:20px;bottom:12px;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--c) 55%,transparent))}
-html.web .stv .gl .recs .rz.ring svg{position:absolute;inset:0}
-html.web .stv .gl .recs .rz.ring b{position:relative;font-size:12.5px;font-weight:850;color:var(--text);letter-spacing:-.2px}
-html.web .stv .gl .recs .rz.dots{flex-wrap:wrap;justify-content:flex-end;gap:6px;width:112px;right:20px;bottom:18px}
-html.web .stv .gl .recs .rz.dots i{width:14px;height:14px;border-radius:50%;background:color-mix(in srgb,var(--c) 18%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 30%,transparent)}
-html.web .stv .gl .recs .rz.dots i.on{background:radial-gradient(circle at 35% 30%,color-mix(in srgb,var(--c) 60%,#fff),var(--c));box-shadow:0 0 10px -1px var(--c)}
-html.web .stv .gl .recs .rz.dots i.cur{box-shadow:0 0 0 2px var(--surface2),0 0 0 3.5px var(--c),0 0 12px var(--c)}
-html.web .stv .gl .recs>div{min-height:112px}
+html.web .mset-top.msw{height:0;margin:0;padding:0;top:0}
+html.web .mset-top.msw>*{position:relative;top:18px}
 html.web .head{position:relative}
 .invpop{position:absolute;right:0;top:calc(100% + 4px);width:320px;z-index:30;pointer-events:none;visibility:hidden;
   clip-path:inset(-20px -20px -40px 100% round 22px);opacity:0;transform:translateX(18px);
@@ -2718,7 +2708,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.654';
+const APP = 'VOOB (by BGASHEV) Mini App v1.655';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5117,7 +5107,8 @@ function langCardHTML(){
 document.documentElement.lang = curLang();
 function viewMe(){
   if (S.meSet && S.pers && inTG) return `<div class="mset-top"><button class="ib round" data-act="persback" aria-label="Назад к настройкам">${IC('back', 20)}</button><b>Персонализация</b>${syncHTML()}</div>` + viewPersonalization();
-  if (S.meSet || !inTG) return (inTG ? `<div class="mset-top"><button class="ib round" data-act="mesback" aria-label="Назад к профилю">${IC('back', 20)}</button><b>Настройки</b>${syncHTML()}</div>` : '') + viewMeSettings();
+  if (S.meSet || !inTG) return (inTG ? (inWeb ? `<div class="mset-top msw">${syncHTML()}</div><div class="head"><div><h1>Настройки</h1><div class="sub">Профиль, оформление и приватность</div></div></div>`
+    : `<div class="mset-top"><button class="ib round" data-act="mesback" aria-label="Назад к профилю">${IC('back', 20)}</button><b>Настройки</b>${syncHTML()}</div>`) : '') + viewMeSettings();
   const me = FR.data && FR.data.me;
   if (!me) { loadFriends().then(() => { if (S.tab === 'me' && !S.meSet) render(); }); }
   else if (!ME.busy && (!ME.prof || Date.now() - ME.at > 60000)) loadMyProfile(me.tg_id);
@@ -5220,6 +5211,7 @@ function viewMeSettings(){
   let h = '';                                        // v1.438: PRO — под профилем и промокодом
   h += `<div class="prof pc"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}" data-t="${tierOf(lv.level).idx}">${lv.level}</span></div>
     <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}<div class="prof-act">${tgUser ? socialsHTML(tgUser.id, true) : ''}</div></div></div>${inTG ? '' : `<div class="prof-sync">${syncHTML()}</div>`}`;
+  h += '<!--M1-->';
   if (inTG) h += proCardHTML();
   if (inTG) h += `<div class="card pmc"><div class="pm-top"><span class="pm-ic">${IC('gift', 20)}</span><div><b>Промокод</b><small>PRO или подарок</small></div></div>
     <div class="pm-field"><input id="pm-in" class="inp" placeholder="VOOB-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="16" enterkeyhint="done">
@@ -5244,13 +5236,13 @@ function viewMeSettings(){
   h += `<div class="card"><h3>${IC('target')}Цель недели</h3><div class="cap" style="margin:-6px 0 12px">Неделя начинается с первой тренировки и длится N дней. Выполнил норму — следующая начнётся с новой тренировки.</div>
     <div class="g2">${stepper('gcount', 'Сколько тренировок', g.count, 1, 14, 1, 0, '', 'gcount')}${stepper('gdays', 'За сколько дней', g.days, 3, 14, 1, 0, '', 'gdays')}</div>
     <div style="font-weight:650" id="g-prev">${goalPreview()}</div></div>`;
+  h += '<!--M2-->';
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}
     ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${dvEff() === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${dvEff() === k ? IC('check', 16) : ''}${k === 'black' ? '<i class="prot">PRO</i>' : ''}</button>`).join('')}</div>` : ''}</div>
     <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}${isPro() ? '' : '<i class="prot inl" data-act="prosheet" role="button">PRO</i>'}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}" data-act="accent" data-v="${k}" style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div>
     <div class="f"><span>Фон · ${(TEX.find(x => x[0] === texKey()) || TEX[0])[1]}</span><div class="texpv" aria-hidden="true"><div class="texpv-in"><i class="pvt${texKey() === 'none' ? '' : ' tex-' + texKey()}" key="${texKey()}"></i><div class="pvs"><span>9:41</span><i class="isl"></i><span class="pvr"><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.7" y="5" width="3" height="6" rx="1"/><rect x="9.4" y="2.5" width="3" height="8.5" rx="1"/><rect x="14" y="0" width="3" height="11" rx="1"/></svg><svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="currentColor" opacity=".5"/><rect x="2" y="2" width="15" height="8" rx="2" fill="currentColor"/><rect x="23" y="4" width="1.6" height="4" rx=".8" fill="currentColor" opacity=".5"/></svg></span></div><div class="pvh"><b></b><u></u></div><div class="pvc"><i></i><i></i></div></div><em>Так выглядит фон на всех экранах приложения: он начинается сверху и растворяется вниз</em></div><div class="texs">${TEX.map(([k, l]) => `<button type="button" class="texb${k === 'none' ? '' : ' tex-' + k}${texKey() === k ? ' on' : ''}" data-act="tex" data-v="${k}" aria-label="${l}" title="${l}"><span>${l}</span></button>`).join('')}</div></div>
     ${inTG ? `<div class="tgl${lookSync() ? ' on' : ''}" data-act="looksync" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)"><span class="sw2"></span><b>Одинаково на всех устройствах</b></div>
     <div class="cap" style="margin-top:8px">${lookSync() ? 'Тема, оттенок и акцентный цвет будут одинаковыми на всех твоих устройствах.' : 'Оформление хранится только на этом устройстве — на других тема и цвет могут быть другими.'}</div>` : ''}</div>`;
-  if (inWeb) h += hkCardHTML();
   h += langCardHTML();
   if (inTG) {
     if (PRIV.v == null && !PRIV.loading) { PRIV.loading = true; apiAuth('/friends/privacy', {}).then(j => { PRIV.v = !!j.private; PRIV.hf = !!j.hide_feed; if (S.tab === 'me') render(); }).catch(() => {}).finally(() => { PRIV.loading = false; }); }
@@ -5267,13 +5259,17 @@ function viewMeSettings(){
   h += `<div class="card"><h3>${IC('cloud')}Данные</h3><div class="cap" style="margin:-6px 0 12px">Данные синхронизируются через сервер VOOB и привязаны к твоему Telegram: одинаковы на всех твоих устройствах.</div>
     <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost small" data-act="import">${IC('import', 16)}Импорт из VOOB для Windows</button><button class="btn ghost small" data-act="copy">${IC('export', 16)}Скопировать копию</button></div>
     <div class="cap" style="margin-top:10px">Импорт: выбери файл STEPS_backup_….json из десктопной версии (Настройки → Резервная копия). Совпадающие записи не задублируются.</div></div>`;
+  if (inWeb) h += hkCardHTML();
+  h += '<!--M3-->';
   if (inWebApp) h += `<button type="button" class="btn ghost web-out" data-act="weblogout">Выйти из этого браузера</button>`;
   if (inTG) h += isDeleting() ? `<div class="card dz"><h3>${IC('trash')}Аккаунт</h3><div class="cap" style="margin:-6px 0 12px">Удаление запланировано на ${fmtDate(dn(String(PROM.st.del_at).slice(0, 10)))}. До этого дня его можно отменить.</div>
     <button type="button" class="btn dz-b ok" data-act="delopen">${IC('sun', 16)}Отменить удаление</button></div>`
     : `<div class="card dz"><h3>${IC('trash')}Аккаунт</h3><div class="cap" style="margin:-6px 0 12px">Удалить аккаунт и все данные из VOOB. Аккаунт отключится сразу, а удалится через 7 дней — до этого срока удаление можно отменить. Нужен код из Telegram-бота.</div>
     <button type="button" class="btn dz-b" data-act="fzopen" data-v="delete">${IC('trash', 16)}Удалить аккаунт</button></div>`;
   h += `<div class="foot">VOOB <a data-act="creator">by BGASHEV</a> · ${APP.split(' ').pop()}<br>Тренировок: ${valid().length} · взвешиваний: ${weightsSorted().length}</div>`;
-  return inWeb ? `<div class="mset2">${h}</div>` : h;
+  if (!inWeb) return h.replace(/<!--M\d-->/g, '');
+  const q1 = h.split('<!--M1-->'), q2 = q1[1].split('<!--M2-->'), q3 = q2[1].split('<!--M3-->');
+  return `<div class="mset2"><div class="ms-h">${q1[0]}</div><div class="ms-l">${q2[0]}</div><div class="ms-r">${q3[0]}</div><div class="ms-f">${q3[1]}</div></div>`;
 }
 /* ---- PRO (v1.423) ---- */
 const PROM = {st:null, busy:false};
