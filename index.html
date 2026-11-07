@@ -515,6 +515,11 @@ input[type=date].inp{display:block}
 .gp .gi{width:40px;height:40px;display:block}.gp i{font-size:10.5px!important;line-height:1.15;text-align:center}.gbig svg{width:96px;height:96px}
 .gbtn svg{color:var(--accent)}
 .gen{display:inline-flex;align-items:center;gap:2px;font-size:12px;color:var(--muted)}
+.gen.tap{background:none;border:0;padding:6px 8px;margin:-6px -8px;border-radius:12px;cursor:pointer;font:inherit;font-size:12px;transition:background .2s,transform .2s}.gen.tap:hover{background:var(--surface2)}.gen.tap:active{transform:scale(.95)}
+.gei{padding:6px 4px 4px}.gei-h{display:flex;align-items:center;gap:14px;margin-bottom:14px}.gei-h h2{margin:0}.gei-h .cap{margin-top:2px}
+.gei-ic{flex:none;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;color:var(--on-accent,#fff);background:var(--accent);box-shadow:0 8px 22px -8px var(--accent)}
+.gei-r{display:flex;flex-direction:column;gap:3px;padding:11px 14px;margin-bottom:8px;border-radius:16px;background:var(--surface2);border:1px solid var(--border)}.gei-r b{font-size:13.5px}.gei-r span{font-size:13.5px;color:var(--muted);line-height:1.4}
+.gei-ok{width:100%;margin-top:6px}
 .gen i{display:inline-flex;color:var(--border)}.gen i.on{color:var(--accent)}.gen b{margin-left:4px;color:var(--text)}
 .gpick{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .gp{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 4px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);transition:transform .12s}
@@ -3246,7 +3251,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.748';
+const APP = 'VOOB (by BGASHEV) Mini App v1.749';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4516,9 +4521,9 @@ function openGiftView(k, who){
     <b class="gvt">${esc(ttl)}</b>${meta ? `<div class="gvm">${meta}</div>` : ''}<div class="gvh">нажми, чтобы закрыть</div>`;
   document.body.appendChild(z); hap.imp();
 }
-function energyHTML(en){
+function energyHTML(en, tap){
   if (!en) return '';
-  return `<span class="gen" title="Подарков в этом месяце">${Array.from({length:en.total}, (_, i) => `<i class="${i < en.left ? 'on' : ''}">${IC('bolt', 13)}</i>`).join('')}<b>${en.left}/${en.total}</b></span>`;
+  return `<${tap ? 'button type="button" data-act="geninfo" aria-label="Что такое энергия"' : 'span'} class="gen${tap ? ' tap' : ''}" title="${tap ? 'Что такое энергия' : 'Подарков в этом месяце'}">${Array.from({length:en.total}, (_, i) => `<i class="${i < en.left ? 'on' : ''}">${IC('bolt', 13)}</i>`).join('')}<b>${en.left}/${en.total}</b></${tap ? 'button' : 'span'}>`;
 }
 function openGiftInbox(){
   const p = (GIFTS_IN && GIFTS_IN.pending) || []; if (!p.length) return;
@@ -5043,7 +5048,7 @@ function viewFriends(){
     const pn = (mg.pending || []).length;
     h += `<div class="card" style="padding:12px 16px"><div class="row" style="justify-content:space-between;align-items:center;gap:10px">
       <h3 style="margin:0;white-space:nowrap">${IC('gift')}Подарки <span class="cap" style="font-weight:600">${(mg.kinds || []).length}/${GIFT_ALL.length}</span></h3>
-      ${pn ? `<button class="btn primary small" data-act="ginbox">${IC('gift', 14)}Ждут ${pn}</button>` : energyHTML(en)}</div></div>`; }
+      ${pn ? `<button class="btn primary small" data-act="ginbox">${IC('gift', 14)}Ждут ${pn}</button>` : energyHTML(en, true)}</div></div>`; }
   if (fr.length) {
     const people = fr.map(f => [f, false]).concat([[d.me, true]]).sort((a, b) => (mxp(b[0]) - mxp(a[0])) || (pm(b[0]) - pm(a[0])) || (b[1] - a[1]));
     const mx = Math.max(1, ...people.map(p => mxp(p[0])));
@@ -7000,6 +7005,14 @@ const ACT = {
     document.querySelectorAll('.bdg').forEach(el => { el.innerHTML = bdgInner(+el.dataset.bid, +el.dataset.sz); }); render(); hap.imp(); toast('Оформление применено'); pzCelebrate(); },
   persopen: () => { hap.tap(); S.pers = true; S.pzp = null; S.pzH = null; meNav('nav-in'); },
   persback: () => { hap.tap(); S.pers = false; S.pzp = null; S.pzH = null; meNav('nav-out'); },
+  geninfo: () => { hap.tap(); const en = (FR.data && FR.data.gift_energy) || {left: 0, total: isPro() ? 5 : 3}, pro = isPro();
+    openSheet(`<div class="gei"><div class="gei-h"><span class="gei-ic">${IC('bolt', 22)}</span><div><h2>Энергия подарков</h2><div class="cap">Сейчас: ${en.left} из ${en.total}</div></div></div>
+      <div class="gei-r"><b>Что это</b><span>Твой запас подарков на месяц. Каждая молния — один подарок другу.</span></div>
+      <div class="gei-r"><b>Сколько</b><span>${pro ? '5 в месяц с PRO.' : '3 в месяц. С PRO — 5.'}</span></div>
+      <div class="gei-r"><b>Откуда берётся</b><span>Возвращается сама: все молнии наполняются заново 1-го числа каждого месяца.</span></div>
+      <div class="gei-r"><b>На что тратится</b><span>Один обычный подарок — минус одна молния. Премиум-подарки (только для PRO) энергию не тратят.</span></div>
+      <div class="gei-r"><b>Что получает друг</b><span>Если такого подарка у него ещё не было — +100 очков (за премиум +200).</span></div>
+      <button type="button" class="btn primary gei-ok" data-act="close">Понятно</button></div>`); },
   gexp: el => { const w = el.closest('.gwrap'); if (!w) return; hap.tap(); w.classList.toggle('open');
     el.setAttribute('aria-label', w.classList.contains('open') ? 'Свернуть' : 'Показать все подарки'); },
   pladd: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.imp();
