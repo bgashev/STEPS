@@ -2476,7 +2476,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.604';
+const APP = 'VOOB (by BGASHEV) Mini App v1.605';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3853,6 +3853,7 @@ function savePhotos(){
 }
 const PRIV = {v:null, hf:false, loading:false};
 async function apiAuth(route, body){
+  if (inWebApp) body = Object.assign({client:'web'}, body || {});   // v1.605: сервер помечает сессию как WEB (статистика платформ в Core)
   let tok = await ensureToken();
   try { return await api(route, Object.assign({token:tok}, body || {})); }
   catch (e) { if (e.status !== 401) throw e; tok = await ensureToken(true); return await api(route, Object.assign({token:tok}, body || {})); }
