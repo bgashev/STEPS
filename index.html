@@ -1609,7 +1609,9 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .rkc .rkm{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
 .rkc .rk .nm{display:flex;align-items:center;gap:6px;width:auto;flex:none;font-size:14.5px;line-height:1.1}
 .rkc .rk .nm .you{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);flex:none}
-.rkc .rk .br{flex:none;width:100%;height:4px;background:color-mix(in srgb,var(--off) 70%,transparent)}
+.rkc .rk .br{flex:none;width:100%;height:12px;border-radius:7px;background:color-mix(in srgb,var(--off) 70%,transparent);box-shadow:inset 0 1px 2px rgba(0,0,0,.22)}
+.rkc .rk .br i{border-radius:7px}
+.rkc .rkm{gap:8px}
 .rkc .rk .mv{width:auto;min-width:54px;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
 .rkc .rk .mv b{font-size:14.5px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
 .rkc .rk .mv small{font-size:10.5px;font-weight:600;color:var(--muted);line-height:1}
@@ -2533,7 +2535,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.617';
+const APP = 'VOOB (by BGASHEV) Mini App v1.618';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
