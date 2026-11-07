@@ -1803,11 +1803,14 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 #view .hero.hbg{margin-left:-16px;margin-right:-16px;margin-top:calc(-1 * (var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 18px));
   padding-top:calc(36px + var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 18px)}
 #sheet .hero.hbg{margin-left:-18px;margin-right:-18px}
-.hero.hbg::before{border-radius:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 110px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 110px),transparent 100%)}
-.hero.hbg>.hbgfx{border-radius:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 110px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 110px),transparent 100%)}
-.hero.hbg::after{display:block;content:"";position:absolute;left:0;right:0;top:auto;bottom:0;height:250px;z-index:-1;pointer-events:none;border-radius:0;
-  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);background:linear-gradient(to bottom,transparent 0,color-mix(in srgb,var(--bgt,var(--bg)) 45%,transparent) 35%,color-mix(in srgb,var(--bgt,var(--bg)) 62%,var(--bg)) 100%);
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 40%);mask-image:linear-gradient(to bottom,transparent 0,#000 40%)}
+.hero.hbg::before{border-radius:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 250px),rgba(0,0,0,.88) calc(100% - 205px),rgba(0,0,0,.62) calc(100% - 150px),rgba(0,0,0,.34) calc(100% - 100px),rgba(0,0,0,.13) calc(100% - 55px),rgba(0,0,0,.03) calc(100% - 20px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 250px),rgba(0,0,0,.88) calc(100% - 205px),rgba(0,0,0,.62) calc(100% - 150px),rgba(0,0,0,.34) calc(100% - 100px),rgba(0,0,0,.13) calc(100% - 55px),rgba(0,0,0,.03) calc(100% - 20px),transparent 100%)}
+.hero.hbg>.hbgfx{border-radius:0;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 250px),rgba(0,0,0,.88) calc(100% - 205px),rgba(0,0,0,.62) calc(100% - 150px),rgba(0,0,0,.34) calc(100% - 100px),rgba(0,0,0,.13) calc(100% - 55px),rgba(0,0,0,.03) calc(100% - 20px),transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 calc(100% - 250px),rgba(0,0,0,.88) calc(100% - 205px),rgba(0,0,0,.62) calc(100% - 150px),rgba(0,0,0,.34) calc(100% - 100px),rgba(0,0,0,.13) calc(100% - 55px),rgba(0,0,0,.03) calc(100% - 20px),transparent 100%)}
+.hero.hbg::after{display:block;content:"";position:absolute;left:0;right:0;top:auto;bottom:0;height:300px;z-index:-1;pointer-events:none;border-radius:0;
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  background:linear-gradient(to bottom,transparent 0,color-mix(in srgb,var(--bgt,var(--bg)) 14%,transparent) 14%,color-mix(in srgb,var(--bgt,var(--bg)) 32%,transparent) 32%,color-mix(in srgb,var(--bgt,var(--bg)) 48%,var(--bg)) 52%,color-mix(in srgb,var(--bgt,var(--bg)) 56%,var(--bg)) 76%,color-mix(in srgb,var(--bgt,var(--bg)) 62%,var(--bg)) 100%);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.12) 16%,rgba(0,0,0,.4) 38%,rgba(0,0,0,.75) 64%,#000 100%);mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.12) 16%,rgba(0,0,0,.4) 38%,rgba(0,0,0,.75) 64%,#000 100%)}
+/* карточка друга (шторка): низ растворяется в цвет шторки, а не обрывается */
+#sheet .hero.hbg::after{background:linear-gradient(to bottom,transparent 0,color-mix(in srgb,var(--bgt,var(--bg)) 18%,transparent) 14%,color-mix(in srgb,var(--bgt,var(--bg)) 34%,transparent) 30%,color-mix(in srgb,var(--bgt,var(--bg)) 36%,var(--bg)) 52%,color-mix(in srgb,var(--bgt,var(--bg)) 14%,var(--bg)) 78%,var(--bg) 100%)}
 /* фон профиля продолжается вниз по странице: не цвет темы, а тот же оттенок, плавно растворяющийся */
 #view{position:relative;isolation:isolate}
 #view.bgt::before{content:"";position:absolute;z-index:-1;top:0;left:50%;width:100vw;height:calc(var(--hb,400px) + 1000px);transform:translateX(-50%);pointer-events:none;
@@ -2504,7 +2507,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.612';
+const APP = 'VOOB (by BGASHEV) Mini App v1.613';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
