@@ -3009,9 +3009,11 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.693';
+const APP = 'VOOB (by BGASHEV) Mini App v1.694';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
+/* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
+try { const m = /[?&]p=([^&]*)/.exec(location.search); if (m) history.replaceState(null, '', decodeURIComponent(m[1]) + location.hash); } catch (e) {}
 const tg = window.Telegram && window.Telegram.WebApp;
 const REALTG = !!(tg && tg.initData);
 const WEBK = 'voob_web_sess';   // v1.550 WEB: сессия, полученная входом по QR
@@ -6286,6 +6288,7 @@ function render(){
   tb.style.setProperty('--ti', ti);
   updPCard();
   updWBg();
+  urlSync();
   segSlide();
   const hh = v.querySelector('.hero.hbg'), bt = hh ? hh.style.getPropertyValue('--bgt') : '';
   if (bt) v.style.setProperty('--bgt', bt); else v.style.removeProperty('--bgt');
@@ -7173,7 +7176,29 @@ function showWebLogin(){
 }
 
 /* ============================================================ запуск ==== */
+/* v1.694 WEB: у вкладок свои адреса (app.voob.kz/friends, /settings …). В Telegram адрес не трогаем */
+const ROUTES = {'/':{t:'home', n:''}, '/stats':{t:'stats', n:'Итоги'}, '/weight':{t:'weight', n:'Вес'}, '/friends':{t:'friends', n:'Друзья'}, '/settings':{t:'me', set:1, n:'Настройки'}, '/personalization':{t:'me', set:1, pers:1, n:'Персонализация'}};
+function pathNow(){
+  if (S.tab === 'me' && S.pers) return '/personalization';
+  if (S.tab === 'me' && S.meSet) return '/settings';
+  if (S.tab === 'stats' || S.tab === 'weight' || S.tab === 'friends') return '/' + S.tab;
+  return '/';
+}
+function urlSync(){
+  if (!inWeb) return;
+  try {
+    const p = pathNow(), r = ROUTES[p];
+    document.title = r && r.n ? 'VOOB · ' + r.n : 'VOOB';
+    if (location.pathname.replace(/\/+$/, '') !== (p === '/' ? '' : p)) history.pushState(null, '', p + location.search + location.hash);
+  } catch (e) {}
+}
+function routeApply(path){
+  const r = ROUTES[(path || '/').replace(/\/+$/, '') || '/']; if (!r) return false;
+  S.tab = r.t; S.meSet = !!r.set; S.pers = !!r.pers; S.fprof = null; return true;
+}
+if (inWeb) window.addEventListener('popstate', () => { if (!routeApply(location.pathname)) return; try { if (sheetCtx) closeSheet(); } catch (e) {} fabMini(false); _rTab = null; render(); window.scrollTo(0, 0); });
 async function init(){
+  try { if (inWeb) routeApply(location.pathname); } catch (e) {}
   if (tg) {
     try { tg.ready(); tg.expand(); } catch (e) {}
     try { if (ver('7.7')) tg.disableVerticalSwipes(); } catch (e) {}
