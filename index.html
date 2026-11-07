@@ -3161,7 +3161,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.726';
+const APP = 'VOOB (by BGASHEV) Mini App v1.727';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7227,6 +7227,7 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
 
 /* VOOB «Кольца»: общий переход voob.kz ↔ app.voob.kz. Из точки клика раскрывается ирис со светящейся кромкой, два кольца логотипа (сайт и приложение) сближаются по спирали, сцепляются со вспышкой и анаморфным бликом, собирается имя, затем камера пролетает сквозь кольцо. 'in' стартует с того же кадра, на котором закончился 'out' */
 (function (w) {
+  var WM_G = {V: "<path d='M0 0H2.6L5 6.8 7.4 0H10L6.3 10H3.7Z' fill='currentColor'/>", O: "<circle cx='5' cy='5' r='3.9' fill='none' stroke='currentColor' stroke-width='2.2'/>", B: "<rect width='2.2' height='10' fill='currentColor'/><g fill='none' stroke='currentColor' stroke-width='2.2'><path d='M1 1.1H5.3A1.95 1.95 0 0 1 5.3 5H1'/><path d='M1 5H5.8A1.95 1.95 0 0 1 5.8 8.9H1'/></g>"};   // те же буквы, что и на сайте: «O» — идеальные круги
   var CSS = '#luv{position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:2147483000;background:#010206;overflow:hidden;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:#f4f6fb;display:grid;place-items:center;pointer-events:all}'
     + '#luv .l_lg{position:absolute;inset:0;background:radial-gradient(55vmax circle at 50% 48%,rgba(139,92,246,.13),transparent 62%),radial-gradient(38vmax circle at 64% 36%,rgba(34,211,238,.055),transparent 60%),radial-gradient(40vmax circle at 36% 64%,rgba(244,114,182,.05),transparent 60%)}'
     + '#luv .l_vg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 48%,transparent 38%,rgba(0,0,0,.88) 100%);pointer-events:none}'
