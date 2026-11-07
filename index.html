@@ -2395,7 +2395,6 @@ body.frozen .stp .sb{opacity:.45}
 .wl-ov.okk b{font-size:44px}
 .wl-cap{margin-top:16px;font-size:13px;color:var(--muted);font-weight:650;text-align:center;min-height:18px}
 @media (min-width:0px){}
-html.web body{background-color:var(--bg);background-image:radial-gradient(ellipse 85% 75% at 55% 12%,transparent 0,var(--bg) 80%),linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:100% 100%,64px 64px,64px 64px;background-attachment:fixed}
 @media (max-width:760px){.wl-card{grid-template-columns:1fr;gap:26px;padding:32px 24px;text-align:center}.wl-l p.sub{margin-inline:auto}.wl-st li{text-align:left}.wl-acts{justify-content:center}.wl-l h1{font-size:30px}}
 @media (min-width:900px){
  html.web #tabs{left:14px;right:auto;top:14px;bottom:14px;width:236px;max-width:none;margin:0;border-radius:26px;border:1px solid var(--border);box-shadow:0 24px 60px -24px rgba(0,0,0,.4),0 2px 10px rgba(0,0,0,.08);backdrop-filter:blur(34px) saturate(1.4);-webkit-backdrop-filter:blur(34px) saturate(1.4);flex-direction:column;justify-content:flex-start;gap:4px;padding:92px 12px 16px;background:color-mix(in srgb,var(--surface) 70%,transparent)}
@@ -2464,6 +2463,24 @@ html.web .inv-row .inv-code{margin-top:0;min-width:0}html.web .inv-row .inv-shar
 /* WEB: плитки «Итоги» — ровная сетка вместо горизонтальной ленты */
 @media(min-width:900px){html.web .stv .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px;overflow:visible;margin:14px 0 0;padding:0;-webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
 html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
+/* v1.607: фоновые текстуры (Оформление → Фон) */
+body{background-attachment:fixed}
+.tex-grid{background-image:radial-gradient(ellipse 85% 75% at 55% 12%,transparent 0,var(--bg) 80%),linear-gradient(var(--tl) 1px,transparent 1px),linear-gradient(90deg,var(--tl) 1px,transparent 1px);background-size:100% 100%,56px 56px,56px 56px}
+.tex-dots{background-image:radial-gradient(var(--tl2) 1.3px,transparent 1.6px);background-size:18px 18px}
+.tex-grain{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");background-size:160px 160px}
+.tex-rings{background-image:repeating-radial-gradient(circle at 20% 110%,transparent 0 22px,var(--tl) 22px 23px)}
+.tex-plus{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Cpath d='M14 9v10M9 14h10' stroke='%23888' stroke-opacity='.32' stroke-width='1.2' stroke-linecap='round'/%3E%3C/svg%3E");background-size:28px 28px}
+.tex-aura{background-image:radial-gradient(40% 55% at 15% 20%,color-mix(in srgb,var(--accent) 22%,transparent),transparent 70%),radial-gradient(45% 55% at 90% 85%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 70%)}
+.tex-relief{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='200' viewBox='0 0 300 200' fill='none' stroke='%23888' stroke-opacity='.24'%3E%3Cpath d='M-10 40C40 10 90 70 150 40S260 10 310 50'/%3E%3Cpath d='M-10 62C40 32 90 92 150 62S260 32 310 72'/%3E%3Cpath d='M-10 84C40 54 90 114 150 84S260 54 310 94'/%3E%3Cpath d='M-10 106C40 76 90 136 150 106S260 76 310 116'/%3E%3Cpath d='M-10 128C40 98 90 158 150 128S260 98 310 138'/%3E%3Cpath d='M-10 150C40 120 90 180 150 150S260 120 310 160'/%3E%3C/svg%3E");background-size:300px 200px}
+.tex-paper{background-image:repeating-linear-gradient(45deg,var(--tl3) 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,var(--tl3) 0 1px,transparent 1px 9px)}
+.tex-rays{background-image:repeating-conic-gradient(from 0deg at 50% 125%,var(--tl3) 0 .6deg,transparent .6deg 7deg)}
+.texs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.texb{position:relative;height:46px;border-radius:12px;border:1.5px solid var(--border);background-color:var(--surface2);background-attachment:scroll;color:var(--muted);font:700 10.5px/1 inherit;cursor:pointer;display:grid;place-items:end center;padding:0 0 5px;overflow:hidden}
+.texb span{position:relative;background:color-mix(in srgb,var(--surface2) 80%,transparent);padding:2px 5px;border-radius:6px;font-size:10px;font-weight:700;color:var(--text)}
+.texb.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.texb.tex-grid{background-size:100% 100%,16px 16px,16px 16px}.texb.tex-rings{background-image:repeating-radial-gradient(circle at 20% 130%,transparent 0 10px,var(--tl) 10px 11px)}
+.texb.tex-dots{background-size:9px 9px}.texb.tex-plus{background-size:16px 16px}.texb.tex-paper{background-image:repeating-linear-gradient(45deg,var(--tl2) 0 1px,transparent 1px 6px),repeating-linear-gradient(-45deg,var(--tl2) 0 1px,transparent 1px 6px)}
+.texb.tex-rays{background-image:repeating-conic-gradient(from 0deg at 50% 150%,var(--tl2) 0 2deg,transparent 2deg 9deg)}.texb.tex-relief{background-size:150px 100px}
 </style>
 </head>
 <body>
@@ -2478,7 +2495,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.606';
+const APP = 'VOOB (by BGASHEV) Mini App v1.607';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2498,6 +2515,9 @@ const LS = 'steps_db_' + (tgUser ? tgUser.id : 'local');
 const CH = 3900;   // размер куска для CloudStorage (лимит 4096 символов на значение)
 
 const ACCENTS = [["rose","Розовый","#F4A3BE"],["peach","Персиковый","#F7B58E"],["butter","Лимонный","#F2D679"],["mint","Мятный","#9AD9B3"],["sky","Голубой","#8FC8EE"],["lavender","Лавандовый","#B4A7EE"],["lilac","Сиреневый","#D9A8EA"],["teal","Бирюзовый","#86D5CF"],["sand","Песочный","#E3C9A0"],["mono","Монохром","#EDEDF2"]];
+const TEX = [['none','Нет'],['grid','Сетка'],['dots','Точки'],['grain','Зерно'],['rings','Волны'],['plus','Плюсики'],['aura','Ауры'],['relief','Рельеф'],['paper','Ватман'],['rays','Лучи']];
+const texKey = () => { const k = db.settings.tex; return TEX.some(x => x[0] === k) ? k : (inWeb ? 'grid' : 'none'); };
+function applyTex(){ try { const k = texKey(); document.body.className = document.body.className.replace(/\btex-\w+/g, '').trim(); if (k !== 'none') document.body.classList.add('tex-' + k); } catch (e) {} }
 const THEMES = {
   light:{bg:"#F5F5F8",surface:"#FFFFFF",surface2:"#EFEFF4",border:"#E3E3EA",text:"#1D1D24",muted:"#8A8A98",off:"#DEDEE6"},
   dark:{bg:"#121216",surface:"#1A1A20",surface2:"#24242C",border:"#2C2C36",text:"#F1F1F5",muted:"#8B8B99",off:"#34343F"},
@@ -2889,7 +2909,7 @@ function touchMeta(id){
 }
 function metaData(id){
   if (id === 'profile') return {name:db.profile.name || '', birth:db.profile.birth || '', sex:db.profile.sex || '', height:+db.profile.height || 0};
-  if (id === 'settings') return Object.assign({goal:db.settings.goal}, Array.isArray(db.settings.fav) ? {fav:db.settings.fav.slice(0, 6)} : {}, lookSync() ? {accent:db.settings.accent, theme:db.settings.theme, dv:db.settings.dv || 'graphite'} : {}, db.settings.frame ? {frame:db.settings.frame} : {}, db.settings.bg ? {bg:db.settings.bg} : {}, db.settings.badge ? {badge:db.settings.badge} : {}, Array.isArray(db.settings.seen_ach) ? {ach:db.settings.seen_ach.slice(0, 60)} : {});
+  if (id === 'settings') return Object.assign({goal:db.settings.goal}, Array.isArray(db.settings.fav) ? {fav:db.settings.fav.slice(0, 6)} : {}, lookSync() ? {accent:db.settings.accent, theme:db.settings.theme, dv:db.settings.dv || 'graphite', ...(db.settings.tex ? {tex:db.settings.tex} : {})} : {}, db.settings.frame ? {frame:db.settings.frame} : {}, db.settings.bg ? {bg:db.settings.bg} : {}, db.settings.badge ? {badge:db.settings.badge} : {}, Array.isArray(db.settings.seen_ach) ? {ach:db.settings.seen_ach.slice(0, 60)} : {});
   return db.weight_goal || {};
 }
 function applyMeta(id, d){
@@ -2905,6 +2925,7 @@ function applyMeta(id, d){
       if (ACCENTS.some(a => a[0] === d.accent)) db.settings.accent = d.accent;
       if (['auto','light','dark'].includes(d.theme)) db.settings.theme = d.theme;
       if (['graphite','black'].includes(d.dv)) db.settings.dv = d.dv;
+      if (TEX.some(x => x[0] === d.tex)) db.settings.tex = d.tex;
       try { applyTheme(); } catch (e) {} }
     db.settings.frame = FRAMES.some(x => x[0] && x[0] === frNorm(d.frame)) ? frNorm(d.frame) : '';
     db.settings.bg = typeof d.bg === 'string' && d.bg.length < 24 ? d.bg : '';
@@ -3113,6 +3134,10 @@ function applyTheme(){
   r.setProperty('--accent', acc);
   r.setProperty('--on-accent', (0.299*ar + 0.587*ag + 0.114*ab) > 140 ? '#1D1D24' : '#FFFFFF');
   r.setProperty('--accent-soft', `rgba(${ar},${ag},${ab},.16)`);
+  r.setProperty('--tl', mode === 'dark' ? 'rgba(255,255,255,.07)' : 'rgba(20,20,40,.08)');
+  r.setProperty('--tl2', mode === 'dark' ? 'rgba(255,255,255,.14)' : 'rgba(20,20,40,.16)');
+  r.setProperty('--tl3', mode === 'dark' ? 'rgba(255,255,255,.045)' : 'rgba(20,20,40,.055)');
+  applyTex();
   r.setProperty('--accent2', accent2(acc));
   const [sr, sg, sb] = hexRgb(th.surface);
   r.setProperty('--tabs-bg', `rgba(${sr},${sg},${sb},.86)`);
@@ -4861,6 +4886,7 @@ function viewMeSettings(){
   h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}
     ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${dvEff() === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${dvEff() === k ? IC('check', 16) : ''}${k === 'black' ? '<i class="prot">PRO</i>' : ''}</button>`).join('')}</div>` : ''}</div>
     <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}${isPro() ? '' : '<i class="prot inl" data-act="prosheet" role="button">PRO</i>'}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}" data-act="accent" data-v="${k}" style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div>
+    <div class="f"><span>Фон · ${(TEX.find(x => x[0] === texKey()) || TEX[0])[1]}</span><div class="texs">${TEX.map(([k, l]) => `<button type="button" class="texb${k === 'none' ? '' : ' tex-' + k}${texKey() === k ? ' on' : ''}" data-act="tex" data-v="${k}" aria-label="${l}" title="${l}"><span>${l}</span></button>`).join('')}</div></div>
     ${inTG ? `<div class="tgl${lookSync() ? ' on' : ''}" data-act="looksync" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)"><span class="sw2"></span><b>Одинаково на всех устройствах</b></div>
     <div class="cap" style="margin-top:8px">${lookSync() ? 'Тема, оттенок и акцентный цвет будут одинаковыми на всех твоих устройствах.' : 'Оформление хранится только на этом устройстве — на других тема и цвет могут быть другими.'}</div>` : ''}</div>`;
   h += langCardHTML();
@@ -5930,6 +5956,7 @@ const ACT = {
   dv: el => { if (el.dataset.v === 'black' && !isPro()) { hap.warn(); S.dvPrev = true; applyTheme(); render(); clearTimeout(S.dvT);
       S.dvT = setTimeout(() => { S.dvPrev = false; applyTheme(); render(); }, 5000); proToast('Чёрная тема — в PRO. Сейчас это предпросмотр'); return; }
     S.dvPrev = false; db.settings.dv = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
+  tex: el => { db.settings.tex = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTex(); render(); hap.tap(); },
   looksync: () => { const on = !lookSync(); lsSet('voob_look_sync', on); hap.tap();
     if (on) { touchMeta('settings'); save(); toast('Оформление этого устройства теперь общее'); } else toast('Теперь у телефона своё оформление');
     render(); },
