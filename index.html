@@ -869,7 +869,7 @@ html.web .pz-stage{position:sticky;top:24px;display:flex;flex-direction:column;g
 .pz-lv .lvbar{height:6px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden}.pz-lv .lvbar i{display:block;height:100%;border-radius:3px;background:#fff}
 .pzsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .pzs{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:16px;background:var(--surface);border:1px solid var(--border);transition:border-color .3s,background .3s,transform .3s cubic-bezier(.3,1.4,.5,1);min-width:0}
-.pzs span{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:700}.pzs b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pzs span{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:700}.pzs b{font-size:13.5px;line-height:1.2;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pzs.chg{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}.pzs.hov{transform:translateY(-2px)}
 .pzbtns{display:flex;gap:10px}.pzgo{flex:1;min-height:50px}.pzrs{min-height:50px}
 .pzhint{display:flex;align-items:center;gap:7px;justify-content:center;text-align:center;color:var(--muted);font-size:12.5px;margin-top:2px}.pzhint svg{color:var(--accent);flex:none}
@@ -2914,7 +2914,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.679';
+const APP = 'VOOB (by BGASHEV) Mini App v1.680';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
