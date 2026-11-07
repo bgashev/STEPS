@@ -3251,7 +3251,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.749';
+const APP = 'VOOB (by BGASHEV) Mini App v1.750';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6329,7 +6329,7 @@ function goalPreview(){ const g = G(); return `${npw(g.count, W_WORK)} за ${np
 
 /* ============================================================ рендер ==== */
 // ---------- горячие клавиши (WEB) ----------
-const HK = [['home','Главная','Digit1'],['stats','Итоги','Digit2'],['weight','Вес','Digit3'],['friends','Друзья','Digit4'],['me','Я (настройки)','Digit5'],['add','Новая тренировка','KeyN'],['kadd','Взвеситься','KeyW'],['back','Назад / закрыть окно','Escape']];
+const HK = [['home','Главная','Digit1'],['friends','Друзья','Digit2'],['weight','Вес','Digit3'],['stats','Итоги','Digit4'],['me','Я (настройки)','Digit5'],['add','Новая тренировка','KeyN'],['kadd','Взвеситься','KeyW'],['back','Назад / закрыть окно','Escape']];
 let hkMap = null, hkCap = null;
 function hkLoad(){
   if (hkMap) return hkMap;
@@ -6392,7 +6392,7 @@ function updPCard(){
   el.classList.toggle('on', on); el.style.setProperty('--tc', tc);
   if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.classList.toggle('hasbg', !!bg); el.innerHTML = html;
 }
-const TABS = inWeb ? [['stats','Итоги','stats'],['weight','Вес','scale'],['friends','Друзья','friends'],['me','Я','user']] : [['stats','Итоги','stats'],['weight','Вес','scale'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
+const TABS = inWeb ? [['friends','Друзья','friends'],['weight','Вес','scale'],['stats','Итоги','stats'],['me','Я','user']] : [['stats','Итоги','stats'],['weight','Вес','scale'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
 const VIEWS = {home:(inWeb && inTG ? viewHomeWeb : viewHome), weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe};
 // плавающая кнопка внизу по центру: на «Главной» — тренировка, во «Весе» — взвеситься
 const FAB = {home:['add', 'Тренировка'], weight:['kadd', 'Взвеситься']};
