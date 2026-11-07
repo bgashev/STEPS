@@ -2459,6 +2459,7 @@ html.web .mset-top:has(+ .me-prof .hero.hbg)>*{position:relative;top:18px}
 html.web .mset-top:has(+ .me-prof .hero.hbg)::before{content:'';display:block;position:fixed;left:0;right:0;top:0;bottom:auto;height:120px;z-index:-1;pointer-events:none;
   background:linear-gradient(to bottom,rgba(0,0,0,.5),rgba(0,0,0,.18) 55%,transparent);-webkit-backdrop-filter:none;backdrop-filter:none;-webkit-mask-image:none;mask-image:none}
 html.web #view .me-prof .hero.hbg{margin-top:0;padding-top:112px}
+html.web .mset-top:has(> [data-act="fpback"])>b{display:none}   /* WEB: подпись «Профиль» в шапке не нужна, стрелка «назад» остаётся */
  html.web #view{max-width:none;margin:0;padding-top:34px;padding-bottom:60px;padding-left:calc(264px + max(28px,(100vw - 264px - 760px) / 2));padding-right:max(28px,calc((100vw - 264px - 760px) / 2))}
  html.web #fab.wdock{left:calc(50% + 132px);bottom:28px}
  html.web #toast{bottom:32px;left:calc(50% + 132px)}
@@ -2570,7 +2571,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.629';
+const APP = 'VOOB (by BGASHEV) Mini App v1.630';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
