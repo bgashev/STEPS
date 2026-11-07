@@ -2998,6 +2998,7 @@ html.web #wbg{display:block}
 html.web #tabs{overflow:hidden;clip-path:inset(0 round 26px);isolation:isolate}
 html.web #tabs .tbi,html.web #tabs .tab{clip-path:none}
 html.web #view .head .sub{color:color-mix(in srgb,var(--text) 74%,transparent)}
+#wbg .wbl{transition:opacity .7s ease}#wbg .wbl.nw{animation:none;opacity:0}
 /* v1.709: подписи в «Персонализации» — на стеклянной плашке, читаются на любом фоне */
 html.web .pz-top .sub,html.web .pz-cap,html.web .pzhint{display:inline-flex;align-items:center;gap:7px;width:fit-content;max-width:100%;padding:7px 14px;border-radius:999px;color:var(--text);background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(34px) saturate(1.4);-webkit-backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border);line-height:1.35}
 html.web .pz-cap{display:flex;border-radius:18px}
@@ -3066,7 +3067,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.709';
+const APP = 'VOOB (by BGASHEV) Mini App v1.710';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6306,10 +6307,19 @@ function meNav(cls){   // v1.484: плавный «пуш» между проф�
 }
 /* v1.639: «ползунок» переключателей (7 дней · 30 дней · …) — плавно переезжает на новое место, а не пропадает и появляется */
 /* v1.646 WEB, «Главная»: вместо текстуры — свой фон профиля на весь экран, сильно размытый, матовый и притемнённый */
-function updWBg(){   // v1.709: переписано — один путь через слои (перекрёстное растворение), без гонок таймеров
+const _bgR = {};
+function bgReady(k){   // v1.710: заранее декодируем картинки фона — иначе слои «выскакивают» и мерцают при загрузке
+  k = bgNorm(k); if (_bgR[k]) return _bgR[k]; bgEnsure(k);
+  const css = BG_CSS[k] || '', urls = [...css.matchAll(/url\((["']?)(data:[^"')]+)\1\)/g)].map(m => m[2]);
+  const all = Promise.all(urls.map(u => { const im = new Image(); im.src = u; return (im.decode ? im.decode() : Promise.resolve()).catch(() => {}); }));
+  return _bgR[k] = Promise.race([all, new Promise(r => setTimeout(r, 1800))]);
+}
+function bgWarm(){ const ks = Object.keys(BG_SVG); let i = 0; const step = () => { if (i >= ks.length) return; bgReady(ks[i++]); (window.requestIdleCallback || setTimeout)(step, 200); }; step(); }
+function updWBg(){   // v1.709/710: слои с перекрёстным растворением; слой показываем только когда картинки декодированы
   const el = document.getElementById('wbg'); if (!el) return;
   const pz = inWeb && inTG && S.meSet && S.pers; let k = pz ? (pzEff().eff.bg || '') : (inWeb && inTG && S.fprof && !S.meSet ? (BGS.get(+S.fprof) || '') : inWeb && inTG && S.tab === 'home' && !S.fprof && !S.meSet && !S.pers ? myBg() : '');
   if (k && !BG_SVG[bgNorm(k)]) k = '';
+  if (pz && !bgWarm.d) { bgWarm.d = 1; bgWarm(); }
   if ((el.dataset.k || '') === k) return;
   el.dataset.k = k; clearTimeout(updWBg.t); clearTimeout(el._wt);
   const layers = () => [...el.children].filter(c => c.classList.contains('wbl'));
@@ -6317,14 +6327,18 @@ function updWBg(){   // v1.709: переписано — один путь че�
     el.classList.remove('on'); document.documentElement.classList.remove('hbgl');
     updWBg.t = setTimeout(() => { if (!el.dataset.k) { el.innerHTML = ''; el._wl = null; } }, 1200); return;
   }
-  const L = document.createElement('div'); L.className = 'wbl'; L.innerHTML = bgFx(k) + '<u class="wbm"></u>';
-  const was = el.classList.contains('on') && layers().length;
-  if (!was) { el.innerHTML = ''; }
-  else L.classList.add('nw');
-  el.appendChild(L); el._wl = L;
-  document.documentElement.classList.add('hbgl');
-  if (was) el._wt = setTimeout(() => { layers().forEach(c => { if (c !== el._wl) c.remove(); }); if (el._wl) el._wl.classList.remove('nw'); }, 750);
-  else requestAnimationFrame(() => requestAnimationFrame(() => { if (el.dataset.k === k) el.classList.add('on'); }));
+  bgReady(k).then(() => {
+    if (el.dataset.k !== k) return;   // пока грузилось, выбрали другой
+    const L = document.createElement('div'); L.className = 'wbl nw'; L.innerHTML = bgFx(k) + '<u class="wbm"></u>';
+    const was = el.classList.contains('on') && layers().length;
+    if (!was) el.innerHTML = '';
+    el.appendChild(L); el._wl = L; document.documentElement.classList.add('hbgl');
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (el._wl !== L) return;
+      L.classList.remove('nw'); el.classList.add('on');
+      clearTimeout(el._wt); el._wt = setTimeout(() => { layers().forEach(c => { if (c !== el._wl) c.remove(); }); }, 800);
+    }));
+  });
 }
 function segSlide(){
   document.querySelectorAll('.seg').forEach(sg => {
