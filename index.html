@@ -1000,6 +1000,21 @@ html.web .fc4 .f4c span{font-size:10.5px}
 html.web .fc4 .f4f{min-height:18px;font-size:13px;justify-content:flex-start}
 html.web .fc4.fcb::after{background:linear-gradient(180deg,rgba(8,8,12,.38),rgba(8,8,12,.62) 70%,rgba(8,8,12,.78))}
 html.web .fc4.fcb>.hbgfx{opacity:.85}
+/* v1.693: WEB · карточка друга — стеклянная плашка, столбики-капсулы без подписей дней */
+html.web .fc4:not(.fcb){background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 7%,var(--surface)) 0,var(--surface) 55%);border-color:color-mix(in srgb,var(--text) 9%,transparent);box-shadow:0 1px 0 rgba(255,255,255,.05) inset,0 16px 36px -26px rgba(0,0,0,.6)}
+html.web .fc4::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;background:radial-gradient(120% 70% at 0 0,rgba(255,255,255,.09),transparent 55%);opacity:.8}
+html.web .fc4:hover{border-color:color-mix(in srgb,var(--accent) 55%,transparent);box-shadow:0 22px 44px -22px rgba(0,0,0,.75),0 0 0 1px color-mix(in srgb,var(--accent) 35%,transparent),0 0 36px -14px var(--accent)}
+html.web .fc4>*{position:relative;z-index:2}
+html.web .fc4 .f4w{gap:9px;height:70px;margin-top:4px}
+html.web .fc4 .f4c{justify-content:flex-end;border-radius:99px;background:color-mix(in srgb,var(--text) 6%,transparent);padding:3px;gap:0}
+html.web .fc4 .f4c i{width:100%;border-radius:99px;min-height:8px}
+html.web .fc4 .f4c i.on{box-shadow:0 0 14px -3px var(--accent)}
+html.web .fc4 .f4c.td{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--accent) 70%,transparent)}
+html.web .fc4.fcb .f4c{background:rgba(255,255,255,.1)}
+html.web .fc4 .f4f{justify-content:space-between;min-height:20px;padding-top:2px}
+html.web .fc4 .f4f em{font-style:normal;font-size:12px;opacity:.8;white-space:nowrap}
+html.web .fc4 .f4f b{font-size:15px;font-weight:800;color:var(--accent)}
+html.web .fc4.fcb .f4f b{color:#fff}
 /* v1.668: плашка друга показывает его фон профиля */
 .fc{position:relative;isolation:isolate;overflow:hidden}
 .fc.fcb{border-color:rgba(255,255,255,.14);--text:#F4F4F8;--muted:rgba(255,255,255,.74);color:#F4F4F8;background:#0b0b10}
@@ -2994,7 +3009,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.692';
+const APP = 'VOOB (by BGASHEV) Mini App v1.693';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4783,8 +4798,8 @@ function viewFriends(){
       return `<div class="fc fc4${fbg ? ' fcb' : ''}" data-act="frprof" data-id="${f.tg_id}" style="animation-delay:${Math.min(i, 10) * 40}ms">${fbg ? bgFx(fbg) : ''}
         <div class="f4t">${favHTML(f)}<div class="fm"><div class="f4n"><b>${esc(f.name)}</b>${bdgHTML(f.tg_id, 16)}${f.private ? IC('lock', 13) : ''}${g.run >= 2 ? `<span class="fstreak">${IC('flame', 13)}${g.run}</span>` : ''}</div>${sub ? `<div class="l3">${sub}</div>` : ''}</div>
           <span class="fac"><button class="rm gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 18)}</button><button class="rm" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 17)}</button></span></div>
-        <div class="f4w">${dd.map((m, k) => `<div class="f4c${k === 6 ? ' td' : ''}" title="${esc(WDF[wdOf(t0 - 6 + k)] + ': ' + fmtMin(m))}"><i class="${m > 0 ? 'on' : ''}" style="--h:${m > 0 ? Math.max(14, m / mx * 100) : 8}%;--dl:${k * 45}ms"></i><span>${WD[wdOf(t0 - 6 + k)]}</span></div>`).join('')}</div>
-        <div class="f4f">${f.week.minutes ? '<b>' + fmtMin(f.week.minutes) + '</b> за 7 дней' : ''}</div></div>`;
+        <div class="f4w">${dd.map((m, k) => `<div class="f4c${k === 6 ? ' td' : ''}" title="${esc(WDF[wdOf(t0 - 6 + k)] + ': ' + fmtMin(m))}"><i class="${m > 0 ? 'on' : ''}" style="--h:${m > 0 ? Math.max(14, m / mx * 100) : 8}%;--dl:${k * 45}ms"></i></div>`).join('')}</div>
+        <div class="f4f"><span>${f.week.minutes ? '<b>' + fmtMin(f.week.minutes) + '</b> за 7 дней' : 'на этой неделе тихо'}</span><em>${last}</em></div></div>`;
     }
     return `<div class="fc${fbg ? ' fcb' : ''}" data-act="frprof" data-id="${f.tg_id}" style="animation-delay:${Math.min(i, 10) * 40}ms">${fbg ? bgFx(fbg) : ''}${favHTML(f)}<div class="fm"><div><b>${esc(f.name)}</b>${bdgHTML(f.tg_id, 14)}${f.private ? IC('lock', 12) : ''}${g.run >= 2 ? `<span class="fstreak">${IC('flame', 12)}${g.run}</span>` : ''}</div>
       ${sub ? `<div class="l3">${sub}</div>` : ''}<div class="l2">${fmtMin(f.week.minutes)} за 7 дней · ${gl}</div><div class="l3">${last}</div>${inWeb ? `<div class="fpg${g.done_today || g.prev_ok ? ' ok' : ''}"><i style="width:${Math.max(g.shown ? 6 : 0, Math.min(100, g.done_today || g.prev_ok ? 100 : g.shown / (g.target || 1) * 100))}%"></i></div>` : ''}</div>
