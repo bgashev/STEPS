@@ -1994,8 +1994,8 @@ body.frozen .stp .sb{opacity:.45}
 #view .hero.hbg>.hbgfx::after{content:"";position:absolute;left:0;right:0;top:0;height:calc(96px + var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px));pointer-events:none;
   background:linear-gradient(to bottom,#000 0,#000 58%,rgba(0,0,0,.55) 80%,rgba(0,0,0,0) 100%)}
 #lgo{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;opacity:0;pointer-events:all;background:color-mix(in srgb,var(--bg) 95%,transparent);-webkit-backdrop-filter:blur(26px);backdrop-filter:blur(26px)}
-.lgo-cols{position:absolute;inset:0;display:flex;justify-content:space-evenly;align-items:flex-start;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent)}
-.lgo-col{height:100%;overflow:visible;flex:0 0 auto}
+.lgo-cols{position:absolute;inset:0;display:flex;justify-content:center;align-items:flex-start;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 22%,#000 78%,transparent)}
+.lgo-col{height:100%;overflow:visible;flex:0 0 20%;min-width:0}   /* v1.622: пять равных столбцов — центральный всегда ровно по центру экрана, на любой ширине */
 .lgo-col>div{margin-top:100vh;display:flex;flex-direction:column;gap:30px;align-items:center;will-change:transform}
 .lgo-col span{opacity:0;animation:lgw 700ms cubic-bezier(.22,.8,.24,1) both;font-size:var(--sz);font-weight:700;letter-spacing:-.3px;white-space:nowrap;color:var(--text)}
 @keyframes lgh{0%{opacity:0;filter:blur(16px);transform:translateY(46px) scale(.94)}100%{opacity:var(--op);filter:blur(0);transform:translateY(0) scale(1)}}
@@ -2549,7 +2549,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.621';
+const APP = 'VOOB (by BGASHEV) Mini App v1.622';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
