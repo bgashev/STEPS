@@ -809,6 +809,13 @@ html.web .stv .gl .recs .rv{font-size:21px;letter-spacing:-.5px;margin:6px 0 2px
 }
 html.web .mset-top.msw{height:0;margin:0;padding:0;top:0}
 html.web .mset-top.msw>*{position:relative;top:18px}
+.wpop{position:fixed;left:auto;top:80px;width:340px;z-index:31}
+.wpop .ip-in .f{margin:0 0 10px}
+.wpop .wp-row{display:grid;margin:10px 0 0}
+.wpop .wp-hint{color:var(--muted);font-size:11.5px;line-height:1.4;margin:2px 2px 12px}
+.wpop .wp-save{width:100%;min-height:46px;border-radius:14px}
+#fab.wp-open .fi svg{transform:rotate(45deg)}
+#fab .fi svg{transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
 html.web .head{position:relative}
 .invpop{position:absolute;right:0;top:calc(100% + 4px);width:320px;z-index:30;pointer-events:none;visibility:hidden;
   clip-path:inset(-20px -20px -40px 100% round 22px);opacity:0;transform:translateX(18px);
@@ -2710,7 +2717,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.656';
+const APP = 'VOOB (by BGASHEV) Mini App v1.657';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5668,6 +5675,7 @@ window.addEventListener('scroll', () => {
 }, {passive:true});
 function updFab(){
   const box = $('#fab'); if (!box) return;
+  if (S.tab !== 'weight') wpClose();
   const b = box.querySelector('button'), fl = b.querySelector('.fl'), fi = b.querySelector('.fi');
   const cfg = FAB[S.tab];
   if (!fi.innerHTML) fi.innerHTML = IC('plus', 20);
@@ -5955,6 +5963,33 @@ function updPreview(){
   const kc = walkKcal(sp, inc, mi, weightAt(d));
   const lvl = walkMets(sp, inc), lv = lvl < 4.5 ? 'лёгкая' : lvl < 6 ? 'средняя' : lvl < 7.5 ? 'тяжёлая' : 'интенсив';
   el.textContent = `≈ ${kmF(sp * mi / 60)}` + (kc ? ` · ≈ ${kcalF(kc)}` : '') + ` · нагрузка: ${lv}`;
+}
+/* v1.657 WEB (широкий экран): «Взвеситься» — плашка, выезжающая влево из кнопки, как у «Добавить друга» */
+const wideWeb = () => inWeb && inTG && window.matchMedia && matchMedia('(min-width:1320px)').matches;
+function wpClose(){
+  const el = document.getElementById('wpop'), f = document.getElementById('fab'); if (f) f.classList.remove('wp-open');
+  if (!el || !el.classList.contains('open')) return;
+  el.classList.remove('open'); clearTimeout(wpClose.t); wpClose.t = setTimeout(() => { if (!el.classList.contains('open')) el.remove(); }, 600);
+}
+function wpOpen(){
+  const f = document.getElementById('fab'); if (!f) return;
+  let el = document.getElementById('wpop'); if (el) el.remove();
+  el = document.createElement('div'); el.id = 'wpop'; el.className = 'invpop wpop';
+  el.innerHTML = `<div class="ip-in"><div class="ip-t">Взвеситься</div>
+    ${stepper('kg', 'Вес', currentWeight() || 75, 20, 300, 0.1, 1, 'кг')}
+    <div class="wp-row"><label class="f"><span>Дата</span><input class="inp" type="date" id="k-date" value="${isoOf(todayN())}" max="${isoOf(todayN())}"></label></div>
+    <label class="f"><span>Заметка</span><input class="inp" id="k-note" maxlength="100" placeholder="Например: утром натощак" autocomplete="off"></label>
+    <div class="wp-hint">Взвешивайся в одно и то же время: утром, до завтрака. График будет честнее.</div>
+    <button type="button" class="btn primary wp-save" data-act="wpsave">Сохранить</button></div>`;
+  document.body.appendChild(el);
+  const r = f.getBoundingClientRect(); el.style.right = Math.max(12, innerWidth - r.right) + 'px'; el.style.top = (r.bottom + 10) + 'px';
+  f.classList.add('wp-open'); void el.offsetWidth; el.classList.add('open');
+  setTimeout(() => { const i = el.querySelector('.stp input'); if (i) { i.focus(); i.select(); } }, 320);
+}
+function wpToggle(){ const el = document.getElementById('wpop'); if (el && el.classList.contains('open')) wpClose(); else wpOpen(); }
+if (inWeb) {
+  document.addEventListener('click', e => { const el = document.getElementById('wpop'); if (el && el.classList.contains('open') && !e.target.closest('#wpop,#fab')) wpClose(); }, true);
+  document.addEventListener('keydown', e => { const el = document.getElementById('wpop'); if (!el || !el.classList.contains('open')) return; if (e.key === 'Escape') wpClose(); else if (e.key === 'Enter' && e.target.closest('#wpop') && e.target.tagName === 'INPUT') { e.preventDefault(); ACT.wpsave(); } });
 }
 function openWeight(e){
   const def = e ? +e.kg : (currentWeight() || 75);
@@ -6392,7 +6427,8 @@ const ACT = {
     db.settings.summary_seen = seen.slice(-20); persist(); hap.tap();
     const card = el.closest('.fest'); if (card) { card.style.transition = 'opacity .25s, transform .25s'; card.style.opacity = 0; card.style.transform = 'scale(.97)'; setTimeout(render, 240); } else render(); },
   more: () => { S.limit += 30; render(); },
-  kadd: () => openWeight(null),
+  kadd: () => { if (wideWeb()) wpToggle(); else openWeight(null); },
+  wpsave: () => { sheetCtx = {type:'weight', item:null}; wpClose(); saveWeight(); },
   kedit: el => { const e = findK(el.dataset.id); if (e) openWeight(e); },
   ksave: saveWeight, kdel: delWeight,
   kmore: () => { S.klimit += 30; render(); },
