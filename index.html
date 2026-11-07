@@ -2178,9 +2178,9 @@ body.frozen .stp .sb{opacity:.45}
 .stv .kpi .kv{font-size:23px;font-weight:850;letter-spacing:-.6px;font-variant-numeric:tabular-nums}
 .stv .kpi:first-child{grid-column:1/-1;background:linear-gradient(120deg,color-mix(in srgb,var(--accent) 12%,var(--surface)),var(--surface))}
 .stv .kpi:first-child .kv{font-size:30px}
-.stv .st-sec,.stv>.card{margin:12px 0 0;padding:18px 16px 16px;border-radius:28px;background:var(--surface);border:1px solid var(--border)}
-.stv .st-sec>h3,.stv>.card>h3{display:flex;align-items:center;gap:9px;margin:0 2px 14px;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.stv .st-sec>h3 svg,.stv>.card>h3 svg{width:26px;height:26px;padding:6px;border-radius:9px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);box-sizing:border-box;flex:none}
+.stv .st-sec,.stv>.card,.stv .me-l>.card,.stv .me-r>.card{margin:12px 0 0;padding:18px 16px 16px;border-radius:28px;background:var(--surface);border:1px solid var(--border)}
+.stv .st-sec>h3,.stv>.card>h3,.stv .me-l>.card>h3,.stv .me-r>.card>h3{display:flex;align-items:center;gap:9px;margin:0 2px 14px;font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.stv .st-sec>h3 svg,.stv>.card>h3 svg,.stv .me-l>.card>h3 svg,.stv .me-r>.card>h3 svg{width:26px;height:26px;padding:6px;border-radius:9px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);box-sizing:border-box;flex:none}
 .stv .st-sec>h3 span{letter-spacing:.02em;text-transform:none;font-size:12px}
 .stv .st-stack{height:10px;border-radius:99px;gap:3px;margin-bottom:8px}.stv .st-stack i{border-radius:99px}
 .stv .bfill{border-radius:10px 10px 4px 4px;background:linear-gradient(180deg,var(--accent2,var(--accent)),var(--accent))!important;width:68%;opacity:.92}
@@ -2340,11 +2340,11 @@ body.frozen .stp .sb{opacity:.45}
 .stv .kpi::before{display:none}
 .stv .kpi .kv,.stv .kpi:first-child .kv{font-size:24px;font-weight:700;letter-spacing:-.9px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .stv .kpi .kc{font-size:11.5px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted);white-space:nowrap}
-.stv .st-sec,.stv>.card{position:relative;overflow:hidden;margin-top:14px;padding:20px 18px 18px;border-radius:30px;border:0;background:var(--gl);box-shadow:inset 0 0 0 1px var(--hl);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
-.stv .st-sec::before,.stv>.card::before{content:"";position:absolute;left:-1px;top:-1px;right:-1px;height:90px;border-radius:30px 30px 0 0;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 10%,transparent),transparent);pointer-events:none}
-.stv .st-sec>*,.stv>.card>*{position:relative}
-.stv .st-sec>h3,.stv>.card>h3{display:flex;align-items:center;gap:9px;margin:0 0 16px;font-size:17px;font-weight:700;letter-spacing:-.3px;text-transform:none;color:var(--text)}
-.stv .st-sec>h3 svg,.stv>.card>h3 svg{width:18px;height:18px;padding:0;background:none;color:var(--accent);flex:none}
+.stv .st-sec,.stv>.card,.stv .me-l>.card,.stv .me-r>.card{position:relative;overflow:hidden;margin-top:14px;padding:20px 18px 18px;border-radius:30px;border:0;background:var(--gl);box-shadow:inset 0 0 0 1px var(--hl);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.stv .st-sec::before,.stv>.card::before,.stv .me-l>.card::before,.stv .me-r>.card::before{content:"";position:absolute;left:-1px;top:-1px;right:-1px;height:90px;border-radius:30px 30px 0 0;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 10%,transparent),transparent);pointer-events:none}
+.stv .st-sec>*,.stv>.card>*,.stv .me-l>.card>*,.stv .me-r>.card>*{position:relative}
+.stv .st-sec>h3,.stv>.card>h3,.stv .me-l>.card>h3,.stv .me-r>.card>h3{display:flex;align-items:center;gap:9px;margin:0 0 16px;font-size:17px;font-weight:700;letter-spacing:-.3px;text-transform:none;color:var(--text)}
+.stv .st-sec>h3 svg,.stv>.card>h3 svg,.stv .me-l>.card>h3 svg,.stv .me-r>.card>h3 svg{width:18px;height:18px;padding:0;background:none;color:var(--accent);flex:none}
 .stv .st-sec>h3 span{margin-left:auto;font-size:12px;font-weight:600;color:var(--muted);letter-spacing:0}
 .stv .st-act{gap:14px;padding:11px 0}.stv .st-act+.st-act{border-top:1px solid color-mix(in srgb,var(--text) 6%,transparent)}
 .stv .st-ai{position:relative;width:44px;height:44px;border-radius:0;background:none;color:var(--c)}.stv .st-ai svg:first-child{position:absolute;inset:0;width:44px;height:44px}.stv .st-ai svg:last-child{position:absolute;left:13.5px;top:13.5px}
@@ -2503,6 +2503,11 @@ html.web .me-l,html.web .me-r{display:contents}
   html.web #view.w2 .me-r{display:block;min-width:0}
   html.web #view.w2 .me-r>:first-child{margin-top:0!important}
   html.web #view.w2 .me-l>.card{margin:14px 0 0}
+  html.web #view.w2 .me-l>:first-child{margin-top:0}
+  html.web #view.w2 .fr2 .me-r{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-content:start}
+  html.web #view.w2 .fr2 .me-r>.mh,html.web #view.w2 .fr2 .me-r>.card{grid-column:1/-1}
+  html.web #view.w2 .fr2 .me-r>.fc{margin:0}
+  html.web #view.w2 .stv .me-r .hm{max-width:440px;margin:0 auto}
   html.web #view.w2 .me-l .hero,html.web #view.w2 .me-l .hero.hbg{margin:0;padding:36px 22px 30px;border-radius:26px}
   html.web #view.w2 .me-l .hero{background:var(--surface);border:1px solid var(--border);overflow:hidden;box-shadow:0 30px 60px -36px rgba(0,0,0,.45)}
   html.web #view.w2 .me-l .hero.hbg{background:#0b0b10;border-color:rgba(255,255,255,.12)}
@@ -2622,7 +2627,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.637';
+const APP = 'VOOB (by BGASHEV) Mini App v1.638';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4255,6 +4260,7 @@ function viewFriends(){
   if (!FR.data) return h + (FR.err ? `<div class="card muted">Не удалось загрузить друзей: ${esc(FR.err)}<div style="margin-top:10px"><button class="btn ghost small" data-act="frload">Повторить</button></div></div>`
     : `<div class="sk" style="height:120px"><i class="c"></i><span class="ln"><i></i><i></i></span></div>` + [0, 1, 2].map(i => `<div class="sk" style="animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join(''));
   const d = FR.data, fr = d.friends;
+  h += '<!--H--><!--L-->';
   if ((d.requests || []).length) h += `<div class="card"><h3>${IC('friends')}Заявки в друзья · ${d.requests.length}</h3>` + d.requests.map(r =>
     `<div class="rq">${favHTML(r)}<span class="nm">${esc(r.name)}</span><button class="btn ghost small" data-act="frresp" data-id="${r.tg_id}" data-v="0">Нет</button><button class="btn primary small" data-act="frresp" data-id="${r.tg_id}" data-v="1">${IC('check', 15)}Принять</button></div>`).join('') + `</div>`;
   if (S.inv == null) S.inv = !fr.length;
@@ -4277,6 +4283,7 @@ function viewFriends(){
     h += `<div class="card rkc"><h3 style="margin:0">${IC('trophy')}Рейтинг месяца</h3><div class="cap rkcap">XP с 1-го числа · +${RATE_XP} за активность</div>` +
       people.slice(0, 10).map(([f, me], i) => `<div class="rk${me ? ' me' : ''}" ${me ? 'data-act="tab" data-tab="me"' : `data-act="frprof" data-id="${f.tg_id}"`}><span class="pl${i < 3 ? ' m' + (i + 1) : ''}">${i + 1}</span>${favHTML(f, true)}<span class="rkm"><span class="nm">${esc(f.name)}${me ? '<em class="you">ты</em>' : ''}</span><span class="br"><i style="width:${Math.max(mxp(f) ? 4 : 0, mxp(f) / mx * 100)}%;animation-delay:${i * 60}ms"><b class="lvp"></b></i></span></span><span class="mv"><b>${numSep(mxp(f))}</b><small>${f.level ? 'ур. ' + f.level.level : 'XP'}</small></span></div>`).join('') + `</div>`;
   }
+  h += '<!--/L-->';
   h += `<div class="mh">Друзья · ${fr.length}<span>за 7 дней · последняя тренировка</span></div>`;
   if (!fr.length) h += `<div class="card muted">Пока никого. Отправь ссылку первому другу — вдвоём ходить веселее.</div>`;
   const order = fr.slice().sort((a, b) => (b.goal.done_today - a.goal.done_today) || (b.week.minutes - a.week.minutes));
@@ -4289,7 +4296,7 @@ function viewFriends(){
       ${sub ? `<div class="l3">${sub}</div>` : ''}<div class="l2">${fmtMin(f.week.minutes)} за 7 дней · ${gl}</div><div class="l3">${last}</div></div>
       <button class="rm gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 17)}</button><button class="rm" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 16)}</button></div>`;
   }).join('');
-  return h;
+  return webSplit(h, 'fr2');
 }
 const FPC = new Map();   // кэш профилей друзей: открываются мгновенно, свежие данные догружаются фоном
 // v1.559: профиль друга — полноценная страница в основном окне (как «Я»), а не шторка
@@ -4440,6 +4447,14 @@ function viewHome(web){
   } }
   h += historyHTML(ws);
   return `<div class="hm">${h}</div>` + '<div class="wdock-sp"></div>';   // место под кнопку «Тренировка»
+}
+/* v1.638 WEB: разметка вкладок в два столбца — <!--H--> конец шапки, <!--L-->…<!--/L--> уходит в левую (липкую) колонку, остальное — в правую */
+function webSplit(h, cls){
+  const i = h.indexOf('<!--H-->'), head = i >= 0 ? h.slice(0, i) : '', rest = i >= 0 ? h.slice(i + 8) : h;
+  if (!inWeb) return h.replace(/<!--\/?[HL]-->/g, '');
+  let left = ''; const right = rest.replace(/<!--L-->([\s\S]*?)<!--\/L-->/g, (m, x) => { left += x; return ''; });
+  if (!left) return head + right;
+  return head + `<div class="me-prof${cls ? ' ' + cls : ''}"><div class="me-l">${left}</div><div class="me-r">${right}</div></div>`;
 }
 /* v1.637 WEB: «Главная» = мой профиль слева (профиль, подарки, достижения) + аналитика справа (цель, план, лента, история) */
 const HW = {t:0};
@@ -4594,6 +4609,7 @@ function viewWeight(){
     delta = `<div class="delta" style="color:${col}">${z ? IC('minus', 13) : IC(dv > 0 ? 'arrow_up' : 'arrow_down', 13)}${z ? 'без изменений' : num(Math.abs(dv)) + ' кг с прошлого раза'}</div>`;
   } else delta = `<div class="delta muted">Первое взвешивание</div>`;
   const ago = t - lastD;
+  h += '<!--H--><!--L-->';
   h += `<div class="card"><div class="cap">Сейчас</div><div class="huge">${num(cur)} кг</div>${delta}
     <div class="cap" style="margin-top:6px">${fmtDate(lastD)}${ago > 0 ? ' · ' + npw(ago, W_DAY) + ' назад' : ''} · ${ago >= 7 ? 'давно не взвешивался — пора на весы' : 'взвешивайся 1–3 раза в неделю'}</div></div>`;
   // цель
@@ -4632,6 +4648,7 @@ function viewWeight(){
   }
   // график
   const since = periodSince(S.wp), pts = daily.filter(p => since == null || p[0] >= since);
+  h += '<!--/L-->';
   h += `<div class="card"><div class="row" style="justify-content:space-between;flex-wrap:wrap"><h3 style="margin:0">Динамика</h3>${seg('wp', [['30','30 дн'],['90','90 дн'],['365','Год'],['all','Всё']])}</div>${lineChart(pts, gs ? goal.target : null)}</div>`;
   // мини-статистика
   const kgs = es.map(e => +e.kg), fk = v => num(v) + ' кг';
@@ -4647,7 +4664,7 @@ function viewWeight(){
       <span class="delta" style="color:${col};width:58px">${dv == null ? '—' : z ? '0' : IC(dv > 0 ? 'arrow_up' : 'arrow_down', 12) + num(Math.abs(dv))}</span><span class="cap sp" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(e.note || '')}</span></div>`;
   });
   if (rev.length > S.klimit) h += `<button class="btn ghost small more" data-act="kmore">Показать ещё (осталось ${rev.length - S.klimit})</button>`;
-  return h + '<div class="wdock-sp"></div>';   // отступ в самом низу, чтобы кнопка не закрывала историю
+  return webSplit(h) + '<div class="wdock-sp"></div>';   // отступ в самом низу, чтобы кнопка не закрывала историю
 }
 
 /* М3 п.18: «Итоги» не привязаны к бегу — всё считается через время, дни и виды активности; дистанция и скорость появляются, только если они есть */
@@ -4690,7 +4707,9 @@ function viewStats(){
   let h = `<div class="stv"><div class="head"><div><h1>Итоги</h1><div class="sub">${ws.length ? 'Всё, что ты сделал — по любым видам активности' : 'Здесь соберётся вся твоя активность'}</div></div></div>
     <div style="margin-bottom:6px">${seg('sp', [['7', '7 дней'], ['30', '30 дней'], ['12m', '12 месяцев'], ['all', 'Всё время']])}</div>`;
   if (!ws.length) return h + `<div class="card empty"><div class="badge">${IC('stats', 30)}</div><h3 style="justify-content:center">Пока нечего подводить</h3><div class="muted">Добавь первую тренировку — любой вид: бег, силовые, йога, плавание. Итоги появятся здесь.</div></div></div><div class="wdock-sp"></div>`;
+  h += '<!--H-->';
   if (n) {
+    h += '<!--L-->';
     const tm = sum(pws, w => w.minutes), weeks = periodDays(S.sp, ws) / 7, kcs = pws.map(kcal), kc = sum(kcs, k => k || 0);
     const days = new Set(pws.map(w => w.date)).size, kinds = new Set(pws.map(actOf)).size, xp = sum(pws, workoutXp);
     const dl = periodDelta(ws, S.sp, tm);
@@ -4711,6 +4730,7 @@ function viewStats(){
       kpi(kc ? kcalF(kc) : '—', kc ? 'Сожжено, примерно' : 'Ккал: укажи вес'), kpi(num(sum(pws, w => +w.feeling || 3) / n) + ' / 5', 'Среднее состояние')];
     const km = sum(pws, kmOf); if (km > 0.05) ex.splice(3, 0, kpi(kmF(km), 'Пройдено, примерно'));
     h += `<div class="kpis">${[kpi(n, plural(n, W_WORK)), kpi(days, plural(days, W_DAY) + ' с активностью')].concat(ex.slice(0, 6)).join('')}</div>`;
+    h += '<!--/L-->';
     // по видам активности
     const by = new Map(); for (const w of pws) { const a = actOf(w); if (!by.has(a)) by.set(a, []); by.get(a).push(w); }
     const rows = [...by.entries()].map(([a, gl]) => [a, gl, sum(gl, w => w.minutes)]).sort((x, y) => y[2] - x[2]);
@@ -4743,7 +4763,7 @@ function viewStats(){
   const sp = ws.filter(w => +w.speed > 0 && !isStr(w)); if (sp.length) { const b = mxBy(sp, w => +w.speed); recs.push(['Самая быстрая', num(b.speed) + ' км/ч', stName(actOf(b)) + ' · ' + dd(b)]); }
   const ic = ws.filter(w => actOf(w) === 'run' && +w.incline > 0); if (ic.length) { const b = mxBy(ic, w => +w.incline); recs.push(['Самый крутой уклон', num(b.incline) + ' %', dd(b)]); }
   h += `<div class="recs">` + recs.map(r => `<div><div class="cap">${r[0]}</div><div class="rv">${r[1]}</div><div class="cap">${r[2]}</div></div>`).join('') + `</div></div>`;
-  return h + '</div><div class="wdock-sp"></div>';
+  return webSplit(h) + '</div><div class="wdock-sp"></div>';
 }
 function openAchFull(){
   hap.imp();
