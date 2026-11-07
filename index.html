@@ -47,8 +47,8 @@ h3 .ic{color:var(--accent)}
 .seg button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .seg{position:relative}
 .seg .sgi{position:absolute;left:0;top:0;width:0;height:0;opacity:0;pointer-events:none;z-index:0;box-sizing:border-box;will-change:transform,width;transition:transform .5s cubic-bezier(.3,1.05,.35,1),width .5s cubic-bezier(.3,1.05,.35,1),height .3s,opacity .2s}
-.seg.sl button{position:relative;z-index:1}
-.seg.sl button.on{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+.seg.sgs button{position:relative;z-index:1}
+.seg.sgs button.on{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
 @media (prefers-reduced-motion:reduce){.seg .sgi{transition:none}}
 .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .kpi{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:12px 14px}
@@ -2664,7 +2664,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.643';
+const APP = 'VOOB (by BGASHEV) Mini App v1.644';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5700,11 +5700,11 @@ function segSlide(){
   document.querySelectorAll('.seg').forEach(sg => {
     const ind = sg.querySelector(':scope > .sgi'); if (!ind) return;
     const on = sg.querySelector(':scope > button.on');
-    if (!on || !sg.offsetWidth) { ind.style.opacity = '0'; sg.classList.remove('sl'); return; }
-    sg.classList.remove('sl');
+    if (!on || !sg.offsetWidth) { ind.style.opacity = '0'; sg.classList.remove('sgs'); return; }
+    sg.classList.remove('sgs');
     const cs = getComputedStyle(on), look = [cs.backgroundColor, cs.backgroundImage, cs.boxShadow, cs.borderRadius, cs.borderTopColor, cs.borderTopWidth].join('|');
     if (ind.dataset.look !== look) { ind.dataset.look = look; ind.style.background = cs.backgroundImage !== 'none' ? cs.backgroundImage : cs.backgroundColor; ind.style.boxShadow = cs.boxShadow; ind.style.borderRadius = cs.borderRadius; ind.style.border = cs.borderTopWidth + ' solid ' + cs.borderTopColor; }
-    sg.classList.add('sl');
+    sg.classList.add('sgs');
     const first = !ind.dataset.p;
     if (first) ind.style.transition = 'none';
     ind.style.width = on.offsetWidth + 'px'; ind.style.height = on.offsetHeight + 'px'; ind.style.transform = `translate(${on.offsetLeft}px,${on.offsetTop}px)`; ind.style.opacity = '1';
