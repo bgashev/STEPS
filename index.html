@@ -1022,7 +1022,7 @@ html.web .fc4.fcb>.hbgfx{opacity:.85}
 /* v1.701: WEB · основной фон карточки друга — его фон профиля, сильно размытый, с зерном */
 html.web .fc4 .f4bg{position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:inherit;pointer-events:none}
 html.web .fc4 .f4bg>.hbgfx{inset:-25%;width:150%;height:150%;z-index:0;animation:none;filter:blur(30px) saturate(1.45);opacity:.9}
-html.web .fc4 .f4bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,14,.3),rgba(10,10,14,.5)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");mix-blend-mode:normal;opacity:1}
+html.web .fc4 .f4bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,14,.3),rgba(10,10,14,.5)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.2'/%3E%3C/svg%3E");mix-blend-mode:normal;opacity:1}
 html.web .fc4.fcb2{--text:#F4F4F8;--muted:rgba(255,255,255,.72);color:#F4F4F8;border-color:rgba(255,255,255,.14);background:#0b0b10}
 html.web .fc4.fcb2 .fac .rm{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.16)}
 html.web .fc4.fcb2 .f4b{box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 10px 26px -14px rgba(0,0,0,.6)}
@@ -2993,7 +2993,11 @@ html.web #wbg{display:block}
 #wbg.on{opacity:1}
 #wbg .wbl{position:absolute;inset:0}#wbg .wbl.nw{animation:wblin .65s ease both}@keyframes wblin{from{opacity:0}}
 #wbg .hbgfx{position:absolute;left:-12%;top:-12%;width:124%;height:124%;inset:auto;z-index:0;border-radius:0;animation:none;filter:blur(42px) saturate(1.35);transform:translateZ(0)}
-#wbg .wbm{position:absolute;inset:0;display:block;background:linear-gradient(180deg,rgba(9,9,13,.2),rgba(9,9,13,.36)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");background-blend-mode:normal}
+#wbg .wbm{position:absolute;inset:0;display:block;background:linear-gradient(180deg,rgba(9,9,13,.2),rgba(9,9,13,.36)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");background-blend-mode:normal}
+/* v1.706: светлая тема — общий фон страницы высветляем (размытие то же), зерно едва заметно */
+html[data-mode="light"] #wbg{background:#eef0f6}
+html[data-mode="light"] #wbg .wbm{background:linear-gradient(180deg,rgba(246,247,251,.5),rgba(246,247,251,.62)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");background-blend-mode:normal}
+html[data-mode="light"] #wbg .hbgfx{filter:blur(42px) saturate(1.25)}
 html.hbgl #texl{opacity:0!important}
 #texl{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:1;transition:opacity .5s ease;-webkit-mask-image:radial-gradient(ellipse 90% 70% at var(--mx,55%) var(--my,10%),#000 0,rgba(0,0,0,.86) 18%,rgba(0,0,0,.6) 38%,rgba(0,0,0,.3) 58%,rgba(0,0,0,.1) 76%,transparent 93%);mask-image:radial-gradient(ellipse 90% 70% at var(--mx,55%) var(--my,10%),#000 0,rgba(0,0,0,.86) 18%,rgba(0,0,0,.6) 38%,rgba(0,0,0,.3) 58%,rgba(0,0,0,.1) 76%,transparent 93%)}
 #texl.tex-aura{-webkit-mask-image:none;mask-image:none}
@@ -3054,7 +3058,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.705';
+const APP = 'VOOB (by BGASHEV) Mini App v1.706';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
