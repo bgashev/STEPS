@@ -830,6 +830,28 @@ html.web .fsum .fi{width:30px;height:30px;border-radius:50%;display:grid;place-i
 html.web .fsum b{font-size:24px;letter-spacing:-.7px;line-height:1.1;position:relative;z-index:1}
 html.web .fsum b u{text-decoration:none;font-size:13px;color:var(--muted);letter-spacing:0;font-weight:650}
 html.web .fsum small{color:var(--muted);font-size:12px;position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* v1.670: WEB · карточка друга «Статус и крупная цифра» */
+html.web .fc5{flex-direction:column;align-items:stretch;justify-content:space-between;gap:16px;min-height:158px;padding:16px 16px 20px;border-radius:22px;transition:transform .35s cubic-bezier(.3,1.3,.5,1),box-shadow .35s,border-color .3s}
+html.web .fc5:hover{transform:translateY(-3px);box-shadow:0 18px 34px -18px rgba(0,0,0,.7)}
+html.web .fc5 .fgh{position:absolute;right:-6px;top:-22px;font-size:120px;font-weight:900;line-height:1;opacity:.06;z-index:-1;pointer-events:none}
+html.web .fc5 .f5t{display:flex;align-items:center;gap:12px;min-width:0}
+html.web .fc5 .f5n{display:flex;align-items:center;gap:6px;min-width:0}html.web .fc5 .f5n b{font-size:16px}
+html.web .fc5 .f5b{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+html.web .fc5 .fst{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;padding:4px 10px;border-radius:99px;background:var(--surface2);border:1px solid var(--border)}
+html.web .fc5 .fst i{width:8px;height:8px;border-radius:50%;background:var(--muted);opacity:.7}
+html.web .fc5 .fst.ok i{background:#5ad08a;opacity:1;box-shadow:0 0 10px #5ad08a}
+html.web .fc5 .fbig{font-size:32px;font-weight:900;letter-spacing:-.02em;line-height:1;margin-top:10px}
+html.web .fc5 .fbig small{font-size:13px;color:var(--muted);font-weight:700;margin-left:5px;letter-spacing:0}
+html.web .fc5 .flast{margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.web .fc5 .fac{display:flex;gap:8px;flex:none}
+html.web .fc5 .fac .rm{width:36px;height:36px;display:grid;place-items:center;padding:0;border:1px solid var(--border);background:var(--surface2);border-radius:12px;transition:transform .25s cubic-bezier(.3,1.5,.5,1)}
+html.web .fc5 .fac .rm:hover{transform:translateY(-2px) scale(1.08)}
+html.web .fc5 .fac .gbtn{color:#f2cf5b}
+html.web .fc5 .f5p{position:absolute;left:0;right:0;bottom:0;height:4px;margin:0;border-radius:0}
+@media (hover:hover){html.web .fc5 .fac{opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s}html.web .fc5:hover .fac{opacity:1;transform:none}}
+html.web .fc5.fcb .fst{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.16)}
+html.web .fc5.fcb .fac .rm{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.16)}
+html.web .fc5.fcb::after{background:linear-gradient(90deg,rgba(8,8,12,.62),rgba(8,8,12,.3) 65%,rgba(8,8,12,.45))}
 /* v1.668: плашка друга показывает его фон профиля */
 .fc{position:relative;isolation:isolate;overflow:hidden}
 .fc.fcb{border-color:rgba(255,255,255,.14);--text:#F4F4F8;--muted:rgba(255,255,255,.74);color:#F4F4F8;background:#0b0b10}
@@ -2755,7 +2777,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.669';
+const APP = 'VOOB (by BGASHEV) Mini App v1.670';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4497,6 +4519,14 @@ function viewFriends(){
     const last = f.last ? `${agoText(f.last.date)} · ${f.last.minutes} мин` : 'ещё не тренировался';
     const sub = [f.level ? `<span style="color:${tierColor(f.level.level)};font-weight:700">${tierOf(f.level.level).title}</span>` : '', f.handle ? '@' + esc(f.handle) : f.username ? '@' + esc(f.username) : ''].filter(Boolean).join(' · ');
     const fbg = BGS.get(+f.tg_id) || '';
+    if (inWeb) {   // v1.670: карточка «Статус и крупная цифра»
+      const okn = g.done_today || g.prev_ok, pc = Math.max(g.shown ? 6 : 0, Math.min(100, okn ? 100 : g.shown / (g.target || 1) * 100));
+      return `<div class="fc fc5${fbg ? ' fcb' : ''}" data-act="frprof" data-id="${f.tg_id}" style="animation-delay:${Math.min(i, 10) * 40}ms">${fbg ? bgFx(fbg) : ''}<span class="fgh" aria-hidden="true">${esc((f.name || '?')[0].toUpperCase())}</span>
+        <div class="f5t">${favHTML(f)}<div class="fm"><div class="f5n"><b>${esc(f.name)}</b>${bdgHTML(f.tg_id, 14)}${f.private ? IC('lock', 12) : ''}${g.run >= 2 ? `<span class="fstreak">${IC('flame', 12)}${g.run}</span>` : ''}</div>${sub ? `<div class="l3">${sub}</div>` : ''}</div></div>
+        <div class="f5b"><div><span class="fst${okn ? ' ok' : ''}"><i></i>${okn ? (g.done_today ? 'норма закрыта' : 'вчера закрыта') : `норма ${g.shown}/${g.target}`}</span><div class="fbig">${f.week.minutes}<small>мин / 7 дн.</small></div><div class="l3 flast">${last}</div></div>
+        <div class="fac"><button class="rm gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 17)}</button><button class="rm" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 16)}</button></div></div>
+        <div class="fpg${okn ? ' ok' : ''} f5p"><i style="width:${pc}%"></i></div></div>`;
+    }
     return `<div class="fc${fbg ? ' fcb' : ''}" data-act="frprof" data-id="${f.tg_id}" style="animation-delay:${Math.min(i, 10) * 40}ms">${fbg ? bgFx(fbg) : ''}${favHTML(f)}<div class="fm"><div><b>${esc(f.name)}</b>${bdgHTML(f.tg_id, 14)}${f.private ? IC('lock', 12) : ''}${g.run >= 2 ? `<span class="fstreak">${IC('flame', 12)}${g.run}</span>` : ''}</div>
       ${sub ? `<div class="l3">${sub}</div>` : ''}<div class="l2">${fmtMin(f.week.minutes)} за 7 дней · ${gl}</div><div class="l3">${last}</div>${inWeb ? `<div class="fpg${g.done_today || g.prev_ok ? ' ok' : ''}"><i style="width:${Math.max(g.shown ? 6 : 0, Math.min(100, g.done_today || g.prev_ok ? 100 : g.shown / (g.target || 1) * 100))}%"></i></div>` : ''}</div>
       <button class="rm gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 17)}</button><button class="rm" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 16)}</button></div>`;
