@@ -873,7 +873,11 @@ html.web .pz-stage{position:sticky;top:24px;display:flex;flex-direction:column;g
 .pzs.chg{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}.pzs.hov{transform:translateY(-2px)}
 .pzbtns{display:flex;gap:10px}.pzgo{flex:1;min-height:50px}.pzrs{min-height:50px}
 .pzhint{display:flex;align-items:center;gap:7px;justify-content:center;text-align:center;color:var(--muted);font-size:12.5px;margin-top:2px}.pzhint svg{color:var(--accent);flex:none}
-html.web .pz-main>.seg{margin-bottom:12px}
+html.web .pztabs{position:relative;display:grid;grid-template-columns:repeat(3,1fr);padding:4px;border-radius:999px;background:var(--surface);border:1px solid var(--border);margin-bottom:12px}
+html.web .pztabs .pzti{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:999px;background:var(--accent);box-shadow:0 6px 18px -8px var(--accent);transform:translateX(calc(var(--i) * 100%));transition:transform .5s cubic-bezier(.3,1.05,.35,1)}
+html.web .pztabs button{position:relative;z-index:1;border:0;background:none;padding:11px 8px;font:inherit;font-weight:750;font-size:13.5px;color:var(--muted);border-radius:999px;cursor:pointer;transition:color .3s}
+html.web .pztabs button.on{color:var(--on-accent,#fff)}
+.pz-gw.sw{animation:pzgw .4s ease}
 .pz-cap{color:var(--muted);font-size:13px;margin:0 2px 14px}
 .pz-gw{animation:pzgw .4s ease backwards}@keyframes pzgw{from{opacity:0}}
 .pzgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(136px,1fr))}.pzgrid.bg{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}.pzgrid.bd{grid-template-columns:repeat(auto-fill,minmax(112px,1fr))}
@@ -2910,7 +2914,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.678';
+const APP = 'VOOB (by BGASHEV) Mini App v1.679';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5457,6 +5461,7 @@ function pzGridHTML(tab){
   if (tab === 'bd') return `<div class="pzgrid bd">` + BADGE_LIST.map(([v, l], i) => mk('bd', v, i, `<span class="pzbd">${badgeHTML(v, 38)}</span>`, !isPro(), l, !isPro())).join('') + `</div>`;
   return `<div class="pzgrid fr">` + FRAMES.map(([v, l, pro], i) => mk('fr', v, i, frAv(v, 64, lv, photo, name), !!pro, l, !!pro && !frOwned(v))).join('') + `</div>`;
 }
+function pzCap(t){ return t === 'bg' ? 'Анимированный фон шапки профиля. Его видят все, кто откроет твой профиль' : t === 'bd' ? 'Маленький значок рядом с именем: в профиле, списках и ленте' : 'Рамка аватарки: её видят друзья в профиле, списках и ленте'; }
 function viewPersWeb(){
   const lv = myLevel(), name = displayName() || 'Гость', un = tgUser && tgUser.username, {eff} = pzEff(), bk = eff.bg;
   const cnt = {fr: FRAMES.length, bg: BG_KEYS.length + 1, bd: BADGE_LIST.length};
@@ -5467,9 +5472,9 @@ function viewPersWeb(){
       <h2 class="pz-nm"><span class="nm">${esc(name)}</span><span id="pznm" data-k="${eff.bd}">${pzBadgeInner(eff.bd)}</span></h2>${un ? `<div class="pz-at">@${esc(un)}</div>` : ''}
       <div class="pz-lv"><div class="pz-lvt"><span class="lvn" data-t="${tierOf(lv.level).idx}">${lv.level}</span><span>${tierOf(lv.level).title}</span></div><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div></div></div>
     <div class="pzsum" id="pzsum">${pzSumHTML()}</div><div id="pzact">${pzActHTML()}</div></div>
-  <div class="pz-main">${seg('pzTab', [['fr', 'Рамки · ' + cnt.fr], ['bg', 'Фоны · ' + cnt.bg], ['bd', 'Значки · ' + cnt.bd]])}
-    <div class="pz-cap">${S.pzTab === 'bg' ? 'Анимированный фон шапки профиля. Его видят все, кто откроет твой профиль' : S.pzTab === 'bd' ? 'Маленький значок рядом с именем: в профиле, списках и ленте' : 'Рамка аватарки: её видят друзья в профиле, списках и ленте'}</div>
-    <div class="pz-gw" key="${S.pzTab}">${pzGridHTML(S.pzTab)}</div></div></div>`;
+  <div class="pz-main"><div class="pztabs" id="pztabs" style="--i:${['fr', 'bg', 'bd'].indexOf(S.pzTab)}"><i class="pzti"></i>${[['fr', 'Рамки · ' + cnt.fr], ['bg', 'Фоны · ' + cnt.bg], ['bd', 'Значки · ' + cnt.bd]].map(([k, l]) => `<button type="button" class="${S.pzTab === k ? 'on' : ''}" data-act="pztab" data-v="${k}">${l}</button>`).join('')}</div>
+    <div class="pz-cap" id="pzcap">${pzCap(S.pzTab)}</div>
+    <div class="pz-gw" id="pzgw">${pzGridHTML(S.pzTab)}</div></div>`;
 }
 function pzUpdate(){
   if (!document.getElementById('pzst')) return;
@@ -6501,6 +6506,9 @@ const ACT = {
   meset: () => { hap.tap(); if (inWeb && S.tab !== 'me') { S.tab = 'me'; if (S.fprof) S.fprof = null; } S.meSet = true; meNav('nav-in'); },
   mesback: () => { hap.tap(); S.meSet = false; S.pers = false; meNav('nav-out'); },
   pzpick: el => { const k = el.dataset.k, v = el.dataset.v, cur = pzCur(); S.pzp = S.pzp || {}; if (v === cur[k] && !(k in S.pzp)) { hap.tap(); return; } if (S.pzp[k] === v || v === cur[k]) delete S.pzp[k]; else S.pzp[k] = v; S.pzH = null; hap.tap(); pzUpdate(); },
+  pztab: el => { const v = el.dataset.v, bar = document.getElementById('pztabs'), gw = document.getElementById('pzgw'); if (!bar || !gw || S.pzTab === v) return; S.pzTab = v; S.pzH = null; hap.tap();
+    bar.style.setProperty('--i', ['fr', 'bg', 'bd'].indexOf(v)); bar.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+    document.getElementById('pzcap').textContent = pzCap(v); gw.classList.remove('sw'); gw.innerHTML = pzGridHTML(v); void gw.offsetWidth; gw.classList.add('sw'); pzUpdate(); },
   pzreset: () => { S.pzp = null; S.pzH = null; hap.tap(); pzUpdate(); },
   pzpro: () => openPro(),
   pzapply: () => { const p = S.pzp || {}, cur = pzCur(); let n = 0;
