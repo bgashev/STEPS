@@ -3009,6 +3009,9 @@ html.web #view .head .sub{color:color-mix(in srgb,var(--text) 74%,transparent)}
 .pz-lv .lvbar i{border-radius:8px}
 .pz-lv{max-width:320px}.pz-lv .lvbar{background:rgba(255,255,255,.18);height:18px;margin:12px auto 4px}
 @media (prefers-reduced-motion:reduce){.pz-lv .lvbar i,.pz-lv .lvbar i::after{animation:none!important}}
+/* v1.718: полоса XP в карточке сайдбара — цвет звания (как значок уровня), тёмная подложка для контраста */
+html.web .pcard .pc-bar{height:8px;border-radius:5px;background:rgba(0,0,0,.38);box-shadow:inset 0 1px 2px rgba(0,0,0,.4)}
+html.web .pcard .pc-bar i{border-radius:5px;background:linear-gradient(90deg,color-mix(in srgb,var(--tc,#fff) 55%,#fff),var(--tc,#fff) 70%,color-mix(in srgb,var(--tc,#fff) 55%,#fff));background-size:200% 100%;box-shadow:0 0 10px color-mix(in srgb,var(--tc,#fff) 60%,transparent)}
 /* v1.711: три плашки «Рамка · Фон · Значок» — стекло, иконка-чип, крупное название */
 html.web .pzsum{gap:10px}
 html.web .pzs{position:relative;gap:10px;padding:12px 14px 13px;border-radius:20px;background:color-mix(in srgb,var(--surface) 70%,transparent)!important;backdrop-filter:blur(34px) saturate(1.4);-webkit-backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border);box-shadow:0 10px 26px -18px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.35);overflow:hidden}
@@ -3085,7 +3088,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.717';
+const APP = 'VOOB (by BGASHEV) Mini App v1.718';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
