@@ -921,6 +921,9 @@ html.web #view .hmw .card:not(.dz),html.web #view .hmw .plsug,html.web #view .hm
 @media (prefers-reduced-motion:reduce){.fv-bar i{animation:none}}
 /* v1.699: WEB · кнопки «План» и «Повторить» на главной — тоже стекло, как у боковой панели */
 html.web #view .hmw .actions .btn{background:color-mix(in srgb,var(--surface) 70%,transparent)!important;-webkit-backdrop-filter:blur(34px) saturate(1.4);backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border)!important;box-shadow:0 24px 60px -24px rgba(0,0,0,.4),0 2px 10px rgba(0,0,0,.08)}
+/* v1.705: WEB · профиль другого человека — кнопки «Взбодрить / Друзья / Подарок» и «Пожаловаться»: стекло как у боковой панели; «Пожаловаться» по длине слова */
+html.web #view .fp2 .fp-bar .fpb,html.web #view .fp2 .me-r>.btn{background:color-mix(in srgb,var(--surface) 70%,transparent)!important;-webkit-backdrop-filter:blur(34px) saturate(1.4);backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border)!important;box-shadow:0 24px 60px -24px rgba(0,0,0,.4),0 2px 10px rgba(0,0,0,.08)}
+html.web #view .fp2 .me-r>.btn{width:auto!important;justify-self:start;display:inline-flex;align-items:center;justify-content:center;padding-left:22px;padding-right:22px}
 /* v1.698: WEB · профиль другого человека — плашки с той же прозрачностью и размытием, что у боковой панели */
 html.web #view .fp2 .card,html.web #view .fp2 .wk,html.web #view .fp2 .hero:not(.hbg){background:color-mix(in srgb,var(--surface) 70%,transparent)!important;-webkit-backdrop-filter:blur(34px) saturate(1.4);backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border);box-shadow:0 24px 60px -24px rgba(0,0,0,.4),0 2px 10px rgba(0,0,0,.08)}
 /* v1.671: WEB · карточка друга «Неделя в столбиках» */
@@ -3051,7 +3054,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.704';
+const APP = 'VOOB (by BGASHEV) Mini App v1.705';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
