@@ -805,7 +805,9 @@ html.web .stv .gl .recs .cap:first-child{padding-right:34px;min-height:26px}
 html.web .stv .gl .recs .rv{font-size:21px;letter-spacing:-.5px;margin:6px 0 2px;position:relative;z-index:1}
 @media (min-width:1320px){
  /* v1.649 WEB · Настройки в два столбца: карточки сами распределяются по колонкам, шапка и подвал — на всю ширину */
- html.web #view.w2 .sp-wrap{margin-left:416px}   /* переключатель периода начинается над правым столбцом */
+ html.web #view.w2 .sp-wrap{margin-left:416px;display:flex;justify-content:center}
+ html.web #view.w2 .sp-wrap .seg{width:auto;flex:none;display:inline-flex}
+ html.web #view.w2 .sp-wrap .seg>button{flex:none;padding-left:22px;padding-right:22px}   /* переключатель периода начинается над правым столбцом */
  html.web #view.w2 .mset2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 22px;align-items:start}
  html.web #view.w2 .mset2 .ms-h,html.web #view.w2 .mset2 .ms-f{grid-column:1/-1}
  html.web #view.w2 .mset2 .ms-l,html.web #view.w2 .mset2 .ms-r{min-width:0}
@@ -3049,7 +3051,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.702';
+const APP = 'VOOB (by BGASHEV) Mini App v1.703';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
