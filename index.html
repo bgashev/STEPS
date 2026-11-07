@@ -45,6 +45,11 @@ h3 .ic{color:var(--accent)}
 .seg button{flex:none;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:12px;padding:7px 12px;font-size:13px;font-weight:650;transition:.18s}
 .seg.fill button{flex:1;padding:7px 4px}
 .seg button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.seg{position:relative}
+.seg .sgi{position:absolute;left:0;top:0;width:0;height:0;opacity:0;pointer-events:none;z-index:0;box-sizing:border-box;will-change:transform,width;transition:transform .5s cubic-bezier(.3,1.05,.35,1),width .5s cubic-bezier(.3,1.05,.35,1),height .3s,opacity .2s}
+.seg.sl button{position:relative;z-index:1}
+.seg.sl button.on{background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+@media (prefers-reduced-motion:reduce){.seg .sgi{transition:none}}
 .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .kpi{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:12px 14px}
 .kv{font-size:20px;font-weight:750;letter-spacing:-.3px}
@@ -2627,7 +2632,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.638';
+const APP = 'VOOB (by BGASHEV) Mini App v1.639';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3462,7 +3467,7 @@ function lineChart(pts, goal){
   return s + '</svg>';
 }
 function seg(key, items){
-  return `<div class="seg">` + items.map(([v, l]) => `<button type="button" class="${S[key] === v ? 'on' : ''}" data-act="seg" data-k="${key}" data-v="${v}">${l}</button>`).join('') + `</div>`;
+  return `<div class="seg">` + items.map(([v, l]) => `<button type="button" class="${S[key] === v ? 'on' : ''}" data-act="seg" data-k="${key}" data-v="${v}">${l}</button>`).join('') + `<i class="sgi"></i></div>`;
 }
 function kpi(v, c){ return `<div class="kpi"><div class="kv">${v}</div><div class="kc">${c}</div></div>`; }
 function stepper(key, label, val, min, max, step, dec, suf, bind){
@@ -5383,7 +5388,7 @@ async function socSave(net, value, btn){
     toast(value ? 'Добавлено в профиль' : 'Убрано из профиля');
   } catch (e) { back(); toast('Нет связи: ' + e.message); }
 }
-function seg2(act, items, cur){ return `<div class="seg">` + items.map(([v, l]) => `<button type="button" class="${cur === v ? 'on' : ''}" data-act="${act}" data-v="${v}">${l}</button>`).join('') + `</div>`; }
+function seg2(act, items, cur){ return `<div class="seg">` + items.map(([v, l]) => `<button type="button" class="${cur === v ? 'on' : ''}" data-act="${act}" data-v="${v}">${l}</button>`).join('') + `<i class="sgi"></i></div>`; }
 function chips(age, b, bmr){
   // v1.499: «Расчёт» — четыре плитки и шкала ИМТ с зонами; меняется сразу при смене роста, даты рождения и пола
   const z = bmiZones(), sx = db.profile.sex, h = +db.profile.height || 0, m = h / 100;
@@ -5632,7 +5637,7 @@ function morphKids(from, to){
 function morphEl(o, n){
   if (o.isEqualNode(n)) return;
   const hold = o.dataset && (o.dataset.zh || o.dataset.ph);   // фото сейчас открыто крупно — не трогаем его видимость
-  for (const at of [...o.attributes]) if (!n.hasAttribute(at.name) && !KEEP_ATTR.has(at.name) && !(hold && at.name === 'style')) o.removeAttribute(at.name);
+  for (const at of [...o.attributes]) if (!n.hasAttribute(at.name) && !KEEP_ATTR.has(at.name) && !(hold && at.name === 'style') && !(o.classList && o.classList.contains('sgi'))) o.removeAttribute(at.name);
   for (const at of n.attributes) if (o.getAttribute(at.name) !== at.value && !(hold && at.name === 'style')) o.setAttribute(at.name, at.value);
   if ((o.tagName === 'INPUT' || o.tagName === 'TEXTAREA') && document.activeElement !== o && n.hasAttribute('value') && o.value !== n.getAttribute('value')) o.value = n.getAttribute('value');
   if (o.tagName === 'INPUT') o.checked = n.hasAttribute('checked');
@@ -5642,6 +5647,22 @@ function meNav(cls){   // v1.484: плавный «пуш» между проф�
   window.scrollTo(0, 0); _rTab = null; render();
   const v = $('#view'); v.classList.remove('nav-in', 'nav-out'); void v.offsetWidth; v.classList.add(cls);
   setTimeout(() => v.classList.remove(cls), 1000);
+}
+/* v1.639: «ползунок» переключателей (7 дней · 30 дней · …) — плавно переезжает на новое место, а не пропадает и появляется */
+function segSlide(){
+  document.querySelectorAll('.seg').forEach(sg => {
+    const ind = sg.querySelector(':scope > .sgi'); if (!ind) return;
+    const on = sg.querySelector(':scope > button.on');
+    if (!on || !sg.offsetWidth) { ind.style.opacity = '0'; sg.classList.remove('sl'); return; }
+    sg.classList.remove('sl');
+    const cs = getComputedStyle(on), look = [cs.backgroundColor, cs.backgroundImage, cs.boxShadow, cs.borderRadius, cs.borderTopColor, cs.borderTopWidth].join('|');
+    if (ind.dataset.look !== look) { ind.dataset.look = look; ind.style.background = cs.backgroundImage !== 'none' ? cs.backgroundImage : cs.backgroundColor; ind.style.boxShadow = cs.boxShadow; ind.style.borderRadius = cs.borderRadius; ind.style.border = cs.borderTopWidth + ' solid ' + cs.borderTopColor; }
+    sg.classList.add('sl');
+    const first = !ind.dataset.p;
+    if (first) ind.style.transition = 'none';
+    ind.style.width = on.offsetWidth + 'px'; ind.style.height = on.offsetHeight + 'px'; ind.style.transform = `translate(${on.offsetLeft}px,${on.offsetTop}px)`; ind.style.opacity = '1';
+    if (first) { ind.dataset.p = '1'; void ind.offsetWidth; ind.style.transition = ''; }
+  });
 }
 function render(){
   if (inWeb && inTG && S.tab === 'me' && !S.meSet && !S.pers && !S.fprof) S.tab = 'home';   // v1.637 WEB: «Я» и «Главная» — одна страница
@@ -5663,6 +5684,7 @@ function render(){
   tb.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   tb.style.setProperty('--ti', ti);
   updPCard();
+  segSlide();
   const hh = v.querySelector('.hero.hbg'), bt = hh ? hh.style.getPropertyValue('--bgt') : '';
   if (bt) v.style.setProperty('--bgt', bt); else v.style.removeProperty('--bgt');
   v.classList.toggle('bgt', !!bt);
