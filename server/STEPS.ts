@@ -543,6 +543,10 @@ function detailsOf(recs: any[], today: number) {
   let bestRun = 0, cur = 0;
   for (const d of [...daysSet].sort((a, b) => a - b)) { cur = daysSet.has(d - 1) ? cur + 1 : 1; bestRun = Math.max(bestRun, cur); }
   const rec = (w: any, v: number) => (w ? { value: Math.round(v * 10) / 10, date: w.date } : null);
+  // v1.700: любимые виды — три самых частых по числу тренировок
+  const favN: Record<string, number> = {};
+  for (const w of ws) { const k = typeof w.act === "string" && w.act.length < 20 ? w.act : "run"; favN[k] = (favN[k] || 0) + 1; }
+  const fav = Object.entries(favN).sort((x, y) => y[1] - x[1]).slice(0, 3).map(([act, n]) => ({ act, n }));
   const ach = recs.find((r) => r.kind === "meta" && r.id === "settings" && !r.deleted)?.data?.ach;
   return {
     ach: Array.isArray(ach) ? ach.filter((k: any) => typeof k === "string" && k.length < 24).slice(0, 60) : [],
@@ -550,7 +554,7 @@ function detailsOf(recs: any[], today: number) {
       km: Math.round(ws.reduce((a, w) => a + km(w), 0) * 10) / 10, days: daysSet.size },
     records: { longest: rec(lo, Number(lo?.minutes) || 0), farthest: rec(fa, fa ? km(fa) : 0),
       fastest: rec(fs, Number(fs?.speed) || 0), steepest: rec(st, Number(st?.incline) || 0), best_days_row: bestRun },
-    months, recent,
+    months, recent, fav,
   };
 }
 
