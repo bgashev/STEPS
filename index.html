@@ -1729,8 +1729,8 @@ html.web .texpv{display:none}
 .prof.pc .ava{width:104px;height:104px}
 .prof.pc>div:last-child{display:flex;flex-direction:column;align-items:center;width:100%}
 .prof.pc .nmrow{justify-content:center}
-html.web .prof.pc{flex-direction:row;align-items:center;text-align:left;gap:20px;margin:0 0 18px;padding:18px 22px;border-radius:26px;background:var(--surface);border:1px solid var(--border)}
-html.web .prof.pc .ava{width:76px;height:76px;flex:none;font-size:30px}
+html.web .prof.pc{flex-direction:row;align-items:center;text-align:left;gap:16px;margin:0 0 16px;padding:14px 18px;border-radius:26px;background:var(--surface);border:1px solid var(--border)}
+html.web .prof.pc .ava{width:68px;height:68px;flex:none;font-size:30px}
 html.web .prof.pc>div:last-child{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;width:auto;flex:1;min-width:0;gap:6px 12px}
 html.web .prof.pc .nmrow{justify-content:flex-start;margin:0}
 html.web .prof.pc .crw{display:inline-flex;gap:6px}
@@ -2731,7 +2731,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.662';
+const APP = 'VOOB (by BGASHEV) Mini App v1.663';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5240,9 +5240,9 @@ function viewMeSettings(){
   const age = ageOf(p.birth), kg = currentWeight(), hgt = +p.height || 0, b = bmiOf(kg, hgt), bmr = bmrOf(kg, hgt, age, p.sex);
   const lv = myLevel();
   let h = '';                                        // v1.438: PRO — под профилем и промокодом
+  h += '<!--M1-->';
   h += `<div class="prof pc"><div class="ava${frameCls((db.settings || {}).frame || '', lv.level)}"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'S').toUpperCase())}</div><span class="lvb${tierOf(lv.level).idx ? ' tg' : ''}" data-t="${tierOf(lv.level).idx}">${lv.level}</span></div>
     <div style="min-width:0"><h1 class="nmrow" style="font-size:22px"><span class="nm">${esc(name || 'Гость')}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h1>${tgUser ? creatorHTML(tgUser.id) : ''}<div class="prof-act">${tgUser ? socialsHTML(tgUser.id, true) : ''}</div></div></div>${inTG ? '' : `<div class="prof-sync">${syncHTML()}</div>`}`;
-  h += '<!--M1-->';
   if (inTG) h += proCardHTML();
   if (inTG) h += `<div class="card pmc"><div class="pm-top"><span class="pm-ic">${IC('gift', 20)}</span><div><b>Промокод</b><small>PRO или подарок</small></div></div>
     <div class="pm-field"><input id="pm-in" class="inp" placeholder="VOOB-XXXX-XXXX" autocapitalize="characters" autocomplete="off" spellcheck="false" maxlength="16" enterkeyhint="done">
