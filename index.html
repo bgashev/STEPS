@@ -2533,7 +2533,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.616';
+const APP = 'VOOB (by BGASHEV) Mini App v1.617';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2953,7 +2953,7 @@ function touchMeta(id){
 }
 function metaData(id){
   if (id === 'profile') return {name:db.profile.name || '', birth:db.profile.birth || '', sex:db.profile.sex || '', height:+db.profile.height || 0};
-  if (id === 'settings') return Object.assign({goal:db.settings.goal}, Array.isArray(db.settings.fav) ? {fav:db.settings.fav.slice(0, 6)} : {}, lookSync() ? {accent:db.settings.accent, theme:db.settings.theme, dv:db.settings.dv || 'graphite', ...(db.settings.tex ? {tex:db.settings.tex} : {})} : {}, db.settings.frame ? {frame:db.settings.frame} : {}, db.settings.bg ? {bg:db.settings.bg} : {}, db.settings.badge ? {badge:db.settings.badge} : {}, Array.isArray(db.settings.seen_ach) ? {ach:db.settings.seen_ach.slice(0, 60)} : {});
+  if (id === 'settings') return Object.assign({goal:db.settings.goal}, Array.isArray(db.settings.fav) ? {fav:db.settings.fav.slice(0, 6)} : {}, lookSync() ? {accent:db.settings.accent, theme:db.settings.theme, dv:db.settings.dv || 'graphite', ...(db.settings.tex ? {tex:db.settings.tex} : {})} : {}, db.settings.frame ? {frame:db.settings.frame} : {}, db.settings.bg ? {bg:db.settings.bg} : {}, db.settings.badge ? {badge:db.settings.badge} : {}, Array.isArray(db.settings.seen_ach) ? {ach:db.settings.seen_ach.slice(0, 60)} : {}, db.settings.seen_lvl != null ? {lvl:+db.settings.seen_lvl || 1} : {});
   return db.weight_goal || {};
 }
 function applyMeta(id, d){
@@ -2974,6 +2974,8 @@ function applyMeta(id, d){
     db.settings.frame = FRAMES.some(x => x[0] && x[0] === frNorm(d.frame)) ? frNorm(d.frame) : '';
     db.settings.bg = typeof d.bg === 'string' && d.bg.length < 24 ? d.bg : '';
     db.settings.badge = BADGE_LIST.some(x => x[0] === d.badge) ? d.badge : '';
+    if (Array.isArray(d.ach)) db.settings.seen_ach = [...new Set([...(Array.isArray(db.settings.seen_ach) ? db.settings.seen_ach : []), ...d.ach.filter(x => typeof x === 'string')])];   // v1.617: «уже поздравляли» едет между устройствами
+    if (+d.lvl > 0) db.settings.seen_lvl = Math.max(+db.settings.seen_lvl || 0, Math.min(999, +d.lvl));
     if (Array.isArray(d.fav)) db.settings.fav = d.fav.filter(x => typeof x === 'string').slice(0, 6);
   } else if (id === 'weight_goal') db.weight_goal = (d && typeof d === 'object') ? d : {};
 }
@@ -3075,7 +3077,7 @@ async function syncNow(){
     srvUser = res.user || srvUser;
     setGifts(res.gifts);
     if (res.pro) { const was = isFrozen(); setProSt(res.pro); if (was !== isFrozen()) render(); }
-    lastSync = Date.now();
+    lastSync = Date.now(); setTimeout(checkRewards, 900);
     if (rows.length) { ME.at = 0; if (S.tab === 'me' && !S.meSet && FR.data && FR.data.me && !ME.busy) loadMyProfile(FR.data.me.tg_id); }
     persist();
     if (changed && !sheetCtx) { applyTheme(); render(); }
@@ -3659,12 +3661,13 @@ function showNextReward(){
 function checkRewards(){
   if (RW.busy || $('#cg').classList.contains('show')) return;
   try { if (localStorage.getItem('steps_no_rewards')) return; } catch (e) {}   // автотесты
+  if (inTG && !lastSync) return;   // v1.617: пока не пришла первая синхронизация, не знаем, что уже видели на других устройствах
   const lv = myLevel().level, achs = achievements(), done = achs.filter(a => a.done).map(a => a.key), st = db.settings;
-  if (st.seen_lvl == null || !Array.isArray(st.seen_ach)) { st.seen_lvl = lv; st.seen_ach = done; persist(); return; }
+  if (st.seen_lvl == null || !Array.isArray(st.seen_ach)) { st.seen_lvl = lv; st.seen_ach = done; touchMeta('settings'); save(); return; }
   const q = [];
   if (lv > st.seen_lvl) q.push({kind:'level', level:lv, newTier:tierOf(lv).idx > tierOf(st.seen_lvl).idx});
   for (const a of achs) if (a.done && !st.seen_ach.includes(a.key)) q.push({kind:'ach', ach:a});
-  if (lv !== st.seen_lvl || done.join() !== st.seen_ach.join()) { const achCh = done.join() !== st.seen_ach.join(); st.seen_lvl = lv; st.seen_ach = done; if (achCh) { touchMeta('settings'); save(); } else persist(); }
+  if (lv !== st.seen_lvl || done.join() !== st.seen_ach.join()) { const achCh = done.join() !== st.seen_ach.join(); st.seen_lvl = lv; st.seen_ach = done; touchMeta('settings'); save(); }
   if (!q.length) return;
   RW.queue = q.slice(0, 4); showNextReward();
 }
