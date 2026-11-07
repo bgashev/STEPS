@@ -2999,6 +2999,14 @@ html.web #tabs{overflow:hidden;clip-path:inset(0 round 26px);isolation:isolate}
 html.web #tabs .tbi,html.web #tabs .tab{clip-path:none}
 html.web #view .head .sub{color:color-mix(in srgb,var(--text) 74%,transparent)}
 #wbg .wbl{transition:opacity .7s ease}#wbg .wbl.nw{animation:none;opacity:0}
+/* v1.711: три плашки «Рамка · Фон · Значок» — стекло, иконка-чип, крупное название */
+html.web .pzsum{gap:10px}
+html.web .pzs{position:relative;gap:10px;padding:12px 14px 13px;border-radius:20px;background:color-mix(in srgb,var(--surface) 70%,transparent)!important;backdrop-filter:blur(34px) saturate(1.4);-webkit-backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border);box-shadow:0 10px 26px -18px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.35);overflow:hidden}
+html.web .pzs span{gap:8px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+html.web .pzs span svg{flex:none;width:26px;height:26px;padding:6px;border-radius:9px;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+html.web .pzs b{font-size:15px;font-weight:800;letter-spacing:-.15px;line-height:1.2;min-height:2.4em;display:flex;align-items:center;-webkit-line-clamp:unset;overflow:visible}
+html.web .pzs.chg{border-color:color-mix(in srgb,var(--accent) 70%,transparent);box-shadow:0 12px 30px -16px var(--accent),inset 0 1px 0 rgba(255,255,255,.35)}
+html.web .pzs.chg::after{content:"";position:absolute;top:14px;right:14px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
 /* v1.709: подписи в «Персонализации» — на стеклянной плашке, читаются на любом фоне */
 html.web .pz-top .sub,html.web .pz-cap,html.web .pzhint{display:inline-flex;align-items:center;gap:7px;width:fit-content;max-width:100%;padding:7px 14px;border-radius:999px;color:var(--text);background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(34px) saturate(1.4);-webkit-backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border);line-height:1.35}
 html.web .pz-cap{display:flex;border-radius:18px}
@@ -3067,7 +3075,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.710';
+const APP = 'VOOB (by BGASHEV) Mini App v1.711';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
