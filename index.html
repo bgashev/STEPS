@@ -3009,6 +3009,22 @@ html.web #view .head .sub{color:color-mix(in srgb,var(--text) 74%,transparent)}
 .pz-lv .lvbar i{border-radius:8px}
 .pz-lv{max-width:320px}.pz-lv .lvbar{background:rgba(255,255,255,.18);height:18px;margin:12px auto 4px}
 @media (prefers-reduced-motion:reduce){.pz-lv .lvbar i,.pz-lv .lvbar i::after{animation:none!important}}
+/* v1.725: подтверждение подарка — крупный подарок на светящейся сцене */
+.gcf-box{width:min(340px,100%);padding:0 20px 20px;border-radius:30px;overflow:hidden;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 10%,var(--surface)),var(--surface) 55%);box-shadow:0 30px 70px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.08)}
+.gcf-stage{position:relative;height:190px;margin:0 -20px 6px;display:grid;place-items:center}
+.gcf-halo{position:absolute;inset:0;background:radial-gradient(closest-side at 50% 52%,color-mix(in srgb,var(--accent) 38%,transparent),transparent 78%);animation:gcfPulse 3.2s ease-in-out infinite}
+.gcf-ring{position:absolute;left:50%;top:52%;width:170px;height:170px;margin:-85px 0 0 -85px;border-radius:50%;border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);box-shadow:inset 0 0 40px color-mix(in srgb,var(--accent) 14%,transparent)}
+.gcf-art{position:relative;width:148px;height:148px;margin:0;filter:drop-shadow(0 14px 18px rgba(0,0,0,.35));animation:gcfFloat 3.6s ease-in-out infinite}
+.gcf-art.prem{filter:drop-shadow(0 10px 26px rgba(233,169,42,.6))}
+.gcf-k{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.gcf-box h3{margin:6px 0 10px;font-size:26px;letter-spacing:-.4px;line-height:1.1}
+.gcf-to{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:color-mix(in srgb,var(--text) 7%,transparent);border:1px solid var(--border);font-size:14px}
+.gcf-to span{color:var(--muted)}.gcf-to b{font-weight:800}
+.gcf-pr{margin-top:10px;font-size:12.5px;font-weight:700;color:#e9a92a}
+.gcf-btns{margin-top:20px;gap:10px}.gcf-btns .btn{min-height:54px;font-size:16px;border-radius:18px}.gcf-btns .btn.primary{flex:1.4;box-shadow:0 10px 26px -10px var(--accent)}
+@keyframes gcfFloat{50%{transform:translateY(-7px) rotate(-1.5deg)}}
+@keyframes gcfPulse{50%{opacity:.7;transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.gcf-art,.gcf-halo{animation:none}}
 /* v1.724: WEB · настройки на широком экране — без растянутого воздуха */
 html.web #view.w2 .mset2 .seg.fill{display:inline-flex;width:fit-content;max-width:100%}
 html.web #view.w2 .mset2 .seg.fill>button{flex:none;padding-left:26px;padding-right:26px}
@@ -3145,7 +3161,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.724';
+const APP = 'VOOB (by BGASHEV) Mini App v1.725';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4437,7 +4453,7 @@ function openGiftInbox(){
 function closeGc(){ const o = $('#gcf'); if (!o) return; o.classList.add('out'); setTimeout(() => o.remove(), 260); }
 function giftConfirm(f, k){
   closeGc(); const o = document.createElement('div'), prem = PGIFTS.includes(k); o.id = 'gcf'; o.className = 'gcf';
-  o.innerHTML = `<div class="gcf-box"><div class="gcf-art${prem ? ' prem' : ''}">${giftArt(k)}</div><h3>Отправить подарок?</h3><div class="cap">«${esc(GIFT_T[k][1])}» → ${esc(f.name)}${prem ? '<br>Получит +200 очков за первый такой подарок' : ''}</div>
+  o.innerHTML = `<div class="gcf-box"><div class="gcf-stage"><i class="gcf-halo"></i><i class="gcf-ring"></i><div class="gcf-art${prem ? ' prem' : ''}">${giftArt(k)}</div></div><div class="gcf-k">Отправить подарок?</div><h3>${esc(GIFT_T[k][1])}</h3><div class="gcf-to"><span>для</span><b>${esc(f.name)}</b></div>${prem ? '<div class="gcf-pr">★ +200 очков за первый такой подарок</div>' : ''}
     <div class="gcf-btns"><button type="button" class="btn ghost" data-act="gno">Отмена</button><button type="button" class="btn primary" data-act="gdo" data-id="${f.tg_id}" data-k="${k}">Отправить</button></div></div>`;
   o.addEventListener('click', e => { if (e.target === o) closeGc(); });
   document.body.appendChild(o);
