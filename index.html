@@ -907,6 +907,16 @@ html.web .hm>.head h1{font-size:38px;letter-spacing:-.8px;line-height:1.1}
 html.web .hm>.head .sub{font-size:15px;margin-top:6px}
 /* v1.684: WEB · «Главная»: плашки с той же прозрачностью и размытием, что у боковой панели */
 html.web #view .hmw .card:not(.dz),html.web #view .hmw .plsug,html.web #view .hmw .hmc{background:color-mix(in srgb,var(--surface) 70%,transparent)!important;-webkit-backdrop-filter:blur(34px) saturate(1.4);backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border);box-shadow:0 24px 60px -24px rgba(0,0,0,.4),0 2px 10px rgba(0,0,0,.08)}
+/* v1.700: «Любимые виды» в профиле */
+.fvc .fv-l{margin:0 0 12px;font-size:13px;color:var(--muted)}.fvc .fv-l b{color:var(--text)}
+.fv-bar{display:flex;height:12px;border-radius:99px;overflow:hidden;gap:3px;margin:0 0 12px}
+.fv-bar i{display:block;background:var(--c);border-radius:99px;transform-origin:left;animation:fvg .9s cubic-bezier(.2,.8,.2,1) backwards;box-shadow:0 0 14px -3px var(--c)}
+.fv-bar i.o{background:color-mix(in srgb,var(--text) 10%,transparent);box-shadow:none}
+@keyframes fvg{from{transform:scaleX(0)}}
+.fv-r{display:flex;align-items:center;gap:12px;padding:8px 0}.fv-r+.fv-r{border-top:1px solid var(--border)}
+.fv-i{flex:none;width:32px;height:32px;display:grid;place-items:center;border-radius:10px;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c)}
+.fv-r b{flex:1;font-size:14px}.fv-r em{font-style:normal;font-weight:800;color:var(--c)}
+@media (prefers-reduced-motion:reduce){.fv-bar i{animation:none}}
 /* v1.699: WEB · кнопки «План» и «Повторить» на главной — тоже стекло, как у боковой панели */
 html.web #view .hmw .actions .btn{background:color-mix(in srgb,var(--surface) 70%,transparent)!important;-webkit-backdrop-filter:blur(34px) saturate(1.4);backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border)!important;box-shadow:0 24px 60px -24px rgba(0,0,0,.4),0 2px 10px rgba(0,0,0,.08)}
 /* v1.698: WEB · профиль другого человека — плашки с той же прозрачностью и размытием, что у боковой панели */
@@ -2860,7 +2870,7 @@ html.web .me-l,html.web .me-r{display:contents}
  html.web #view.w2 .mset-top:has(+ .me-prof.fp2 .hero.hbg)::before{display:none}
  html.web #view.w2 .fp2 .me-r{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-content:start}
  html.web #view.w2 .fp2 .me-r>*{grid-column:1/-1;margin:0!important;max-width:none}
- html.web #view.w2 .fp2 .me-r>.prec:not(.pfull),html.web #view.w2 .fp2 .me-r>.card.pfin:not(.pstat):not(.pmon):not(.prec){grid-column:auto}
+ html.web #view.w2 .fp2 .me-r>.prec:not(.pfull),html.web #view.w2 .fp2 .me-r>.card.pfin:not(.pstat):not(.pmon):not(.prec):not(.fvc){grid-column:auto}
  html.web #view.w2 .fp2 .me-r>.pmon{order:5}
  html.web #view.w2 .fp2 .me-r>.btn{order:9}
  html.web #view.w2 .fp2 .me-r>.wk{padding:22px}
@@ -3032,7 +3042,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.699';
+const APP = 'VOOB (by BGASHEV) Mini App v1.700';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4916,6 +4926,8 @@ function friendSheetHTML(f, j, loading, self){
   if ((d.ach || []).length) h += self ? `<!--L--><div class="card achlink pfin" style="--pi:${PI++}" data-act="achall"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${IC('chev', 16)}</div>${medalStrip(d.ach, 44)}</div><!--/L-->`
     : `<!--L--><div class="card pfin" style="--pi:${PI++}"><h3>${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${medalStrip(d.ach, 44)}</div><!--/L-->`;
   /* v1.481: «Всего», «Рекорды», «По месяцам», «Последние» — без привязки к ходьбе: главное — время и дни, дистанция и скорость только если они есть */
+  const fvc = favCardHTML(d.fav, t.workouts, PI);
+  if (fvc) { h += fvc; PI++; }
   const hasKm = (+t.km || 0) > 0.05;
   h += `<div class="card pfin pstat" style="--pi:${PI++}"><h3>${IC('trophy')}Всего</h3><div class="pst3"><div><b>${t.workouts}</b><span>тренировок</span></div><div><b>${fmtMin(t.minutes)}</b><span>в движении</span></div><div><b>${t.days}</b><span>активных дней</span></div></div>${hasKm ? `<div class="pst-ft">${IC('walk', 15)}<span>Пройдено и пробежано</span><b>${kmF(t.km)}</b></div>` : ''}</div>`;
   const rrow = (ico, cap, x, v) => x ? `<div class="rrow"><span class="ri">${IC(ico, 17)}</span><div class="rt"><b>${cap}</b><span>${fmtDate(dn(x.date))}</span></div><em>${v}</em></div>` : '';
@@ -4932,6 +4944,17 @@ function friendSheetHTML(f, j, loading, self){
   const cap1 = k => { const n = (ACTS.find(a => a[0] === k) || ACTS[0])[1]; return n; };
   if (d.recent.length) h += `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('clock')}Последние тренировки</h3>` + d.recent.map(w => `<div class="rw2"><div><b>${esc(cap1(w.act || 'run'))}</b><span>${fmtDate(dn(w.date))}, ${WD[wdOf(dn(w.date))]}</span></div><em>${esc(rline(w))}</em></div>`).join('') + `</div>`;
   return h;
+}
+/* v1.700: «Любимые виды» — три самых частых вида тренировок (считает сервер), доли от всех тренировок */
+const FAV_C = {run:'#5be3a4', swim:'#4fc3ff', dumbbell:'#ff9f43', bike:'#ffd23f', yoga:'#c9a0ff', squat:'#ff6f91', pushup:'#ff7a5c', plank:'#ffb86b', burpee:'#ff5f6d', pullup:'#6fa8ff', barbell:'#b39bff', abs:'#ffa96b', jumprope:'#7be0c3', stepper:'#8ad06b'};
+function favCardHTML(fav, total, pi){
+  total = +total || 0; fav = (fav || []).filter(x => x && x.n > 0 && ACTS.some(a => a[0] === x.act));
+  if (!fav.length || total < 3) return '';
+  const L = fav.map(x => ({k: x.act, n: ACTS.find(a => a[0] === x.act)[1], c: FAV_C[x.act] || 'var(--accent)', q: Math.max(1, Math.round(x.n / total * 100))}));
+  const rest = Math.max(0, 100 - L.reduce((a, x) => a + x.q, 0));
+  return `<div class="card pfin fvc" style="--pi:${pi}"><h3>${IC('trophy')}Любимые виды</h3><p class="fv-l">Чаще всего — <b>${esc(L[0].n.toLowerCase())}</b>, ${L[0].q}% тренировок</p>
+    <div class="fv-bar">${L.map(x => `<i style="--c:${x.c};flex:${x.q}"></i>`).join('')}${rest ? `<i class="o" style="flex:${rest}"></i>` : ''}</div>
+    ${L.map(x => `<div class="fv-r" style="--c:${x.c}"><span class="fv-i">${IC(x.k, 18)}</span><b>${esc(x.n)}</b><em>${x.q}%</em></div>`).join('')}</div>`;
 }
 async function copyStr(s){
   try { await navigator.clipboard.writeText(s); return true; } catch (e) {
