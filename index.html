@@ -1014,6 +1014,13 @@ html.web .fc4 .f4c span{font-size:10.5px}
 html.web .fc4 .f4f{min-height:18px;font-size:13px;justify-content:flex-start}
 html.web .fc4.fcb::after{background:linear-gradient(180deg,rgba(8,8,12,.38),rgba(8,8,12,.62) 70%,rgba(8,8,12,.78))}
 html.web .fc4.fcb>.hbgfx{opacity:.85}
+/* v1.701: WEB · основной фон карточки друга — его фон профиля, сильно размытый, с зерном */
+html.web .fc4 .f4bg{position:absolute;inset:0;z-index:0;overflow:hidden;border-radius:inherit;pointer-events:none}
+html.web .fc4 .f4bg>.hbgfx{inset:-25%;width:150%;height:150%;z-index:0;animation:none;filter:blur(30px) saturate(1.45);opacity:.9}
+html.web .fc4 .f4bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,14,.3),rgba(10,10,14,.5)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");mix-blend-mode:normal;opacity:1}
+html.web .fc4.fcb2{--text:#F4F4F8;--muted:rgba(255,255,255,.72);color:#F4F4F8;border-color:rgba(255,255,255,.14);background:#0b0b10}
+html.web .fc4.fcb2 .fac .rm{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.16)}
+html.web .fc4.fcb2 .f4b{box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 10px 26px -14px rgba(0,0,0,.6)}
 /* v1.697: WEB · карточка друга — нижняя половина показывает его фон профиля */
 html.web .fc4{gap:14px;padding:16px 16px 16px}
 html.web .fc4 .f4b{position:relative;isolation:isolate;overflow:hidden;min-height:108px;margin:2px -2px -2px;border-radius:18px;display:flex;align-items:flex-end;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 22%,var(--surface2)),var(--surface2));box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
@@ -3042,7 +3049,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.700';
+const APP = 'VOOB (by BGASHEV) Mini App v1.701';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4830,7 +4837,7 @@ function viewFriends(){
     const fbg = BGS.get(+f.tg_id) || '';
     if (inWeb) {   // v1.671: карточка «Неделя в столбиках»
       const okn = g.done_today || g.prev_ok, t0 = todayN(), dd = (f.week.days && f.week.days.length === 7) ? f.week.days : [0, 0, 0, 0, 0, 0, 0], mx = Math.max(...dd, 1);
-      return `<div class="fc fc4" data-act="frprof" data-id="${f.tg_id}" style="animation-delay:${Math.min(i, 10) * 40}ms">
+      return `<div class="fc fc4${fbg ? ' fcb2' : ''}" data-act="frprof" data-id="${f.tg_id}" style="animation-delay:${Math.min(i, 10) * 40}ms"><div class="f4bg" aria-hidden="true">${fbg ? bgFx(fbg) : ''}</div>
         <div class="f4t">${favHTML(f)}<div class="fm"><div class="f4n"><b>${esc(f.name)}</b>${bdgHTML(f.tg_id, 16)}${f.private ? IC('lock', 13) : ''}${g.run >= 2 ? `<span class="fstreak">${IC('flame', 13)}${g.run}</span>` : ''}</div>${sub ? `<div class="l3">${sub}</div>` : ''}</div>
           <span class="fac"><button class="rm gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 18)}</button><button class="rm" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 17)}</button></span></div>
         <div class="f4b${fbg ? ' has' : ''}">${fbg ? bgFx(fbg) : '<i class="f4e"></i>'}<div class="f4f"><span>${f.week.minutes ? '<b>' + fmtMin(f.week.minutes) + '</b> за 7 дней' : 'на этой неделе тихо'}</span><em>${last}</em></div></div></div>`;
@@ -7362,7 +7369,8 @@ async function loadBgs(ids){
     if (ch) updWBg();
     if (ch) document.querySelectorAll('.fc4[data-id] .f4b').forEach(b => { const k = BGS.get(+b.closest('.fc4').dataset.id) || '';   // v1.697: фон друга — на нижней половине карточки
       if (b.classList.contains('has') === !!k && (!k || b.querySelector(':scope > .hbgfx'))) return;
-      b.classList.toggle('has', !!k); b.querySelectorAll(':scope > .hbgfx, :scope > .f4e').forEach(x => x.remove()); b.insertAdjacentHTML('afterbegin', k ? bgFx(k) : '<i class="f4e"></i>'); });
+      b.classList.toggle('has', !!k); b.querySelectorAll(':scope > .hbgfx, :scope > .f4e').forEach(x => x.remove()); b.insertAdjacentHTML('afterbegin', k ? bgFx(k) : '<i class="f4e"></i>');
+      const c4 = b.closest('.fc4'), bg = c4.querySelector(':scope > .f4bg'); c4.classList.toggle('fcb2', !!k); if (bg) bg.innerHTML = k ? bgFx(k) : ''; });
     if (ch) document.querySelectorAll('.fc:not(.fc4)[data-id]').forEach(c => { const k = BGS.get(+c.dataset.id) || '';   // v1.668: фон друга в плашке
       if (c.classList.contains('fcb') === !!k && (!k || c.querySelector(':scope > .hbgfx'))) return;
       c.classList.toggle('fcb', !!k); const o = c.querySelector(':scope > .hbgfx'); if (o) o.remove(); if (k) c.insertAdjacentHTML('afterbegin', bgFx(k)); });
