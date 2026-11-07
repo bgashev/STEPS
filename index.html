@@ -3212,6 +3212,12 @@ html.web #view.w2 .mset2 .ms-f .web-out{order:3;flex:1 0 100%;width:100%;min-hei
 html.web #view.w2 .mset2 .ms-f .web-out:hover{color:var(--text)}
 html.web #view.w2 .mset2 .ms-f .foot{order:4}
 @media (max-width:640px){.gsc{grid-template-columns:auto minmax(0,1fr);row-gap:10px}.gsc-a{grid-column:1/-1}}
+/* v741: карточка профиля в боковой панели выше (134 → 160 px): элементам стало просторнее. Меню под ней сдвинуто на ту же величину */
+html.web .pcard{height:160px;padding:17px 16px 16px}
+html.web .pcard .pc-id{gap:6px}
+html.web .pcard .pc-cr{margin:0}
+html.web #tabs{padding-top:262px}
+html.web #tabs .tbi{top:262px}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -3226,7 +3232,7 @@ html.web #view.w2 .mset2 .ms-f .foot{order:4}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.740';
+const APP = 'VOOB (by BGASHEV) Mini App v1.741';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
