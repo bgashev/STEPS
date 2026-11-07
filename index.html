@@ -898,6 +898,11 @@ html.web .prof.pc.on{animation:pcpls 1s cubic-bezier(.3,1.4,.5,1)}@keyframes pcp
 html.web .prof.pc.on>.pcwho{animation:pcblr 1.2s cubic-bezier(.3,.7,.3,1)}@keyframes pcblr{0%,100%{filter:blur(0)}35%{filter:blur(6px);opacity:.75}}
 html.web .prof.pc.on .nm{background:linear-gradient(100deg,#fff 20%,var(--pc1),var(--pc2),#fff 80%) 0 0/250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:pcshm 3.5s linear infinite}@keyframes pcshm{to{background-position:-250% 0}}
 html.web .prof.pc .crt{transition:box-shadow .6s .4s}html.web .prof.pc.on .crt{box-shadow:0 0 16px -4px var(--pc1)}
+/* v1.674: WEB · имя в шапке не «болтается» сверху: плотнее к плашкам */
+html.web .prof.pc>.pcwho{gap:8px}
+html.web .prof.pc .nmrow{line-height:1.05;margin:0 0 -1px;padding-top:6px}
+html.web .prof.pc .crw{margin-top:0}
+html.web .prof.pc .prof-act{min-height:0}
 /* кнопка справа */
 html.web .prof.pc>.pcr{display:flex;position:relative;z-index:2;align-items:center;justify-content:flex-end;gap:16px;align-self:stretch;margin:-14px -18px -14px 0;padding:14px 22px 14px 16px;border:0;background:none;color:inherit;font:inherit;text-align:right;cursor:pointer;border-radius:0 26px 26px 0;isolation:isolate}
 html.web .prof.pc>.pcr::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;background:radial-gradient(110% 150% at 100% 50%,color-mix(in srgb,var(--pc1) 30%,transparent),color-mix(in srgb,var(--pc2) 10%,transparent) 45%,transparent 72%);opacity:.8;transition:opacity .5s}
@@ -2841,7 +2846,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.673';
+const APP = 'VOOB (by BGASHEV) Mini App v1.674';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
