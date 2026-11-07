@@ -805,7 +805,7 @@ html.web .stv .gl .recs .cap:first-child{padding-right:34px;min-height:26px}
 html.web .stv .gl .recs .rv{font-size:21px;letter-spacing:-.5px;margin:6px 0 2px;position:relative;z-index:1}
 @media (min-width:1320px){
  /* v1.649 WEB · Настройки в два столбца: карточки сами распределяются по колонкам, шапка и подвал — на всю ширину */
- html.web #view.w2 .sp-wrap{margin-left:416px;display:flex;justify-content:center}
+ html.web #view.w2 .sp-wrap{margin-left:416px;display:flex;justify-content:center;margin-bottom:22px!important}
  html.web #view.w2 .sp-wrap .seg{width:auto;flex:none;display:inline-flex}
  html.web #view.w2 .sp-wrap .seg>button{flex:none;padding-left:22px;padding-right:22px}   /* переключатель периода начинается над правым столбцом */
  html.web #view.w2 .mset2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 22px;align-items:start}
@@ -2666,7 +2666,7 @@ body.frozen .stp .sb{opacity:.45}
 .stv .st-ct span{font-size:10.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);max-width:110px;line-height:1.3}
 .stv .st-d{margin:16px auto 0;padding:6px 12px 6px 10px;font-size:12.5px;font-weight:700;letter-spacing:.01em;backdrop-filter:blur(8px)}.stv .st-d em{display:inline;font-weight:600;margin-left:6px;opacity:.75}
 .stv .st-lg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:22px 0 4px;text-align:left}
-.stv .st-lg>div{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:20px;background:var(--gl);box-shadow:inset 0 0 0 1px var(--hl);animation:lvRow .5s cubic-bezier(.2,.8,.2,1) both}
+.stv .st-lg>div{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:20px;background:var(--gl);box-shadow:inset 0 0 0 1px var(--hl);animation:none}
 .stv .st-lg>div:last-child:nth-child(odd){grid-column:1/-1}
 .stv .st-lg u{flex:none;width:9px;height:9px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 20%,transparent),0 0 12px var(--c)}
 .stv .st-lg p{min-width:0}.stv .st-lg b{display:block;font-size:14px;font-weight:650;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stv .st-lg span{display:block;margin-top:1px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
@@ -2841,7 +2841,7 @@ html.web .me-l,html.web .me-r{display:contents}
   html.web #view.w2 .me-l{display:block;position:sticky;top:34px;max-height:calc(100vh - 68px);overflow-y:auto;scrollbar-width:none;padding:0 44px 64px;margin:0 -44px -64px}
   html.web #view.w2 .me-l::-webkit-scrollbar{display:none}
   html.web #view.w2 .me-r{display:block;min-width:0}
-  /* v1.733 Главная: шапка «Добрый день» над обеими колонками — карточка профиля начинается на уровне «Цели недели» */
+  /* v1.734 Главная: шапка «Добрый день» над обеими колонками — карточка профиля начинается на уровне «Цели недели» */
   html.web #view.w2 .hmw{row-gap:0}
   html.web #view.w2 .hmw>.me-r{display:contents}
   html.web #view.w2 .hmw>.me-r>.hm{display:contents}
@@ -3177,7 +3177,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.733';
+const APP = 'VOOB (by BGASHEV) Mini App v1.734';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7239,7 +7239,7 @@ setInterval(() => { if (!document.hidden) syncNow(); }, 15000);   // пока п
 const WM_G = {V: "<path d='M0 0H2.6L5 6.8 7.4 0H10L6.3 10H3.7Z' fill='currentColor'/>", O: "<circle cx='5' cy='5' r='3.9' fill='none' stroke='currentColor' stroke-width='2.2'/>", B: "<rect width='2.2' height='10' fill='currentColor'/><g fill='none' stroke='currentColor' stroke-width='2.2'><path d='M1 1.1H5.3A1.95 1.95 0 0 1 5.3 5H1'/><path d='M1 5H5.8A1.95 1.95 0 0 1 5.8 8.9H1'/></g>"};
 /* v1.714: логотип-слово VOOB — геометрическое: «О» — идеальные круги, без искажений шрифта */
 const WM_SVG = (h = 14) => { const x = {V: 0, O1: 13, O2: 26, B: 39}, p = (k, g) => `<g transform="translate(${x[k]} 0)">${WM_G[g]}</g>`; return `<svg class="vwm" viewBox="0 0 48 10" height="${h}" width="${(h * 4.8).toFixed(1)}" aria-label="VOOB" role="img" style="display:block;overflow:visible">${p('V','V')}${p('O1','O')}${p('O2','O')}${p('B','B')}</svg>`; };
-/* v1.733: WEB-сайдбар — «V ⚭ B»: вместо двух «O» — два сцепленных кольца логотипа (левое с градиентом) */
+/* v1.734: WEB-сайдбар — «V ⚭ B»: вместо двух «O» — два сцепленных кольца логотипа (левое с градиентом) */
 const WM_LOGO = (h = 18) => `<svg class="vwm" viewBox="0 0 42.4 10" height="${h}" width="${(h * 4.24).toFixed(1)}" aria-label="VOOB" role="img" style="display:block;overflow:visible"><defs><clipPath id="wlc"><rect x="0" y="0" width="60" height="5"/></clipPath><linearGradient id="wlg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9b8ff"/><stop offset=".5" stop-color="#8b5cf6"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs><g>${WM_G.V}</g><g fill="none" stroke-width="1.9"><circle cx="18" cy="5" r="4.05" stroke="url(#wlg)"/><circle cx="23.6" cy="5" r="4.05" stroke="currentColor"/><circle cx="18" cy="5" r="4.05" stroke="url(#wlg)" clip-path="url(#wlc)"/></g><g transform="translate(32.4 0)">${WM_G.B}</g></svg>`;
 const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w}" height="${Math.round(w * .6)}" aria-hidden="true"><defs><clipPath id="vlu"><rect x="0" y="0" width="100" height="30"/></clipPath><linearGradient id="vlg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9b8ff"/><stop offset=".5" stop-color="#8b5cf6"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs><circle cx="37" cy="30" r="20" fill="none" stroke="url(#vlg)" stroke-width="8"/><circle cx="63" cy="30" r="20" fill="none" stroke="var(--text)" stroke-width="8"/><circle cx="37" cy="30" r="20" fill="none" stroke="url(#vlg)" stroke-width="8" clip-path="url(#vlu)"/></svg>`;
 
