@@ -2622,7 +2622,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.636';
+const APP = 'VOOB (by BGASHEV) Mini App v1.637';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4362,7 +4362,6 @@ function friendSheetHTML(f, j, loading, self){
   h += socialsHTML(f.tg_id, true) + `</div>` + acts;
   if (self) h += '<!--hs-->';   // v1.634 WEB: граница «зона профиля | лента карточек» для двух столбцов
   h += weekCard(f, g, ok, shown, j && j.week && j.week.days, loading);
-  if (self && inWeb && !loading) h += feedShortHTML(7, PI++);   // v1.635 WEB: справа — короткая лента друзей
   if ((f.gift_kinds || []).length) h += (self ? '<!--L-->' : '') + `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из ${GIFT_ALL.length}</h3>${giftShelf(f.gift_kinds, 20, f.name)}</div>` + (self ? '<!--/L-->' : '');
   if (!loading && !self) h += `<button class="btn ghost small" style="width:100%;margin-bottom:12px;color:var(--muted)" data-act="frrep" data-id="${f.tg_id}">Пожаловаться</button>`;
   if (loading) return h + `<div id="fp-load">` + [100, 120, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('') + `</div>`;
@@ -4396,7 +4395,7 @@ async function copyStr(s){
 }
 
 /* ============================================================ экраны ==== */
-function viewHome(){
+function viewHome(web){
   const ws = valid(), g = G(), t = todayN(), info = goalInfo(ws), rest = restDays(ws), [cur] = dayStreaks(ws);
   const tMin = sum(ws.filter(w => dn(w.date) === t), w => w.minutes);
   const bits = [tMin ? `сегодня уже ${fmtMin(tMin)} в движении` : (rest.has(t) ? 'сегодня день отдыха' : 'сегодня ещё без тренировки')];
@@ -4427,7 +4426,7 @@ function viewHome(){
     <div class="gx-top">${segRing(info.shown, g.count, done, pct)}<div class="gx-txt">${gtxt}<div class="gx2-bar"><i style="width:${Math.min(100, pct)}%"></i></div>${gsBtn}</div></div>${goalStrip(ws, g.days)}${note}</div>`}
   <div class="actions"><button class="btn ghost" data-act="plans">${IC('plan')}План${upPlans(ws).length ? `<span class="pn">${upPlans(ws).length}</span>` : ''}</button>${ws.length ? `<button class="btn ghost" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat')}Повторить</button>` : ''}</div>`;
   h += planSuggestHTML(ws);
-  h += feedTickerHTML();
+  h += web ? feedShortHTML(6, 4) : feedTickerHTML();
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
   const due = dueWeekSummary(ws);
   const dueM = dueMonthSummary(ws);
@@ -4441,6 +4440,24 @@ function viewHome(){
   } }
   h += historyHTML(ws);
   return `<div class="hm">${h}</div>` + '<div class="wdock-sp"></div>';   // место под кнопку «Тренировка»
+}
+/* v1.637 WEB: «Главная» = мой профиль слева (профиль, подарки, достижения) + аналитика справа (цель, план, лента, история) */
+const HW = {t:0};
+function viewHomeWeb(){
+  const me = FR.data && FR.data.me;
+  if (!me) { if (Date.now() - HW.t > 15000) { HW.t = Date.now(); loadFriends().then(() => { if (S.tab === 'home' && !S.fprof) render(); }); } }
+  else if (!ME.busy && (!ME.prof || Date.now() - ME.at > 60000)) loadMyProfile(me.tg_id);
+  const photo = tgUser && tgUser.photo_url;
+  if (me && photo && !FR.ph.get(me.tg_id)) FR.ph.set(me.tg_id, photo);
+  let left = '';
+  if (!me) left = [380, 120, 110].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('');
+  else {
+    const f = Object.assign({}, me, {name: displayName() || me.name, gift_kinds: (GIFTS_IN && GIFTS_IN.kinds) || me.gift_kinds || [], level: myLevel()});
+    const body = friendSheetHTML(f, ME.prof ? Object.assign({}, ME.prof, {level: f.level}) : ME.prof, !ME.prof, true), cut = body.indexOf('<!--hs-->');
+    left = body.slice(0, cut > 0 ? cut : 0);
+    body.slice(cut + 9).replace(/<!--L-->([\s\S]*?)<!--\/L-->/g, (m, x) => { left += x; return m; });   // подарки и достижения — под профилем
+  }
+  return `<div class="me-prof"><div class="me-l">${left}</div><div class="me-r">${viewHome(true)}</div></div>`;
 }
 /* план на сегодня: пунктирная карточка-предложение (полного раздела «План» в мобильной версии нет) */
 function todayPlans(ws){
@@ -4958,7 +4975,7 @@ async function loadMyProfile(id){
   try { ME.prof = await apiAuth('/friends/profile', {tg_id:id, today:isoOf(todayN())}); ME.at = Date.now(); }
   catch (e) { ME.at = Date.now(); }
   ME.busy = false;
-  if (S.tab === 'me' && !S.meSet) render();
+  if ((S.tab === 'me' && !S.meSet) || (S.tab === 'home' && inWeb && inTG && !S.fprof)) render();
 }
 /* v1.524: рамка — сначала предпросмотр (крупно + в профиле + в списке), «Применить» внизу; без PRO — кнопка открытия PRO */
 function frAv(k, px, lv, photo, name){
@@ -5448,18 +5465,18 @@ function updPCard(){
   const tb = $('#tabs'); if (!tb || !inWeb || !inTG || !tgUser) return;
   const lv = myLevel(), name = displayName() || 'Гость', k = frameOf({tg_id:tgUser.id}), bg = myBg(), uid = +tgUser.id;
   const photo = FR.ph.get(uid) || tgUser.photo_url || '', pct = lv.need ? Math.max(4, Math.min(100, (lv.into || 0) / lv.need * 100)) : 4;
-  const on = S.tab === 'me' && !S.fprof, tc = tierColor(lv.level), tier = tierOf(lv.level).title;
-  tb.classList.toggle('on-me', S.tab === 'me');
+  const on = S.tab === 'home' && !S.fprof, tc = tierColor(lv.level), tier = tierOf(lv.level).title;
+  tb.classList.toggle('on-me', S.tab === 'me' || S.tab === 'home');
   const av = frAv(k, 46, lv, photo, name).replace('<div class="fav', `<div data-fid="${uid}" class="fav`);
   const html = `<span class="pc-bg"></span>${bg ? bgFx(bg) : ''}<span class="pc-top"><span class="pc-av">${av}</span><span class="pc-id"><b class="nm pc-nm">${esc(name)}</b><span class="pc-t"><i class="pc-lv">${lv.level}</i><em>${esc(tier)}</em></span></span></span><span class="pc-xp"><span class="pc-bar"><i style="width:${pct}%"><b class="lvp"></b></i></span><small>${lv.into || 0} / ${lv.need || 0} XP</small></span>`;
   let el = tb.querySelector('.pcard');
-  if (!el) { el = document.createElement('button'); el.type = 'button'; el.className = 'pcard'; el.dataset.act = 'tab'; el.dataset.tab = 'me'; el.setAttribute('aria-label', 'Профиль'); tb.appendChild(el); }
+  if (!el) { el = document.createElement('button'); el.type = 'button'; el.className = 'pcard'; el.dataset.act = 'tab'; el.dataset.tab = 'home'; el.setAttribute('aria-label', 'Главная'); tb.appendChild(el); }
   const sig = [html.replace(/<img[^>]*>/, photo ? '<img>' : ''), photo ? photo.length : 0, tc].join('|');
   el.classList.toggle('on', on); el.style.setProperty('--tc', tc);
   if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.classList.toggle('hasbg', !!bg); el.innerHTML = html;
 }
-const TABS = inWeb ? [['home','Главная','home'],['stats','Итоги','stats'],['weight','Вес','scale'],['friends','Друзья','friends'],['me','Я','user']] : [['stats','Итоги','stats'],['weight','Вес','scale'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
-const VIEWS = {home:viewHome, weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe};
+const TABS = inWeb ? [['stats','Итоги','stats'],['weight','Вес','scale'],['friends','Друзья','friends'],['me','Я','user']] : [['stats','Итоги','stats'],['weight','Вес','scale'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
+const VIEWS = {home:(inWeb && inTG ? viewHomeWeb : viewHome), weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe};
 // плавающая кнопка внизу по центру: на «Главной» — тренировка, во «Весе» — взвеситься
 const FAB = {home:['add', 'Тренировка'], weight:['kadd', 'Взвеситься']};
 let fabY = 0, fabMiniOn = false;
@@ -5607,6 +5624,7 @@ function meNav(cls){   // v1.484: плавный «пуш» между проф�
   setTimeout(() => v.classList.remove(cls), 1000);
 }
 function render(){
+  if (inWeb && inTG && S.tab === 'me' && !S.meSet && !S.pers && !S.fprof) S.tab = 'home';   // v1.637 WEB: «Я» и «Главная» — одна страница
   const html = S.fprof ? viewFProf() : VIEWS[S.tab](), v = $('#view'), rkey = S.fprof ? 'fp' : S.tab;
   const same = _rTab === rkey;
   if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
@@ -5973,8 +5991,8 @@ const ACT = {
   fzsend: () => fzSend(),
   delopen: () => openRestore(),
   delrestore: () => doRestore(),
-  webset: () => { ACT.tab({dataset:{tab:'me'}}); if (!S.meSet) ACT.meset(); },
-  meset: () => { hap.tap(); S.meSet = true; meNav('nav-in'); },
+  webset: () => { if (S.tab === 'me' && S.meSet) return; S.fprof = null; ACT.meset(); },
+  meset: () => { hap.tap(); if (inWeb && S.tab !== 'me') { S.tab = 'me'; if (S.fprof) S.fprof = null; } S.meSet = true; meNav('nav-in'); },
   mesback: () => { hap.tap(); S.meSet = false; S.pers = false; meNav('nav-out'); },
   persopen: () => { hap.tap(); S.pers = true; meNav('nav-in'); },
   persback: () => { hap.tap(); S.pers = false; meNav('nav-out'); },
