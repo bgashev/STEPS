@@ -1612,6 +1612,8 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .rkc .rk .nm .you{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);flex:none}
 .rkc .rk .br{flex:none;width:100%;height:12px;border-radius:7px;background:color-mix(in srgb,var(--off) 70%,transparent);box-shadow:inset 0 1px 2px rgba(0,0,0,.22)}
 .rkc .rk .br i{border-radius:7px}
+.rkc .rk .br i{position:relative;overflow:hidden}
+html.web .texpv{display:none}
 .rkc .rkm{gap:8px}
 .rkc .rk .mv{width:auto;min-width:54px;display:flex;flex-direction:column;align-items:flex-end;gap:3px}
 .rkc .rk .mv b{font-size:14.5px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1}
@@ -4198,7 +4200,7 @@ function viewFriends(){
     const people = fr.map(f => [f, false]).concat([[d.me, true]]).sort((a, b) => (mxp(b[0]) - mxp(a[0])) || (pm(b[0]) - pm(a[0])) || (b[1] - a[1]));
     const mx = Math.max(1, ...people.map(p => mxp(p[0])));
     h += `<div class="card rkc"><h3 style="margin:0">${IC('trophy')}Рейтинг месяца</h3><div class="cap rkcap">XP с 1-го числа · +${RATE_XP} за активность</div>` +
-      people.slice(0, 10).map(([f, me], i) => `<div class="rk${me ? ' me' : ''}" ${me ? 'data-act="tab" data-tab="me"' : `data-act="frprof" data-id="${f.tg_id}"`}><span class="pl${i < 3 ? ' m' + (i + 1) : ''}">${i + 1}</span>${favHTML(f, true)}<span class="rkm"><span class="nm">${esc(f.name)}${me ? '<em class="you">ты</em>' : ''}</span><span class="br"><i style="width:${Math.max(mxp(f) ? 4 : 0, mxp(f) / mx * 100)}%;animation-delay:${i * 60}ms"></i></span></span><span class="mv"><b>${numSep(mxp(f))}</b><small>${f.level ? 'ур. ' + f.level.level : 'XP'}</small></span></div>`).join('') + `</div>`;
+      people.slice(0, 10).map(([f, me], i) => `<div class="rk${me ? ' me' : ''}" ${me ? 'data-act="tab" data-tab="me"' : `data-act="frprof" data-id="${f.tg_id}"`}><span class="pl${i < 3 ? ' m' + (i + 1) : ''}">${i + 1}</span>${favHTML(f, true)}<span class="rkm"><span class="nm">${esc(f.name)}${me ? '<em class="you">ты</em>' : ''}</span><span class="br"><i style="width:${Math.max(mxp(f) ? 4 : 0, mxp(f) / mx * 100)}%;animation-delay:${i * 60}ms"><b class="lvp"></b></i></span></span><span class="mv"><b>${numSep(mxp(f))}</b><small>${f.level ? 'ур. ' + f.level.level : 'XP'}</small></span></div>`).join('') + `</div>`;
   }
   h += `<div class="mh">Друзья · ${fr.length}<span>за 7 дней · последняя тренировка</span></div>`;
   if (!fr.length) h += `<div class="card muted">Пока никого. Отправь ссылку первому другу — вдвоём ходить веселее.</div>`;
