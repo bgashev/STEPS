@@ -822,6 +822,16 @@ html.web .mset-top.msw+.head{position:relative;z-index:26}   /* заголово
 #fab.wp-open .fi svg{transform:rotate(45deg)}
 #fab .fi svg{transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
 #ipfx{position:fixed;inset:0;z-index:32;pointer-events:none;overflow:hidden;transition:opacity .5s}
+html.web .fsum{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+html.web .fsum>div{position:relative;overflow:hidden;border-radius:20px;padding:14px 16px;background:var(--surface);border:1px solid var(--border);display:flex;flex-direction:column;gap:2px}
+html.web .fsum>div::after{content:"";position:absolute;right:-30px;top:-30px;width:96px;height:96px;border-radius:50%;background:radial-gradient(closest-side,var(--c),transparent);opacity:.28;pointer-events:none}
+html.web .fsum .fi{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;margin-bottom:8px;background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 40%,#000));box-shadow:0 0 14px -2px var(--c);position:relative;z-index:1}
+html.web .fsum b{font-size:24px;letter-spacing:-.7px;line-height:1.1;position:relative;z-index:1}
+html.web .fsum b u{text-decoration:none;font-size:13px;color:var(--muted);letter-spacing:0;font-weight:650}
+html.web .fsum small{color:var(--muted);font-size:12px;position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.web .fpb{height:4px;border-radius:2px;background:var(--surface2);margin-top:8px;overflow:hidden}
+html.web .fpb i{display:block;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2,var(--accent)))}
+html.web .fpb.ok i{background:linear-gradient(90deg,#5ad08a,#a6dc6f)}
 html.web .head{position:relative}
 .invpop{position:fixed;width:330px;z-index:31;pointer-events:none;visibility:hidden;opacity:0;transform-origin:calc(100% - 28px) 0;transform:translateY(-12px) scale(.94);filter:blur(14px);
   transition:opacity .5s cubic-bezier(.22,.7,.2,1),transform .7s cubic-bezier(.2,.9,.25,1),filter .5s cubic-bezier(.22,.7,.2,1),visibility 0s .7s}
@@ -2597,7 +2607,7 @@ html.web .me-l,html.web .me-r{display:contents}
   html.web #view.w2 .me-l>.card{margin:14px 0 0}
   html.web #view.w2 .me-l>:first-child{margin-top:0}
   html.web #view.w2 .fr2 .me-r{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-content:start}
-  html.web #view.w2 .fr2 .me-r>.mh,html.web #view.w2 .fr2 .me-r>.card{grid-column:1/-1}
+  html.web #view.w2 .fr2 .me-r>.mh,html.web #view.w2 .fr2 .me-r>.card,html.web #view.w2 .fr2 .me-r>.fsum{grid-column:1/-1}
   html.web #view.w2 .fr2 .me-r>.fc{margin:0}
   html.web #view.w2 .stv .me-r .hm{max-width:440px;margin:0 auto}
   html.web #view.w2 .me-l .hero,html.web #view.w2 .me-l .hero.hbg{margin:0;padding:36px 22px 30px;border-radius:26px}
@@ -2737,7 +2747,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.666';
+const APP = 'VOOB (by BGASHEV) Mini App v1.667';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4268,7 +4278,7 @@ async function loadFeed(force){
   catch (e) { FEED.err = e.message || 'нет связи'; if (!FEED.ev) FEED.ev = []; }
   FEED.busy = false; FEED.at = Date.now();
   if (sheetCtx && sheetCtx.type === 'feed') { const l = $('#feedlist'); if (l) l.innerHTML = feedListHTML(); document.querySelectorAll('[data-act=feedref]').forEach(b => b.classList.remove('spin')); }
-  if (S.tab === 'home' || (S.tab === 'me' && inWeb)) render();
+  if (S.tab === 'home' || (S.tab === 'me' && inWeb) || (S.tab === 'friends' && inWeb)) render();
 }
 const actName = k => ((ACTS.find(a => a[0] === k) || ACTS[0])[1]).toLowerCase();
 function feedTime(iso){ const d = new Date(iso); return isNaN(d) ? '' : d.toTimeString().slice(0, 5); }
@@ -4441,6 +4451,7 @@ function viewFriends(){
     h += `<div class="card" style="padding:12px 16px"><div class="row" style="justify-content:space-between;align-items:center;gap:10px">
       <h3 style="margin:0;white-space:nowrap">${IC('gift')}Подарки <span class="cap" style="font-weight:600">${(mg.kinds || []).length}/${GIFT_ALL.length}</span></h3>
       ${pn ? `<button class="btn primary small" data-act="ginbox">${IC('gift', 14)}Ждут ${pn}</button>` : energyHTML(en)}</div></div>`; }
+  if (inWeb && fr.length) h += feedShortHTML(7, 3);   // v1.667: лента друзей снова слева
   if (fr.length) {
     const people = fr.map(f => [f, false]).concat([[d.me, true]]).sort((a, b) => (mxp(b[0]) - mxp(a[0])) || (pm(b[0]) - pm(a[0])) || (b[1] - a[1]));
     const mx = Math.max(1, ...people.map(p => mxp(p[0])));
@@ -4448,6 +4459,12 @@ function viewFriends(){
       people.slice(0, 10).map(([f, me], i) => `<div class="rk${me ? ' me' : ''}" ${me ? 'data-act="tab" data-tab="me"' : `data-act="frprof" data-id="${f.tg_id}"`}><span class="pl${i < 3 ? ' m' + (i + 1) : ''}">${i + 1}</span>${favHTML(f, true)}<span class="rkm"><span class="nm">${esc(f.name)}${me ? '<em class="you">ты</em>' : ''}</span><span class="br"><i style="width:${Math.max(mxp(f) ? 4 : 0, mxp(f) / mx * 100)}%;animation-delay:${i * 60}ms"><b class="lvp"></b></i></span></span><span class="mv"><b>${numSep(mxp(f))}</b><small>${f.level ? 'ур. ' + f.level.level : 'XP'}</small></span></div>`).join('') + `</div>`;
   }
   h += '<!--/L-->';
+  if (inWeb && fr.length) {   // v1.667: сводка по друзьям над списком
+    const dn0 = fr.filter(f => f.goal.done_today).length, mins = fr.reduce((a, f) => a + (f.week.minutes || 0), 0), top = fr.reduce((a, f) => (f.goal.run || 0) > ((a && a.goal.run) || 0) ? f : a, null);
+    h += `<div class="fsum"><div style="--c:#5ad08a"><span class="fi">${IC('check', 17)}</span><b>${dn0}<u>/${fr.length}</u></b><small>закрыли норму сегодня</small></div>
+      <div style="--c:#5b8cff"><span class="fi">${IC('clock', 17)}</span><b>${fmtMin(mins)}</b><small>друзья за 7 дней</small></div>
+      <div style="--c:#f09a4f"><span class="fi">${IC('flame', 17)}</span><b>${top && top.goal.run >= 2 ? top.goal.run + '<u> дн.</u>' : '—'}</b><small>${top && top.goal.run >= 2 ? 'серия · ' + esc(top.name) : 'серий пока нет'}</small></div></div>`;
+  }
   h += `<div class="mh">Друзья · ${fr.length}<span>за 7 дней · последняя тренировка</span></div>`;
   if (!fr.length) h += `<div class="card muted">Пока никого. Отправь ссылку первому другу — вдвоём ходить веселее.</div>`;
   const order = fr.slice().sort((a, b) => (b.goal.done_today - a.goal.done_today) || (b.week.minutes - a.week.minutes));
@@ -4457,7 +4474,7 @@ function viewFriends(){
     const last = f.last ? `${agoText(f.last.date)} · ${f.last.minutes} мин` : 'ещё не тренировался';
     const sub = [f.level ? `<span style="color:${tierColor(f.level.level)};font-weight:700">${tierOf(f.level.level).title}</span>` : '', f.handle ? '@' + esc(f.handle) : f.username ? '@' + esc(f.username) : ''].filter(Boolean).join(' · ');
     return `<div class="fc" data-act="frprof" data-id="${f.tg_id}" style="animation-delay:${Math.min(i, 10) * 40}ms">${favHTML(f)}<div class="fm"><div><b>${esc(f.name)}</b>${bdgHTML(f.tg_id, 14)}${f.private ? IC('lock', 12) : ''}${g.run >= 2 ? `<span class="fstreak">${IC('flame', 12)}${g.run}</span>` : ''}</div>
-      ${sub ? `<div class="l3">${sub}</div>` : ''}<div class="l2">${fmtMin(f.week.minutes)} за 7 дней · ${gl}</div><div class="l3">${last}</div></div>
+      ${sub ? `<div class="l3">${sub}</div>` : ''}<div class="l2">${fmtMin(f.week.minutes)} за 7 дней · ${gl}</div><div class="l3">${last}</div>${inWeb ? `<div class="fpb${g.done_today || g.prev_ok ? ' ok' : ''}"><i style="width:${Math.max(g.shown ? 6 : 0, Math.min(100, g.done_today || g.prev_ok ? 100 : g.shown / (g.target || 1) * 100))}%"></i></div>` : ''}</div>
       <button class="rm gbtn" data-act="gift" data-id="${f.tg_id}" aria-label="Подарить">${IC('gift', 17)}</button><button class="rm" data-act="frpoke" data-id="${f.tg_id}" aria-label="Взбодрить"${f.poke_wait ? ' style="opacity:.35"' : ''}>${IC('bolt', 16)}</button></div>`;
   }).join('');
   return webSplit(h, 'fr2');
