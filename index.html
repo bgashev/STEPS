@@ -2450,6 +2450,32 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
  html.web .tab{flex:none;height:48px;flex-direction:row;justify-content:flex-start;gap:14px;padding:0 18px;font-size:14.5px;border-radius:16px;cursor:pointer}
  html.web .tab:hover:not(.on){background:color-mix(in srgb,var(--text) 6%,transparent)}
  html.web #view .hero.hbg{--hx:max(28px,calc((100vw - 264px - 760px) / 2));margin:-34px calc(-1 * var(--hx)) 0 calc(-264px - var(--hx));padding:70px calc(18px + var(--hx)) 48px calc(18px + 264px + var(--hx))}
+/* v1.631 WEB: плашка профиля в боковом меню */
+html.web #tabs{padding-top:222px}
+html.web #tabs .tbi{top:222px}
+html.web #tabs.on-me .tbi{opacity:0}
+html.web .tab[data-tab="me"]{display:none}
+html.web .pcard{position:absolute;left:12px;right:12px;top:76px;height:120px;margin:0;padding:14px 14px 13px;border:0;border-radius:22px;cursor:pointer;text-align:left;font:inherit;color:#fff;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;
+  background:#14141a;box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 18px 34px -18px rgba(0,0,0,.7);transition:transform .4s cubic-bezier(.2,.8,.2,1),box-shadow .4s;-webkit-tap-highlight-color:transparent}
+html.web .pcard .pc-bg{position:absolute;inset:0;z-index:-3;background:radial-gradient(120% 150% at 0% 0%,color-mix(in srgb,var(--tc,var(--accent)) 46%,transparent),transparent 62%),radial-gradient(90% 120% at 100% 100%,color-mix(in srgb,var(--accent2,var(--accent)) 30%,transparent),transparent 60%),linear-gradient(160deg,#23232d,#15151c)}
+html.web .pcard.hasbg .pc-bg{background:#0b0b10}
+html.web .pcard .hbgfx{z-index:-2;inset:auto;left:0;top:0;width:170%;height:210%;transform:scale(.6);transform-origin:0 0;border-radius:0}
+html.web .pcard::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(8,8,12,.04) 0,rgba(8,8,12,.18) 45%,rgba(8,8,12,.72) 100%)}
+html.web .pcard::after{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(140deg,rgba(255,255,255,.55),rgba(255,255,255,.05) 42%,rgba(255,255,255,.18));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+html.web .pcard:hover{transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.1) inset,0 22px 38px -16px rgba(0,0,0,.75)}
+html.web .pcard.on{box-shadow:0 0 0 1.5px rgba(255,255,255,.9),0 0 0 5px color-mix(in srgb,var(--tc,#fff) 26%,transparent),0 18px 34px -16px rgba(0,0,0,.7)}
+html.web .pcard .pc-top{display:flex;align-items:center;gap:12px;min-width:0}
+html.web .pcard .pc-av{flex:none;display:block;width:46px;height:46px}
+html.web .pcard .pc-id{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
+html.web .pcard .pc-nm{font-size:15px;font-weight:800;letter-spacing:.01em;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+html.web .pcard .pc-t{display:flex;align-items:center;gap:7px;min-width:0}
+html.web .pcard .pc-lv{font-style:normal;flex:none;min-width:22px;height:20px;padding:0 6px;border-radius:10px;display:grid;place-items:center;font-size:11.5px;font-weight:900;color:#15151b;background:var(--tc,#fff);box-shadow:0 0 12px color-mix(in srgb,var(--tc,#fff) 55%,transparent)}
+html.web .pcard .pc-t em{font-style:normal;font-size:11.5px;font-weight:700;letter-spacing:.04em;color:rgba(255,255,255,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html.web .pcard .pc-xp{display:flex;flex-direction:column;gap:6px}
+html.web .pcard .pc-bar{display:block;height:7px;border-radius:4px;background:rgba(255,255,255,.18);overflow:hidden;position:relative}
+html.web .pcard .pc-bar i{display:block;height:100%;border-radius:4px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--accent),var(--accent2,var(--accent)),var(--accent));background-size:200% 100%;animation:growX .9s cubic-bezier(.2,.8,.2,1) backwards,lvFlow 5s linear infinite}
+html.web .pcard .pc-xp small{font-size:10.5px;font-weight:700;letter-spacing:.05em;color:rgba(255,255,255,.7);text-align:right;line-height:1}
+@media (prefers-reduced-motion:reduce){html.web .pcard .pc-bar i{animation:none}}
  html.web body::after{display:none}
  html.web #view .hero.hbg>.hbgfx::after{display:none}
 /* WEB: профиль друга с фоном — фон от самого верха окна, шапка «Профиль» лежит поверх; лёгкий градиент сверху — на всю ширину экрана */
@@ -2571,7 +2597,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.630';
+const APP = 'VOOB (by BGASHEV) Mini App v1.631';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5368,6 +5394,21 @@ if (inWeb) document.addEventListener('keydown', e => {
   const a = HK.find(h => hkMap[h[0]] && hkMap[h[0]] === e.code);
   if (a && hkRun(a[0])) e.preventDefault();
 }, true);
+/* v1.631 WEB: плашка профиля над меню — аватар с рамкой, фон профиля, уровень и полоса опыта; нажатие открывает «Я» */
+function updPCard(){
+  const tb = $('#tabs'); if (!tb || !inWeb || !inTG || !tgUser) return;
+  const lv = myLevel(), name = displayName() || 'Гость', k = frameOf({tg_id:tgUser.id}), bg = myBg(), uid = +tgUser.id;
+  const photo = FR.ph.get(uid) || tgUser.photo_url || '', pct = lv.need ? Math.max(4, Math.min(100, (lv.into || 0) / lv.need * 100)) : 4;
+  const on = S.tab === 'me' && !S.fprof, tc = tierColor(lv.level), tier = tierOf(lv.level).title;
+  tb.classList.toggle('on-me', S.tab === 'me');
+  const av = frAv(k, 46, lv, photo, name).replace('<div class="fav', `<div data-fid="${uid}" class="fav`);
+  const html = `<span class="pc-bg"></span>${bg ? bgFx(bg) : ''}<span class="pc-top"><span class="pc-av">${av}</span><span class="pc-id"><b class="nm pc-nm">${esc(name)}</b><span class="pc-t"><i class="pc-lv">${lv.level}</i><em>${esc(tier)}</em></span></span></span><span class="pc-xp"><span class="pc-bar"><i style="width:${pct}%"><b class="lvp"></b></i></span><small>${lv.into || 0} / ${lv.need || 0} XP</small></span>`;
+  let el = tb.querySelector('.pcard');
+  if (!el) { el = document.createElement('button'); el.type = 'button'; el.className = 'pcard'; el.dataset.act = 'tab'; el.dataset.tab = 'me'; el.setAttribute('aria-label', 'Профиль'); tb.appendChild(el); }
+  const sig = [html.replace(/<img[^>]*>/, photo ? '<img>' : ''), photo ? photo.length : 0, tc].join('|');
+  el.classList.toggle('on', on); el.style.setProperty('--tc', tc);
+  if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.classList.toggle('hasbg', !!bg); el.innerHTML = html;
+}
 const TABS = inWeb ? [['home','Главная','home'],['stats','Итоги','stats'],['weight','Вес','scale'],['friends','Друзья','friends'],['me','Я','user']] : [['stats','Итоги','stats'],['weight','Вес','scale'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
 const VIEWS = {home:viewHome, weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe};
 // плавающая кнопка внизу по центру: на «Главной» — тренировка, во «Весе» — взвеситься
@@ -5531,6 +5572,7 @@ function render(){
   if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + LOGO_SVG(50) + '<b>VOOB</b></span>' : '') + (inWeb ? '<span class="wver" data-act="copyver" title="Скопировать версию">WEB ' + ((APP.match(/v[\d.]+/) || [''])[0]) + '</span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${inWeb && k === 'me' ? 'Профиль' : l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb stb" data-act="webset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.3a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.4a2 2 0 0 0 .7 2.7l.2.1a2 2 0 0 1 1 1.7v.5a2 2 0 0 1-1 1.7l-.2.1a2 2 0 0 0-.7 2.7l.2.4a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.3a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.3a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.4a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.7v-.5a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.4a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.3a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span>Настройки</span></button><button type="button" class="siteb phb" data-act="tophone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10.5 18.5h3"/></svg><span>Открыть на телефоне</span></button><button type="button" class="siteb" data-act="tosite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.7 2.7 4 5.9 4 9.5s-1.3 6.8-4 9.5c-2.7-2.7-4-5.9-4-9.5s1.3-6.8 4-9.5z"/></svg><span>VOOB.KZ</span></button>' : '');
   tb.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   tb.style.setProperty('--ti', ti);
+  updPCard();
   const hh = v.querySelector('.hero.hbg'), bt = hh ? hh.style.getPropertyValue('--bgt') : '';
   if (bt) v.style.setProperty('--bgt', bt); else v.style.removeProperty('--bgt');
   v.classList.toggle('bgt', !!bt);
