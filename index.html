@@ -3189,22 +3189,29 @@ html.web #view .fp2 .fp-bar .fpb.off b,html.web #view .fp2 .fp-bar .fpb.frb:disa
 .gs-msg{margin-top:10px;font-size:13px;line-height:1.4;color:var(--muted)}
 .gs-err{font-size:13px;color:var(--muted)}
 @media (max-width:760px){.wl-g{margin-inline:auto}.wl-g .gs-host{justify-content:center}}
-/* v738: карточка «Вход через Google» и низ настроек WEB — единая сетка: Google → Аккаунт → Выйти */
-.gsc{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:16px;padding:16px 20px}
-.gsc-ic{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:var(--surface2);border:1px solid var(--border)}
-.gsc.on .gsc-ic{border-color:color-mix(in srgb,var(--green,#34d399) 55%,var(--border))}
-.gsc-t{display:flex;flex-direction:column;gap:3px;min-width:0}
-.gsc-t b{font-size:16px;font-weight:800;color:var(--text)}
-.gsc-t small{font-size:13px;line-height:1.35;color:var(--muted);display:flex;align-items:center;gap:7px;min-width:0}
-.gsc-dot{width:8px;height:8px;border-radius:50%;background:var(--green,#34d399);flex:none}
-.gsc-a{display:flex;align-items:center;justify-content:flex-end}
-.gsc-a .btn{min-height:42px;padding:0 22px}
-html.web #view.w2 .mset2 .ms-f #gs-card{flex:1 0 100%;order:1}
-html.web #view.w2 .mset2 .ms-f .dz{order:2}
-html.web #view.w2 .mset2 .ms-f .web-out{order:3;flex:1 0 100%;width:100%;min-height:52px;padding:0 24px;color:var(--muted)}
+/* v739: Google-вход и низ настроек WEB — компактные карточки в два столбца, «Выйти» — тихая ссылка */
+.wl-gbtn{display:inline-flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:48px;padding:0 20px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-weight:700;font-size:15px;transition:transform .2s,border-color .2s}
+.wl-gbtn:hover{transform:translateY(-1px);border-color:var(--muted)}
+.gsc{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:14px;padding:12px 16px}
+.gsc-ic{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:var(--surface2);border:1px solid var(--border)}
+.gsc.on .gsc-ic{border-color:color-mix(in srgb,#34d399 55%,var(--border))}
+.gsc-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.gsc-t b{font-size:15px;font-weight:800;color:var(--text)}
+.gsc-t small{font-size:12.5px;line-height:1.35;color:var(--muted);display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.gsc-dot{width:8px;height:8px;border-radius:50%;background:#34d399;flex:none}
+.gsc-a{display:flex;align-items:center}
+.gsc-b{min-height:38px;padding:0 18px}
+.gsc-b[hidden]{display:none!important}
+html.web #view.w2 .mset2 .ms-f{gap:12px}
+html.web #view.w2 .mset2 .ms-f #gs-card{flex:1 1 420px;order:1;margin:0}
+html.web #view.w2 .mset2 .ms-f .dz{flex:1 1 420px;order:2;padding:12px 16px;column-gap:16px}
+html.web #view.w2 .mset2 .ms-f .dz>h3{font-size:15px}
+html.web #view.w2 .mset2 .ms-f .dz>.cap{font-size:12.5px;line-height:1.4}
+html.web #view.w2 .mset2 .ms-f .dz>.dz-b{min-height:40px;padding:0 18px}
+html.web #view.w2 .mset2 .ms-f .web-out{order:3;flex:1 0 100%;width:100%;min-height:40px;padding:0;background:none;border:0;color:var(--muted);font-weight:600;font-size:14px}
 html.web #view.w2 .mset2 .ms-f .web-out:hover{color:var(--text)}
 html.web #view.w2 .mset2 .ms-f .foot{order:4}
-@media (max-width:640px){.gsc{grid-template-columns:auto minmax(0,1fr);row-gap:12px}.gsc-a{grid-column:1/-1;justify-content:flex-start}}
+@media (max-width:640px){.gsc{grid-template-columns:auto minmax(0,1fr);row-gap:10px}.gsc-a{grid-column:1/-1}}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -3219,7 +3226,7 @@ html.web #view.w2 .mset2 .ms-f .foot{order:4}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.738';
+const APP = 'VOOB (by BGASHEV) Mini App v1.739';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5960,7 +5967,7 @@ function viewMeSettings(){
     <div class="cap" style="margin-top:10px">Импорт: выбери файл STEPS_backup_….json из десктопной версии (Настройки → Резервная копия). Совпадающие записи не задублируются.</div></div>`;
   if (inWeb) h += hkCardHTML();
   h += '<!--M3-->';
-  if (inWebApp) { h += `<div class="card gsc" id="gs-card"><span class="gsc-ic"><svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><div class="gsc-t" id="gs-state"><b>Вход через Google</b><small>Загрузка…</small></div><div class="gsc-a"><div id="gs-host" class="gs-host" hidden></div><button type="button" class="btn ghost small" id="gs-unl" data-act="gsunlink" hidden>Отвязать</button></div></div>`; setTimeout(gsMount, 0); }
+  if (inWebApp) { h += `<div class="card gsc" id="gs-card"><span class="gsc-ic"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><div class="gsc-t" id="gs-state"><b>Вход через Google</b><small>Загрузка…</small></div><div class="gsc-a"><button type="button" class="btn small gsc-b" id="gs-link" data-act="gslink" hidden>Привязать</button><button type="button" class="btn ghost small gsc-b" id="gs-unl" data-act="gsunlink" hidden>Отвязать</button></div></div>`; setTimeout(gsMount, 0); }
   if (inWebApp) h += `<button type="button" class="btn ghost web-out" data-act="weblogout">Выйти из этого браузера</button>`;
   if (inTG) h += isDeleting() ? `<div class="card dz"><h3>${IC('trash')}Аккаунт</h3><div class="cap" style="margin:-6px 0 12px">Удаление запланировано на ${fmtDate(dn(String(PROM.st.del_at).slice(0, 10)))}. До этого дня его можно отменить.</div>
     <button type="button" class="btn dz-b ok" data-act="delopen">${IC('sun', 16)}Отменить удаление</button></div>`
@@ -6070,14 +6077,14 @@ function fzBlockHTML(st){
 }
 const FZ = {a:'freeze', busy:false, t:0, tm:null};
 function fzOpen(a){
-  const st = PROM.st || {}, fr = a === 'freeze', dl = a === 'delete'; if (!dl && (fr ? !st.can_freeze : !st.frozen)) return;
+  const st = PROM.st || {}, fr = a === 'freeze', dl = a === 'delete', gu = a === 'gunlink'; if (!dl && !gu && (fr ? !st.can_freeze : !st.frozen)) return;
   hap.tap(); FZ.a = a; FZ.busy = false;
-  const facts = dl ? ['Аккаунт отключится сразу и пропадёт из списков друзей', 'Через 7 дней всё удалится безвозвратно: тренировки, вес, друзья, подарки', 'До этого срока удаление можно отменить · звёзды не возвращаются']
+  const facts = gu ? ['Google перестанет открывать этот аккаунт VOOB', 'Вход через Telegram продолжит работать как раньше', 'Привязать Google можно снова в любой момент'] : dl ? ['Аккаунт отключится сразу и пропадёт из списков друзей', 'Через 7 дней всё удалится безвозвратно: тренировки, вес, друзья, подарки', 'До этого срока удаление можно отменить · звёзды не возвращаются']
     : fr
     ? [`Пауза на ${st.freeze_days} дн.`, 'Оставшиеся дни PRO сохранятся', 'Пока идёт заморозка, данные можно только смотреть', 'Доступно один раз · разморозить можно раньше']
     : [`Осталось ${st.days_left} дн. PRO — они продолжатся`, 'Редактирование и добавление снова откроются'];
-  openSheet(`<div class="fz ${dl ? 'del' : fr ? 'ice' : 'sun'}"><div class="fz-orb">${IC(dl ? 'trash' : fr ? 'snow' : 'sun', 28)}</div>
-    <h2>${dl ? 'Удалить аккаунт' : fr ? 'Заморозить PRO' : 'Разморозить PRO'}</h2>
+  openSheet(`<div class="fz ${dl ? 'del' : fr ? 'ice' : 'sun'}"><div class="fz-orb">${IC(gu ? 'link' : dl ? 'trash' : fr ? 'snow' : 'sun', 28)}</div>
+    <h2>${gu ? 'Отвязать Google' : dl ? 'Удалить аккаунт' : fr ? 'Заморозить PRO' : 'Разморозить PRO'}</h2>
     <div id="fz-stage"><ul class="fz-facts">${facts.map(f => `<li>${IC('check', 13)}<span>${f}</span></li>`).join('')}</ul>
     <div class="cap fz-cap">Для подтверждения пришлём 4-значный код в Telegram-бот.</div>
     <button type="button" class="btn primary fz-go" id="fz-go" data-act="fzsend">${IC('chev', 16)}Получить код в боте</button>
@@ -6088,7 +6095,7 @@ function fzStage(h){ const g = $('#fz-stage'); if (!g) return; g.classList.remov
 async function fzSend(){
   if (FZ.busy) return; FZ.busy = true; const b = $('#fz-go'); if (b) b.classList.add('ld');
   try {
-    const j = await apiAuth('/pro/freeze/start', {action:FZ.a});
+    const j = FZ.a === 'gunlink' ? await apiAuth(GAPI + '/unlink-start', {}) : await apiAuth('/pro/freeze/start', {action:FZ.a});
     if (j.status === 'undelivered') { toast('Код не отправился — открой бота VOOB, нажми «Start» и попробуй снова'); if (b) b.classList.remove('ld'); }
     else fzCode(j.status === 'soon');
   } catch (e) { toast(e.message || 'Нет связи'); if (b) b.classList.remove('ld'); }
@@ -6117,7 +6124,8 @@ document.addEventListener('focusin', e => { if (e.target.id === 'fz-in') fzCells
 async function fzVerify(code){
   if (FZ.busy) return; FZ.busy = true; const box = $('#fz-code'); if (box) box.classList.add('ld');
   try {
-    const j = await apiAuth('/pro/freeze/verify', {action:FZ.a, code});
+    const j = FZ.a === 'gunlink' ? await apiAuth(GAPI + '/unlink-verify', {code}) : await apiAuth('/pro/freeze/verify', {action:FZ.a, code});
+    if (FZ.a === 'gunlink' && j.status === 'ok') { gsUnlinked(); FZ.busy = false; return; }
     if (j.status === 'ok' && j.scheduled) { fzSched(j.pro); FZ.busy = false; return; }
     if (j.status === 'ok') { fzDone(j.pro); FZ.busy = false; return; }
     const msg = {wrong:`Неверный код · осталось попыток: ${j.left}`, expired:'Код истёк — запроси новый', locked:'Слишком много попыток — запроси новый код'}[j.status] || 'Не получилось';
@@ -7031,7 +7039,9 @@ const ACT = {
   wlnew: () => wlStart(),
   wlskip: () => { try { sessionStorage.setItem('voob_web_skip', '1'); } catch (e) {} clearInterval(WL.timer); clearInterval(WL.tick); const w = $('#wl'); if (w) w.classList.remove('show'); },
   weblogout: () => { hap.tap(); webLogout(); },
-  gsunlink: () => { hap.tap(); gsUnlink(); },
+  gslogin: () => { hap.tap(); gsAsk(gsLogin); },
+  gslink: () => { hap.tap(); gsAsk(gsLink); },
+  gsunlink: () => { hap.tap(); fzOpen('gunlink'); },
   tophone: () => { hap.tap(); openSheet(`<div class="phqr"><h2>Открыть на телефоне</h2><div class="qrb">${qrSvg('https://t.me/voobkz_bot/VOOB')}</div><p class="cap">Наведи камеру телефона на QR-код: VOOB откроется в Telegram.</p><button type="button" class="btn ghost" data-act="close" style="width:100%">Закрыть</button></div>`, {type:'phqr'}); },
   tosite: el => { hap.tap(); const r = el.getBoundingClientRect(); VOOB_LU('out', '', () => { location.href = 'https://voob.kz/?from=app&t=' + Date.now(); }, {x:r.left + r.width / 2, y:r.top + r.height / 2}); },
   ctopen: el => { const u = el.dataset.u; hap.tap();
@@ -7396,64 +7406,66 @@ try {
   }
 } catch (e) {}
 addEventListener('pageshow', ev => { if (ev.persisted) { const o = document.getElementById('luv'); if (o) o.remove(); } });
-/* v737: Google как дополнительный вход в WEB. Аккаунт остаётся Telegram-овым: Google привязывается в Настройках и потом открывает тот же профиль */
+/* v739: Google как дополнительный вход в WEB. Аккаунт остаётся Telegram-овым: Google привязывается в Настройках и потом открывает тот же профиль.
+   Своя кнопка + окно выбора аккаунта Google (без iframe): настройки перерисовываются, а iframe-кнопка при этом терялась */
 const GCID = '641775711992-ra7vdtqtp74egslhfd0j2cqj12hqgn6c.apps.googleusercontent.com';
 const GAPI = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-google';
-const GS = {st:null, ready:null, busy:false};
+const GS = {st:null, ready:null, busy:false, cli:null};
 function gsLoad(){
   if (GS.ready) return GS.ready;
   GS.ready = new Promise((ok, no) => {
-    if (window.google && google.accounts && google.accounts.id) return ok();
+    if (window.google && google.accounts && google.accounts.oauth2) return ok();
     const sc = document.createElement('script'); sc.src = 'https://accounts.google.com/gsi/client'; sc.async = true;
     sc.onload = () => ok(); sc.onerror = () => { GS.ready = null; no(new Error('gsi')); };
     document.head.appendChild(sc);
   });
   return GS.ready;
 }
-async function gsButton(host, cb, text, w){
-  if (!host) return;
+function gsAsk(cb){
+  if (!(window.google && google.accounts && google.accounts.oauth2)) { gsLoad().catch(() => {}); toast('Google ещё загружается — нажми ещё раз'); return; }
   try {
-    await gsLoad();
-    google.accounts.id.initialize({client_id:GCID, callback:r => cb(r && r.credential), auto_select:false, use_fedcm_for_prompt:true});
-    host.innerHTML = '';
-    const dark = document.documentElement.classList.contains('dark') || matchMedia('(prefers-color-scheme: dark)').matches;
-    google.accounts.id.renderButton(host, {type:'standard', theme:dark ? 'filled_black' : 'outline', size:'large', shape:'pill', text:text || 'signin_with', logo_alignment:'left', width:w || Math.min(280, host.clientWidth || 280), locale:'ru'});
-  } catch (e) { host.innerHTML = '<span class="gs-err">Google сейчас недоступен</span>'; }
+    GS.cli = google.accounts.oauth2.initTokenClient({client_id:GCID, scope:'openid email profile',
+      callback: r => { if (r && r.access_token) cb(r.access_token); },
+      error_callback: er => { if (er && er.type === 'popup_failed_to_open') toast('Браузер заблокировал окно Google — разреши всплывающие окна для app.voob.kz'); }});
+    GS.cli.requestAccessToken({prompt:'select_account'});
+  } catch (e) { toast('Не получилось открыть Google'); }
 }
-async function gsLogin(cred){
-  const m = $('#wl-gmsg'); if (!cred) return;
+async function gsLogin(tok){
+  const m = $('#wl-gmsg'); if (m) m.textContent = '';
   try {
-    const j = await api(GAPI + '/login', {credential:cred, client:'web'});
+    const j = await api(GAPI + '/login', {credential:tok, client:'web'});
     if (j.status === 'ok') {
       try { localStorage.setItem(WEBK, JSON.stringify({token:j.token, user:j.user})); } catch (e) {}
       wlSet('ok'); setTimeout(() => location.reload(), 900);
-    } else if (m) m.textContent = 'Этот Google пока не привязан к профилю VOOB. Войди через Telegram, затем в Настройках нажми «Привязать Google».';
+    } else if (m) m.textContent = 'Этот Google пока не привязан к профилю VOOB. Войди через Telegram, затем в Настройках нажми «Привязать».';
   } catch (e) { if (m) m.textContent = e.message || 'Не получилось войти через Google'; }
 }
 async function gsLoadStatus(){
+  if (GS.busy) return; GS.busy = true;
   try { GS.st = await apiAuth(GAPI + '/status', {}); } catch (e) { GS.st = {linked:false, email:'', err:1}; }
-  const h = $('#gs-host'); if (h) gsMount();
+  GS.busy = false; gsMount();
 }
 function gsMount(){
   const c = $('#gs-card'); if (!c) return;
+  gsLoad().catch(() => {});
   if (!GS.st) { gsLoadStatus(); return; }
   const st = GS.st;
   c.classList.toggle('on', !!st.linked);
-  c.querySelector('#gs-state').innerHTML = '<b>Вход через Google</b>' + (st.linked ? '<small><i class="gsc-dot"></i>Привязан' + (st.email ? ' · ' + esc(st.email) : '') + '</small>' : '<small>Не привязан. Telegram остаётся основным входом, Google — запасной</small>');
-  const h = c.querySelector('#gs-host');
-  h.hidden = !!st.linked;
+  c.querySelector('#gs-state').innerHTML = '<b>Вход через Google</b>' + (st.linked ? '<small><i class="gsc-dot"></i>Привязан' + (st.email ? ' · ' + esc(st.email) : '') + '</small>' : '<small>Не привязан · Telegram остаётся основным входом</small>');
+  c.querySelector('#gs-link').hidden = !!st.linked;
   c.querySelector('#gs-unl').hidden = !st.linked;
-  if (!st.linked) gsButton(h, gsLink, 'continue_with', 230);
 }
-async function gsLink(cred){
-  if (!cred || GS.busy) return; GS.busy = true;
-  try { const j = await apiAuth(GAPI + '/link', {credential:cred}); GS.st = {linked:true, email:j.email || ''}; toast('Google привязан'); }
+async function gsLink(tok){
+  if (!tok || GS.busy) return; GS.busy = true;
+  try { const j = await apiAuth(GAPI + '/link', {credential:tok}); GS.st = {linked:true, email:j.email || ''}; hap.ok(); toast('Google привязан'); }
   catch (e) { toast(e.message || 'Не получилось привязать Google'); }
   GS.busy = false; gsMount();
 }
-async function gsUnlink(){
-  try { await apiAuth(GAPI + '/unlink', {}); GS.st = {linked:false, email:''}; toast('Google отвязан'); } catch (e) { toast(e.message || 'Ошибка'); }
-  gsMount();
+function gsUnlinked(){
+  clearInterval(FZ.tm); GS.st = {linked:false, email:''}; hap.ok();
+  fzStage(`<div class="fz-ok"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23"/><path d="M15 27l8 8 14-16"/></svg></div>
+    <div class="fz-okt">Google отвязан</div><div class="cap fz-cap">Вход в WEB теперь только через Telegram. Привязать Google можно снова в любой момент.</div>`);
+  setTimeout(() => { if (sheetCtx && sheetCtx.type === 'fz') closeSheet(); gsMount(); }, 2000);
 }
 const WL = {code:'', link:'', t0:0, exp:600, timer:0, tick:0};
 async function webLogout(silent){
@@ -7515,7 +7527,7 @@ function showWebLogin(){
         <h1>Войди через Telegram</h1>
         <p class="sub">Тренировки, друзья и вся статистика — на большом экране. Пароли не нужны.</p>
         <ol class="wl-st"><li>Наведи камеру телефона на QR-код</li><li>Нажми «Запустить» в чате с ботом VOOB</li><li>Вернись сюда — вход произойдёт сам</li></ol>
-        <div class="wl-acts"><button type="button" class="btn primary" data-act="wlopen">Открыть в Telegram</button><button type="button" class="wl-link" data-act="wlskip">Продолжить без входа</button></div><div class="wl-g"><div class="wl-or"><span>или</span></div><div id="wl-gh" class="gs-host"></div><div id="wl-gmsg" class="gs-msg"></div></div></div>
+        <div class="wl-acts"><button type="button" class="btn primary" data-act="wlopen">Открыть в Telegram</button><button type="button" class="wl-link" data-act="wlskip">Продолжить без входа</button></div><div class="wl-g"><div class="wl-or"><span>или</span></div><button type="button" class="wl-gbtn" data-act="gslogin"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Войти через Google</span></button><div id="wl-gmsg" class="gs-msg"></div></div></div>
       <div class="wl-r"><div class="wl-qr load" id="wl-qr"><span id="wl-svg"></span>
         <div class="wl-ov ld"><i class="wl-sp"></i></div>
         <div class="wl-ov ex">Код устарел<button type="button" class="btn small" data-act="wlnew">Новый QR</button></div>
@@ -7525,7 +7537,7 @@ function showWebLogin(){
     </div>`;
     document.body.appendChild(el);
   }
-  el.classList.add('show'); wlStart(); gsButton($('#wl-gh'), gsLogin, 'signin_with');
+  el.classList.add('show'); wlStart(); gsLoad().catch(() => {});
 }
 
 /* ============================================================ запуск ==== */

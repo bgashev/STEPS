@@ -1,4 +1,4 @@
-// VOOB — вход через Google (Supabase Edge Function voob-google) · v1.0
+// VOOB — вход через Google (Supabase Edge Function voob-google) · v1.1 (access_token, отвязка по коду из бота)
 // Аккаунт VOOB = Telegram ID. Google только привязывается к нему и открывает тот же профиль.
 // Таблицы: google_links(google_sub pk, tg_id unique, email), sessions(token_hash, tg_id, device), users.
 import { createClient } from "npm:@supabase/supabase-js@2";
@@ -52,14 +52,14 @@ async function userInfo(tgId: number) {
   return data ?? { tg_id: tgId };
 }
 
-async function googleVerify(idToken: unknown): Promise<{ sub: string; email: string } | null> {
-  if (typeof idToken !== "string" || idToken.length < 100 || idToken.length > 4096) return null;
-  const r = await fetch("https://oauth2.googleapis.com/tokeninfo?id_token=" + encodeURIComponent(idToken)).catch(() => null);
+// Клиент присылает access_token окна выбора аккаунта Google; проверяем его у Google и сверяем, что он выдан именно нашему приложению
+async function googleVerify(tok: unknown): Promise<{ sub: string; email: string } | null> {
+  if (typeof tok !== "string" || tok.length < 20 || tok.length > 4096) return null;
+  const r = await fetch("https://oauth2.googleapis.com/tokeninfo?access_token=" + encodeURIComponent(tok)).catch(() => null);
   if (!r || !r.ok) return null;
   const t = await r.json().catch(() => null);
-  if (!t || t.aud !== GOOGLE_CLIENT_ID || !t.sub) return null;
-  if (t.iss !== "accounts.google.com" && t.iss !== "https://accounts.google.com") return null;
-  if (Number(t.exp) * 1000 < Date.now()) return null;
+  if (!t || !t.sub || (t.aud !== GOOGLE_CLIENT_ID && t.azp !== GOOGLE_CLIENT_ID)) return null;
+  if (Number(t.expires_in) <= 0) return null;
   const ok = t.email_verified === true || t.email_verified === "true";
   return { sub: String(t.sub), email: ok ? String(t.email ?? "") : "" };
 }
@@ -90,10 +90,49 @@ async function routeStatus(body: any) {
   const { data } = await db.from("google_links").select("email").eq("tg_id", me).maybeSingle();
   return json({ linked: !!data, email: data?.email ?? "" });
 }
-async function routeUnlink(body: any) {
+const BOT_TOKEN = Deno.env.get("TELEGRAM_BOT_TOKEN") ?? "";
+const ACT = "google_unlink", ACT_TTL_MIN = 10, ACT_TRIES = 5;
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let r = 0;
+  for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return r === 0;
+}
+async function tgSend(chat: number, text: string) {
+  const r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: chat, parse_mode: "HTML", text }),
+  }).catch(() => null);
+  return !!(r && (await r.json().catch(() => ({}))).ok);
+}
+// Отвязка Google подтверждается 4-значным кодом, который приходит в Telegram-бота
+async function routeUnlinkStart(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
+  const { data: l } = await db.from("google_links").select("email").eq("tg_id", me).maybeSingle();
+  if (!l) return fail("Google не привязан", 409);
+  const { data: old } = await db.from("action_codes").select("created_at").eq("tg_id", me).eq("action", ACT).maybeSingle();
+  if (old && Date.now() - new Date(old.created_at).getTime() < 60000) return json({ status: "soon", ttl: ACT_TTL_MIN * 60 });
+  const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 10000).padStart(4, "0");
+  await db.from("action_codes").upsert({ tg_id: me, action: ACT, code_hash: await sha256(`act:${ACT}:${me}:${code}`), tries: 0,
+    created_at: new Date().toISOString() }, { onConflict: "tg_id,action" });
+  const sent = await tgSend(me, `🔓 Код для отвязки Google от VOOB: <b>${code}</b>\n\nПосле этого вход через Google перестанет открывать твой аккаунт. Вход через Telegram продолжит работать.\n\nДействует ${ACT_TTL_MIN} минут. Если это не ты — никому не говори код и просто игнорируй сообщение.`);
+  return json({ status: sent ? "sent" : "undelivered", ttl: ACT_TTL_MIN * 60 });
+}
+async function routeUnlinkVerify(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const code = String(body?.code ?? "").trim();
+  const { data: r } = await db.from("action_codes").select("code_hash, tries, created_at").eq("tg_id", me).eq("action", ACT).maybeSingle();
+  if (!r || Date.now() - new Date(r.created_at).getTime() > ACT_TTL_MIN * 60000) return json({ status: "expired" });
+  if (r.tries >= ACT_TRIES) return json({ status: "locked" });
+  if (!/^\d{4}$/.test(code) || !safeEqual(await sha256(`act:${ACT}:${me}:${code}`), r.code_hash)) {
+    await db.from("action_codes").update({ tries: r.tries + 1 }).eq("tg_id", me).eq("action", ACT);
+    return json({ status: r.tries + 1 >= ACT_TRIES ? "locked" : "wrong", left: ACT_TRIES - r.tries - 1 });
+  }
+  await db.from("action_codes").delete().eq("tg_id", me).eq("action", ACT);
   await db.from("google_links").delete().eq("tg_id", me);
+  tgSend(me, "✅ Google отвязан от аккаунта VOOB. Вход в WEB — через Telegram.");
   return json({ status: "ok" });
 }
 
@@ -107,7 +146,8 @@ Deno.serve(async (req) => {
       case "login": return await routeLogin(body);
       case "link": return await routeLink(body);
       case "status": return await routeStatus(body);
-      case "unlink": return await routeUnlink(body);
+      case "unlink-start": return await routeUnlinkStart(body);
+      case "unlink-verify": return await routeUnlinkVerify(body);
     }
     return fail("Неизвестный маршрут " + route, 404);
   } catch (e) {
