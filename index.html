@@ -830,6 +830,17 @@ html.web .fsum .fi{width:30px;height:30px;border-radius:50%;display:grid;place-i
 html.web .fsum b{font-size:24px;letter-spacing:-.7px;line-height:1.1;position:relative;z-index:1}
 html.web .fsum b u{text-decoration:none;font-size:13px;color:var(--muted);letter-spacing:0;font-weight:650}
 html.web .fsum small{color:var(--muted);font-size:12px;position:relative;z-index:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* v1.673: WEB · «План на сегодня» — одна компактная строка вместо трёх */
+html.web .plsug{display:flex;align-items:center;gap:14px;padding:10px 12px 10px 14px;border-radius:18px}
+html.web .hm .plsug{margin-bottom:14px}
+html.web .plsug .ph{display:contents}
+html.web .plsug .pd{width:34px;height:34px;border-radius:11px}
+html.web .plsug .pt{flex:1 1 auto;white-space:nowrap}
+html.web .plsug .pv{order:1;margin:0;flex:0 1 auto;gap:6px}
+html.web .plsug .pc{flex:0 0 auto;padding:6px 11px;border-radius:99px;background:color-mix(in srgb,var(--text) 7%,transparent);font-size:12.5px}
+html.web .plsug .pb{order:2;gap:8px}
+html.web .plsug .ib{width:38px;height:38px}
+@media (max-width:1500px){html.web .plsug .pt small{display:none}}
 /* v1.671: WEB · карточка друга «Неделя в столбиках» */
 html.web .fc4{flex-direction:column;align-items:stretch;gap:12px;padding:14px 16px;border-radius:22px;transition:transform .35s cubic-bezier(.3,1.3,.5,1),box-shadow .35s,border-color .3s}
 html.web .fc4:hover{transform:translateY(-3px);box-shadow:0 18px 34px -18px rgba(0,0,0,.7)}
@@ -2830,7 +2841,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.672';
+const APP = 'VOOB (by BGASHEV) Mini App v1.673';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
