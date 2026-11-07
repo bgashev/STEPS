@@ -1952,6 +1952,14 @@ html.web .prof.pc .prof-act{margin:0;justify-content:flex-start}
 #view.nav-in>*,#view.nav-out>*{transform-origin:50% 0;will-change:transform,opacity,filter}
 #view.nav-in>*{animation:navIn .75s cubic-bezier(.22,1,.36,1) backwards}
 #view.nav-out>*{animation:navOut .75s cubic-bezier(.22,1,.36,1) backwards}
+/* v1.696: иконки соцсетей в шапке настроек — на 30% меньше */
+.prof.pc .prof-act .soci{width:24px;height:24px}
+.prof.pc .prof-act .soci .lg{width:34px;height:34px;transform:scale(.7)}
+.prof.pc .prof-act .socs{gap:5px}
+/* v1.696 WEB: переход в «Настройки»/«Персонализация» — одно мягкое появление всей страницы вместо анимации каждого блока (она переигрывалась при дозагрузке данных и давала мерцание) */
+@keyframes navFade{from{opacity:0}}
+html.web #view.nav-in>*,html.web #view.nav-out>*{animation:none!important;will-change:auto;transform:none}
+html.web #view.nav-in,html.web #view.nav-out{animation:navFade .4s ease-out backwards}
 #view.nav-in>:nth-child(2),#view.nav-out>:nth-child(2){animation-delay:.05s}
 #view.nav-in>:nth-child(3),#view.nav-out>:nth-child(3){animation-delay:.1s}
 #view.nav-in>:nth-child(4),#view.nav-out>:nth-child(4){animation-delay:.15s}
@@ -3009,7 +3017,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.695';
+const APP = 'VOOB (by BGASHEV) Mini App v1.696';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6179,7 +6187,7 @@ function weightIntro(v){
     if (k < 1 && hg.isConnected) requestAnimationFrame(step); else hg.textContent = m[1] + m[2]; };
   requestAnimationFrame(step);
 }
-let _rTab = null, _rHtml = '';
+let _rTab = null, _rHtml = '', _navT = 0, _navDef = 0;
 /* v1.442: морфинг DOM. Повторный render той же вкладки (пришли друзья, значки, фото…) больше не пересоздаёт
    страницу целиком: кольца, полоски, фон профиля и аватарки остаются теми же узлами, анимации не стартуют заново. */
 const KEEP_ATTR = new Set(['data-done', 'data-zh', 'data-ph']);   // ставит сам скрипт (счётчик минут уже отыграл)
@@ -6231,7 +6239,7 @@ function morphEl(o, n){
   morphKids(o, n);
 }
 function meNav(cls){   // v1.484: плавный «пуш» между профилем и настройками, как в iOS
-  window.scrollTo(0, 0); _rTab = null; render();
+  window.scrollTo(0, 0); _rTab = null; _navT = performance.now(); render();
   const v = $('#view'); v.classList.remove('nav-in', 'nav-out'); void v.offsetWidth; v.classList.add(cls);
   setTimeout(() => v.classList.remove(cls), 1000);
 }
@@ -6271,6 +6279,7 @@ function render(){
   if (inWeb && inTG && S.tab === 'me' && !S.meSet && !S.pers && !S.fprof) S.tab = 'home';   // v1.637 WEB: «Я» и «Главная» — одна страница
   const html = S.fprof ? viewFProf() : VIEWS[S.tab](), v = $('#view'), rkey = S.fprof ? 'fp' : S.tab;
   const same = _rTab === rkey;
+  if (same && inWeb && _navT && performance.now() - _navT < 700) { clearTimeout(_navDef); _navDef = setTimeout(render, Math.max(30, _navT + 720 - performance.now())); return; }   // v1.696: пока страница «въезжает», дозагрузки данных ждут — иначе она перерисовывалась на глазах
   if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
   v.classList.toggle('w2', inWeb && (html.indexOf('class="me-l"') > -1 || html.indexOf('class="mset2"') > -1 || html.indexOf('class="pz2"') > -1));   // v1.636: ширину столбцов задаём до вставки — иначе страница сначала рисуется узкой и «прыгает»
   v.classList.toggle('rr', same);                          // та же вкладка: обновляем без повторных «появлений»
