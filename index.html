@@ -822,11 +822,6 @@ html.web .head{position:relative}
   transition:clip-path .46s cubic-bezier(.2,.85,.2,1),opacity .28s,transform .46s cubic-bezier(.2,.85,.2,1),visibility 0s .46s}
 .invpop.open{pointer-events:auto;visibility:visible;clip-path:inset(-20px -20px -40px 0 round 22px);opacity:1;transform:none;transition-delay:0s}
 .ip-in{padding:16px;border-radius:22px;border:1px solid var(--border);background:linear-gradient(165deg,color-mix(in srgb,var(--surface2) 62%,var(--surface)),var(--surface));backdrop-filter:blur(14px) saturate(1.1);-webkit-backdrop-filter:blur(14px) saturate(1.1);box-shadow:0 24px 60px -20px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.06)}
-.ip-fxs{display:flex;align-items:center;gap:5px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--border);font-size:11px;color:var(--mu,var(--muted))}
-.ip-fxs span{margin-right:auto;color:var(--muted)}
-.ip-fxs button{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:transparent;color:var(--muted);font:inherit;font-weight:800;font-size:11px;cursor:pointer}
-.ip-fxs button.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
-#ipfx{position:fixed;inset:0;z-index:40;pointer-events:none;overflow:hidden;transition:opacity .45s}
 .ip-t{font-size:13px;font-weight:800;letter-spacing:.02em;margin:0 2px 12px}
 .ip-find{display:flex;align-items:center;gap:6px;padding:4px 4px 4px 14px;border-radius:16px;background:var(--surface2);border:1.5px solid transparent;transition:border-color .25s,box-shadow .25s}
 .ip-find:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
@@ -2717,7 +2712,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.657';
+const APP = 'VOOB (by BGASHEV) Mini App v1.658';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4347,44 +4342,16 @@ function startTicker(){
 
 /* v1.641 WEB: «Добавить друга» — компактная плашка, выезжающая влево из кнопки в шапке */
 
-/* v1.653: частицы вокруг плашки «Добавить друга» — 6 вариантов на выбор (цифры внизу плашки) */
-function ipFxMode(){ try { return +localStorage.getItem('voob_ipfx') || 1; } catch (e) { return 1; } }
-function invFxClear(){ const L = document.getElementById('ipfx'); if (!L) return; L.style.opacity = '0'; clearTimeout(invFxClear.t); invFxClear.t = setTimeout(() => { if (L.style.opacity === '0') L.innerHTML = ''; }, 500); }
-function invFx(){
-  const pop = document.querySelector('.ip-in'); if (!pop || !S.inv) return;
-  if (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches) return;
-  let L = document.getElementById('ipfx');
-  if (!L) { L = document.createElement('div'); L.id = 'ipfx'; document.body.appendChild(L); }
-  clearTimeout(invFxClear.t); L.innerHTML = ''; L.style.opacity = '1';
-  const m = ipFxMode(), r = pop.getBoundingClientRect(), C = ['#9a6bff', '#5b8cff', '#7ee0b0', '#f2cf5b', '#f09a4f', '#ec6aa8'], rnd = (a, b) => a + Math.random() * (b - a), pick = a => a[Math.floor(Math.random() * a.length)];
-  const per = () => { const w = r.width, h = r.height, t = Math.random() * (2 * (w + h)); let x, y, nx = 0, ny = 0;
-    if (t < w) { x = r.left + t; y = r.top; ny = -1; } else if (t < w + h) { x = r.right; y = r.top + (t - w); nx = 1; } else if (t < 2 * w + h) { x = r.right - (t - w - h); y = r.bottom; ny = 1; } else { x = r.left; y = r.bottom - (t - 2 * w - h); nx = -1; }
-    return {x, y, nx: nx + rnd(-.35, .35), ny: ny + rnd(-.35, .35)}; };
-  const mk = (css, html) => { const e = document.createElement('i'); e.style.cssText = 'position:absolute;left:0;top:0;display:block;will-change:transform,opacity;' + css; if (html) e.textContent = html; L.appendChild(e); return e; };
-  const fly = (e, p, d, o) => { const dx = p.nx * d + (o.dx || 0), dy = p.ny * d + (o.dy || 0), rot = o.rot || 0, s0 = o.s0 == null ? 1 : o.s0, s1 = o.s1 == null ? .4 : o.s1;
-    e.animate([{opacity: 0, transform: `translate(${p.x}px,${p.y}px) rotate(0deg) scale(${s0})`}, {opacity: o.peak || 1, offset: o.pk || .18}, {opacity: 0, transform: `translate(${p.x + dx}px,${p.y + dy}px) rotate(${rot}deg) scale(${s1})`}],
-      {duration: o.dur, delay: o.delay || 0, easing: 'cubic-bezier(.15,.7,.25,1)', fill: 'both'}); };
-  const arc = (e, p, o) => { const tx = -p.ny, ty = p.nx, cv = o.cv || 0, d = o.d, g = o.g || 0;
-    e.animate([{opacity: 0, transform: `translate(${p.x}px,${p.y}px) scale(${o.s0 || 1})`}, {opacity: 1, offset: .15},
-      {opacity: o.mid == null ? .9 : o.mid, offset: .55, transform: `translate(${p.x + p.nx * d * .62 + tx * cv * .7}px,${p.y + p.ny * d * .62 + ty * cv * .7 + g * .3}px) scale(${o.sm || .8})`},
-      {opacity: 0, transform: `translate(${p.x + p.nx * d + tx * cv}px,${p.y + p.ny * d + ty * cv + g}px) scale(${o.s1 || .15})`}], {duration: o.dur, delay: o.delay || 0, easing: 'cubic-bezier(.12,.7,.25,1)', fill: 'both'}); };
-  const dot = (z, c, glow) => mk(`width:${z}px;height:${z}px;border-radius:50%;background:${glow > 1 ? '#fff' : c};box-shadow:0 0 ${z * 3}px ${glow > 1 ? z * .6 : 0}px ${c}`);
-  if (m === 1) for (let i = 0; i < 90; i++) { const c = pick(C), z = rnd(2, 4.8); arc(dot(z, c, 2), per(), {d: rnd(46, 118), dur: rnd(800, 1500), delay: rnd(0, 380)}); }
-  else if (m === 2) for (let i = 0; i < 110; i++) { const c = pick(C), z = rnd(1.5, 3.6), e = dot(z, c, 1), p = per(), d = rnd(28, 96), g = rnd(18, 48), dl = rnd(0, 700), du = rnd(1600, 2600), tw = Math.random() < .5;
-    e.animate([{opacity: 0, transform: `translate(${p.x}px,${p.y}px) scale(.5)`}, {opacity: 1, offset: .12}, {opacity: tw ? .25 : .9, offset: .38}, {opacity: 1, offset: .6}, {opacity: tw ? .2 : .8, offset: .8, transform: `translate(${p.x + p.nx * d * .9}px,${p.y + p.ny * d * .9 + g * .7}px) scale(1)`}, {opacity: 0, transform: `translate(${p.x + p.nx * d}px,${p.y + p.ny * d + g}px) scale(.3)`}], {duration: du, delay: dl, easing: 'cubic-bezier(.15,.65,.3,1)', fill: 'both'}); }
-  else for (let i = 0; i < 100; i++) { const c = pick(C), z = rnd(1.8, 4.2), sg = Math.random() < .5 ? -1 : 1; arc(dot(z, c, 2), per(), {d: rnd(40, 100), cv: sg * rnd(34, 80), dur: rnd(1200, 2100), delay: rnd(0, 800), s1: .1, mid: 1}); }
-}
 function invPop(d){
   return `<div class="invpop${S.inv ? ' open' : ''}" id="inv"><div class="ip-in">
     <div class="ip-t">Добавить друга</div>
     <div class="ip-find"><span class="at">@</span><input class="inp" id="fr-code" placeholder="Код или ник" maxlength="24" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"><button class="ip-go" data-act="fradd" aria-label="Добавить">${IC('chev', 18)}</button></div>
     <div class="ip-or"><span>или поделись</span></div>
     <div class="ip-row"><button type="button" class="ip-b" data-act="frshare">${IC('export', 16)}<span>Ссылка</span></button><button type="button" class="ip-b ip-c" data-act="frcode" aria-label="Скопировать код"><b>${esc(d.code)}</b>${IC('link', 15)}</button></div>
-    <div class="ip-fxs"><span>эффект</span>${[1, 2, 3].map(i => `<button type="button" data-act="ipfx" data-v="${i}" class="${ipFxMode() === i ? 'on' : ''}">${i}</button>`).join('')}</div>
   </div></div>`;
 }
 if (inWeb) {
-  const invClose = () => { if (!S.inv) return; S.inv = false; invFxClear(); const r = document.getElementById('inv'); if (r) r.classList.remove('open'); const b = document.querySelector('[data-act="frinv"]'); if (b) { b.classList.remove('on'); const l = b.querySelector('.ibl'); if (l) l.textContent = 'Добавить друга'; } };
+  const invClose = () => { if (!S.inv) return; S.inv = false; const r = document.getElementById('inv'); if (r) r.classList.remove('open'); const b = document.querySelector('[data-act="frinv"]'); if (b) { b.classList.remove('on'); const l = b.querySelector('.ibl'); if (l) l.textContent = 'Добавить друга'; } };
   document.addEventListener('click', e => { if (S.inv && S.tab === 'friends' && !e.target.closest('#inv,[data-act="frinv"]')) invClose(); }, true);
   document.addEventListener('keydown', e => { if (e.key === 'Escape') invClose(); });
 }
@@ -6243,8 +6210,7 @@ const ACT = {
     db.plans.splice(idx, 1); tombstone('plan', p); save(); hap.warn(); render(); if (inForm) closeSheet(); else openPlans();
     toast('План удалён', 'Отменить', () => { db.plans.splice(Math.min(idx, db.plans.length), 0, p); touch('plan', p); save(); render(); if (sheetCtx && sheetCtx.type === 'plans') openPlans(); }); },
   frload: () => { FR.err = ''; hap.tap(); const b = document.querySelector('[data-act=frload]'); if (b) b.classList.add('spin'); loadFriends(true); },
-  frinv: el => { S.inv = !S.inv; hap.imp(); el.classList.toggle('on', S.inv); const r = $('#inv'); if (r) r.classList.toggle('open', S.inv); const l = el.querySelector('.ibl'); if (l) l.textContent = S.inv ? 'Закрыть' : 'Добавить друга'; if (inWeb) { if (S.inv) { setTimeout(() => { const i = $('#fr-code'); if (i) i.focus(); }, 280); setTimeout(invFx, 200); } else invFxClear(); } },
-  ipfx: el => { try { localStorage.setItem('voob_ipfx', el.dataset.v); } catch (e) {} document.querySelectorAll('.ip-fxs button').forEach(b => b.classList.toggle('on', b === el)); invFx(); hap.tap(); },
+  frinv: el => { S.inv = !S.inv; hap.imp(); el.classList.toggle('on', S.inv); const r = $('#inv'); if (r) r.classList.toggle('open', S.inv); const l = el.querySelector('.ibl'); if (l) l.textContent = S.inv ? 'Закрыть' : 'Добавить друга'; if (inWeb && S.inv) setTimeout(() => { const i = $('#fr-code'); if (i) i.focus(); }, 280); },
   frzoom: el => openZoom(+el.dataset.id, el),
   zclose: () => closeZoom(),
   frall: el => { const id = +el.dataset.id, f = FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me && FR.data.me.tg_id === id ? FR.data.me : null)); const fl = FR.profBy.get(id); if (!f || !fl) return; hap.tap();
