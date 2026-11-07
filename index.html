@@ -2999,8 +2999,8 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 html.web #wbg{display:block}
 #wbg.on{opacity:1}
 #wbg .wbl{position:absolute;inset:0}#wbg .wbl.nw{animation:wblin .65s ease both}@keyframes wblin{from{opacity:0}}
-#wbg .hbgfx{position:absolute;left:-12%;top:-12%;width:124%;height:124%;inset:auto;z-index:0;border-radius:0;animation:none;filter:blur(42px) saturate(1.35);transform:translateZ(0)}
-#wbg .wbm{position:absolute;inset:0;display:block;background:linear-gradient(180deg,rgba(9,9,13,.30),rgba(9,9,13,.50)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");background-blend-mode:normal}
+#wbg .hbgfx{position:absolute;left:-12%;top:-12%;width:124%;height:124%;inset:auto;z-index:0;border-radius:0;animation:none;filter:blur(60px) saturate(1.35);transform:translateZ(0)}
+#wbg .wbm{position:absolute;inset:0;display:block;background:linear-gradient(180deg,rgba(9,9,13,.30),rgba(9,9,13,.50)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E");background-blend-mode:normal}
 /* v1.707: левая колонка — без острых углов, фон профиля светлее */
 html.web #tabs{overflow:hidden;clip-path:inset(0 round 26px);isolation:isolate}
 html.web #tabs .tbi,html.web #tabs .tab{clip-path:none}
@@ -3077,9 +3077,9 @@ html.web .pzs::before{content:"";position:absolute;left:14px;right:14px;top:0;he
 html.web .pzs.chg::before,html.web .pzs.hov::before{opacity:1}
 html.web .pzs b{font-size:16px}
 /* v1.721: Персонализация — фон менее размыт (анимация видна лучше) и с лёгким зерном */
-#wbg.pz .hbgfx{filter:blur(16px) saturate(1.3)!important}
+#wbg.pz .hbgfx{filter:blur(34px) saturate(1.3)!important}
 #wbg.pz .wbm{opacity:.5}
-#wbg.pz::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.075;mix-blend-mode:overlay}
+#wbg::after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.15' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.16;mix-blend-mode:overlay}html[data-mode="light"] #wbg::after{opacity:.11}
 /* v1.720: мобильная карточка друга — крупнее кнопки, левый край размыт и рассеивается к 70% */
 .fc .rm{padding:10px;border-radius:14px}.fc .rm svg{width:24px;height:24px}
 .fc.fcb::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);-webkit-mask-image:linear-gradient(90deg,#000 0,rgba(0,0,0,.85) 22%,transparent 70%);mask-image:linear-gradient(90deg,#000 0,rgba(0,0,0,.85) 22%,transparent 70%)}
@@ -3243,7 +3243,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.744';
+const APP = 'VOOB (by BGASHEV) Mini App v1.745';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
