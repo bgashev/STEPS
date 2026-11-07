@@ -2575,7 +2575,10 @@ html.web .mset-top:has(> [data-act="fpback"])>*{display:none}   /* WEB: подп
 @media (min-width:1320px){
  /* v1.641: на широком экране «Тренировка / Взвеситься» живёт в боковой панели под меню, а не плавает над контентом */
  html.web #fab.wdock,html.web #fab.wdock.center{left:auto;bottom:auto;top:42px;right:max(28px,calc((100vw - 264px - 1240px) / 2));width:auto;transform:none;z-index:9}
- html.web #fab.hide{transform:translateY(-8px) scale(.96)}
+ html.web #fab.hide{transform:translateY(-6px) scale(.94);filter:blur(10px)}
+ html.web #fab.wdock,html.web #fab.wdock.center{transition:opacity .6s cubic-bezier(.22,.7,.2,1),transform .7s cubic-bezier(.2,.9,.25,1),filter .6s cubic-bezier(.22,.7,.2,1)}
+ html.web #fab.first{transition:none!important;animation:fabInW .8s cubic-bezier(.2,.9,.25,1) both}
+ @keyframes fabInW{from{opacity:0;transform:translateY(-8px) scale(.92);filter:blur(12px)}60%{filter:blur(0)}to{opacity:1;transform:none;filter:blur(0)}}
  html.web #fab .wd-add,html.web #fab.mini .wd-add{height:46px;padding:0 20px 0 16px;gap:8px;justify-content:center;border-radius:999px;background:var(--accent)!important;color:var(--on-accent)!important;border:0;box-shadow:0 8px 22px -10px var(--accent)!important}
  html.web #fab.mini .fl{display:inline-block}
  html.web #fab .wd-add:hover{filter:brightness(1.08)}
@@ -2696,7 +2699,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.649';
+const APP = 'VOOB (by BGASHEV) Mini App v1.650';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
