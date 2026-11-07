@@ -2605,6 +2605,12 @@ html.web .inv-row .inv-code{margin-top:0;min-width:0}html.web .inv-row .inv-shar
 @media(min-width:900px){html.web .stv .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px;overflow:visible;margin:14px 0 0;padding:0;-webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
 html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 /* v1.607: фоновые текстуры (Оформление → Фон) */
+#wbg{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity 1.1s cubic-bezier(.3,.6,.3,1);overflow:hidden;background:#0b0b10;display:none}
+html.web #wbg{display:block}
+#wbg.on{opacity:1}
+#wbg .hbgfx{position:absolute;left:-12%;top:-12%;width:124%;height:124%;inset:auto;z-index:0;border-radius:0;animation:none;filter:blur(64px) saturate(1.05);transform:translateZ(0)}
+#wbg .wbm{position:absolute;inset:0;display:block;background:linear-gradient(180deg,rgba(9,9,13,.58),rgba(9,9,13,.72)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");background-blend-mode:normal}
+html.hbgl #texl{opacity:0!important}
 #texl{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:1;transition:opacity .5s ease;-webkit-mask-image:radial-gradient(ellipse 90% 70% at var(--mx,55%) var(--my,10%),#000 0,rgba(0,0,0,.86) 18%,rgba(0,0,0,.6) 38%,rgba(0,0,0,.3) 58%,rgba(0,0,0,.1) 76%,transparent 93%);mask-image:radial-gradient(ellipse 90% 70% at var(--mx,55%) var(--my,10%),#000 0,rgba(0,0,0,.86) 18%,rgba(0,0,0,.6) 38%,rgba(0,0,0,.3) 58%,rgba(0,0,0,.1) 76%,transparent 93%)}
 #texl.tex-aura{-webkit-mask-image:none;mask-image:none}
 .tex-grid{background-image:linear-gradient(var(--tl) 1px,transparent 1px),linear-gradient(90deg,var(--tl) 1px,transparent 1px);background-size:56px 56px,56px 56px}
@@ -2652,7 +2658,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 .texb.tex-rays{background-image:repeating-conic-gradient(from 0deg at 50% -50%,var(--tl2) 0 2deg,transparent 2deg 9deg)}.texb.tex-relief{background-size:150px 100px}
 </style>
 </head>
-<body><div id="texl" aria-hidden="true"></div>
+<body><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
 <main id="view"></main>
 <div id="fab" class="wdock center hide"><button class="wd-add" data-act="add" type="button"><span class="fi"></span><span class="fl"></span></button></div>
 <nav id="tabs"></nav>
@@ -2664,7 +2670,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.645';
+const APP = 'VOOB (by BGASHEV) Mini App v1.646';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5698,6 +5704,18 @@ function meNav(cls){   // v1.484: плавный «пуш» между проф�
   setTimeout(() => v.classList.remove(cls), 1000);
 }
 /* v1.639: «ползунок» переключателей (7 дней · 30 дней · …) — плавно переезжает на новое место, а не пропадает и появляется */
+/* v1.646 WEB, «Главная»: вместо текстуры — свой фон профиля на весь экран, сильно размытый, матовый и притемнённый */
+function updWBg(){
+  const el = document.getElementById('wbg'); if (!el) return;
+  const k = inWeb && inTG && S.tab === 'home' && !S.fprof && !S.meSet && !S.pers ? myBg() : '';
+  if ((el.dataset.k || '') === k) return;
+  clearTimeout(updWBg.t);
+  if (!k) { el.classList.remove('on'); document.documentElement.classList.remove('hbgl'); updWBg.t = setTimeout(() => { if (!el.classList.contains('on')) { el.innerHTML = ''; el.dataset.k = ''; } }, 1100); el.dataset.k = ''; return; }
+  el.dataset.k = k; el.classList.remove('on');
+  el.innerHTML = bgFx(k) + '<u class="wbm"></u>';
+  document.documentElement.classList.add('hbgl');
+  requestAnimationFrame(() => requestAnimationFrame(() => { if (el.dataset.k === k) el.classList.add('on'); }));
+}
 function segSlide(){
   document.querySelectorAll('.seg').forEach(sg => {
     const ind = sg.querySelector(':scope > .sgi'); if (!ind) return;
@@ -5733,6 +5751,7 @@ function render(){
   tb.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   tb.style.setProperty('--ti', ti);
   updPCard();
+  updWBg();
   segSlide();
   const hh = v.querySelector('.hero.hbg'), bt = hh ? hh.style.getPropertyValue('--bgt') : '';
   if (bt) v.style.setProperty('--bgt', bt); else v.style.removeProperty('--bgt');
