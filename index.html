@@ -2567,7 +2567,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.627';
+const APP = 'VOOB (by BGASHEV) Mini App v1.628';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3971,7 +3971,7 @@ async function loadFriends(){
   FR.loading = true;
   const hadSkeleton = !FR.data;
   let changed = true;
-  try { const j = await apiAuth('/friends', {today:isoOf(todayN())}); const sig = JSON.stringify(j); changed = sig !== FR.sig || !!FR.err; FR.sig = sig; FR.data = j; FR.err = ''; FR.at = Date.now(); askBadges([...(j.friends || []).map(x => x.tg_id), j.me && j.me.tg_id, ...(j.requests || []).map(x => x.tg_id)]); if (changed) lsSet(FRK, j); if (j.my_gifts) setGifts(j.my_gifts);
+  try { const j = await apiAuth('/friends', {today:isoOf(todayN())}); const sig = JSON.stringify(j); changed = sig !== FR.sig || !!FR.err; FR.sig = sig; FR.data = j; FR.err = ''; FR.at = Date.now(); askBadges([...(j.friends || []).map(x => x.tg_id), j.me && j.me.tg_id, ...(j.requests || []).map(x => x.tg_id)]); bgWarm((j.friends || []).map(x => x.tg_id)); if (changed) lsSet(FRK, j); if (j.my_gifts) setGifts(j.my_gifts);
     const n = (j.friends || []).length; if (db.settings.friends_n !== n) { db.settings.friends_n = n; persist(); } }
   catch (e) { FR.err = e.message || 'нет связи'; }
   FR.loading = false;
@@ -4236,13 +4236,23 @@ function fpBack(){
 async function openFriendProfile(id){
   const f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
   const c = FPC.get(id), cj = c && c.j;
+  // v1.628: страница открывается один раз и сразу готовой — профиль и фон друга ждём вместе (не дольше 0.7 с), а не дорисовываем по кускам
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const fresh = !!cj && Date.now() - c.at < 60000;
+  const pP = fresh ? null : apiAuth('/friends/profile', {tg_id:id, today:isoOf(todayN())}).then(j => { FPC.set(id, {j, at:Date.now()}); return j; });
+  if (pP) pP.catch(() => {});
+  let bP = null; if (!BGS_KNOWN.has(+id)) { loadBgs.asked = loadBgs.asked || new Map(); loadBgs.asked.set(+id, Date.now()); bP = loadBgs([+id]); }
+  if (!cj || bP) await Promise.race([Promise.all([cj ? 0 : (pP ? pP.catch(() => 0) : 0), bP || 0]), sleep(700)]);
+  if (S.fprof === id) return;   // уже открыт (двойное нажатие)
+  const c2 = FPC.get(id), cj2 = c2 && c2.j;
   if (!S.fprof) S.fprofY = window.scrollY;
   S.fprof = id;
   if (sheetCtx) closeSheet();
   render(); window.scrollTo(0, 0);
   try { if (ver('6.1')) tg.BackButton.show(); } catch (e) {}
-  if (cj) { loadFofPhotos(cj); if (Date.now() - c.at < 60000) return; }
-  try { const j = await apiAuth('/friends/profile', {tg_id:id, today:isoOf(todayN())}); FPC.set(id, {j, at:Date.now()});
+  if (cj2) loadFofPhotos(cj2);
+  if (!pP) return;
+  try { const j = await pP;
     if (S.fprof === id) { render(); loadFofPhotos(j); } }
   catch (e) { const el = $('#fp-load'); if (el) el.textContent = 'Не удалось загрузить: ' + e.message; }
 }
@@ -6450,7 +6460,9 @@ const bgEnsure = k => { if (!BG_CSS[k] || document.getElementById('bgc-' + k)) r
 const bgNorm = k => BG_OLD[k] || k;   // v1.435: фоны живые — слои CSS с анимацией, как в программе
 function bgFx(k){ k = bgNorm(k); if (BG_SVG[k]) bgEnsure(k); return BG_SVG[k] ? `<div class="hbgfx bg-${k}" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i></div>` : ''; }
 function bgTint(k){ try { k = bgNorm(k); const css = BG_CSS[k] || '', m = css.match(new RegExp('\\.bg-' + k + '\\{background:([^}]*)\\}')), cs = m ? (m[1].match(/#[0-9a-fA-F]{6}/g) || []) : []; return cs.length ? cs[cs.length > 1 ? 1 : 0] : ''; } catch (e) { return ''; } }
-const BGS = new Map();                      // tg_id -> фон карточки профиля (только у PRO)
+const BGSK = 'voob_bgs_' + UK, BGS_ST = lsGet(BGSK) || {};   // v1.628: фоны друзей помним между запусками — профиль сразу открывается с фоном, без «подгрузки»
+const BGS = new Map(Object.entries(BGS_ST).filter(([k, v]) => v).map(([k, v]) => [+k, v]));   // tg_id -> фон карточки профиля (только у PRO)
+const BGS_KNOWN = new Set(Object.keys(BGS_ST).map(Number));
 function bgOwned(k){ return isPro(); }   // фоны профиля — только PRO (отдельной выдачи фонов больше нет)
 function myBg(){ const k = bgNorm(db.settings.bg || ''); return BG_SVG[k] && bgOwned(k) ? k : ''; }
 function heroBg(){ return ''; }
@@ -6459,10 +6471,18 @@ async function loadBgs(ids){
   try {
     const j = await apiAuth(EXTRA_API, {action:'bgs', ids});
     let ch = false;
-    for (const id of ids) { const v = (j.bgs || {})[id] || ''; if ((BGS.get(+id) || '') !== v) { ch = true; if (v) BGS.set(+id, v); else BGS.delete(+id); } }
+    for (const id of ids) { const v = (j.bgs || {})[id] || ''; BGS_KNOWN.add(+id); if ((BGS.get(+id) || '') !== v) { ch = true; if (v) BGS.set(+id, v); else BGS.delete(+id); } }
+    lsSet(BGSK, Object.fromEntries([...BGS_KNOWN].map(n => [n, BGS.get(n) || ''])));
     if (ch) document.querySelectorAll('.hero[data-hid]').forEach(h => { const k = BGS.get(+h.dataset.hid) || '';
+      if (h.classList.contains('hbg') === !!k && (!k || h.querySelector(':scope > .hbgfx'))) return;   // у этой карточки ничего не поменялось
       h.classList.toggle('hbg', !!k); const o = h.querySelector(':scope > .hbgfx'); if (o) o.remove(); if (k) h.insertAdjacentHTML('afterbegin', bgFx(k)); });
   } catch (e) {}
+}
+// заранее узнаём фоны всех друзей (пока человек на вкладке «Друзья»), чтобы профиль открывался сразу с фоном
+function bgWarm(ids){
+  loadBgs.asked = loadBgs.asked || new Map(); const now = Date.now();
+  const need = (ids || []).map(Number).filter(n => n && now - (loadBgs.asked.get(n) || 0) > 300000);
+  if (!need.length) return; need.forEach(n => loadBgs.asked.set(n, now)); loadBgs(need);
 }
 /* гантели: что именно делаем (как в программе) */
 const DB_EX = [['curl', 'Подъём на бицепс', 'Бицепс'], ['press', 'Жим над головой', 'Плечи'], ['lateral', 'Разведение в стороны', 'Дельты'], ['row', 'Тяга в наклоне', 'Спина'],
