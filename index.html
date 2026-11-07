@@ -3188,11 +3188,23 @@ html.web #view .fp2 .fp-bar .fpb.off b,html.web #view .fp2 .fp-bar .fpb.frb:disa
 .gs-host[hidden],#gs-unl[hidden]{display:none!important}
 .gs-msg{margin-top:10px;font-size:13px;line-height:1.4;color:var(--muted)}
 .gs-err{font-size:13px;color:var(--muted)}
-.gs-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;justify-content:space-between}
-.gs-t{display:flex;flex-direction:column;gap:2px;min-width:0}
-.gs-t b{font-size:15px;font-weight:700;color:var(--text)}
-.gs-t small{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis}
 @media (max-width:760px){.wl-g{margin-inline:auto}.wl-g .gs-host{justify-content:center}}
+/* v738: карточка «Вход через Google» и низ настроек WEB — единая сетка: Google → Аккаунт → Выйти */
+.gsc{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;column-gap:16px;padding:16px 20px}
+.gsc-ic{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:var(--surface2);border:1px solid var(--border)}
+.gsc.on .gsc-ic{border-color:color-mix(in srgb,var(--green,#34d399) 55%,var(--border))}
+.gsc-t{display:flex;flex-direction:column;gap:3px;min-width:0}
+.gsc-t b{font-size:16px;font-weight:800;color:var(--text)}
+.gsc-t small{font-size:13px;line-height:1.35;color:var(--muted);display:flex;align-items:center;gap:7px;min-width:0}
+.gsc-dot{width:8px;height:8px;border-radius:50%;background:var(--green,#34d399);flex:none}
+.gsc-a{display:flex;align-items:center;justify-content:flex-end}
+.gsc-a .btn{min-height:42px;padding:0 22px}
+html.web #view.w2 .mset2 .ms-f #gs-card{flex:1 0 100%;order:1}
+html.web #view.w2 .mset2 .ms-f .dz{order:2}
+html.web #view.w2 .mset2 .ms-f .web-out{order:3;flex:1 0 100%;width:100%;min-height:52px;padding:0 24px;color:var(--muted)}
+html.web #view.w2 .mset2 .ms-f .web-out:hover{color:var(--text)}
+html.web #view.w2 .mset2 .ms-f .foot{order:4}
+@media (max-width:640px){.gsc{grid-template-columns:auto minmax(0,1fr);row-gap:12px}.gsc-a{grid-column:1/-1;justify-content:flex-start}}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -3207,7 +3219,7 @@ html.web #view .fp2 .fp-bar .fpb.off b,html.web #view .fp2 .fp-bar .fpb.frb:disa
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.737';
+const APP = 'VOOB (by BGASHEV) Mini App v1.738';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5948,7 +5960,7 @@ function viewMeSettings(){
     <div class="cap" style="margin-top:10px">Импорт: выбери файл STEPS_backup_….json из десктопной версии (Настройки → Резервная копия). Совпадающие записи не задублируются.</div></div>`;
   if (inWeb) h += hkCardHTML();
   h += '<!--M3-->';
-  if (inWebApp) { h += `<div class="card" id="gs-card"><h3>${IC('link')}Вход через Google</h3><div class="gs-row"><div class="gs-t" id="gs-state"><b>Загрузка…</b></div><div id="gs-host" class="gs-host" hidden></div><button type="button" class="btn ghost small" id="gs-unl" data-act="gsunlink" hidden>Отвязать</button></div><div class="cap" style="margin-top:8px">Telegram остаётся основным способом входа. Google — удобный запасной: открывает тот же профиль, с теми же данными, друзьями и PRO.</div></div>`; setTimeout(gsMount, 0); }
+  if (inWebApp) { h += `<div class="card gsc" id="gs-card"><span class="gsc-ic"><svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><div class="gsc-t" id="gs-state"><b>Вход через Google</b><small>Загрузка…</small></div><div class="gsc-a"><div id="gs-host" class="gs-host" hidden></div><button type="button" class="btn ghost small" id="gs-unl" data-act="gsunlink" hidden>Отвязать</button></div></div>`; setTimeout(gsMount, 0); }
   if (inWebApp) h += `<button type="button" class="btn ghost web-out" data-act="weblogout">Выйти из этого браузера</button>`;
   if (inTG) h += isDeleting() ? `<div class="card dz"><h3>${IC('trash')}Аккаунт</h3><div class="cap" style="margin:-6px 0 12px">Удаление запланировано на ${fmtDate(dn(String(PROM.st.del_at).slice(0, 10)))}. До этого дня его можно отменить.</div>
     <button type="button" class="btn dz-b ok" data-act="delopen">${IC('sun', 16)}Отменить удаление</button></div>`
@@ -7398,14 +7410,14 @@ function gsLoad(){
   });
   return GS.ready;
 }
-async function gsButton(host, cb, text){
+async function gsButton(host, cb, text, w){
   if (!host) return;
   try {
     await gsLoad();
     google.accounts.id.initialize({client_id:GCID, callback:r => cb(r && r.credential), auto_select:false, use_fedcm_for_prompt:true});
     host.innerHTML = '';
     const dark = document.documentElement.classList.contains('dark') || matchMedia('(prefers-color-scheme: dark)').matches;
-    google.accounts.id.renderButton(host, {type:'standard', theme:dark ? 'filled_black' : 'outline', size:'large', shape:'pill', text:text || 'signin_with', logo_alignment:'left', width:Math.min(280, host.clientWidth || 280), locale:'ru'});
+    google.accounts.id.renderButton(host, {type:'standard', theme:dark ? 'filled_black' : 'outline', size:'large', shape:'pill', text:text || 'signin_with', logo_alignment:'left', width:w || Math.min(280, host.clientWidth || 280), locale:'ru'});
   } catch (e) { host.innerHTML = '<span class="gs-err">Google сейчас недоступен</span>'; }
 }
 async function gsLogin(cred){
@@ -7426,11 +7438,12 @@ function gsMount(){
   const c = $('#gs-card'); if (!c) return;
   if (!GS.st) { gsLoadStatus(); return; }
   const st = GS.st;
-  c.querySelector('#gs-state').innerHTML = st.linked ? '<b>Google привязан</b>' + (st.email ? '<small>' + esc(st.email) + '</small>' : '') : '<b>Google не привязан</b><small>Привяжи, чтобы заходить на WEB без QR-кода</small>';
+  c.classList.toggle('on', !!st.linked);
+  c.querySelector('#gs-state').innerHTML = '<b>Вход через Google</b>' + (st.linked ? '<small><i class="gsc-dot"></i>Привязан' + (st.email ? ' · ' + esc(st.email) : '') + '</small>' : '<small>Не привязан. Telegram остаётся основным входом, Google — запасной</small>');
   const h = c.querySelector('#gs-host');
   h.hidden = !!st.linked;
   c.querySelector('#gs-unl').hidden = !st.linked;
-  if (!st.linked) gsButton(h, gsLink, 'continue_with');
+  if (!st.linked) gsButton(h, gsLink, 'continue_with', 230);
 }
 async function gsLink(cred){
   if (!cred || GS.busy) return; GS.busy = true;
