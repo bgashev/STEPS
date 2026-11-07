@@ -2947,8 +2947,8 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 html.web #wbg{display:block}
 #wbg.on{opacity:1}
 #wbg .wbl{position:absolute;inset:0}#wbg .wbl.nw{animation:wblin .65s ease both}@keyframes wblin{from{opacity:0}}
-#wbg .hbgfx{position:absolute;left:-12%;top:-12%;width:124%;height:124%;inset:auto;z-index:0;border-radius:0;animation:none;filter:blur(64px) saturate(1.05);transform:translateZ(0)}
-#wbg .wbm{position:absolute;inset:0;display:block;background:linear-gradient(180deg,rgba(9,9,13,.58),rgba(9,9,13,.72)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");background-blend-mode:normal}
+#wbg .hbgfx{position:absolute;left:-12%;top:-12%;width:124%;height:124%;inset:auto;z-index:0;border-radius:0;animation:none;filter:blur(42px) saturate(1.35);transform:translateZ(0)}
+#wbg .wbm{position:absolute;inset:0;display:block;background:linear-gradient(180deg,rgba(9,9,13,.2),rgba(9,9,13,.36)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");background-blend-mode:normal}
 html.hbgl #texl{opacity:0!important}
 #texl{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:1;transition:opacity .5s ease;-webkit-mask-image:radial-gradient(ellipse 90% 70% at var(--mx,55%) var(--my,10%),#000 0,rgba(0,0,0,.86) 18%,rgba(0,0,0,.6) 38%,rgba(0,0,0,.3) 58%,rgba(0,0,0,.1) 76%,transparent 93%);mask-image:radial-gradient(ellipse 90% 70% at var(--mx,55%) var(--my,10%),#000 0,rgba(0,0,0,.86) 18%,rgba(0,0,0,.6) 38%,rgba(0,0,0,.3) 58%,rgba(0,0,0,.1) 76%,transparent 93%)}
 #texl.tex-aura{-webkit-mask-image:none;mask-image:none}
@@ -3009,7 +3009,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.694';
+const APP = 'VOOB (by BGASHEV) Mini App v1.695';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6239,7 +6239,7 @@ function meNav(cls){   // v1.484: плавный «пуш» между проф�
 /* v1.646 WEB, «Главная»: вместо текстуры — свой фон профиля на весь экран, сильно размытый, матовый и притемнённый */
 function updWBg(){
   const el = document.getElementById('wbg'); if (!el) return;
-  const pz = inWeb && inTG && S.meSet && S.pers, k = pz ? (pzEff().eff.bg || '') : (inWeb && inTG && S.tab === 'home' && !S.fprof && !S.meSet && !S.pers ? myBg() : '');
+  const pz = inWeb && inTG && S.meSet && S.pers, k = pz ? (pzEff().eff.bg || '') : (inWeb && inTG && S.fprof && !S.meSet ? (BGS.get(+S.fprof) || '') : inWeb && inTG && S.tab === 'home' && !S.fprof && !S.meSet && !S.pers ? myBg() : '');
   if ((el.dataset.k || '') === k) return;
   if (pz && k && el.dataset.k && el.classList.contains('on')) {   // v1.682: между фонами — перекрёстное растворение, без провала в чёрное
     if (!el.querySelector(':scope > .wbl')) { const w = document.createElement('div'); w.className = 'wbl'; while (el.firstChild) w.appendChild(el.firstChild); el.appendChild(w); }
@@ -7313,6 +7313,7 @@ async function loadBgs(ids){
     if (ch) document.querySelectorAll('.hero[data-hid]').forEach(h => { const k = BGS.get(+h.dataset.hid) || '';
       if (h.classList.contains('hbg') === !!k && (!k || h.querySelector(':scope > .hbgfx'))) return;   // у этой карточки ничего не поменялось
       h.classList.toggle('hbg', !!k); const o = h.querySelector(':scope > .hbgfx'); if (o) o.remove(); if (k) h.insertAdjacentHTML('afterbegin', bgFx(k)); });
+    if (ch) updWBg();
     if (ch) document.querySelectorAll('.fc[data-id]').forEach(c => { const k = BGS.get(+c.dataset.id) || '';   // v1.668: фон друга в плашке
       if (c.classList.contains('fcb') === !!k && (!k || c.querySelector(':scope > .hbgfx'))) return;
       c.classList.toggle('fcb', !!k); const o = c.querySelector(':scope > .hbgfx'); if (o) o.remove(); if (k) c.insertAdjacentHTML('afterbegin', bgFx(k)); });
