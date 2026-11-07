@@ -3172,6 +3172,14 @@ html.web .fc4 .l3{font-size:12.5px;margin-top:2px}
 html.web .fc4 .fac{gap:8px}
 html.web .fc4 .fac .rm{width:40px;height:40px;border-radius:13px}
 html.web .fc4:hover{transform:translateY(-2px);box-shadow:none}
+/* v1.736: WEB · три кнопки под плашкой чужого профиля читаются на любом фоне: светлый текст на плотной подложке; «через N ч» и «Друзья» без общей прозрачности */
+html.web #view .fp2 .fp-bar .fpb{background:color-mix(in srgb,var(--surface2) 90%,transparent)!important;border:1px solid var(--border2,var(--border))!important;color:var(--text)!important;box-shadow:none}
+html.web #view .fp2 .fp-bar .fpb b{color:var(--text)!important;font-weight:800}
+html.web #view .fp2 .fp-bar .fpb.gift span{background:color-mix(in srgb,var(--accent) 26%,transparent)!important;color:var(--accent)!important}
+html.web #view .fp2 .fp-bar .fpb.poke span{background:rgba(242,208,100,.22)!important}
+html.web #view .fp2 .fp-bar .fpb.off,html.web #view .fp2 .fp-bar .fpb.frb:disabled{opacity:1}
+html.web #view .fp2 .fp-bar .fpb.off span,html.web #view .fp2 .fp-bar .fpb.frb:disabled .stk3{opacity:.6}
+html.web #view .fp2 .fp-bar .fpb.off b,html.web #view .fp2 .fp-bar .fpb.frb:disabled b{color:var(--muted)!important;font-weight:700}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -3186,7 +3194,7 @@ html.web .fc4:hover{transform:translateY(-2px);box-shadow:none}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.735';
+const APP = 'VOOB (by BGASHEV) Mini App v1.736';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
