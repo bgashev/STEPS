@@ -779,7 +779,9 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .ib.shim.on svg{transform:rotate(45deg)}
 /* v1.647 WEB · Итоги: «стекло и свечение» */
 .ri{display:none}
-html.web .stv .card.gl{background:linear-gradient(165deg,color-mix(in srgb,var(--surface2) 80%,transparent),var(--surface) 62%);border:1px solid var(--border);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 18px 40px -26px rgba(0,0,0,.6)}
+/* v1.656 WEB · Итоги: подложки как в «Весе» — без верхнего градиента, стекла и теней */
+html.web .stv .st-sec::before,html.web .stv>.card::before,html.web .stv .me-l>.card::before,html.web .stv .me-r>.card::before{display:none}
+html.web .stv .st-sec,html.web .stv>.card,html.web .stv .me-l>.card,html.web .stv .me-r>.card,html.web .stv .card.gl{background:var(--surface);border:1px solid var(--border);box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;border-radius:26px;padding:18px}
 html.web .stv .gl .fd{grid-template-columns:96px 1fr 58px;margin:11px 0}
 html.web .stv .gl .fdb{height:10px;background:var(--surface2);box-shadow:inset 0 0 0 1px var(--border);overflow:visible}
 html.web .stv .gl .fdb i{box-shadow:0 0 14px -2px currentColor;filter:saturate(1.05)}
@@ -2708,7 +2710,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.655';
+const APP = 'VOOB (by BGASHEV) Mini App v1.656';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
