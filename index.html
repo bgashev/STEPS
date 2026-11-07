@@ -777,6 +777,25 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .ib.shim.on{background:var(--surface2);color:var(--text)}
 .ib.shim.on::after{display:none}
 .ib.shim.on svg{transform:rotate(45deg)}
+/* v1.647 WEB · Итоги: «стекло и свечение» */
+.ri{display:none}
+html.web .stv .card.gl{background:linear-gradient(165deg,color-mix(in srgb,var(--surface2) 80%,transparent),var(--surface) 62%);border:1px solid var(--border);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 18px 40px -26px rgba(0,0,0,.6)}
+html.web .stv .gl .fd{grid-template-columns:96px 1fr 58px;margin:11px 0}
+html.web .stv .gl .fdb{height:10px;background:var(--surface2);box-shadow:inset 0 0 0 1px var(--border);overflow:visible}
+html.web .stv .gl .fdb i{box-shadow:0 0 14px -2px currentColor;filter:saturate(1.05)}
+html.web .stv .wdc .bars{height:150px;gap:6px}
+html.web .stv .wdc .bcol{position:relative}
+html.web .stv .wdc .bcol::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:min(72%,26px);transform:translateX(-50%);border-radius:99px;background:var(--surface2);box-shadow:inset 0 0 0 1px var(--border)}
+html.web .stv .wdc .bfill{position:relative;z-index:1;width:min(72%,26px)!important;border-radius:99px!important;background:linear-gradient(180deg,#9bb8ff,#9a6bff)!important;opacity:1!important;box-shadow:0 0 20px -1px #9a6bff}
+html.web .stv .wdc .bfill.zero{opacity:0!important;box-shadow:none}
+html.web .stv .wdc .bv{font-weight:800}
+html.web .stv .gl .recs{display:grid;grid-template-columns:1fr 1fr;gap:10px;overflow:visible;margin:0;padding:0;scroll-snap-type:none}
+html.web .stv .gl .recs>div{position:relative;overflow:hidden;width:auto;flex:none;min-width:0;padding:15px 16px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);gap:2px}
+html.web .stv .gl .recs>div::after{content:"";position:absolute;right:-34px;top:-34px;width:100px;height:100px;border-radius:50%;background:radial-gradient(closest-side,var(--c),transparent);opacity:.32;pointer-events:none}
+html.web .stv .gl .recs>div:last-child:nth-child(odd){grid-column:1/-1}
+html.web .stv .gl .recs .ri{display:grid;place-items:center;position:absolute;right:12px;top:12px;width:30px;height:30px;border-radius:50%;z-index:1;color:#fff;background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 40%,#000));box-shadow:0 0 14px -2px var(--c)}
+html.web .stv .gl .recs .cap:first-of-type{padding-right:34px;min-height:26px}
+html.web .stv .gl .recs .rv{font-size:21px;letter-spacing:-.5px;margin:6px 0 2px;position:relative;z-index:1}
 html.web .head{position:relative}
 .invpop{position:absolute;right:0;top:calc(100% + 4px);width:320px;z-index:30;pointer-events:none;visibility:hidden;
   clip-path:inset(-20px -20px -40px 100% round 22px);opacity:0;transform:translateX(18px);
@@ -2670,7 +2689,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.646';
+const APP = 'VOOB (by BGASHEV) Mini App v1.647';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4804,12 +4823,12 @@ function viewStats(){
   if (n) {
     const counts = {1:0, 2:0, 3:0, 4:0, 5:0}; pws.forEach(w => counts[clamp(parseInt(w.feeling) || 3, 1, 5)]++);
     const mx = Math.max(...Object.values(counts)) || 1;
-    h += `<div class="card"><h3>Состояние на тренировках</h3>` + [5,4,3,2,1].map((l, i) => `<div class="fd"><span>${FEEL[l][0]}</span><div class="fdb">${counts[l] ? `<i style="width:${Math.max(8, counts[l] / mx * 100)}%;background:${FEEL[l][1]};animation-delay:${i*60}ms"></i>` : ''}</div><span class="cap">${counts[l]} · ${Math.round(counts[l] * 100 / n)}%</span></div>`).join('') + `</div>`;
+    h += `<div class="card gl"><h3>Состояние на тренировках</h3>` + [5,4,3,2,1].map((l, i) => `<div class="fd"><span>${FEEL[l][0]}</span><div class="fdb">${counts[l] ? `<i style="width:${Math.max(8, counts[l] / mx * 100)}%;background:${FEEL[l][1]};color:${FEEL[l][1]};animation-delay:${i*60}ms"></i>` : ''}</div><span class="cap">${counts[l]} · ${Math.round(counts[l] * 100 / n)}%</span></div>`).join('') + `</div>`;
     const wd = [0,0,0,0,0,0,0]; pws.forEach(w => wd[wdOf(dn(w.date))]++);
-    h += `<div class="card"><h3>По дням недели</h3>${bars(wd.map((v, i) => [WD[i], v, `${WDF[i]}: ${npw(v, W_WORK)}`]), v => String(v), 'cap2', 140)}</div>`;
+    h += `<div class="card gl wdc"><h3>По дням недели</h3>${bars(wd.map((v, i) => [WD[i], v, `${WDF[i]}: ${npw(v, W_WORK)}`]), v => String(v), 'cap2', 140)}</div>`;
   }
   // рекорды: только то, что есть у твоих видов активности
-  h += `<div class="card"><h3>${IC('trophy')}Рекорды и серии</h3>`;
+  h += `<div class="card gl"><h3>${IC('trophy')}Рекорды и серии</h3>`;
   const mxBy = (a, f) => a.reduce((x, y) => f(y) > f(x) ? y : x);
   const [bw, bwd] = bestWindow(ws), [cs, bs] = dayStreaks(ws), [gd, gb] = goalHistory(ws), dd = w => fmtDate(dn(w.date));
   const wdc = [0,0,0,0,0,0,0]; ws.forEach(w => wdc[wdOf(dn(w.date))]++); const fav = wdc.indexOf(Math.max(...wdc));
@@ -4822,7 +4841,7 @@ function viewStats(){
   const kw = ws.filter(w => kmOf(w) > 0.05); if (kw.length) { const b = mxBy(kw, kmOf); recs.push(['Самая дальняя', kmF(kmOf(b)), stName(actOf(b)) + ' · ' + dd(b)]); }
   const sp = ws.filter(w => +w.speed > 0 && !isStr(w)); if (sp.length) { const b = mxBy(sp, w => +w.speed); recs.push(['Самая быстрая', num(b.speed) + ' км/ч', stName(actOf(b)) + ' · ' + dd(b)]); }
   const ic = ws.filter(w => actOf(w) === 'run' && +w.incline > 0); if (ic.length) { const b = mxBy(ic, w => +w.incline); recs.push(['Самый крутой уклон', num(b.incline) + ' %', dd(b)]); }
-  h += `<div class="recs">` + recs.map(r => `<div><div class="cap">${r[0]}</div><div class="rv">${r[1]}</div><div class="cap">${r[2]}</div></div>`).join('') + `</div></div>`;
+  h += `<div class="recs">` + recs.map((r, i) => `<div style="--c:${['#9a6bff', '#5b8cff', '#f2cf5b', '#f09a4f', '#5ad08a', '#ec6aa8'][i % 6]}"><span class="ri">${IC(({'Самая долгая':'clock','Любимая активность':'flame','Дней подряд':'flame','Норм выполнено':'check','Любимый день':'stats'})[r[0]] || 'trophy', 16)}</span><div class="cap">${r[0]}</div><div class="rv">${r[1]}</div><div class="cap">${r[2]}</div></div>`).join('') + `</div></div>`;
   return webSplit(h) + '</div><div class="wdock-sp"></div>';
 }
 function openAchFull(){
