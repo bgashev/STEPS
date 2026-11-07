@@ -843,9 +843,52 @@ html.web .plsug .ib{width:38px;height:38px}
 @media (max-width:1500px){html.web .plsug .pt small{display:none}}
 /* v1.675: WEB · кнопки плана со словами, если хватает ширины */
 .plsug .bl{display:none}
-@media (min-width:760px){html.web .plsug .ib{width:auto;height:38px;border-radius:99px;padding:0 15px 0 12px;gap:6px}
-html.web .plsug .ib .bl{display:inline;font:inherit;font-size:13px;font-weight:750;white-space:nowrap}
+@media (min-width:760px){html.web .plsug .ib.ok{width:auto;height:38px;border-radius:99px;padding:0 18px 0 14px;gap:7px;font-family:inherit;font-style:normal;letter-spacing:0}
+html.web .plsug .ib.ok .bl{display:inline;font:inherit;font-size:13.5px;font-weight:800;font-style:normal;white-space:nowrap;color:var(--on-accent,var(--bg))}
 html.web .plsug .ib svg{width:18px;height:18px}}
+/* v1.676: WEB · «Персонализация» — студия */
+html.web .pz-top{display:flex;align-items:center;gap:16px;margin:0 0 22px;animation:pzin .5s cubic-bezier(.2,.8,.2,1) backwards}
+html.web .pz-top h1{margin:0;font-size:28px;letter-spacing:-.4px}html.web .pz-top .sub{color:var(--muted);font-size:13.5px;margin-top:2px}
+html.web .pz2{display:grid;grid-template-columns:minmax(360px,440px) minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:1099px){html.web .pz2{grid-template-columns:1fr}}
+html.web .pz-stage{position:sticky;top:24px;display:flex;flex-direction:column;gap:14px;animation:pzstage .7s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes pzstage{from{opacity:0;filter:blur(10px);transform:translateY(14px) scale(.98)}}
+@keyframes pzin{from{opacity:0;transform:translateY(12px) scale(.96)}}
+.pz-card{position:relative;isolation:isolate;overflow:hidden;border-radius:30px;min-height:390px;padding:36px 24px 26px;display:flex;flex-direction:column;align-items:center;text-align:center;color:#fff;background:#0b0b10;border:1px solid rgba(255,255,255,.12);box-shadow:0 34px 60px -34px rgba(0,0,0,.85)}
+.pz-card::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(transparent 45%,rgba(6,6,10,.6))}
+.pz-bg{position:absolute;inset:0;z-index:-2;isolation:isolate;overflow:hidden}.pz-bg.fi{animation:pzfade .55s ease both}
+@keyframes pzfade{from{opacity:0;filter:blur(8px)}}
+.pz-bg .pzd{position:absolute;border-radius:50%;filter:blur(42px);opacity:.7}
+.pz-bg .pzd.a{width:280px;height:280px;left:-60px;top:-80px;background:var(--accent);animation:pcd1 8s ease-in-out infinite alternate}
+.pz-bg .pzd.b{width:260px;height:260px;right:-70px;bottom:-90px;background:#7a52ff;animation:pcd2 9s ease-in-out infinite alternate}
+.pz-bg .pzd.c{width:200px;height:200px;left:30%;top:40%;background:#ff4fa3;opacity:.35;animation:pcd1 7s ease-in-out infinite alternate-reverse}
+.pz-av{position:relative;display:grid;place-items:center;margin-bottom:14px}.pz-av.pop{animation:pcpop .8s cubic-bezier(.3,1.6,.5,1)}
+.pz-nm{margin:0;font-size:26px;letter-spacing:-.4px;display:flex;align-items:center;justify-content:center;gap:8px;color:#fff}
+.pz-at{color:rgba(255,255,255,.72);font-size:14px;margin-top:2px}
+.pz-lv{width:100%;max-width:260px;margin-top:auto;padding-top:22px}.pz-lvt{display:flex;align-items:center;justify-content:center;gap:8px;font-weight:800;font-size:13px;margin-bottom:8px;color:#fff}
+.pz-lv .lvbar{height:6px;border-radius:3px;background:rgba(255,255,255,.2);overflow:hidden}.pz-lv .lvbar i{display:block;height:100%;border-radius:3px;background:#fff}
+.pzsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pzs{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:16px;background:var(--surface);border:1px solid var(--border);transition:border-color .3s,background .3s,transform .3s cubic-bezier(.3,1.4,.5,1);min-width:0}
+.pzs span{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);font-weight:700}.pzs b{font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pzs.chg{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}.pzs.hov{transform:translateY(-2px)}
+.pzbtns{display:flex;gap:10px}.pzgo{flex:1;min-height:50px}.pzrs{min-height:50px}
+.pzhint{display:flex;align-items:center;gap:7px;justify-content:center;text-align:center;color:var(--muted);font-size:12.5px;margin-top:2px}.pzhint svg{color:var(--accent);flex:none}
+html.web .pz-main>.seg{margin-bottom:12px}
+.pz-cap{color:var(--muted);font-size:13px;margin:0 2px 14px}
+.pz-gw{animation:pzgw .4s ease backwards}@keyframes pzgw{from{opacity:0}}
+.pzgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(136px,1fr))}.pzgrid.bg{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}.pzgrid.bd{grid-template-columns:repeat(auto-fill,minmax(112px,1fr))}
+.pzb{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 8px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-weight:750;font-size:12.5px;cursor:pointer;min-width:0;transition:transform .35s cubic-bezier(.3,1.4,.5,1),border-color .25s,box-shadow .3s,background .25s;animation:pzin .5s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i)*18ms)}
+.pzb:hover{transform:translateY(-4px) scale(1.04);border-color:color-mix(in srgb,var(--accent) 60%,var(--border));box-shadow:0 16px 28px -16px rgba(0,0,0,.7),0 0 24px -8px var(--accent);background:var(--surface2)}
+.pzb:active{transform:scale(.97)}
+.pzb.sel{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+.pzb.lock{opacity:.78}
+.pzb .prot{position:absolute;top:8px;right:8px;font-size:9px;font-weight:850;letter-spacing:.08em;padding:2px 6px;border-radius:999px;background:linear-gradient(120deg,#F5B23C,#FFE08A);color:#2b2000;font-style:normal;z-index:2}
+.pzck{position:absolute;top:8px;left:8px;width:20px;height:20px;border-radius:50%;display:none;place-items:center;background:var(--accent);color:var(--on-accent,#fff);z-index:2}.pzb.cur .pzck{display:grid}
+.pzb.bg{padding:10px 10px 12px}.pzth{position:relative;width:100%;aspect-ratio:16/10;border-radius:14px;overflow:hidden;isolation:isolate;background:#0b0b10;border:1px solid var(--border)}
+.pzth.none{background:repeating-linear-gradient(135deg,transparent 0 9px,color-mix(in srgb,var(--text) 8%,transparent) 9px 10px),var(--surface2)}
+.pzb .pzth .hbgfx i{animation-play-state:paused!important}.pzb:hover .pzth .hbgfx i,.pzb.sel .pzth .hbgfx i{animation-play-state:running!important}
+.pzbd{display:grid;place-items:center;height:48px}
+@media (prefers-reduced-motion:reduce){.pzb,.pz-stage,.pz-top,.pz-gw{animation:none!important}}
 /* v1.671: WEB · карточка друга «Неделя в столбиках» */
 html.web .fc4{flex-direction:column;align-items:stretch;gap:12px;padding:14px 16px;border-radius:22px;transition:transform .35s cubic-bezier(.3,1.3,.5,1),box-shadow .35s,border-color .3s}
 html.web .fc4:hover{transform:translateY(-3px);box-shadow:0 18px 34px -18px rgba(0,0,0,.7)}
@@ -2851,7 +2894,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.675';
+const APP = 'VOOB (by BGASHEV) Mini App v1.676';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4808,8 +4851,8 @@ function planSuggestHTML(ws){
   const par = planParams(p).map(([ic, v, t]) => `<span class="pc" title="${t}" aria-label="${t}: ${esc(v)}">${IC(ic, 13)}${esc(v)}</span>`).join('');
   return `<div class="plsug" id="plsug"><div class="ph"><div class="pd">${IC('target', 18)}</div>
     <div class="pt">План на сегодня<small>${ps.length > 1 ? `ещё ${ps.length - 1} в плане` : 'отметь, когда сделаешь'}</small></div>
-    <div class="pb"><button class="ib" data-act="plskip" data-id="${esc(p.id)}" aria-label="Отклонить">${IC('close', 20)}<span class="bl">Пропустить</span></button>
-    <button class="ib ok" data-act="pladd" data-id="${esc(p.id)}" aria-label="Добавить тренировку">${IC('check', 22)}<span class="bl">Готово</span></button></div></div>
+    <div class="pb"><button class="ib" data-act="plskip" data-id="${esc(p.id)}" aria-label="Отклонить">${IC('close', 20)}</button>
+    <button class="ib ok" data-act="pladd" data-id="${esc(p.id)}" aria-label="Добавить тренировку">${IC('check', 22)}<span class="bl">Добавить</span></button></div></div>
     ${par ? `<div class="pv">${par}</div>` : ''}</div>`;
 }
 function findPlan(id){ return (db.plans || []).find(p => String(p.id) === String(id)); }
@@ -5288,6 +5331,7 @@ function langCardHTML(){
 }
 document.documentElement.lang = curLang();
 function viewMe(){
+  if (S.meSet && S.pers && inTG && inWeb) return viewPersWeb();
   if (S.meSet && S.pers && inTG) return `<div class="mset-top"><button class="ib round" data-act="persback" aria-label="Назад к настройкам">${IC('back', 20)}</button><b>Персонализация</b>${syncHTML()}</div>` + viewPersonalization();
   if (S.meSet || !inTG) return (inTG ? (inWeb ? `<div class="mset-top msw">${syncHTML()}</div><div class="head"><div><h1>Настройки</h1><div class="sub">Профиль, оформление и приватность</div></div></div>`
     : `<div class="mset-top"><button class="ib round" data-act="mesback" aria-label="Назад к профилю">${IC('back', 20)}</button><b>Настройки</b>${syncHTML()}</div>`) : '') + viewMeSettings();
@@ -5371,6 +5415,58 @@ function bgPrevHTML(k, st){
 }
 function openBgPrev(k){ hap.tap(); const c = frameOf(tgUser ? {tg_id:tgUser.id} : null), st = {kit:!!(k && c === k && bgNorm(db.settings.bg || '') === k)}; openSheet(bgPrevHTML(k, st), {type:'bgprev', v:k, kit:st.kit}); }
 function bgPrevShow(k){ if (!sheetCtx || sheetCtx.type !== 'bgprev') return; sheetCtx.v = k; const sh = $('#sheet'); sh.innerHTML = '<div class="grab"></div>' + bgPrevHTML(k, sheetCtx); sh.scrollTop = 0; }
+
+/* ===== v1.676 WEB · «Персонализация»: студия — слева живой предпросмотр профиля, справа плитки рамок, фонов и значков ===== */
+S.pzTab = S.pzTab || 'fr';
+function pzCur(){ return {fr: frameOf(tgUser ? {tg_id:tgUser.id} : null) || '', bg: myBg(), bd: db.settings.badge || 'verified'}; }
+function pzEff(){ const cur = pzCur(), pend = S.pzp || {}, hov = S.pzH || {}; return {cur, pend, eff: Object.assign({}, cur, pend, hov)}; }
+function pzLocked(k, v){ return k === 'fr' ? !!((FRAMES.find(x => x[0] === v) || [])[2]) && !frOwned(v) : k === 'bg' ? !!v && !bgOwned(v) : !isPro(); }
+function pzBgInner(bk){ return bk ? bgFx(bk) : '<i class="pzd a"></i><i class="pzd b"></i><i class="pzd c"></i>'; }
+function pzAvInner(fk){ const lv = myLevel(), name = displayName() || 'Гость', photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url) || ''; return frAv(fk, 128, lv, photo, name); }
+function pzBadgeInner(bd){ const b = tgUser && BDG.get(tgUser.id); return b && b.creator ? crownHTML(24) : badgeHTML(bd, 24); }
+function pzSumHTML(){
+  const {cur, pend, eff} = pzEff(), nm = {fr: (FRAMES.find(x => x[0] === eff.fr) || FRAMES[0])[1], bg: eff.bg ? (BG_KEYS.find(x => x[0] === eff.bg) || [0, eff.bg])[1] : 'Без фона', bd: (BADGE_LIST.find(x => x[0] === eff.bd) || BADGE_LIST[0])[1]};
+  return [['fr', 'sparkle', 'Рамка'], ['bg', 'palette', 'Фон'], ['bd', 'crown', 'Значок']].map(([k, ic, t]) => `<div class="pzs${(k in pend && pend[k] !== cur[k]) ? ' chg' : ''}${(S.pzH && k in S.pzH) ? ' hov' : ''}"><span>${IC(ic, 14)}${t}</span><b>${esc(nm[k])}</b></div>`).join('');
+}
+function pzActHTML(){
+  const {cur, pend} = pzEff(), ch = ['fr', 'bg', 'bd'].filter(k => k in pend && pend[k] !== cur[k]);
+  if (!ch.length) return `<div class="pzhint">${IC('sparkle', 15)}Наведи на плитку, чтобы посмотреть, нажми, чтобы выбрать</div>`;
+  const lk = ch.some(k => pzLocked(k, pend[k]));
+  return `<div class="pzbtns">${lk ? `<button type="button" class="btn primary pzgo" data-act="pzpro">${IC('crown', 18)}Разблокировать с PRO</button>` : `<button type="button" class="btn primary pzgo" data-act="pzapply">${IC('check', 18)}Применить · ${ch.length}</button>`}<button type="button" class="btn ghost pzrs" data-act="pzreset">Сбросить</button></div>${lk ? '<div class="pzhint">Сейчас это только предпросмотр: выбранное станет твоим с подпиской</div>' : ''}`;
+}
+function pzGridHTML(tab){
+  const {cur, pend} = pzEff(), lv = myLevel(), name = displayName() || 'Гость', photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url) || '';
+  const mk = (k, v, i, inner, pro, lbl, lock) => `<button type="button" class="pzb ${k}${cur[k] === v ? ' cur' : ''}${(k in pend && pend[k] === v) ? ' sel' : ''}${lock ? ' lock' : ''}" data-act="pzpick" data-k="${k}" data-v="${v}" style="--i:${Math.min(i, 24)}">${pro ? '<i class="prot">PRO</i>' : ''}<i class="pzck">${IC('check', 12)}</i>${inner}<b>${esc(lbl)}</b></button>`;
+  if (tab === 'bg') return `<div class="pzgrid bg">` + [['', 'Без фона']].concat(BG_KEYS).map(([v, l], i) => mk('bg', v, i, `<span class="pzth${v ? '' : ' none'}">${v ? bgFx(v) : ''}</span>`, !!v && !bgOwned(v) || (!!v && !isPro()), l, !!v && !bgOwned(v))).join('') + `</div>`;
+  if (tab === 'bd') return `<div class="pzgrid bd">` + BADGE_LIST.map(([v, l], i) => mk('bd', v, i, `<span class="pzbd">${badgeHTML(v, 38)}</span>`, !isPro(), l, !isPro())).join('') + `</div>`;
+  return `<div class="pzgrid fr">` + FRAMES.map(([v, l, pro], i) => mk('fr', v, i, frAv(v, 64, lv, photo, name), !!pro, l, !!pro && !frOwned(v))).join('') + `</div>`;
+}
+function viewPersWeb(){
+  const lv = myLevel(), name = displayName() || 'Гость', un = tgUser && tgUser.username, {eff} = pzEff(), bk = eff.bg;
+  const cnt = {fr: FRAMES.length, bg: BG_KEYS.length + 1, bd: BADGE_LIST.length};
+  return `<div class="pz-top"><button class="ib round" data-act="persback" aria-label="Назад к настройкам">${IC('back', 20)}</button><div><h1>Персонализация</h1><div class="sub">Рамка, фон и значок. Результат виден сразу, пока ты выбираешь</div></div></div>
+  <div class="pz2"><div class="pz-stage" id="pzst">
+    <div class="pz-card${bk ? ' hbg' : ''}" id="pzcard"><div class="pz-bg fi" id="pzbg" data-k="${bk}">${pzBgInner(bk)}</div>
+      <div class="pz-av" id="pzav" data-k="${eff.fr}">${pzAvInner(eff.fr)}</div>
+      <h2 class="pz-nm"><span class="nm">${esc(name)}</span><span id="pznm" data-k="${eff.bd}">${pzBadgeInner(eff.bd)}</span></h2>${un ? `<div class="pz-at">@${esc(un)}</div>` : ''}
+      <div class="pz-lv"><div class="pz-lvt"><span class="lvn" data-t="${tierOf(lv.level).idx}">${lv.level}</span><span>${tierOf(lv.level).title}</span></div><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div></div></div>
+    <div class="pzsum" id="pzsum">${pzSumHTML()}</div><div id="pzact">${pzActHTML()}</div></div>
+  <div class="pz-main">${seg('pzTab', [['fr', 'Рамки · ' + cnt.fr], ['bg', 'Фоны · ' + cnt.bg], ['bd', 'Значки · ' + cnt.bd]])}
+    <div class="pz-cap">${S.pzTab === 'bg' ? 'Анимированный фон шапки профиля. Его видят все, кто откроет твой профиль' : S.pzTab === 'bd' ? 'Маленький значок рядом с именем: в профиле, списках и ленте' : 'Рамка аватарки: её видят друзья в профиле, списках и ленте'}</div>
+    <div class="pz-gw" key="${S.pzTab}">${pzGridHTML(S.pzTab)}</div></div></div>`;
+}
+function pzUpdate(){
+  if (!document.getElementById('pzst')) return;
+  const {cur, pend, eff} = pzEff(), set = (id, key, fn) => { const el = document.getElementById(id); if (!el || el.dataset.k === String(key)) return null; el.dataset.k = key; el.innerHTML = fn(); return el; };
+  const b = set('pzbg', eff.bg, () => pzBgInner(eff.bg)); if (b) { b.classList.remove('fi'); void b.offsetWidth; b.classList.add('fi'); document.getElementById('pzcard').classList.toggle('hbg', !!eff.bg); }
+  const a = set('pzav', eff.fr, () => pzAvInner(eff.fr)); if (a) { a.classList.remove('pop'); void a.offsetWidth; a.classList.add('pop'); }
+  set('pznm', eff.bd, () => pzBadgeInner(eff.bd));
+  document.getElementById('pzsum').innerHTML = pzSumHTML(); document.getElementById('pzact').innerHTML = pzActHTML();
+  document.querySelectorAll('.pzb').forEach(t => t.classList.toggle('sel', t.dataset.k in pend && pend[t.dataset.k] === t.dataset.v));
+}
+let _pzT = 0;
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('.pzb'); if (!t || e.pointerType === 'touch') return; cancelAnimationFrame(_pzT); _pzT = requestAnimationFrame(() => { S.pzH = {[t.dataset.k]: t.dataset.v}; pzUpdate(); }); });
+document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('.pzb'); if (!t || t.contains(e.relatedTarget) || e.pointerType === 'touch') return; cancelAnimationFrame(_pzT); _pzT = requestAnimationFrame(() => { if (S.pzH) { S.pzH = null; pzUpdate(); } }); });
 function viewPersonalization(){
   const name = displayName(), photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url), lv = myLevel();
   let h = '';
@@ -6002,7 +6098,7 @@ function render(){
   const html = S.fprof ? viewFProf() : VIEWS[S.tab](), v = $('#view'), rkey = S.fprof ? 'fp' : S.tab;
   const same = _rTab === rkey;
   if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
-  v.classList.toggle('w2', inWeb && (html.indexOf('class="me-l"') > -1 || html.indexOf('class="mset2"') > -1));   // v1.636: ширину столбцов задаём до вставки — иначе страница сначала рисуется узкой и «прыгает»
+  v.classList.toggle('w2', inWeb && (html.indexOf('class="me-l"') > -1 || html.indexOf('class="mset2"') > -1 || html.indexOf('class="pz2"') > -1));   // v1.636: ширину столбцов задаём до вставки — иначе страница сначала рисуется узкой и «прыгает»
   v.classList.toggle('rr', same);                          // та же вкладка: обновляем без повторных «появлений»
   _rTab = rkey; _rHtml = html;
   if (same) morphSoft(v, html);   // v1.442: та же вкладка — правим только изменившееся, без мерцаний
@@ -6388,8 +6484,17 @@ const ACT = {
   webset: () => { if (S.tab === 'me' && S.meSet) return; S.fprof = null; ACT.meset(); },
   meset: () => { hap.tap(); if (inWeb && S.tab !== 'me') { S.tab = 'me'; if (S.fprof) S.fprof = null; } S.meSet = true; meNav('nav-in'); },
   mesback: () => { hap.tap(); S.meSet = false; S.pers = false; meNav('nav-out'); },
-  persopen: () => { hap.tap(); S.pers = true; meNav('nav-in'); },
-  persback: () => { hap.tap(); S.pers = false; meNav('nav-out'); },
+  pzpick: el => { const k = el.dataset.k, v = el.dataset.v, cur = pzCur(); S.pzp = S.pzp || {}; if (v === cur[k] && !(k in S.pzp)) { hap.tap(); return; } if (S.pzp[k] === v || v === cur[k]) delete S.pzp[k]; else S.pzp[k] = v; S.pzH = null; hap.tap(); pzUpdate(); },
+  pzreset: () => { S.pzp = null; S.pzH = null; hap.tap(); pzUpdate(); },
+  pzpro: () => openPro(),
+  pzapply: () => { const p = S.pzp || {}, cur = pzCur(); let n = 0;
+    if ('fr' in p && p.fr !== cur.fr && !pzLocked('fr', p.fr)) { db.settings.frame = p.fr; n++; }
+    if ('bg' in p && p.bg !== cur.bg && !pzLocked('bg', p.bg)) { db.settings.bg = p.bg; n++; }
+    if ('bd' in p && p.bd !== cur.bd && !pzLocked('bd', p.bd)) { db.settings.badge = p.bd === 'verified' ? '' : p.bd; n++; }
+    if (!n) { hap.warn(); return; } touchMeta('settings'); save(); S.pzp = null; S.pzH = null;
+    document.querySelectorAll('.bdg').forEach(el => { el.innerHTML = bdgInner(+el.dataset.bid, +el.dataset.sz); }); render(); hap.imp(); toast('Оформление применено'); },
+  persopen: () => { hap.tap(); S.pers = true; S.pzp = null; S.pzH = null; meNav('nav-in'); },
+  persback: () => { hap.tap(); S.pers = false; S.pzp = null; S.pzH = null; meNav('nav-out'); },
   gexp: el => { const w = el.closest('.gwrap'); if (!w) return; hap.tap(); w.classList.toggle('open');
     el.setAttribute('aria-label', w.classList.contains('open') ? 'Свернуть' : 'Показать все подарки'); },
   pladd: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.imp();
