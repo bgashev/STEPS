@@ -2525,6 +2525,15 @@ html.web .me-l,html.web .me-r{display:contents}
 html.web .mset-top:has(> [data-act="fpback"])>*{display:none}   /* WEB: подпись «Профиль» в шапке не нужна, стрелка «назад» остаётся */
  html.web #view{max-width:none;margin:0;padding-top:34px;padding-bottom:60px;padding-left:calc(264px + max(28px,(100vw - 264px - 760px) / 2));padding-right:max(28px,calc((100vw - 264px - 760px) / 2))}
  html.web #fab.wdock{left:calc(50% + 132px);bottom:28px}
+@media (min-width:1320px){
+ /* v1.641: на широком экране «Тренировка / Взвеситься» живёт в боковой панели под меню, а не плавает над контентом */
+ html.web #fab.wdock,html.web #fab.wdock.center{left:26px;right:auto;top:430px;bottom:auto;width:212px;transform:none;z-index:11}
+ html.web #fab.hide{transform:translateY(8px) scale(.96)}
+ html.web #fab .wd-add,html.web #fab.mini .wd-add{width:100%!important;height:50px;padding:0 16px;gap:8px;justify-content:center;border-radius:16px;background:var(--accent)!important;color:var(--on-accent)!important;border:0;box-shadow:0 10px 24px -10px var(--accent)!important}
+ html.web #fab.mini .fl{display:inline-block}
+ html.web #fab .wd-add:hover{filter:brightness(1.08)}
+ html.web .wdock-sp{display:none}
+}
  html.web #toast{bottom:32px;left:calc(50% + 132px)}
  html.web #sheet{top:50%;bottom:auto;left:50%;right:auto;width:calc(100% - 48px);max-width:560px;max-height:86vh;border-radius:28px;border:1px solid var(--border);padding-bottom:24px;transform:translate(-50%,-46%) scale(.97);opacity:0;transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .24s}
  html.web #sw.open #sheet{transform:translate(-50%,-50%);opacity:1}
@@ -2634,7 +2643,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.640';
+const APP = 'VOOB (by BGASHEV) Mini App v1.641';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
