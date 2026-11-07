@@ -2993,7 +2993,7 @@ html.web #wbg{display:block}
 #wbg.on{opacity:1}
 #wbg .wbl{position:absolute;inset:0}#wbg .wbl.nw{animation:wblin .65s ease both}@keyframes wblin{from{opacity:0}}
 #wbg .hbgfx{position:absolute;left:-12%;top:-12%;width:124%;height:124%;inset:auto;z-index:0;border-radius:0;animation:none;filter:blur(42px) saturate(1.35);transform:translateZ(0)}
-#wbg .wbm{position:absolute;inset:0;display:block;background:linear-gradient(180deg,rgba(236,239,251,.34),rgba(236,239,251,.26)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");background-blend-mode:normal}
+#wbg .wbm{position:absolute;inset:0;display:block;background:linear-gradient(180deg,rgba(240,243,253,.48),rgba(240,243,253,.40)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");background-blend-mode:normal}
 /* v1.707: левая колонка — без острых углов, фон профиля светлее */
 html.web #tabs{overflow:hidden;clip-path:inset(0 round 26px);isolation:isolate}
 html.web #tabs .tbi,html.web #tabs .tab{clip-path:none}
@@ -3085,7 +3085,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.712';
+const APP = 'VOOB (by BGASHEV) Mini App v1.713';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7102,7 +7102,7 @@ document.addEventListener('visibilitychange', () => {
 setInterval(() => { if (!document.hidden) syncNow(); }, 15000);   // пока приложение на экране — проверяем облако часто
 
 /* ============================================== WEB: вход по QR (v1.550) == */
-const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w}" height="${Math.round(w * .6)}" aria-hidden="true"><defs><clipPath id="vlu"><rect x="0" y="0" width="100" height="30"/></clipPath></defs><circle cx="37" cy="30" r="20" fill="none" stroke="var(--accent)" stroke-width="8"/><circle cx="63" cy="30" r="20" fill="none" stroke="var(--text)" stroke-width="8"/><circle cx="37" cy="30" r="20" fill="none" stroke="var(--accent)" stroke-width="8" clip-path="url(#vlu)"/></svg>`;
+const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w}" height="${Math.round(w * .6)}" aria-hidden="true"><defs><clipPath id="vlu"><rect x="0" y="0" width="100" height="30"/></clipPath><linearGradient id="vlg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--accent) 60%,#fff)"/><stop offset=".5" style="stop-color:var(--accent)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--accent) 45%,#38bdf8)"/></linearGradient></defs><circle cx="37" cy="30" r="20" fill="none" stroke="url(#vlg)" stroke-width="8"/><circle cx="63" cy="30" r="20" fill="none" stroke="var(--text)" stroke-width="8"/><circle cx="37" cy="30" r="20" fill="none" stroke="url(#vlg)" stroke-width="8" clip-path="url(#vlu)"/></svg>`;
 
 /* VOOB «Кольца»: общий переход voob.kz ↔ app.voob.kz. Из точки клика раскрывается ирис со светящейся кромкой, два кольца логотипа (сайт и приложение) сближаются по спирали, сцепляются со вспышкой и анаморфным бликом, собирается имя, затем камера пролетает сквозь кольцо. 'in' стартует с того же кадра, на котором закончился 'out' */
 (function (w) {
@@ -7128,10 +7128,10 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
     var old = D.getElementById('luv'); if (old) old.remove(); var oldr = D.getElementById('luvr'); if (oldr) oldr.remove();
     if (!D.getElementById('lu-css')) { var st = D.createElement('style'); st.id = 'lu-css'; st.textContent = CSS; D.head.appendChild(st); }
     var o = D.createElement('div'); o.id = 'luv';
-    o.innerHTML = '<div class="l_lg"></div><div class="l_au"></div><div class="l_vg"></div><div class="l_st"><div class="l_rg"><svg viewBox="0 0 100 60"><defs><clipPath id="lucp"><rect x="0" y="0" width="100" height="30"/></clipPath></defs>'
-      + '<g class="l_g1"><circle class="l_c1" cx="37" cy="30" r="20" pathLength="100" stroke="#8b5cf6"/><circle class="l_h1" cx="37" cy="30" r="20" pathLength="100" stroke="#fff" style="stroke-dasharray:5 95;opacity:0"/></g>'
+    o.innerHTML = '<div class="l_lg"></div><div class="l_au"></div><div class="l_vg"></div><div class="l_st"><div class="l_rg"><svg viewBox="0 0 100 60"><defs><clipPath id="lucp"><rect x="0" y="0" width="100" height="30"/></clipPath><linearGradient id="lug" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c4b5fd"/><stop offset=".5" stop-color="#8b5cf6"/><stop offset="1" stop-color="#38bdf8"/></linearGradient></defs>'
+      + '<g class="l_g1"><circle class="l_c1" cx="37" cy="30" r="20" pathLength="100" stroke="url(#lug)"/><circle class="l_h1" cx="37" cy="30" r="20" pathLength="100" stroke="#fff" style="stroke-dasharray:5 95;opacity:0"/></g>'
       + '<g class="l_g2"><circle class="l_c2" cx="63" cy="30" r="20" pathLength="100" stroke="#f1f2f6"/><circle class="l_h2" cx="63" cy="30" r="20" pathLength="100" stroke="#22d3ee" style="stroke-dasharray:5 95;opacity:0"/></g>'
-      + '<g class="l_g3"><circle class="l_c3" cx="37" cy="30" r="20" pathLength="100" stroke="#8b5cf6" clip-path="url(#lucp)"/></g></svg><i class="l_fz"></i><i class="l_fl"></i></div>'
+      + '<g class="l_g3"><circle class="l_c3" cx="37" cy="30" r="20" pathLength="100" stroke="url(#lug)" clip-path="url(#lucp)"/></g></svg><i class="l_fz"></i><i class="l_fl"></i></div>'
       + '<div class="l_wm"><i>V</i><i>O</i><i>O</i><i>B</i></div></div>';
     var ob = D.getElementById('luvb'); if (ob) ob.remove();
     var bl = D.createElement('div'); bl.id = 'luvb'; bl.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:2147482999;pointer-events:none;-webkit-backdrop-filter:blur(0px);backdrop-filter:blur(0px)';
