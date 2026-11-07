@@ -798,6 +798,7 @@ html.web .stv .gl .recs .cap:first-child{padding-right:34px;min-height:26px}
 html.web .stv .gl .recs .rv{font-size:21px;letter-spacing:-.5px;margin:6px 0 2px;position:relative;z-index:1}
 @media (min-width:1320px){
  /* v1.649 WEB · Настройки в два столбца: карточки сами распределяются по колонкам, шапка и подвал — на всю ширину */
+ html.web #view.w2 .sp-wrap{margin-left:416px}   /* переключатель периода начинается над правым столбцом */
  html.web #view.w2 .mset2{column-count:2;column-gap:22px}
  html.web #view.w2 .mset2>*{break-inside:avoid;-webkit-column-break-inside:avoid;margin-top:0;margin-bottom:16px;max-width:none}
  html.web #view.w2 .mset2>.prof.pc,html.web #view.w2 .mset2>.foot,html.web #view.w2 .mset2>.web-out{column-span:all}
@@ -2712,7 +2713,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.651';
+const APP = 'VOOB (by BGASHEV) Mini App v1.652';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4807,7 +4808,7 @@ function viewStats(){
   const ws = valid(), pws = filterPeriod(ws, S.sp), n = pws.length, g = G();
   const PN = {'7': 'за 7 дней', '30': 'за 30 дней', '12m': 'за 12 месяцев', 'all': 'за всё время'}[S.sp] || '';
   let h = `<div class="stv"><div class="head"><div><h1>Итоги</h1><div class="sub">${ws.length ? 'Всё, что ты сделал — по любым видам активности' : 'Здесь соберётся вся твоя активность'}</div></div></div>
-    <div style="margin-bottom:6px">${seg('sp', [['7', '7 дней'], ['30', '30 дней'], ['12m', '12 месяцев'], ['all', 'Всё время']])}</div>`;
+    <div class="sp-wrap" style="margin-bottom:6px">${seg('sp', [['7', '7 дней'], ['30', '30 дней'], ['12m', '12 месяцев'], ['all', 'Всё время']])}</div>`;
   if (!ws.length) return h + `<div class="card empty"><div class="badge">${IC('stats', 30)}</div><h3 style="justify-content:center">Пока нечего подводить</h3><div class="muted">Добавь первую тренировку — любой вид: бег, силовые, йога, плавание. Итоги появятся здесь.</div></div></div><div class="wdock-sp"></div>`;
   h += '<!--H-->';
   if (n) {
