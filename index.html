@@ -2361,6 +2361,8 @@ body.frozen .stp .sb{opacity:.45}
 /* после смены темы размытие у градиентов (шапка настроек сверху, панель вкладок снизу) набирается плавно, а не включается рывком */
 :root.thz-fin .mset-top::before{animation:thzBlurT .8s cubic-bezier(.3,.6,.3,1) both}
 :root.thz-fin body::after{animation:thzBlurB .8s cubic-bezier(.3,.6,.3,1) both}
+/* v1.751 WEB: у верхнего градиента уже есть своя анимация (msgIn). Подмена её на thzBlurT и возврат через 0,9 с перезапускали появление и меняли размытие — градиент моргал; здесь анимация остаётся той же, без перезапуска */
+html.web:root.thz-fin .mset-top::before{animation:msgIn 1.1s cubic-bezier(.22,.7,.2,1) both}
 @keyframes thzBlurT{from{-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}to{-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}}
 @keyframes thzBlurB{from{-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}to{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}}
 /* v1.493: статус синхронизации — справа в шапке настроек, напротив «Назад»; «VOOB» в плашке PRO читается на светлой теме */
@@ -3251,7 +3253,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.750';
+const APP = 'VOOB (by BGASHEV) Mini App v1.751';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
