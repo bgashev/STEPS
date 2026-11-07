@@ -2809,6 +2809,41 @@ html.web .me-l,html.web .me-r{display:contents}
  html.web #view.w2 .fp2 .me-r>.wk{padding:22px}
  html.web #view.w2 .fp2 .me-l .fp-bar{margin:14px 0 0}
 }
+/* v1.690 WEB: окно «Подарить» — витрина + панель выбранного подарка */
+html.web #sheet.gw{width:min(980px,calc(100% - 48px));max-width:none;height:min(680px,calc(100vh - 56px));max-height:none;padding:0;overflow:hidden;display:flex;flex-direction:column}
+html.web #sheet.gw .gw-h{display:flex;align-items:flex-start;gap:14px;padding:22px 24px 12px}
+html.web #sheet.gw .gw-h>div:first-child{flex:1;min-width:0}
+html.web #sheet.gw .gw-h h2{margin:0 0 4px;font-size:22px;letter-spacing:-.4px}
+html.web #sheet.gw .gw-h .cap{margin:0;max-width:640px}
+html.web #sheet.gw .gen{flex:none;margin-top:4px}
+html.web #sheet.gw .gw-x{flex:none;width:36px;height:36px;border-radius:50%;border:0;background:var(--surface2);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:transform .2s,background .2s}
+html.web #sheet.gw .gw-x:hover{transform:rotate(90deg);background:color-mix(in srgb,var(--text) 12%,var(--surface2))}
+html.web #sheet.gw .gw-ban{width:auto;margin:0 24px 14px;flex:none}
+html.web #sheet.gw .gw-body{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 310px;border-top:1px solid var(--border)}
+.gw-grid{overflow-y:auto;padding:16px 20px 24px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;align-content:start;scrollbar-width:thin}
+.gw-sec{grid-column:1/-1;display:flex;align-items:center;gap:8px;margin:12px 2px 0;font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.gw-sec:first-child{margin-top:0}.gw-sec.pr{color:#E9A91F}.gw-sec u{text-decoration:none;margin-left:auto;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted)}
+.gwc{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font:inherit;transition:transform .2s cubic-bezier(.2,.9,.3,1.3),border-color .2s,background .2s,box-shadow .2s}
+.gwc .gi{width:66px;height:66px;display:block;transition:transform .25s cubic-bezier(.2,.9,.3,1.4)}.gwc .gi svg{width:100%;height:100%;display:block}
+.gwc i{font-style:normal;font-size:12.5px;font-weight:600;line-height:1.15;text-align:center}
+.gwc:hover{transform:translateY(-3px)}.gwc:hover .gi{transform:scale(1.12) rotate(-4deg)}
+.gwc.has::after{content:"есть";position:absolute;top:8px;right:8px;font-size:9.5px;font-weight:800;letter-spacing:.04em;color:var(--muted);background:var(--bg);padding:2px 6px;border-radius:99px}
+.gwc.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,var(--surface2));box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent),0 14px 30px -14px var(--accent)}
+.gwc.pr{border-color:color-mix(in srgb,#E9B949 45%,var(--border));background:radial-gradient(120% 90% at 50% 0,color-mix(in srgb,#E9B949 16%,transparent),var(--surface2))}
+.gwc.pr.sel{border-color:#E9B949;box-shadow:0 0 0 3px color-mix(in srgb,#E9B949 28%,transparent),0 14px 30px -14px #E9B949}
+.gwc.lk .gi{filter:saturate(.65)}.gwc.lk::before{content:"PRO";position:absolute;top:8px;left:8px;font-size:9px;font-weight:850;color:#2a1a00;background:#E9B949;padding:2px 6px;border-radius:99px}
+.gw-side{border-left:1px solid var(--border);padding:24px 22px 22px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 7%,transparent),transparent 60%)}
+.gw-side>*{animation:gwIn .38s cubic-bezier(.2,.9,.3,1) both}.gw-side>*:nth-child(2){animation-delay:.04s}.gw-side>*:nth-child(3){animation-delay:.08s}.gw-side>*:nth-child(4){animation-delay:.12s}
+@keyframes gwIn{from{opacity:0;transform:translateY(8px) scale(.97);filter:blur(5px)}}
+.gw-big{position:relative;width:190px;height:190px;margin-top:4px;flex:none}
+.gw-big::before{content:"";position:absolute;inset:-12%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 34%,transparent),transparent 65%);filter:blur(10px)}
+.gw-big.prem::before{background:radial-gradient(circle,color-mix(in srgb,#E9B949 40%,transparent),transparent 65%)}
+.gw-big svg{position:relative;width:100%;height:100%;display:block;animation:gwFl 3.2s ease-in-out infinite}
+@keyframes gwFl{50%{transform:translateY(-8px) rotate(2deg)}}
+.gw-side h3{margin:6px 0 0;font-size:21px;letter-spacing:-.3px}.gw-side p{margin:0;color:var(--muted);font-size:13px;max-width:230px}
+.gw-pts{display:inline-flex;padding:5px 11px;border-radius:99px;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent);font-weight:750;font-size:12.5px}.gw-pts.has{background:var(--surface2);color:var(--muted)}
+.gw-sp{flex:1}.gw-go{width:100%;height:50px;border-radius:16px;font-size:15px}
+@media(prefers-reduced-motion:reduce){.gw-side>*,.gw-big svg{animation:none}}
 html.web .mset-top:has(> [data-act="fpback"])>*{display:none}   /* WEB: подпись «Профиль» в шапке не нужна, стрелка «назад» остаётся */
  html.web #view{max-width:none;margin:0;padding-top:34px;padding-bottom:60px;padding-left:calc(264px + max(28px,(100vw - 264px - 760px) / 2));padding-right:max(28px,calc((100vw - 264px - 760px) / 2))}
  html.web #fab.wdock{left:calc(50% + 132px);bottom:28px}
@@ -2940,7 +2975,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.689';
+const APP = 'VOOB (by BGASHEV) Mini App v1.690';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4214,9 +4249,42 @@ function giftConfirm(f, k){
   o.addEventListener('click', e => { if (e.target === o) closeGc(); });
   document.body.appendChild(o);
 }
+/* v1.690 WEB: окно «Подарить» — витрина по разделам слева, большая панель выбранного подарка справа */
+const GW_CATS = [['Еда и сладости', ['donut','icecream','melon','avocado','lollipop','pizza','mushroom','potion']],
+  ['Спорт', ['dumbbell','basketball','soccer','tennis','volleyball','boxing','kettlebell','stopwatch','runner','skate','goggles','whistle','pingpong','bowling','trophy','shaker']],
+  ['Фантазия', ['duck','gem','rainbow','ufo','cactus','heart','cat','saturn','disco','egg','star']]];
+const GW = {id:0, k:'', has:new Set(), en:null, pro:false};
+function gwSide(){
+  const k = GW.k, prem = PGIFTS.includes(k), has = GW.has.has(k), lock = prem && !GW.pro, noEn = !prem && !(GW.en && GW.en.left);
+  const pts = has ? 'уже есть у друга · без очков' : prem ? '+200 очков другу' : 'новый вид · +100 очков другу';
+  const f = FR.data.friends.find(x => x.tg_id === GW.id);
+  return `<div class="gw-big${prem ? ' prem' : ''}" key="${k}">${giftArt(k)}</div><h3>${esc(GIFT_T[k][1])}</h3><span class="gw-pts${has ? ' has' : ''}">${pts}</span>
+    <p>${esc(f ? f.name : 'Друг')} увидит подарок в своей коллекции и получит уведомление.${prem ? ' Премиум не тратит твою энергию.' : ''}</p><div class="gw-sp"></div>
+    ${lock ? `<button type="button" class="btn primary gw-go" data-act="gprolock">${IC('crown', 18)}Нужен VOOB PRO</button>`
+      : `<button type="button" class="btn primary gw-go" data-act="gdo" data-id="${GW.id}" data-k="${k}"${noEn ? ' disabled' : ''}>${IC('gift', 18)}${noEn ? 'Нет энергии' : prem ? 'Подарить' : 'Подарить · −1 энергии'}</button>`}`;
+}
+function gwSel(k){
+  if (!GIFT_T[k]) return; GW.k = k; hap.tap();
+  document.querySelectorAll('.gwc').forEach(b => b.classList.toggle('sel', b.dataset.k === k));
+  const sd = $('#gw-side'); if (sd) { sd.innerHTML = gwSide(); sd.classList.remove('pop'); void sd.offsetWidth; sd.classList.add('pop'); }
+}
+function openGiftPickerWeb(f, en, has, pro){
+  const id = f.tg_id, card = k => { const pr = PGIFTS.includes(k);
+    return `<button type="button" class="gwc${has.has(k) ? ' has' : ''}${pr ? ' pr' : ''}${pr && !pro ? ' lk' : ''}" data-act="gwsel" data-k="${k}"><span class="gi">${giftArt(k)}</span><i>${esc(GIFT_T[k][1])}</i></button>`; };
+  const seen = new Set(GW_CATS.flatMap(c => c[1])), rest = GIFT_KEYS.filter(k => k !== 'pro' && !seen.has(k));
+  const cats = GW_CATS.map((c, i) => [c[0], c[1].concat(i === 2 ? rest : [])]);
+  GW.id = id; GW.has = has; GW.en = en; GW.pro = pro;
+  const first = cats[0][1].find(k => !has.has(k)) || cats[0][1][0]; GW.k = first;
+  openSheet(`<div class="gw-h"><div><h2>Подарить: ${esc(f.name)}</h2><div class="cap">${en.left ? 'Энергии хватит ещё на ' + npw(en.left, ['подарок','подарка','подарков']) + ' в этом месяце. Метка «есть» — такой подарок у друга уже есть; новый вид даст ему +100 очков.' : 'Энергия кончилась — новые подарки с 1-го числа.'}</div></div>${energyHTML(en)}<button type="button" class="gw-x" data-act="close" aria-label="Закрыть">${IC('close', 18)}</button></div>
+    <button type="button" class="gpx-ban gw-ban" data-act="giftpro" data-id="${id}"><span class="gpx-bi">${IC('crown', 22)}</span><div><b>Подарить VOOB PRO</b><small>Подписка другу · оплата звёздами</small></div>${IC('chev', 18)}</button>
+    <div class="gw-body"><div class="gw-grid">${cats.map(c => `<div class="gw-sec">${c[0]}</div>` + c[1].map(card).join('')).join('')}<div class="gw-sec pr">${IC('crown', 13)}Премиум<u>только для PRO · без траты энергии · +200 очков</u></div>${PGIFTS.map(card).join('')}</div>
+    <aside class="gw-side" id="gw-side">${gwSide()}</aside></div>`, {type:'gpick', id});
+  $('#sheet').classList.add('gw'); const s0 = document.querySelector('.gwc[data-k="' + first + '"]'); if (s0) s0.classList.add('sel');
+}
 function openGiftPicker(id){
   const f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
   const en = FR.data.gift_energy || {left:0, total:isPro() ? 5 : 3}, has = new Set(f.gift_kinds || []), pro = isPro();
+  if (inWeb && window.innerWidth >= 900) return openGiftPickerWeb(f, en, has, pro);
   openSheet(`<div class="row" style="justify-content:space-between;align-items:center;margin-bottom:6px"><h2 style="margin:0">Подарить: ${esc(f.name)}</h2>${energyHTML(en)}</div>
     <div class="cap" style="margin-bottom:12px">${en.left ? 'Энергии хватит ещё на ' + npw(en.left, ['подарок','подарка','подарков']) + ' в этом месяце. Отмеченные точкой у друга уже есть — новый вид даст ему +100 очков.' : 'Энергия кончилась — новые подарки с 1-го числа.'}</div>
     <button type="button" class="gpx-ban" data-act="giftpro" data-id="${id}"><span class="gpx-bi">${IC('crown', 22)}</span><div><b>Подарить VOOB PRO</b><small>Подписка другу · оплата звёздами</small></div>${IC('chev', 18)}</button>
@@ -6190,7 +6258,7 @@ const sheetBack = ctx => ctx && BACK_T.has(ctx.type) && !(inTG && ver('6.1')) ? 
 function openSheet(html, ctx){
   sheetCtx = ctx;
   $('#sheet').classList.remove('top');
-  $('#sheet').classList.remove('xl');
+  $('#sheet').classList.remove('xl', 'gw');
   $('#sheet').classList.toggle('pf', !!ctx && BACK_T.has(ctx.type));
   $('#sheet').classList.toggle('half', !!ctx && (ctx.type === 'acts' || ctx.type === 'planact' || ctx.type === 'frall'));
   $('#sheet').classList.toggle('fr', !!ctx && ctx.type === 'frall');   // выбор активности — до середины экрана, избранные под большим пальцем
@@ -6655,6 +6723,7 @@ const ACT = {
   ginbox: () => openGiftInbox(),
   gview: el => openGiftView(el.dataset.k, el.dataset.who),
   gvclose: () => { const z = $('#gview'); if (z) { z.classList.add('out'); setTimeout(() => z.remove(), 180); } },
+  gwsel: el => gwSel(el.dataset.k),
   gsend: el => { const f = FR.data && FR.data.friends.find(x => x.tg_id === +el.dataset.id); if (!f) return; hap.tap(); giftConfirm(f, el.dataset.k); },
   gno: () => { hap.tap(); closeGc(); },
   gprolock: () => { hap.warn(); proToast('Премиум-подарки — только для PRO. Получатель берёт +200 очков'); },
