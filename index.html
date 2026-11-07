@@ -3243,7 +3243,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.742';
+const APP = 'VOOB (by BGASHEV) Mini App v1.743';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6571,9 +6571,10 @@ function segSlide(){
     const ind = sg.querySelector(':scope > .sgi'); if (!ind) return;
     const on = sg.querySelector(':scope > button.on');
     if (!on || !sg.offsetWidth) { ind.style.opacity = '0'; sg.classList.remove('sgs'); return; }
-    sg.classList.remove('sgs');
+    sg.classList.remove('sgs'); const _tr = on.style.transition; on.style.transition = 'none';   // v743: без перехода, иначе getComputedStyle отдаёт «прозрачный» старт и индикатор красится в прозрачный (кнопка «Тёмная» исчезала)
     const cs = getComputedStyle(on), look = [cs.backgroundColor, cs.backgroundImage, cs.boxShadow, cs.borderRadius, cs.borderTopColor, cs.borderTopWidth].join('|');
     if (ind.dataset.look !== look) { ind.dataset.look = look; ind.style.background = cs.backgroundImage !== 'none' ? cs.backgroundImage : cs.backgroundColor; ind.style.boxShadow = cs.boxShadow; ind.style.borderRadius = cs.borderRadius; ind.style.border = cs.borderTopWidth + ' solid ' + cs.borderTopColor; }
+    on.style.transition = _tr;
     sg.classList.add('sgs');
     const first = !ind.dataset.p;
     if (first) ind.style.transition = 'none';
