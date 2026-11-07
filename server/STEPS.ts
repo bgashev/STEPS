@@ -1184,55 +1184,6 @@ async function routeAccountRestore(body: any) {
   return json({ status: "ok", pro: await proStatus(me) });
 }
 
-
-/* ===== Google как дополнительный способ входа (v1.737) =====
-   Аккаунт VOOB по-прежнему = Telegram ID. Google только привязывается к нему и потом открывает тот же аккаунт.
-   Таблица: google_links(google_sub text pk, tg_id bigint unique, email text, created_at timestamptz) */
-const GOOGLE_CLIENT_ID = Deno.env.get("GOOGLE_CLIENT_ID") ?? "641775711992-ra7vdtqtp74egslhfd0j2cqj12hqgn6c.apps.googleusercontent.com";
-async function googleVerify(idToken: unknown): Promise<{ sub: string; email: string } | null> {
-  if (typeof idToken !== "string" || idToken.length < 100 || idToken.length > 4096) return null;
-  const r = await fetch("https://oauth2.googleapis.com/tokeninfo?id_token=" + encodeURIComponent(idToken)).catch(() => null);
-  if (!r || !r.ok) return null;
-  const t = await r.json().catch(() => null);
-  if (!t || t.aud !== GOOGLE_CLIENT_ID || !t.sub) return null;
-  if (t.iss !== "accounts.google.com" && t.iss !== "https://accounts.google.com") return null;
-  if (Number(t.exp) * 1000 < Date.now()) return null;
-  const ok = t.email_verified === true || t.email_verified === "true";
-  return { sub: String(t.sub), email: ok ? String(t.email ?? "") : "" };
-}
-async function routeGoogleLogin(body: any) {
-  const g = await googleVerify(body?.credential);
-  if (!g) return fail("Не удалось подтвердить вход через Google", 401);
-  const { data } = await db.from("google_links").select("tg_id").eq("google_sub", g.sub).maybeSingle();
-  if (!data) return json({ status: "unlinked" });
-  const token = await createSession(data.tg_id as number, "web");
-  return json({ status: "ok", token, user: await userInfo(data.tg_id as number) });
-}
-async function routeGoogleLink(body: any) {
-  const me = await sessionUser(body?.token);
-  if (!me) return noSession();
-  const g = await googleVerify(body?.credential);
-  if (!g) return fail("Не удалось подтвердить вход через Google", 401);
-  const { data: ex } = await db.from("google_links").select("tg_id").eq("google_sub", g.sub).maybeSingle();
-  if (ex && ex.tg_id !== me) return fail("Этот Google-аккаунт уже привязан к другому профилю VOOB", 409);
-  await db.from("google_links").delete().eq("tg_id", me);            // один Google на аккаунт: новая привязка заменяет старую
-  const { error } = await db.from("google_links").insert({ google_sub: g.sub, tg_id: me, email: g.email || null });
-  if (error) return fail("Не удалось привязать Google", 500);
-  return json({ status: "ok", email: g.email });
-}
-async function routeGoogleStatus(body: any) {
-  const me = await sessionUser(body?.token);
-  if (!me) return noSession();
-  const { data } = await db.from("google_links").select("email").eq("tg_id", me).maybeSingle();
-  return json({ linked: !!data, email: data?.email ?? "" });
-}
-async function routeGoogleUnlink(body: any) {
-  const me = await sessionUser(body?.token);
-  if (!me) return noSession();
-  await db.from("google_links").delete().eq("tg_id", me);
-  return json({ status: "ok" });
-}
-
 const FROZEN_BLOCK = new Set(["/friends/add", "/friends/remove", "/friends/request", "/friends/respond", "/friends/privacy",
   "/friends/poke", "/gifts/send", "/gifts/claim", "/profile/handle"]);
 
@@ -1261,10 +1212,6 @@ Deno.serve(async (req) => {
       case "/login/poll": return await routeLoginPoll(body);
       case "/sync": return await routeSync(body);
       case "/logout": return await routeLogout(body);
-      case "/google/login": return await routeGoogleLogin(body);
-      case "/google/link": return await routeGoogleLink(body);
-      case "/google/status": return await routeGoogleStatus(body);
-      case "/google/unlink": return await routeGoogleUnlink(body);
       case "/avatar": return await routeAvatar(body);
       case "/friends": return await routeFriends(body);
       case "/friends/add": return await routeFriendAdd(body);

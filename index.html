@@ -7386,6 +7386,7 @@ try {
 addEventListener('pageshow', ev => { if (ev.persisted) { const o = document.getElementById('luv'); if (o) o.remove(); } });
 /* v737: Google как дополнительный вход в WEB. Аккаунт остаётся Telegram-овым: Google привязывается в Настройках и потом открывает тот же профиль */
 const GCID = '641775711992-ra7vdtqtp74egslhfd0j2cqj12hqgn6c.apps.googleusercontent.com';
+const GAPI = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-google';
 const GS = {st:null, ready:null, busy:false};
 function gsLoad(){
   if (GS.ready) return GS.ready;
@@ -7410,7 +7411,7 @@ async function gsButton(host, cb, text){
 async function gsLogin(cred){
   const m = $('#wl-gmsg'); if (!cred) return;
   try {
-    const j = await api('/google/login', {credential:cred, client:'web'});
+    const j = await api(GAPI + '/login', {credential:cred, client:'web'});
     if (j.status === 'ok') {
       try { localStorage.setItem(WEBK, JSON.stringify({token:j.token, user:j.user})); } catch (e) {}
       wlSet('ok'); setTimeout(() => location.reload(), 900);
@@ -7418,7 +7419,7 @@ async function gsLogin(cred){
   } catch (e) { if (m) m.textContent = e.message || 'Не получилось войти через Google'; }
 }
 async function gsLoadStatus(){
-  try { GS.st = await apiAuth('/google/status', {}); } catch (e) { GS.st = {linked:false, email:'', err:1}; }
+  try { GS.st = await apiAuth(GAPI + '/status', {}); } catch (e) { GS.st = {linked:false, email:'', err:1}; }
   const h = $('#gs-host'); if (h) gsMount();
 }
 function gsMount(){
@@ -7433,12 +7434,12 @@ function gsMount(){
 }
 async function gsLink(cred){
   if (!cred || GS.busy) return; GS.busy = true;
-  try { const j = await apiAuth('/google/link', {credential:cred}); GS.st = {linked:true, email:j.email || ''}; toast('Google привязан'); }
+  try { const j = await apiAuth(GAPI + '/link', {credential:cred}); GS.st = {linked:true, email:j.email || ''}; toast('Google привязан'); }
   catch (e) { toast(e.message || 'Не получилось привязать Google'); }
   GS.busy = false; gsMount();
 }
 async function gsUnlink(){
-  try { await apiAuth('/google/unlink', {}); GS.st = {linked:false, email:''}; toast('Google отвязан'); } catch (e) { toast(e.message || 'Ошибка'); }
+  try { await apiAuth(GAPI + '/unlink', {}); GS.st = {linked:false, email:''}; toast('Google отвязан'); } catch (e) { toast(e.message || 'Ошибка'); }
   gsMount();
 }
 const WL = {code:'', link:'', t0:0, exp:600, timer:0, tick:0};
