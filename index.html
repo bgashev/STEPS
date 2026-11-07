@@ -3046,6 +3046,15 @@ html.web .stv .st-lg u{width:13px;height:13px}
 html.web .stv .st-lg b{font-size:19px;font-weight:750}
 html.web .stv .st-lg span{font-size:15px;margin-top:3px}
 .stv .st-lg>div:only-child b{font-size:17px}.stv .st-lg>div:only-child span{font-size:13.5px}
+/* v1.728: «Итоги» — плашки видов активности: крупная типографика (моб. и WEB) */
+.stv .st-lg>div{padding:16px 18px;gap:14px;border-radius:22px}
+.stv .st-lg u{width:12px;height:12px}
+.stv .st-lg b{font-size:18px;font-weight:800;letter-spacing:-.3px;line-height:1.15}
+.stv .st-lg span{display:flex;align-items:center;gap:8px;margin-top:5px;font-size:15px}
+.stv .st-lg span em{font-style:normal;font-weight:650;color:var(--text);font-size:15.5px;letter-spacing:-.1px}
+.stv .st-lg span i{font-style:normal;font-weight:800;font-size:12.5px;padding:2px 9px;border-radius:99px;color:var(--c);background:color-mix(in srgb,var(--c) 16%,transparent)}
+.stv .st-lg>div:only-child b{font-size:22px}.stv .st-lg>div:only-child span em{font-size:17px}.stv .st-lg>div:only-child span i{font-size:13.5px;padding:3px 11px}
+html.web .stv .st-lg>div{padding:18px 22px}html.web .stv .st-lg b{font-size:19px}
 /* v1.723: плавная смена акцентного цвета (зарегистрированные цветовые свойства анимируются) */
 @property --accent{syntax:'<color>';inherits:true;initial-value:#B4A7EE}
 @property --accent2{syntax:'<color>';inherits:true;initial-value:#B4A7EE}
@@ -3161,7 +3170,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.727';
+const APP = 'VOOB (by BGASHEV) Mini App v1.728';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5419,7 +5428,7 @@ function viewStats(){
     const ctr = tm >= 60 ? `<b data-h="${Math.floor(tm / 60)}" data-m="${Math.round(tm % 60) % 60}">${Math.floor(tm / 60)}<i>:</i>${String(Math.round(tm % 60) % 60).padStart(2, '0')}</b><span>часов в движении</span>` : `<b data-v="${Math.round(tm)}">${Math.round(tm)}</b><span>минут в движении</span>`;
     h += `<div class="st-hero"><div class="st-k">${PN}</div>
       <div class="st-rg"><svg viewBox="0 0 300 300" aria-hidden="true"><g class="tk">${ticks}</g>${rings}</svg><div class="st-ct">${ctr}</div></div>${dh}
-      <div class="st-lg">${top.map(([a, m], i) => `<div style="--c:${actCol(a)};--n:${i}"><u></u><p><b>${esc(stName(a))}</b><span>${fmtMin(m)} · ${Math.round(m * 100 / ((sum(dn0, x => x[1]) || 1)))}%</span></p></div>`).join('')}</div></div>`;
+      <div class="st-lg">${top.map(([a, m], i) => `<div style="--c:${actCol(a)};--n:${i}"><u></u><p><b>${esc(stName(a))}</b><span><em>${fmtMin(m)}</em><i>${Math.round(m * 100 / ((sum(dn0, x => x[1]) || 1)))}%</i></span></p></div>`).join('')}</div></div>`;
     const ex = [kpi(num(n / weeks), 'Тренировок в неделю'), kpi(fmtMin(tm / n), 'Средняя тренировка'), kpi(numSep(xp), 'Очков заработано'),
       kpi(kc ? kcalF(kc) : '—', kc ? 'Сожжено, примерно' : 'Ккал: укажи вес'), kpi(num(sum(pws, w => +w.feeling || 3) / n) + ' / 5', 'Среднее состояние')];
     const km = sum(pws, kmOf); if (km > 0.05) ex.splice(3, 0, kpi(kmF(km), 'Пройдено, примерно'));
