@@ -809,18 +809,20 @@ html.web .stv .gl .recs .rv{font-size:21px;letter-spacing:-.5px;margin:6px 0 2px
 }
 html.web .mset-top.msw{height:0;margin:0;padding:0;top:0}
 html.web .mset-top.msw>*{position:relative;top:18px}
-.wpop{position:fixed;left:auto;top:80px;width:340px;z-index:31}
+.invpop.wpop{width:340px}
 .wpop .ip-in .f{margin:0 0 10px}
 .wpop .wp-row{display:grid;margin:10px 0 0}
 .wpop .wp-hint{color:var(--muted);font-size:11.5px;line-height:1.4;margin:2px 2px 12px}
 .wpop .wp-save{width:100%;min-height:46px;border-radius:14px}
 #fab.wp-open .fi svg{transform:rotate(45deg)}
 #fab .fi svg{transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
+#ipfx{position:fixed;inset:0;z-index:32;pointer-events:none;overflow:hidden;transition:opacity .5s}
 html.web .head{position:relative}
-.invpop{position:absolute;right:0;top:calc(100% + 4px);width:320px;z-index:30;pointer-events:none;visibility:hidden;
-  clip-path:inset(-20px -20px -40px 100% round 22px);opacity:0;transform:translateX(18px);
-  transition:clip-path .46s cubic-bezier(.2,.85,.2,1),opacity .28s,transform .46s cubic-bezier(.2,.85,.2,1),visibility 0s .46s}
-.invpop.open{pointer-events:auto;visibility:visible;clip-path:inset(-20px -20px -40px 0 round 22px);opacity:1;transform:none;transition-delay:0s}
+.invpop{position:fixed;width:330px;z-index:31;pointer-events:none;visibility:hidden;opacity:0;transform-origin:calc(100% - 28px) 0;transform:translateY(-12px) scale(.94);filter:blur(14px);
+  transition:opacity .5s cubic-bezier(.22,.7,.2,1),transform .7s cubic-bezier(.2,.9,.25,1),filter .5s cubic-bezier(.22,.7,.2,1),visibility 0s .7s}
+.invpop.open{pointer-events:auto;visibility:visible;opacity:1;transform:none;filter:blur(0);transition-delay:0s}
+#pbd{position:fixed;inset:0;z-index:28;pointer-events:none;opacity:0;background:rgba(6,6,10,.42);-webkit-backdrop-filter:blur(8px) saturate(.92);backdrop-filter:blur(8px) saturate(.92);transition:opacity .55s cubic-bezier(.22,.7,.2,1)}
+#pbd.on{opacity:1;pointer-events:auto}
 .ip-in{padding:16px;border-radius:22px;border:1px solid var(--border);background:linear-gradient(165deg,color-mix(in srgb,var(--surface2) 62%,var(--surface)),var(--surface));backdrop-filter:blur(14px) saturate(1.1);-webkit-backdrop-filter:blur(14px) saturate(1.1);box-shadow:0 24px 60px -20px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.06)}
 .ip-t{font-size:13px;font-weight:800;letter-spacing:.02em;margin:0 2px 12px}
 .ip-find{display:flex;align-items:center;gap:6px;padding:4px 4px 4px 14px;border-radius:16px;background:var(--surface2);border:1.5px solid transparent;transition:border-color .25s,box-shadow .25s}
@@ -2712,7 +2714,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.658';
+const APP = 'VOOB (by BGASHEV) Mini App v1.659';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4342,22 +4344,58 @@ function startTicker(){
 
 /* v1.641 WEB: «Добавить друга» — компактная плашка, выезжающая влево из кнопки в шапке */
 
-function invPop(d){
-  return `<div class="invpop${S.inv ? ' open' : ''}" id="inv"><div class="ip-in">
-    <div class="ip-t">Добавить друга</div>
+/* v1.659 WEB: плашки «Добавить друга» и «Взвеситься» — общий движок: размытие и затемнение экрана, мягкое появление, гало и боке */
+function popBd(on, a){
+  let b = document.getElementById('pbd'); if (!b) { b = document.createElement('div'); b.id = 'pbd'; document.body.appendChild(b); }
+  if (on && a) { const r = a.getBoundingClientRect(), W = innerWidth, H = innerHeight, x = r.left - 2, y = r.top - 2, w = r.width + 4, h = r.height + 4, k = Math.min(h / 2, 24);
+    b.style.clipPath = `path(evenodd,"M0 0H${W}V${H}H0Z M${x + k} ${y}H${x + w - k}A${k} ${k} 0 0 1 ${x + w} ${y + k}V${y + h - k}A${k} ${k} 0 0 1 ${x + w - k} ${y + h}H${x + k}A${k} ${k} 0 0 1 ${x} ${y + h - k}V${y + k}A${k} ${k} 0 0 1 ${x + k} ${y}Z")`; b.classList.add('on'); }
+  else b.classList.remove('on');
+}
+function popFxClear(){ const L = document.getElementById('ipfx'); if (!L) return; L.style.opacity = '0'; clearTimeout(popFxClear.t); popFxClear.t = setTimeout(() => { if (L.style.opacity === '0') L.innerHTML = ''; }, 600); }
+function popFx(pop){
+  if (!pop || (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches)) return;
+  let L = document.getElementById('ipfx'); if (!L) { L = document.createElement('div'); L.id = 'ipfx'; document.body.appendChild(L); }
+  clearTimeout(popFxClear.t); L.innerHTML = ''; L.style.opacity = '1';
+  const r = pop.getBoundingClientRect(), V = ['#c9b8ff', '#9db8ff', '#ffffff', '#e9dcff'], rnd = (x, y) => x + Math.random() * (y - x), pick = x => x[Math.floor(Math.random() * x.length)];
+  const per = () => { const w = r.width, h = r.height, t = Math.random() * 2 * (w + h); let x, y, nx = 0, ny = 0;
+    if (t < w) { x = r.left + t; y = r.top; ny = -1; } else if (t < w + h) { x = r.right; y = r.top + t - w; nx = 1; } else if (t < 2 * w + h) { x = r.right - (t - w - h); y = r.bottom; ny = 1; } else { x = r.left; y = r.bottom - (t - 2 * w - h); nx = -1; }
+    nx += rnd(-.3, .3); ny += rnd(-.3, .3); const l = Math.hypot(nx, ny) || 1; return {x, y, nx: nx / l, ny: ny / l}; };
+  const mk = css => { const e = document.createElement('i'); e.style.cssText = 'position:absolute;left:0;top:0;display:block;will-change:transform,opacity;' + css; L.appendChild(e); return e; };
+  const halo = mk(`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;border-radius:22px;box-sizing:border-box`);
+  halo.animate([{boxShadow: '0 0 0 0 #9a8cff00'}, {boxShadow: '0 0 56px 6px #9a8cff66', offset: .35}, {boxShadow: '0 0 90px 14px #9a8cff00'}], {duration: 2200, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'both'});
+  for (let i = 0; i < 14; i++) { const p = per(), z = rnd(16, 38), c = pick(V), d = rnd(20, 56), e = mk(`width:${z}px;height:${z}px;margin:${-z / 2}px 0 0 ${-z / 2}px;border-radius:50%;background:radial-gradient(circle,${c}99,${c}00 70%);filter:blur(4px)`);
+    e.animate([{opacity: 0, transform: `translate(${p.x}px,${p.y}px) scale(.5)`}, {opacity: .7, offset: .4}, {opacity: 0, transform: `translate(${p.x + p.nx * d}px,${p.y + p.ny * d - 14}px) scale(1.3)`}], {duration: rnd(2400, 3600), delay: rnd(0, 800), easing: 'cubic-bezier(.3,.6,.35,1)', fill: 'both'}); }
+  for (let i = 0; i < 28; i++) { const p = per(), z = rnd(1.5, 2.6), d = rnd(24, 70), e = mk(`width:${z}px;height:${z}px;border-radius:50%;background:#fff;box-shadow:0 0 8px #c9b8ff`);
+    e.animate([{opacity: 0, transform: `translate(${p.x}px,${p.y}px)`}, {opacity: .9, offset: .3}, {opacity: 0, transform: `translate(${p.x + p.nx * d}px,${p.y + p.ny * d}px)`}], {duration: rnd(2000, 3200), delay: rnd(0, 900), easing: 'cubic-bezier(.2,.7,.25,1)', fill: 'both'}); }
+}
+function popOpen(id, html, anchor, after, cls){
+  const old = document.getElementById(id); if (old) old.remove();
+  const el = document.createElement('div'); el.id = id; el.className = 'invpop' + (cls ? ' ' + cls : ''); el.innerHTML = `<div class="ip-in">${html}</div>`; document.body.appendChild(el);
+  const r = anchor.getBoundingClientRect(); el.style.right = Math.max(12, innerWidth - r.right) + 'px'; el.style.top = (r.bottom + 12) + 'px';
+  popBd(true, anchor); void el.offsetWidth; el.classList.add('open');
+  setTimeout(() => { popFx(el.querySelector('.ip-in')); if (after) after(el); }, 260);
+  return el;
+}
+function popClose(id){
+  const el = document.getElementById(id); if (!el || !el.classList.contains('open')) return false;
+  el.classList.remove('open'); popBd(false); popFxClear(); clearTimeout(popClose.t); popClose.t = setTimeout(() => { if (!el.classList.contains('open')) el.remove(); }, 700); return true;
+}
+function invContent(d){
+  return `<div class="ip-t">Добавить друга</div>
     <div class="ip-find"><span class="at">@</span><input class="inp" id="fr-code" placeholder="Код или ник" maxlength="24" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"><button class="ip-go" data-act="fradd" aria-label="Добавить">${IC('chev', 18)}</button></div>
     <div class="ip-or"><span>или поделись</span></div>
-    <div class="ip-row"><button type="button" class="ip-b" data-act="frshare">${IC('export', 16)}<span>Ссылка</span></button><button type="button" class="ip-b ip-c" data-act="frcode" aria-label="Скопировать код"><b>${esc(d.code)}</b>${IC('link', 15)}</button></div>
-  </div></div>`;
+    <div class="ip-row"><button type="button" class="ip-b" data-act="frshare">${IC('export', 16)}<span>Ссылка</span></button><button type="button" class="ip-b ip-c" data-act="frcode" aria-label="Скопировать код"><b>${esc(d.code)}</b>${IC('link', 15)}</button></div>`;
 }
+function fpSetBtn(){ const b = document.querySelector('[data-act="frinv"]'); if (!b) return; b.classList.toggle('on', !!S.inv); const l = b.querySelector('.ibl'); if (l) l.textContent = S.inv ? 'Закрыть' : 'Добавить друга'; }
+function fpOpen(){ const b = document.querySelector('[data-act="frinv"]'); if (!b || !FR.data) return; S.inv = true; fpSetBtn(); popOpen('inv', invContent(FR.data), b, el => { const i = el.querySelector('#fr-code'); if (i) i.focus(); }); }
+function fpClose(){ if (!S.inv) return; S.inv = false; fpSetBtn(); popClose('inv'); }
 if (inWeb) {
-  const invClose = () => { if (!S.inv) return; S.inv = false; const r = document.getElementById('inv'); if (r) r.classList.remove('open'); const b = document.querySelector('[data-act="frinv"]'); if (b) { b.classList.remove('on'); const l = b.querySelector('.ibl'); if (l) l.textContent = 'Добавить друга'; } };
-  document.addEventListener('click', e => { if (S.inv && S.tab === 'friends' && !e.target.closest('#inv,[data-act="frinv"]')) invClose(); }, true);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') invClose(); });
+  document.addEventListener('click', e => { if (S.inv && !e.target.closest('#inv,[data-act="frinv"]')) fpClose(); }, true);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') { fpClose(); wpClose(); } });
 }
 function viewFriends(){
   if (S.inv == null && inWeb) S.inv = false;
-  let h = `<div class="head"><div><h1>Друзья</h1><div class="sub">Следи за успехами друзей — и пусть они следят за твоими</div></div>${inTG ? `<div class="hbtns"><button class="ib${FR.loading ? ' spin' : ''}" data-act="frload" aria-label="Обновить">${IC('repeat', 18)}</button><button class="ib shim${S.inv ? ' on' : ''}" data-act="frinv" aria-label="Добавить друга">${IC('plus', 20)}${inWeb ? `<span class="ibl">${S.inv ? 'Закрыть' : 'Добавить друга'}</span>` : ''}</button></div>` : ''}${inWeb && inTG && FR.data ? invPop(FR.data) : ''}</div>`;
+  let h = `<div class="head"><div><h1>Друзья</h1><div class="sub">Следи за успехами друзей — и пусть они следят за твоими</div></div>${inTG ? `<div class="hbtns"><button class="ib${FR.loading ? ' spin' : ''}" data-act="frload" aria-label="Обновить">${IC('repeat', 18)}</button><button class="ib shim${S.inv ? ' on' : ''}" data-act="frinv" aria-label="Добавить друга">${IC('plus', 20)}${inWeb ? `<span class="ibl">${S.inv ? 'Закрыть' : 'Добавить друга'}</span>` : ''}</button></div>` : ''}</div>`;
   if (!inTG) return h + `<div class="card muted">Открой VOOB в Telegram — друзья работают через него.</div>`;
   if (!FR.data && !FR.loading && !FR.err) setTimeout(loadFriends, 0);
   if (!FR.data) return h + (FR.err ? `<div class="card muted">Не удалось загрузить друзей: ${esc(FR.err)}<div style="margin-top:10px"><button class="btn ghost small" data-act="frload">Повторить</button></div></div>`
@@ -5643,6 +5681,7 @@ window.addEventListener('scroll', () => {
 function updFab(){
   const box = $('#fab'); if (!box) return;
   if (S.tab !== 'weight') wpClose();
+  if (S.tab !== 'friends') fpClose();
   const b = box.querySelector('button'), fl = b.querySelector('.fl'), fi = b.querySelector('.fi');
   const cfg = FAB[S.tab];
   if (!fi.innerHTML) fi.innerHTML = IC('plus', 20);
@@ -5933,25 +5972,16 @@ function updPreview(){
 }
 /* v1.657 WEB (широкий экран): «Взвеситься» — плашка, выезжающая влево из кнопки, как у «Добавить друга» */
 const wideWeb = () => inWeb && inTG && window.matchMedia && matchMedia('(min-width:1320px)').matches;
-function wpClose(){
-  const el = document.getElementById('wpop'), f = document.getElementById('fab'); if (f) f.classList.remove('wp-open');
-  if (!el || !el.classList.contains('open')) return;
-  el.classList.remove('open'); clearTimeout(wpClose.t); wpClose.t = setTimeout(() => { if (!el.classList.contains('open')) el.remove(); }, 600);
-}
+function wpClose(){ const f = document.getElementById('fab'); if (f) f.classList.remove('wp-open'); popClose('wpop'); }
 function wpOpen(){
   const f = document.getElementById('fab'); if (!f) return;
-  let el = document.getElementById('wpop'); if (el) el.remove();
-  el = document.createElement('div'); el.id = 'wpop'; el.className = 'invpop wpop';
-  el.innerHTML = `<div class="ip-in"><div class="ip-t">Взвеситься</div>
+  f.classList.add('wp-open');
+  popOpen('wpop', `<div class="ip-t">Взвеситься</div>
     ${stepper('kg', 'Вес', currentWeight() || 75, 20, 300, 0.1, 1, 'кг')}
     <div class="wp-row"><label class="f"><span>Дата</span><input class="inp" type="date" id="k-date" value="${isoOf(todayN())}" max="${isoOf(todayN())}"></label></div>
     <label class="f"><span>Заметка</span><input class="inp" id="k-note" maxlength="100" placeholder="Например: утром натощак" autocomplete="off"></label>
     <div class="wp-hint">Взвешивайся в одно и то же время: утром, до завтрака. График будет честнее.</div>
-    <button type="button" class="btn primary wp-save" data-act="wpsave">Сохранить</button></div>`;
-  document.body.appendChild(el);
-  const r = f.getBoundingClientRect(); el.style.right = Math.max(12, innerWidth - r.right) + 'px'; el.style.top = (r.bottom + 10) + 'px';
-  f.classList.add('wp-open'); void el.offsetWidth; el.classList.add('open');
-  setTimeout(() => { const i = el.querySelector('.stp input'); if (i) { i.focus(); i.select(); } }, 320);
+    <button type="button" class="btn primary wp-save" data-act="wpsave">Сохранить</button>`, f, el => { const i = el.querySelector('.stp input'); if (i) { i.focus(); i.select(); } }, 'wpop');
 }
 function wpToggle(){ const el = document.getElementById('wpop'); if (el && el.classList.contains('open')) wpClose(); else wpOpen(); }
 if (inWeb) {
@@ -6210,7 +6240,7 @@ const ACT = {
     db.plans.splice(idx, 1); tombstone('plan', p); save(); hap.warn(); render(); if (inForm) closeSheet(); else openPlans();
     toast('План удалён', 'Отменить', () => { db.plans.splice(Math.min(idx, db.plans.length), 0, p); touch('plan', p); save(); render(); if (sheetCtx && sheetCtx.type === 'plans') openPlans(); }); },
   frload: () => { FR.err = ''; hap.tap(); const b = document.querySelector('[data-act=frload]'); if (b) b.classList.add('spin'); loadFriends(true); },
-  frinv: el => { S.inv = !S.inv; hap.imp(); el.classList.toggle('on', S.inv); const r = $('#inv'); if (r) r.classList.toggle('open', S.inv); const l = el.querySelector('.ibl'); if (l) l.textContent = S.inv ? 'Закрыть' : 'Добавить друга'; if (inWeb && S.inv) setTimeout(() => { const i = $('#fr-code'); if (i) i.focus(); }, 280); },
+  frinv: el => { if (inWeb) { hap.imp(); if (S.inv) fpClose(); else fpOpen(); return; } S.inv = !S.inv; hap.imp(); el.classList.toggle('on', S.inv); const r = $('#inv'); if (r) r.classList.toggle('open', S.inv); const l = el.querySelector('.ibl'); if (l) l.textContent = S.inv ? 'Закрыть' : 'Добавить друга'; if (inWeb && S.inv) setTimeout(() => { const i = $('#fr-code'); if (i) i.focus(); }, 280); },
   frzoom: el => openZoom(+el.dataset.id, el),
   zclose: () => closeZoom(),
   frall: el => { const id = +el.dataset.id, f = FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me && FR.data.me.tg_id === id ? FR.data.me : null)); const fl = FR.profBy.get(id); if (!f || !fl) return; hap.tap();
