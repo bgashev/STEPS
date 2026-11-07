@@ -2489,6 +2489,10 @@ html.web .mset-top:has(+ .me-prof .hero.hbg)>*{position:relative;top:18px}
 html.web .mset-top:has(+ .me-prof .hero.hbg)::before{content:'';display:block;position:fixed;left:0;right:0;top:0;bottom:auto;height:120px;z-index:-1;pointer-events:none;
   background:linear-gradient(to bottom,rgba(0,0,0,.5),rgba(0,0,0,.18) 55%,transparent);-webkit-backdrop-filter:none;backdrop-filter:none;-webkit-mask-image:none;mask-image:none}
 html.web #view .me-prof .hero.hbg{margin-top:0;padding-top:112px}
+html.web .fsh .fsh-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+html.web .fsh .fsh-h h3{margin:0}
+html.web .fsh .fsh-all{display:inline-flex;align-items:center;gap:2px;border:0;background:none;color:var(--muted);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;padding:6px 4px 6px 10px;border-radius:12px}
+html.web .fsh .fsh-all:hover{color:var(--text);background:color-mix(in srgb,var(--text) 6%,transparent)}
 /* v1.634 WEB: «Профиль» в два столбца на широком экране (слева — зона профиля, справа — карточки с прокруткой) */
 html.web .me-l,html.web .me-r{display:contents}
 @media (min-width:1320px){
@@ -2498,6 +2502,7 @@ html.web .me-l,html.web .me-r{display:contents}
   html.web #view.w2 .me-l::-webkit-scrollbar{display:none}
   html.web #view.w2 .me-r{display:block;min-width:0}
   html.web #view.w2 .me-r>:first-child{margin-top:0!important}
+  html.web #view.w2 .me-l>.card{margin:14px 0 0}
   html.web #view.w2 .me-l .hero,html.web #view.w2 .me-l .hero.hbg{margin:0;padding:36px 22px 30px;border-radius:26px}
   html.web #view.w2 .me-l .hero{background:var(--surface);border:1px solid var(--border);overflow:hidden;box-shadow:0 30px 60px -36px rgba(0,0,0,.45)}
   html.web #view.w2 .me-l .hero.hbg{background:#0b0b10;border-color:rgba(255,255,255,.12)}
@@ -2617,7 +2622,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.634';
+const APP = 'VOOB (by BGASHEV) Mini App v1.635';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4146,7 +4151,7 @@ async function loadFeed(force){
   catch (e) { FEED.err = e.message || 'нет связи'; if (!FEED.ev) FEED.ev = []; }
   FEED.busy = false; FEED.at = Date.now();
   if (sheetCtx && sheetCtx.type === 'feed') { const l = $('#feedlist'); if (l) l.innerHTML = feedListHTML(); document.querySelectorAll('[data-act=feedref]').forEach(b => b.classList.remove('spin')); }
-  if (S.tab === 'home') render();
+  if (S.tab === 'home' || (S.tab === 'me' && inWeb)) render();
 }
 const actName = k => ((ACTS.find(a => a[0] === k) || ACTS[0])[1]).toLowerCase();
 function feedTime(iso){ const d = new Date(iso); return isNaN(d) ? '' : d.toTimeString().slice(0, 5); }
@@ -4189,6 +4194,22 @@ function feedListHTML(){
     h += feedItemHTML(ev, i);
   });
   return h;
+}
+// v1.635 WEB: короткая лента друзей в профиле — последние события, с днями и лайками
+function feedShortHTML(n, pi){
+  if (!inTG) return '';
+  loadFeed();
+  const head = `<div class="fsh-h"><h3>${IC('friends')}Лента друзей</h3><button type="button" class="fsh-all" data-act="feedgo">Вся лента${IC('chev', 14)}</button></div>`;
+  if (!FEED.ev) return `<div class="card pfin fsh" style="--pi:${pi}">${head}${feedListHTML()}</div>`;
+  if (!FEED.ev.length) return `<div class="card pfin fsh" style="--pi:${pi}">${head}<div class="muted">${FEED.err ? 'Не удалось загрузить ленту' : 'У друзей за последние две недели тихо. Взбодри кого-нибудь ⚡'}</div></div>`;
+  const t = isoOf(todayN()), y = isoOf(todayN() - 1);
+  let h = '', last = null;
+  FEED.ev.slice(0, n).forEach((ev, i) => {
+    const d = feedDay(ev.at);
+    if (d !== last) { last = d; h += `<div class="fday">${d === t ? 'Сегодня' : d === y ? 'Вчера' : fmtDate(dn(d))}</div>`; }
+    h += feedItemHTML(ev, i);
+  });
+  return `<div class="card pfin fsh" style="--pi:${pi}">${head}${h}</div>`;
 }
 // главная: одна новость, каждые 3 секунды плавно сменяется следующей; нажатие — в «Друзья»
 function feedTickerHTML(){
@@ -4341,12 +4362,13 @@ function friendSheetHTML(f, j, loading, self){
   h += socialsHTML(f.tg_id, true) + `</div>` + acts;
   if (self) h += '<!--hs-->';   // v1.634 WEB: граница «зона профиля | лента карточек» для двух столбцов
   h += weekCard(f, g, ok, shown, j && j.week && j.week.days, loading);
-  if ((f.gift_kinds || []).length) h += `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из ${GIFT_ALL.length}</h3>${giftShelf(f.gift_kinds, 20, f.name)}</div>`;
+  if (self && inWeb) h += feedShortHTML(7, PI++);   // v1.635 WEB: справа — короткая лента друзей
+  if ((f.gift_kinds || []).length) h += (self ? '<!--L-->' : '') + `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из ${GIFT_ALL.length}</h3>${giftShelf(f.gift_kinds, 20, f.name)}</div>` + (self ? '<!--/L-->' : '');
   if (!loading && !self) h += `<button class="btn ghost small" style="width:100%;margin-bottom:12px;color:var(--muted)" data-act="frrep" data-id="${f.tg_id}">Пожаловаться</button>`;
   if (loading) return h + `<div id="fp-load">` + [100, 120, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('') + `</div>`;
   if (!j.details) return h + `<div class="card muted pfin" style="--pi:${PI++}">${IC('lock', 16)} ${self ? 'Твой профиль закрыт — друзья видят только основное. Открыть можно в настройках.' : esc(f.name) + ' закрыл(а) профиль — видно только основное.'}</div>`;
   const d = j.details, t = d.totals, r = d.records;
-  if ((d.ach || []).length) h += self ? `<div class="card achlink pfin" style="--pi:${PI++}" data-act="achall"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${IC('chev', 16)}</div>${medalStrip(d.ach, 44)}</div>`
+  if ((d.ach || []).length) h += self ? `<!--L--><div class="card achlink pfin" style="--pi:${PI++}" data-act="achall"><div class="row" style="justify-content:space-between;margin-bottom:10px"><h3 style="margin:0">${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${IC('chev', 16)}</div>${medalStrip(d.ach, 44)}</div><!--/L-->`
     : `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('medal')}Достижения · ${d.ach.filter(k => ACH_INFO[k]).length}</h3>${medalStrip(d.ach, 44)}</div>`;
   /* v1.481: «Всего», «Рекорды», «По месяцам», «Последние» — без привязки к ходьбе: главное — время и дни, дистанция и скорость только если они есть */
   const hasKm = (+t.km || 0) > 0.05;
@@ -4923,7 +4945,11 @@ function viewMe(){
     : [110, 90, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join(''));
   const f = Object.assign({}, me, {name: displayName() || me.name, gift_kinds: (GIFTS_IN && GIFTS_IN.kinds) || me.gift_kinds || [], level: myLevel()});   // v1.489: уровень и XP считаем у себя — без ожидания сервера
   const body = friendSheetHTML(f, ME.prof ? Object.assign({}, ME.prof, {level: f.level}) : ME.prof, !ME.prof, true), cut = body.indexOf('<!--hs-->');
-  if (inWeb && cut > 0) return h + `<div class="me-prof"><div class="me-l">${body.slice(0, cut)}</div><div class="me-r">${body.slice(cut + 9)}</div></div>`;   // WEB: слева — карточка профиля, справа — всё остальное
+  if (inWeb && cut > 0) {   // WEB: слева — профиль + подарки + достижения (куски между <!--L--> и <!--/L-->), справа — остальное
+    let left = body.slice(0, cut), right = body.slice(cut + 9);
+    right = right.replace(/<!--L-->([\s\S]*?)<!--\/L-->/g, (m, x) => { left += x; return ''; });
+    return h + `<div class="me-prof"><div class="me-l">${left}</div><div class="me-r">${right}</div></div>`;
+  }   // WEB: слева — карточка профиля, справа — всё остальное
   return h + `<div class="me-prof">${body}</div>`;
 }
 async function loadMyProfile(id){
