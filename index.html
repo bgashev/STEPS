@@ -2452,10 +2452,13 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
  html.web #view .hero.hbg{--hx:max(28px,calc((100vw - 264px - 760px) / 2));margin:-34px calc(-1 * var(--hx)) 0 calc(-264px - var(--hx));padding:70px calc(18px + var(--hx)) 48px calc(18px + 264px + var(--hx))}
  html.web body::after{display:none}
  html.web #view .hero.hbg>.hbgfx::after{display:none}
-/* WEB: профиль друга с фоном — фон начинается от самого верха, шапка «Профиль» лежит поверх без градиентной плашки */
-html.web .mset-top:has(+ .me-prof .hero.hbg){margin-bottom:-62px}
-html.web .mset-top:has(+ .me-prof .hero.hbg)::before{display:none}
-html.web #view .me-prof .hero.hbg{padding-top:142px}
+/* WEB: профиль друга с фоном — фон от самого верха окна, шапка «Профиль» лежит поверх; лёгкий градиент сверху — на всю ширину экрана */
+html.web #view:has(> .mset-top + .me-prof .hero.hbg){padding-top:0}
+html.web .mset-top:has(+ .me-prof .hero.hbg){height:0;margin:0;padding:0;top:0}
+html.web .mset-top:has(+ .me-prof .hero.hbg)>*{position:relative;top:18px}
+html.web .mset-top:has(+ .me-prof .hero.hbg)::before{content:'';display:block;position:fixed;left:0;right:0;top:0;bottom:auto;height:120px;z-index:-1;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(0,0,0,.5),rgba(0,0,0,.18) 55%,transparent);-webkit-backdrop-filter:none;backdrop-filter:none;-webkit-mask-image:none;mask-image:none}
+html.web #view .me-prof .hero.hbg{margin-top:0;padding-top:112px}
  html.web #view{max-width:none;margin:0;padding-top:34px;padding-bottom:60px;padding-left:calc(264px + max(28px,(100vw - 264px - 760px) / 2));padding-right:max(28px,calc((100vw - 264px - 760px) / 2))}
  html.web #fab.wdock{left:calc(50% + 132px);bottom:28px}
  html.web #toast{bottom:32px;left:calc(50% + 132px)}
@@ -2567,7 +2570,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.628';
+const APP = 'VOOB (by BGASHEV) Mini App v1.629';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
