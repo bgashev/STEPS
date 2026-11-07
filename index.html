@@ -873,9 +873,9 @@ html.web .pz-stage{position:sticky;top:24px;display:flex;flex-direction:column;g
 .pzs.chg{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}.pzs.hov{transform:translateY(-2px)}
 .pzbtns{display:flex;gap:10px}.pzgo{flex:1;min-height:50px}.pzrs{min-height:50px}
 .pzhint{display:flex;align-items:center;gap:7px;justify-content:center;text-align:center;color:var(--muted);font-size:12.5px;margin-top:2px}.pzhint svg{color:var(--accent);flex:none}
-html.web .pztabs{position:relative;display:grid;grid-template-columns:repeat(3,1fr);padding:4px;border-radius:999px;background:var(--surface);border:1px solid var(--border);margin-bottom:12px}
-html.web .pztabs .pzti{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:999px;background:var(--accent);box-shadow:0 6px 18px -8px var(--accent);transform:translateX(calc(var(--i) * 100%));transition:transform .5s cubic-bezier(.3,1.05,.35,1)}
-html.web .pztabs button{position:relative;z-index:1;border:0;background:none;padding:11px 8px;font:inherit;font-weight:750;font-size:13.5px;color:var(--muted);border-radius:999px;cursor:pointer;transition:color .3s}
+html.web .pztabs{position:relative;display:grid;grid-template-columns:repeat(4,1fr);padding:4px;border-radius:999px;background:var(--surface);border:1px solid var(--border);margin-bottom:12px}
+html.web .pztabs .pzti{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 4);border-radius:999px;background:var(--accent);box-shadow:0 6px 18px -8px var(--accent);transform:translateX(calc(var(--i) * 100%));transition:transform .5s cubic-bezier(.3,1.05,.35,1)}
+html.web .pztabs button{position:relative;z-index:1;border:0;background:none;padding:11px 4px;white-space:nowrap;font:inherit;font-weight:750;font-size:13.5px;color:var(--muted);border-radius:999px;cursor:pointer;transition:color .3s}
 html.web .pztabs button.on{color:var(--on-accent,#fff)}
 .pz-gw.sw{animation:pzgw .4s ease}
 .pz-cap{color:var(--muted);font-size:13px;margin:0 2px 14px}
@@ -891,6 +891,7 @@ html.web .pztabs button.on{color:var(--on-accent,#fff)}
 .pzb.bg{padding:10px 10px 12px}.pzth{position:relative;width:100%;aspect-ratio:16/10;border-radius:14px;overflow:hidden;isolation:isolate;background:#0b0b10;border:1px solid var(--border)}
 .pzth.none{background:repeating-linear-gradient(135deg,transparent 0 9px,color-mix(in srgb,var(--text) 8%,transparent) 9px 10px),var(--surface2)}
 .pzb .pzth .hbgfx i{animation-play-state:paused!important}.pzb:hover .pzth .hbgfx i,.pzb.sel .pzth .hbgfx i{animation-play-state:running!important}
+.pzgrid.kt{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}.pzb.kt{padding:10px 10px 12px}.pzkav{position:absolute;inset:0;display:grid;place-items:center;z-index:2}.pzb.kt .pzth{aspect-ratio:16/11}
 .pzbd{display:grid;place-items:center;height:48px}
 @media (prefers-reduced-motion:reduce){.pzb,.pz-stage,.pz-top,.pz-gw{animation:none!important}}
 /* v1.677: WEB · «Главная»: приветствие крупнее */
@@ -2914,7 +2915,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.680';
+const APP = 'VOOB (by BGASHEV) Mini App v1.681';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5437,7 +5438,9 @@ function openBgPrev(k){ hap.tap(); const c = frameOf(tgUser ? {tg_id:tgUser.id} 
 function bgPrevShow(k){ if (!sheetCtx || sheetCtx.type !== 'bgprev') return; sheetCtx.v = k; const sh = $('#sheet'); sh.innerHTML = '<div class="grab"></div>' + bgPrevHTML(k, sheetCtx); sh.scrollTop = 0; }
 
 /* ===== v1.676 WEB · «Персонализация»: студия — слева живой предпросмотр профиля, справа плитки рамок, фонов и значков ===== */
-S.pzTab = S.pzTab || 'fr';
+S.pzTab = S.pzTab || 'kt';
+const PZ_T = ['kt', 'fr', 'bg', 'bd'];
+function pzKits(){ const bs = new Set(BG_KEYS.map(x => x[0])); return [['', 'Чистый профиль']].concat(FRAMES.filter(f => f[0] && bs.has(f[0])).map(f => [f[0], f[1]])); }
 function pzCur(){ return {fr: frameOf(tgUser ? {tg_id:tgUser.id} : null) || '', bg: myBg(), bd: db.settings.badge || 'verified'}; }
 function pzEff(){ const cur = pzCur(), pend = S.pzp || {}, hov = S.pzH || {}; return {cur, pend, eff: Object.assign({}, cur, pend, hov)}; }
 function pzLocked(k, v){ return k === 'fr' ? !!((FRAMES.find(x => x[0] === v) || [])[2]) && !frOwned(v) : k === 'bg' ? !!v && !bgOwned(v) : !isPro(); }
@@ -5457,11 +5460,13 @@ function pzActHTML(){
 function pzGridHTML(tab){
   const {cur, pend} = pzEff(), lv = myLevel(), name = displayName() || 'Гость', photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url) || '';
   const mk = (k, v, i, inner, pro, lbl, lock) => `<button type="button" class="pzb ${k}${cur[k] === v ? ' cur' : ''}${(k in pend && pend[k] === v) ? ' sel' : ''}${lock ? ' lock' : ''}" data-act="pzpick" data-k="${k}" data-v="${v}" style="--i:${Math.min(i, 24)}">${pro ? '<i class="prot">PRO</i>' : ''}<i class="pzck">${IC('check', 12)}</i>${inner}<b>${esc(lbl)}</b></button>`;
+  if (tab === 'kt') return `<div class="pzgrid kt">` + pzKits().map(([v, l], i) => { const lk = !!v && (!bgOwned(v) || !frOwned(v));
+    return `<button type="button" class="pzb kt${(cur.fr === v && cur.bg === v) ? ' cur' : ''}${(pend.fr === v && pend.bg === v) ? ' sel' : ''}${lk ? ' lock' : ''}" data-act="pzpick" data-k="kt" data-v="${v}" style="--i:${Math.min(i, 24)}">${v && lk ? '<i class="prot">PRO</i>' : ''}<i class="pzck">${IC('check', 12)}</i><span class="pzth${v ? '' : ' none'}">${v ? bgFx(v) : ''}<span class="pzkav">${frAv(v, 54, lv, photo, name)}</span></span><b>${esc(l)}</b></button>`; }).join('') + `</div>`;
   if (tab === 'bg') return `<div class="pzgrid bg">` + [['', 'Без фона']].concat(BG_KEYS).map(([v, l], i) => mk('bg', v, i, `<span class="pzth${v ? '' : ' none'}">${v ? bgFx(v) : ''}</span>`, !!v && !bgOwned(v) || (!!v && !isPro()), l, !!v && !bgOwned(v))).join('') + `</div>`;
   if (tab === 'bd') return `<div class="pzgrid bd">` + BADGE_LIST.map(([v, l], i) => mk('bd', v, i, `<span class="pzbd">${badgeHTML(v, 38)}</span>`, !isPro(), l, !isPro())).join('') + `</div>`;
   return `<div class="pzgrid fr">` + FRAMES.map(([v, l, pro], i) => mk('fr', v, i, frAv(v, 64, lv, photo, name), !!pro, l, !!pro && !frOwned(v))).join('') + `</div>`;
 }
-function pzCap(t){ return t === 'bg' ? 'Анимированный фон шапки профиля. Его видят все, кто откроет твой профиль' : t === 'bd' ? 'Маленький значок рядом с именем: в профиле, списках и ленте' : 'Рамка аватарки: её видят друзья в профиле, списках и ленте'; }
+function pzCap(t){ return t === 'kt' ? 'Готовые комплекты: рамка и фон в одном стиле. Выбери и при желании поменяй значок или любую часть отдельно' : t === 'bg' ? 'Анимированный фон шапки профиля. Его видят все, кто откроет твой профиль' : t === 'bd' ? 'Маленький значок рядом с именем: в профиле, списках и ленте' : 'Рамка аватарки: её видят друзья в профиле, списках и ленте'; }
 function viewPersWeb(){
   const lv = myLevel(), name = displayName() || 'Гость', un = tgUser && tgUser.username, {eff} = pzEff(), bk = eff.bg;
   const cnt = {fr: FRAMES.length, bg: BG_KEYS.length + 1, bd: BADGE_LIST.length};
@@ -5472,7 +5477,7 @@ function viewPersWeb(){
       <h2 class="pz-nm"><span class="nm">${esc(name)}</span><span id="pznm" data-k="${eff.bd}">${pzBadgeInner(eff.bd)}</span></h2>${un ? `<div class="pz-at">@${esc(un)}</div>` : ''}
       <div class="pz-lv"><div class="pz-lvt"><span class="lvn" data-t="${tierOf(lv.level).idx}">${lv.level}</span><span>${tierOf(lv.level).title}</span></div><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div></div></div>
     <div class="pzsum" id="pzsum">${pzSumHTML()}</div><div id="pzact">${pzActHTML()}</div></div>
-  <div class="pz-main"><div class="pztabs" id="pztabs" style="--i:${['fr', 'bg', 'bd'].indexOf(S.pzTab)}"><i class="pzti"></i>${[['fr', 'Рамки · ' + cnt.fr], ['bg', 'Фоны · ' + cnt.bg], ['bd', 'Значки · ' + cnt.bd]].map(([k, l]) => `<button type="button" class="${S.pzTab === k ? 'on' : ''}" data-act="pztab" data-v="${k}">${l}</button>`).join('')}</div>
+  <div class="pz-main"><div class="pztabs" id="pztabs" style="--i:${PZ_T.indexOf(S.pzTab)}"><i class="pzti"></i>${[['kt', 'Комплекты · ' + pzKits().length], ['fr', 'Рамки · ' + cnt.fr], ['bg', 'Фоны · ' + cnt.bg], ['bd', 'Значки · ' + cnt.bd]].map(([k, l]) => `<button type="button" class="${S.pzTab === k ? 'on' : ''}" data-act="pztab" data-v="${k}">${l}</button>`).join('')}</div>
     <div class="pz-cap" id="pzcap">${pzCap(S.pzTab)}</div>
     <div class="pz-gw" id="pzgw">${pzGridHTML(S.pzTab)}</div></div>`;
 }
@@ -5483,10 +5488,10 @@ function pzUpdate(){
   const a = set('pzav', eff.fr, () => pzAvInner(eff.fr)); if (a) { a.classList.remove('pop'); void a.offsetWidth; a.classList.add('pop'); }
   set('pznm', eff.bd, () => pzBadgeInner(eff.bd));
   document.getElementById('pzsum').innerHTML = pzSumHTML(); document.getElementById('pzact').innerHTML = pzActHTML();
-  document.querySelectorAll('.pzb').forEach(t => t.classList.toggle('sel', t.dataset.k in pend && pend[t.dataset.k] === t.dataset.v));
+  document.querySelectorAll('.pzb').forEach(t => t.classList.toggle('sel', t.dataset.k === 'kt' ? (pend.fr === t.dataset.v && pend.bg === t.dataset.v) : (t.dataset.k in pend && pend[t.dataset.k] === t.dataset.v)));
 }
 let _pzT = 0;
-document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('.pzb'); if (!t || e.pointerType === 'touch') return; cancelAnimationFrame(_pzT); _pzT = requestAnimationFrame(() => { S.pzH = {[t.dataset.k]: t.dataset.v}; pzUpdate(); }); });
+document.addEventListener('pointerover', e => { const t = e.target.closest && e.target.closest('.pzb'); if (!t || e.pointerType === 'touch') return; cancelAnimationFrame(_pzT); _pzT = requestAnimationFrame(() => { S.pzH = t.dataset.k === 'kt' ? {fr: t.dataset.v, bg: t.dataset.v} : {[t.dataset.k]: t.dataset.v}; pzUpdate(); }); });
 document.addEventListener('pointerout', e => { const t = e.target.closest && e.target.closest('.pzb'); if (!t || t.contains(e.relatedTarget) || e.pointerType === 'touch') return; cancelAnimationFrame(_pzT); _pzT = requestAnimationFrame(() => { if (S.pzH) { S.pzH = null; pzUpdate(); } }); });
 function viewPersonalization(){
   const name = displayName(), photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url), lv = myLevel();
@@ -6505,9 +6510,10 @@ const ACT = {
   webset: () => { if (S.tab === 'me' && S.meSet) return; S.fprof = null; ACT.meset(); },
   meset: () => { hap.tap(); if (inWeb && S.tab !== 'me') { S.tab = 'me'; if (S.fprof) S.fprof = null; } S.meSet = true; meNav('nav-in'); },
   mesback: () => { hap.tap(); S.meSet = false; S.pers = false; meNav('nav-out'); },
-  pzpick: el => { const k = el.dataset.k, v = el.dataset.v, cur = pzCur(); S.pzp = S.pzp || {}; if (v === cur[k] && !(k in S.pzp)) { hap.tap(); return; } if (S.pzp[k] === v || v === cur[k]) delete S.pzp[k]; else S.pzp[k] = v; S.pzH = null; hap.tap(); pzUpdate(); },
+  pzpick: el => { const k = el.dataset.k, v = el.dataset.v, cur = pzCur(); S.pzp = S.pzp || {};
+    if (k === 'kt') { const was = S.pzp.fr === v && S.pzp.bg === v; delete S.pzp.fr; delete S.pzp.bg; if (!was) { if (cur.fr !== v) S.pzp.fr = v; if (cur.bg !== v) S.pzp.bg = v; } S.pzH = null; hap.tap(); pzUpdate(); return; } if (v === cur[k] && !(k in S.pzp)) { hap.tap(); return; } if (S.pzp[k] === v || v === cur[k]) delete S.pzp[k]; else S.pzp[k] = v; S.pzH = null; hap.tap(); pzUpdate(); },
   pztab: el => { const v = el.dataset.v, bar = document.getElementById('pztabs'), gw = document.getElementById('pzgw'); if (!bar || !gw || S.pzTab === v) return; S.pzTab = v; S.pzH = null; hap.tap();
-    bar.style.setProperty('--i', ['fr', 'bg', 'bd'].indexOf(v)); bar.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+    bar.style.setProperty('--i', PZ_T.indexOf(v)); bar.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
     document.getElementById('pzcap').textContent = pzCap(v); gw.classList.remove('sw'); gw.innerHTML = pzGridHTML(v); void gw.offsetWidth; gw.classList.add('sw'); pzUpdate(); },
   pzreset: () => { S.pzp = null; S.pzH = null; hap.tap(); pzUpdate(); },
   pzpro: () => openPro(),
