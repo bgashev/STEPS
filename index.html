@@ -2718,7 +2718,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.653';
+const APP = 'VOOB (by BGASHEV) Mini App v1.654';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4365,14 +4365,15 @@ function invFx(){
   const fly = (e, p, d, o) => { const dx = p.nx * d + (o.dx || 0), dy = p.ny * d + (o.dy || 0), rot = o.rot || 0, s0 = o.s0 == null ? 1 : o.s0, s1 = o.s1 == null ? .4 : o.s1;
     e.animate([{opacity: 0, transform: `translate(${p.x}px,${p.y}px) rotate(0deg) scale(${s0})`}, {opacity: o.peak || 1, offset: o.pk || .18}, {opacity: 0, transform: `translate(${p.x + dx}px,${p.y + dy}px) rotate(${rot}deg) scale(${s1})`}],
       {duration: o.dur, delay: o.delay || 0, easing: 'cubic-bezier(.15,.7,.25,1)', fill: 'both'}); };
-  if (m === 1) for (let i = 0; i < 30; i++) { const c = pick(C), z = rnd(2, 4), e = mk(`width:${z}px;height:${z}px;border-radius:50%;background:${c};box-shadow:0 0 ${z * 3}px ${c}`), p = per(); fly(e, p, rnd(36, 84), {dur: rnd(700, 1200), delay: rnd(0, 300), s1: .2}); }
-  else if (m === 2) for (let i = 0; i < 16; i++) { const c = pick(C), z = rnd(9, 24), e = mk(`width:${z}px;height:${z}px;border-radius:50%;background:radial-gradient(circle at 35% 30%,${c},transparent 72%);filter:blur(1.5px)`), p = per(); fly(e, p, rnd(26, 70), {dur: rnd(1500, 2300), delay: rnd(0, 350), dy: rnd(-26, -8), peak: .8, pk: .3, s0: .4, s1: 1.15}); }
-  else if (m === 3) for (let i = 0; i < 18; i++) { const c = pick(C), e = mk(`font:800 ${rnd(13, 22)}px/1 Manrope,system-ui,sans-serif;color:${c};text-shadow:0 0 10px ${c}`, '+'), p = per(); fly(e, p, rnd(40, 90), {dur: rnd(1000, 1600), delay: rnd(0, 350), rot: rnd(-200, 200), s0: .5, s1: 1}); }
-  else if (m === 4) for (let i = 0; i < 30; i++) { const c = pick(C), e = mk(`width:${rnd(4, 6)}px;height:${rnd(8, 12)}px;border-radius:2px;background:${c}`), p = per(); fly(e, p, rnd(50, 100), {dur: rnd(1100, 1700), delay: rnd(0, 250), rot: rnd(360, 900) * (Math.random() < .5 ? -1 : 1), dy: rnd(14, 34), s0: 1, s1: .8}); }
-  else if (m === 5) for (let i = 0; i < 3; i++) { const d = 44 + i * 6, e = mk(`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;border-radius:22px;border:1.5px solid ${C[i]};box-shadow:0 0 18px ${C[i]},inset 0 0 14px ${C[i]};box-sizing:border-box`);
-    e.animate([{opacity: 0, transform: 'scale(1)'}, {opacity: .7, offset: .2}, {opacity: 0, transform: `scale(${(r.width + 2 * d) / r.width},${(r.height + 2 * d) / r.height})`}], {duration: 1300, delay: i * 170, easing: 'cubic-bezier(.2,.7,.25,1)', fill: 'both'}); }
-  else for (let i = 0; i < 18; i++) { const c = pick(C), z = rnd(3, 6), e = mk(`width:${z}px;height:${z}px;border-radius:50%;background:#fff;box-shadow:0 0 ${z * 3}px ${z}px ${c}`), p = per(), d = rnd(16, 70), x = p.x + p.nx * d, y = p.y + p.ny * d, w = () => `translate(${x + rnd(-18, 18)}px,${y + rnd(-18, 18)}px)`;
-    e.animate([{transform: w(), opacity: 0}, {transform: w(), opacity: .95}, {transform: w(), opacity: .25}, {transform: w(), opacity: .9}, {transform: w(), opacity: 0}], {duration: rnd(4200, 7000), delay: rnd(0, 900), iterations: Infinity, easing: 'ease-in-out', direction: 'alternate'}); }
+  const arc = (e, p, o) => { const tx = -p.ny, ty = p.nx, cv = o.cv || 0, d = o.d, g = o.g || 0;
+    e.animate([{opacity: 0, transform: `translate(${p.x}px,${p.y}px) scale(${o.s0 || 1})`}, {opacity: 1, offset: .15},
+      {opacity: o.mid == null ? .9 : o.mid, offset: .55, transform: `translate(${p.x + p.nx * d * .62 + tx * cv * .7}px,${p.y + p.ny * d * .62 + ty * cv * .7 + g * .3}px) scale(${o.sm || .8})`},
+      {opacity: 0, transform: `translate(${p.x + p.nx * d + tx * cv}px,${p.y + p.ny * d + ty * cv + g}px) scale(${o.s1 || .15})`}], {duration: o.dur, delay: o.delay || 0, easing: 'cubic-bezier(.12,.7,.25,1)', fill: 'both'}); };
+  const dot = (z, c, glow) => mk(`width:${z}px;height:${z}px;border-radius:50%;background:${glow > 1 ? '#fff' : c};box-shadow:0 0 ${z * 3}px ${glow > 1 ? z * .6 : 0}px ${c}`);
+  if (m === 1) for (let i = 0; i < 90; i++) { const c = pick(C), z = rnd(2, 4.8); arc(dot(z, c, 2), per(), {d: rnd(46, 118), dur: rnd(800, 1500), delay: rnd(0, 380)}); }
+  else if (m === 2) for (let i = 0; i < 110; i++) { const c = pick(C), z = rnd(1.5, 3.6), e = dot(z, c, 1), p = per(), d = rnd(28, 96), g = rnd(18, 48), dl = rnd(0, 700), du = rnd(1600, 2600), tw = Math.random() < .5;
+    e.animate([{opacity: 0, transform: `translate(${p.x}px,${p.y}px) scale(.5)`}, {opacity: 1, offset: .12}, {opacity: tw ? .25 : .9, offset: .38}, {opacity: 1, offset: .6}, {opacity: tw ? .2 : .8, offset: .8, transform: `translate(${p.x + p.nx * d * .9}px,${p.y + p.ny * d * .9 + g * .7}px) scale(1)`}, {opacity: 0, transform: `translate(${p.x + p.nx * d}px,${p.y + p.ny * d + g}px) scale(.3)`}], {duration: du, delay: dl, easing: 'cubic-bezier(.15,.65,.3,1)', fill: 'both'}); }
+  else for (let i = 0; i < 100; i++) { const c = pick(C), z = rnd(1.8, 4.2), sg = Math.random() < .5 ? -1 : 1; arc(dot(z, c, 2), per(), {d: rnd(40, 100), cv: sg * rnd(34, 80), dur: rnd(1200, 2100), delay: rnd(0, 800), s1: .1, mid: 1}); }
 }
 function invPop(d){
   return `<div class="invpop${S.inv ? ' open' : ''}" id="inv"><div class="ip-in">
@@ -4380,7 +4381,7 @@ function invPop(d){
     <div class="ip-find"><span class="at">@</span><input class="inp" id="fr-code" placeholder="Код или ник" maxlength="24" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go"><button class="ip-go" data-act="fradd" aria-label="Добавить">${IC('chev', 18)}</button></div>
     <div class="ip-or"><span>или поделись</span></div>
     <div class="ip-row"><button type="button" class="ip-b" data-act="frshare">${IC('export', 16)}<span>Ссылка</span></button><button type="button" class="ip-b ip-c" data-act="frcode" aria-label="Скопировать код"><b>${esc(d.code)}</b>${IC('link', 15)}</button></div>
-    <div class="ip-fxs"><span>эффект</span>${[1, 2, 3, 4, 5, 6].map(i => `<button type="button" data-act="ipfx" data-v="${i}" class="${ipFxMode() === i ? 'on' : ''}">${i}</button>`).join('')}</div>
+    <div class="ip-fxs"><span>эффект</span>${[1, 2, 3].map(i => `<button type="button" data-act="ipfx" data-v="${i}" class="${ipFxMode() === i ? 'on' : ''}">${i}</button>`).join('')}</div>
   </div></div>`;
 }
 if (inWeb) {
