@@ -3243,7 +3243,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.745';
+const APP = 'VOOB (by BGASHEV) Mini App v1.746';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4953,20 +4953,27 @@ function popBd(on, a){
   else b.classList.remove('on');
 }
 function popFxClear(){ const L = document.getElementById('ipfx'); if (!L) return; L.style.opacity = '0'; clearTimeout(popFxClear.t); popFxClear.t = setTimeout(() => { if (L.style.opacity === '0') L.innerHTML = ''; }, 600); }
-function popFx(pop){
+function popFx(pop, big){
   if (!pop || (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches)) return;
   let L = document.getElementById('ipfx'); if (!L) { L = document.createElement('div'); L.id = 'ipfx'; document.body.appendChild(L); }
   clearTimeout(popFxClear.t); L.innerHTML = ''; L.style.opacity = '1';
-  const r = pop.getBoundingClientRect(), V = ['#c9b8ff', '#9db8ff', '#ffffff', '#e9dcff'], rnd = (x, y) => x + Math.random() * (y - x), pick = x => x[Math.floor(Math.random() * x.length)];
+  const r = pop.getBoundingClientRect(), V = big ? ['#ffffff', '#c9b8ff', '#8fb4ff', '#ff9ee8', '#7ef0ff', '#ffe08a'] : ['#c9b8ff', '#9db8ff', '#ffffff', '#e9dcff'], rnd = (x, y) => x + Math.random() * (y - x), pick = x => x[Math.floor(Math.random() * x.length)];
   const per = () => { const w = r.width, h = r.height, t = Math.random() * 2 * (w + h); let x, y, nx = 0, ny = 0;
     if (t < w) { x = r.left + t; y = r.top; ny = -1; } else if (t < w + h) { x = r.right; y = r.top + t - w; nx = 1; } else if (t < 2 * w + h) { x = r.right - (t - w - h); y = r.bottom; ny = 1; } else { x = r.left; y = r.bottom - (t - 2 * w - h); nx = -1; }
     nx += rnd(-.3, .3); ny += rnd(-.3, .3); const l = Math.hypot(nx, ny) || 1; return {x, y, nx: nx / l, ny: ny / l}; };
   const mk = css => { const e = document.createElement('i'); e.style.cssText = 'position:absolute;left:0;top:0;display:block;will-change:transform,opacity;' + css; L.appendChild(e); return e; };
   const halo = mk(`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;border-radius:22px;box-sizing:border-box`);
-  halo.animate([{boxShadow: '0 0 0 0 #9a8cff00'}, {boxShadow: '0 0 56px 6px #9a8cff66', offset: .35}, {boxShadow: '0 0 90px 14px #9a8cff00'}], {duration: 2200, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'both'});
-  for (let i = 0; i < 14; i++) { const p = per(), z = rnd(16, 38), c = pick(V), d = rnd(20, 56), e = mk(`width:${z}px;height:${z}px;margin:${-z / 2}px 0 0 ${-z / 2}px;border-radius:50%;background:radial-gradient(circle,${c}99,${c}00 70%);filter:blur(4px)`);
-    e.animate([{opacity: 0, transform: `translate(${p.x}px,${p.y}px) scale(.5)`}, {opacity: .7, offset: .4}, {opacity: 0, transform: `translate(${p.x + p.nx * d}px,${p.y + p.ny * d - 14}px) scale(1.3)`}], {duration: rnd(2400, 3600), delay: rnd(0, 800), easing: 'cubic-bezier(.3,.6,.35,1)', fill: 'both'}); }
-  for (let i = 0; i < 28; i++) { const p = per(), z = rnd(1.5, 2.6), d = rnd(24, 70), e = mk(`width:${z}px;height:${z}px;border-radius:50%;background:#fff;box-shadow:0 0 8px #c9b8ff`);
+  halo.animate(big ? [{boxShadow: '0 0 0 0 #b9a8ff00'}, {boxShadow: '0 0 80px 14px #b9a8ffd9, 0 0 0 2px #ffffff99', offset: .28}, {boxShadow: '0 0 150px 34px #9a8cff00'}] : [{boxShadow: '0 0 0 0 #9a8cff00'}, {boxShadow: '0 0 56px 6px #9a8cff66', offset: .35}, {boxShadow: '0 0 90px 14px #9a8cff00'}], {duration: big ? 2800 : 2200, easing: 'cubic-bezier(.22,.61,.36,1)', fill: 'both'});
+  if (big) {
+    [0, 1, 2].forEach(k => { const w = mk(`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;border-radius:22px;box-sizing:border-box;border:${2.5 - k * .6}px solid ${['#ffffff', '#b9a8ff', '#7ef0ff'][k]};box-shadow:0 0 24px #b9a8ff99`);
+      w.animate([{opacity: .95, transform: 'scale(1)'}, {opacity: 0, transform: `scale(${1.16 + k * .12}, ${1.2 + k * .16})`}], {duration: 1200 + k * 150, delay: k * 170, easing: 'cubic-bezier(.15,.7,.25,1)', fill: 'both'}); });
+    const sh = mk(`left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;border-radius:22px;overflow:hidden`), sb = document.createElement('i');
+    sb.style.cssText = 'position:absolute;top:-20%;bottom:-20%;left:0;width:46%;background:linear-gradient(100deg,transparent,#ffffffb3 50%,transparent);filter:blur(8px);mix-blend-mode:screen'; sh.appendChild(sb);
+    sb.animate([{transform: 'translateX(-130%) skewX(-18deg)'}, {transform: 'translateX(330%) skewX(-18deg)'}], {duration: 1100, delay: 180, easing: 'cubic-bezier(.45,.05,.3,1)', fill: 'both'});
+  }
+  for (let i = 0, N = big ? 30 : 14; i < N; i++) { const p = per(), z = rnd(16, 38) * (big ? 1.5 : 1), c = pick(V), d = rnd(20, 56) * (big ? 1.9 : 1), e = mk(`width:${z}px;height:${z}px;margin:${-z / 2}px 0 0 ${-z / 2}px;border-radius:50%;background:radial-gradient(circle,${c}${big ? 'e6' : '99'},${c}00 70%);filter:blur(4px)`);
+    e.animate([{opacity: 0, transform: `translate(${p.x}px,${p.y}px) scale(.5)`}, {opacity: big ? 1 : .7, offset: .4}, {opacity: 0, transform: `translate(${p.x + p.nx * d}px,${p.y + p.ny * d - 14}px) scale(1.3)`}], {duration: rnd(2400, 3600), delay: rnd(0, 800), easing: 'cubic-bezier(.3,.6,.35,1)', fill: 'both'}); }
+  for (let i = 0, N = big ? 80 : 28; i < N; i++) { const p = per(), z = rnd(1.5, 2.6) * (big ? 1.5 : 1), d = rnd(24, 70) * (big ? 2.2 : 1), c = big ? pick(V) : '#c9b8ff', e = mk(`width:${z}px;height:${z}px;border-radius:50%;background:#fff;box-shadow:0 0 ${big ? 12 : 8}px ${c}`);
     e.animate([{opacity: 0, transform: `translate(${p.x}px,${p.y}px)`}, {opacity: .9, offset: .3}, {opacity: 0, transform: `translate(${p.x + p.nx * d}px,${p.y + p.ny * d}px)`}], {duration: rnd(2000, 3200), delay: rnd(0, 900), easing: 'cubic-bezier(.2,.7,.25,1)', fill: 'both'}); }
 }
 function popOpen(id, html, anchor, after, cls){
@@ -4988,10 +4995,10 @@ function pzCelebrate(){
   const go = () => {
     const el = document.getElementById('pzcard'); if (!el) return;
     popBd(true, el); const bd = document.getElementById('pbd'); if (bd) bd.style.pointerEvents = 'none';
-    popFx(el);
-    try { el.animate([{filter:'blur(12px) brightness(1.35)', transform:'translateY(-10px) scale(.96)', opacity:.55}, {filter:'blur(0) brightness(1)', transform:'none', opacity:1}], {duration:820, easing:'cubic-bezier(.2,.9,.25,1)'}); } catch (e) {}
+    popFx(el, true);
+    try { el.animate([{filter:'blur(14px) brightness(2.2) saturate(1.6)', transform:'translateY(-14px) scale(.92)', opacity:.5}, {filter:'blur(0) brightness(1.35) saturate(1.3)', transform:'scale(1.035)', opacity:1, offset:.5}, {filter:'blur(0) brightness(1) saturate(1)', transform:'none', opacity:1}], {duration:1100, easing:'cubic-bezier(.2,.9,.25,1)'}); } catch (e) {}
     clearTimeout(pzCelebrate.t);
-    pzCelebrate.t = setTimeout(() => { popBd(false); popFxClear(); if (bd) setTimeout(() => { bd.style.pointerEvents = ''; }, 700); }, 2600);
+    pzCelebrate.t = setTimeout(() => { popBd(false); popFxClear(); if (bd) setTimeout(() => { bd.style.pointerEvents = ''; }, 700); }, 3300);
   };
   const r = c.getBoundingClientRect();
   if (r.top < 0 || r.bottom > innerHeight) { try { c.scrollIntoView({block:'center', behavior:'smooth'}); } catch (e) {} setTimeout(go, 420); } else go();
