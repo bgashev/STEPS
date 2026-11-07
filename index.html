@@ -2999,6 +2999,16 @@ html.web #tabs{overflow:hidden;clip-path:inset(0 round 26px);isolation:isolate}
 html.web #tabs .tbi,html.web #tabs .tab{clip-path:none}
 html.web #view .head .sub{color:color-mix(in srgb,var(--text) 74%,transparent)}
 #wbg .wbl{transition:opacity .7s ease}#wbg .wbl.nw{animation:none;opacity:0}
+/* v1.712: полоса уровня в Персонализации — как в профиле (широкая, с частицами) */
+.pz-lv .lvbar{height:20px;margin:14px auto 10px;width:100%;border-radius:10px;position:relative;box-shadow:inset 0 1px 2px rgba(0,0,0,.25)}
+.pz-lv .lvbar i{border-radius:8px;position:relative;overflow:hidden;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent));background-size:200% 100%;animation:growX .9s cubic-bezier(.2,.8,.2,1) backwards,lvFlow 5s linear infinite;box-shadow:0 0 12px color-mix(in srgb,var(--accent) 55%,transparent)}
+.pz-lv .lvbar i::before{content:"";position:absolute;left:0;right:0;top:0;height:45%;background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(255,255,255,0));border-radius:8px 8px 0 0}
+.pz-lv .lvbar i::after{content:"";position:absolute;top:0;bottom:0;width:38%;left:-45%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);animation:lvShine 2.8s ease-in-out 1s infinite}
+.pz-lv .lvbar{border-radius:11px}.pz-lv .lvbar i{border-radius:11px}
+.pz-lv .lvbar{height:16px;margin:10px auto 6px;border-radius:8px}
+.pz-lv .lvbar i{border-radius:8px}
+.pz-lv{max-width:320px}.pz-lv .lvbar{background:rgba(255,255,255,.18);height:18px;margin:12px auto 4px}
+@media (prefers-reduced-motion:reduce){.pz-lv .lvbar i,.pz-lv .lvbar i::after{animation:none!important}}
 /* v1.711: три плашки «Рамка · Фон · Значок» — стекло, иконка-чип, крупное название */
 html.web .pzsum{gap:10px}
 html.web .pzs{position:relative;gap:10px;padding:12px 14px 13px;border-radius:20px;background:color-mix(in srgb,var(--surface) 70%,transparent)!important;backdrop-filter:blur(34px) saturate(1.4);-webkit-backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border);box-shadow:0 10px 26px -18px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.35);overflow:hidden}
@@ -3075,7 +3085,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.711';
+const APP = 'VOOB (by BGASHEV) Mini App v1.712';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5697,7 +5707,7 @@ function viewPersWeb(){
     <div class="pz-card${bk ? ' hbg' : ''}" id="pzcard"><div class="pz-bg fi" id="pzbg" data-k="${bk}">${pzBgInner(bk)}</div>
       <div class="pz-av" id="pzav" data-k="${eff.fr}">${pzAvInner(eff.fr)}</div>
       <h2 class="pz-nm"><span class="nm">${esc(name)}</span><span id="pznm" data-k="${eff.bd}">${pzBadgeInner(eff.bd)}</span></h2>${un ? `<div class="pz-at">@${esc(un)}</div>` : ''}
-      <div class="pz-lv"><div class="pz-lvt"><span class="lvn" data-t="${tierOf(lv.level).idx}">${lv.level}</span><span>${tierOf(lv.level).title}</span></div><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"></i></div></div></div>
+      <div class="pz-lv"><div class="pz-lvt"><span class="lvn" data-t="${tierOf(lv.level).idx}">${lv.level}</span><span>${tierOf(lv.level).title}</span></div><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"><b class="lvp"></b></i></div></div></div>
     <div class="pzsum" id="pzsum">${pzSumHTML()}</div><div id="pzact">${pzActHTML()}</div></div>
   <div class="pz-main"><div class="pztabs" id="pztabs" style="--i:${PZ_T.indexOf(S.pzTab)}"><i class="pzti"></i>${[['kt', 'Комплекты · ' + pzKits().length], ['fr', 'Рамки · ' + cnt.fr], ['bg', 'Фоны · ' + cnt.bg], ['bd', 'Значки · ' + cnt.bd]].map(([k, l]) => `<button type="button" class="${S.pzTab === k ? 'on' : ''}" data-act="pztab" data-v="${k}">${l}</button>`).join('')}</div>
     <div class="pz-cap" id="pzcap">${pzCap(S.pzTab)}</div>
@@ -6329,6 +6339,9 @@ function updWBg(){   // v1.709/710: слои с перекрёстным рас�
   if (k && !BG_SVG[bgNorm(k)]) k = '';
   if (pz && !bgWarm.d) { bgWarm.d = 1; bgWarm(); }
   if ((el.dataset.k || '') === k) return;
+  if (pz && el.classList.contains('on') && !updWBg.go) {   // v1.712: быстрые наведения — не чаще раза в 160 мс, без наслоения анимаций
+    clearTimeout(updWBg.dt); updWBg.dt = setTimeout(() => { updWBg.go = 1; try { updWBg(); } finally { updWBg.go = 0; } }, 160); return; }
+  clearTimeout(updWBg.dt);
   el.dataset.k = k; clearTimeout(updWBg.t); clearTimeout(el._wt);
   const layers = () => [...el.children].filter(c => c.classList.contains('wbl'));
   if (!k) {
@@ -6339,7 +6352,7 @@ function updWBg(){   // v1.709/710: слои с перекрёстным рас�
     if (el.dataset.k !== k) return;   // пока грузилось, выбрали другой
     const L = document.createElement('div'); L.className = 'wbl nw'; L.innerHTML = bgFx(k) + '<u class="wbm"></u>';
     const was = el.classList.contains('on') && layers().length;
-    if (!was) el.innerHTML = '';
+    if (!was) el.innerHTML = ''; else { layers().forEach(c => { if (c !== el._wl) c.remove(); }); if (el._wl) el._wl.classList.remove('nw'); }   // v1.712: максимум два слоя — уходящий и приходящий
     el.appendChild(L); el._wl = L; document.documentElement.classList.add('hbgl');
     requestAnimationFrame(() => requestAnimationFrame(() => {
       if (el._wl !== L) return;
