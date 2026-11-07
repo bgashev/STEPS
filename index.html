@@ -809,6 +809,7 @@ html.web .stv .gl .recs .rv{font-size:21px;letter-spacing:-.5px;margin:6px 0 2px
 }
 html.web .mset-top.msw{height:0;margin:0;padding:0;top:0}
 html.web .mset-top.msw>*{position:relative;top:18px}
+html.web .mset-top.msw+.head{position:relative;z-index:26}   /* заголовок выше фиксированного градиента шапки, иначе градиент его перекрывает */
 .invpop.wpop{width:340px}
 .wpop .ip-in .f{margin:0 0 10px}
 .wpop .wp-row{display:grid;margin:10px 0 0}
@@ -2714,7 +2715,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.659';
+const APP = 'VOOB (by BGASHEV) Mini App v1.660';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
