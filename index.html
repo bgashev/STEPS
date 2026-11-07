@@ -2535,7 +2535,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.618';
+const APP = 'VOOB (by BGASHEV) Mini App v1.619';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5861,12 +5861,12 @@ const ACT = {
     openSheet(`<h2>Друзья ${esc(f.name)}</h2>` + fl.map(x => fofHTML(x)).join('') + `<button class="btn ghost" style="width:100%;margin-top:12px" data-act="frback" data-id="${id}">Назад к профилю</button>`, {type:'frall', id}); },
   rwok: () => { $('#cg').classList.remove('show'); setTimeout(showNextReward, 250); },
   frpoke: async el => {
+    hap.seq([['i', 'medium', 0]]); try { navigator.vibrate && !ver('6.1') && navigator.vibrate(18); } catch (e) {}   // v1.618: отклик сразу, до любых проверок
     const id = +el.dataset.id, f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
-    if (f.poke_wait) { toast(`Уже взбодрил(а) — снова можно через ${f.poke_wait} ч`); return; }
-    hap.imp();
+    if (f.poke_wait) { hap.warn(); toast(`Уже взбодрил(а) — снова можно через ${f.poke_wait} ч`); return; }
     try { const j = await apiAuth('/friends/poke', {tg_id:id});
       if (j.status === 'soon') { f.poke_wait = j.hours; toast(`Уже взбодрил(а) — снова можно через ${j.hours} ч`); }
-      else { f.poke_wait = j.hours || 12; toast(j.status === 'undelivered' ? `${f.name} ещё не писал(а) боту — сообщение не дошло` : `Ты взбодрил(а) ${f.name} ⚡ Бот уже передал`); hap.ok(); }
+      else { f.poke_wait = j.hours || 12; toast(j.status === 'undelivered' ? `${f.name} ещё не писал(а) боту — сообщение не дошло` : `Ты взбодрил(а) ${f.name} ⚡ Бот уже передал`); hap.seq([['n', 'success', 0], ['i', 'heavy', 140], ['i', 'light', 90]]); }
       document.querySelectorAll(`[data-act=frpoke][data-id="${id}"]`).forEach(b => { if (b.classList.contains('fpb')) { b.classList.add('off'); const t = b.querySelector('b'); if (t) t.textContent = `через ${f.poke_wait} ч`; } else b.style.opacity = '.35'; });
     } catch (e) { toast('Нет связи: ' + e.message); } },
   story: el => { hap.imp(); openStory(el.dataset.kind, +el.dataset.a, +el.dataset.b, el.dataset.k); },
