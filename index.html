@@ -843,15 +843,17 @@ html.web .plsug .ib{width:38px;height:38px}
 @media (max-width:1500px){html.web .plsug .pt small{display:none}}
 /* v1.675: WEB · кнопки плана со словами, если хватает ширины */
 .plsug .bl{display:none}
-@media (min-width:760px){html.web .plsug .ib.ok{width:auto;height:38px;border-radius:99px;padding:0 18px 0 14px;gap:7px;font-family:inherit;font-style:normal;letter-spacing:0}
-html.web .plsug .ib.ok .bl{display:inline;font:inherit;font-size:13.5px;font-weight:800;font-style:normal;white-space:nowrap;color:var(--on-accent,var(--bg))}
-html.web .plsug .ib svg{width:18px;height:18px}}
+@media (min-width:760px){html.web .plsug .pb{align-items:center}
+html.web .plsug .ib.ok{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;flex:none;width:auto;min-width:0;height:38px;aspect-ratio:auto;padding:0 18px 0 14px;gap:8px;border:0;border-radius:19px;line-height:1;transform:none;font-family:inherit;font-style:normal;letter-spacing:0;font-synthesis:none}
+html.web .plsug .ib.ok:active{transform:scale(.96)}
+html.web .plsug .ib.ok .bl{display:block;font:inherit;font-size:13.5px;font-weight:800;line-height:1;font-style:normal;white-space:nowrap;color:var(--on-accent,var(--bg))}
+html.web .plsug .ib svg{width:18px;height:18px;flex:none;display:block}}
 /* v1.676: WEB · «Персонализация» — студия */
-html.web .pz-top{display:flex;align-items:center;gap:16px;margin:0 0 22px;animation:pzin .5s cubic-bezier(.2,.8,.2,1) backwards}
+html.web .pz-top{display:flex;align-items:center;gap:16px;margin:0 0 22px}
 html.web .pz-top h1{margin:0;font-size:28px;letter-spacing:-.4px}html.web .pz-top .sub{color:var(--muted);font-size:13.5px;margin-top:2px}
 html.web .pz2{display:grid;grid-template-columns:minmax(360px,440px) minmax(0,1fr);gap:28px;align-items:start}
 @media (max-width:1099px){html.web .pz2{grid-template-columns:1fr}}
-html.web .pz-stage{position:sticky;top:24px;display:flex;flex-direction:column;gap:14px;animation:pzstage .7s cubic-bezier(.2,.8,.2,1) backwards}
+html.web .pz-stage{position:sticky;top:24px;display:flex;flex-direction:column;gap:14px}
 @keyframes pzstage{from{opacity:0;filter:blur(10px);transform:translateY(14px) scale(.98)}}
 @keyframes pzin{from{opacity:0;transform:translateY(12px) scale(.96)}}
 .pz-card{position:relative;isolation:isolate;overflow:hidden;border-radius:30px;min-height:390px;padding:36px 24px 26px;display:flex;flex-direction:column;align-items:center;text-align:center;color:#fff;background:#0b0b10;border:1px solid rgba(255,255,255,.12);box-shadow:0 34px 60px -34px rgba(0,0,0,.85)}
@@ -879,9 +881,10 @@ html.web .pztabs button{position:relative;z-index:1;border:0;background:none;pad
 html.web .pztabs button.on{color:var(--on-accent,#fff)}
 .pz-gw.sw{animation:pzgw .4s ease}
 .pz-cap{color:var(--muted);font-size:13px;margin:0 2px 14px}
-.pz-gw{animation:pzgw .4s ease backwards}@keyframes pzgw{from{opacity:0}}
+.pz-gw.sw{animation:pzgw .4s ease}@keyframes pzgw{from{opacity:0}}
 .pzgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(136px,1fr))}.pzgrid.bg{grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}.pzgrid.bd{grid-template-columns:repeat(auto-fill,minmax(112px,1fr))}
-.pzb{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 8px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-weight:750;font-size:12.5px;cursor:pointer;min-width:0;transition:transform .35s cubic-bezier(.3,1.4,.5,1),border-color .25s,box-shadow .3s,background .25s;animation:pzin .5s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i)*18ms)}
+.pzb{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 8px 12px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-weight:750;font-size:12.5px;cursor:pointer;min-width:0;transition:transform .35s cubic-bezier(.3,1.4,.5,1),border-color .25s,box-shadow .3s,background .25s;}
+#view.nav-in .pzb,.pz-gw.sw .pzb{animation:pzin .5s cubic-bezier(.2,.8,.2,1) backwards;animation-delay:calc(var(--i)*18ms)}
 .pzb:hover{transform:translateY(-4px) scale(1.04);border-color:color-mix(in srgb,var(--accent) 60%,var(--border));box-shadow:0 16px 28px -16px rgba(0,0,0,.7),0 0 24px -8px var(--accent);background:var(--surface2)}
 .pzb:active{transform:scale(.97)}
 .pzb.sel{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
@@ -2853,6 +2856,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 #wbg{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity 1.1s cubic-bezier(.3,.6,.3,1);overflow:hidden;background:#0b0b10;display:none}
 html.web #wbg{display:block}
 #wbg.on{opacity:1}
+#wbg .wbl{position:absolute;inset:0}#wbg .wbl.nw{animation:wblin .65s ease both}@keyframes wblin{from{opacity:0}}
 #wbg .hbgfx{position:absolute;left:-12%;top:-12%;width:124%;height:124%;inset:auto;z-index:0;border-radius:0;animation:none;filter:blur(64px) saturate(1.05);transform:translateZ(0)}
 #wbg .wbm{position:absolute;inset:0;display:block;background:linear-gradient(180deg,rgba(9,9,13,.58),rgba(9,9,13,.72)),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");background-blend-mode:normal}
 html.hbgl #texl{opacity:0!important}
@@ -2915,7 +2919,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.681';
+const APP = 'VOOB (by BGASHEV) Mini App v1.683';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5487,7 +5491,7 @@ function pzUpdate(){
   const b = set('pzbg', eff.bg, () => pzBgInner(eff.bg)); if (b) { b.classList.remove('fi'); void b.offsetWidth; b.classList.add('fi'); document.getElementById('pzcard').classList.toggle('hbg', !!eff.bg); }
   const a = set('pzav', eff.fr, () => pzAvInner(eff.fr)); if (a) { a.classList.remove('pop'); void a.offsetWidth; a.classList.add('pop'); }
   set('pznm', eff.bd, () => pzBadgeInner(eff.bd));
-  document.getElementById('pzsum').innerHTML = pzSumHTML(); document.getElementById('pzact').innerHTML = pzActHTML();
+  document.getElementById('pzsum').innerHTML = pzSumHTML(); document.getElementById('pzact').innerHTML = pzActHTML(); updWBg();
   document.querySelectorAll('.pzb').forEach(t => t.classList.toggle('sel', t.dataset.k === 'kt' ? (pend.fr === t.dataset.v && pend.bg === t.dataset.v) : (t.dataset.k in pend && pend[t.dataset.k] === t.dataset.v)));
 }
 let _pzT = 0;
@@ -6095,8 +6099,12 @@ function meNav(cls){   // v1.484: плавный «пуш» между проф�
 /* v1.646 WEB, «Главная»: вместо текстуры — свой фон профиля на весь экран, сильно размытый, матовый и притемнённый */
 function updWBg(){
   const el = document.getElementById('wbg'); if (!el) return;
-  const k = inWeb && inTG && S.tab === 'home' && !S.fprof && !S.meSet && !S.pers ? myBg() : '';
+  const pz = inWeb && inTG && S.meSet && S.pers, k = pz ? (pzEff().eff.bg || '') : (inWeb && inTG && S.tab === 'home' && !S.fprof && !S.meSet && !S.pers ? myBg() : '');
   if ((el.dataset.k || '') === k) return;
+  if (pz && k && el.dataset.k && el.classList.contains('on')) {   // v1.682: между фонами — перекрёстное растворение, без провала в чёрное
+    if (!el.querySelector(':scope > .wbl')) { const w = document.createElement('div'); w.className = 'wbl'; while (el.firstChild) w.appendChild(el.firstChild); el.appendChild(w); }
+    el.dataset.k = k; const L = document.createElement('div'); L.className = 'wbl nw'; L.innerHTML = bgFx(k) + '<u class="wbm"></u>'; el.appendChild(L);
+    setTimeout(() => { [...el.children].forEach(c => { if (c !== L && c.classList.contains('wbl')) c.remove(); }); L.classList.remove('nw'); }, 700); return; }
   clearTimeout(updWBg.t);
   if (!k) { el.classList.remove('on'); document.documentElement.classList.remove('hbgl'); updWBg.t = setTimeout(() => { if (!el.classList.contains('on')) { el.innerHTML = ''; el.dataset.k = ''; } }, 1100); el.dataset.k = ''; return; }
   el.dataset.k = k; el.classList.remove('on');
