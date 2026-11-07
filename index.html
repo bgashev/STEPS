@@ -2475,6 +2475,14 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 .tex-paper{background-image:repeating-linear-gradient(45deg,var(--tl3) 0 1px,transparent 1px 9px),repeating-linear-gradient(-45deg,var(--tl3) 0 1px,transparent 1px 9px)}
 .tex-rays{background-image:repeating-conic-gradient(from 0deg at 50% 125%,var(--tl3) 0 .6deg,transparent .6deg 7deg)}
 .texs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.hkr{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--border)}
+.hkr:first-of-type{border-top:0}
+.hkr>span{font-weight:600;font-size:14px}
+.hkk{min-width:62px;height:34px;padding:0 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font:700 13px/1 inherit;cursor:pointer;transition:border-color .2s,background .2s,color .2s}
+.hkk:hover{border-color:var(--accent)}
+.hkk.cap2{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);animation:hkp 1s ease-in-out infinite alternate}
+.hkk.none{color:var(--muted);font-weight:600}
+@keyframes hkp{to{opacity:.55}}
 .texb{position:relative;height:46px;border-radius:12px;border:1.5px solid var(--border);background-color:var(--surface2);background-attachment:scroll;color:var(--muted);font:700 10.5px/1 inherit;cursor:pointer;display:grid;place-items:end center;padding:0 0 5px;overflow:hidden}
 .texb span{position:relative;background:color-mix(in srgb,var(--surface2) 80%,transparent);padding:2px 5px;border-radius:6px;font-size:10px;font-weight:700;color:var(--text)}
 .texb.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
@@ -2495,7 +2503,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.608';
+const APP = 'VOOB (by BGASHEV) Mini App v1.609';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4895,6 +4903,7 @@ function viewMeSettings(){
     <div class="f"><span>Фон · ${(TEX.find(x => x[0] === texKey()) || TEX[0])[1]}</span><div class="texs">${TEX.map(([k, l]) => `<button type="button" class="texb${k === 'none' ? '' : ' tex-' + k}${texKey() === k ? ' on' : ''}" data-act="tex" data-v="${k}" aria-label="${l}" title="${l}"><span>${l}</span></button>`).join('')}</div></div>
     ${inTG ? `<div class="tgl${lookSync() ? ' on' : ''}" data-act="looksync" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)"><span class="sw2"></span><b>Одинаково на всех устройствах</b></div>
     <div class="cap" style="margin-top:8px">${lookSync() ? 'Тема, оттенок и акцентный цвет будут одинаковыми на всех твоих устройствах.' : 'Оформление хранится только на этом устройстве — на других тема и цвет могут быть другими.'}</div>` : ''}</div>`;
+  if (inWeb) h += hkCardHTML();
   h += langCardHTML();
   if (inTG) {
     if (PRIV.v == null && !PRIV.loading) { PRIV.loading = true; apiAuth('/friends/privacy', {}).then(j => { PRIV.v = !!j.private; PRIV.hf = !!j.hide_feed; if (S.tab === 'me') render(); }).catch(() => {}).finally(() => { PRIV.loading = false; }); }
@@ -5221,6 +5230,55 @@ function bmTween(){
 function goalPreview(){ const g = G(); return `${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)} ≈ ${num(g.count * 7 / g.days)} в неделю`; }
 
 /* ============================================================ рендер ==== */
+// ---------- горячие клавиши (WEB) ----------
+const HK = [['home','Главная','Digit1'],['stats','Итоги','Digit2'],['weight','Вес','Digit3'],['friends','Друзья','Digit4'],['me','Я (настройки)','Digit5'],['add','Новая тренировка','KeyN'],['kadd','Взвеситься','KeyW'],['back','Назад / закрыть окно','Escape']];
+let hkMap = null, hkCap = null;
+function hkLoad(){
+  if (hkMap) return hkMap;
+  hkMap = {}; HK.forEach(h => { hkMap[h[0]] = h[2]; });
+  try { const s = JSON.parse(localStorage.getItem('voob_keys') || '{}'); Object.keys(s).forEach(k => { if (k in hkMap && typeof s[k] === 'string') hkMap[k] = s[k]; }); } catch (e) {}
+  return hkMap;
+}
+function hkSave(){ try { const d = {}; HK.forEach(h => { if (hkMap[h[0]] !== h[2]) d[h[0]] = hkMap[h[0]]; }); if (Object.keys(d).length) localStorage.setItem('voob_keys', JSON.stringify(d)); else localStorage.removeItem('voob_keys'); } catch (e) {} }
+function hkLabel(c){
+  if (!c) return 'нет';
+  if (/^Key[A-Z]$/.test(c)) return c.slice(3);
+  if (/^Digit\d$/.test(c)) return c.slice(5);
+  if (/^Numpad\d$/.test(c)) return 'Num' + c.slice(6);
+  return ({Escape:'Esc',Space:'Пробел',Enter:'Enter',Backspace:'⌫',Tab:'Tab',ArrowUp:'↑',ArrowDown:'↓',ArrowLeft:'←',ArrowRight:'→',Slash:'/',Backquote:'`',Minus:'−',Equal:'=',BracketLeft:'[',BracketRight:']',Comma:',',Period:'.',Semicolon:';',Quote:"'",Backslash:'\\'})[c] || c;
+}
+function hkRun(a){
+  if (a === 'back') { if (sheetCtx) { closeSheet(); return true; } if (S.fprof) { fpBack(); return true; } return false; }
+  if (sheetCtx) return false;
+  if (['home','stats','weight','friends','me'].includes(a)) { ACT.tab({dataset:{tab:a}}); return true; }
+  if (a === 'add') { ACT.add(); return true; }
+  if (a === 'kadd') { ACT.kadd(); return true; }
+  return false;
+}
+function hkCardHTML(){
+  hkLoad();
+  return `<div class="card"><h3>${IC('palette')}Горячие клавиши</h3><div class="cap" style="margin:-6px 0 10px">Нажми на клавишу справа и затем на новую. Esc — отмена, Backspace — убрать клавишу. Работают независимо от раскладки.</div>` +
+    HK.map(([a, l]) => `<div class="hkr"><span>${l}</span><button type="button" class="hkk${hkCap === a ? ' cap2' : ''}${hkMap[a] ? '' : ' none'}" data-act="hkcap" data-v="${a}">${hkCap === a ? 'нажми…' : hkLabel(hkMap[a])}</button></div>`).join('') +
+    `<button type="button" class="btn ghost" data-act="hkreset" style="margin-top:12px">Сбросить по умолчанию</button></div>`;
+}
+if (inWeb) document.addEventListener('keydown', e => {
+  hkLoad();
+  if (hkCap) {
+    e.preventDefault(); e.stopPropagation();
+    if (['ShiftLeft','ShiftRight','ControlLeft','ControlRight','AltLeft','AltRight','MetaLeft','MetaRight','CapsLock'].includes(e.code)) return;
+    const a = hkCap;
+    if (e.code === 'Escape') { hkCap = null; render(); return; }
+    if (e.code === 'Backspace') { hkMap[a] = ''; hkCap = null; hkSave(); render(); return; }
+    const other = HK.find(h => h[0] !== a && hkMap[h[0]] === e.code);
+    if (other) { toast('Клавиша ' + hkLabel(e.code) + ' уже занята: «' + other[1] + '»'); return; }
+    hkMap[a] = e.code; hkCap = null; hkSave(); render(); hap.tap(); return;
+  }
+  if (e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
+  const tg0 = e.target, tn = tg0 && tg0.tagName;
+  if (tn === 'INPUT' || tn === 'TEXTAREA' || tn === 'SELECT' || (tg0 && tg0.isContentEditable)) { return; }
+  const a = HK.find(h => hkMap[h[0]] && hkMap[h[0]] === e.code);
+  if (a && hkRun(a[0])) e.preventDefault();
+}, true);
 const TABS = inWeb ? [['home','Главная','home'],['stats','Итоги','stats'],['weight','Вес','scale'],['friends','Друзья','friends'],['me','Я','user']] : [['stats','Итоги','stats'],['weight','Вес','scale'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
 const VIEWS = {home:viewHome, weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe};
 // плавающая кнопка внизу по центру: на «Главной» — тренировка, во «Весе» — взвеситься
@@ -5962,6 +6020,8 @@ const ACT = {
   dv: el => { if (el.dataset.v === 'black' && !isPro()) { hap.warn(); S.dvPrev = true; applyTheme(); render(); clearTimeout(S.dvT);
       S.dvT = setTimeout(() => { S.dvPrev = false; applyTheme(); render(); }, 5000); proToast('Чёрная тема — в PRO. Сейчас это предпросмотр'); return; }
     S.dvPrev = false; db.settings.dv = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
+  hkcap: el => { hkCap = el.dataset.v; render(); },
+  hkreset: () => { hkMap = null; try { localStorage.removeItem('voob_keys'); } catch (e) {} hkCap = null; hkLoad(); render(); hap.tap(); toast('Клавиши сброшены'); },
   tex: el => { db.settings.tex = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTex(true); render(); hap.tap(); },
   looksync: () => { const on = !lookSync(); lsSet('voob_look_sync', on); hap.tap();
     if (on) { touchMeta('settings'); save(); toast('Оформление этого устройства теперь общее'); } else toast('Теперь у телефона своё оформление');
