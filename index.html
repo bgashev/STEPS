@@ -1725,6 +1725,13 @@ html.web .texpv{display:none}
 .prof.pc .ava{width:104px;height:104px}
 .prof.pc>div:last-child{display:flex;flex-direction:column;align-items:center;width:100%}
 .prof.pc .nmrow{justify-content:center}
+html.web .prof.pc{flex-direction:row;align-items:center;text-align:left;gap:20px;margin:0 0 18px;padding:18px 22px;border-radius:26px;background:var(--surface);border:1px solid var(--border)}
+html.web .prof.pc .ava{width:76px;height:76px;flex:none;font-size:30px}
+html.web .prof.pc>div:last-child{flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:flex-start;width:auto;flex:1;min-width:0;gap:6px 12px}
+html.web .prof.pc .nmrow{justify-content:flex-start;margin:0}
+html.web .prof.pc .crw{display:inline-flex;gap:6px}
+html.web .prof.pc .crt{margin-top:0}
+html.web .prof.pc .prof-act{margin:0 0 0 auto}
 .prof.pc .crw{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
 .prof.pc .prof-act{justify-content:center}
 @keyframes navIn{from{opacity:0;transform:translate3d(0,10px,0) scale(.965);filter:blur(14px)}60%{filter:blur(2px)}to{opacity:1;transform:none;filter:blur(0)}}
@@ -2521,11 +2528,11 @@ html.web #tabs .siteb:hover{background:var(--hover,rgba(127,127,127,.12));opacit
  html.web .tab:hover:not(.on){background:color-mix(in srgb,var(--text) 6%,transparent)}
  html.web #view .hero.hbg{--hx:max(28px,calc((100vw - 264px - 760px) / 2));margin:-34px calc(-1 * var(--hx)) 0 calc(-264px - var(--hx));padding:70px calc(18px + var(--hx)) 48px calc(18px + 264px + var(--hx))}
 /* v1.631 WEB: плашка профиля в боковом меню */
-html.web #tabs{padding-top:222px}
-html.web #tabs .tbi{top:222px}
+html.web #tabs{padding-top:236px}
+html.web #tabs .tbi{top:236px}
 html.web #tabs.on-me .tbi{opacity:0}
 html.web .tab[data-tab="me"]{display:none}
-html.web .pcard{position:absolute;left:12px;right:12px;top:76px;height:120px;margin:0;padding:14px 14px 13px;border:0;border-radius:22px;cursor:pointer;text-align:left;font:inherit;color:#fff;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;
+html.web .pcard{position:absolute;left:12px;right:12px;top:76px;height:134px;margin:0;padding:14px 14px 13px;border:0;border-radius:22px;cursor:pointer;text-align:left;font:inherit;color:#fff;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;
   background:#14141a;box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 18px 34px -18px rgba(0,0,0,.7);transition:transform .4s cubic-bezier(.2,.8,.2,1),box-shadow .4s;-webkit-tap-highlight-color:transparent}
 html.web .pcard .pc-bg{position:absolute;inset:0;z-index:-3;background:radial-gradient(120% 150% at 0% 0%,color-mix(in srgb,var(--tc,var(--accent)) 46%,transparent),transparent 62%),radial-gradient(90% 120% at 100% 100%,color-mix(in srgb,var(--accent2,var(--accent)) 30%,transparent),transparent 60%),linear-gradient(160deg,#23232d,#15151c)}
 html.web .pcard.hasbg .pc-bg{background:#0b0b10}
@@ -2534,6 +2541,11 @@ html.web .pcard::before{content:'';position:absolute;inset:0;z-index:-1;pointer-
 html.web .pcard::after{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:linear-gradient(140deg,rgba(255,255,255,.55),rgba(255,255,255,.05) 42%,rgba(255,255,255,.18));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 html.web .pcard:hover{transform:translateY(-1px);box-shadow:0 1px 0 rgba(255,255,255,.1) inset,0 22px 38px -16px rgba(0,0,0,.75)}
 html.web .pcard.on{box-shadow:0 0 0 1.5px rgba(255,255,255,.9),0 0 0 5px color-mix(in srgb,var(--tc,#fff) 26%,transparent),0 18px 34px -16px rgba(0,0,0,.7)}
+html.web .pcard .pc-n{display:flex;align-items:center;gap:6px;min-width:0}
+html.web .pcard .pc-n .bdg{flex:none;display:inline-flex}
+html.web .pcard .pc-cr{display:flex;gap:5px;margin:7px 0 0;min-height:0}
+html.web .pcard .pc-cr .crw{display:flex;gap:5px}
+html.web .pcard .pc-cr .crt{margin:0;padding:3px 8px 3px 7px;font-size:8.5px;letter-spacing:.1em}
 html.web .pcard .pc-top{display:flex;align-items:center;gap:12px;min-width:0}
 html.web .pcard .pc-av{flex:none;display:block;width:46px;height:46px}
 html.web .pcard .pc-id{display:flex;flex-direction:column;gap:5px;min-width:0;flex:1}
@@ -2715,7 +2727,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.660';
+const APP = 'VOOB (by BGASHEV) Mini App v1.661';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -5645,7 +5657,7 @@ function updPCard(){
   const on = S.tab === 'home' && !S.fprof, tc = tierColor(lv.level), tier = tierOf(lv.level).title;
   tb.classList.toggle('on-me', S.tab === 'me' || S.tab === 'home');
   const av = frAv(k, 46, lv, photo, name).replace('<div class="fav', `<div data-fid="${uid}" class="fav`);
-  const html = `<span class="pc-bg"></span>${bg ? bgFx(bg) : ''}<span class="pc-top"><span class="pc-av">${av}</span><span class="pc-id"><b class="nm pc-nm">${esc(name)}</b><span class="pc-t"><i class="pc-lv">${lv.level}</i><em>${esc(tier)}</em></span></span></span><span class="pc-xp"><span class="pc-bar"><i style="width:${pct}%"><b class="lvp"></b></i></span><small>${lv.into || 0} / ${lv.need || 0} XP</small></span>`;
+  const html = `<span class="pc-bg"></span>${bg ? bgFx(bg) : ''}<span class="pc-top"><span class="pc-av">${av}</span><span class="pc-id"><span class="pc-n"><b class="nm pc-nm">${esc(name)}</b>${bdgHTML(uid, 14)}</span><span class="pc-t"><i class="pc-lv">${lv.level}</i><em>${esc(tier)}</em></span></span></span><span class="pc-cr">${creatorHTML(uid)}</span><span class="pc-xp"><span class="pc-bar"><i style="width:${pct}%"><b class="lvp"></b></i></span><small>${lv.into || 0} / ${lv.need || 0} XP</small></span>`;
   let el = tb.querySelector('.pcard');
   if (!el) { el = document.createElement('button'); el.type = 'button'; el.className = 'pcard'; el.dataset.act = 'tab'; el.dataset.tab = 'home'; el.setAttribute('aria-label', 'Главная'); tb.appendChild(el); }
   const sig = [html.replace(/<img[^>]*>/, photo ? '<img>' : ''), photo ? photo.length : 0, tc].join('|');
