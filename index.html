@@ -2479,6 +2479,10 @@ html.web .pcard .pc-xp small{font-size:10.5px;font-weight:700;letter-spacing:.05
  html.web body::after{display:none}
  html.web #view .hero.hbg>.hbgfx::after{display:none}
 /* WEB: профиль друга с фоном — фон от самого верха окна, шапка «Профиль» лежит поверх; лёгкий градиент сверху — на всю ширину экрана */
+/* WEB: подложка шапки («Настройки», «Персонализация», профиль) — на всю ширину экрана, а не обрубком по центру */
+html.web .mset-top::before{position:fixed;left:0;right:0;top:0;bottom:auto;height:118px;
+  background:linear-gradient(to bottom,var(--bg) 0,color-mix(in srgb,var(--bg) 86%,transparent) 55%,transparent 100%);
+  -webkit-mask-image:linear-gradient(to bottom,#000 0,#000 50%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 50%,transparent 100%)}
 html.web #view:has(> .mset-top + .me-prof .hero.hbg){padding-top:0}
 html.web .mset-top:has(+ .me-prof .hero.hbg){height:0;margin:0;padding:0;top:0}
 html.web .mset-top:has(+ .me-prof .hero.hbg)>*{position:relative;top:18px}
@@ -2597,7 +2601,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.631';
+const APP = 'VOOB (by BGASHEV) Mini App v1.632';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
