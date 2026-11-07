@@ -2504,7 +2504,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.611';
+const APP = 'VOOB (by BGASHEV) Mini App v1.612';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -6101,7 +6101,7 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
     + '#luv .l_rg{position:relative;width:min(320px,70vw);aspect-ratio:100/60}'
     + '#luv svg{width:100%;height:100%;overflow:visible;display:block;filter:drop-shadow(0 0 14px rgba(139,92,246,.55))}'
     + '#luv svg g,#luv svg circle{transform-box:fill-box;transform-origin:center}'
-    + '#luv svg circle{fill:none;stroke-width:8;stroke-dasharray:100;stroke-dashoffset:0}'
+    + '#luv svg circle{fill:none;stroke-width:8;stroke-dasharray:100.6 100.6;stroke-dashoffset:0}'
     + '#luv .l_wm{display:flex;font-weight:900;font-size:min(46px,11.5vw);letter-spacing:.5em;padding-left:.5em;color:#f1f2f6;text-shadow:0 0 24px rgba(139,92,246,.35);line-height:1}'
     + '#luv .l_wm i{font-style:normal;display:inline-block;opacity:0}'
     + '#luv .l_fl{position:absolute;left:50%;top:50%;width:12px;height:12px;margin:-6px;border-radius:50%;background:radial-gradient(circle closest-side,#fff,rgba(255,255,255,.55) 40%,rgba(255,255,255,0) 100%);opacity:0}'
@@ -6118,20 +6118,20 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
     o.innerHTML = '<div class="l_lg"></div><div class="l_au"></div><div class="l_vg"></div><div class="l_st"><div class="l_rg"><svg viewBox="0 0 100 60"><defs><clipPath id="lucp"><rect x="0" y="0" width="100" height="30"/></clipPath></defs>'
       + '<g class="l_g1"><circle class="l_c1" cx="37" cy="30" r="20" pathLength="100" stroke="#8b5cf6"/><circle class="l_h1" cx="37" cy="30" r="20" pathLength="100" stroke="#fff" style="stroke-dasharray:5 95;opacity:0"/></g>'
       + '<g class="l_g2"><circle class="l_c2" cx="63" cy="30" r="20" pathLength="100" stroke="#f1f2f6"/><circle class="l_h2" cx="63" cy="30" r="20" pathLength="100" stroke="#22d3ee" style="stroke-dasharray:5 95;opacity:0"/></g>'
-      + '<circle class="l_c3" cx="37" cy="30" r="20" pathLength="100" stroke="#8b5cf6" clip-path="url(#lucp)"/></svg><i class="l_fz"></i><i class="l_fl"></i></div>'
+      + '<g class="l_g3"><circle class="l_c3" cx="37" cy="30" r="20" pathLength="100" stroke="#8b5cf6" clip-path="url(#lucp)"/></g></svg><i class="l_fz"></i><i class="l_fl"></i></div>'
       + '<div class="l_wm"><i>V</i><i>O</i><i>O</i><i>B</i></div></div>';
     var ob = D.getElementById('luvb'); if (ob) ob.remove();
     var bl = D.createElement('div'); bl.id = 'luvb'; bl.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:2147482999;pointer-events:none;-webkit-backdrop-filter:blur(0px);backdrop-filter:blur(0px)';
     D.body.appendChild(bl); D.body.appendChild(o);
     var BL = function (a, b, dur, dl) { bl.animate([{ backdropFilter: 'blur(' + a + 'px)', webkitBackdropFilter: 'blur(' + a + 'px)' }, { backdropFilter: 'blur(' + b + 'px)', webkitBackdropFilter: 'blur(' + b + 'px)' }], { duration: dur, delay: dl || 0, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' }); };
     var g = D.getElementById('lu-g'); if (g) g.remove();
-    var q = function (s) { return o.querySelector(s); }, rg = q('.l_rg'), g1 = q('.l_g1'), g2 = q('.l_g2'), c1 = q('.l_c1'), c2 = q('.l_c2'), c3 = q('.l_c3'), h1 = q('.l_h1'), h2 = q('.l_h2'), fl = q('.l_fl'), fz = q('.l_fz'), au = q('.l_au'), ls = [].slice.call(o.querySelectorAll('.l_wm i'));
+    var q = function (s) { return o.querySelector(s); }, rg = q('.l_rg'), g1 = q('.l_g1'), g2 = q('.l_g2'), g3 = q('.l_g3'), c1 = q('.l_c1'), c2 = q('.l_c2'), c3 = q('.l_c3'), h1 = q('.l_h1'), h2 = q('.l_h2'), fl = q('.l_fl'), fz = q('.l_fz'), au = q('.l_au'), ls = [].slice.call(o.querySelectorAll('.l_wm i'));
     var A = function (el, k, op) { return el.animate(k, Object.assign({ fill: 'forwards' }, op)); };
     var flare = function (dur) { A(fz, [{ opacity: 0, transform: 'scaleX(.02)' }, { opacity: 1, transform: 'scaleX(.55)', offset: .3 }, { opacity: 0, transform: 'scaleX(1.25)' }], { duration: dur || 900, easing: 'cubic-bezier(.2,.7,.2,1)' }); };
     if (out) {
       var W = innerWidth, H = innerHeight, x = pt && pt.x != null ? pt.x : W / 2, y = pt && pt.y != null ? pt.y : H / 2,
           R = Math.hypot(Math.max(x, W - x), Math.max(y, H - y)) + 40;
-      c3.style.opacity = 0; BL(0, 22, 900);
+      BL(0, 22, 900);
       /* ирис из точки клика со светящейся кромкой */
       A(o, [{ clipPath: 'circle(0px at ' + x + 'px ' + y + 'px)' }, { clipPath: 'circle(' + R + 'px at ' + x + 'px ' + y + 'px)' }], { duration: 760, easing: 'cubic-bezier(.65,0,.2,1)' });
       var rim = D.createElement('div'); rim.id = 'luvr'; rim.style.cssText = 'left:' + (x - R) + 'px;top:' + (y - R) + 'px;width:' + (2 * R) + 'px;height:' + (2 * R) + 'px';
@@ -6142,15 +6142,17 @@ const LOGO_SVG = (w = 46) => `<svg class="vlogo" viewBox="0 0 100 60" width="${w
       A(q('.l_st'), [{ transform: 'scale(1.1)' }, { transform: 'scale(1)' }], { duration: 2050, delay: 300, easing: 'cubic-bezier(.16,.8,.2,1)' });
       var T0 = 420, TD = 950;
       A(c1, [{ strokeDashoffset: 100, opacity: .25 }, { strokeDashoffset: 8, opacity: 1, offset: .8 }, { strokeDashoffset: 0, opacity: 1 }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
+      A(c3, [{ strokeDashoffset: 100, opacity: .25 }, { strokeDashoffset: 8, opacity: 1, offset: .8 }, { strokeDashoffset: 0, opacity: 1 }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
       A(c2, [{ strokeDashoffset: 100, opacity: .25 }, { strokeDashoffset: 8, opacity: 1, offset: .8 }, { strokeDashoffset: 0, opacity: 1 }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
       A(g1, [{ transform: 'translateX(-120px) rotate(-200deg) scale(.7)' }, { transform: 'translateX(-6px) rotate(-10deg) scale(1.01)', offset: .82 }, { transform: 'none' }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
+      A(g3, [{ transform: 'translateX(-120px) rotate(-200deg) scale(.7)' }, { transform: 'translateX(-6px) rotate(-10deg) scale(1.01)', offset: .82 }, { transform: 'none' }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
       A(g2, [{ transform: 'translateX(120px) rotate(200deg) scale(.7)' }, { transform: 'translateX(6px) rotate(10deg) scale(1.01)', offset: .82 }, { transform: 'none' }], { duration: TD, delay: T0, easing: 'cubic-bezier(.3,.7,.25,1)' });
       [].forEach(function (h, i) { A(h, [{ opacity: 1, strokeDashoffset: 0 }, { opacity: 1, offset: .9 }, { opacity: 0, strokeDashoffset: i ? 260 : -260 }], { duration: TD + 120, delay: T0, easing: 'cubic-bezier(.3,.5,.4,1)' }); });
       A(rg, [{ transform: 'scale(.8)' }, { transform: 'scale(1)' }], { duration: 1200, delay: 320, easing: 'cubic-bezier(.2,.7,.2,1)' });
       var LK = T0 + TD - 40;
       setTimeout(function () {
         /* сцепление: вспышка, анаморфный блик, ударные волны, искры */
-        c3.style.opacity = 1; A(c3, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 });
+        
         A(rg, [{ transform: 'scale(1)' }, { transform: 'scale(1.04)', offset: .3 }, { transform: 'scale(1)' }], { duration: 600, easing: 'ease-out' });
         var rr = rg.getBoundingClientRect(), rcx = rr.left + rr.width / 2, rcy = rr.top + rr.height / 2, SD = Math.hypot(innerWidth, innerHeight) * 1.1,
             rc = ['#ffffff', '#22d3ee', '#8b5cf6', '#f472b6', '#22d3ee', '#8b5cf6', '#ffffff'],
