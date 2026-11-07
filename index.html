@@ -202,7 +202,8 @@ input[type=date].inp{display:block}
 .sb{width:38px;height:38px;border-radius:11px;border:1px solid var(--border);background:var(--surface);display:grid;place-items:center;touch-action:none;flex:none;user-select:none;-webkit-user-select:none;transition:transform .1s}
 .sb:active{transform:scale(.9);border-color:var(--accent)}
 .sv{flex:1;display:flex;align-items:baseline;justify-content:center;gap:4px;min-width:0}
-.sv input{width:2.9em;min-width:0;text-align:right;background:none;border:0;color:var(--text);font:inherit;font-size:17px;font-weight:700;padding:0}
+.sv{position:relative}.sv .sgh{position:absolute;pointer-events:none;text-align:right;font:inherit;font-size:17px;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:flex-end;line-height:1}
+.sv input{will-change:transform,filter,opacity;width:2.9em;min-width:0;text-align:right;background:none;border:0;color:var(--text);font:inherit;font-size:17px;font-weight:700;padding:0}
 .sv input:focus{outline:none}
 .sv em{font-style:normal;color:var(--muted);font-size:13px;white-space:nowrap}
 .feel{display:flex;gap:12px;align-items:center}
@@ -2754,7 +2755,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.668';
+const APP = 'VOOB (by BGASHEV) Mini App v1.669';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -3609,8 +3610,23 @@ function stepBy(el, d){
   let v = readStp(el);
   if (el.dataset.jump && d > 0 && v <= +el.dataset.min) v = +el.dataset.jump; else v = v + d * st;
   v = clamp(+v.toFixed(dec), +el.dataset.min, +el.dataset.max);
-  el.querySelector('input').value = fmtIn(v, dec);
+  const inp = el.querySelector('input'), was = inp.value, now = fmtIn(v, dec);
+  inp.value = now;
+  if (was !== now) stpFx(el, inp, was, d, !!rep);
   onStp(el);
+}
+// v1.669: смена цифры в степпере — лёгкий блюр и небольшой сдвиг (старая уходит, новая приходит, в духе Apple)
+function stpFx(el, inp, was, d, fast){
+  if (!inp.animate || matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const dur = fast ? 170 : 300, dy = fast ? 6 : 9, bl = fast ? 3 : 5, ease = 'cubic-bezier(.2,.8,.2,1)', sv = inp.parentNode;
+  inp.getAnimations().forEach(a => a.cancel());
+  inp.animate([{opacity:.1, filter:`blur(${bl}px)`, transform:`translateY(${d > 0 ? dy : -dy}px)`}, {opacity:1, filter:'blur(0)', transform:'none'}], {duration:dur, easing:ease});
+  sv.querySelectorAll('.sgh').forEach(g => g.remove());
+  const g = document.createElement('span'); g.className = 'sgh'; g.textContent = was; g.setAttribute('aria-hidden', 'true');
+  g.style.cssText = `left:${inp.offsetLeft}px;top:${inp.offsetTop}px;width:${inp.offsetWidth}px;height:${inp.offsetHeight}px`;
+  sv.appendChild(g);
+  const an = g.animate([{opacity:.9, filter:'blur(0)', transform:'none'}, {opacity:0, filter:`blur(${bl}px)`, transform:`translateY(${d > 0 ? -dy : dy}px)`}], {duration:dur * .8, easing:ease, fill:'forwards'});
+  an.onfinish = () => g.remove();
 }
 
 /* ========================================================== состояние === */
