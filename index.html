@@ -3110,6 +3110,8 @@ html.web .pzs b{font-size:15px;font-weight:800;letter-spacing:-.15px;line-height
 html.web .pzs.chg{border-color:color-mix(in srgb,var(--accent) 70%,transparent);box-shadow:0 12px 30px -16px var(--accent),inset 0 1px 0 rgba(255,255,255,.35)}
 html.web .pzs.chg::after{content:"";position:absolute;top:14px;right:14px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
 /* v1.709: подписи в «Персонализации» — на стеклянной плашке, читаются на любом фоне */
+html.web .pztabs,html.web .pzb{background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(34px) saturate(1.4);-webkit-backdrop-filter:blur(34px) saturate(1.4)}
+html.web .pzb:hover{background:color-mix(in srgb,var(--surface2) 70%,transparent)}
 html.web .pz-top .ib.round{background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(34px) saturate(1.4);-webkit-backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border)}
 html.web .pz-top .sub,html.web .pz-cap,html.web .pzhint{display:inline-flex;align-items:center;gap:7px;width:fit-content;max-width:100%;padding:7px 14px;border-radius:999px;color:var(--text);background:color-mix(in srgb,var(--surface) 70%,transparent);backdrop-filter:blur(34px) saturate(1.4);-webkit-backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border);line-height:1.35}
 html.web .pz-cap{display:flex;border-radius:18px}
@@ -3244,7 +3246,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.747';
+const APP = 'VOOB (by BGASHEV) Mini App v1.748';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
