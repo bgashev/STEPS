@@ -794,7 +794,7 @@ html.web .stv .gl .recs>div{position:relative;overflow:hidden;width:auto;flex:no
 html.web .stv .gl .recs>div::after{content:"";position:absolute;right:-34px;top:-34px;width:100px;height:100px;border-radius:50%;background:radial-gradient(closest-side,var(--c),transparent);opacity:.32;pointer-events:none}
 html.web .stv .gl .recs>div:last-child:nth-child(odd){grid-column:1/-1}
 html.web .stv .gl .recs .ri{display:grid;place-items:center;position:absolute;right:12px;top:12px;width:30px;height:30px;border-radius:50%;z-index:1;color:#fff;background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 40%,#000));box-shadow:0 0 14px -2px var(--c)}
-html.web .stv .gl .recs .cap:first-of-type{padding-right:34px;min-height:26px}
+html.web .stv .gl .recs .cap:first-child{padding-right:34px;min-height:26px}
 html.web .stv .gl .recs .rv{font-size:21px;letter-spacing:-.5px;margin:6px 0 2px;position:relative;z-index:1}
 html.web .head{position:relative}
 .invpop{position:absolute;right:0;top:calc(100% + 4px);width:320px;z-index:30;pointer-events:none;visibility:hidden;
@@ -2689,7 +2689,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.647';
+const APP = 'VOOB (by BGASHEV) Mini App v1.648';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4841,7 +4841,7 @@ function viewStats(){
   const kw = ws.filter(w => kmOf(w) > 0.05); if (kw.length) { const b = mxBy(kw, kmOf); recs.push(['Самая дальняя', kmF(kmOf(b)), stName(actOf(b)) + ' · ' + dd(b)]); }
   const sp = ws.filter(w => +w.speed > 0 && !isStr(w)); if (sp.length) { const b = mxBy(sp, w => +w.speed); recs.push(['Самая быстрая', num(b.speed) + ' км/ч', stName(actOf(b)) + ' · ' + dd(b)]); }
   const ic = ws.filter(w => actOf(w) === 'run' && +w.incline > 0); if (ic.length) { const b = mxBy(ic, w => +w.incline); recs.push(['Самый крутой уклон', num(b.incline) + ' %', dd(b)]); }
-  h += `<div class="recs">` + recs.map((r, i) => `<div style="--c:${['#9a6bff', '#5b8cff', '#f2cf5b', '#f09a4f', '#5ad08a', '#ec6aa8'][i % 6]}"><span class="ri">${IC(({'Самая долгая':'clock','Любимая активность':'flame','Дней подряд':'flame','Норм выполнено':'check','Любимый день':'stats'})[r[0]] || 'trophy', 16)}</span><div class="cap">${r[0]}</div><div class="rv">${r[1]}</div><div class="cap">${r[2]}</div></div>`).join('') + `</div></div>`;
+  h += `<div class="recs">` + recs.map((r, i) => `<div style="--c:${['#9a6bff', '#5b8cff', '#f2cf5b', '#f09a4f', '#5ad08a', '#ec6aa8'][i % 6]}"><div class="cap">${r[0]}</div><div class="rv">${r[1]}</div><div class="cap">${r[2]}</div><span class="ri">${IC(({'Самая долгая':'clock','Любимая активность':'flame','Дней подряд':'flame','Норм выполнено':'check','Любимый день':'stats'})[r[0]] || 'trophy', 16)}</span></div>`).join('') + `</div></div>`;
   return webSplit(h) + '</div><div class="wdock-sp"></div>';
 }
 function openAchFull(){
