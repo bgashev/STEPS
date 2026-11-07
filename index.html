@@ -3243,7 +3243,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.743';
+const APP = 'VOOB (by BGASHEV) Mini App v1.744';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7070,7 +7070,6 @@ const ACT = {
     try { if (el.dataset.net === 'tg') tg.openTelegramLink(u); else tg.openLink(u); } catch (e) { window.open(u, '_blank'); } },
   wlopen: () => { if (WL.link) window.open(WL.link, '_blank'); },
   wlnew: () => wlStart(),
-  wlskip: () => { try { sessionStorage.setItem('voob_web_skip', '1'); } catch (e) {} clearInterval(WL.timer); clearInterval(WL.tick); const w = $('#wl'); if (w) w.classList.remove('show'); },
   weblogout: () => { hap.tap(); webLogout(); },
   gslogin: () => { hap.tap(); gsAsk(gsLogin); },
   gslink: () => { hap.tap(); gsAsk(gsLink); },
@@ -7560,7 +7559,7 @@ function showWebLogin(){
         <h1>Войди через Telegram</h1>
         <p class="sub">Тренировки, друзья и вся статистика — на большом экране. Пароли не нужны.</p>
         <ol class="wl-st"><li>Наведи камеру телефона на QR-код</li><li>Нажми «Запустить» в чате с ботом VOOB</li><li>Вернись сюда — вход произойдёт сам</li></ol>
-        <div class="wl-acts"><button type="button" class="btn primary" data-act="wlopen">Открыть в Telegram</button><button type="button" class="wl-link" data-act="wlskip">Продолжить без входа</button></div><div class="wl-g"><div class="wl-or"><span>или</span></div><button type="button" class="wl-gbtn" data-act="gslogin"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Войти через Google</span></button><div id="wl-gmsg" class="gs-msg"></div></div></div>
+        <div class="wl-acts"><button type="button" class="btn primary" data-act="wlopen">Открыть в Telegram</button></div><div class="wl-g"><div class="wl-or"><span>или</span></div><button type="button" class="wl-gbtn" data-act="gslogin"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Войти через Google</span></button><div id="wl-gmsg" class="gs-msg"></div></div></div>
       <div class="wl-r"><div class="wl-qr load" id="wl-qr"><span id="wl-svg"></span>
         <div class="wl-ov ld"><i class="wl-sp"></i></div>
         <div class="wl-ov ex">Код устарел<button type="button" class="btn small" data-act="wlnew">Новый QR</button></div>
@@ -7606,7 +7605,7 @@ async function init(){
   try { const s = localStorage.getItem(LS); if (s) db = normalize(JSON.parse(s)); } catch (e) {}
   invalidate(); applyTheme(); render();
   scheduleSync(100);
-  try { if (inWeb && !inWebApp && !sessionStorage.getItem('voob_web_skip')) showWebLogin(); } catch (e) {}
+  try { if (inWeb && !inWebApp) showWebLogin(); /* v1.744: WEB только после входа через Telegram */ } catch (e) {}
   if (inTG) setTimeout(() => { loadFriends(); loadFeed(true); }, 900);   // к моменту перехода во вкладку всё уже свежее
   try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); } catch (e) {}
   if (!hasCloud) return;
