@@ -938,6 +938,17 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .fpb.del span{background:rgba(239,107,115,.12);color:var(--red)}
 .fpb.del b{color:var(--muted)}
 .fpb.off{opacity:.5}
+.fp-bar.fp3{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;margin:16px 0 6px!important}
+.fp3 .fpb{height:74px!important;flex-direction:column!important;gap:6px!important;border-radius:20px!important;padding:0 4px;min-width:0}
+.fp3 .fpb span{width:34px!important;height:34px!important;border-radius:12px!important}
+.fp3 .fpb b{font-size:12.5px!important;white-space:nowrap}
+.fp3 .fpb.frb{background:var(--surface2)!important;border-color:var(--border)!important;color:var(--text)!important}
+.fpb .stk3{display:flex;align-items:center;justify-content:center;height:34px;font-style:normal}
+.fpb .stk3 .fav{width:28px;height:28px;font-size:12px;box-shadow:0 0 0 2px var(--surface2)}
+.fpb .stk3 .fav+.fav{margin-left:-10px}.fpb .stk3 .fav .lvb{display:none}
+.fpb .stk3 .fe{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--text) 8%,transparent);color:var(--muted)}
+.fpb.frb:disabled{opacity:.6}
+
 .fpa{width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:transform .12s}
 .fpa:active{transform:scale(.9)}
 .fpa.gbtn{color:var(--accent)}
@@ -1823,8 +1834,12 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 #sheet .hero.hbg::after{background:linear-gradient(to bottom,transparent 0,color-mix(in srgb,var(--bgt,var(--bg)) 18%,transparent) 14%,color-mix(in srgb,var(--bgt,var(--bg)) 34%,transparent) 30%,color-mix(in srgb,var(--bgt,var(--bg)) 36%,var(--bg)) 52%,color-mix(in srgb,var(--bgt,var(--bg)) 14%,var(--bg)) 78%,var(--bg) 100%)}
 /* фон профиля продолжается вниз по странице: не цвет темы, а тот же оттенок, плавно растворяющийся */
 #view{position:relative;isolation:isolate}
-#view.bgt::before{content:"";position:absolute;z-index:-1;top:0;left:50%;width:100vw;height:calc(var(--hb,400px) + 1000px);transform:translateX(-50%);pointer-events:none;
-  background:linear-gradient(to bottom,color-mix(in srgb,var(--bgt) 62%,var(--bg)) 0,color-mix(in srgb,var(--bgt) 62%,var(--bg)) var(--hb,400px),color-mix(in srgb,var(--bgt) 36%,var(--bg)) calc(var(--hb,400px) + 150px),color-mix(in srgb,var(--bgt) 16%,var(--bg)) calc(var(--hb,400px) + 380px),color-mix(in srgb,var(--bgt) 5%,var(--bg)) calc(var(--hb,400px) + 700px),var(--bg) calc(var(--hb,400px) + 1000px))}
+#view.bgt::before{display:none}
+/* v1.616: хвост фона — чистый CSS, без JS: продолжается на 900px ниже героя и растворяется в цвет темы */
+#view .hero.hbg:not(.bgpv)::after{bottom:-900px;height:1200px;
+  background:linear-gradient(to bottom,transparent 0,color-mix(in srgb,var(--bgt,var(--bg)) 14%,transparent) 42px,color-mix(in srgb,var(--bgt,var(--bg)) 32%,transparent) 96px,color-mix(in srgb,var(--bgt,var(--bg)) 48%,var(--bg)) 156px,color-mix(in srgb,var(--bgt,var(--bg)) 56%,var(--bg)) 228px,color-mix(in srgb,var(--bgt,var(--bg)) 62%,var(--bg)) 300px,color-mix(in srgb,var(--bgt,var(--bg)) 40%,var(--bg)) 480px,color-mix(in srgb,var(--bgt,var(--bg)) 20%,var(--bg)) 700px,color-mix(in srgb,var(--bgt,var(--bg)) 6%,var(--bg)) 950px,var(--bg) 1200px);
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.12) 48px,rgba(0,0,0,.4) 114px,rgba(0,0,0,.75) 192px,#000 300px);mask-image:linear-gradient(to bottom,transparent 0,rgba(0,0,0,.12) 48px,rgba(0,0,0,.4) 114px,rgba(0,0,0,.75) 192px,#000 300px)}
+#view .hero.hbg:not(.bgpv)~*{position:relative}
 /* п.18 · итоги */
 .st-hero{text-align:center;padding:22px 6px 8px}
 .st-k{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
@@ -2518,7 +2533,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.615';
+const APP = 'VOOB (by BGASHEV) Mini App v1.616';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4216,12 +4231,17 @@ function friendSheetHTML(f, j, loading, self){
       <div class="lvbar"><i style="width:${pct}%"><b class="lvp"></b></i></div><div class="cap">${lv.into} из ${lv.need} очков до уровня ${lv.level + 1}</div></div>`;
   if (j && j.friends) FR.profBy.set(+f.tg_id, j.friends);   // список друзей — у каждого профиля свой (раньше один общий, и его перезаписывал любой другой открытый профиль)
   const pw = +f.poke_wait || 0;
-  const acts = self ? '' : `<div class="fp-bar"><button class="fpb poke${pw ? ' off' : ''}" data-act="frpoke" data-id="${f.tg_id}"><span>${IC('bolt', 20)}</span><b>${pw ? `через ${pw} ч` : 'Взбодрить'}</b></button>`
+  const nfr = loading ? 0 : (j.friends || []).length;
+  const frBtn = loading ? `<button type="button" class="fpb frb" disabled><em class="stk3"><span class="fav skl"></span><span class="fav skl"></span></em><b>Друзья</b></button>`
+    : `<button type="button" class="fpb frb" ${nfr ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}><em class="stk3">${nfr ? j.friends.slice(0, 3).map(x => favHTML(x, false)).join('') : `<span class="fe">${IC('friends', 18)}</span>`}</em><b>Друзья · ${j.friends_count}</b></button>`;
+  const acts = self ? '' : `<div class="fp-bar fp3"><button class="fpb poke${pw ? ' off' : ''}" data-act="frpoke" data-id="${f.tg_id}"><span>${IC('bolt', 20)}</span><b>${pw ? `через ${pw} ч` : 'Взбодрить'}</b></button>`
+    + frBtn
     + `<button class="fpb gift" data-act="gift" data-id="${f.tg_id}"><span>${IC('gift', 20)}</span><b>Подарок</b></button></div>`;
-  h += `<div class="hero-row">` + (loading ? `<button type="button" class="fchipb" disabled><span class="stk"><span class="fav skl"></span><span class="fav skl"></span></span>Друзья · <span class="fcn skl"></span></button>`
+  if (self) h += `<div class="hero-row">` + (loading ? `<button type="button" class="fchipb" disabled><span class="stk"><span class="fav skl"></span><span class="fav skl"></span></span>Друзья · <span class="fcn skl"></span></button>`
     : `<button type="button" class="fchipb ld" ${(j.friends || []).length ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}>${(j.friends || []).length ? `<span class="stk">${j.friends.slice(0, 3).map(x => favHTML(x, false)).join('')}</span>` : IC('friends', 16)}Друзья · <span class="fcn">${j.friends_count}</span>${(j.friends || []).length ? IC('chev', 14) : ''}</button>`)
-    + (self ? `<button type="button" class="fchipb hset" data-act="meset" aria-label="Настройки профиля и приложения">${IC('gear', 16)}Настройки</button>` : '')
-    + `</div>` + socialsHTML(f.tg_id, true) + `</div>` + acts;
+    + `<button type="button" class="fchipb hset" data-act="meset" aria-label="Настройки профиля и приложения">${IC('gear', 16)}Настройки</button>`
+    + `</div>`;
+  h += socialsHTML(f.tg_id, true) + `</div>` + acts;
   h += weekCard(f, g, ok, shown, j && j.week && j.week.days, loading);
   if ((f.gift_kinds || []).length) h += `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из ${GIFT_ALL.length}</h3>${giftShelf(f.gift_kinds, 20, f.name)}</div>`;
   if (!loading && !self) h += `<button class="btn ghost small" style="width:100%;margin-bottom:12px;color:var(--muted)" data-act="frrep" data-id="${f.tg_id}">Пожаловаться</button>`;
