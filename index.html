@@ -2622,7 +2622,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.635';
+const APP = 'VOOB (by BGASHEV) Mini App v1.636';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -4362,7 +4362,7 @@ function friendSheetHTML(f, j, loading, self){
   h += socialsHTML(f.tg_id, true) + `</div>` + acts;
   if (self) h += '<!--hs-->';   // v1.634 WEB: граница «зона профиля | лента карточек» для двух столбцов
   h += weekCard(f, g, ok, shown, j && j.week && j.week.days, loading);
-  if (self && inWeb) h += feedShortHTML(7, PI++);   // v1.635 WEB: справа — короткая лента друзей
+  if (self && inWeb && !loading) h += feedShortHTML(7, PI++);   // v1.635 WEB: справа — короткая лента друзей
   if ((f.gift_kinds || []).length) h += (self ? '<!--L-->' : '') + `<div class="card pfin" style="--pi:${PI++}"><h3>${IC('gift')}Подарки · ${f.gift_kinds.length} из ${GIFT_ALL.length}</h3>${giftShelf(f.gift_kinds, 20, f.name)}</div>` + (self ? '<!--/L-->' : '');
   if (!loading && !self) h += `<button class="btn ghost small" style="width:100%;margin-bottom:12px;color:var(--muted)" data-act="frrep" data-id="${f.tg_id}">Пожаловаться</button>`;
   if (loading) return h + `<div id="fp-load">` + [100, 120, 140].map((ht, i) => `<div class="sk" style="height:${ht}px;animation-delay:${i * 90}ms"><i class="c"></i><span class="ln"><i></i><i></i></span></div>`).join('') + `</div>`;
@@ -5562,6 +5562,8 @@ function revealNew(root){
   root.querySelectorAll('.pfin').forEach(el => {
     if (RV.has(el)) return; RV.add(el);
     const h = el.offsetHeight; if (!el.animate || !h) return;
+    if (el.closest('.me-l,.me-r')) {   // v1.636 WEB, два столбца: без роста по высоте (он дёргал соседние карточки и липкую колонку) — только мягкое появление
+      el.animate([{opacity:0, transform:'translateY(14px) scale(.99)'}, {opacity:1, transform:'none'}], {duration:680, delay:Math.min(k++, 7) * 70, easing:'cubic-bezier(.2,.8,.2,1)', fill:'backwards'}); return; }
     const cs = getComputedStyle(el), from = {height:'0px', opacity:0, transform:'translateY(18px) scale(.985)'}, to = {height:h + 'px', opacity:1, transform:'none'};
     ['paddingTop', 'paddingBottom', 'marginTop', 'marginBottom'].forEach(p => { from[p] = '0px'; to[p] = cs[p]; });
     el.style.overflow = 'hidden';
@@ -5608,6 +5610,7 @@ function render(){
   const html = S.fprof ? viewFProf() : VIEWS[S.tab](), v = $('#view'), rkey = S.fprof ? 'fp' : S.tab;
   const same = _rTab === rkey;
   if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
+  v.classList.toggle('w2', inWeb && html.indexOf('class="me-l"') > -1);   // v1.636: ширину столбцов задаём до вставки — иначе страница сначала рисуется узкой и «прыгает»
   v.classList.toggle('rr', same);                          // та же вкладка: обновляем без повторных «появлений»
   _rTab = rkey; _rHtml = html;
   if (same) morphSoft(v, html);   // v1.442: та же вкладка — правим только изменившееся, без мерцаний
@@ -5625,7 +5628,6 @@ function render(){
   const hh = v.querySelector('.hero.hbg'), bt = hh ? hh.style.getPropertyValue('--bgt') : '';
   if (bt) v.style.setProperty('--bgt', bt); else v.style.removeProperty('--bgt');
   v.classList.toggle('bgt', !!bt);
-  v.classList.toggle('w2', inWeb && !!v.querySelector(':scope > .me-prof > .me-l'));   // WEB: профиль в два столбца, если хватает ширины
   if (window._hbRO) { _hbRO.disconnect(); }
   if (hh && bt) { const setHb = () => v.style.setProperty('--hb', Math.round(hh.offsetTop + hh.offsetHeight) + 'px'); setHb(); if (window.ResizeObserver) { window._hbRO = new ResizeObserver(setHb); window._hbRO.observe(hh); } }
 }
