@@ -3051,7 +3051,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.703';
+const APP = 'VOOB (by BGASHEV) Mini App v1.704';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6171,7 +6171,7 @@ function updFab(){
   if (S.tab !== 'weight') wpClose();
   if (S.tab !== 'friends') fpClose();
   const b = box.querySelector('button'), fl = b.querySelector('.fl'), fi = b.querySelector('.fi');
-  const cfg = FAB[S.tab];
+  const cfg = S.fprof ? null : FAB[S.tab];   // v1.704: в чужом профиле кнопки «Тренировка» нет
   if (!fi.innerHTML) fi.innerHTML = IC('plus', 20);
   if (!cfg) { box.classList.add('hide'); return; }
   if (!updFab.ok) { b.dataset.act = cfg[0]; fl.textContent = cfg[1]; return; }   // пока приложение не «устоялось» (шрифты, размер окна Telegram, восстановление прокрутки) кнопка скрыта и не двигается
