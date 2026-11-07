@@ -2464,8 +2464,9 @@ html.web .inv-row .inv-code{margin-top:0;min-width:0}html.web .inv-row .inv-shar
 @media(min-width:900px){html.web .stv .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px;overflow:visible;margin:14px 0 0;padding:0;-webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
 html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 /* v1.607: фоновые текстуры (Оформление → Фон) */
-#texl{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:1;transition:opacity .5s ease}
-.tex-grid{background-image:radial-gradient(ellipse 85% 75% at 55% 12%,transparent 0,var(--bg) 80%),linear-gradient(var(--tl) 1px,transparent 1px),linear-gradient(90deg,var(--tl) 1px,transparent 1px);background-size:100% 100%,56px 56px,56px 56px}
+#texl{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:1;transition:opacity .5s ease;-webkit-mask-image:radial-gradient(ellipse 90% 70% at var(--mx,55%) var(--my,10%),#000 0,rgba(0,0,0,.86) 18%,rgba(0,0,0,.6) 38%,rgba(0,0,0,.3) 58%,rgba(0,0,0,.1) 76%,transparent 93%);mask-image:radial-gradient(ellipse 90% 70% at var(--mx,55%) var(--my,10%),#000 0,rgba(0,0,0,.86) 18%,rgba(0,0,0,.6) 38%,rgba(0,0,0,.3) 58%,rgba(0,0,0,.1) 76%,transparent 93%)}
+#texl.tex-aura{-webkit-mask-image:none;mask-image:none}#texl.tex-rings{--mx:20%;--my:100%}#texl.tex-rays{--mx:50%;--my:100%}
+.tex-grid{background-image:linear-gradient(var(--tl) 1px,transparent 1px),linear-gradient(90deg,var(--tl) 1px,transparent 1px);background-size:56px 56px,56px 56px}
 .tex-dots{background-image:radial-gradient(var(--tl2) 1.3px,transparent 1.6px);background-size:18px 18px}
 .tex-grain{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");background-size:160px 160px}
 .tex-rings{background-image:repeating-radial-gradient(circle at 20% 110%,transparent 0 22px,var(--tl) 22px 23px)}
@@ -2486,7 +2487,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 .texb{position:relative;height:46px;border-radius:12px;border:1.5px solid var(--border);background-color:var(--surface2);background-attachment:scroll;color:var(--muted);font:700 10.5px/1 inherit;cursor:pointer;display:grid;place-items:end center;padding:0 0 5px;overflow:hidden}
 .texb span{position:relative;background:color-mix(in srgb,var(--surface2) 80%,transparent);padding:2px 5px;border-radius:6px;font-size:10px;font-weight:700;color:var(--text)}
 .texb.on{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
-.texb.tex-grid{background-size:100% 100%,16px 16px,16px 16px}.texb.tex-rings{background-image:repeating-radial-gradient(circle at 20% 130%,transparent 0 10px,var(--tl) 10px 11px)}
+.texb.tex-grid{background-size:16px 16px,16px 16px}.texb.tex-rings{background-image:repeating-radial-gradient(circle at 20% 130%,transparent 0 10px,var(--tl) 10px 11px)}
 .texb.tex-dots{background-size:9px 9px}.texb.tex-plus{background-size:16px 16px}.texb.tex-paper{background-image:repeating-linear-gradient(45deg,var(--tl2) 0 1px,transparent 1px 6px),repeating-linear-gradient(-45deg,var(--tl2) 0 1px,transparent 1px 6px)}
 .texb.tex-rays{background-image:repeating-conic-gradient(from 0deg at 50% 150%,var(--tl2) 0 2deg,transparent 2deg 9deg)}.texb.tex-relief{background-size:150px 100px}
 </style>
@@ -2503,7 +2504,7 @@ html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.609';
+const APP = 'VOOB (by BGASHEV) Mini App v1.610';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
