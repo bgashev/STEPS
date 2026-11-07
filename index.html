@@ -11,9 +11,9 @@
 <style>
 :root{--bg:#121216;--surface:#1A1A20;--surface2:#24242C;--border:#2C2C36;--text:#F1F1F5;--muted:#8B8B99;--off:#34343F;--accent:#B4A7EE;--on-accent:#1D1D24;--accent-soft:rgba(180,167,238,.16);--green:#5FC98A;--red:#EF6B73;--blue:#7FB5FF}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--text);font:15px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+html,body{margin:0;color:var(--text);font:15px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
 html{overflow-x:hidden}body{overflow-x:clip}html,body{max-width:100%;overscroll-behavior-x:none}   /* v1.507: страница не двигается вбок; v1.523: у body clip вместо hidden — иначе body становится скролл-контейнером и ломает sticky (кнопка «Назад» в настройках) */
-body{overscroll-behavior-y:none;transition:background .25s}
+html{background:var(--bg);transition:background .25s}body{overscroll-behavior-y:none;background:transparent}
 button{font:inherit;color:inherit;cursor:pointer}
 #view{max-width:560px;margin:0 auto;padding:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 18px) 16px calc(100px + env(safe-area-inset-bottom))}
 .ic{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;display:block}
@@ -2464,7 +2464,7 @@ html.web .inv-row .inv-code{margin-top:0;min-width:0}html.web .inv-row .inv-shar
 @media(min-width:900px){html.web .stv .kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:10px;overflow:visible;margin:14px 0 0;padding:0;-webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
 html.web .stv .kpi{flex:none;min-width:0;width:auto;scroll-snap-align:none}}
 /* v1.607: фоновые текстуры (Оформление → Фон) */
-body{background-attachment:fixed}
+#texl{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:1;transition:opacity .5s ease}
 .tex-grid{background-image:radial-gradient(ellipse 85% 75% at 55% 12%,transparent 0,var(--bg) 80%),linear-gradient(var(--tl) 1px,transparent 1px),linear-gradient(90deg,var(--tl) 1px,transparent 1px);background-size:100% 100%,56px 56px,56px 56px}
 .tex-dots{background-image:radial-gradient(var(--tl2) 1.3px,transparent 1.6px);background-size:18px 18px}
 .tex-grain{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");background-size:160px 160px}
@@ -2483,7 +2483,7 @@ body{background-attachment:fixed}
 .texb.tex-rays{background-image:repeating-conic-gradient(from 0deg at 50% 150%,var(--tl2) 0 2deg,transparent 2deg 9deg)}.texb.tex-relief{background-size:150px 100px}
 </style>
 </head>
-<body>
+<body><div id="texl" aria-hidden="true"></div>
 <main id="view"></main>
 <div id="fab" class="wdock center hide"><button class="wd-add" data-act="add" type="button"><span class="fi"></span><span class="fl"></span></button></div>
 <nav id="tabs"></nav>
@@ -2495,7 +2495,7 @@ body{background-attachment:fixed}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.607';
+const APP = 'VOOB (by BGASHEV) Mini App v1.608';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 const tg = window.Telegram && window.Telegram.WebApp;
@@ -2517,7 +2517,13 @@ const CH = 3900;   // размер куска для CloudStorage (лимит 40
 const ACCENTS = [["rose","Розовый","#F4A3BE"],["peach","Персиковый","#F7B58E"],["butter","Лимонный","#F2D679"],["mint","Мятный","#9AD9B3"],["sky","Голубой","#8FC8EE"],["lavender","Лавандовый","#B4A7EE"],["lilac","Сиреневый","#D9A8EA"],["teal","Бирюзовый","#86D5CF"],["sand","Песочный","#E3C9A0"],["mono","Монохром","#EDEDF2"]];
 const TEX = [['none','Нет'],['grid','Сетка'],['dots','Точки'],['grain','Зерно'],['rings','Волны'],['plus','Плюсики'],['aura','Ауры'],['relief','Рельеф'],['paper','Ватман'],['rays','Лучи']];
 const texKey = () => { const k = db.settings.tex; return TEX.some(x => x[0] === k) ? k : (inWeb ? 'grid' : 'none'); };
-function applyTex(){ try { const k = texKey(); document.body.className = document.body.className.replace(/\btex-\w+/g, '').trim(); if (k !== 'none') document.body.classList.add('tex-' + k); } catch (e) {} }
+let _texK = null, _texT = 0;
+function applyTex(anim){ try { const k = texKey(), el = document.getElementById('texl'); if (!el || k === _texK) return;
+    const set = () => { el.className = k === 'none' ? '' : 'tex-' + k; el.style.opacity = ''; _texK = k; };
+    clearTimeout(_texT);
+    if (!anim || _texK === null) { set(); return; }
+    el.style.opacity = '0';                       // 0,5 с гаснет, затем 0,5 с проявляется новая
+    _texT = setTimeout(() => { el.className = k === 'none' ? '' : 'tex-' + k; _texK = k; void el.offsetWidth; el.style.opacity = '1'; }, 500); } catch (e) {} }
 const THEMES = {
   light:{bg:"#F5F5F8",surface:"#FFFFFF",surface2:"#EFEFF4",border:"#E3E3EA",text:"#1D1D24",muted:"#8A8A98",off:"#DEDEE6"},
   dark:{bg:"#121216",surface:"#1A1A20",surface2:"#24242C",border:"#2C2C36",text:"#F1F1F5",muted:"#8B8B99",off:"#34343F"},
@@ -5956,7 +5962,7 @@ const ACT = {
   dv: el => { if (el.dataset.v === 'black' && !isPro()) { hap.warn(); S.dvPrev = true; applyTheme(); render(); clearTimeout(S.dvT);
       S.dvT = setTimeout(() => { S.dvPrev = false; applyTheme(); render(); }, 5000); proToast('Чёрная тема — в PRO. Сейчас это предпросмотр'); return; }
     S.dvPrev = false; db.settings.dv = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
-  tex: el => { db.settings.tex = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTex(); render(); hap.tap(); },
+  tex: el => { db.settings.tex = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTex(true); render(); hap.tap(); },
   looksync: () => { const on = !lookSync(); lsSet('voob_look_sync', on); hap.tap();
     if (on) { touchMeta('settings'); save(); toast('Оформление этого устройства теперь общее'); } else toast('Теперь у телефона своё оформление');
     render(); },
