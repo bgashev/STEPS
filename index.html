@@ -3226,7 +3226,7 @@ html.web #view.w2 .mset2 .ms-f .foot{order:4}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.739';
+const APP = 'VOOB (by BGASHEV) Mini App v1.740';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4963,6 +4963,21 @@ function popOpen(id, html, anchor, after, cls){
 function popClose(id){
   const el = document.getElementById(id); if (!el || !el.classList.contains('open')) return false;
   el.classList.remove('open'); popBd(false); popFxClear(); clearTimeout(popClose.t); popClose.t = setTimeout(() => { if (!el.classList.contains('open')) el.remove(); }, 700); return true;
+}
+/* v740: «Применить» в Персонализации — карточка профиля оживает как плашка «Добавить друга»: экран темнеет и размывается вокруг, у карточки проявляется гало, летят боке и искры */
+function pzCelebrate(){
+  const c = document.getElementById('pzcard'); if (!c) return;
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  const go = () => {
+    const el = document.getElementById('pzcard'); if (!el) return;
+    popBd(true, el); const bd = document.getElementById('pbd'); if (bd) bd.style.pointerEvents = 'none';
+    popFx(el);
+    try { el.animate([{filter:'blur(12px) brightness(1.35)', transform:'translateY(-10px) scale(.96)', opacity:.55}, {filter:'blur(0) brightness(1)', transform:'none', opacity:1}], {duration:820, easing:'cubic-bezier(.2,.9,.25,1)'}); } catch (e) {}
+    clearTimeout(pzCelebrate.t);
+    pzCelebrate.t = setTimeout(() => { popBd(false); popFxClear(); if (bd) setTimeout(() => { bd.style.pointerEvents = ''; }, 700); }, 2600);
+  };
+  const r = c.getBoundingClientRect();
+  if (r.top < 0 || r.bottom > innerHeight) { try { c.scrollIntoView({block:'center', behavior:'smooth'}); } catch (e) {} setTimeout(go, 420); } else go();
 }
 function invContent(d){
   return `<div class="ip-t">Добавить друга</div>
@@ -6954,7 +6969,7 @@ const ACT = {
     if ('bg' in p && p.bg !== cur.bg && !pzLocked('bg', p.bg)) { db.settings.bg = p.bg; n++; }
     if ('bd' in p && p.bd !== cur.bd && !pzLocked('bd', p.bd)) { db.settings.badge = p.bd === 'verified' ? '' : p.bd; n++; }
     if (!n) { hap.warn(); return; } touchMeta('settings'); save(); S.pzp = null; S.pzH = null;
-    document.querySelectorAll('.bdg').forEach(el => { el.innerHTML = bdgInner(+el.dataset.bid, +el.dataset.sz); }); render(); hap.imp(); toast('Оформление применено'); },
+    document.querySelectorAll('.bdg').forEach(el => { el.innerHTML = bdgInner(+el.dataset.bid, +el.dataset.sz); }); render(); hap.imp(); toast('Оформление применено'); pzCelebrate(); },
   persopen: () => { hap.tap(); S.pers = true; S.pzp = null; S.pzH = null; meNav('nav-in'); },
   persback: () => { hap.tap(); S.pers = false; S.pzp = null; S.pzH = null; meNav('nav-out'); },
   gexp: el => { const w = el.closest('.gwrap'); if (!w) return; hap.tap(); w.classList.toggle('open');
