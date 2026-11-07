@@ -3161,7 +3161,7 @@ html.hbgl #texl{opacity:0!important}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.725';
+const APP = 'VOOB (by BGASHEV) Mini App v1.726';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -3827,6 +3827,7 @@ function applyTheme(){
   r.setProperty('--tl3', mode === 'dark' ? 'rgba(255,255,255,.045)' : 'rgba(20,20,40,.055)');
   applyTex();
   r.setProperty('--accent2', accent2(acc));
+  clearTimeout(applyTheme._t); applyTheme._t = setTimeout(() => { try { document.querySelectorAll('.seg > .sgi').forEach(i => { delete i.dataset.look; }); segSlide(); } catch (e) {} }, 780);   // v1.726: индикатор переключателя снимает цвет после перетекания акцента, а не в середине
   const [sr, sg, sb] = hexRgb(th.surface);
   r.setProperty('--tabs-bg', `rgba(${sr},${sg},${sb},.86)`);
   try {
