@@ -439,6 +439,7 @@ function fieldsOk(w: any, today: number) {
       if (!w.sl.every((x: any) => Number.isInteger(Number(x)) && Number(x) >= 1 && Number(x) <= st.max)) return false;
     } else if (!(Number.isInteger(n) && n >= 1 && n <= MAX_SETS && v >= 1 && v <= st.max)) return false;
     if (!(kg >= 0 && kg <= MAX_KG)) return false;
+    if (Array.isArray(w.sk) && !(w.sk.length === n && w.sk.every((x: any) => Number(x) >= 0 && Number(x) <= MAX_KG))) return false;   // v1.755: вес по подходам
     const c0 = Number(w.created) || 0;
     return !(c0 > 0 && Math.floor(c0 * 1000 / DAY) - d > AC.lateDays);
   }
@@ -538,7 +539,8 @@ function detailsOf(recs: any[], today: number) {
     .map((w) => ({ date: w.date, minutes: Number(w.minutes) || 0, speed: Number(w.speed) || 0, incline: Number(w.incline) || 0,
       act: w.act || "run", sets: Number(w.sets) || 0, reps: Number(w.reps) || 0, secs: Number(w.secs) || 0, kg: Number(w.kg) || 0,
       ...(typeof w.ex === "string" && w.ex.length < 24 ? { ex: w.ex } : {}),
-      ...(Array.isArray(w.sl) ? { sl: w.sl.slice(0, MAX_SETS).map((x: any) => Number(x) || 0) } : {}) }));
+      ...(Array.isArray(w.sl) ? { sl: w.sl.slice(0, MAX_SETS).map((x: any) => Number(x) || 0) } : {}),
+      ...(Array.isArray(w.sk) ? { sk: w.sk.slice(0, MAX_SETS).map((x: any) => Math.min(MAX_KG, Math.max(0, Number(x) || 0))) } : {}) }));
   const daysSet = new Set(ws.map((w) => dnum(w.date)!));
   let bestRun = 0, cur = 0;
   for (const d of [...daysSet].sort((a, b) => a - b)) { cur = daysSet.has(d - 1) ? cur + 1 : 1; bestRun = Math.max(bestRun, cur); }
