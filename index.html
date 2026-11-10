@@ -3285,6 +3285,14 @@ html.web #view .fp2 .fp-bar .fpb.off,html.web #view .fp2 .fp-bar .fpb.frb:disabl
 html.web #view .fp2 .fp-bar .fpb.off span,html.web #view .fp2 .fp-bar .fpb.frb:disabled .stk3{opacity:.6}
 html.web #view .fp2 .fp-bar .fpb.off b,html.web #view .fp2 .fp-bar .fpb.frb:disabled b{color:var(--muted)!important;font-weight:700}
 /* v1.737: Google-вход (WEB) */
+.wl-pwf{display:none}
+#wl.pw .wl-pwf{display:block}
+#wl.pw .wl-l>h1,#wl.pw .wl-l>p.sub,#wl.pw .wl-st,#wl.pw .wl-l>.wl-acts,#wl.pw .wl-g,#wl.pw .wl-pwbtn{display:none}
+.wl-pwbtn{margin-top:12px;max-width:300px}
+.wl-pwi{display:grid;gap:10px;margin:0 0 18px;max-width:340px}
+.wl-pwi input{width:100%;box-sizing:border-box;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:14px 16px;font-size:16px;color:var(--text);outline:none;transition:border-color .16s}
+.wl-pwi input:focus{border-color:var(--accent)}
+@media (max-width:760px){.wl-pwi{margin-inline:auto}}
 .wl-g{margin-top:22px;max-width:300px}
 .wl-or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
 .wl-or:before,.wl-or:after{content:"";flex:1;height:1px;background:var(--border)}
@@ -3304,6 +3312,10 @@ html.web #view .fp2 .fp-bar .fpb.off b,html.web #view .fp2 .fp-bar .fpb.frb:disa
 .gsc-t small{font-size:12.5px;line-height:1.35;color:var(--muted);display:flex;align-items:center;gap:7px;min-width:0;overflow:hidden;text-overflow:ellipsis}
 .gsc-dot{width:8px;height:8px;border-radius:50%;background:#34d399;flex:none}
 .gsc-a{display:flex;align-items:center}
+.ps-a{gap:8px}.psc.on .gsc-ic{border-color:color-mix(in srgb,#34d399 55%,var(--border))}
+.fz-pw{display:grid;gap:10px;margin:4px 0 10px}
+.fz-pw input{width:100%;box-sizing:border-box;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;padding:13px 15px;font-size:16px;color:var(--text);outline:none;transition:border-color .16s}
+.fz-pw input:focus{border-color:var(--accent)}
 .gsc-b{min-height:38px;padding:0 18px}
 .gsc-b[hidden]{display:none!important}
 html.web #view.w2 .mset2 .ms-f{gap:12px}
@@ -6137,6 +6149,7 @@ function viewMeSettings(){
   if (inWeb) h += hkCardHTML();
   h += '<!--M3-->';
   if (inWebApp) { h += `<div class="card gsc" id="gs-card"><span class="gsc-ic"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><div class="gsc-t" id="gs-state"><b>Вход через Google</b><small>Загрузка…</small></div><div class="gsc-a"><button type="button" class="btn small gsc-b" id="gs-link" data-act="gslink" hidden>Привязать</button><button type="button" class="btn ghost small gsc-b" id="gs-unl" data-act="gsunlink" hidden>Отвязать</button></div></div>`; setTimeout(gsMount, 0); }
+  if (inWebApp) { h += `<div class="card gsc psc" id="ps-card"><span class="gsc-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="3"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/><circle cx="12" cy="15.5" r="1.2" fill="currentColor"/></svg></span><div class="gsc-t" id="ps-state"><b>Вход по паролю</b><small>Загрузка…</small></div><div class="gsc-a ps-a"><button type="button" class="btn small gsc-b" id="ps-set" data-act="psset" hidden>Задать</button><button type="button" class="btn ghost small gsc-b" id="ps-del" data-act="psdel" hidden>Удалить</button></div></div>`; setTimeout(psMount, 0); }
   if (inWebApp) h += `<button type="button" class="btn ghost web-out" data-act="weblogout">Выйти из этого браузера</button>`;
   if (inTG) h += isDeleting() ? `<div class="card dz"><h3>${IC('trash')}Аккаунт</h3><div class="cap" style="margin:-6px 0 12px">Удаление запланировано на ${fmtDate(dn(String(PROM.st.del_at).slice(0, 10)))}. До этого дня его можно отменить.</div>
     <button type="button" class="btn dz-b ok" data-act="delopen">${IC('sun', 16)}Отменить удаление</button></div>`
@@ -6246,25 +6259,32 @@ function fzBlockHTML(st){
 }
 const FZ = {a:'freeze', busy:false, t:0, tm:null};
 function fzOpen(a){
-  const st = PROM.st || {}, fr = a === 'freeze', dl = a === 'delete', gu = a === 'gunlink'; if (!dl && !gu && (fr ? !st.can_freeze : !st.frozen)) return;
+  const st = PROM.st || {}, fr = a === 'freeze', dl = a === 'delete', gu = a === 'gunlink', ps = a === 'pset', pd = a === 'pdel'; if (!dl && !gu && !ps && !pd && (fr ? !st.can_freeze : !st.frozen)) return;
   hap.tap(); FZ.a = a; FZ.busy = false;
-  const facts = gu ? ['Google перестанет открывать этот аккаунт VOOB', 'Вход через Telegram продолжит работать как раньше', 'Привязать Google можно снова в любой момент'] : dl ? ['Аккаунт отключится сразу и пропадёт из списков друзей', 'Через 7 дней всё удалится безвозвратно: тренировки, вес, друзья, подарки', 'До этого срока удаление можно отменить · звёзды не возвращаются']
+  const facts = ps ? ['Логин — твой @username в VOOB', 'Пароль нужен только для входа в WEB, Telegram остаётся основным входом', 'Сменить или удалить пароль можно только с кодом из бота'] : pd ? ['Вход по логину и паролю перестанет работать', 'Вход через Telegram продолжит работать как раньше', 'Задать пароль можно снова в любой момент'] : gu ? ['Google перестанет открывать этот аккаунт VOOB', 'Вход через Telegram продолжит работать как раньше', 'Привязать Google можно снова в любой момент'] : dl ? ['Аккаунт отключится сразу и пропадёт из списков друзей', 'Через 7 дней всё удалится безвозвратно: тренировки, вес, друзья, подарки', 'До этого срока удаление можно отменить · звёзды не возвращаются']
     : fr
     ? [`Пауза на ${st.freeze_days} дн.`, 'Оставшиеся дни PRO сохранятся', 'Пока идёт заморозка, данные можно только смотреть', 'Доступно один раз · разморозить можно раньше']
     : [`Осталось ${st.days_left} дн. PRO — они продолжатся`, 'Редактирование и добавление снова откроются'];
-  openSheet(`<div class="fz ${dl ? 'del' : fr ? 'ice' : 'sun'}"><div class="fz-orb">${IC(gu ? 'link' : dl ? 'trash' : fr ? 'snow' : 'sun', 28)}</div>
-    <h2>${gu ? 'Отвязать Google' : dl ? 'Удалить аккаунт' : fr ? 'Заморозить PRO' : 'Разморозить PRO'}</h2>
+  openSheet(`<div class="fz ${dl ? 'del' : fr ? 'ice' : 'sun'}"><div class="fz-orb">${IC(ps || pd ? 'lock' : gu ? 'link' : dl ? 'trash' : fr ? 'snow' : 'sun', 28)}</div>
+    <h2>${ps ? (PS.st && PS.st.has_pwd ? 'Сменить пароль' : 'Задать пароль') : pd ? 'Удалить пароль' : gu ? 'Отвязать Google' : dl ? 'Удалить аккаунт' : fr ? 'Заморозить PRO' : 'Разморозить PRO'}</h2>
     <div id="fz-stage"><ul class="fz-facts">${facts.map(f => `<li>${IC('check', 13)}<span>${f}</span></li>`).join('')}</ul>
-    <div class="cap fz-cap">Для подтверждения пришлём 4-значный код в Telegram-бот.</div>
+    ${ps ? `<div class="fz-pw"><input id="fz-p1" type="password" placeholder="Новый пароль (от 8 символов)" autocomplete="new-password" maxlength="128"><input id="fz-p2" type="password" placeholder="Повтори пароль" autocomplete="new-password" maxlength="128"></div>` : ''}<div class="cap fz-cap">Для подтверждения пришлём 4-значный код в Telegram-бот.</div>
     <button type="button" class="btn primary fz-go" id="fz-go" data-act="fzsend">${IC('chev', 16)}Получить код в боте</button>
     <button type="button" class="btn fz-no" data-act="close">Отмена</button></div></div>`, {type:'fz'});
   $('#sheet').classList.add('top');
 }
 function fzStage(h){ const g = $('#fz-stage'); if (!g) return; g.classList.remove('in'); g.innerHTML = h; void g.offsetWidth; g.classList.add('in'); }
 async function fzSend(){
-  if (FZ.busy) return; FZ.busy = true; const b = $('#fz-go'); if (b) b.classList.add('ld');
+  if (FZ.busy) return;
+  if (FZ.a === 'pset' && !$('#fz-in')) {
+    const p1 = ($('#fz-p1') || {}).value || '', p2 = ($('#fz-p2') || {}).value || '';
+    if (p1.length < 8) { hap.warn(); toast('Пароль: минимум 8 символов'); return; }
+    if (p1 !== p2) { hap.warn(); toast('Пароли не совпадают'); return; }
+    FZ.pw = p1;
+  }
+  FZ.busy = true; const b = $('#fz-go'); if (b) b.classList.add('ld');
   try {
-    const j = FZ.a === 'gunlink' ? await apiAuth(GAPI + '/unlink-start', {}) : await apiAuth('/pro/freeze/start', {action:FZ.a});
+    const j = FZ.a === 'pset' ? await apiAuth(PAPI + '/set-start', {}) : FZ.a === 'pdel' ? await apiAuth(PAPI + '/remove-start', {}) : FZ.a === 'gunlink' ? await apiAuth(GAPI + '/unlink-start', {}) : await apiAuth('/pro/freeze/start', {action:FZ.a});
     if (j.status === 'undelivered') { toast('Код не отправился — открой бота VOOB, нажми «Start» и попробуй снова'); if (b) b.classList.remove('ld'); }
     else fzCode(j.status === 'soon');
   } catch (e) { toast(e.message || 'Нет связи'); if (b) b.classList.remove('ld'); }
@@ -6293,8 +6313,9 @@ document.addEventListener('focusin', e => { if (e.target.id === 'fz-in') fzCells
 async function fzVerify(code){
   if (FZ.busy) return; FZ.busy = true; const box = $('#fz-code'); if (box) box.classList.add('ld');
   try {
-    const j = FZ.a === 'gunlink' ? await apiAuth(GAPI + '/unlink-verify', {code}) : await apiAuth('/pro/freeze/verify', {action:FZ.a, code});
+    const j = FZ.a === 'pset' ? await apiAuth(PAPI + '/set-verify', {code, password:FZ.pw}) : FZ.a === 'pdel' ? await apiAuth(PAPI + '/remove-verify', {code}) : FZ.a === 'gunlink' ? await apiAuth(GAPI + '/unlink-verify', {code}) : await apiAuth('/pro/freeze/verify', {action:FZ.a, code});
     if (FZ.a === 'gunlink' && j.status === 'ok') { gsUnlinked(); FZ.busy = false; return; }
+    if ((FZ.a === 'pset' || FZ.a === 'pdel') && j.status === 'ok') { psDone(FZ.a === 'pset'); FZ.pw = ''; FZ.busy = false; return; }
     if (j.status === 'ok' && j.scheduled) { fzSched(j.pro); FZ.busy = false; return; }
     if (j.status === 'ok') { fzDone(j.pro); FZ.busy = false; return; }
     const msg = {wrong:`Неверный код · осталось попыток: ${j.left}`, expired:'Код истёк — запроси новый', locked:'Слишком много попыток — запроси новый код'}[j.status] || 'Не получилось';
@@ -7287,6 +7308,11 @@ const ACT = {
   gslogin: () => { hap.tap(); gsAsk(gsLogin); },
   gslink: () => { hap.tap(); gsAsk(gsLink); },
   gsunlink: () => { hap.tap(); fzOpen('gunlink'); },
+  psset: () => { hap.tap(); fzOpen('pset'); },
+  psdel: () => { hap.tap(); fzOpen('pdel'); },
+  wlpw: () => { hap.tap(); wlPw(true); },
+  wlpwback: () => { hap.tap(); wlPw(false); },
+  wlpwgo: () => wlPwLogin(),
   tophone: () => { hap.tap(); openSheet(`<div class="phqr"><h2>Открыть на телефоне</h2><div class="qrb">${qrSvg('https://t.me/voobkz_bot/VOOB')}</div><p class="cap">Наведи камеру телефона на QR-код: VOOB откроется в Telegram.</p><button type="button" class="btn ghost" data-act="close" style="width:100%">Закрыть</button></div>`, {type:'phqr'}); },
   tosite: el => { hap.tap(); const r = el.getBoundingClientRect(); VOOB_LU('out', '', () => { location.href = 'https://voob.kz/?from=app&t=' + Date.now(); }, {x:r.left + r.width / 2, y:r.top + r.height / 2}); },
   ctopen: el => { const u = el.dataset.u; hap.tap();
@@ -7718,6 +7744,47 @@ function gsUnlinked(){
     <div class="fz-okt">Google отвязан</div><div class="cap fz-cap">Вход в WEB теперь только через Telegram. Привязать Google можно снова в любой момент.</div>`);
   setTimeout(() => { if (sheetCtx && sheetCtx.type === 'fz') closeSheet(); gsMount(); }, 2000);
 }
+/* v1.760: вход в WEB по @username и паролю (функция voob-pass). Пароль меняется только с кодом из бота */
+const PAPI = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-pass';
+const PS = {st:null, busy:false};
+async function psLoadStatus(){
+  if (PS.busy) return; PS.busy = true;
+  try { PS.st = await apiAuth(PAPI + '/status', {}); } catch (e) { PS.st = {has_pwd:false, handle:'', err:1}; }
+  PS.busy = false; psMount();
+}
+function psMount(){
+  const c = $('#ps-card'); if (!c) return;
+  if (!PS.st) { psLoadStatus(); return; }
+  const st = PS.st;
+  c.classList.toggle('on', !!st.has_pwd);
+  c.querySelector('#ps-state').innerHTML = '<b>Вход по паролю</b>' + (st.has_pwd ? '<small><i class="gsc-dot"></i>Включён · логин @' + esc(st.handle || '') + '</small>'
+    : st.handle ? '<small>Не задан · логин будет @' + esc(st.handle) + '</small>' : '<small>Сначала задай @username в профиле — он станет логином</small>');
+  const sb = c.querySelector('#ps-set'); sb.hidden = !st.handle && !st.has_pwd; sb.textContent = st.has_pwd ? 'Изменить' : 'Задать';
+  c.querySelector('#ps-del').hidden = !st.has_pwd;
+}
+function psDone(was){
+  clearInterval(FZ.tm); const set = was; PS.st = Object.assign({}, PS.st || {}, {has_pwd:set}); hap.ok();
+  fzStage(`<div class="fz-ok"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="23"/><path d="M15 27l8 8 14-16"/></svg></div>
+    <div class="fz-okt">${set ? 'Пароль сохранён' : 'Пароль удалён'}</div><div class="cap fz-cap">${set ? 'Теперь в WEB можно войти по логину и паролю. Вход через Telegram работает как раньше.' : 'Вход в WEB теперь только через Telegram или Google.'}</div>`);
+  setTimeout(() => { if (sheetCtx && sheetCtx.type === 'fz') closeSheet(); psLoadStatus(); }, 2000);
+}
+function wlPw(on){ const w = $('#wl'); if (!w) return; w.classList.toggle('pw', on); const m = $('#wl-pmsg'); if (m) m.textContent = ''; if (on) setTimeout(() => { const i = $('#wl-pl'); if (i) i.focus(); }, 80); }
+async function wlPwLogin(){
+  const l = ($('#wl-pl') || {}).value || '', p = ($('#wl-pp') || {}).value || '', m = $('#wl-pmsg'), b = $('#wl-pgo');
+  if (m) m.textContent = ''; if (!l.trim() || !p) { if (m) m.textContent = 'Введи логин и пароль'; return; }
+  if (b) b.classList.add('ld');
+  try {
+    const j = await api(PAPI + '/login', {login:l, password:p});
+    if (j.status === 'ok') {
+      try { localStorage.setItem(WEBK, JSON.stringify({token:j.token, user:j.user})); } catch (e) {}
+      wlSet('ok'); setTimeout(() => location.reload(), 900); return;
+    }
+    if (m) m.textContent = j.status === 'locked' ? 'Слишком много попыток. Подожди 15 минут.' : 'Неверный логин или пароль';
+    const pi = $('#wl-pp'); if (pi) { pi.value = ''; pi.focus(); }
+  } catch (e) { if (m) m.textContent = e.message || 'Нет связи'; }
+  if (b) b.classList.remove('ld');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.target.id === 'wl-pl' || e.target.id === 'wl-pp')) { e.preventDefault(); wlPwLogin(); } });
 const WL = {code:'', link:'', t0:0, exp:600, timer:0, tick:0};
 async function webLogout(silent){
   const tok = webSess && webSess.token;
@@ -7778,7 +7845,10 @@ function showWebLogin(){
         <h1>Войди через Telegram</h1>
         <p class="sub">Тренировки, друзья и вся статистика — на большом экране. Пароли не нужны.</p>
         <ol class="wl-st"><li>Наведи камеру телефона на QR-код</li><li>Нажми «Запустить» в чате с ботом VOOB</li><li>Вернись сюда — вход произойдёт сам</li></ol>
-        <div class="wl-acts"><button type="button" class="btn primary" data-act="wlopen">Открыть в Telegram</button></div><div class="wl-g"><div class="wl-or"><span>или</span></div><button type="button" class="wl-gbtn" data-act="gslogin"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Войти через Google</span></button><div id="wl-gmsg" class="gs-msg"></div></div></div>
+        <div class="wl-acts"><button type="button" class="btn primary" data-act="wlopen">Открыть в Telegram</button></div><div class="wl-g"><div class="wl-or"><span>или</span></div><button type="button" class="wl-gbtn" data-act="gslogin"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Войти через Google</span></button><div id="wl-gmsg" class="gs-msg"></div></div><button type="button" class="wl-gbtn wl-pwbtn" data-act="wlpw"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10.5" width="16" height="10" rx="3"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg><span>Войти по логину и паролю</span></button>
+        <div class="wl-pwf"><h1>Вход по паролю</h1><p class="sub">Логин — твой @username в VOOB. Пароль можно задать в настройках после входа через Telegram.</p>
+          <div class="wl-pwi"><input id="wl-pl" type="text" placeholder="@username" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="40"><input id="wl-pp" type="password" placeholder="Пароль" autocomplete="current-password" maxlength="128"></div>
+          <div class="wl-acts"><button type="button" class="btn primary" id="wl-pgo" data-act="wlpwgo">Войти</button><button type="button" class="btn ghost" data-act="wlpwback">Назад</button></div><div id="wl-pmsg" class="gs-msg"></div></div></div>
       <div class="wl-r"><div class="wl-qr load" id="wl-qr"><span id="wl-svg"></span>
         <div class="wl-ov ld"><i class="wl-sp"></i></div>
         <div class="wl-ov ex">Код устарел<button type="button" class="btn small" data-act="wlnew">Новый QR</button></div>
