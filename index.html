@@ -48,6 +48,7 @@ h3 .ic{color:var(--accent)}
 .seg::-webkit-scrollbar{display:none}
 .seg button{flex:none;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:12px;padding:7px 12px;font-size:13px;font-weight:650;transition:.18s}
 .seg.fill button{flex:1;padding:7px 4px}
+.seg.fit button{flex:1 1 auto;min-width:0;padding:8px 6px;font-size:12.5px;letter-spacing:-.1px;text-align:center}   /* v1.753: длинные казахские подписи влезают в одну строку без прокрутки */
 .seg button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 .seg{position:relative}
 .seg .sgi{position:absolute;left:0;top:0;width:0;height:0;opacity:0;pointer-events:none;z-index:0;box-sizing:border-box;will-change:transform,width;transition:transform .5s cubic-bezier(.3,1.05,.35,1),width .5s cubic-bezier(.3,1.05,.35,1),height .3s,opacity .2s}
@@ -3253,7 +3254,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.752';
+const APP = 'VOOB (by BGASHEV) Mini App v1.753';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4102,8 +4103,8 @@ function lineChart(pts, goal){
     s += `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.6" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>`; });
   return s + '</svg>';
 }
-function seg(key, items){
-  return `<div class="seg">` + items.map(([v, l]) => `<button type="button" class="${S[key] === v ? 'on' : ''}" data-act="seg" data-k="${key}" data-v="${v}">${l}</button>`).join('') + `<i class="sgi"></i></div>`;
+function seg(key, items, cls){
+  return `<div class="seg${cls ? ' ' + cls : ''}">` + items.map(([v, l]) => `<button type="button" class="${S[key] === v ? 'on' : ''}" data-act="seg" data-k="${key}" data-v="${v}">${l}</button>`).join('') + `<i class="sgi"></i></div>`;
 }
 function kpi(v, c){ return `<div class="kpi"><div class="kv">${v}</div><div class="kc">${c}</div></div>`; }
 function stepper(key, label, val, min, max, step, dec, suf, bind){
@@ -5457,7 +5458,7 @@ function viewWeight(){
   // график
   const since = periodSince(S.wp), pts = daily.filter(p => since == null || p[0] >= since);
   h += '<!--/L-->';
-  h += `<div class="card"><div class="row" style="justify-content:space-between;flex-wrap:wrap"><h3 style="margin:0">Динамика</h3>${seg('wp', [['30','30 дн'],['90','90 дн'],['365','Год'],['all','Всё']])}</div>${lineChart(pts, gs ? goal.target : null)}</div>`;
+  h += `<div class="card"><div class="row" style="justify-content:space-between;flex-wrap:wrap"><h3 style="margin:0">Динамика</h3>${seg('wp', [['30','30 дн'],['90','90 дн'],['365','Год'],['all','Всё']], 'fit')}</div>${lineChart(pts, gs ? goal.target : null)}</div>`;
   // мини-статистика
   const kgs = es.map(e => +e.kg), fk = v => num(v) + ' кг';
   const ref = days => { const r = daily.filter(p => p[0] <= t - days); return r.length ? signed(cur - last(r)[1]) + ' кг' : '—'; };
@@ -5513,7 +5514,7 @@ function viewStats(){
   const ws = valid(), pws = filterPeriod(ws, S.sp), n = pws.length, g = G();
   const PN = {'7': 'за 7 дней', '30': 'за 30 дней', '12m': 'за 12 месяцев', 'all': 'за всё время'}[S.sp] || '';
   let h = `<div class="stv"><div class="head"><div><h1>Итоги</h1><div class="sub">${ws.length ? 'Всё, что ты сделал — по любым видам активности' : 'Здесь соберётся вся твоя активность'}</div></div></div>
-    <div class="sp-wrap" style="margin-bottom:6px">${seg('sp', [['7', '7 дней'], ['30', '30 дней'], ['12m', '12 месяцев'], ['all', 'Всё время']])}</div>`;
+    <div class="sp-wrap" style="margin-bottom:6px">${seg('sp', [['7', '7 дней'], ['30', '30 дней'], ['12m', '12 месяцев'], ['all', 'Всё время']], 'fit')}</div>`;
   if (!ws.length) return h + `<div class="card empty"><div class="badge">${IC('stats', 30)}</div><h3 style="justify-content:center">Пока нечего подводить</h3><div class="muted">Добавь первую тренировку — любой вид: бег, силовые, йога, плавание. Итоги появятся здесь.</div></div></div><div class="wdock-sp"></div>`;
   h += '<!--H-->';
   if (n) {
@@ -5548,7 +5549,7 @@ function viewStats(){
   // календарь активности
   h += `<div class="st-sec"><h3>${IC('clock')}Календарь активности<span>12 недель</span></h3>${heatHTML(ws)}</div>`;
   const hasKm = ws.some(w => kmOf(w) > 0.05), [items, fmt] = bucketData(ws, S.sp, S.sm);
-  h += `<div class="card"><h3>Динамика</h3>${seg('sm', [['min', 'Минуты'], ['cnt', 'Тренировки'], ['kcal', 'Калории']].concat(hasKm ? [['km', 'Километры']] : []))}${bars(items, fmt, 'cap1')}</div>`;
+  h += `<div class="card"><h3>Динамика</h3>${seg('sm', [['min', 'Минуты'], ['cnt', 'Тренировки'], ['kcal', 'Калории']].concat(hasKm ? [['km', 'Километры']] : []), 'fit')}${bars(items, fmt, 'cap1')}</div>`;
   if (n) {
     const counts = {1:0, 2:0, 3:0, 4:0, 5:0}; pws.forEach(w => counts[clamp(parseInt(w.feeling) || 3, 1, 5)]++);
     const mx = Math.max(...Object.values(counts)) || 1;
