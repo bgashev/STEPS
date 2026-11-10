@@ -780,22 +780,20 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .slxx{text-align:center;color:var(--muted)}
 .slh .sln{background:none}
 .slh span{white-space:nowrap}
-.slr .slt,.slr .slc{display:none}
+.slr .slc{display:none}
 .wkg{display:grid;grid-template-columns:minmax(0,1fr);gap:0 24px;grid-template-areas:"d" "s" "f" "n"}
 .wkg>.wk-d{grid-area:d}.wkg>.wk-s{grid-area:s}.wkg>.wk-f{grid-area:f}.wkg>.wk-n{grid-area:n}
 html.web #sheet.wk{max-width:560px}
+html.web #sheet.wk .wk-f .feel{display:grid;grid-template-columns:repeat(5,34px);justify-content:space-between;gap:0}
+html.web #sheet.wk .wk-f .feel button{width:34px;height:34px;min-width:0;padding:0}
+html.web #sheet.wk .wk-f .feel-l{grid-column:1/-1;margin:2px 0 0}
 @media(min-width:900px){
   html.web #sheet.wk{max-width:920px;padding:22px 28px 24px}
   html.web #sheet.wk .wkg{grid-template-columns:260px minmax(0,1fr);grid-template-areas:"d s" "f s" "n s" ". s";align-items:start}
-  html.web #sheet.wk .slr.k,html.web #sheet.wk .slr.slh{grid-template-columns:34px minmax(0,1fr) minmax(0,1fr) 104px 34px 34px;gap:10px}
+  html.web #sheet.wk .slr.k,html.web #sheet.wk .slr.slh{grid-template-columns:34px minmax(0,1fr) minmax(0,1fr) 34px 34px;gap:10px}
   html.web #sheet.wk .slxx{display:none}
-  html.web #sheet.wk .wk-f .feel{flex-wrap:wrap;gap:8px}
-  html.web #sheet.wk .wk-f .feel button{width:34px;height:34px}
-  html.web #sheet.wk .wk-f .feel-l{flex-basis:100%;margin:2px 0 0}
-  html.web #sheet.wk .slr .slt{display:block;text-align:right;font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
   html.web #sheet.wk .slr .slc{display:grid;width:34px;height:34px;border:0;border-radius:10px;background:none;color:var(--muted);place-items:center;cursor:pointer}
   html.web #sheet.wk .slr .slc:hover,html.web #sheet.wk .slx:hover{background:var(--surface2);color:var(--text)}
-  html.web #sheet.wk .slr.slh .slt{text-align:right}
   html.web #sheet.wk .wk-s .f>span:first-child{font-size:13px}
   html.web #sheet.wk .wk-s .preview{margin-top:14px}
 }
@@ -3014,7 +3012,7 @@ html.web .mset-top:has(> [data-act="fpback"])>*{display:none}   /* WEB: подп
  html.web .wdock-sp{display:none}
 }
  html.web #toast{bottom:32px;left:calc(50% + 132px)}
- html.web #sheet{top:50%;bottom:auto;left:50%;right:auto;width:calc(100% - 48px);max-width:560px;max-height:86vh;border-radius:28px;border:1px solid var(--border);padding-bottom:24px;transform:translate(-50%,-46%) scale(.97);opacity:0;transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .24s}
+ html.web #sheet{top:50%;bottom:auto;left:50%;right:auto;width:calc(100% - 48px);max-width:560px;max-height:86vh;border-radius:28px;border:1px solid var(--border);padding-bottom:24px;transform:translate(-50%,-47%) scale(.965);opacity:0;transition:transform .42s cubic-bezier(.16,1,.3,1),opacity .28s ease}
  html.web #sw.open #sheet{transform:translate(-50%,-50%);opacity:1}
  html.web #sheet.pf{top:50%;width:min(780px,calc(100% - 48px));height:calc(100vh - 56px);max-height:none;border-radius:28px;border:1px solid var(--border);padding-top:14px}
  html.web .grab{display:none}
@@ -3314,7 +3312,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.755';
+const APP = 'VOOB (by BGASHEV) Mini App v1.756';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6723,7 +6721,8 @@ const sheetBack = ctx => ctx && BACK_T.has(ctx.type) && !(inTG && ver('6.1')) ? 
 function openSheet(html, ctx){
   sheetCtx = ctx;
   $('#sheet').classList.remove('top');
-  $('#sheet').classList.remove('xl', 'gw', 'wk');
+  $('#sheet').classList.remove('xl', 'gw');
+  $('#sheet').classList.toggle('wk', !!(inWeb && ctx && ctx.type === 'workout' && STR[ctx.act]));   // до открытия: окно не меняет размер во время появления
   $('#sheet').classList.toggle('pf', !!ctx && BACK_T.has(ctx.type));
   $('#sheet').classList.toggle('half', !!ctx && (ctx.type === 'acts' || ctx.type === 'planact' || ctx.type === 'frall'));
   $('#sheet').classList.toggle('fr', !!ctx && ctx.type === 'frall');   // выбор активности — до середины экрана, избранные под большим пальцем
@@ -6796,7 +6795,6 @@ function openWorkout(w, preset, hint, act, back){
     ${feelPicker(f)}
     <label class="f"><span>Заметка</span><input class="inp" id="f-note" maxlength="140" placeholder="Необязательно" value="${esc(w ? w.note || '' : '')}"></label>`}
     <div class="sheet-btns">${w ? `<button class="btn ghost danger" data-act="wdel">${IC('trash')}</button>` : ''}${acLocked(w) ? `<div class="hint" style="margin:0;align-self:center">${IC('lock', 13)} Старше 2 дней — менять нельзя, только удалить</div>` : `<button class="btn primary" data-act="wsave">Сохранить</button>`}</div>`, {type:'workout', item:w, act, back});
-  if (st && inWeb) $('#sheet').classList.add('wk');
   updPreview();
 }
 function slBlock(src, same, act, st){
@@ -6807,11 +6805,10 @@ function slBlock(src, same, act, st){
 function slRowsHTML(sl, st, sk, act){
   const step = st[0] === 'secs' ? 5 : 1;
   if (sk && KG_ACT[act]) { const ks = act === 'barbell' ? 2.5 : 1;
-    return `<div class="slr slh"><span class="sln"></span><span>повторов</span><span class="slxx"></span><span>вес, кг</span><span class="slt">тоннаж</span><span class="slc"></span><span class="slx"></span></div>` + sl.map((v, i) => `<div class="slr k" style="animation-delay:${i * 30}ms"><span class="sln">${i + 1}</span>
+    return `<div class="slr slh"><span class="sln"></span><span>повторов</span><span class="slxx"></span><span>вес, кг</span><span class="slc"></span><span class="slx"></span></div>` + sl.map((v, i) => `<div class="slr k" style="animation-delay:${i * 30}ms"><span class="sln">${i + 1}</span>
     <div class="slg"><button type="button" class="slb" data-act="slstep" data-i="${i}" data-d="${-step}" aria-label="Меньше повторов">${IC('minus', 15)}</button><input class="sli" type="number" inputmode="numeric" min="1" max="${st[1]}" value="${v}" data-i="${i}"><button type="button" class="slb" data-act="slstep" data-i="${i}" data-d="${step}" aria-label="Больше повторов">${IC('plus', 15)}</button></div>
     <span class="slxx">×</span>
     <div class="slg"><button type="button" class="slb" data-act="slstep" data-f="k" data-i="${i}" data-d="${-ks}" aria-label="Меньше вес">${IC('minus', 15)}</button><input class="slk" type="text" inputmode="decimal" value="${fmtKg(sk[i] || 0)}" data-i="${i}" aria-label="Вес, кг"><button type="button" class="slb" data-act="slstep" data-f="k" data-i="${i}" data-d="${ks}" aria-label="Больше вес">${IC('plus', 15)}</button></div>
-    <span class="slt">${fmtKg(v * (sk[i] || 0))} кг</span>
     <button type="button" class="slc" data-act="slcp" data-i="${i}" aria-label="Копировать подход" title="Копировать подход"><svg class="ic" width="15" height="15" viewBox="0 0 18 18"><rect x="6" y="6" width="8.5" height="8.5" rx="2"/><path d="M11.5 3.8V3.5A1.5 1.5 0 0 0 10 2H4.5A1.5 1.5 0 0 0 3 3.5V10A1.5 1.5 0 0 0 4.5 11.5h.3"/></svg></button>
     ${sl.length > 1 ? `<button type="button" class="slx" data-act="sldel" data-i="${i}" aria-label="Убрать подход">${IC('close', 14)}</button>` : '<span class="slx"></span>'}</div>`).join(''); }
   return sl.map((v, i) => `<div class="slr" style="animation-delay:${i * 30}ms"><span class="sln">${i + 1}</span>
@@ -6829,10 +6826,9 @@ function updPreview(){
   if (st) {
     const sl = slRead(), tot0 = sl.reduce((a, x) => a + x, 0), mi = strMinL(act, sl), d = ($('#f-date') || {}).value || isoOf(todayN()), kg = weightAt(d);
     const tot = st[0] === 'secs' ? (tot0 >= 60 ? `${fmtMin(Math.round(tot0 / 60))} под нагрузкой` : `${tot0} сек`) : `${tot0} повторов`;
-    const sk = KG_ACT[act] ? skRead() : [], xp = workoutXp({act, sl, sets:sl.length, sk, kg:kgAvg(sl, sk)}), ton = sl.reduce((a, r, i) => a + r * (sk[i] || 0), 0);
-    document.querySelectorAll('#f-sl .slr.k').forEach((r, i) => { const t = r.querySelector('.slt'); if (t) t.textContent = fmtKg(sl[i] * (sk[i] || 0)) + ' кг'; });
+    const sk = KG_ACT[act] ? skRead() : [], xp = workoutXp({act, sl, sets:sl.length, sk, kg:kgAvg(sl, sk)});
     const sm = $('#sl-sum'); if (sm) sm.textContent = `${sl.length} ${plural(sl.length, ['подход','подхода','подходов'])} · ${tot}`;
-    el.textContent = `Всего ${tot}` + (KG_ACT[act] && ton ? ` · тоннаж ${fmtKg(ton)} кг` : '') + ` · ≈ ${fmtMin(mi)}` + (kg ? ` · ≈ ${kcalF(Math.round(st[3] * kg * mi / 60))}` : '') + ` · +${xp} XP`;
+    el.textContent = `Всего ${tot}` + ` · ≈ ${fmtMin(mi)}` + (kg ? ` · ≈ ${kcalF(Math.round(st[3] * kg * mi / 60))}` : '') + ` · +${xp} XP`;
     return;
   }
   if (TIMEA[act]) {
