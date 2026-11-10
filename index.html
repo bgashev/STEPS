@@ -3224,6 +3224,7 @@ html.hbgl #texl{opacity:0!important}
 .texpv .pvc i{height:8px;border-radius:4px;background:var(--off)}.texpv .pvc i+i{width:55%}
 .texpv em{display:block;margin-top:7px;font-style:normal;font-size:12px;color:var(--muted);text-align:center}
 .texs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+.hkc .hkh{all:unset;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;width:100%;cursor:pointer}.hkc .hkh h3{margin:0}.hkch{display:grid;place-items:center;color:var(--muted);transition:transform .35s cubic-bezier(.2,.8,.2,1)}.hkc.open .hkch{transform:rotate(90deg)}.hkb{animation:hkIn .4s cubic-bezier(.2,.8,.2,1) backwards;overflow:hidden}@keyframes hkIn{from{opacity:0;transform:translateY(-8px);max-height:0}to{max-height:700px}}
 .hkr{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid var(--border)}
 .hkr:first-of-type{border-top:0}
 .hkr>span{font-weight:600;font-size:14px}
@@ -6423,7 +6424,7 @@ function goalPreview(){ const g = G(); return `${npw(g.count, W_WORK)} за ${np
 /* ============================================================ рендер ==== */
 // ---------- горячие клавиши (WEB) ----------
 const HK = [['home','Главная','Digit1'],['friends','Друзья','Digit2'],['weight','Вес','Digit3'],['stats','Итоги','Digit4'],['me','Я (настройки)','Digit5'],['add','Новая тренировка','KeyN'],['kadd','Взвеситься','KeyW'],['back','Назад / закрыть окно','Escape']];
-let hkMap = null, hkCap = null;
+let hkMap = null, hkCap = null, hkOpen = false;
 function hkLoad(){
   if (hkMap) return hkMap;
   hkMap = {}; HK.forEach(h => { hkMap[h[0]] = h[2]; });
@@ -6448,9 +6449,11 @@ function hkRun(a){
 }
 function hkCardHTML(){
   hkLoad();
-  return `<div class="card"><h3>${IC('palette')}Горячие клавиши</h3><div class="cap" style="margin:-6px 0 10px">Нажми на клавишу справа и затем на новую. Esc — отмена, Backspace — убрать клавишу. Работают независимо от раскладки.</div>` +
+  const open = hkOpen || hkCap;
+  return `<div class="card hkc${open ? ' open' : ''}"><button type="button" class="hkh" data-act="hkopen" aria-expanded="${open ? 'true' : 'false'}"><h3>${IC('palette')}Горячие клавиши</h3><span class="hkch">${IC('chev', 16)}</span></button>` +
+    (open ? `<div class="hkb"><div class="cap" style="margin:6px 0 10px">Нажми на клавишу справа и затем на новую. Esc — отмена, Backspace — убрать клавишу. Работают независимо от раскладки.</div>` +
     HK.map(([a, l]) => `<div class="hkr"><span>${l}</span><button type="button" class="hkk${hkCap === a ? ' cap2' : ''}${hkMap[a] ? '' : ' none'}" data-act="hkcap" data-v="${a}">${hkCap === a ? 'нажми…' : hkLabel(hkMap[a])}</button></div>`).join('') +
-    `<button type="button" class="btn ghost" data-act="hkreset" style="margin-top:12px">Сбросить по умолчанию</button></div>`;
+    `<button type="button" class="btn ghost" data-act="hkreset" style="margin-top:12px">Сбросить по умолчанию</button></div>` : '') + `</div>`;
 }
 if (inWeb) document.addEventListener('keydown', e => {
   hkLoad();
@@ -7355,6 +7358,7 @@ const ACT = {
   dv: el => { if (el.dataset.v === 'black' && !isPro()) { hap.warn(); S.dvPrev = true; applyTheme(); render(); clearTimeout(S.dvT);
       S.dvT = setTimeout(() => { S.dvPrev = false; applyTheme(); render(); }, 5000); proToast('Чёрная тема — в PRO. Сейчас это предпросмотр'); return; }
     S.dvPrev = false; db.settings.dv = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
+  hkopen: () => { hkOpen = !hkOpen; if (!hkOpen) hkCap = null; render(); hap.tap(); },
   hkcap: el => { hkCap = el.dataset.v; render(); },
   hkreset: () => { hkMap = null; try { localStorage.removeItem('voob_keys'); } catch (e) {} hkCap = null; hkLoad(); render(); hap.tap(); toast('Клавиши сброшены'); },
   tex: el => { db.settings.tex = el.dataset.v; if (lookSync()) touchMeta('settings'); save(); applyTex(true); render(); hap.tap(); },
