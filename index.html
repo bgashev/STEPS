@@ -2427,6 +2427,12 @@ html.web:root.thz-fin .mset-top::before{animation:msgIn 1.1s cubic-bezier(.22,.7
 /* v1.493: статус синхронизации — справа в шапке настроек, напротив «Назад»; «VOOB» в плашке PRO читается на светлой теме */
 .mset-top .sync2{margin-left:auto;height:36px;padding:0 10px;border-radius:18px;flex:none}
 .mset-top .sync2.open{padding:0 13px 0 10px}
+/* v1.757: раскрытая плашка синхронизации не выталкивается за экран: заголовок плавно уступает ей место */
+.mset-top>b{min-width:0;max-width:70vw;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;transition:max-width .45s cubic-bezier(.22,.61,.36,1),opacity .3s ease,margin .45s cubic-bezier(.22,.61,.36,1)}
+.mset-top:has(.sync2.open)>b{max-width:0;opacity:0;margin-left:-12px}
+.mset-top .sync2{flex:0 1 auto;min-width:0}
+.mset-top .sync2 .st{min-width:0}
+.mset-top .sync2 .st>span{text-overflow:ellipsis}
 :root[data-mode=light] .prox-t{background:linear-gradient(90deg,#7A4E00,#A86F0A);-webkit-background-clip:text;background-clip:text;color:transparent}
 :root[data-mode=light] .prox-s{color:color-mix(in srgb,var(--text) 62%,transparent)}
 /* v1.494: соцсети — плитки с состояниями, плавное окно ввода, галочка вместо резкого закрытия */
@@ -3312,7 +3318,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.756';
+const APP = 'VOOB (by BGASHEV) Mini App v1.757';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
