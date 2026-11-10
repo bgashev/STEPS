@@ -3318,7 +3318,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.757';
+const APP = 'VOOB (by BGASHEV) Mini App v1.758';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6099,6 +6099,7 @@ function viewMeSettings(){
   h += `<div class="card"><h3>${IC('link')}Контакты</h3><div class="cap" style="margin:-6px 0 0">Новости, обновления и ответы — здесь.</div><div class="ctc">
     <button type="button" class="ctr" data-act="ctopen" data-tg="1" data-u="https://t.me/voobkz"><span class="lg tg">${SOC_LOGO.tg}</span><span class="ctr-t"><b>Telegram-канал</b><small>t.me/voobkz</small></span><span class="ctr-go">${IC('chev', 16)}</span></button>
     <button type="button" class="ctr" data-act="ctopen" data-u="https://www.instagram.com/voob.kz/"><span class="lg ig">${SOC_LOGO.ig}</span><span class="ctr-t"><b>Instagram</b><small>@voob.kz</small></span><span class="ctr-go">${IC('chev', 16)}</span></button>
+    <button type="button" class="ctr" data-act="ctopen" data-u="https://www.youtube.com/@voobkz"><span class="lg yt">${SOC_LOGO.yt}</span><span class="ctr-t"><b>YouTube</b><small>@voobkz</small></span><span class="ctr-go">${IC('chev', 16)}</span></button>
     <button type="button" class="ctr" data-act="ctopen" data-u="https://voob.kz"><span class="lg web"><svg width="64%" viewBox="0 0 100 60" fill="none" stroke="#fff" stroke-width="8.5" aria-hidden="true"><circle cx="37" cy="30" r="20"/><circle cx="63" cy="30" r="20" opacity=".92"/></svg></span><span class="ctr-t"><b>Сайт</b><small>voob.kz</small></span><span class="ctr-go">${IC('chev', 16)}</span></button></div></div>`;
   if (inTG) h += `<div class="card"><h3>${IC('sparkle')}Идеи и жалобы</h3><div class="hint">Нашёл ошибку или есть идея? Напиши — сообщение уйдёт разработчику.</div><button class="btn ghost small" data-act="fbopen">${IC('edit', 16)}Написать</button></div>`;
   h += `<div class="card"><h3>${IC('cloud')}Данные</h3><div class="cap" style="margin:-6px 0 12px">Данные синхронизируются через сервер VOOB и привязаны к твоему Telegram: одинаковы на всех твоих устройствах.</div>
