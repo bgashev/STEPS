@@ -740,6 +740,30 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 .hsort button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
 /* выбор активности */
 .wstep{display:none!important}
+/* WEB: широкое окно «Что тренируем?» */
+html.web #sheet.aw{width:min(940px,calc(100% - 48px));max-width:none;max-height:min(780px,calc(100vh - 48px));padding:0 0 4px;overflow-y:auto;-webkit-mask-image:none;mask-image:none}
+#sheet.aw>.grab{display:none}
+.aw-h{display:flex;align-items:center;gap:14px;padding:22px 26px 14px}.aw-h h2{margin:0;font-size:22px;letter-spacing:-.4px;flex:1}
+.aw-x{width:36px;height:36px;border-radius:50%;border:0;background:var(--surface2);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:transform .3s,background .2s}.aw-x:hover{transform:rotate(90deg);background:color-mix(in srgb,var(--text) 12%,var(--surface2))}
+.aw-s{display:flex;align-items:center;gap:10px;margin:0 26px;height:48px;border-radius:16px;background:var(--surface2);border:1px solid var(--border);padding:0 14px;color:var(--muted);transition:border-color .2s}
+.aw-s:focus-within{border-color:var(--accent)}
+.aw-s input{all:unset;flex:1;color:var(--text);font-size:15px}.aw-s input::placeholder{color:var(--muted)}
+.aw-s kbd,.aw-f kbd{font:600 11px inherit;border:1px solid var(--border);border-radius:6px;padding:2px 6px;color:var(--muted)}
+.aw-c{display:flex;gap:6px;flex-wrap:wrap;padding:14px 26px 4px}
+.aw-c button{border:1px solid var(--border);background:none;color:var(--muted);border-radius:999px;padding:7px 15px;font:600 13px inherit;cursor:pointer;transition:background .2s,color .2s,transform .1s}.aw-c button:active{transform:scale(.95)}
+.aw-c button[aria-pressed=true]{background:var(--accent);color:var(--on-accent);border-color:transparent}
+#sheet.aw .acts{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;padding:12px 26px 0;margin:0}
+#sheet.aw .act{flex-direction:column;align-items:flex-start;text-align:left;gap:14px;padding:18px 16px 16px;border-radius:22px;background:var(--surface2);min-height:128px;transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .2s,background .2s}
+#sheet.aw .act[hidden]{display:none}
+#sheet.aw .act:hover,#sheet.aw .act:focus-visible{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 55%,var(--border));background:var(--surface);outline:none}
+#sheet.aw .act .ai{width:48px;height:48px;transition:transform .3s cubic-bezier(.22,1,.36,1)}#sheet.aw .act:hover .ai{transform:scale(1.1) rotate(-6deg)}
+#sheet.aw .act .atx{display:grid;gap:2px}#sheet.aw .act .al{font-size:14.5px;font-weight:750}#sheet.aw .act .as{font-size:12px;font-weight:500;color:var(--muted)}
+#sheet.aw .act .an{position:absolute;left:auto;right:12px;top:12px;font:600 11px inherit;color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:1px 6px;opacity:.75}#sheet.aw .act .an:empty{display:none}
+#sheet.aw .act .afav{top:auto;right:12px;bottom:12px;left:auto;opacity:0;transition:opacity .2s}#sheet.aw .act:hover .afav,#sheet.aw .act.pin .afav{opacity:1}
+.aw-e{text-align:center;color:var(--muted);padding:30px 0 10px}
+.aw-f{display:flex;gap:18px;flex-wrap:wrap;padding:14px 26px 14px;margin-top:14px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}.aw-f kbd{margin-right:5px}
+@media(max-width:900px){#sheet.aw .acts{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 .acts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:6px 0 16px}
 .act{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px 12px;border-radius:22px;border:1px solid var(--border);background:var(--surface);font-weight:700;font-size:12.5px;text-align:center;}
 .act .ai{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent)}
@@ -6736,9 +6760,10 @@ function openSheet(html, ctx){
   sheetCtx = ctx;
   $('#sheet').classList.remove('top');
   $('#sheet').classList.remove('xl', 'gw');
+  $('#sheet').classList.toggle('aw', !!(inWeb && ctx && ctx.type === 'acts'));   // WEB: широкое окно выбора активности
   $('#sheet').classList.toggle('wkw', !!(inWeb && ctx && ctx.type === 'workout' && STR[ctx.act]));   // до открытия: окно не меняет размер во время появления
   $('#sheet').classList.toggle('pf', !!ctx && BACK_T.has(ctx.type));
-  $('#sheet').classList.toggle('half', !!ctx && (ctx.type === 'acts' || ctx.type === 'planact' || ctx.type === 'frall'));
+  $('#sheet').classList.toggle('half', !(inWeb && ctx && ctx.type === 'acts') && !!ctx && (ctx.type === 'acts' || ctx.type === 'planact' || ctx.type === 'frall'));
   $('#sheet').classList.toggle('fr', !!ctx && ctx.type === 'frall');   // выбор активности — до середины экрана, избранные под большим пальцем
   $('#sheet').innerHTML = `<div class="grab"></div>` + sheetBack(ctx) + html;
   $('#sheet').scrollTop = 0;
@@ -7030,8 +7055,49 @@ async function copyBackup(){
 const favMax = () => isPro() ? 5 : 1;   // v1.454: без PRO — одна закреплённая, с PRO — до 5
 function favActs(){ const f = Array.isArray(db.settings.fav) ? db.settings.fav : []; return f.filter(k => ACTS.some(a => a[0] === k && a[2])).slice(0, favMax()); }
 function openActs(calm){   // calm — вернулись «назад»: без повторного каскада, раскрытость окна восстанавливается
+  if (inWeb) { openActsWeb(calm); return; }
   openSheet(`<div class="wstep"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div><h2>Что тренируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше привычная форма</div><div class="acts${calm ? ' calm' : ''}">` + actsHTML() + `</div>`, {type:'acts'});
   if (calm && S.actsXl) $('#sheet').classList.add('xl');
+}
+/* WEB: широкое окно выбора активности — поиск, категории, навигация стрелками */
+const ACT_CAT = {run:'Кардио', bike:'Кардио', burpee:'Кардио', jumprope:'Кардио', stepper:'Кардио', swim:'Кардио', yoga:'Гибкость'};
+const catOf = k => ACT_CAT[k] || 'Силовые';
+function actLast(k){
+  let best = -1e9; for (const w of db.workouts) if ((w.act || 'run') === k && w.date) { const d = dn(w.date); if (d > best) best = d; }
+  if (best < -1e8) return 'ещё не было';
+  const diff = todayN() - best;
+  return diff <= 0 ? 'сегодня' : diff === 1 ? 'вчера' : diff < 7 ? diff + ' дн. назад' : diff < 30 ? Math.round(diff / 7) + ' нед. назад' : fmtDate(best);
+}
+function openActsWeb(calm){
+  S.awCat = S.awCat || 'Все';
+  openSheet(`<div class="aw-h"><h2>Что тренируем?</h2><button type="button" class="aw-x" data-act="close" aria-label="Закрыть">${IC('close', 18)}</button></div>
+    <div class="aw-s">${IC('search', 18)}<input id="aq" type="text" placeholder="Найти активность" autocomplete="off" spellcheck="false"><kbd>/</kbd></div>
+    <div class="aw-c">${['Все', 'Кардио', 'Силовые', 'Гибкость'].map(c => `<button type="button" data-act="actcat" data-v="${c}" aria-pressed="${S.awCat === c}">${c}</button>`).join('')}</div>
+    <div class="acts${calm ? ' calm' : ''}">` + actsHTML() + `</div><div class="aw-e" hidden>Ничего не нашлось</div>
+    <div class="aw-f"><span><kbd>← ↑ ↓ →</kbd>навигация</span><span><kbd>Enter</kbd>выбрать</span><span><kbd>Esc</kbd>закрыть</span></div>`, {type:'acts'});
+  awFilter();
+}
+function awFilter(){
+  const box = $('.acts'); if (!box || !$('#sheet').classList.contains('aw')) return;
+  const q = (($('#aq') || {}).value || '').trim().toLowerCase(), cat = S.awCat || 'Все'; let n = 0;
+  box.querySelectorAll('.act').forEach(b => { const ok = (cat === 'Все' || b.dataset.cat === cat) && (!q || b.dataset.n.includes(q)); b.hidden = !ok;
+    if (ok) n++; });
+  const e = $('.aw-e'); if (e) e.hidden = n > 0;
+}
+if (inWeb) {
+  document.addEventListener('input', e => { if (e.target && e.target.id === 'aq') awFilter(); });
+  document.addEventListener('keydown', e => {
+    if (!sheetCtx || sheetCtx.type !== 'acts' || !$('#sheet').classList.contains('aw') || e.ctrlKey || e.metaKey || e.altKey) return;
+    const inp = e.target && e.target.id === 'aq', vis = [...document.querySelectorAll('.acts .act:not([hidden])')];
+    if (e.key === '/' && !inp) { e.preventDefault(); e.stopPropagation(); const q = $('#aq'); if (q) q.focus(); return; }
+    if (/^Arrow/.test(e.key)) {
+      if (inp && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) return;
+      const cur = vis.indexOf(document.activeElement), cols = 4; let i = cur < 0 ? 0 : cur;
+      if (cur >= 0) i += e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowDown' ? cols : -cols;
+      e.preventDefault(); e.stopPropagation(); if (vis[i]) vis[i].focus(); else if (inp === false && cur >= 0 && e.key === 'ArrowUp') { const q = $('#aq'); if (q) q.focus(); }
+    }
+    if (e.key === 'Enter' && inp) { const b = vis[0]; if (b) { e.preventDefault(); b.click(); } }
+  }, true);
 }
 // шаг назад из любого этапа добавления: форма → упражнение → выбор активности (и форма плана → выбор активности)
 function stepBack(){
@@ -7043,6 +7109,9 @@ function stepBack(){
 }
 function actsHTML(){
   const f = favActs(), list = [...f.map(k => ACTS.find(a => a[0] === k)), ...ACTS.filter(a => !f.includes(a[0]))];
+  if (inWeb) return list.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}${f.includes(k) ? ' pin' : ''}" data-k="${k}" data-cat="${catOf(k)}" data-n="${l.toLowerCase()}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="--d:${Math.min(i, 13) * 34 + 90}ms">`
+    + `<span class="ai">${IC(k, 26)}</span><span class="atx"><span class="al">${l}</span><span class="as">${ok ? actLast(k) : 'в разработке'}</span></span>`
+    + (ok ? `<span class="afav" data-act="actfav" data-v="${k}" role="button" aria-label="${f.includes(k) ? 'Открепить' : 'Закрепить наверху'}"><svg width="20" height="20" viewBox="0 0 24 24"><path d="m12 3.2 2.6 5.5 6 .7-4.4 4.1 1.1 6L12 16.6l-5.3 2.9 1.1-6L3.4 9.4l6-.7L12 3.2Z"/></svg></span>` : '') + `</button>`).join('');
   return list.map(([k, l, ok], i) => `<button type="button" class="act${ok ? '' : ' soon'}${f.includes(k) ? ' pin' : ''}" data-k="${k}" ${ok ? `data-act="actpick" data-v="${k}"` : 'data-act="actsoon"'} style="--d:${Math.min(i, 13) * 34 + 90}ms">`
     + (ok ? `<span class="afav" data-act="actfav" data-v="${k}" role="button" aria-label="${f.includes(k) ? 'Открепить' : 'Закрепить наверху'}"><svg width="22" height="22" viewBox="0 0 24 24"><path d="m12 3.2 2.6 5.5 6 .7-4.4 4.1 1.1 6L12 16.6l-5.3 2.9 1.1-6L3.4 9.4l6-.7L12 3.2Z"/></svg></span>` : '')
     + `<span class="ai">${IC(k, 24)}</span><span class="al">${l}</span>${ok ? '' : '<em>в разработке</em>'}</button>`).join('');
@@ -7051,13 +7120,14 @@ const ACT = {
   tab: el => { if (S.fprof) { S.fprof = null; _rTab = null; if (!sheetCtx) { try { if (ver('6.1')) tg.BackButton.hide(); } catch (e) {} } } if (S.tab !== el.dataset.tab || _rTab === null) { S.tab = el.dataset.tab; S.meSet = false; S.pers = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') { FR_TAB_T = performance.now(); if (!FR.data || Date.now() - (FR.at || 0) > 20000) loadFriends(); } } },
   add: () => { hap.imp(); S.actsXl = false; openActs(false); },
   sback: () => { hap.tap(); stepBack(); },
+  actcat: el => { S.awCat = el.dataset.v; document.querySelectorAll('.aw-c button').forEach(b => b.setAttribute('aria-pressed', b === el)); awFilter(); hap.tap(); },
   actfav: el => { const k = el.dataset.v, f = favActs(), on = f.includes(k);
     if (!on && f.length >= favMax()) { hap.warn(); if (isPro()) toast('Закрепить можно до 5 видов — сначала открепи один'); else proToast('Больше одной закреплённой — с PRO', 'acts'); return; }
     db.settings.fav = on ? f.filter(x => x !== k) : [...f, k]; touchMeta('settings'); save();
     on ? hap.pinOff() : hap.pinOn();   // разные отклики: закрепили — сильный + «успех», открепили — два мягких
     const box = $('.acts'); if (!box) return;
     const was = new Map([...box.querySelectorAll('.act[data-k]')].map(b => [b.dataset.k, b.getBoundingClientRect()]));
-    box.classList.add('calm'); box.innerHTML = actsHTML();
+    box.classList.add('calm'); box.innerHTML = actsHTML(); awFilter();
     const EZ = 'cubic-bezier(.2,.85,.25,1)', still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!still) box.querySelectorAll('.act[data-k]').forEach(b => { const a = was.get(b.dataset.k), n = b.getBoundingClientRect(); if (!a || !b.animate) return;
       const dx = a.left - n.left, dy = a.top - n.top, sx = a.width / n.width, sy = a.height / n.height, morph = Math.abs(sx - 1) > .02 || Math.abs(sy - 1) > .02;
