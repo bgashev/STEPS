@@ -896,7 +896,7 @@ html.web .mset-top::before{animation:msgIn 1.1s cubic-bezier(.22,.7,.2,1) both}
 html.web .mset-top.msw{height:0;margin:0;padding:0;top:0}
 html.web .mset-top.msw>*{position:relative;top:18px}
 html.web .mset-top.msw{z-index:30}html.web .mset-top.msw>*{pointer-events:auto}
-html.web .mset-top.msw+.head{position:relative;z-index:26}   /* заголовок выше фиксированного градиента шапки, иначе градиент его перекрывает */
+html.web .mset-top.msw+.head{position:relative;z-index:31;pointer-events:none}   /* заголовок выше фиксированного градиента шапки, иначе градиент его перекрывает */
 .invpop.wpop{width:340px}
 .wpop .ip-in .f{margin:0 0 10px}
 .wpop .wp-row{display:grid;margin:10px 0 0}
