@@ -3032,6 +3032,7 @@ html.web #sheet.gw .gw-body{flex:1;min-height:0;display:grid;grid-template-colum
 .gw-sp{flex:1}.gw-go{width:100%;height:50px;border-radius:16px;font-size:15px}
 @media(prefers-reduced-motion:reduce){.gw-side>*,.gw-big svg{animation:none}}
 html.web .mset-top:has(> [data-act="fpback"])>*{display:none}   /* WEB: подпись «Профиль» в шапке не нужна, стрелка «назад» остаётся */
+html.web .mset-top:has(> [data-act="fpback"])::before{display:none!important}   /* v1.764: у чужого профиля градиент шапки не нужен — он наползал на фото и карточки */
  html.web #view{max-width:none;margin:0;padding-top:34px;padding-bottom:60px;padding-left:calc(264px + max(28px,(100vw - 264px - 760px) / 2));padding-right:max(28px,calc((100vw - 264px - 760px) / 2))}
  html.web #fab.wdock{left:calc(50% + 132px);bottom:28px}
 @media (min-width:1320px){
@@ -3362,7 +3363,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.763';
+const APP = 'VOOB (by BGASHEV) Mini App v1.764';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
