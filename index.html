@@ -3362,7 +3362,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.762';
+const APP = 'VOOB (by BGASHEV) Mini App v1.763';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4833,7 +4833,7 @@ function handleCard(){
   const h = srvUser && srvUser.handle;
   return `<div class="card hdc"><div class="hdc-h"><span class="hdc-ic">${IC('user', 18)}</span><div><b>Ник в VOOB</b><small>По нему тебя найдут друзья</small></div></div>
     <div class="hdl"><span class="hdl-at">@</span><input id="p-handle" maxlength="21" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="nickname" data-v="${h ? esc(h) : ''}" value="${h ? esc(h) : ''}" oninput="this.closest('.hdl').classList.toggle('dirty',this.value.trim().replace(/^@+/,'')!==this.dataset.v)"><button type="button" class="hdl-s" data-act="hsave">Сохранить</button></div>
-    <div class="hdc-n">Латиница, цифры и «_» · 3–20 символов</div>
+    <div class="hdc-n">${h && /^voob_[a-z0-9]{8}$/.test(h) ? 'Сейчас у тебя временный ник — придумай свой, чтобы ссылку легко запомнить' : 'Латиница, цифры и «_» · 3–20 символов'}</div>
     ${h ? `<div class="hdc-act"><button type="button" class="btn primary small" data-act="pshare">${IC('share', 16)}Поделиться</button><button type="button" class="btn ghost small" data-act="pcopy">${IC('link', 16)}Ссылка</button></div>` : ''}</div>`;
 }
 const profLink = h => inWeb ? `https://app.voob.kz/@${h}` : `https://t.me/voobkz_bot/VOOB?startapp=u_${h}`;
