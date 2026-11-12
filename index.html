@@ -3362,7 +3362,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.761';
+const APP = 'VOOB (by BGASHEV) Mini App v1.762';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4806,6 +4806,7 @@ function openFeedback(type, target){
 }
 async function openPublicProfile(handle){
   if (!inTG) return;
+  PUBH = handle;
   openSheet(`<div id="pub"><div class="sk" style="height:140px"><i class="c"></i><span class="ln"><i></i><i></i></span></div></div>`, {type:'pub'});
   try {
     const j = await apiAuth('/profile/public', {handle, today:isoOf(todayN())});
@@ -4835,7 +4836,7 @@ function handleCard(){
     <div class="hdc-n">Латиница, цифры и «_» · 3–20 символов</div>
     ${h ? `<div class="hdc-act"><button type="button" class="btn primary small" data-act="pshare">${IC('share', 16)}Поделиться</button><button type="button" class="btn ghost small" data-act="pcopy">${IC('link', 16)}Ссылка</button></div>` : ''}</div>`;
 }
-const profLink = h => `https://t.me/voobkz_bot/VOOB?startapp=u_${h}`;
+const profLink = h => inWeb ? `https://app.voob.kz/@${h}` : `https://t.me/voobkz_bot/VOOB?startapp=u_${h}`;
 
 /* ============================================================ друзья ==== */
 let FR_TAB_T = 0;   // М1: когда открыли вкладку «Друзья»
@@ -4869,6 +4870,7 @@ async function loadFriends(){
     const n = (j.friends || []).length; if (db.settings.friends_n !== n) { db.settings.friends_n = n; persist(); } }
   catch (e) { FR.err = e.message || 'нет связи'; }
   FR.loading = false;
+  try { resolvePend(); } catch (e) {}
   if (S.tab === 'friends') {
     if (changed) {
       // М1: ответ сервера не перестраивает вкладку, пока играет анимация её появления — иначе высота прыгает (рывок)
@@ -7867,7 +7869,13 @@ function showWebLogin(){
 /* ============================================================ запуск ==== */
 /* v1.694 WEB: у вкладок свои адреса (app.voob.kz/friends, /settings …). В Telegram адрес не трогаем */
 const ROUTES = {'/':{t:'home', n:''}, '/stats':{t:'stats', n:'Итоги'}, '/weight':{t:'weight', n:'Вес'}, '/friends':{t:'friends', n:'Друзья'}, '/settings':{t:'me', set:1, n:'Настройки'}, '/personalization':{t:'me', set:1, pers:1, n:'Персонализация'}};
+let pendHandle = null, PUBH = null;   // v1.762: ссылка на профиль app.voob.kz/@ник
+const HRX = /^\/@([A-Za-z][A-Za-z0-9_]{2,19})$/;
+const frHandle = f => f && (f.handle || f.username) || '';
 function pathNow(){
+  if (pendHandle) return '/@' + pendHandle;
+  if (S.fprof) { const f = FR.data && FR.data.friends.find(x => x.tg_id === S.fprof), h = frHandle(f); if (h) return '/@' + h; }
+  if (PUBH && sheetCtx && sheetCtx.type === 'pub') return '/@' + PUBH;
   if (S.tab === 'me' && S.pers) return '/personalization';
   if (S.tab === 'me' && S.meSet) return '/settings';
   if (S.tab === 'stats' || S.tab === 'weight' || S.tab === 'friends') return '/' + S.tab;
@@ -7877,15 +7885,24 @@ function urlSync(){
   if (!inWeb) return;
   try {
     const p = pathNow(), r = ROUTES[p];
-    document.title = r && r.n ? 'VOOB · ' + r.n : 'VOOB';
+    const hm = HRX.exec(p), hf = hm && FR.data && FR.data.friends.find(x => frHandle(x).toLowerCase() === hm[1].toLowerCase());
+    document.title = hm ? (hf && hf.first_name ? hf.first_name + ' (@' + hm[1] + ') · VOOB' : '@' + hm[1] + ' · VOOB') : r && r.n ? 'VOOB · ' + r.n : 'VOOB';
     if (location.pathname.replace(/\/+$/, '') !== (p === '/' ? '' : p)) history.pushState(null, '', p + location.search + location.hash);
   } catch (e) {}
 }
+function resolvePend(){
+  if (!pendHandle || !FR.data) return;
+  const h = pendHandle; pendHandle = null;
+  const f = FR.data.friends.find(x => frHandle(x).toLowerCase() === h.toLowerCase());
+  if (f) openFriendProfile(f.tg_id); else { PUBH = h; openPublicProfile(h); }
+}
 function routeApply(path){
+  const hm = HRX.exec((path || '').replace(/\/+$/, ''));
+  if (hm) { S.tab = 'friends'; S.meSet = false; S.pers = false; S.fprof = null; pendHandle = hm[1]; return true; }
   const r = ROUTES[(path || '/').replace(/\/+$/, '') || '/']; if (!r) return false;
   S.tab = r.t; S.meSet = !!r.set; S.pers = !!r.pers; S.fprof = null; return true;
 }
-if (inWeb) window.addEventListener('popstate', () => { if (!routeApply(location.pathname)) return; try { if (sheetCtx) closeSheet(); } catch (e) {} fabMini(false); _rTab = null; render(); window.scrollTo(0, 0); });
+if (inWeb) window.addEventListener('popstate', () => { if (!routeApply(location.pathname)) return; try { if (sheetCtx) closeSheet(); } catch (e) {} fabMini(false); _rTab = null; render(); window.scrollTo(0, 0); try { resolvePend(); } catch (e) {} });
 // v1.755: экран «Настраиваем твой профиль» поверх размытого приложения (WEB, первый вход без локальных данных)
 function pflShow(){
   if (document.getElementById('pfl')) return;
