@@ -2890,6 +2890,11 @@ html.web #tabs{padding-top:236px}
 html.web #tabs .tbi{top:236px}
 html.web #tabs.on-me .tbi{opacity:0}
 html.web .tab[data-tab="me"]{display:none}
+html.web .tab[data-tab="shop"]::after{content:'скоро';margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+.shopsoon{display:grid;justify-items:center;text-align:center;gap:10px;padding:44px 24px}
+.shopsoon .ss-ic{width:72px;height:72px;border-radius:24px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 14%,var(--surface2));color:var(--accent);border:1px solid var(--border)}
+.shopsoon h3{margin:6px 0 0;justify-content:center}.shopsoon .muted{max-width:420px}
+.ss-ch{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px}.ss-ch span{padding:6px 14px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);font-size:13px;font-weight:700}
 html.web .pcard{position:absolute;left:12px;right:12px;top:76px;height:134px;margin:0;padding:14px 14px 13px;border:0;border-radius:22px;cursor:pointer;text-align:left;font:inherit;color:#fff;overflow:hidden;isolation:isolate;display:flex;flex-direction:column;justify-content:space-between;
   background:#14141a;box-shadow:0 1px 0 rgba(255,255,255,.08) inset,0 18px 34px -18px rgba(0,0,0,.7);transition:transform .4s cubic-bezier(.2,.8,.2,1),box-shadow .4s;-webkit-tap-highlight-color:transparent}
 html.web .pcard .pc-bg{position:absolute;inset:0;z-index:-3;background:radial-gradient(120% 150% at 0% 0%,color-mix(in srgb,var(--tc,var(--accent)) 46%,transparent),transparent 62%),radial-gradient(90% 120% at 100% 100%,color-mix(in srgb,var(--accent2,var(--accent)) 30%,transparent),transparent 60%),linear-gradient(160deg,#23232d,#15151c)}
@@ -3363,7 +3368,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.766';
+const APP = 'VOOB (by BGASHEV) Mini App v1.767';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -3931,6 +3936,7 @@ async function syncNow(){
 const IP = {
   search:'<circle cx="8" cy="8" r="5"/><path d="M12 12L15.5 15.5"/>',
   walk:'<path d="M3 5H15M6 9H15M9 13H15"/>',
+  shop:'<path d="M3 6.2h12l-.9 9H3.9L3 6.2Z"/><path d="M6.4 6.2V5a2.6 2.6 0 0 1 5.2 0v1.2"/>',
   scale:'<rect x="2" y="2" width="14" height="14" rx="4"/><path d="M5.5 8A3.5 3.5 0 0 1 12.5 8M9 8L10.6 6"/>',
   stats:'<path d="M4 15V10M9 15V6M14 15V3"/>',
   user:'<circle cx="9" cy="6" r="3"/><path d="M3.5 15.5C4.4 12.6 6.4 11 9 11s4.6 1.6 5.5 4.5"/>',
@@ -5540,6 +5546,12 @@ function historyHTML0(ws){
   return h;
 }
 
+function viewShop(){   // v1.767: заготовка «Магазина» — позже покупка отдельных рамок, фонов и значков без PRO
+  return `<div class="head"><div><h1>Магазин</h1><div class="sub">Рамки, фоны и значки по одному, без подписки</div></div></div>
+  <div class="card shopsoon"><div class="ss-ic">${IC('shop', 34)}</div><h3>Скоро открытие</h3>
+  <div class="muted">Не хочешь PRO целиком? Здесь можно будет взять одну рамку, один фон или значок, и они останутся у тебя навсегда.</div>
+  <div class="ss-ch"><span>Рамки</span><span>Фоны</span><span>Значки</span></div></div>`;
+}
 function viewWeight(){
   const es = weightsSorted(), goal = db.weight_goal || {};
   let h = `<div class="head"><div><h1>Вес</h1><div class="sub">${es.length ? npw(es.length, W_ENTRY) + ' — продолжай в том же духе' : 'Следи за весом и иди к цели'}</div></div></div>`;
@@ -6543,8 +6555,8 @@ function updPCard(){
   el.classList.toggle('on', on); el.style.setProperty('--tc', tc);
   if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.classList.toggle('hasbg', !!bg); el.innerHTML = html;
 }
-const TABS = inWeb ? [['friends','Друзья','friends'],['weight','Вес','scale'],['stats','Итоги','stats'],['me','Я','user']] : [['stats','Итоги','stats'],['weight','Вес','scale'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
-const VIEWS = {home:(inWeb && inTG ? viewHomeWeb : viewHome), weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe};
+const TABS = inWeb ? [['friends','Друзья','friends'],['weight','Вес','scale'],['stats','Итоги','stats'],['shop','Магазин','shop'],['me','Я','user']] : [['stats','Итоги','stats'],['weight','Вес','scale'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
+const VIEWS = {home:(inWeb && inTG ? viewHomeWeb : viewHome), weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe, shop:viewShop};
 // плавающая кнопка внизу по центру: на «Главной» — тренировка, во «Весе» — взвеситься
 const FAB = {home:['add', 'Тренировка'], weight:['kadd', 'Взвеситься']};
 let fabY = 0, fabMiniOn = false;
@@ -7869,7 +7881,7 @@ function showWebLogin(){
 
 /* ============================================================ запуск ==== */
 /* v1.694 WEB: у вкладок свои адреса (app.voob.kz/friends, /settings …). В Telegram адрес не трогаем */
-const ROUTES = {'/':{t:'home', n:''}, '/stats':{t:'stats', n:'Итоги'}, '/weight':{t:'weight', n:'Вес'}, '/friends':{t:'friends', n:'Друзья'}, '/settings':{t:'me', set:1, n:'Настройки'}, '/personalization':{t:'me', set:1, pers:1, n:'Персонализация'}};
+const ROUTES = {'/':{t:'home', n:''}, '/stats':{t:'stats', n:'Итоги'}, '/weight':{t:'weight', n:'Вес'}, '/friends':{t:'friends', n:'Друзья'}, '/shop':{t:'shop', n:'Магазин'}, '/settings':{t:'me', set:1, n:'Настройки'}, '/personalization':{t:'me', set:1, pers:1, n:'Персонализация'}};
 let pendHandle = null, PUBH = null;   // v1.762: ссылка на профиль app.voob.kz/@ник
 const HRX = /^\/@([A-Za-z][A-Za-z0-9_]{2,19})$/;
 const frHandle = f => f && (f.handle || f.username) || '';
@@ -7879,7 +7891,7 @@ function pathNow(){
   if (PUBH && sheetCtx && sheetCtx.type === 'pub') return '/@' + PUBH;
   if (S.tab === 'me' && S.pers) return '/personalization';
   if (S.tab === 'me' && S.meSet) return '/settings';
-  if (S.tab === 'stats' || S.tab === 'weight' || S.tab === 'friends') return '/' + S.tab;
+  if (S.tab === 'stats' || S.tab === 'weight' || S.tab === 'friends' || S.tab === 'shop') return '/' + S.tab;
   return '/';
 }
 function urlSync(){
