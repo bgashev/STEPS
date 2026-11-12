@@ -6158,7 +6158,7 @@ function viewMeSettings(){
     <button type="button" class="btn dz-b ok" data-act="delopen">${IC('sun', 16)}Отменить удаление</button></div>`
     : `<div class="card dz"><h3>${IC('trash')}Аккаунт</h3><div class="cap" style="margin:-6px 0 12px">Удалить аккаунт и все данные из VOOB. Аккаунт отключится сразу, а удалится через 7 дней — до этого срока удаление можно отменить. Нужен код из Telegram-бота.</div>
     <button type="button" class="btn dz-b" data-act="fzopen" data-v="delete">${IC('trash', 16)}Удалить аккаунт</button></div>`;
-  h += `<div class="foot">VOOB <a data-act="creator">by BGASHEV</a> · ${APP.split(' ').pop()}<br>Тренировок: ${valid().length} · взвешиваний: ${weightsSorted().length}</div>`;
+  h += `<div class="foot">VOOB <a data-act="creator">by BGASHEV</a> · ${APP.split(' ').pop()}</div>`;
   if (!inWeb) return h.replace(/<!--M\d-->/g, '');
   const q1 = h.split('<!--M1-->'), q2 = q1[1].split('<!--M2-->'), q3 = q2[1].split('<!--M3-->');
   return `<div class="mset2"><div class="ms-h">${q1[0]}</div><div class="ms-l">${q2[0]}</div><div class="ms-r">${q3[0]}</div><div class="ms-f">${q3[1]}</div></div>`;
