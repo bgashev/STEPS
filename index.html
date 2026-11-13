@@ -3414,7 +3414,7 @@ html.web #tabs .tbi{top:262px}
 .shp-btn{font:inherit;font-size:13px;font-weight:800;border:0;border-radius:99px;padding:9px 18px;background:var(--text);color:var(--bg);cursor:pointer;transition:transform .2s}
 .shp-btn.g{background:rgba(255,255,255,.16);color:#fff;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28)}.shp-btn:hover{transform:translateY(-2px)}
 .shp-h.sm .shp-btn{padding:7px 13px;font-size:12px}
-.shp-tabs{display:flex;gap:8px;margin:26px 0 4px;position:sticky;top:0;z-index:3;padding:10px 0;background:linear-gradient(var(--bg) 70%,transparent)}
+.shp-tabs{display:flex;gap:6px;width:fit-content;max-width:100%;overflow-x:auto;scrollbar-width:none;margin:26px 0 8px;position:sticky;top:10px;z-index:3;padding:6px;border-radius:99px;border:1px solid var(--border);background:color-mix(in srgb,var(--bg) 72%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 8px 24px #0004}.shp-tabs::-webkit-scrollbar{display:none}.shp-tabs button{white-space:nowrap}
 .shp-tabs button{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:99px;padding:8px 18px;cursor:pointer;transition:.2s}
 .shp-tabs button.on{background:var(--accent);color:var(--bg);border-color:transparent}
 .shp-wrap[data-t=fr] .s-bg,.shp-wrap[data-t=fr] .s-kit,.shp-wrap[data-t=bg] .s-fr,.shp-wrap[data-t=bg] .s-kit,.shp-wrap[data-t=kit] .s-fr,.shp-wrap[data-t=kit] .s-bg{display:none}
@@ -3461,7 +3461,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.785';
+const APP = 'VOOB (by BGASHEV) Mini App v1.786';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
