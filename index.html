@@ -1860,6 +1860,7 @@ html.web .ib.shim:has(.ibl){width:auto;padding:0 18px 0 14px;gap:8px;display:inl
 .swc.lk{position:relative}
 .swc .prot{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);font-size:8px;font-weight:850;letter-spacing:.06em;line-height:1;padding:2px 5px;border-radius:999px;background:linear-gradient(120deg,#F5B23C,#FFE08A);color:#3a2600;box-shadow:0 0 0 2px var(--surface);pointer-events:none}   /* v1.460: вместо замочка — та же плашка PRO, что у рамок и фонов */
 .sws{row-gap:16px}
+.lrows{padding:6px 0}.lrow{font:inherit;color:var(--text);display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:none;border:0;padding:14px 18px;cursor:pointer;transition:background .2s}.lrow+.lrow{border-top:1px solid var(--border)}.lrow:active{background:var(--surface2)}.lrow>.ic:last-child{color:var(--muted);flex:none}.lri{width:38px;height:38px;border-radius:12px;background:var(--surface2);display:grid;place-items:center;flex:none}.lrt{flex:1;min-width:0}.lrt b{display:block;font-size:15px;font-weight:650}.lrt small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
 .thm button{font-size:13px;padding:0 4px;white-space:nowrap}
 .dv2s{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dv2{font:inherit;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;height:46px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:.2s}.dv2 i{width:20px;height:20px;border-radius:50%;border:1px solid var(--border-strong,var(--border));flex:none}.dv2.on{color:var(--text);border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}.dv2 .prot{font-style:normal;font-size:9px;font-weight:850;letter-spacing:.06em;padding:2px 6px;border-radius:999px;background:linear-gradient(120deg,#F5B23C,#FFE08A);color:#3a2600}
 .sws{display:grid;grid-template-columns:repeat(5,1fr);gap:16px 0;justify-items:center;padding:4px 0}.swc{width:40px;height:40px}.swc.on::after{inset:-5px}
@@ -3482,7 +3483,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.801';
+const APP = 'VOOB (by BGASHEV) Mini App v1.802';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6462,8 +6463,7 @@ function viewMeSettings(){
     <button type="button" class="ctr" data-act="ctopen" data-u="https://www.tiktok.com/@voobkz"><span class="lg tt">${SOC_LOGO.tt}</span><span class="ctr-t"><b>TikTok</b><small>@voobkz</small></span><span class="ctr-go">${IC('chev', 16)}</span></button>
     <button type="button" class="ctr" data-act="ctopen" data-u="https://www.threads.com/@voob.kz"><span class="lg th">${SOC_LOGO.th}</span><span class="ctr-t"><b>Threads</b><small>@voob.kz</small></span><span class="ctr-go">${IC('chev', 16)}</span></button>
     <button type="button" class="ctr" data-act="ctopen" data-u="https://voob.kz"><span class="lg web"><svg width="64%" viewBox="0 0 100 60" fill="none" stroke="#fff" stroke-width="8.5" aria-hidden="true"><circle cx="37" cy="30" r="20"/><circle cx="63" cy="30" r="20" opacity=".92"/></svg></span><span class="ctr-t"><b>Сайт</b><small>voob.kz</small></span><span class="ctr-go">${IC('chev', 16)}</span></button></div></div>`;
-  if (inTG) h += `<div class="card"><h3>${IC('clock')}Платежи и возвраты</h3><div class="hint">История оплат звёздами и заявка на возврат, если что-то пошло не так.</div><button class="btn ghost small" data-act="paysopen">${IC('crown', 16)}Открыть</button></div>`;
-  if (inTG) h += `<div class="card"><h3>${IC('sparkle')}Идеи и жалобы</h3><div class="hint">Нашёл ошибку или есть идея? Напиши — сообщение уйдёт разработчику.</div><button class="btn ghost small" data-act="fbopen">${IC('edit', 16)}Написать</button></div>`;
+  if (inTG) h += `<div class="card lrows"><button type="button" class="lrow" data-act="paysopen"><span class="lri">${IC('clock', 18)}</span><span class="lrt"><b>Платежи и возвраты</b><small>История оплат и заявка на возврат</small></span>${IC('chev', 16)}</button><button type="button" class="lrow" data-act="fbopen"><span class="lri">${IC('sparkle', 18)}</span><span class="lrt"><b>Идеи и жалобы</b><small>Сообщение уйдёт разработчику</small></span>${IC('chev', 16)}</button></div>`;
   h += `<div class="card"><h3>${IC('cloud')}Данные</h3><div class="cap" style="margin:-6px 0 12px">Данные синхронизируются через сервер VOOB и привязаны к твоему Telegram: одинаковы на всех твоих устройствах.</div>
     <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost small" data-act="import">${IC('import', 16)}Импорт из VOOB для Windows</button><button class="btn ghost small" data-act="copy">${IC('export', 16)}Скопировать копию</button></div>
     <div class="cap" style="margin-top:10px">Импорт: выбери файл STEPS_backup_….json из десктопной версии (Настройки → Резервная копия). Совпадающие записи не задублируются.</div></div>`;
