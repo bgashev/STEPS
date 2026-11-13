@@ -778,6 +778,17 @@ html.web #sheet.aw{width:min(940px,calc(100% - 48px));max-width:none;max-height:
 #sheet.aw .act .afav{top:auto;right:12px;bottom:12px;left:auto;opacity:0;transition:opacity .2s}#sheet.aw .act:hover .afav,#sheet.aw .act.pin .afav{opacity:1}
 .aw-e{text-align:center;color:var(--muted);padding:30px 0 10px}
 .aw-f{display:flex;gap:18px;flex-wrap:wrap;padding:14px 26px 14px;margin-top:14px;border-top:1px solid var(--border);color:var(--muted);font-size:12px}.aw-f kbd{margin-right:5px}
+/* v1.777: WEB — избранные тонкой полосой над сеткой, а не огромными плитками */
+#sheet.aw .acts .aw-fl{grid-column:1/-1;font:700 11px inherit;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:2px 2px -4px}
+#sheet.aw .acts .aw-sp{grid-column:1/-1;height:4px;display:block}
+#sheet.aw .acts .aw-fl[hidden],#sheet.aw .acts .aw-sp[hidden]{display:none}
+#sheet.aw .act.pin{grid-column:auto;flex-direction:row;align-items:center;min-height:0;gap:11px;padding:10px 38px 10px 11px;border-radius:18px}
+#sheet.aw .act.pin .ai{width:38px;height:38px;flex:none}
+#sheet.aw .act.pin .atx{min-width:0}
+#sheet.aw .act.pin .al{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+#sheet.aw .act.pin .as{color:color-mix(in srgb,var(--on-accent) 62%,transparent)}
+#sheet.aw .act.pin .afav{top:50%;bottom:auto;right:8px;margin-top:-19px}
+#sheet.aw .act.pin:has(+ .act:not(.pin)){margin-bottom:0}
 @media(max-width:900px){#sheet.aw .acts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 .acts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:6px 0 16px}
@@ -3393,7 +3404,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.776';
+const APP = 'VOOB (by BGASHEV) Mini App v1.777';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7153,6 +7164,13 @@ function awFilter(){
   box.querySelectorAll('.act').forEach(b => { const ok = (cat === 'Все' || b.dataset.cat === cat) && (!q || b.dataset.n.includes(q)); b.hidden = !ok;
     if (ok) n++; });
   const e = $('.aw-e'); if (e) e.hidden = n > 0;
+  // v1.777: избранное — тонкая полоса «Избранное» над сеткой
+  const pins = [...box.querySelectorAll('.act.pin')];
+  if (pins.length && !box.querySelector('.aw-fl')) {
+    const l = document.createElement('div'); l.className = 'aw-fl'; l.textContent = 'Избранное'; box.insertBefore(l, pins[0]);
+    const sp = document.createElement('i'); sp.className = 'aw-sp'; sp.setAttribute('aria-hidden', 'true'); pins[pins.length - 1].after(sp);
+  }
+  const vp = pins.some(b => !b.hidden); box.querySelectorAll('.aw-fl,.aw-sp').forEach(x => { x.hidden = !vp; });
 }
 if (inWeb) {
   document.addEventListener('input', e => { if (e.target && e.target.id === 'aq') awFilter(); });
