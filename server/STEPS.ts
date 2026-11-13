@@ -348,13 +348,13 @@ async function routeShopInvoice(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
   const kind = String(body?.kind ?? ""), item = String(body?.item ?? "");
-  if (!["frame", "bg"].includes(kind) || !SHOP_RE.test(item)) return fail("Неизвестный предмет");
+  if (!["frame", "bg", "kit"].includes(kind) || !SHOP_RE.test(item)) return fail("Неизвестный предмет");
   if (await isLocked(me)) return fail("Оплата недоступна, пока подписка заморожена или аккаунт ждёт удаления", 423);
   const stars = (await shopPrices())[kind];
   if (!stars) return fail("Цена не задана", 500);
   const { data: have } = await db.from("shop_owned").select("id").eq("tg_id", me).eq("kind", kind).eq("item", item).is("refunded_at", null).maybeSingle();
   if (have) return fail("Это уже у тебя", 409);
-  const title = kind === "frame" ? "Рамка для аватарки" : "Фон профиля";
+  const title = kind === "frame" ? "Рамка для аватарки" : kind === "kit" ? "Комплект: рамка и фон" : "Фон профиля";
   const r = await tg("createInvoiceLink", {
     title, description: `${title} в VOOB. Остаётся у тебя навсегда.`.slice(0, 255), payload: `shop:${kind}:${item}:${me}`,
     provider_token: "", currency: "XTR", prices: [{ label: title, amount: stars }],
@@ -372,7 +372,11 @@ async function routeShopLooks(body: any) {
     db.from("shop_owned").select("tg_id, kind, item").in("tg_id", ids).is("refunded_at", null),
     db.from("records").select("tg_id, data, deleted").eq("kind", "meta").eq("id", "settings").in("tg_id", ids),
   ]);
-  const have = new Set((own ?? []).map((r: any) => `${r.tg_id}:${r.kind}:${r.item}`));
+  const have = new Set<string>();
+  for (const r of own ?? []) {
+    const o = r as any;
+    if (o.kind === "kit") { have.add(`${o.tg_id}:frame:${o.item}`); have.add(`${o.tg_id}:bg:${o.item}`); } else have.add(`${o.tg_id}:${o.kind}:${o.item}`);
+  }
   const bgs: Record<string, string> = {}, frs: Record<string, string> = {};
   for (const r of st ?? []) {
     const id = Number((r as any).tg_id), d = (r as any).deleted ? null : (r as any).data;
@@ -382,7 +386,7 @@ async function routeShopLooks(body: any) {
   return json({ bgs, frs });
 }
 function parseShopPayload(s: string) {
-  const m = /^shop:(frame|bg):([a-z0-9]{3,16}):(\d+)$/.exec(s || "");
+  const m = /^shop:(frame|bg|kit):([a-z0-9]{3,16}):(\d+)$/.exec(s || "");
   return m ? { kind: m[1], item: m[2], tg: Number(m[3]) } : null;
 }
 
@@ -426,7 +430,7 @@ async function onPaid(msg: any) {
     }
     const row = Array.isArray(data) ? data[0] : data;
     if (row?.dup) return;
-    await tg("sendMessage", { chat_id: msg.chat.id, text: `✨ Готово! ${sh.kind === "frame" ? "Рамка" : "Фон"} теперь твой навсегда. Открой VOOB и примени.`, reply_markup: openBtnMk() });
+    await tg("sendMessage", { chat_id: msg.chat.id, text: `✨ Готово! ${sh.kind === "frame" ? "Рамка" : sh.kind === "kit" ? "Комплект" : "Фон"} теперь твой навсегда. Открой VOOB и примени.`, reply_markup: openBtnMk() });
     if (ADMIN_TG_ID) {
       const u = await userInfo(msg.from.id) as any;
       tg("sendMessage", { chat_id: ADMIN_TG_ID, text: `🛍 Магазин · ${sh.kind}:${sh.item} · ${sp.total_amount}⭐\n${displayName(u)} (id ${msg.from.id})\ncharge: ${sp.telegram_payment_charge_id}` }).catch(() => {});
