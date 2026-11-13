@@ -3419,6 +3419,7 @@ html.web #tabs .tbi{top:262px}
 .shp-tabs button.on{background:var(--accent);color:var(--bg);border-color:transparent}
 .shp-wrap[data-t=fr] .s-bg,.shp-wrap[data-t=fr] .s-kit,.shp-wrap[data-t=bg] .s-fr,.shp-wrap[data-t=bg] .s-kit,.shp-wrap[data-t=kit] .s-fr,.shp-wrap[data-t=kit] .s-bg{display:none}
 
+.pzbuy{flex-wrap:wrap}.pzbuy .pzgo{flex:1 1 150px}.pzst{background:var(--accent)!important;color:var(--bg)!important;font-style:normal}
 /* v1.785: предпросмотр товара */
 .spv{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:16px;animation:spvin .22s ease}.spv.out{opacity:0;transition:opacity .18s}
 .spv-back{position:absolute;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(10px)}
@@ -3461,7 +3462,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.786';
+const APP = 'VOOB (by BGASHEV) Mini App v1.787';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5107,7 +5108,7 @@ async function shopBuy(kind, item, name){
   try {
     const j = await apiAuth('/shop/invoice', {kind, item});
     if (!j.link) throw new Error(j.error || 'нет счёта');
-    const paid = () => { hap.ok(); SHOP.owned.add(kind + ':' + item); if (kind === 'kit') { SHOP.owned.add('frame:' + item); SHOP.owned.add('bg:' + item); } toast('✨ «' + name + '» теперь твой навсегда'); loadShop(true).then(() => { render(); if (SPV) shopPvDraw(0); }); render(); if (SPV) shopPvDraw(0); };
+    const paid = () => { hap.ok(); SHOP.owned.add(kind + ':' + item); if (kind === 'kit') { SHOP.owned.add('frame:' + item); SHOP.owned.add('bg:' + item); } toast('✨ «' + name + '» теперь твой навсегда'); loadShop(true).then(() => { render(); if (SPV) shopPvDraw(0); }); render(); if (SPV) shopPvDraw(0); if (sheetCtx && sheetCtx.type === 'frprev') frPrevShow(sheetCtx.v); else if (sheetCtx && sheetCtx.type === 'bgprev') bgPrevShow(sheetCtx.v); };
     if (ver('6.1') && tg.openInvoice) tg.openInvoice(j.link, st => { if (st === 'paid') paid(); });
     else { openTG(j.link); toast('Оплати в Telegram и вернись сюда'); }
   } catch (e) { toast('Не получилось: ' + e.message); }
@@ -6152,7 +6153,9 @@ function frPrevHTML(k, st){
   const mode = st.pv || 'av', pairable = !!k && !!BG_SVG[k] && owned && bgOwned(k), kitSel = pairable && !!st.kit;
   const bg = kitSel ? k : myBg(), same = cur === k && (!kitSel || bgNorm(db.settings.bg || '') === k);   // v1.546: один предпросмотр за раз (Аватар · Профиль · Друзья), парный фон — по желанию
   if (bg) bgEnsure(bg);
-  const btn = !owned ? `<button type="button" class="btn frpv-pro" data-act="frpro">${IC('crown', 18)}Разблокировать с PRO</button><div class="cap frpv-cap">Сейчас это только предпросмотр — рамка станет твоей с подпиской</div>`
+  const kp = SHOP.prices.kit, bp = SHOP.prices.bg, fp = SHOP.prices.frame, kitOk = SHOP.ok && !!kp && !!BG_SVG[k] && !bgOwned(k) && kp < fp + bp;
+  const btn = (!owned && SHOP.ok) ? `<button type="button" class="btn primary frpv-go" data-act="pvbuy" data-kind="frame" data-k="${k}">Купить рамку · ⭐ ${fp}</button>${kitOk ? `<button type="button" class="btn frpv-pro" data-act="pvbuy" data-kind="kit" data-k="${k}">Комплект рамка + фон · ⭐ ${kp}</button>` : ''}<div class="cap frpv-cap">Покупка навсегда. Или открой всё сразу <a href="#" data-act="frpro" style="color:var(--accent);font-weight:700">с PRO</a></div>`
+    : !owned ? `<button type="button" class="btn frpv-pro" data-act="frpro">${IC('crown', 18)}Разблокировать с PRO</button><div class="cap frpv-cap">Сейчас это только предпросмотр — рамка станет твоей с подпиской</div>`
     : same ? `<button type="button" class="btn frpv-go" disabled>${IC('check', 18)}Сейчас выбрана</button>`
     : `<button type="button" class="btn primary frpv-go" data-act="frapply" data-v="${k}">${IC('check', 18)}${kitSel ? 'Применить с фоном' : 'Применить'}</button>`;
   const body = mode === 'pf'
@@ -6169,7 +6172,7 @@ function frPrevHTML(k, st){
     <div class="frpv-stage m-${mode}"><button type="button" class="frpv-nav l" data-act="frnav" data-v="${prev}" aria-label="Предыдущая">${IC('chev', 18)}</button>${body}<button type="button" class="frpv-nav r" data-act="frnav" data-v="${next}" aria-label="Следующая">${IC('chev', 18)}</button></div>
     ${pair}${btn}</div>`;
 }
-function openFramePrev(k){ hap.tap(); const c = frameOf(tgUser ? {tg_id:tgUser.id} : null), st = {pv:'av', kit:!!(c && BG_SVG[c] && bgNorm(db.settings.bg || '') === c)}; openSheet(frPrevHTML(k, st), {type:'frprev', v:k, pv:st.pv, kit:st.kit}); }
+function openFramePrev(k){ hap.tap(); if (!SHOP.ok) loadShop(); const c = frameOf(tgUser ? {tg_id:tgUser.id} : null), st = {pv:'av', kit:!!(c && BG_SVG[c] && bgNorm(db.settings.bg || '') === c)}; openSheet(frPrevHTML(k, st), {type:'frprev', v:k, pv:st.pv, kit:st.kit}); }
 function frPrevShow(k){ if (!sheetCtx || sheetCtx.type !== 'frprev') return; sheetCtx.v = k; const sh = $('#sheet'); sh.innerHTML = '<div class="grab"></div>' + frPrevHTML(k, sheetCtx); sh.scrollTop = 0; }   // v1.537: смена мгновенная, без анимации
 /* v1.525: фон профиля — предпросмотр целиком (как будет выглядеть шапка), «Применить» внизу */
 function bgPrevHTML(k, st){
@@ -6180,7 +6183,9 @@ function bgPrevHTML(k, st){
   const pairable = !!k && FRAMES.some(x => x[0] === k && x[2]) && owned && frOwned(k), kitSel = pairable && !!st.kit;   // v1.553: «Парная рамка» — как «Парный фон» в окне рамки
   const fk = kitSel ? k : frameOf(tgUser ? {tg_id:tgUser.id} : null);
   const prev = list[(i + list.length - 1) % list.length], next = list[(i + 1) % list.length];
-  const btn = !owned ? `<button type="button" class="btn frpv-pro" data-act="frpro">${IC('crown', 18)}Разблокировать с PRO</button><div class="cap frpv-cap">Сейчас это только предпросмотр — фон станет твоим с подпиской</div>`
+  const kp = SHOP.prices.kit, bp = SHOP.prices.bg, fp = SHOP.prices.frame, kitOk = SHOP.ok && !!kp && FRAMES.some(x => x[0] === k && x[2]) && !frOwned(k) && kp < fp + bp;
+  const btn = (!owned && SHOP.ok) ? `<button type="button" class="btn primary frpv-go" data-act="pvbuy" data-kind="bg" data-k="${k}">Купить фон · ⭐ ${bp}</button>${kitOk ? `<button type="button" class="btn frpv-pro" data-act="pvbuy" data-kind="kit" data-k="${k}">Комплект рамка + фон · ⭐ ${kp}</button>` : ''}<div class="cap frpv-cap">Покупка навсегда. Или открой всё сразу <a href="#" data-act="frpro" style="color:var(--accent);font-weight:700">с PRO</a></div>`
+    : !owned ? `<button type="button" class="btn frpv-pro" data-act="frpro">${IC('crown', 18)}Разблокировать с PRO</button><div class="cap frpv-cap">Сейчас это только предпросмотр — фон станет твоим с подпиской</div>`
     : (cur && (!kitSel || frameOf(tgUser ? {tg_id:tgUser.id} : null) === k)) ? `<button type="button" class="btn frpv-go" disabled>${IC('check', 18)}Сейчас выбран</button>`
     : `<button type="button" class="btn primary frpv-go" data-act="bgapply" data-v="${k}">${IC('check', 18)}${kitSel ? 'Применить с рамкой' : 'Применить'}</button>`;
   const pair = pairable ? `<div class="frpv-pair"><div class="tgl${kitSel ? ' on' : ''}" data-act="bgpair"><span class="sw2"></span><b>Парная рамка</b></div><div class="cap">Рамка в тон фону${kitSel ? ' — применится вместе с ним' : ' — по желанию'}</div></div>` : '';
@@ -6191,7 +6196,7 @@ function bgPrevHTML(k, st){
       <h2 class="nmrow hero-nm"><span class="nm">${esc(name)}</span>${tgUser ? bdgHTML(tgUser.id, 20) : ''}</h2>${tgUser && tgUser.username ? `<div class="hero-at">@${esc(tgUser.username)}</div>` : ''}
       <div class="hero-lv"><div class="hero-lvt"><span class="lvn" data-t="${tierOf(lv.level).idx}">${lv.level}</span><span class="ttl">${tierOf(lv.level).title}</span></div><div class="lvbar"><i style="width:${Math.max(3, lv.into / lv.need * 100)}%"><b class="lvp"></b></i></div></div></div></div>${pair}${btn}</div>`;
 }
-function openBgPrev(k){ hap.tap(); const c = frameOf(tgUser ? {tg_id:tgUser.id} : null), st = {kit:!!(k && c === k && bgNorm(db.settings.bg || '') === k)}; openSheet(bgPrevHTML(k, st), {type:'bgprev', v:k, kit:st.kit}); }
+function openBgPrev(k){ hap.tap(); if (!SHOP.ok) loadShop(); const c = frameOf(tgUser ? {tg_id:tgUser.id} : null), st = {kit:!!(k && c === k && bgNorm(db.settings.bg || '') === k)}; openSheet(bgPrevHTML(k, st), {type:'bgprev', v:k, kit:st.kit}); }
 function bgPrevShow(k){ if (!sheetCtx || sheetCtx.type !== 'bgprev') return; sheetCtx.v = k; const sh = $('#sheet'); sh.innerHTML = '<div class="grab"></div>' + bgPrevHTML(k, sheetCtx); sh.scrollTop = 0; }
 
 /* ===== v1.676 WEB · «Персонализация»: студия — слева живой предпросмотр профиля, справа плитки рамок, фонов и значков ===== */
@@ -6200,6 +6205,14 @@ const PZ_T = ['kt', 'fr', 'bg', 'bd'];
 function pzKits(){ const bs = new Set(BG_KEYS.map(x => x[0])); return [['', 'Чистый профиль']].concat(FRAMES.filter(f => f[0] && bs.has(f[0])).map(f => [f[0], f[1]])); }
 function pzCur(){ return {fr: frameOf(tgUser ? {tg_id:tgUser.id} : null) || '', bg: myBg(), bd: db.settings.badge || 'verified'}; }
 function pzEff(){ const cur = pzCur(), pend = S.pzp || {}, hov = S.pzH || {}; return {cur, pend, eff: Object.assign({}, cur, pend, hov)}; }
+function pzNm(kind, k){ return kind === 'bg' ? ((BG_KEYS.find(x => x[0] === k) || [])[1] || k) : ((FRAMES.find(x => x[0] === k) || [])[1] || k); }
+function pzTag(kind, k, lock){ return lock ? (SHOP.ok && SHOP.prices[kind] ? `<i class="prot pzst">⭐ ${SHOP.prices[kind]}</i>` : '<i class="prot">PRO</i>') : ''; }
+function pzBuyHTML(fk, bk){   // v1.787: что можно купить отдельно: рамка, фон или комплект (если выгоднее)
+  const fp = SHOP.prices.frame, bp = SHOP.prices.bg, kp = SHOP.prices.kit, lf = !!fk && !frOwned(fk) && !!(FRAMES.find(x => x[0] === fk) || [])[2], lb = !!bk && !bgOwned(bk);
+  const b = (kind, k, t, cls) => `<button type="button" class="btn ${cls || 'primary'} pzgo" data-act="pzbuy" data-kind="${kind}" data-k="${k}">${t}</button>`;
+  if (lf && lb && fk === bk && kp && kp < fp + bp) return b('kit', fk, `Комплект · ⭐ ${kp} <s style="opacity:.6;font-weight:600">${fp + bp}</s>`);
+  return (lf ? b('frame', fk, `Купить рамку · ⭐ ${fp}`) : '') + (lb ? b('bg', bk, `Купить фон · ⭐ ${bp}`, lf ? 'ghost' : 'primary') : '');
+}
 function pzLocked(k, v){ return k === 'fr' ? !!((FRAMES.find(x => x[0] === v) || [])[2]) && !frOwned(v) : k === 'bg' ? !!v && !bgOwned(v) : !isPro(); }
 function pzBgInner(bk){ return bk ? bgFx(bk) : '<i class="pzd a"></i><i class="pzd b"></i><i class="pzd c"></i>'; }
 function pzAvInner(fk){ const lv = myLevel(), name = displayName() || 'Гость', photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url) || ''; return frAv(fk, 128, lv, photo, name); }
@@ -6212,19 +6225,23 @@ function pzActHTML(){
   const {cur, pend} = pzEff(), ch = ['fr', 'bg', 'bd'].filter(k => k in pend && pend[k] !== cur[k]);
   if (!ch.length) return `<div class="pzhint">${IC('sparkle', 15)}Наведи на плитку, чтобы посмотреть, нажми, чтобы выбрать</div>`;
   const lk = ch.some(k => pzLocked(k, pend[k]));
+  if (lk && SHOP.ok && !(ch.includes('bd') && pzLocked('bd', pend.bd))) {
+    return `<div class="pzbtns pzbuy">${pzBuyHTML(ch.includes('fr') ? pend.fr : '', ch.includes('bg') ? pend.bg : '')}<button type="button" class="btn ghost pzrs" data-act="pzreset">Сбросить</button></div><div class="pzhint">Покупка навсегда. Или открой всё сразу <a href="#" data-act="pzpro" style="color:var(--accent);font-weight:700">с PRO</a></div>`;
+  }
   return `<div class="pzbtns">${lk ? `<button type="button" class="btn primary pzgo" data-act="pzpro">${IC('crown', 18)}Разблокировать с PRO</button>` : `<button type="button" class="btn primary pzgo" data-act="pzapply">${IC('check', 18)}Применить · ${ch.length}</button>`}<button type="button" class="btn ghost pzrs" data-act="pzreset">Сбросить</button></div>${lk ? '<div class="pzhint">Сейчас это только предпросмотр: выбранное станет твоим с подпиской</div>' : ''}`;
 }
 function pzGridHTML(tab){
   const {cur, pend} = pzEff(), lv = myLevel(), name = displayName() || 'Гость', photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url) || '';
-  const mk = (k, v, i, inner, pro, lbl, lock) => `<button type="button" class="pzb ${k}${cur[k] === v ? ' cur' : ''}${(k in pend && pend[k] === v) ? ' sel' : ''}${lock ? ' lock' : ''}" data-act="pzpick" data-k="${k}" data-v="${v}" style="--i:${Math.min(i, 24)}">${pro ? '<i class="prot">PRO</i>' : ''}<i class="pzck">${IC('check', 12)}</i>${inner}<b>${esc(lbl)}</b></button>`;
+  const mk = (k, v, i, inner, pro, lbl, lock, tag) => `<button type="button" class="pzb ${k}${cur[k] === v ? ' cur' : ''}${(k in pend && pend[k] === v) ? ' sel' : ''}${lock ? ' lock' : ''}" data-act="pzpick" data-k="${k}" data-v="${v}" style="--i:${Math.min(i, 24)}">${tag || (pro ? '<i class="prot">PRO</i>' : '')}<i class="pzck">${IC('check', 12)}</i>${inner}<b>${esc(lbl)}</b></button>`;
   if (tab === 'kt') return `<div class="pzgrid kt">` + pzKits().map(([v, l], i) => { const lk = !!v && (!bgOwned(v) || !frOwned(v));
-    return `<button type="button" class="pzb kt${(cur.fr === v && cur.bg === v) ? ' cur' : ''}${(pend.fr === v && pend.bg === v) ? ' sel' : ''}${lk ? ' lock' : ''}" data-act="pzpick" data-k="kt" data-v="${v}" style="--i:${Math.min(i, 24)}">${v && lk ? '<i class="prot">PRO</i>' : ''}<i class="pzck">${IC('check', 12)}</i><span class="pzth${v ? '' : ' none'}">${v ? bgFx(v) : ''}<span class="pzkav">${frAv(v, 54, lv, photo, name)}</span></span><b>${esc(l)}</b></button>`; }).join('') + `</div>`;
-  if (tab === 'bg') return `<div class="pzgrid bg">` + [['', 'Без фона']].concat(BG_KEYS).map(([v, l], i) => mk('bg', v, i, `<span class="pzth${v ? '' : ' none'}">${v ? bgFx(v) : ''}</span>`, !!v && !bgOwned(v) || (!!v && !isPro()), l, !!v && !bgOwned(v))).join('') + `</div>`;
+    return `<button type="button" class="pzb kt${(cur.fr === v && cur.bg === v) ? ' cur' : ''}${(pend.fr === v && pend.bg === v) ? ' sel' : ''}${lk ? ' lock' : ''}" data-act="pzpick" data-k="kt" data-v="${v}" style="--i:${Math.min(i, 24)}">${v && lk ? (SHOP.ok ? '<i class="prot pzst">⭐ ' + ((!frOwned(v) && !bgOwned(v)) ? (SHOP.prices.kit || SHOP.prices.frame + SHOP.prices.bg) : (frOwned(v) ? SHOP.prices.bg : SHOP.prices.frame)) + '</i>' : '<i class="prot">PRO</i>') : ''}<i class="pzck">${IC('check', 12)}</i><span class="pzth${v ? '' : ' none'}">${v ? bgFx(v) : ''}<span class="pzkav">${frAv(v, 54, lv, photo, name)}</span></span><b>${esc(l)}</b></button>`; }).join('') + `</div>`;
+  if (tab === 'bg') return `<div class="pzgrid bg">` + [['', 'Без фона']].concat(BG_KEYS).map(([v, l], i) => mk('bg', v, i, `<span class="pzth${v ? '' : ' none'}">${v ? bgFx(v) : ''}</span>`, 0, l, !!v && !bgOwned(v), pzTag('bg', v, !!v && !bgOwned(v)))).join('') + `</div>`;
   if (tab === 'bd') return `<div class="pzgrid bd">` + BADGE_LIST.map(([v, l], i) => mk('bd', v, i, `<span class="pzbd">${badgeHTML(v, 38)}</span>`, !isPro(), l, !isPro())).join('') + `</div>`;
-  return `<div class="pzgrid fr">` + FRAMES.map(([v, l, pro], i) => mk('fr', v, i, frAv(v, 64, lv, photo, name), !!pro, l, !!pro && !frOwned(v))).join('') + `</div>`;
+  return `<div class="pzgrid fr">` + FRAMES.map(([v, l, pro], i) => mk('fr', v, i, frAv(v, 64, lv, photo, name), 0, l, !!pro && !frOwned(v), pzTag('frame', v, !!pro && !frOwned(v)))).join('') + `</div>`;
 }
 function pzCap(t){ return t === 'kt' ? 'Готовые комплекты: рамка и фон в одном стиле. Выбери и при желании поменяй значок или любую часть отдельно' : t === 'bg' ? 'Анимированный фон шапки профиля. Его видят все, кто откроет твой профиль' : t === 'bd' ? 'Маленький значок рядом с именем: в профиле, списках и ленте' : 'Рамка аватарки: её видят друзья в профиле, списках и ленте'; }
 function viewPersWeb(){
+  if (!SHOP.ok) loadShop().then(() => { if (SHOP.ok && document.querySelector('.pz2')) render(); });
   const lv = myLevel(), name = displayName() || 'Гость', un = tgUser && tgUser.username, {eff} = pzEff(), bk = eff.bg;
   const cnt = {fr: FRAMES.length, bg: BG_KEYS.length + 1, bd: BADGE_LIST.length};
   return `<div class="pz-top"><button class="ib round" data-act="persback" aria-label="Назад к настройкам">${IC('back', 20)}</button><div><h1>Персонализация</h1><div class="sub">Рамка, фон и значок. Результат виден сразу, пока ты выбираешь</div></div></div>
@@ -7405,6 +7422,8 @@ const ACT = {
     document.getElementById('pzcap').textContent = pzCap(v); gw.classList.remove('sw'); gw.innerHTML = pzGridHTML(v); void gw.offsetWidth; gw.classList.add('sw'); pzUpdate(); },
   pzreset: () => { S.pzp = null; S.pzH = null; hap.tap(); pzUpdate(); },
   pzpro: () => openPro(),
+  pzbuy: el => ACT.shopbuy({dataset: {kind: el.dataset.kind, k: el.dataset.k, n: el.dataset.kind === 'bg' ? pzNm('bg', el.dataset.k) : pzNm('frame', el.dataset.k)}}),
+  pvbuy: el => ACT.pzbuy(el),
   pzapply: () => { const p = S.pzp || {}, cur = pzCur(); let n = 0;
     if ('fr' in p && p.fr !== cur.fr && !pzLocked('fr', p.fr)) { db.settings.frame = p.fr; n++; }
     if ('bg' in p && p.bg !== cur.bg && !pzLocked('bg', p.bg)) { db.settings.bg = p.bg; n++; }
