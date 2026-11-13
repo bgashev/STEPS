@@ -1,7 +1,23 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<script>try{if(/[?&]from=site\b/.test(location.search)){document.write('<style id="lu-g">html{background:#010206!important}body{visibility:hidden}</style>');setTimeout(function(){var g=document.getElementById("lu-g");if(g)g.remove()},4000)}}catch(e){}</script>
+<script>try{if(/[?&]from=site\b/.test(location.search)){document.write('<style id="lu-g">html{background:#010206!important}body{visibility:hidden}/* v1.771: стартовый экран (мобильная версия), вариант «Свечение» */
+#vsplash{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:var(--text);overflow:hidden}
+#vsplash *{transform-box:fill-box}
+#vsplash svg{display:block;overflow:visible}
+#vsplash .sp-mk{width:96px;height:58px}#vsplash .sp-wm{width:88px;height:18.3px}
+#vsplash .sp-glow{position:absolute;left:50%;top:50%;width:240px;height:240px;margin:-120px 0 0 -120px;border-radius:50%;background:radial-gradient(circle,rgba(139,92,246,.55),rgba(34,211,238,.22) 45%,transparent 68%);filter:blur(12px);opacity:0;animation:splBloom 1.7s ease-out both}
+#vsplash .sp-mk{animation:splMk 1s cubic-bezier(.2,.9,.25,1) .1s both}
+#vsplash .sp-gr{stroke-dasharray:126;animation:splSweep 1s ease-out .15s both}
+#vsplash .sp-g{animation:splG .9s cubic-bezier(.2,.9,.25,1) .75s both}
+#vsplash.out{animation:splOut .22s ease-in forwards}
+@keyframes splBloom{0%{opacity:0;transform:scale(.15)}45%{opacity:.9}100%{opacity:.18;transform:scale(1.15)}}
+@keyframes splMk{from{opacity:0;transform:scale(.8);filter:blur(10px)}}
+@keyframes splSweep{from{stroke-dashoffset:126}to{stroke-dashoffset:0}}
+@keyframes splG{from{opacity:0;transform:translateX(calc(var(--d)*1px));filter:blur(5px)}}
+@keyframes splOut{to{opacity:0}}
+@media (prefers-reduced-motion:reduce){#vsplash .sp-glow,#vsplash .sp-mk,#vsplash .sp-gr,#vsplash .sp-g{animation:none;opacity:1;stroke-dashoffset:0}#vsplash .sp-glow{opacity:.18}}
+</style>');setTimeout(function(){var g=document.getElementById("lu-g");if(g)g.remove()},4000)}}catch(e){}</script>
 <meta charset="utf-8">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta property="og:site_name" content="VOOB"><meta property="og:type" content="website"><meta property="og:title" content="Профиль в VOOB"><meta property="og:description" content="Тренировки, в которых приятно жить. Открой профиль и добавься в друзья."><meta property="og:image" content="https://app.voob.kz/og.jpg?v=2"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://app.voob.kz/og.jpg?v=2"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -3369,7 +3385,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.770';
+const APP = 'VOOB (by BGASHEV) Mini App v1.771';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7940,6 +7956,17 @@ function pflHide(){
   const wait = Math.max(0, 1600 - (Date.now() - PFL.t0));   // не мигать: минимум 1,6 с
   setTimeout(() => { d.classList.add('out'); setTimeout(() => d.remove(), 650); }, wait);
 }
+/* v1.771: стартовый экран на 2 секунды (только Telegram Mini App) */
+function splashShow(){
+  try {
+    const X = [0, 13, 26, 39], K = ['V', 'O', 'O', 'B'], D = [-16, -6, 6, 16];
+    const d = document.createElement('div'); d.id = 'vsplash'; d.setAttribute('aria-hidden', 'true');
+    d.innerHTML = `<div class="sp-glow"></div><svg class="sp-mk" viewBox="0 0 100 60"><defs><linearGradient id="spg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9b8ff"/><stop offset=".5" stop-color="#8b5cf6"/><stop offset="1" stop-color="#22d3ee"/></linearGradient><clipPath id="spu"><rect x="0" y="0" width="100" height="30"/></clipPath></defs><circle class="sp-gr" cx="37" cy="30" r="20" fill="none" stroke="url(#spg)" stroke-width="8" stroke-linecap="round"/><circle cx="63" cy="30" r="20" fill="none" stroke="currentColor" stroke-width="8"/><circle class="sp-gr" cx="37" cy="30" r="20" fill="none" stroke="url(#spg)" stroke-width="8" stroke-linecap="round" clip-path="url(#spu)"/></svg><svg class="sp-wm" viewBox="0 0 48 10">${K.map((k, i) => `<g class="sp-g" style="--d:${D[i]}"><g transform="translate(${X[i]} 0)">${WM_G[k]}</g></g>`).join('')}</svg>`;
+    document.body.appendChild(d);
+    setTimeout(() => d.classList.add('out'), 1780);
+    setTimeout(() => d.remove(), 2030);
+  } catch (e) {}
+}
 async function init(){
   try { if (inWeb) routeApply(location.pathname); } catch (e) {}
   if (tg) {
@@ -7951,6 +7978,7 @@ async function init(){
   try { const s = localStorage.getItem(LS); if (s) db = normalize(JSON.parse(s)); } catch (e) {}
   let _pfl = false; try { _pfl = inWeb && inWebApp && !localStorage.getItem(LS); if (_pfl) pflShow(); } catch (e) {}
   invalidate(); applyTheme(); render();
+  if (REALTG) splashShow();
   scheduleSync(100);
   try { if (inWeb && !inWebApp) showWebLogin(); /* v1.744: WEB только после входа через Telegram */ } catch (e) {}
   if (inTG) setTimeout(() => { loadFriends(); loadFeed(true); }, 900);   // к моменту перехода во вкладку всё уже свежее
