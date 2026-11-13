@@ -338,11 +338,17 @@ async function shopPrices(): Promise<Record<string, number>> {
   for (const r of data ?? []) o[(r as any).kind] = Number((r as any).stars);
   return o;
 }
+// есть ли у человека предмет (комплект считается, если есть и рамка, и фон)
+async function shopHas(tg: number, kind: string, item: string) {
+  const { data } = await db.from("shop_owned").select("kind").eq("tg_id", tg).eq("item", item).is("refunded_at", null);
+  const k = new Set((data ?? []).map((r: any) => r.kind));
+  return kind === "kit" ? k.has("kit") || (k.has("frame") && k.has("bg")) : k.has(kind) || k.has("kit");
+}
 async function routeShopStatus(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
   const [pr, { data }] = await Promise.all([shopPrices(), db.from("shop_owned").select("kind, item").eq("tg_id", me).is("refunded_at", null)]);
-  return json({ prices: pr, owned: (data ?? []).map((r: any) => `${r.kind}:${r.item}`) });
+  return json({ prices: pr, gifts: true, owned: (data ?? []).map((r: any) => `${r.kind}:${r.item}`) });
 }
 async function routeShopInvoice(body: any) {
   const me = await sessionUser(body?.token);
@@ -352,15 +358,22 @@ async function routeShopInvoice(body: any) {
   if (await isLocked(me)) return fail("Оплата недоступна, пока подписка заморожена или аккаунт ждёт удаления", 423);
   const stars = (await shopPrices())[kind];
   if (!stars) return fail("Цена не задана", 500);
-  const { data: have } = await db.from("shop_owned").select("id").eq("tg_id", me).eq("kind", kind).eq("item", item).is("refunded_at", null).maybeSingle();
-  if (have) return fail("Это уже у тебя", 409);
-  const title = kind === "frame" ? "Рамка для аватарки" : kind === "kit" ? "Комплект: рамка и фон" : "Фон профиля";
+  const to = Number(body?.for ?? 0);                         // v1.792: подарок другу
+  if (to) {
+    if (to === me || !(await areFriends(me, to))) return fail("Дарить можно только друзьям", 403);
+    if ((await deactivatedSet([to])).size) return fail("Пользователь недоступен", 404);
+  }
+  if (await shopHas(to || me, kind, item)) return fail(to ? "Это уже есть у друга" : "Это уже у тебя", 409);
+  const what = kind === "frame" ? "Рамка для аватарки" : kind === "kit" ? "Комплект: рамка и фон" : "Фон профиля";
+  const title = to ? (kind === "frame" ? "Подарок: рамка для друга" : kind === "kit" ? "Подарок: комплект" : "Подарок: фон для друга") : what;
+  const fu = to ? await userInfo(to) as any : null;
   const r = await tg("createInvoiceLink", {
-    title, description: `${title} в VOOB. Остаётся у тебя навсегда.`.slice(0, 255), payload: `shop:${kind}:${item}:${me}`,
+    title, description: (to ? `${what} в VOOB для ${displayName(fu)}. Останется у друга навсегда.` : `${what} в VOOB. Остаётся у тебя навсегда.`).slice(0, 255),
+    payload: to ? `shop:${kind}:${item}:${me}:${to}` : `shop:${kind}:${item}:${me}`,
     provider_token: "", currency: "XTR", prices: [{ label: title, amount: stars }],
   });
   if (!r?.ok) return fail("Не удалось создать счёт: " + (r?.description ?? "Telegram"), 502);
-  return json({ link: r.result, kind, item, stars });
+  return json({ link: r.result, kind, item, stars, for: to || undefined });
 }
 // купленные рамки и фоны людей из списка: показываем то, что выбрано в настройках и куплено (PRO считает клиент и voob-extra)
 async function routeShopLooks(body: any) {
@@ -386,8 +399,8 @@ async function routeShopLooks(body: any) {
   return json({ bgs, frs });
 }
 function parseShopPayload(s: string) {
-  const m = /^shop:(frame|bg|kit):([a-z0-9]{3,16}):(\d+)$/.exec(s || "");
-  return m ? { kind: m[1], item: m[2], tg: Number(m[3]) } : null;
+  const m = /^shop:(frame|bg|kit):([a-z0-9]{3,16}):(\d+)(?::(\d+))?$/.exec(s || "");
+  return m ? { kind: m[1], item: m[2], tg: Number(m[3]), to: m[4] ? Number(m[4]) : 0 } : null;
 }
 
 function parseProPayload(s: string) {
@@ -398,7 +411,8 @@ async function onPreCheckout(q: any) {
   const sh = parseShopPayload(q.invoice_payload);
   if (sh) {
     const price = (await shopPrices())[sh.kind];
-    const ok = !!price && sh.tg === q.from?.id && q.currency === "XTR" && q.total_amount === price && !(await isFrozen(sh.tg));
+    const ok = !!price && sh.tg === q.from?.id && q.currency === "XTR" && q.total_amount === price && !(await isFrozen(sh.tg))
+      && (!sh.to || (await areFriends(sh.tg, sh.to) && !(await shopHas(sh.to, sh.kind, sh.item)))) && (sh.to || !(await shopHas(sh.tg, sh.kind, sh.item)));
     await tg("answerPreCheckoutQuery", ok ? { pre_checkout_query_id: q.id, ok: true }
       : { pre_checkout_query_id: q.id, ok: false, error_message: "Счёт устарел — открой Магазин в VOOB ещё раз." });
     return;
@@ -420,7 +434,8 @@ async function onPaid(msg: any) {
       return;
     }
     await upsertUser(msg.from);
-    const { data, error } = await db.rpc("shop_apply_payment", { p_tg: msg.from.id, p_kind: sh.kind, p_item: sh.item,
+    const owner = sh.to || msg.from.id;
+    const { data, error } = await db.rpc("shop_apply_payment", { p_tg: owner, p_kind: sh.kind, p_item: sh.item,
       p_charge: sp.telegram_payment_charge_id, p_stars: sp.total_amount });
     if (error) {
       console.error(error);
@@ -430,7 +445,16 @@ async function onPaid(msg: any) {
     }
     const row = Array.isArray(data) ? data[0] : data;
     if (row?.dup) return;
-    await tg("sendMessage", { chat_id: msg.chat.id, text: `✨ Готово! ${sh.kind === "frame" ? "Рамка" : sh.kind === "kit" ? "Комплект" : "Фон"} теперь твой навсегда. Открой VOOB и примени.`, reply_markup: openBtnMk() });
+    const word = sh.kind === "frame" ? "Рамка" : sh.kind === "kit" ? "Комплект" : "Фон";
+    if (sh.to) {                                             // v1.792: подарок другу
+      await db.from("shop_owned").update({ payer_id: msg.from.id }).eq("charge_id", sp.telegram_payment_charge_id);
+      const fu = await userInfo(sh.to) as any, me = await userInfo(msg.from.id) as any;
+      await tg("sendMessage", { chat_id: msg.chat.id, text: `🎁 Готово! ${displayName(fu)} получит подарок: ${word.toLowerCase()} в VOOB навсегда.\n\nСпасибо за щедрость 💛`, reply_markup: openBtnMk() });
+      notify(sh.to, `🎁 ${displayName(me)} дарит тебе ${word.toLowerCase()} в VOOB!\n\nОткрой Персонализацию, чтобы применить подарок.`);
+      if (ADMIN_TG_ID) tg("sendMessage", { chat_id: ADMIN_TG_ID, text: `🎁 Магазин-подарок · ${sh.kind}:${sh.item} · ${sp.total_amount}⭐\n${displayName(me)} (id ${msg.from.id}) → ${displayName(fu)} (id ${sh.to})\ncharge: ${sp.telegram_payment_charge_id}` }).catch(() => {});
+      return;
+    }
+    await tg("sendMessage", { chat_id: msg.chat.id, text: `✨ Готово! ${word} теперь твой навсегда. Открой VOOB и примени.`, reply_markup: openBtnMk() });
     if (ADMIN_TG_ID) {
       const u = await userInfo(msg.from.id) as any;
       tg("sendMessage", { chat_id: ADMIN_TG_ID, text: `🛍 Магазин · ${sh.kind}:${sh.item} · ${sp.total_amount}⭐\n${displayName(u)} (id ${msg.from.id})\ncharge: ${sp.telegram_payment_charge_id}` }).catch(() => {});
@@ -483,7 +507,7 @@ async function adminRefund(chatId: number, charge: string) {
   const { data: so } = await db.from("shop_owned").select("*").eq("charge_id", charge).maybeSingle();
   if (so) {
     if (so.refunded_at) return tg("sendMessage", { chat_id: chatId, text: "Уже возвращён" });
-    const rr = await tg("refundStarPayment", { user_id: so.tg_id, telegram_payment_charge_id: charge });
+    const rr = await tg("refundStarPayment", { user_id: so.payer_id ?? so.tg_id, telegram_payment_charge_id: charge });
     if (!rr?.ok) return tg("sendMessage", { chat_id: chatId, text: "Telegram: " + (rr?.description ?? "ошибка") });
     await db.from("shop_owned").update({ refunded_at: new Date().toISOString() }).eq("id", so.id);
     return tg("sendMessage", { chat_id: chatId, text: `Возврат сделан: ${so.kind}:${so.item}, ${so.stars}⭐. Предмет отнят.` });
