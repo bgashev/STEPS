@@ -3407,20 +3407,32 @@ html.web #tabs .tbi{top:262px}
 .psc .gsc-b.ghost{color:var(--text)}
 
 /* v1.782: Магазин, широкая сетка */
-.shp-top{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:14px;margin-top:6px}
-.shp-side{display:grid;grid-template-rows:1fr 1fr;gap:14px}
-.shp-h{position:relative;overflow:hidden;isolation:isolate;border-radius:26px;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;gap:18px;padding:24px 28px}
-.shp-h.big{min-height:250px;padding:30px 36px;flex-direction:row-reverse;justify-content:space-between}
-.shp-h.sm{min-height:118px;padding:16px 22px;flex-direction:row-reverse;justify-content:space-between}
-.shp-bgl{position:absolute;inset:0;z-index:-2;overflow:hidden}.shp-bgl .hbgfx{border-radius:0}
-.shp-h::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(10,10,14,.62),rgba(10,10,14,.05) 70%)}
-.shp-hav{flex:none}
-.shp-ht{min-width:0}.shp-ht small{font-size:11px;letter-spacing:.12em;font-weight:800;color:#e9e9f5;text-shadow:0 1px 6px #0009}
-.shp-ht h3{font-size:30px;letter-spacing:-.6px;margin:4px 0 14px;text-shadow:0 2px 12px #000a}.shp-h.sm h3{font-size:20px;margin:2px 0 10px}
-.shp-hb{display:flex;gap:8px;flex-wrap:wrap}
+.shp-car{position:relative;margin-top:6px}
+.shp-slides{position:relative;border-radius:30px;overflow:hidden;isolation:isolate;border:1px solid rgba(255,255,255,.14);min-height:370px;background:var(--surface2);box-shadow:0 30px 70px -30px #000}
+.shp-sl{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:center;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility .6s;pointer-events:none}
+.shp-sl.on{position:relative;opacity:1;visibility:visible;pointer-events:auto;min-height:370px}
+.shp-sbg{position:absolute;inset:0;z-index:-2;overflow:hidden}.shp-sbg .hbgfx{border-radius:0}
+.shp-sl::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(8,8,12,.72),rgba(8,8,12,.12) 72%)}
+.shp-sl.on .shp-sav{animation:shpPop .8s cubic-bezier(.2,1.2,.3,1) both}.shp-sl.on .shp-sx>*{animation:shpUp .6s cubic-bezier(.22,1,.36,1) both}.shp-sl.on .shp-sx>*:nth-child(2){animation-delay:.06s}.shp-sl.on .shp-sx>*:nth-child(3){animation-delay:.12s}.shp-sl.on .shp-sx>*:nth-child(4){animation-delay:.18s}.shp-sl.on .shp-sx>*:nth-child(5){animation-delay:.24s}
+@keyframes shpPop{from{opacity:0;transform:scale(.82) rotate(-6deg)}}@keyframes shpUp{from{opacity:0;transform:translateY(14px)}}
+.shp-sx{position:relative;padding:38px 8px 44px 42px;display:grid;gap:14px;align-content:center;min-width:0}
+.shp-tg{width:fit-content;font-size:10.5px;font-weight:800;letter-spacing:.14em;padding:6px 11px;border-radius:99px;background:rgba(255,255,255,.14);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.14);color:#fff}
+.shp-sx h2{margin:0;font-size:46px;line-height:1;letter-spacing:-.03em;color:#fff;text-shadow:0 2px 18px #0008}
+.shp-stats{display:flex;gap:22px;flex-wrap:wrap}.shp-stats div{font-size:12px;color:rgba(255,255,255,.72)}.shp-stats b{display:block;font-size:17px;color:#fff;margin-bottom:1px}.shp-stats .sv b{color:#a3e635}
+.shp-ab{display:flex;gap:9px;flex-wrap:wrap}.shp-ab .shp-btn{padding:12px 22px;font-size:14px}
+.shp-ln{display:flex;gap:16px;flex-wrap:wrap}.shp-ln button{font:inherit;font-size:12.5px;color:rgba(255,255,255,.78);background:none;border:0;padding:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer}.shp-ln button:hover{color:#fff}
+.shp-sa{position:relative;display:grid;place-items:center;min-height:300px}.shp-sav{filter:drop-shadow(0 14px 34px #000a)}
+.shp-pb{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.14)}.shp-pb i{display:block;height:100%;width:0;background:#fff}
+.shp-sl.on .shp-pb i{animation:shpPg 7s linear both}.shp-car:hover .shp-pb i{animation-play-state:paused}
+@keyframes shpPg{from{width:0}to{width:100%}}
+@media(prefers-reduced-motion:reduce){.shp-sl.on .shp-pb i{animation:none;width:100%}.shp-sl.on .shp-sav,.shp-sl.on .shp-sx>*{animation:none}}
+.shp-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.shp-th{font:inherit;color:var(--text);display:flex;align-items:center;gap:12px;padding:9px 14px 9px 9px;border-radius:18px;background:color-mix(in srgb,var(--surface) 72%,transparent);backdrop-filter:blur(10px);border:1px solid var(--border);cursor:pointer;text-align:left;transition:.25s}
+.shp-th:hover{transform:translateY(-2px)}.shp-th.on{border-color:var(--text);background:rgba(255,255,255,.09)}
+.shp-thm{position:relative;width:46px;height:46px;border-radius:13px;overflow:hidden;flex:none;isolation:isolate}.shp-thm .hbgfx{border-radius:0}
+.shp-th b{display:block;font-size:14px}.shp-th small{display:block;color:var(--muted);font-size:12px}
 .shp-btn{font:inherit;font-size:13px;font-weight:800;border:0;border-radius:99px;padding:9px 18px;background:var(--text);color:var(--bg);cursor:pointer;transition:transform .2s}
 .shp-btn.g{background:rgba(255,255,255,.16);color:#fff;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28)}.shp-btn:hover{transform:translateY(-2px)}
-.shp-h.sm .shp-btn{padding:7px 13px;font-size:12px}
 #shpSkyFx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .5s ease;background:radial-gradient(90% 60vh at 72% 0,#1b2a5c 0,transparent 70%),radial-gradient(70% 55vh at 6% 100%,#3b1560 0,transparent 70%),radial-gradient(60% 45vh at 92% 58%,#12305a66 0,transparent 70%),#05060d}
 #shpSkyFx.on{opacity:1}
 #shpSkyFx s{position:absolute;border-radius:50%;background:#fff;text-decoration:none;animation:shpTw 3s ease-in-out infinite}
@@ -3480,7 +3492,7 @@ html.web #tabs .tbi{top:262px}
 .shp-pr{font-size:12.5px;font-weight:800;background:var(--accent);color:var(--bg);border-radius:99px;padding:5px 15px}
 .shp-pr.own{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
 .shp-pro{margin-top:22px;border:1px dashed var(--border);border-radius:18px;padding:14px 18px;color:var(--muted);font-size:13px}.shp-pro b{color:var(--text);font-weight:600}
-@media(max-width:900px){.shp-top{grid-template-columns:1fr}.shp-h.big{min-height:200px;padding:22px}.shp-ht h3{font-size:24px}}
+@media(max-width:900px){.shp-sl,.shp-sl.on{grid-template-columns:1fr;min-height:0}.shp-slides{min-height:480px}.shp-sa{order:-1;min-height:210px;padding-top:22px}.shp-sav{transform:scale(.8)}.shp-sx{padding:4px 22px 40px}.shp-sx h2{font-size:34px}.shp-strip{grid-template-columns:1fr}.shp-sl.on .shp-sav{animation:none}}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -3495,7 +3507,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.807';
+const APP = 'VOOB (by BGASHEV) Mini App v1.808';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5814,6 +5826,11 @@ function historyHTML0(ws){
   return h;
 }
 
+function shpGo(c, i){   // v1.808: карусель магазина
+  const sl = c.querySelectorAll('.shp-sl'); if (!sl.length) return; i = (i % sl.length + sl.length) % sl.length; c.dataset.i = i;
+  sl.forEach((x, n) => x.classList.toggle('on', n === i)); c.querySelectorAll('.shp-th').forEach((x, n) => x.classList.toggle('on', n === i));
+}
+document.addEventListener('animationend', e => { if (e.animationName === 'shpPg') { const c = e.target.closest('.shp-car'); if (c) shpGo(c, +c.dataset.i + 1); } });
 function shpSkySync(){   // v1.807: звёздное небо на ВСЮ страницу магазина (fixed за интерфейсом, только тёмная тема)
   const on = S.tab === 'shop' && !S.fprof && themeMode() === 'dark';
   let e = document.getElementById('shpSkyFx');
@@ -5844,11 +5861,16 @@ function viewShop(){   // v1.782: «Магазин» (вариант «Журн�
   const mineN = mKits.length + mFr.length + mBg.length;
   const mineHTML = mineN ? [mKits.length ? `<div class="shp-grid bg">${mKits.map(kc).join('')}</div>` : '', mFr.length ? `<div class="shp-lab"><b>Рамки</b></div><div class="shp-grid fr">${mFr.map(fc).join('')}</div>` : '', mBg.length ? `<div class="shp-lab"><b>Фоны</b></div><div class="shp-grid bg">${mBg.map(bc).join('')}</div>` : ''].join('') : `<div class="shp-empty">${SHOP.ok ? 'Пока ничего не куплено' : 'Загружаем покупки…'}</div>`;
   const pick = (i) => paired[(i * 7 + 3) % paired.length] || fr[i] || fr[0];
-  const hero = (f, cls, px) => { const bn = (BG_KEYS.find(x => x[0] === f[0]) || BG_KEYS[0]);
-    return `<div class="shp-h ${cls}"><div class="shp-bgl">${bgFx(bn[0])}</div><div class="shp-hav">${av(f[0], px)}</div><div class="shp-ht"><small>${cls === 'big' ? 'НОВИНКА' : 'ПОДБОРКА'}</small><h3>${esc(f[1])}</h3>
-      <div class="shp-hb">${kp ? `<button type="button" class="shp-btn" data-act="shopbuy" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}">${kitHas(f[0]) ? 'Комплект у тебя' : 'Комплект · ⭐ ' + kp}</button>` : ''}<button type="button" class="shp-btn g" data-act="shopbuy" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}">${has('frame', f[0]) ? 'Рамка у тебя' : 'Рамка · ⭐ ' + SHOP.prices.frame}</button><button type="button" class="shp-btn g" data-act="shopbuy" data-kind="bg" data-k="${bn[0]}" data-n="${esc(bn[1])}">${has('bg', bn[0]) ? 'Фон у тебя' : 'Фон · ⭐ ' + SHOP.prices.bg}</button></div></div></div>`; };
+  const slide = (f, n, tot) => { const bn = (BG_KEYS.find(x => x[0] === f[0]) || BG_KEYS[0]), sum = SHOP.prices.frame + SHOP.prices.bg, pc = kp && kp < sum ? Math.round((1 - kp / sum) * 100) : 0, mine = kitHas(f[0]);
+    return `<div class="shp-sl${n ? '' : ' on'}"><div class="shp-sbg">${bgFx(bn[0])}</div><div class="shp-sx"><span class="shp-tg">${n ? 'ПОДБОРКА' : 'НОВИНКА'} · ${n + 1} / ${tot}</span><h2>${esc(f[1])}</h2>
+      <div class="shp-stats">${kp ? `<div><b>⭐ ${kp}</b>комплект</div>` : ''}${pc ? `<div class="sv"><b>−${pc}%</b>выгода</div>` : ''}<div><b>⭐ ${SHOP.prices.frame} / ${SHOP.prices.bg}</b>по отдельности</div></div>
+      <div class="shp-ab">${kp ? (mine ? `<button type="button" class="shp-btn" disabled style="opacity:.7;cursor:default">${isPro() ? 'Открыто в PRO' : 'Комплект у тебя'}</button>` : `<button type="button" class="shp-btn" data-act="shopbuy" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}">Купить комплект</button>`) : ''}${kp ? `<button type="button" class="shp-btn g" data-act="cardgift" data-kind="kit" data-k="${f[0]}">Подарить</button>` : ''}<button type="button" class="shp-btn g" data-act="shopview" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}">Примерить</button></div>
+      <div class="shp-ln"><button type="button" data-act="shopbuy" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}">${has('frame', f[0]) ? 'рамка у тебя' : 'только рамка · ⭐ ' + SHOP.prices.frame}</button><button type="button" data-act="shopbuy" data-kind="bg" data-k="${bn[0]}" data-n="${esc(bn[1])}">${has('bg', bn[0]) ? 'фон у тебя' : 'только фон · ⭐ ' + SHOP.prices.bg}</button></div></div>
+      <div class="shp-sa"><div class="shp-sav">${av(f[0], 150)}</div></div><div class="shp-pb"><i></i></div></div>`; };
+  const picks = [pick(0), pick(1), pick(2)];
+  const th = (f, n) => { const bn = (BG_KEYS.find(x => x[0] === f[0]) || BG_KEYS[0]); return `<button type="button" class="shp-th${n ? '' : ' on'}" data-act="shpslide" data-i="${n}"><span class="shp-thm">${bgFx(bn[0])}</span><span><b>${esc(f[1])}</b><small>${kp ? 'комплект · ⭐ ' + kp : 'рамка · ⭐ ' + SHOP.prices.frame}</small></span></button>`; };
   return `<div class="shp-wrap" data-t="all"><div class="head"><div><h1>Магазин</h1><div class="sub">Рамки и фоны по одному. Покупаешь один раз, остаются навсегда</div></div></div>
-  <div class="shp-top">${hero(pick(0), 'big', 120)}<div class="shp-side">${hero(pick(1), 'sm', 76)}${hero(pick(2), 'sm', 76)}</div></div>
+  <div class="shp-car" data-i="0"><div class="shp-slides">${picks.map((f, n) => slide(f, n, picks.length)).join('')}</div><div class="shp-strip">${picks.map(th).join('')}</div></div>
   <div class="shp-tabs"><button type="button" class="on" data-act="shoptab" data-t="all">Всё</button><button type="button" data-act="shoptab" data-t="kit">Комплекты · ${kits.length}</button><button type="button" data-act="shoptab" data-t="fr">Рамки · ${fr.length}</button><button type="button" data-act="shoptab" data-t="bg">Фоны · ${bgs.length}</button><button type="button" class="shp-mine" data-act="shoptab" data-t="mine">${IC('check', 14)}Мои покупки${mineN ? ' · ' + mineN : ''}</button></div>
   <section class="shp-sec s-kit"><div class="shp-lab"><b>Комплекты</b><span>рамка и фон одного стиля${kp ? ' за ⭐ ' + kp + ' вместо ' + (SHOP.prices.frame + SHOP.prices.bg) : ''}</span></div><div class="shp-grid bg">${kits.map(kc).join('')}</div></section>
   <section class="shp-sec s-fr"><div class="shp-lab"><b>Рамки</b><span>двигаются и светятся, как в профиле</span></div><div class="shp-grid fr">${fr.map(fc).join('')}</div></section>
@@ -7831,6 +7853,7 @@ const ACT = {
     if (on) { touchMeta('settings'); save(); toast('Оформление этого устройства теперь общее'); } else toast('Теперь у телефона своё оформление');
     render(); },
   frprev: el => openFramePrev(el.dataset.v || ''),
+  shpslide: el => { const c = el.closest('.shp-car'); if (c) shpGo(c, +el.dataset.i); },
   shoptab: el => { const w = el.closest('.shp-wrap'); if (!w) return; w.dataset.t = el.dataset.t; w.querySelectorAll('.shp-tabs button').forEach(x => x.classList.toggle('on', x === el)); },
   shopview: el => shopPreview(el.dataset.kind, el.dataset.k),
   cardgift: el => { if (!SHOP.ok) { toast('Покупки скоро откроются'); return; } shopPreview(el.dataset.kind, el.dataset.k); shopGiftPick(); },
