@@ -3421,12 +3421,11 @@ html.web #tabs .tbi{top:262px}
 .shp-btn{font:inherit;font-size:13px;font-weight:800;border:0;border-radius:99px;padding:9px 18px;background:var(--text);color:var(--bg);cursor:pointer;transition:transform .2s}
 .shp-btn.g{background:rgba(255,255,255,.16);color:#fff;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28)}.shp-btn:hover{transform:translateY(-2px)}
 .shp-h.sm .shp-btn{padding:7px 13px;font-size:12px}
-.shp-wrap{position:relative;isolation:isolate}
-.shp-sky{position:absolute;inset:-30px -26px -40px;z-index:-1;pointer-events:none;overflow:hidden;border-radius:26px;background:radial-gradient(90% 420px at 72% 0,#1b2a5c 0,transparent 70%),radial-gradient(70% 380px at 8% 100%,#3b1560 0,transparent 70%),radial-gradient(60% 300px at 90% 55%,#12305a55 0,transparent 70%),#05060d}
-.shp-sky s{position:absolute;border-radius:50%;background:#fff;text-decoration:none;animation:shpTw 3s ease-in-out infinite}
+#shpSkyFx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .5s ease;background:radial-gradient(90% 60vh at 72% 0,#1b2a5c 0,transparent 70%),radial-gradient(70% 55vh at 6% 100%,#3b1560 0,transparent 70%),radial-gradient(60% 45vh at 92% 58%,#12305a66 0,transparent 70%),#05060d}
+#shpSkyFx.on{opacity:1}
+#shpSkyFx s{position:absolute;border-radius:50%;background:#fff;text-decoration:none;animation:shpTw 3s ease-in-out infinite}
 @keyframes shpTw{50%{opacity:.15;transform:scale(.6)}}
-@media(prefers-reduced-motion:reduce){.shp-sky s{animation:none}}
-.shp-sky~.shp-tabs,.shp-sky~.head{position:relative}
+@media(prefers-reduced-motion:reduce){#shpSkyFx s{animation:none}}
 .shp-tabs{display:flex;gap:6px;width:fit-content;max-width:100%;overflow-x:auto;scrollbar-width:none;margin:26px 0 8px;position:sticky;top:10px;z-index:3;padding:6px;border-radius:99px;border:1px solid var(--border);background:color-mix(in srgb,var(--bg) 72%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 8px 24px #0004}.shp-tabs::-webkit-scrollbar{display:none}.shp-tabs button{white-space:nowrap}
 .shp-tabs button{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:99px;padding:8px 18px;cursor:pointer;transition:.2s}
 .shp-tabs button.on{background:var(--accent);color:var(--bg);border-color:transparent}
@@ -3496,7 +3495,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.806';
+const APP = 'VOOB (by BGASHEV) Mini App v1.807';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5815,11 +5814,17 @@ function historyHTML0(ws){
   return h;
 }
 
-function shpSky(){   // v1.805: звёздное небо за магазином (только тёмная тема)
-  if (themeMode() !== 'dark') return '';
-  let x = 7, r = () => (x = (x * 1664525 + 1013904223) % 4294967296) / 4294967296, h = '';
-  for (let i = 0; i < 90; i++) { const z = (r() * 2 + 1).toFixed(1); h += `<s style="left:${(r() * 100).toFixed(1)}%;top:${(r() * 100).toFixed(1)}%;width:${z}px;height:${z}px;animation-delay:-${(r() * 3).toFixed(1)}s;animation-duration:${(2 + r() * 3).toFixed(1)}s"></s>`; }
-  return `<div class="shp-sky" aria-hidden="true">${h}</div>`;
+function shpSkySync(){   // v1.807: звёздное небо на ВСЮ страницу магазина (fixed за интерфейсом, только тёмная тема)
+  const on = S.tab === 'shop' && !S.fprof && themeMode() === 'dark';
+  let e = document.getElementById('shpSkyFx');
+  if (on) {
+    if (!e) {
+      let x = 7; const r = () => (x = (x * 1664525 + 1013904223) % 4294967296) / 4294967296; let h = '';
+      for (let i = 0; i < 130; i++) { const z = (r() * 2 + 1).toFixed(1); h += `<s style="left:${(r() * 100).toFixed(1)}%;top:${(r() * 100).toFixed(1)}%;width:${z}px;height:${z}px;animation-delay:-${(r() * 3).toFixed(1)}s;animation-duration:${(2 + r() * 3).toFixed(1)}s"></s>`; }
+      e = document.createElement('div'); e.id = 'shpSkyFx'; e.setAttribute('aria-hidden', 'true'); e.innerHTML = h; const wb = document.getElementById('wbg'); if (wb) wb.after(e); else document.body.prepend(e);   // после #wbg (тот же z-index:-1), иначе он закрывает небо
+      requestAnimationFrame(() => requestAnimationFrame(() => e.classList.add('on')));
+    } else e.classList.add('on');
+  } else if (e) { e.classList.remove('on'); setTimeout(() => { if (!e.classList.contains('on')) e.remove(); }, 550); }
 }
 function viewShop(){   // v1.782: «Магазин» (вариант «Журнал»), широкая сетка, везде твой аватар
   if (!SHOP.ok) loadShop().then(() => { if (SHOP.ok && document.querySelector('.shp-wrap')) render(); });
@@ -5842,7 +5847,7 @@ function viewShop(){   // v1.782: «Магазин» (вариант «Журн�
   const hero = (f, cls, px) => { const bn = (BG_KEYS.find(x => x[0] === f[0]) || BG_KEYS[0]);
     return `<div class="shp-h ${cls}"><div class="shp-bgl">${bgFx(bn[0])}</div><div class="shp-hav">${av(f[0], px)}</div><div class="shp-ht"><small>${cls === 'big' ? 'НОВИНКА' : 'ПОДБОРКА'}</small><h3>${esc(f[1])}</h3>
       <div class="shp-hb">${kp ? `<button type="button" class="shp-btn" data-act="shopbuy" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}">${kitHas(f[0]) ? 'Комплект у тебя' : 'Комплект · ⭐ ' + kp}</button>` : ''}<button type="button" class="shp-btn g" data-act="shopbuy" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}">${has('frame', f[0]) ? 'Рамка у тебя' : 'Рамка · ⭐ ' + SHOP.prices.frame}</button><button type="button" class="shp-btn g" data-act="shopbuy" data-kind="bg" data-k="${bn[0]}" data-n="${esc(bn[1])}">${has('bg', bn[0]) ? 'Фон у тебя' : 'Фон · ⭐ ' + SHOP.prices.bg}</button></div></div></div>`; };
-  return `<div class="shp-wrap" data-t="all">${shpSky()}<div class="head"><div><h1>Магазин</h1><div class="sub">Рамки и фоны по одному. Покупаешь один раз, остаются навсегда</div></div></div>
+  return `<div class="shp-wrap" data-t="all"><div class="head"><div><h1>Магазин</h1><div class="sub">Рамки и фоны по одному. Покупаешь один раз, остаются навсегда</div></div></div>
   <div class="shp-top">${hero(pick(0), 'big', 120)}<div class="shp-side">${hero(pick(1), 'sm', 76)}${hero(pick(2), 'sm', 76)}</div></div>
   <div class="shp-tabs"><button type="button" class="on" data-act="shoptab" data-t="all">Всё</button><button type="button" data-act="shoptab" data-t="kit">Комплекты · ${kits.length}</button><button type="button" data-act="shoptab" data-t="fr">Рамки · ${fr.length}</button><button type="button" data-act="shoptab" data-t="bg">Фоны · ${bgs.length}</button><button type="button" class="shp-mine" data-act="shoptab" data-t="mine">${IC('check', 14)}Мои покупки${mineN ? ' · ' + mineN : ''}</button></div>
   <section class="shp-sec s-kit"><div class="shp-lab"><b>Комплекты</b><span>рамка и фон одного стиля${kp ? ' за ⭐ ' + kp + ' вместо ' + (SHOP.prices.frame + SHOP.prices.bg) : ''}</span></div><div class="shp-grid bg">${kits.map(kc).join('')}</div></section>
@@ -7084,6 +7089,7 @@ function segSlide(){
 function render(){
   if (inWeb && inTG && S.tab === 'me' && !S.meSet && !S.pers && !S.fprof) S.tab = 'home';   // v1.637 WEB: «Я» и «Главная» — одна страница
   const html = S.fprof ? viewFProf() : VIEWS[S.tab](), v = $('#view'), rkey = S.fprof ? 'fp' : S.tab;
+  shpSkySync();
   const same = _rTab === rkey;
   if (same && inWeb && _navT && performance.now() - _navT < 700) { clearTimeout(_navDef); _navDef = setTimeout(render, Math.max(30, _navT + 720 - performance.now())); return; }   // v1.696: пока страница «въезжает», дозагрузки данных ждут — иначе она перерисовывалась на глазах
   if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
