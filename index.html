@@ -3562,7 +3562,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.818';
+const APP = 'VOOB (by BGASHEV) Mini App v1.819';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5219,8 +5219,14 @@ function isPro(){ { const c = tgUser && BDG.get(tgUser.id); if (c && c.creator &
 const SHOP = {owned: new Set(), prices: {frame: 30, bg: 25}, ok: 0}, FRS = new Map();   // v1.781: купленные рамки/фоны (навсегда); FRS — купленные рамки друзей
 async function loadShop(force){
   if (SHOP.ok && !force) return;
+  if (SHOP.busy && !force) return SHOP.busy;
+  const run = async () => {
   try { const j = await apiAuth('/shop/status', {}); if (j && j.owned) { SHOP.owned = new Set(j.owned); j.owned.forEach(x => { if (x.startsWith('kit:')) { SHOP.owned.add('frame:' + x.slice(4)); SHOP.owned.add('bg:' + x.slice(4)); } }); if (j.prices) SHOP.prices = j.prices; SHOP.gift = !!j.gifts; SHOP.ok = 1; } } catch (e) {}
+  };
+  SHOP.busy = run().then(() => { SHOP.busy = null; shopPvRefresh(); }, () => { SHOP.busy = null; shopPvRefresh(); });   // v1.819: пока грузится статус — «Загружаю…», потом открытое окно перерисовывается
+  return SHOP.busy;
 }
+function shopPvRefresh(){ if (!sheetCtx) return; if (sheetCtx.type === 'frprev') frPrevShow(sheetCtx.v); else if (sheetCtx.type === 'bgprev') bgPrevShow(sheetCtx.v); }
 
 // v1.785: крупный предпросмотр товара (рамка / фон / комплект) с листанием и кнопкой «Купить»
 let SPV = null;
@@ -6422,7 +6428,7 @@ function frPrevHTML(k, st){
   const bg = kitSel ? k : myBg(), same = cur === k && (!kitSel || bgNorm(db.settings.bg || '') === k);   // v1.546: один предпросмотр за раз (Аватар · Профиль · Друзья), парный фон — по желанию
   if (bg) bgEnsure(bg);
   const kp = SHOP.prices.kit, bp = SHOP.prices.bg, fp = SHOP.prices.frame, kitOk = SHOP.ok && !!kp && !!BG_SVG[k] && !bgOwned(k) && kp < fp + bp;
-  const btn = (!owned && SHOP.ok) ? `<button type="button" class="btn primary frpv-go" data-act="pvbuy" data-kind="frame" data-k="${k}">Купить рамку · ⭐ ${fp}</button>${kitOk ? `<button type="button" class="btn frpv-pro" data-act="pvbuy" data-kind="kit" data-k="${k}">Комплект рамка + фон · ⭐ ${kp}</button>` : ''}<div class="cap frpv-cap">Покупка навсегда. Или открой всё сразу <a href="#" data-act="frpro" style="color:var(--accent);font-weight:700">с PRO</a></div>`
+  const btn = (!owned && !SHOP.ok && SHOP.busy) ? `<button type="button" class="btn frpv-go" disabled>Загружаю…</button>` : (!owned && SHOP.ok) ? `<button type="button" class="btn primary frpv-go" data-act="pvbuy" data-kind="frame" data-k="${k}">Купить рамку · ⭐ ${fp}</button>${kitOk ? `<button type="button" class="btn frpv-pro" data-act="pvbuy" data-kind="kit" data-k="${k}">Комплект рамка + фон · ⭐ ${kp}</button>` : ''}<div class="cap frpv-cap">Покупка навсегда. Или открой всё сразу <a href="#" data-act="frpro" style="color:var(--accent);font-weight:700">с PRO</a></div>`
     : !owned ? `<button type="button" class="btn frpv-pro" data-act="frpro">${IC('crown', 18)}Разблокировать с PRO</button><div class="cap frpv-cap">Сейчас это только предпросмотр — рамка станет твоей с подпиской</div>`
     : same ? `<button type="button" class="btn frpv-go" disabled>${IC('check', 18)}Сейчас выбрана</button>`
     : `<button type="button" class="btn primary frpv-go" data-act="frapply" data-v="${k}">${IC('check', 18)}${kitSel ? 'Применить с фоном' : 'Применить'}</button>`;
@@ -6452,7 +6458,7 @@ function bgPrevHTML(k, st){
   const fk = kitSel ? k : frameOf(tgUser ? {tg_id:tgUser.id} : null);
   const prev = list[(i + list.length - 1) % list.length], next = list[(i + 1) % list.length];
   const kp = SHOP.prices.kit, bp = SHOP.prices.bg, fp = SHOP.prices.frame, kitOk = SHOP.ok && !!kp && FRAMES.some(x => x[0] === k && x[2]) && !frOwned(k) && kp < fp + bp;
-  const btn = (!owned && SHOP.ok) ? `<button type="button" class="btn primary frpv-go" data-act="pvbuy" data-kind="bg" data-k="${k}">Купить фон · ⭐ ${bp}</button>${kitOk ? `<button type="button" class="btn frpv-pro" data-act="pvbuy" data-kind="kit" data-k="${k}">Комплект рамка + фон · ⭐ ${kp}</button>` : ''}<div class="cap frpv-cap">Покупка навсегда. Или открой всё сразу <a href="#" data-act="frpro" style="color:var(--accent);font-weight:700">с PRO</a></div>`
+  const btn = (!owned && !SHOP.ok && SHOP.busy) ? `<button type="button" class="btn frpv-go" disabled>Загружаю…</button>` : (!owned && SHOP.ok) ? `<button type="button" class="btn primary frpv-go" data-act="pvbuy" data-kind="bg" data-k="${k}">Купить фон · ⭐ ${bp}</button>${kitOk ? `<button type="button" class="btn frpv-pro" data-act="pvbuy" data-kind="kit" data-k="${k}">Комплект рамка + фон · ⭐ ${kp}</button>` : ''}<div class="cap frpv-cap">Покупка навсегда. Или открой всё сразу <a href="#" data-act="frpro" style="color:var(--accent);font-weight:700">с PRO</a></div>`
     : !owned ? `<button type="button" class="btn frpv-pro" data-act="frpro">${IC('crown', 18)}Разблокировать с PRO</button><div class="cap frpv-cap">Сейчас это только предпросмотр — фон станет твоим с подпиской</div>`
     : (cur && (!kitSel || frameOf(tgUser ? {tg_id:tgUser.id} : null) === k)) ? `<button type="button" class="btn frpv-go" disabled>${IC('check', 18)}Сейчас выбран</button>`
     : `<button type="button" class="btn primary frpv-go" data-act="bgapply" data-v="${k}">${IC('check', 18)}${kitSel ? 'Применить с рамкой' : 'Применить'}</button>`;
