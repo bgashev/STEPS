@@ -3410,6 +3410,7 @@ html.web #tabs .tbi{top:262px}
 .shp-c{min-width:150px;flex:none;display:flex!important;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:18px 12px 14px!important;cursor:pointer;color:var(--text);font:inherit;transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .2s}
 .shp-c:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 55%,var(--border))}
 .shp-c b{font-size:13.5px;font-weight:750}
+.shp-pr.own{background:var(--surface);color:var(--muted);border:1px solid var(--border)}
 .shp-pr{font-size:12.5px;font-weight:800;background:var(--accent);color:var(--bg);border-radius:99px;padding:5px 14px}
 .shp-bg{position:relative;width:100%;height:80px;border-radius:14px;overflow:hidden;isolation:isolate}.shp-bg .hbgfx{border-radius:0}
 .shp-pro{margin-top:8px;border:1px dashed var(--border);border-radius:18px;padding:14px 18px;color:var(--muted);font-size:13px}.shp-pro b{color:var(--text);font-weight:600}
@@ -3428,7 +3429,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.780';
+const APP = 'VOOB (by BGASHEV) Mini App v1.781';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5024,12 +5025,27 @@ const FR_LEGACY = {aurora:'crystal', gold:'laurel', neon:'pulse', flame:'flame',
 function frNorm(k){ return (k && FR_LEGACY[k]) || k || ''; }
 const asFree = () => { try { return localStorage.getItem('voob_asfree') === '1'; } catch (e) { return false; } };   // только для создателя: смотреть как без PRO
 function isPro(){ { const c = tgUser && BDG.get(tgUser.id); if (c && c.creator && asFree()) return false; } if (typeof INBOX_FRESH !== 'undefined' && INBOX_FRESH) return INBOX_PRO;   /* v1.460: как только сервер ответил — верим только ему (устаревший кэш не держит PRO) */ if (typeof INBOX_PRO !== 'undefined' && INBOX_PRO) return true; const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.pro || b.creator)); }
-function frOwned(k){ return isPro(); }   // рамки аватарки — только PRO (отдельной выдачи рамок больше нет)
+const SHOP = {owned: new Set(), prices: {frame: 30, bg: 25}, ok: 0}, FRS = new Map();   // v1.781: купленные рамки/фоны (навсегда); FRS — купленные рамки друзей
+async function loadShop(force){
+  if (SHOP.ok && !force) return;
+  try { const j = await apiAuth('/shop/status', {}); if (j && j.owned) { SHOP.owned = new Set(j.owned); if (j.prices) SHOP.prices = j.prices; SHOP.ok = 1; } } catch (e) {}
+}
+async function shopBuy(kind, item, name){
+  hap.imp();
+  try {
+    const j = await apiAuth('/shop/invoice', {kind, item});
+    if (!j.link) throw new Error(j.error || 'нет счёта');
+    const paid = () => { hap.ok(); SHOP.owned.add(kind + ':' + item); toast('✨ «' + name + '» теперь твой навсегда'); loadShop(true).then(() => render()); render(); };
+    if (ver('6.1') && tg.openInvoice) tg.openInvoice(j.link, st => { if (st === 'paid') paid(); });
+    else { openTG(j.link); toast('Оплати в Telegram и вернись сюда'); }
+  } catch (e) { toast('Не получилось: ' + e.message); }
+}
+function frOwned(k){ return isPro() || SHOP.owned.has('frame:' + k); }   // рамки аватарки — только PRO (отдельной выдачи рамок больше нет)
 function frameOf(f){
   const mine = tgUser && f && +f.tg_id === tgUser.id, b = f ? (BDG.get(+f.tg_id) || {}) : {};
   const k = frNorm(mine ? (db.settings || {}).frame : f && (f.frame || b.frame));
   const e = FRAMES.find(x => x[0] && x[0] === k); if (!e) return '';
-  if (e[2] && !(mine ? frOwned(k) : (b.pro || b.creator || frNorm(b.frame) === k))) return '';   // рамки PRO видны только у подписчиков
+  if (e[2] && !(mine ? frOwned(k) : (b.pro || b.creator || FRS.get(+f.tg_id) === k))) return '';   // рамки PRO видны у подписчиков и у тех, кто купил
   return k;
 }
 function frameCls(k, lv){ const vars = lv ? tierStyle(lv).replace(' tr"', '"') : ''; return (k ? ` fr-${k}` : '') + vars; }   // v1.422: без рамки — без кольца, цвета значка уровня остаются
@@ -5607,17 +5623,18 @@ function historyHTML0(ws){
 }
 
 function viewShop(){   // v1.780: «Магазин», вариант «Журнал»: подборки сверху, ленты рамок и фонов; оплата пока не подключена
-  const fr = FRAMES.filter(f => f[2]), bgs = BG_KEYS.slice(0, 14);
-  const price = k => 40 + (k.length % 4) * 10;
-  const me = (tgUser && (tgUser.first_name || '')) || 'V';
+  if (!SHOP.ok) loadShop().then(() => { if (SHOP.ok && document.querySelector('.shp-ban')) render(); });
+  const fr = FRAMES.filter(f => f[2]), bgs = BG_KEYS;
+    const me = (tgUser && (tgUser.first_name || '')) || 'V';
   const av = (k, px) => frAv(k, px, {level: 0}, '', me);
-  const fc = (f, i) => `<button type="button" class="card shp-c" data-act="shopbuy" data-n="${esc(f[1])}">${av(f[0], 64)}<div><b>${esc(f[1])}</b></div><span class="shp-pr">⭐ ${price(f[0])}</span></button>`;
-  const bc = b => `<button type="button" class="card shp-c" data-act="shopbuy" data-n="${esc(b[1])}"><div class="shp-bg">${bgFx(b[0])}</div><div><b>${esc(b[1])}</b></div><span class="shp-pr">⭐ ${price(b[0])}</span></button>`;
+  const tag = (kind, k) => isPro() ? '<span class="shp-pr own">В PRO</span>' : SHOP.owned.has(kind + ':' + k) ? '<span class="shp-pr own">Куплено</span>' : `<span class="shp-pr">⭐ ${SHOP.prices[kind]}</span>`;
+  const fc = f => `<button type="button" class="card shp-c" data-act="shopbuy" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}">${av(f[0], 64)}<div><b>${esc(f[1])}</b></div>${tag('frame', f[0])}</button>`;
+  const bc = b => `<button type="button" class="card shp-c" data-act="shopbuy" data-kind="bg" data-k="${b[0]}" data-n="${esc(b[1])}"><div class="shp-bg">${bgFx(b[0])}</div><div><b>${esc(b[1])}</b></div>${tag('bg', b[0])}</button>`;
   const f1 = fr[3] || fr[0], f2 = fr[6] || fr[1], b1 = bgs[0], b2 = bgs[1];
   return `<div class="head"><div><h1>Магазин</h1><div class="sub">Новое, популярное и твоё</div></div></div>
-  <div class="shp-ban"><div class="shp-b1"><div class="shp-bgl">${bgFx(b1[0])}</div><div class="shp-bav">${av(f1[0], 96)}</div><small>НОВИНКА</small><h3>${esc(f1[1])} + фон «${esc(b1[1])}»</h3><p>Комплект за ⭐ 120</p></div>
-  <div class="shp-b2"><div class="shp-bgl">${bgFx(b2[0])}</div><div class="shp-bav">${av(f2[0], 84)}</div><small>ПОДБОРКА</small><h3>${esc(f2[1])}</h3><p>⭐ ${price(f2[0])}</p></div></div>
-  <div class="shp-lab"><b>Рамки</b><span>${fr.length}</span></div><div class="shp-row">${fr.slice(0, 16).map(fc).join('')}</div>
+  <div class="shp-ban"><div class="shp-b1"><div class="shp-bgl">${bgFx(b1[0])}</div><div class="shp-bav">${av(f1[0], 96)}</div><small>НОВИНКА</small><h3>${esc(f1[1])} + фон «${esc(b1[1])}»</h3><p>Рамка ⭐ ${SHOP.prices.frame} · фон ⭐ ${SHOP.prices.bg}</p></div>
+  <div class="shp-b2"><div class="shp-bgl">${bgFx(b2[0])}</div><div class="shp-bav">${av(f2[0], 84)}</div><small>ПОДБОРКА</small><h3>${esc(f2[1])}</h3><p>⭐ ${SHOP.prices.frame}</p></div></div>
+  <div class="shp-lab"><b>Рамки</b><span>${fr.length}</span></div><div class="shp-row">${fr.map(fc).join('')}</div>
   <div class="shp-lab"><b>Фоны</b><span>${bgs.length}</span></div><div class="shp-row">${bgs.map(bc).join('')}</div>
   <div class="shp-pro"><b>В VOOB PRO всё это уже открыто</b></div>`;
 }
@@ -7566,7 +7583,7 @@ const ACT = {
     if (on) { touchMeta('settings'); save(); toast('Оформление этого устройства теперь общее'); } else toast('Теперь у телефона своё оформление');
     render(); },
   frprev: el => openFramePrev(el.dataset.v || ''),
-  shopbuy: el => toast('«' + (el.dataset.n || '') + '»: покупка скоро откроется'),
+  shopbuy: el => { const k = el.dataset.k, kind = el.dataset.kind; if (isPro() || SHOP.owned.has(kind + ':' + k)) { toast('«' + (el.dataset.n || '') + '» уже у тебя: примени в профиле'); return; } shopBuy(kind, k, el.dataset.n || ''); },
   frnav: el => { frPrevShow(el.dataset.v || ''); hap.tap(); },
   frpro: () => openPro(),
   frmode: el => { if (!sheetCtx || sheetCtx.type !== 'frprev') return; sheetCtx.pv = el.dataset.v || 'av'; frPrevShow(sheetCtx.v); hap.tap(); },
@@ -8133,13 +8150,14 @@ function bgTint(k){ try { k = bgNorm(k); const css = BG_CSS[k] || '', m = css.ma
 const BGSK = 'voob_bgs_' + UK, BGS_ST = lsGet(BGSK) || {};   // v1.628: фоны друзей помним между запусками — профиль сразу открывается с фоном, без «подгрузки»
 const BGS = new Map(Object.entries(BGS_ST).filter(([k, v]) => v).map(([k, v]) => [+k, v]));   // tg_id -> фон карточки профиля (только у PRO)
 const BGS_KNOWN = new Set(Object.keys(BGS_ST).map(Number));
-function bgOwned(k){ return isPro(); }   // фоны профиля — только PRO (отдельной выдачи фонов больше нет)
+function bgOwned(k){ return isPro() || SHOP.owned.has('bg:' + k); }   // фоны профиля — только PRO (отдельной выдачи фонов больше нет)
 function myBg(){ const k = bgNorm(db.settings.bg || ''); return BG_SVG[k] && bgOwned(k) ? k : ''; }
 function heroBg(){ return ''; }
 async function loadBgs(ids){
   if (!inTG || !ids.length) return;
   try {
     const j = await apiAuth(EXTRA_API, {action:'bgs', ids});
+    try { const sj = await apiAuth('/shop/looks', {ids}); if (sj) { for (const id of ids) { if (sj.bgs && sj.bgs[id]) (j.bgs = j.bgs || {})[id] = sj.bgs[id]; if (sj.frs && sj.frs[id]) FRS.set(+id, sj.frs[id]); else FRS.delete(+id); } } } catch (e) {}
     let ch = false;
     for (const id of ids) { const v = (j.bgs || {})[id] || ''; BGS_KNOWN.add(+id); if ((BGS.get(+id) || '') !== v) { ch = true; if (v) BGS.set(+id, v); else BGS.delete(+id); } }
     lsSet(BGSK, Object.fromEntries([...BGS_KNOWN].map(n => [n, BGS.get(n) || ''])));
