@@ -510,6 +510,9 @@ async function adminRefund(chatId: number, charge: string) {
     const rr = await tg("refundStarPayment", { user_id: so.payer_id ?? so.tg_id, telegram_payment_charge_id: charge });
     if (!rr?.ok) return tg("sendMessage", { chat_id: chatId, text: "Telegram: " + (rr?.description ?? "ошибка") });
     await db.from("shop_owned").update({ refunded_at: new Date().toISOString() }).eq("id", so.id);
+    const rw = so.kind === "frame" ? "рамку" : so.kind === "kit" ? "комплект" : "фон";
+    notify(so.payer_id ?? so.tg_id, `↩️ Возврат ${so.stars}⭐ за ${rw} оформлен. Звёзды вернутся на баланс Telegram.`);
+    if (so.payer_id && so.payer_id !== so.tg_id) notify(so.tg_id, `Подарок (${rw}) отозван: платёж был возвращён.`);
     return tg("sendMessage", { chat_id: chatId, text: `Возврат сделан: ${so.kind}:${so.item}, ${so.stars}⭐. Предмет отнят.` });
   }
   const { data: p } = await db.from("pro_payments").select("*").eq("charge_id", charge).maybeSingle();
@@ -525,6 +528,120 @@ async function adminRefund(chatId: number, charge: string) {
   }
   notify(p.tg_id, `↩️ Возврат ${p.stars}⭐ за VOOB PRO оформлен.`);
   return tg("sendMessage", { chat_id: chatId, text: `Готово: возвращено ${p.stars}⭐, PRO уменьшен на ${p.days + p.bonus_days} дн.` });
+}
+
+
+/* ---------- Платежи и возвраты (v1.797) ---------- */
+const REFUND_WINDOW_H = 48, REFUND_PRO_GAP_DAYS = 90, REFUND_YEAR_FLAG = 3;
+const RF_REASONS: Record<string, string> = { nofx: "Оплата прошла, но не появилось или не работает", mistake: "Оплатил по ошибке", other: "Другое" };
+async function ensureCallbacks() {
+  try {
+    const wi = await tg("getWebhookInfo", {});
+    const have: string[] = wi?.result?.allowed_updates ?? [];
+    if (wi?.result?.url && !have.includes("callback_query"))
+      await tg("setWebhook", { url: wi.result.url, secret_token: await webhookSecret(), allowed_updates: ["message", "pre_checkout_query", "callback_query"] });
+  } catch { /* не критично */ }
+}
+async function routePayments(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const [{ data: pp }, { data: sp }, { data: rq }] = await Promise.all([
+    db.from("pro_payments").select("charge_id, plan, stars, days, bonus_days, created_at, refunded_at, tg_id, payer_id").or(`tg_id.eq.${me},payer_id.eq.${me}`).order("created_at", { ascending: false }).limit(60),
+    db.from("shop_owned").select("charge_id, kind, item, stars, created_at, refunded_at, tg_id, payer_id").or(`tg_id.eq.${me},payer_id.eq.${me}`).order("created_at", { ascending: false }).limit(60),
+    db.from("refund_requests").select("charge_id, status, created_at").eq("tg_id", me).order("created_at", { ascending: false }).limit(120),
+  ]);
+  const lastRq = new Map<string, string>();
+  for (const r of rq ?? []) if (!lastRq.has((r as any).charge_id)) lastRq.set((r as any).charge_id, (r as any).status);
+  const rows: any[] = [];
+  const mk = (src: string, r: any, extra: any) => {
+    const payer = r.payer_id ?? r.tg_id, mine = payer === me, age = Date.now() - new Date(r.created_at).getTime();
+    const rs = lastRq.get(r.charge_id);
+    const status = r.refunded_at ? "refunded" : rs === "pending" ? "pending" : rs === "rejected" ? "rejected" : "paid";
+    rows.push({ src, charge: r.charge_id, stars: r.stars, at: r.created_at, status, mine, gift: r.tg_id !== payer ? (mine ? "sent" : "got") : null,
+      in_window: age <= REFUND_WINDOW_H * 3600000, can: mine && status === "paid" || (mine && status === "rejected"), ...extra });
+  };
+  for (const r of pp ?? []) mk("pro", r, { plan: (r as any).plan, days: (r as any).days });
+  for (const r of sp ?? []) mk("shop", r, { kind: (r as any).kind, item: (r as any).item });
+  rows.sort((a, b) => (a.at < b.at ? 1 : -1));
+  const spent = rows.filter((x) => x.mine && x.status !== "refunded").reduce((a, x) => a + (Number(x.stars) || 0), 0);
+  return json({ items: rows, spent, window_h: REFUND_WINDOW_H, pro_until: (await proStatus(me)).active ? (await proStatus(me)).until : null });
+}
+async function routeRefundRequest(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const charge = String(body?.charge ?? ""), reason = String(body?.reason ?? ""), note = String(body?.note ?? "").trim().slice(0, 500);
+  if (!RF_REASONS[reason] || !charge) return fail("Неверная заявка");
+  const [{ data: pr }, { data: so }] = await Promise.all([
+    db.from("pro_payments").select("*").eq("charge_id", charge).maybeSingle(),
+    db.from("shop_owned").select("*").eq("charge_id", charge).maybeSingle(),
+  ]);
+  const rec: any = pr ?? so, src = pr ? "pro" : "shop";
+  if (!rec) return fail("Платёж не найден", 404);
+  const payer = rec.payer_id ?? rec.tg_id;
+  if (payer !== me) return fail("Вернуть платёж может только тот, кто его оплатил", 403);
+  if (rec.refunded_at) return json({ status: "done" });
+  const { data: open } = await db.from("refund_requests").select("id").eq("charge_id", charge).eq("status", "pending").maybeSingle();
+  if (open) return json({ status: "pending" });
+  const flags: string[] = [];
+  const failure = reason === "nofx";
+  const ageH = (Date.now() - new Date(rec.created_at).getTime()) / 3600000;
+  if (!failure) {
+    if (ageH > REFUND_WINDOW_H) return json({ status: "late", hours: REFUND_WINDOW_H });
+    if (src === "pro") {
+      const since = new Date(Date.now() - REFUND_PRO_GAP_DAYS * DAY).toISOString();
+      const { count } = await db.from("pro_payments").select("id", { count: "exact", head: true }).or(`tg_id.eq.${me},payer_id.eq.${me}`).not("refunded_at", "is", null).gte("refunded_at", since);
+      if (count) return json({ status: "limit", days: REFUND_PRO_GAP_DAYS });
+    }
+    if (src === "shop" && rec.payer_id && rec.payer_id !== rec.tg_id) {
+      const { data: st } = await db.from("records").select("data, deleted").eq("tg_id", rec.tg_id).eq("kind", "meta").eq("id", "settings").maybeSingle();
+      const d: any = st && !st.deleted ? st.data : null;
+      if (d && (d.frame === rec.item || d.bg === rec.item)) return json({ status: "applied" });
+    }
+  } else flags.push("сбой: сроки и лимиты не проверялись");
+  flags.push(`с оплаты ${Math.round(ageH)} ч`);
+  if (src === "shop" && !rec.payer_id || (src === "shop" && rec.payer_id === rec.tg_id)) {
+    const { data: st } = await db.from("records").select("data, deleted").eq("tg_id", rec.tg_id).eq("kind", "meta").eq("id", "settings").maybeSingle();
+    const d: any = st && !st.deleted ? st.data : null;
+    if (d && (d.frame === rec.item || d.bg === rec.item)) flags.push("предмет надет сейчас");
+  }
+  const yearAgo = new Date(Date.now() - 365 * DAY).toISOString();
+  const [{ count: c1 }, { count: c2 }] = await Promise.all([
+    db.from("pro_payments").select("id", { count: "exact", head: true }).or(`tg_id.eq.${me},payer_id.eq.${me}`).not("refunded_at", "is", null).gte("refunded_at", yearAgo),
+    db.from("shop_owned").select("id", { count: "exact", head: true }).or(`tg_id.eq.${me},payer_id.eq.${me}`).not("refunded_at", "is", null).gte("refunded_at", yearAgo),
+  ]);
+  const had = (c1 ?? 0) + (c2 ?? 0);
+  flags.push(`возвратов за год: ${had}` + (had >= REFUND_YEAR_FLAG ? " ⚠️ много" : ""));
+  if (rec.payer_id && rec.payer_id !== rec.tg_id) flags.push("это подарок другу");
+  const { data: ins, error } = await db.from("refund_requests").insert({ tg_id: me, charge_id: charge, src, reason, note: note || null, flags: flags.join(" · ") }).select("id").single();
+  if (error) return fail("Не удалось отправить заявку", 500);
+  if (ADMIN_TG_ID) {
+    await ensureCallbacks();
+    const u = await userInfo(me) as any;
+    const what = src === "pro" ? `VOOB PRO · ${rec.plan}` : `${rec.kind}:${rec.item}`;
+    await tg("sendMessage", { chat_id: ADMIN_TG_ID, text: `↩️ Заявка на возврат #${ins.id}\n${displayName(u)}${u.handle ? " @" + u.handle : ""} (id ${me})\n${what} · ${rec.stars}⭐\nПричина: ${RF_REASONS[reason]}${note ? "\n«" + note + "»" : ""}\n${flags.join(" · ")}\ncharge: ${charge}`,
+      reply_markup: { inline_keyboard: [[{ text: `Вернуть ${rec.stars}⭐`, callback_data: `rf:ok:${ins.id}` }, { text: "Отклонить", callback_data: `rf:no:${ins.id}` }]] } }).catch(() => {});
+  }
+  return json({ status: "ok" });
+}
+async function onCallback(q: any) {
+  const m = /^rf:(ok|no):(\d+)$/.exec(q.data || "");
+  if (!m || !ADMIN_TG_ID || q.from?.id !== ADMIN_TG_ID) { await tg("answerCallbackQuery", { callback_query_id: q.id }); return; }
+  const { data: r } = await db.from("refund_requests").select("*").eq("id", Number(m[2])).maybeSingle();
+  if (!r || r.status !== "pending") { await tg("answerCallbackQuery", { callback_query_id: q.id, text: "Уже обработано" }); return; }
+  const chat = q.message?.chat?.id ?? ADMIN_TG_ID;
+  if (m[1] === "ok") {
+    await adminRefund(chat, r.charge_id);
+    const { data: a } = await db.from("pro_payments").select("refunded_at").eq("charge_id", r.charge_id).maybeSingle();
+    const { data: b } = await db.from("shop_owned").select("refunded_at").eq("charge_id", r.charge_id).maybeSingle();
+    if (!(a?.refunded_at || b?.refunded_at)) { await tg("answerCallbackQuery", { callback_query_id: q.id, text: "Telegram не вернул звёзды, смотри сообщение выше" }); return; }
+    await db.from("refund_requests").update({ status: "approved", decided_at: new Date().toISOString() }).eq("id", r.id);
+    await tg("answerCallbackQuery", { callback_query_id: q.id, text: "Возвращено" });
+  } else {
+    await db.from("refund_requests").update({ status: "rejected", decided_at: new Date().toISOString() }).eq("id", r.id);
+    notify(r.tg_id, "Заявку на возврат отклонили. Если это ошибка, напиши в «Идеи и жалобы».");
+    await tg("answerCallbackQuery", { callback_query_id: q.id, text: "Отклонено" });
+  }
+  if (q.message) await tg("editMessageReplyMarkup", { chat_id: q.message.chat.id, message_id: q.message.message_id, reply_markup: { inline_keyboard: [[{ text: m[1] === "ok" ? "Возвращено" : "Отклонено", callback_data: "rf:done" }]] } }).catch(() => {});
 }
 
 /* ---------- XP, уровни, анти-чит ---------- */
@@ -1053,7 +1170,7 @@ async function routeSetup(req: Request) {
   const slug = new URL(req.url).pathname.match(/\/(steps)(\/|$)/i)?.[1] ?? "steps";
   const url = `${SB_URL}/functions/v1/${slug}/bot`;
   const r = await tg("setWebhook", {
-    url, secret_token: await webhookSecret(), allowed_updates: ["message", "pre_checkout_query"], drop_pending_updates: true,
+    url, secret_token: await webhookSecret(), allowed_updates: ["message", "pre_checkout_query", "callback_query"], drop_pending_updates: true,
   });
   await tg("setMyCommands", { commands: [
     { command: "start", description: "Открыть VOOB" },
@@ -1071,6 +1188,7 @@ async function routeBot(req: Request) {
   if (!safeEqual(got, await webhookSecret())) return new Response("forbidden", { status: 403 });
   const upd = await req.json().catch(() => null);
   if (upd?.pre_checkout_query) { await onPreCheckout(upd.pre_checkout_query); return new Response("ok"); }
+  if (upd?.callback_query) { await onCallback(upd.callback_query); return new Response("ok"); }
   const msg = upd?.message;
   if (!msg?.from || !msg.chat) return new Response("ok");
   if (msg.successful_payment) { await onPaid(msg); return new Response("ok"); }
@@ -1360,6 +1478,8 @@ Deno.serve(async (req) => {
       case "/shop/status": return await routeShopStatus(body);
       case "/shop/invoice": return await routeShopInvoice(body);
       case "/shop/looks": return await routeShopLooks(body);
+      case "/payments": return await routePayments(body);
+      case "/refund/request": return await routeRefundRequest(body);
       case "/pro/freeze/start": return await routeFreezeStart(body);
       case "/pro/freeze/verify": return await routeFreezeVerify(body);
       case "/account/restore": return await routeAccountRestore(body);
