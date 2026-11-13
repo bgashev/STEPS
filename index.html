@@ -3417,6 +3417,7 @@ html.web #tabs .tbi{top:262px}
 .shp-tabs{display:flex;gap:6px;width:fit-content;max-width:100%;overflow-x:auto;scrollbar-width:none;margin:26px 0 8px;position:sticky;top:10px;z-index:3;padding:6px;border-radius:99px;border:1px solid var(--border);background:color-mix(in srgb,var(--bg) 72%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 8px 24px #0004}.shp-tabs::-webkit-scrollbar{display:none}.shp-tabs button{white-space:nowrap}
 .shp-tabs button{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:99px;padding:8px 18px;cursor:pointer;transition:.2s}
 .shp-tabs button.on{background:var(--accent);color:var(--bg);border-color:transparent}
+.shp-sec.s-mine{display:none}.shp-wrap[data-t=mine] .s-mine{display:block}.shp-wrap[data-t=mine] .s-fr,.shp-wrap[data-t=mine] .s-bg,.shp-wrap[data-t=mine] .s-kit{display:none}.shp-empty{padding:34px 12px;text-align:center;color:var(--muted);font-size:14px}
 .shp-wrap[data-t=fr] .s-bg,.shp-wrap[data-t=fr] .s-kit,.shp-wrap[data-t=bg] .s-fr,.shp-wrap[data-t=bg] .s-kit,.shp-wrap[data-t=kit] .s-fr,.shp-wrap[data-t=kit] .s-bg{display:none}
 
 .me-prof.pubpg{max-width:560px;margin:0 auto}.hero:has(.hero-av .fav[class*=" fr-"]:not(.fr-classic)){padding-top:64px}   /* v1.790: рамка выступает за аватарку до 30% — шапка с overflow:hidden не должна её обрезать */
@@ -3468,7 +3469,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.792';
+const APP = 'VOOB (by BGASHEV) Mini App v1.793';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5761,16 +5762,21 @@ function viewShop(){   // v1.782: «Магазин» (вариант «Журн�
   const paired = fr.filter(f => BG_SVG[f[0]]), kp = SHOP.prices.kit, kits = paired;
   const kitHas = k => isPro() || (SHOP.owned.has('frame:' + k) && SHOP.owned.has('bg:' + k));
   const kc = f => `<button type="button" class="shp-c kit" data-act="shopview" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}"><div class="shp-bg tall">${bgFx(f[0])}<div class="shp-kav">${av(f[0], 72)}</div></div><b>${esc(f[1])}</b>${kitHas(f[0]) ? '<span class="shp-pr own">' + (isPro() ? 'В PRO' : 'Куплено') + '</span>' : kp ? `<span class="shp-pr">⭐ ${kp} <s>${SHOP.prices.frame + SHOP.prices.bg}</s></span>` : '<span class="shp-pr own">Скоро</span>'}</button>`;
+  const buyOwn = (kind, k) => SHOP.owned.has(kind + ':' + k);
+  const mKits = kits.filter(f => buyOwn('frame', f[0]) && buyOwn('bg', f[0])), mFr = fr.filter(f => buyOwn('frame', f[0]) && !mKits.includes(f)), mBg = bgs.filter(b => buyOwn('bg', b[0]) && !mKits.some(f => f[0] === b[0]));
+  const mineN = mKits.length + mFr.length + mBg.length;
+  const mineHTML = mineN ? [mKits.length ? `<div class="shp-grid bg">${mKits.map(kc).join('')}</div>` : '', mFr.length ? `<div class="shp-lab"><b>Рамки</b></div><div class="shp-grid fr">${mFr.map(fc).join('')}</div>` : '', mBg.length ? `<div class="shp-lab"><b>Фоны</b></div><div class="shp-grid bg">${mBg.map(bc).join('')}</div>` : ''].join('') : `<div class="shp-empty">${SHOP.ok ? 'Пока ничего не куплено' : 'Загружаем покупки…'}</div>`;
   const pick = (i) => paired[(i * 7 + 3) % paired.length] || fr[i] || fr[0];
   const hero = (f, cls, px) => { const bn = (BG_KEYS.find(x => x[0] === f[0]) || BG_KEYS[0]);
     return `<div class="shp-h ${cls}"><div class="shp-bgl">${bgFx(bn[0])}</div><div class="shp-hav">${av(f[0], px)}</div><div class="shp-ht"><small>${cls === 'big' ? 'НОВИНКА' : 'ПОДБОРКА'}</small><h3>${esc(f[1])}</h3>
       <div class="shp-hb">${kp ? `<button type="button" class="shp-btn" data-act="shopbuy" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}">${kitHas(f[0]) ? 'Комплект у тебя' : 'Комплект · ⭐ ' + kp}</button>` : ''}<button type="button" class="shp-btn g" data-act="shopbuy" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}">${has('frame', f[0]) ? 'Рамка у тебя' : 'Рамка · ⭐ ' + SHOP.prices.frame}</button><button type="button" class="shp-btn g" data-act="shopbuy" data-kind="bg" data-k="${bn[0]}" data-n="${esc(bn[1])}">${has('bg', bn[0]) ? 'Фон у тебя' : 'Фон · ⭐ ' + SHOP.prices.bg}</button></div></div></div>`; };
   return `<div class="shp-wrap" data-t="all"><div class="head"><div><h1>Магазин</h1><div class="sub">Рамки и фоны по одному. Покупаешь один раз, остаются навсегда</div></div></div>
   <div class="shp-top">${hero(pick(0), 'big', 120)}<div class="shp-side">${hero(pick(1), 'sm', 76)}${hero(pick(2), 'sm', 76)}</div></div>
-  <div class="shp-tabs"><button type="button" class="on" data-act="shoptab" data-t="all">Всё</button><button type="button" data-act="shoptab" data-t="kit">Комплекты · ${kits.length}</button><button type="button" data-act="shoptab" data-t="fr">Рамки · ${fr.length}</button><button type="button" data-act="shoptab" data-t="bg">Фоны · ${bgs.length}</button></div>
+  <div class="shp-tabs"><button type="button" class="on" data-act="shoptab" data-t="all">Всё</button><button type="button" data-act="shoptab" data-t="kit">Комплекты · ${kits.length}</button><button type="button" data-act="shoptab" data-t="fr">Рамки · ${fr.length}</button><button type="button" data-act="shoptab" data-t="bg">Фоны · ${bgs.length}</button><button type="button" data-act="shoptab" data-t="mine">Мои покупки${mineN ? ' · ' + mineN : ''}</button></div>
   <section class="shp-sec s-kit"><div class="shp-lab"><b>Комплекты</b><span>рамка и фон одного стиля${kp ? ' за ⭐ ' + kp + ' вместо ' + (SHOP.prices.frame + SHOP.prices.bg) : ''}</span></div><div class="shp-grid bg">${kits.map(kc).join('')}</div></section>
   <section class="shp-sec s-fr"><div class="shp-lab"><b>Рамки</b><span>двигаются и светятся, как в профиле</span></div><div class="shp-grid fr">${fr.map(fc).join('')}</div></section>
   <section class="shp-sec s-bg"><div class="shp-lab"><b>Фоны</b><span>карточка профиля целиком</span></div><div class="shp-grid bg">${bgs.map(bc).join('')}</div></section>
+  <section class="shp-sec s-mine"><div class="shp-lab"><b>Мои покупки</b><span>${isPro() ? 'всё остальное уже открыто в PRO' : 'остаются у тебя навсегда'}</span></div>${mineHTML}</section>
   <div class="shp-pro"><b>В VOOB PRO всё это открыто сразу</b></div></div>`;
 }
 function viewWeight(){
