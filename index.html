@@ -1860,6 +1860,10 @@ html.web .ib.shim:has(.ibl){width:auto;padding:0 18px 0 14px;gap:8px;display:inl
 .swc.lk{position:relative}
 .swc .prot{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);font-size:8px;font-weight:850;letter-spacing:.06em;line-height:1;padding:2px 5px;border-radius:999px;background:linear-gradient(120deg,#F5B23C,#FFE08A);color:#3a2600;box-shadow:0 0 0 2px var(--surface);pointer-events:none}   /* v1.460: вместо замочка — та же плашка PRO, что у рамок и фонов */
 .sws{row-gap:16px}
+.thm button{font-size:13px;padding:0 4px;white-space:nowrap}
+.dv2s{display:grid;grid-template-columns:1fr 1fr;gap:8px}.dv2{font:inherit;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px;height:46px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);transition:.2s}.dv2 i{width:20px;height:20px;border-radius:50%;border:1px solid var(--border-strong,var(--border));flex:none}.dv2.on{color:var(--text);border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}.dv2 .prot{font-style:normal;font-size:9px;font-weight:850;letter-spacing:.06em;padding:2px 6px;border-radius:999px;background:linear-gradient(120deg,#F5B23C,#FFE08A);color:#3a2600}
+.sws{display:grid;grid-template-columns:repeat(5,1fr);gap:16px 0;justify-items:center;padding:4px 0}.swc{width:40px;height:40px}.swc.on::after{inset:-5px}
+
 /* ---- гантели: выбор упражнения ---- */
 .wstep{display:flex;gap:6px;justify-content:flex-end;margin:-4px 0 6px}
 .wstep .dot{width:7px;height:7px;border-radius:50%;background:color-mix(in srgb,var(--text) 18%,transparent)}
@@ -3478,7 +3482,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.800';
+const APP = 'VOOB (by BGASHEV) Mini App v1.801';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6437,8 +6441,8 @@ function viewMeSettings(){
     <div class="psec">Расчёт · вес берётся из раздела «Вес»</div>
     <div class="bm" id="p-chips">${chips(age, b, bmr)}</div></div>`;
   h += '<!--M2-->';
-  h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme)}
-    ${themeMode() === 'dark' ? `<div class="dvs"><span class="cap">Оттенок</span>${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv${dvEff() === k ? ' on' : ''}" data-act="dv" data-v="${k}" aria-label="${l}" title="${l}" style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})">${dvEff() === k ? IC('check', 16) : ''}${k === 'black' ? '<i class="prot">PRO</i>' : ''}</button>`).join('')}</div>` : ''}</div>
+  h += `<div class="card"><h3>${IC('palette')}Оформление</h3><div class="f"><span>Тема</span>${seg2('theme', [['auto','Как в Telegram'],['light','Светлая'],['dark','Тёмная']], db.settings.theme).replace('class="seg"', 'class="seg fill thm"')}</div>
+    ${themeMode() === 'dark' ? `<div class="f"><span>Оттенок</span><div class="dv2s">${[['graphite','Графит','dark'],['black','Чёрная','black']].map(([k, l, t]) => `<button type="button" class="dv2${dvEff() === k ? ' on' : ''}" data-act="dv" data-v="${k}"><i style="background:linear-gradient(135deg,${THEMES[t].surface2},${THEMES[t].bg})"></i>${l}${k === 'black' ? '<em class="prot">PRO</em>' : ''}</button>`).join('')}</div></div>` : ''}
     <div class="f"><span>Акцентный цвет · ${(ACCENTS.find(a => a[0] === db.settings.accent) || ACCENTS[5])[1]}${isPro() ? '' : '<i class="prot inl" data-act="prosheet" role="button">PRO</i>'}</span><div class="sws">${ACCENTS.map(([k, , c]) => `<button type="button" class="swc${db.settings.accent === k ? ' on' : ''}" data-act="accent" data-v="${k}" style="background:${k === 'mono' ? 'linear-gradient(90deg,#26262C 50%,#EDEDF2 50%)' : c}" aria-label="${k}"></button>`).join('')}</div></div>
     <div class="f"><span>Фон · ${(TEX.find(x => x[0] === texKey()) || TEX[0])[1]}</span><div class="texpv" aria-hidden="true"><div class="texpv-in"><i class="pvt${texKey() === 'none' ? '' : ' tex-' + texKey()}" key="${texKey()}"></i><div class="pvs"><span>9:41</span><i class="isl"></i><span class="pvr"><svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.7" y="5" width="3" height="6" rx="1"/><rect x="9.4" y="2.5" width="3" height="8.5" rx="1"/><rect x="14" y="0" width="3" height="11" rx="1"/></svg><svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x=".5" y=".5" width="21" height="11" rx="3.5" stroke="currentColor" opacity=".5"/><rect x="2" y="2" width="15" height="8" rx="2" fill="currentColor"/><rect x="23" y="4" width="1.6" height="4" rx=".8" fill="currentColor" opacity=".5"/></svg></span></div><div class="pvh"><b></b><u></u></div><div class="pvc"><i></i><i></i></div></div><em>Так выглядит фон на всех экранах приложения: он начинается сверху и растворяется вниз</em></div><div class="texs">${TEX.map(([k, l]) => `<button type="button" class="texb${k === 'none' ? '' : ' tex-' + k}${texKey() === k ? ' on' : ''}" data-act="tex" data-v="${k}" aria-label="${l}" title="${l}"><span>${l}</span></button>`).join('')}</div></div>
     ${inTG ? `<div class="tgl${lookSync() ? ' on' : ''}" data-act="looksync" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)"><span class="sw2"></span><b>Одинаково на всех устройствах</b></div>
