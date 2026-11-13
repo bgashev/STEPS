@@ -3462,8 +3462,25 @@ html.web #tabs .tbi{top:262px}
 .pz-card:has(.pz-av .fav[class*=" fr-"]:not(.fr-classic)){padding-top:84px}
 .spv-st{height:320px}.shp-bg.tall{height:170px}
 .spv-bs{display:flex;gap:8px;width:100%;max-width:440px;margin:0 auto}.spv-bs .spv-b{flex:1;min-width:0;max-width:none;padding:13px 10px;white-space:nowrap}.spv-gift{background:transparent!important;color:var(--text)!important;border:1px solid var(--border)}
-.spv-gl{position:absolute;inset:0;z-index:8;background:var(--surface);border-radius:28px;display:flex;flex-direction:column;animation:spvin .2s ease}.spv-glh{display:flex;align-items:center;gap:10px;padding:16px 18px 8px}.spv-glh b{font-size:17px}.spv-glb{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);color:var(--text);display:grid;place-items:center;cursor:pointer}
-.spv-gll{overflow:auto;padding:6px 12px 14px;display:flex;flex-direction:column;gap:4px}.spv-gr{font:inherit;color:var(--text);display:flex;align-items:center;gap:12px;padding:8px 10px;border:0;border-radius:16px;background:none;cursor:pointer;text-align:left}.spv-gr:hover{background:var(--surface2)}.spv-gr b{flex:1;font-weight:700}.spv-gr small{color:var(--muted)}.spv-gra .fav{width:42px!important;height:42px!important}
+.spv-gl{position:absolute;inset:0;z-index:8;background:radial-gradient(120% 60% at 50% -10%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 70%),var(--surface);border-radius:28px;display:flex;flex-direction:column;overflow:hidden;animation:spvGl .42s cubic-bezier(.22,1,.36,1) both}
+@keyframes spvGl{from{opacity:0;transform:translateY(22px) scale(.97)}}
+.spv-glh{display:flex;align-items:center;gap:14px;padding:22px 24px 10px}.spv-glt{display:grid;gap:2px;min-width:0}.spv-glt b{font-size:24px;letter-spacing:-.02em;line-height:1.1}.spv-glt small{color:var(--muted);font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spv-glb{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);color:var(--text);display:grid;place-items:center;cursor:pointer;transition:transform .25s cubic-bezier(.22,1,.36,1),background .2s}.spv-glb:hover{transform:translateX(-3px);background:var(--border)}.spv-glb:active{transform:scale(.92)}
+.spv-gs{position:relative;display:flex;align-items:center;gap:10px;margin:10px 24px 8px;height:52px;padding:0 14px 0 16px;border-radius:99px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);transition:border-color .25s,box-shadow .25s,background .25s;animation:spvRow .5s .08s cubic-bezier(.22,1,.36,1) both}
+.spv-gs:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);color:var(--text)}.spv-gs i{display:flex}
+.spv-gs input{flex:1;min-width:0;font:inherit;font-size:16px;font-weight:600;color:var(--text);background:none;border:0;outline:0}.spv-gs input::placeholder{color:var(--muted);font-weight:500}
+.spv-gsx{width:28px;height:28px;border-radius:50%;border:0;background:var(--border);color:var(--text);font-size:11px;cursor:pointer}.spv-gsx:hover{background:var(--off)}
+.spv-gll{flex:1;min-height:0;overflow:auto;padding:6px 14px 20px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin}
+.spv-gr{font:inherit;color:var(--text);display:flex;align-items:center;gap:16px;padding:12px 16px 12px 12px;border:1px solid transparent;border-radius:22px;background:none;cursor:pointer;text-align:left;transition:background .25s,border-color .25s,transform .3s cubic-bezier(.22,1,.36,1);animation:spvRow .5s calc(var(--i,0) * 45ms + .12s) cubic-bezier(.22,1,.36,1) both}
+.spv-gr[hidden],.spv-gnone[hidden]{display:none}
+.spv-gr:hover,.spv-gr:focus-visible{background:var(--surface2);border-color:var(--border);transform:translateX(4px);outline:0}.spv-gr:active{transform:scale(.985)}
+.spv-gr b{flex:1;min-width:0;font-weight:800;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.spv-lv{flex:none;color:var(--muted);font-size:12.5px;font-weight:800;padding:4px 10px;border-radius:99px;background:var(--surface2);border:1px solid var(--border)}
+.spv-go{flex:none;display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:800;color:var(--accent);opacity:0;transform:translateX(-8px);transition:.3s cubic-bezier(.22,1,.36,1);width:0;overflow:hidden;white-space:nowrap}.spv-gr:hover .spv-go,.spv-gr:focus-visible .spv-go{opacity:1;transform:none;width:auto}
+.spv-gra .fav{width:56px!important;height:56px!important}.spv-gra{display:flex;flex:none}
+.spv-gnone{padding:26px 18px;text-align:center;color:var(--muted);font-size:14px;animation:spvRow .4s both}
+@keyframes spvRow{from{opacity:0;transform:translateY(12px)}}
+@media(prefers-reduced-motion:reduce){.spv-gl,.spv-gr,.spv-gs,.spv-gnone{animation:none}}
 .pzbuy{flex-wrap:wrap}.pzbuy .pzgo{flex:1 1 150px}.pzst{background:var(--accent)!important;color:var(--bg)!important;font-style:normal}
 /* v1.785: предпросмотр товара */
 .spv{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:16px;animation:spvin .22s ease}.spv.out{opacity:0;transition:opacity .18s}
@@ -3514,7 +3531,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.811';
+const APP = 'VOOB (by BGASHEV) Mini App v1.812';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5221,15 +5238,27 @@ function shopPvDraw(dir, first){
   box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, {passive: true});
   box.addEventListener('touchend', e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) shopPvNav(dx < 0 ? 1 : -1); });
 }
-async function shopGiftPick(){   // v1.792: подарить другу — выбор друга внутри окна предпросмотра
+async function shopGiftPick(){   // v1.792: подарить другу; v1.812: крупнее, поиск по имени, плавные анимации
   if (!SPV) return; hap.tap();
   const box = document.querySelector('.spv-box'); if (!box || box.querySelector('.spv-gl')) return;
-  box.insertAdjacentHTML('beforeend', `<div class="spv-gl"><div class="spv-glh"><button type="button" class="spv-glb" data-act="spvgiftx" aria-label="Назад">${IC('back', 18)}</button><b>Кому подарить?</b></div><div class="spv-gll" id="spv-gll"><div class="hint" style="padding:18px">Загружаю друзей…</div></div></div>`);
+  const o = SPV.list[SPV.i], pr = SPV.kind === 'kit' ? SHOP.prices.kit : SHOP.prices[SPV.kind];
+  box.insertAdjacentHTML('beforeend', `<div class="spv-gl"><div class="spv-glh"><button type="button" class="spv-glb" data-act="spvgiftx" aria-label="Назад">${IC('back', 20)}</button><div class="spv-glt"><b>Кому подарить?</b><small>«${esc(o ? o[1] : '')}»${pr ? ' · ⭐ ' + pr : ''}</small></div></div>
+    <label class="spv-gs"><i>${IC('search', 18)}</i><input id="spv-gs" type="text" inputmode="search" autocomplete="off" spellcheck="false" placeholder="Найти друга по имени" aria-label="Поиск друга"><button type="button" class="spv-gsx" data-act="spvgsx" aria-label="Очистить" hidden>✕</button></label>
+    <div class="spv-gll" id="spv-gll"><div class="hint" style="padding:26px;text-align:center">Загружаю друзей…</div></div></div>`);
   try { if (!FR.data) await loadFriends(); } catch (e) {}
   const el = document.getElementById('spv-gll'); if (!el) return;
   const fr = (FR.data && FR.data.friends) || [];
-  el.innerHTML = fr.length ? fr.map(f => `<button type="button" class="spv-gr" data-act="spvgiftto" data-id="${f.tg_id}"><span class="spv-gra">${favHTML(f, 1)}</span><b>${esc(f.name)}</b><small>Ур. ${f.level ? f.level.level : ''}</small></button>`).join('') : '<div class="hint" style="padding:22px;text-align:center">Подарки можно отправлять только друзьям. Добавь друзей в разделе «Друзья»</div>';
+  el.innerHTML = fr.length ? fr.map((f, i) => `<button type="button" class="spv-gr" style="--i:${Math.min(i, 12)}" data-act="spvgiftto" data-id="${f.tg_id}" data-n="${esc(String(f.name || '').toLowerCase())}"><span class="spv-gra">${favHTML(f, 1)}</span><b>${esc(f.name)}</b><small class="spv-lv">Ур. ${f.level ? f.level.level : ''}</small><span class="spv-go">Подарить ${IC('chev', 14)}</span></button>`).join('') + '<div class="spv-gnone" hidden>Никого не нашли. Подарки можно отправлять только друзьям</div>' : '<div class="hint" style="padding:26px;text-align:center">Подарки можно отправлять только друзьям. Добавь друзей в разделе «Друзья»</div>';
+  const inp = document.getElementById('spv-gs'); if (inp && fr.length > 0 && !('ontouchstart' in window)) inp.focus({preventScroll: true});
+  if (!fr.length && inp) inp.closest('.spv-gs').style.display = 'none';
 }
+function shopGiftFilter(inp){
+  const q = inp.value.trim().toLowerCase(), l = document.getElementById('spv-gll'); if (!l) return; let n = 0;
+  l.querySelectorAll('.spv-gr').forEach(r => { const ok = !q || r.dataset.n.includes(q); r.hidden = !ok; if (ok) n++; });
+  const no = l.querySelector('.spv-gnone'); if (no) no.hidden = n > 0;
+  const x = inp.parentNode.querySelector('.spv-gsx'); if (x) x.hidden = !q;
+}
+document.addEventListener('input', e => { if (e.target && e.target.id === 'spv-gs') shopGiftFilter(e.target); });
 async function shopGiftBuy(id){
   if (!SPV) return; const o = SPV.list[SPV.i], kind = SPV.kind, f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!o) return; hap.imp();
   try {
@@ -7899,6 +7928,7 @@ const ACT = {
   cardgift: el => { if (!SHOP.ok) { toast('Покупки скоро откроются'); return; } shopPreview(el.dataset.kind, el.dataset.k); shopGiftPick(); },
   spvclose: () => shopPvClose(),
   spvgift: () => shopGiftPick(),
+  spvgsx: el => { const i = document.getElementById('spv-gs'); if (i) { i.value = ''; shopGiftFilter(i); i.focus(); } },
   spvgiftx: () => { const g = document.querySelector('.spv-gl'); if (g) g.remove(); },
   spvgiftto: el => shopGiftBuy(+el.dataset.id),
   spvnav: el => shopPvNav(+el.dataset.d),
