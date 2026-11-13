@@ -64,7 +64,7 @@ h3 .ic{color:var(--accent)}
 .plx{flex:none;width:38px;height:38px;border-radius:12px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer}
 .seg{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .seg::-webkit-scrollbar{display:none}
-.seg button{flex:none;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:12px;padding:7px 12px;font-size:13px;font-weight:650;transition:.18s}
+.seg button{flex:none;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:12px;padding:7px 12px;font-size:13px;font-weight:650;transition:color .18s,background .18s,border-color .18s,box-shadow .18s}
 .seg.fill button{flex:1;padding:7px 4px}
 .seg.fit button{flex:1 1 auto;min-width:0;padding:8px 6px;font-size:12.5px;letter-spacing:-.1px;text-align:center}   /* v1.753: длинные казахские подписи влезают в одну строку без прокрутки */
 .seg button.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
@@ -3539,7 +3539,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.815';
+const APP = 'VOOB (by BGASHEV) Mini App v1.816';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7178,9 +7178,10 @@ function updWBg(){   // v1.709/710: слои с перекрёстным рас�
     }));
   });
 }
-function segSlide(){
+function segSlide(instant){
   document.querySelectorAll('.seg').forEach(sg => {
     const ind = sg.querySelector(':scope > .sgi'); if (!ind) return;
+    if (!sg._ro && window.ResizeObserver) { sg._ro = new ResizeObserver(() => { cancelAnimationFrame(sg._rf); sg._rf = requestAnimationFrame(() => segSlide(true)); }); sg._ro.observe(sg); }   // v1.816: ширина переключателя меняется после первого кадра (страница «растёт») — перемеряем
     const on = sg.querySelector(':scope > button.on');
     if (!on || !sg.offsetWidth) { ind.style.opacity = '0'; sg.classList.remove('sgs'); return; }
     sg.classList.remove('sgs'); const _tr = on.style.transition; on.style.transition = 'none';   // v743: без перехода, иначе getComputedStyle отдаёт «прозрачный» старт и индикатор красится в прозрачный (кнопка «Тёмная» исчезала)
@@ -7188,7 +7189,7 @@ function segSlide(){
     if (ind.dataset.look !== look) { ind.dataset.look = look; ind.style.background = cs.backgroundImage !== 'none' ? cs.backgroundImage : cs.backgroundColor; ind.style.boxShadow = cs.boxShadow; ind.style.borderRadius = cs.borderRadius; ind.style.border = cs.borderTopWidth + ' solid ' + cs.borderTopColor; }
     on.style.transition = _tr;
     sg.classList.add('sgs');
-    const first = !ind.dataset.p;
+    const first = !ind.dataset.p || instant === true;
     if (first) ind.style.transition = 'none';
     ind.style.width = on.offsetWidth + 'px'; ind.style.height = on.offsetHeight + 'px'; ind.style.transform = `translate(${on.offsetLeft}px,${on.offsetTop}px)`; ind.style.opacity = '1';
     if (first) { ind.dataset.p = '1'; void ind.offsetWidth; ind.style.transition = ''; }
