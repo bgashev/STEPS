@@ -3418,6 +3418,22 @@ html.web #tabs .tbi{top:262px}
 .shp-tabs button{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:99px;padding:8px 18px;cursor:pointer;transition:.2s}
 .shp-tabs button.on{background:var(--accent);color:var(--bg);border-color:transparent}
 .shp-wrap[data-t=fr] .s-bg,.shp-wrap[data-t=fr] .s-kit,.shp-wrap[data-t=bg] .s-fr,.shp-wrap[data-t=bg] .s-kit,.shp-wrap[data-t=kit] .s-fr,.shp-wrap[data-t=kit] .s-bg{display:none}
+
+/* v1.785: предпросмотр товара */
+.spv{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:16px;animation:spvin .22s ease}.spv.out{opacity:0;transition:opacity .18s}
+.spv-back{position:absolute;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(10px)}
+.spv-box{position:relative;width:min(560px,100%);background:var(--surface);border:1px solid var(--border);border-radius:28px;padding:14px;box-shadow:0 30px 80px #000a;animation:spvup .32s cubic-bezier(.22,1,.36,1)}
+.spv-view{overflow:hidden;border-radius:20px}.spv-view>*{animation:none}.spv-view.fr>*{animation:spvr .3s cubic-bezier(.22,1,.36,1)}.spv-view.fl>*{animation:spvl .3s cubic-bezier(.22,1,.36,1)}
+.spv-st{height:300px;display:grid;place-items:center;border-radius:20px;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--accent) 26%,var(--surface2)),var(--surface2) 72%)}
+.spv-bg{position:relative;height:300px;border-radius:20px;overflow:hidden;isolation:isolate}.spv-bg .hbgfx{border-radius:0}
+.spv-bga{position:absolute;left:20px;bottom:18px;z-index:2;filter:drop-shadow(0 6px 14px #0008)}.spv-kav{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;filter:drop-shadow(0 10px 24px #000a)}
+.spv-x{position:absolute;right:22px;top:22px;z-index:5;width:34px;height:34px;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:14px;cursor:pointer;backdrop-filter:blur(6px)}
+.spv-ar{position:absolute;top:150px;z-index:5;width:42px;height:42px;margin-top:-21px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.42);color:#fff;font-size:26px;line-height:1;cursor:pointer;backdrop-filter:blur(6px);transition:transform .2s}.spv-ar:hover{transform:scale(1.1)}.spv-ar.l{left:24px}.spv-ar.r{right:24px}
+.spv-ft{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px 8px;text-align:center}.spv-ft small{color:var(--muted);font-weight:700;letter-spacing:.05em;font-size:11.5px;text-transform:uppercase}.spv-ft h3{margin:0;font-size:22px}
+.spv-b{width:100%;max-width:340px;padding:13px 18px;font-size:15px;background:var(--accent);color:var(--bg)}.spv-b.own{background:var(--surface2);color:var(--muted);cursor:default;border:1px solid var(--border)}
+.spv-up{font:inherit;font-size:13px;font-weight:700;color:var(--accent);background:none;border:0;cursor:pointer;padding:4px 8px}
+@keyframes spvin{from{opacity:0}}@keyframes spvup{from{opacity:0;transform:translateY(24px) scale(.96)}}@keyframes spvr{from{opacity:0;transform:translateX(40px)}}@keyframes spvl{from{opacity:0;transform:translateX(-40px)}}
+@media(max-width:560px){.spv{align-items:end;padding:0}.spv-box{border-radius:28px 28px 0 0;padding-bottom:calc(14px + env(safe-area-inset-bottom))}.spv-st,.spv-bg{height:260px}.spv-ar{top:130px}}
 .shp-bg.tall{height:150px}.shp-kav{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;filter:drop-shadow(0 6px 14px #0008)}.shp-pr s{opacity:.55;font-weight:600;margin-left:4px}
 .shp-lab{display:flex;justify-content:space-between;align-items:baseline;margin:16px 2px 12px}.shp-lab b{font-size:19px;letter-spacing:-.3px}.shp-lab span{color:var(--muted);font-size:12.5px}
 .shp-grid{display:grid;gap:14px}.shp-grid.fr{grid-template-columns:repeat(auto-fill,minmax(168px,1fr))}.shp-grid.bg{grid-template-columns:repeat(auto-fill,minmax(228px,1fr))}
@@ -3445,7 +3461,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.784';
+const APP = 'VOOB (by BGASHEV) Mini App v1.785';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5046,12 +5062,52 @@ async function loadShop(force){
   if (SHOP.ok && !force) return;
   try { const j = await apiAuth('/shop/status', {}); if (j && j.owned) { SHOP.owned = new Set(j.owned); j.owned.forEach(x => { if (x.startsWith('kit:')) { SHOP.owned.add('frame:' + x.slice(4)); SHOP.owned.add('bg:' + x.slice(4)); } }); if (j.prices) SHOP.prices = j.prices; SHOP.ok = 1; } } catch (e) {}
 }
+
+// v1.785: крупный предпросмотр товара (рамка / фон / комплект) с листанием и кнопкой «Купить»
+let SPV = null;
+function shopList(kind){ const fr = FRAMES.filter(f => f[2]); return kind === 'frame' ? fr : kind === 'bg' ? BG_KEYS : fr.filter(f => BG_SVG[f[0]]); }
+function shopPreview(kind, k){
+  const list = shopList(kind), i = list.findIndex(x => x[0] === k); if (i < 0) return;
+  SPV = {kind, i, list};
+  if (!document.querySelector('.spv')) { document.addEventListener('keydown', shopPvKey); }
+  shopPvDraw(0, 1);
+}
+function shopPvClose(){ const o = document.querySelector('.spv'); if (o) { o.classList.add('out'); setTimeout(() => o.remove(), 180); } SPV = null; document.removeEventListener('keydown', shopPvKey); }
+function shopPvKey(e){ if (e.key === 'Escape') shopPvClose(); else if (e.key === 'ArrowRight') shopPvNav(1); else if (e.key === 'ArrowLeft') shopPvNav(-1); }
+function shopPvNav(d){ if (!SPV) return; const n = SPV.list.length; SPV.i = (SPV.i + d + n) % n; hap.sel && hap.sel(); shopPvDraw(d); }
+function shopPvDraw(dir, first){
+  if (!SPV) return;
+  const {kind, list} = SPV, f = list[SPV.i], k = f[0], n = list.length;
+  const lv = myLevel(), name = displayName() || 'Гость', photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url) || '';
+  const av = (kk, px) => frAv(kk, px, lv, photo, name);
+  const kp = SHOP.prices.kit, kitHas = isPro() || (SHOP.owned.has('frame:' + k) && SHOP.owned.has('bg:' + k));
+  const own = kind === 'kit' ? kitHas : (isPro() || SHOP.owned.has(kind + ':' + k));
+  const price = kind === 'kit' ? kp : SHOP.prices[kind];
+  const stage = kind === 'frame' ? `<div class="spv-st">${av(k, 160)}</div>`
+    : kind === 'bg' ? `<div class="spv-bg">${bgFx(k)}<div class="spv-bga">${av('', 84)}</div></div>`
+    : `<div class="spv-bg">${bgFx(k)}<div class="spv-kav">${av(k, 150)}</div></div>`;
+  const what = {frame: 'Рамка', bg: 'Фон', kit: 'Комплект: рамка и фон'}[kind];
+  const btn = own ? `<button type="button" class="shp-btn spv-b own" disabled>${isPro() ? 'Открыто в PRO' : 'Уже у тебя'}</button>`
+    : (kind === 'kit' && !kp) ? `<button type="button" class="shp-btn spv-b own" disabled>Скоро</button>`
+    : `<button type="button" class="shp-btn spv-b" data-act="spvbuy">Купить · ⭐ ${price}</button>`;
+  const up = (kind !== 'kit' && kp && BG_SVG[k] && FRAMES.some(x => x[0] === k && x[2]) && !own && !kitHas) ? `<button type="button" class="spv-up" data-act="spvbuy" data-kind="kit">или весь комплект рамка + фон за ⭐ ${kp}</button>` : '';
+  let ov = document.querySelector('.spv');
+  if (!ov) { ov = document.createElement('div'); ov.className = 'spv'; document.body.appendChild(ov); }
+  ov.innerHTML = `<div class="spv-back" data-act="spvclose"></div><div class="spv-box">
+    <button type="button" class="spv-x" data-act="spvclose" aria-label="Закрыть">✕</button>
+    <div class="spv-view${first ? '' : dir > 0 ? ' fr' : dir < 0 ? ' fl' : ''}">${stage}</div>
+    <button type="button" class="spv-ar l" data-act="spvnav" data-d="-1" aria-label="Назад">‹</button><button type="button" class="spv-ar r" data-act="spvnav" data-d="1" aria-label="Вперёд">›</button>
+    <div class="spv-ft"><small>${what} · ${SPV.i + 1} / ${n}</small><h3>${esc(f[1])}</h3>${btn}${up}</div></div>`;
+  const box = ov.querySelector('.spv-box'); let x0 = null;
+  box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, {passive: true});
+  box.addEventListener('touchend', e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) shopPvNav(dx < 0 ? 1 : -1); });
+}
 async function shopBuy(kind, item, name){
   hap.imp();
   try {
     const j = await apiAuth('/shop/invoice', {kind, item});
     if (!j.link) throw new Error(j.error || 'нет счёта');
-    const paid = () => { hap.ok(); SHOP.owned.add(kind + ':' + item); if (kind === 'kit') { SHOP.owned.add('frame:' + item); SHOP.owned.add('bg:' + item); } toast('✨ «' + name + '» теперь твой навсегда'); loadShop(true).then(() => render()); render(); };
+    const paid = () => { hap.ok(); SHOP.owned.add(kind + ':' + item); if (kind === 'kit') { SHOP.owned.add('frame:' + item); SHOP.owned.add('bg:' + item); } toast('✨ «' + name + '» теперь твой навсегда'); loadShop(true).then(() => { render(); if (SPV) shopPvDraw(0); }); render(); if (SPV) shopPvDraw(0); };
     if (ver('6.1') && tg.openInvoice) tg.openInvoice(j.link, st => { if (st === 'paid') paid(); });
     else { openTG(j.link); toast('Оплати в Telegram и вернись сюда'); }
   } catch (e) { toast('Не получилось: ' + e.message); }
@@ -5645,11 +5701,11 @@ function viewShop(){   // v1.782: «Магазин» (вариант «Журн�
   const fr = FRAMES.filter(f => f[2]), bgs = BG_KEYS;
   const has = (kind, k) => isPro() || SHOP.owned.has(kind + ':' + k);
   const tag = (kind, k) => isPro() ? '<span class="shp-pr own">В PRO</span>' : SHOP.owned.has(kind + ':' + k) ? '<span class="shp-pr own">Куплено</span>' : `<span class="shp-pr">⭐ ${SHOP.prices[kind]}</span>`;
-  const fc = f => `<button type="button" class="shp-c fr" data-act="shopbuy" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}"><div class="shp-st">${av(f[0], 76)}</div><b>${esc(f[1])}</b>${tag('frame', f[0])}</button>`;
-  const bc = b => `<button type="button" class="shp-c bg" data-act="shopbuy" data-kind="bg" data-k="${b[0]}" data-n="${esc(b[1])}"><div class="shp-bg">${bgFx(b[0])}<div class="shp-bga">${av('', 54)}</div></div><b>${esc(b[1])}</b>${tag('bg', b[0])}</button>`;
+  const fc = f => `<button type="button" class="shp-c fr" data-act="shopview" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}"><div class="shp-st">${av(f[0], 76)}</div><b>${esc(f[1])}</b>${tag('frame', f[0])}</button>`;
+  const bc = b => `<button type="button" class="shp-c bg" data-act="shopview" data-kind="bg" data-k="${b[0]}" data-n="${esc(b[1])}"><div class="shp-bg">${bgFx(b[0])}<div class="shp-bga">${av('', 54)}</div></div><b>${esc(b[1])}</b>${tag('bg', b[0])}</button>`;
   const paired = fr.filter(f => BG_SVG[f[0]]), kp = SHOP.prices.kit, kits = paired;
   const kitHas = k => isPro() || (SHOP.owned.has('frame:' + k) && SHOP.owned.has('bg:' + k));
-  const kc = f => `<button type="button" class="shp-c kit" data-act="shopbuy" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}"><div class="shp-bg tall">${bgFx(f[0])}<div class="shp-kav">${av(f[0], 72)}</div></div><b>${esc(f[1])}</b>${kitHas(f[0]) ? '<span class="shp-pr own">' + (isPro() ? 'В PRO' : 'Куплено') + '</span>' : kp ? `<span class="shp-pr">⭐ ${kp} <s>${SHOP.prices.frame + SHOP.prices.bg}</s></span>` : '<span class="shp-pr own">Скоро</span>'}</button>`;
+  const kc = f => `<button type="button" class="shp-c kit" data-act="shopview" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}"><div class="shp-bg tall">${bgFx(f[0])}<div class="shp-kav">${av(f[0], 72)}</div></div><b>${esc(f[1])}</b>${kitHas(f[0]) ? '<span class="shp-pr own">' + (isPro() ? 'В PRO' : 'Куплено') + '</span>' : kp ? `<span class="shp-pr">⭐ ${kp} <s>${SHOP.prices.frame + SHOP.prices.bg}</s></span>` : '<span class="shp-pr own">Скоро</span>'}</button>`;
   const pick = (i) => paired[(i * 7 + 3) % paired.length] || fr[i] || fr[0];
   const hero = (f, cls, px) => { const bn = (BG_KEYS.find(x => x[0] === f[0]) || BG_KEYS[0]);
     return `<div class="shp-h ${cls}"><div class="shp-bgl">${bgFx(bn[0])}</div><div class="shp-hav">${av(f[0], px)}</div><div class="shp-ht"><small>${cls === 'big' ? 'НОВИНКА' : 'ПОДБОРКА'}</small><h3>${esc(f[1])}</h3>
@@ -7608,6 +7664,10 @@ const ACT = {
     render(); },
   frprev: el => openFramePrev(el.dataset.v || ''),
   shoptab: el => { const w = el.closest('.shp-wrap'); if (!w) return; w.dataset.t = el.dataset.t; w.querySelectorAll('.shp-tabs button').forEach(x => x.classList.toggle('on', x === el)); },
+  shopview: el => shopPreview(el.dataset.kind, el.dataset.k),
+  spvclose: () => shopPvClose(),
+  spvnav: el => shopPvNav(+el.dataset.d),
+  spvbuy: el => { const o = SPV && SPV.list[SPV.i]; if (o) ACT.shopbuy({dataset: {kind: el.dataset.kind || SPV.kind, k: o[0], n: o[1]}}); },
   shopbuy: el => { const k = el.dataset.k, kind = el.dataset.kind; if (!SHOP.ok) { toast('Покупки скоро откроются'); return; } if (isPro() || SHOP.owned.has(kind + ':' + k) || (kind === 'kit' && SHOP.owned.has('frame:' + k) && SHOP.owned.has('bg:' + k))) { toast('«' + (el.dataset.n || '') + '» уже у тебя: примени в профиле'); return; } shopBuy(kind, k, el.dataset.n || ''); },
   frnav: el => { frPrevShow(el.dataset.v || ''); hap.tap(); },
   frpro: () => openPro(),
