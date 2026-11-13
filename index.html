@@ -3368,7 +3368,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.768';
+const APP = 'VOOB (by BGASHEV) Mini App v1.769';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5881,6 +5881,7 @@ function applyLang(root){
         if (out !== cur) { el.setAttribute(a, out); rec[a] = {src, out}; if (L !== 'ru') _lAny = true; } else if (o && out === src) delete rec[a]; }
     }
   } finally { _lapp = false; }
+  if (L !== 'ru' && !applyLang.sg) { applyLang.sg = 1; requestAnimationFrame(() => { applyLang.sg = 0; try { segSlide(); } catch (e) {} }); }   // v1.769: переводы меняют ширину кнопок — индикатор пересчитываем
 }
 const _lobs = new MutationObserver(ms => {
   if (_lapp) return; if (curLang() === 'ru' && !_lAny) return;
