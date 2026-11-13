@@ -3419,7 +3419,7 @@ html.web #tabs .tbi{top:262px}
 .shp-tabs button.on{background:var(--accent);color:var(--bg);border-color:transparent}
 .shp-wrap[data-t=fr] .s-bg,.shp-wrap[data-t=fr] .s-kit,.shp-wrap[data-t=bg] .s-fr,.shp-wrap[data-t=bg] .s-kit,.shp-wrap[data-t=kit] .s-fr,.shp-wrap[data-t=kit] .s-bg{display:none}
 
-.pzbuy{flex-wrap:wrap}.pzbuy .pzgo{flex:1 1 150px}.pzst{background:var(--accent)!important;color:var(--bg)!important;font-style:normal}
+.me-prof.pubpg{max-width:560px;margin:0 auto}.pzbuy{flex-wrap:wrap}.pzbuy .pzgo{flex:1 1 150px}.pzst{background:var(--accent)!important;color:var(--bg)!important;font-style:normal}
 /* v1.785: предпросмотр товара */
 .spv{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:16px;animation:spvin .22s ease}.spv.out{opacity:0;transition:opacity .18s}
 .spv-back{position:absolute;inset:0;background:rgba(0,0,0,.62);backdrop-filter:blur(10px)}
@@ -3462,7 +3462,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.788';
+const APP = 'VOOB (by BGASHEV) Mini App v1.789';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4905,15 +4905,7 @@ function openFeedback(type, target){
     <textarea class="inp" id="fb-text" maxlength="1000" rows="5" placeholder="${target ? 'Что не так?' : 'Например: хочу тёмную тему ещё темнее'}" style="resize:vertical;min-height:120px"></textarea>
     <button class="btn primary" style="width:100%;margin-top:12px" data-act="fbsend"${target ? ` data-target="${target}"` : ''}>Отправить</button>`, {type:'feedback'});
 }
-async function openPublicProfile(handle){
-  if (!inTG) return;
-  PUBH = handle;
-  openSheet(`<div id="pub"><div class="sk" style="height:140px"><i class="c"></i><span class="ln"><i></i><i></i></span></div></div>`, {type:'pub'});
-  try {
-    const j = await apiAuth('/profile/public', {handle, today:isoOf(todayN())});
-    const el = $('#pub'); if (!el) return; askBadges([j.tg_id]);
-    if (j.status !== 'ok') { el.innerHTML = `<h2>Профиль не найден</h2><div class="muted">Похоже, @${esc(handle)} сменил(а) ник.</div>`; return; }
-    if (!FR.phTried.has(j.tg_id)) { FR.phTried.add(j.tg_id); apiAuth('/friends/photo', {tg_id:j.tg_id}).then(r => { if (r.ok) { FR.ph.set(j.tg_id, 'data:image/jpeg;base64,' + r.b64); FR.phAt.set(+j.tg_id, Date.now()); putPhoto(j.tg_id); } }).catch(() => {}); }
+function pubHTML(j){
     const lv = j.level, btn = j.state === 'me' ? `<div class="cap" style="text-align:center">Это твой профиль 🙂</div>`
       : j.state === 'friend' ? `<button class="btn ghost" style="width:100%" data-act="frprof" data-id="${j.tg_id}">${IC('check', 16)}Вы друзья — открыть профиль</button>`
       : j.state === 'requested' ? `<div class="cap" style="text-align:center">Заявка уже отправлена</div>`
@@ -4921,11 +4913,40 @@ async function openPublicProfile(handle){
     const tc = tierColor(lv.level), pct = lv.need ? Math.max(3, (lv.into || 0) / lv.need * 100) : 0;
     const pbg = j.state === 'me' ? myBg() : (BGS.get(+j.tg_id) || '');
     if (j.state !== 'me' && !BGS_KNOWN.has(+j.tg_id)) loadBgs([+j.tg_id]);
-    el.innerHTML = `<div class="hero pubh${pbg ? ' hbg' : ''}" data-hid="${+j.tg_id || 0}" style="--tc:${tc}${pbg && bgTint(pbg) ? ';--bgt:' + bgTint(pbg) : ''}">${bgFx(pbg)}<span class="hero-av">${favHTML(j)}</span>
+    return `<div class="hero pubh${pbg ? ' hbg' : ''}" data-hid="${+j.tg_id || 0}" style="--tc:${tc}${pbg && bgTint(pbg) ? ';--bgt:' + bgTint(pbg) : ''}">${bgFx(pbg)}<span class="hero-av">${favHTML(j)}</span>
       <h2 class="nmrow hero-nm"><span class="nm">${esc(j.name)}</span>${bdgHTML(j.tg_id, 20)}</h2><div class="hero-at">@${esc(j.handle)}</div>${creatorHTML(j.tg_id)}
       <div class="hero-lv" data-act="lvinfo" data-xp="${lv.xp}" data-nm="${esc(j.name)}" role="button" aria-label="Уровни и звания"><div class="hero-lvt"><span class="lvn" data-t="${tierOf(lv.level).idx}">${lv.level}</span><span class="ttl">${tierOf(lv.level).title}</span></div>${lv.need ? `<div class="lvbar"><i style="width:${pct}%"><b class="lvp"></b></i></div><div class="cap">${lv.into || 0} из ${lv.need} очков до уровня ${lv.level + 1}</div>` : ''}</div></div>
       <div class="card"><div class="tot"><div><b>${j.total == null ? '—' : j.total}</b><span class="cap">тренировок</span></div><div><b>${j.friends_count}</b><span class="cap">друзей</span></div><div><b>${(j.gift_kinds || []).length}/${GIFT_ALL.length}</b><span class="cap">подарков</span></div></div></div>
       ${(j.gift_kinds || []).length ? `<div class="card"><h3>${IC('gift')}Коллекция подарков</h3>${giftShelf(j.gift_kinds, 20, j.name)}</div>` : ''}${btn}`;
+}
+const PUBP = new Map();   // публичные профили, открытые целой страницей
+async function openPublicProfile(handle, full){
+  if (!inTG) return;
+  PUBH = handle;
+  if (full) {   // v1.789: профиль создателя — целая страница, как профиль друга
+    try {
+      const j = await apiAuth('/profile/public', {handle, today:isoOf(todayN())});
+      if (j.status !== 'ok') { toast('Профиль не найден'); return; }
+      askBadges([j.tg_id]);
+      if (j.state === 'me') { ACT.gome(); window.scrollTo(0, 0); return; }   // свой профиль — это вкладка «Я»
+      if (j.state === 'friend' && FR.data && FR.data.friends.some(x => x.tg_id === j.tg_id)) { openFriendProfile(j.tg_id); return; }
+      if (j.state !== 'me' && !BGS_KNOWN.has(+j.tg_id)) loadBgs([+j.tg_id]);
+      if (!FR.phTried.has(j.tg_id)) { FR.phTried.add(j.tg_id); apiAuth('/friends/photo', {tg_id:j.tg_id}).then(r => { if (r.ok) { FR.ph.set(j.tg_id, 'data:image/jpeg;base64,' + r.b64); FR.phAt.set(+j.tg_id, Date.now()); putPhoto(j.tg_id); if (S.fprof === j.tg_id) render(); } }).catch(() => {}); }
+      PUBP.set(j.tg_id, j);
+      if (!S.fprof) S.fprofY = window.scrollY;
+      S.fprof = j.tg_id; if (sheetCtx) closeSheet();
+      render(); window.scrollTo(0, 0);
+      try { if (ver('6.1')) tg.BackButton.show(); } catch (e) {}
+    } catch (e) { toast('Не удалось открыть: ' + e.message); }
+    return;
+  }
+  openSheet(`<div id="pub"><div class="sk" style="height:140px"><i class="c"></i><span class="ln"><i></i><i></i></span></div></div>`, {type:'pub'});
+  try {
+    const j = await apiAuth('/profile/public', {handle, today:isoOf(todayN())});
+    const el = $('#pub'); if (!el) return; askBadges([j.tg_id]);
+    if (j.status !== 'ok') { el.innerHTML = `<h2>Профиль не найден</h2><div class="muted">Похоже, @${esc(handle)} сменил(а) ник.</div>`; return; }
+    if (!FR.phTried.has(j.tg_id)) { FR.phTried.add(j.tg_id); apiAuth('/friends/photo', {tg_id:j.tg_id}).then(r => { if (r.ok) { FR.ph.set(j.tg_id, 'data:image/jpeg;base64,' + r.b64); FR.phAt.set(+j.tg_id, Date.now()); putPhoto(j.tg_id); } }).catch(() => {}); }
+    el.innerHTML = pubHTML(j);
     el.classList.remove('blurin'); void el.offsetWidth; el.classList.add('blurin');
   } catch (e) { const el = $('#pub'); if (el) el.innerHTML = `<div class="muted">Не удалось загрузить: ${esc(e.message)}</div>`; }
 }
@@ -5391,6 +5412,7 @@ const FPC = new Map();   // кэш профилей друзей: открыва
 // v1.559: профиль друга — полноценная страница в основном окне (как «Я»), а не шторка
 function viewFProf(){
   const f = FR.data && FR.data.friends.find(x => x.tg_id === S.fprof);
+  if (!f && PUBP.has(S.fprof)) return `<div class="mset-top"><button class="ib round" data-act="fpback" aria-label="Назад">${IC('back', 20)}</button><b>Профиль</b></div><div class="me-prof${inWeb ? ' pubpg' : ''}">${pubHTML(PUBP.get(S.fprof))}</div>`;
   if (!f) { S.fprof = null; return VIEWS[S.tab](); }
   const c = FPC.get(S.fprof), j = c && c.j;
   const body = friendSheetHTML(f, j || null, !j), top = `<div class="mset-top"><button class="ib round" data-act="fpback" aria-label="Назад">${IC('back', 20)}</button><b>Профиль</b></div>`;
@@ -7539,7 +7561,7 @@ const ACT = {
   tosite: el => { hap.tap(); const r = el.getBoundingClientRect(); VOOB_LU('out', '', () => { location.href = 'https://voob.kz/?from=app&t=' + Date.now(); }, {x:r.left + r.width / 2, y:r.top + r.height / 2}); },
   ctopen: el => { const u = el.dataset.u; hap.tap();
     try { if (el.dataset.tg) tg.openTelegramLink(u); else tg.openLink(u); } catch (e) { window.open(u, '_blank'); } },
-  creator: () => { hap.tap(); const c = CREATOR; if (c && c.handle) openPublicProfile(c.handle); else { askBadges([]); toast('Секунду…'); } },
+  creator: () => { hap.tap(); const c = CREATOR; if (c && c.handle) openPublicProfile(c.handle, true); else { askBadges([]); toast('Секунду…'); } },
   achclose: () => { hap.tap(); closeAchFull(); },
   pubprof: el => { hap.tap(); openPublicProfile(el.dataset.h); },
   fpback: () => { hap.tap(); fpBack(); },
