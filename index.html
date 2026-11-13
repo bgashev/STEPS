@@ -1,7 +1,9 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<script>try{if(/[?&]from=site\b/.test(location.search)){document.write('<style id="lu-g">html{background:#010206!important}body{visibility:hidden}/* v1.771: стартовый экран (мобильная версия), вариант «Свечение» */
+<script>try{if(/[?&]from=site\b/.test(location.search)){document.write('<style id="lu-g">html{background:#010206!important}body{visibility:hidden}</style>');setTimeout(function(){var g=document.getElementById("lu-g");if(g)g.remove()},4000)}}catch(e){}</script>
+<style id="vsplash-css">
+/* v1.771: стартовый экран, вариант «Свечение» */
 #vsplash{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;color:var(--text);overflow:hidden}
 #vsplash *{transform-box:fill-box}
 #vsplash svg{display:block;overflow:visible}
@@ -17,7 +19,7 @@
 @keyframes splG{from{opacity:0;transform:translateX(calc(var(--d)*1px));filter:blur(5px)}}
 @keyframes splOut{to{opacity:0}}
 @media (prefers-reduced-motion:reduce){#vsplash .sp-glow,#vsplash .sp-mk,#vsplash .sp-gr,#vsplash .sp-g{animation:none;opacity:1;stroke-dashoffset:0}#vsplash .sp-glow{opacity:.18}}
-</style>');setTimeout(function(){var g=document.getElementById("lu-g");if(g)g.remove()},4000)}}catch(e){}</script>
+</style>
 <meta charset="utf-8">
 <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
 <meta property="og:site_name" content="VOOB"><meta property="og:type" content="website"><meta property="og:title" content="Профиль в VOOB"><meta property="og:description" content="Тренировки, в которых приятно жить. Открой профиль и добавься в друзья."><meta property="og:image" content="https://app.voob.kz/og.jpg?v=2"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://app.voob.kz/og.jpg?v=2"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
@@ -3476,7 +3478,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.799';
+const APP = 'VOOB (by BGASHEV) Mini App v1.800';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
