@@ -3462,7 +3462,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.787';
+const APP = 'VOOB (by BGASHEV) Mini App v1.788';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5092,13 +5092,19 @@ function shopPvDraw(dir, first){
     : (kind === 'kit' && !kp) ? `<button type="button" class="shp-btn spv-b own" disabled>Скоро</button>`
     : `<button type="button" class="shp-btn spv-b" data-act="spvbuy">Купить · ⭐ ${price}</button>`;
   const up = (kind !== 'kit' && kp && BG_SVG[k] && FRAMES.some(x => x[0] === k && x[2]) && !own && !kitHas) ? `<button type="button" class="spv-up" data-act="spvbuy" data-kind="kit">или весь комплект рамка + фон за ⭐ ${kp}</button>` : '';
+  const view = `<div class="spv-view${first ? '' : dir > 0 ? ' fr' : dir < 0 ? ' fl' : ''}">${stage}</div>`;
+  const ft = `<small>${what} · ${SPV.i + 1} / ${n}</small><h3>${esc(f[1])}</h3>${btn}${up}`;
   let ov = document.querySelector('.spv');
+  if (ov && ov.querySelector('.spv-box')) {   // листаем: меняем только содержимое, само окно не перерисовываем (без повторной анимации появления)
+    ov.querySelector('.spv-view').outerHTML = view;
+    ov.querySelector('.spv-ft').innerHTML = ft;
+    return;
+  }
   if (!ov) { ov = document.createElement('div'); ov.className = 'spv'; document.body.appendChild(ov); }
   ov.innerHTML = `<div class="spv-back" data-act="spvclose"></div><div class="spv-box">
-    <button type="button" class="spv-x" data-act="spvclose" aria-label="Закрыть">✕</button>
-    <div class="spv-view${first ? '' : dir > 0 ? ' fr' : dir < 0 ? ' fl' : ''}">${stage}</div>
+    <button type="button" class="spv-x" data-act="spvclose" aria-label="Закрыть">✕</button>${view}
     <button type="button" class="spv-ar l" data-act="spvnav" data-d="-1" aria-label="Назад">‹</button><button type="button" class="spv-ar r" data-act="spvnav" data-d="1" aria-label="Вперёд">›</button>
-    <div class="spv-ft"><small>${what} · ${SPV.i + 1} / ${n}</small><h3>${esc(f[1])}</h3>${btn}${up}</div></div>`;
+    <div class="spv-ft">${ft}</div></div>`;
   const box = ov.querySelector('.spv-box'); let x0 = null;
   box.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, {passive: true});
   box.addEventListener('touchend', e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 50) shopPvNav(dx < 0 ? 1 : -1); });
