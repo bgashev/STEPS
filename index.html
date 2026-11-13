@@ -3438,6 +3438,14 @@ html.web #tabs .tbi{top:262px}
 .cmp-t small{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.05em}.cmp-t b{font-size:22px;letter-spacing:-.02em;white-space:nowrap}.cmp-t svg{width:100%;height:34px;margin-top:2px}
 .cmp-d{width:fit-content;font-weight:800;font-size:12px;padding:3px 9px;border-radius:99px}.cmp-d.up{background:rgba(95,201,138,.16);color:var(--green)}.cmp-d.dn{background:rgba(255,255,255,.07);color:var(--muted)}.cmp-d.nw{background:var(--accent-soft);color:var(--accent)}
 @media(max-width:560px){.cmp-tl{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.fra{display:flex;flex-direction:column;max-height:min(66vh,620px)}.fra .spv-glh{padding:10px 6px 8px}.fra .spv-gs{margin:6px 6px 8px}
+.fra-l{flex:1;min-height:0;overflow:auto;padding:4px 0 10px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin}
+.fra-l .fof{padding:10px 14px 10px 10px;gap:16px;border:1px solid transparent;border-radius:22px;transition:background .25s,border-color .25s,transform .3s cubic-bezier(.22,1,.36,1);animation:spvRow .5s calc(var(--i,0) * 45ms + .1s) cubic-bezier(.22,1,.36,1) both}
+.fra-l .fof[hidden]{display:none}.fra-l .fof.tap:hover{background:var(--surface2);border-color:var(--border);transform:translateX(4px)}.fra-l .fof.tap:active{transform:scale(.985)}
+.fra-l .fof .fav{width:56px;height:56px;font-size:22px}.fra-l .fof .nm{font-weight:800;font-size:18px}
+.fra-l .fof .cap{white-space:nowrap;display:inline-flex;align-items:center;gap:4px;font-size:13px;font-weight:700}
+#sheet.half.fr:not(.xl){-webkit-mask-image:none;mask-image:none}
+@media(prefers-reduced-motion:reduce){.fra-l .fof{animation:none}}
 .shp-btn{font:inherit;font-size:13px;font-weight:800;border:0;border-radius:99px;padding:9px 18px;background:var(--text);color:var(--bg);cursor:pointer;transition:transform .2s}
 .shp-btn.g{background:rgba(255,255,255,.16);color:#fff;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28)}.shp-btn:hover{transform:translateY(-2px)}
 #shpSkyFx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .5s ease;background:radial-gradient(90% 60vh at 72% 0,#1b2a5c 0,transparent 70%),radial-gradient(70% 55vh at 6% 100%,#3b1560 0,transparent 70%),radial-gradient(60% 45vh at 92% 58%,#12305a66 0,transparent 70%),#05060d}
@@ -3531,7 +3539,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.812';
+const APP = 'VOOB (by BGASHEV) Mini App v1.813';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5252,6 +5260,13 @@ async function shopGiftPick(){   // v1.792: подарить другу; v1.812:
   const inp = document.getElementById('spv-gs'); if (inp && fr.length > 0 && !('ontouchstart' in window)) inp.focus({preventScroll: true});
   if (!fr.length && inp) inp.closest('.spv-gs').style.display = 'none';
 }
+function fraFilter(inp){
+  const q = inp.value.trim().toLowerCase(), l = document.querySelector('.fra-l'); if (!l) return; let n = 0;
+  l.querySelectorAll('.fof').forEach(r => { const ok = !q || (r.dataset.n || '').includes(q); r.hidden = !ok; if (ok) n++; });
+  const no = l.querySelector('.spv-gnone'); if (no) no.hidden = n > 0;
+  const x = inp.parentNode.querySelector('.spv-gsx'); if (x) x.hidden = !q;
+}
+document.addEventListener('input', e => { if (e.target && e.target.id === 'fra-s') fraFilter(e.target); });
 function shopGiftFilter(inp){
   const q = inp.value.trim().toLowerCase(), l = document.getElementById('spv-gll'); if (!l) return; let n = 0;
   l.querySelectorAll('.spv-gr').forEach(r => { const ok = !q || r.dataset.n.includes(q); r.hidden = !ok; if (ok) n++; });
@@ -7691,7 +7706,11 @@ const ACT = {
   frzoom: el => openZoom(+el.dataset.id, el),
   zclose: () => closeZoom(),
   frall: el => { const id = +el.dataset.id, f = FR.data && (FR.data.friends.find(x => x.tg_id === id) || (FR.data.me && FR.data.me.tg_id === id ? FR.data.me : null)); const fl = FR.profBy.get(id); if (!f || !fl) return; hap.tap();
-    openSheet(`<h2>Друзья ${esc(f.name)}</h2>` + fl.map(x => fofHTML(x)).join('') + `<button class="btn ghost" style="width:100%;margin-top:12px" data-act="frback" data-id="${id}">Назад к профилю</button>`, {type:'frall', id}); },
+    const rows = fl.map((x, i) => fofHTML(x).replace('<div class="fof', `<div style="--i:${Math.min(i, 12)}" data-n="${esc(String(x.name || '').toLowerCase())}" class="fof`)).join('');   // v1.813: окно «Друзья друга» в стиле выбора друга для подарка
+    openSheet(`<div class="fra"><div class="spv-glh"><button type="button" class="spv-glb" data-act="frback" data-id="${id}" aria-label="Назад к профилю">${IC('back', 20)}</button><div class="spv-glt"><b>Друзья</b><small>${esc(f.name)} · ${fl.length}</small></div></div>`
+      + (fl.length > 5 ? `<label class="spv-gs"><i>${IC('search', 18)}</i><input id="fra-s" type="text" inputmode="search" autocomplete="off" spellcheck="false" placeholder="Найти по имени" aria-label="Поиск"><button type="button" class="spv-gsx" data-act="fragsx" aria-label="Очистить" hidden>✕</button></label>` : '')
+      + `<div class="fra-l">${rows || '<div class="hint" style="padding:26px;text-align:center">Пока никого</div>'}<div class="spv-gnone" hidden>Никого не нашли</div></div></div>`, {type:'frall', id}); },
+  fragsx: () => { const i = document.getElementById('fra-s'); if (i) { i.value = ''; fraFilter(i); i.focus(); } },
   rwok: () => { $('#cg').classList.remove('show'); setTimeout(showNextReward, 250); },
   frpoke: async el => {
     hap.seq([['i', 'medium', 0]]); try { navigator.vibrate && !ver('6.1') && navigator.vibrate(18); } catch (e) {}   // v1.618: отклик сразу, до любых проверок
