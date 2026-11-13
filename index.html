@@ -3426,7 +3426,7 @@ html.web #tabs .tbi{top:262px}
 .shp-sl.on .shp-pb i{animation:shpPg 7s linear both}.shp-car:hover .shp-pb i{animation-play-state:paused}
 @keyframes shpPg{from{width:0}to{width:100%}}
 @media(prefers-reduced-motion:reduce){.shp-sl.on .shp-pb i{animation:none;width:100%}.shp-sl.on .shp-sav,.shp-sl.on .shp-sx>*{animation:none}}
-.shp-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:12px}
+.shp-strip{display:flex;gap:10px;margin-top:12px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 6px;scroll-snap-type:x proximity}.shp-strip::-webkit-scrollbar{display:none}.shp-th{flex:0 0 200px;scroll-snap-align:center}
 .shp-th{font:inherit;color:var(--text);display:flex;align-items:center;gap:12px;padding:9px 14px 9px 9px;border-radius:18px;background:color-mix(in srgb,var(--surface) 72%,transparent);backdrop-filter:blur(10px);border:1px solid var(--border);cursor:pointer;text-align:left;transition:.25s}
 .shp-th:hover{transform:translateY(-2px)}.shp-th.on{border-color:var(--text);background:rgba(255,255,255,.09)}
 .shp-thm{position:relative;width:46px;height:46px;border-radius:13px;overflow:hidden;flex:none;isolation:isolate}.shp-thm .hbgfx{border-radius:0}
@@ -3492,7 +3492,7 @@ html.web #tabs .tbi{top:262px}
 .shp-pr{font-size:12.5px;font-weight:800;background:var(--accent);color:var(--bg);border-radius:99px;padding:5px 15px}
 .shp-pr.own{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
 .shp-pro{margin-top:22px;border:1px dashed var(--border);border-radius:18px;padding:14px 18px;color:var(--muted);font-size:13px}.shp-pro b{color:var(--text);font-weight:600}
-@media(max-width:900px){.shp-sl,.shp-sl.on{grid-template-columns:1fr;min-height:0}.shp-slides{min-height:480px}.shp-sa{order:-1;min-height:210px;padding-top:22px}.shp-sav{transform:scale(.8)}.shp-sx{padding:4px 22px 40px}.shp-sx h2{font-size:34px}.shp-strip{grid-template-columns:1fr}.shp-sl.on .shp-sav{animation:none}}
+@media(max-width:900px){.shp-sl,.shp-sl.on{grid-template-columns:1fr;min-height:0}.shp-slides{min-height:480px}.shp-sa{order:-1;min-height:210px;padding-top:22px}.shp-sav{transform:scale(.8)}.shp-sx{padding:4px 22px 40px}.shp-sx h2{font-size:34px}.shp-th{flex-basis:176px}.shp-sl.on .shp-sav{animation:none}}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -3507,7 +3507,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.808';
+const APP = 'VOOB (by BGASHEV) Mini App v1.809';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5829,6 +5829,7 @@ function historyHTML0(ws){
 function shpGo(c, i){   // v1.808: карусель магазина
   const sl = c.querySelectorAll('.shp-sl'); if (!sl.length) return; i = (i % sl.length + sl.length) % sl.length; c.dataset.i = i;
   sl.forEach((x, n) => x.classList.toggle('on', n === i)); c.querySelectorAll('.shp-th').forEach((x, n) => x.classList.toggle('on', n === i));
+  const st = c.querySelector('.shp-strip'), t = st && st.children[i]; if (t) st.scrollTo({left: t.offsetLeft - (st.clientWidth - t.offsetWidth) / 2, behavior: 'smooth'});
 }
 document.addEventListener('animationend', e => { if (e.animationName === 'shpPg') { const c = e.target.closest('.shp-car'); if (c) shpGo(c, +c.dataset.i + 1); } });
 function shpSkySync(){   // v1.807: звёздное небо на ВСЮ страницу магазина (fixed за интерфейсом, только тёмная тема)
@@ -5867,7 +5868,7 @@ function viewShop(){   // v1.782: «Магазин» (вариант «Журн�
       <div class="shp-ab">${kp ? (mine ? `<button type="button" class="shp-btn" disabled style="opacity:.7;cursor:default">${isPro() ? 'Открыто в PRO' : 'Комплект у тебя'}</button>` : `<button type="button" class="shp-btn" data-act="shopbuy" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}">Купить комплект</button>`) : ''}${kp ? `<button type="button" class="shp-btn g" data-act="cardgift" data-kind="kit" data-k="${f[0]}">Подарить</button>` : ''}<button type="button" class="shp-btn g" data-act="shopview" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}">Примерить</button></div>
       <div class="shp-ln"><button type="button" data-act="shopbuy" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}">${has('frame', f[0]) ? 'рамка у тебя' : 'только рамка · ⭐ ' + SHOP.prices.frame}</button><button type="button" data-act="shopbuy" data-kind="bg" data-k="${bn[0]}" data-n="${esc(bn[1])}">${has('bg', bn[0]) ? 'фон у тебя' : 'только фон · ⭐ ' + SHOP.prices.bg}</button></div></div>
       <div class="shp-sa"><div class="shp-sav">${av(f[0], 150)}</div></div><div class="shp-pb"><i></i></div></div>`; };
-  const picks = [pick(0), pick(1), pick(2)];
+  const picks = []; for (let i = 0; picks.length < Math.min(10, paired.length || 1) && i < 60; i++) { const f = pick(i); if (!picks.includes(f)) picks.push(f); }
   const th = (f, n) => { const bn = (BG_KEYS.find(x => x[0] === f[0]) || BG_KEYS[0]); return `<button type="button" class="shp-th${n ? '' : ' on'}" data-act="shpslide" data-i="${n}"><span class="shp-thm">${bgFx(bn[0])}</span><span><b>${esc(f[1])}</b><small>${kp ? 'комплект · ⭐ ' + kp : 'рамка · ⭐ ' + SHOP.prices.frame}</small></span></button>`; };
   return `<div class="shp-wrap" data-t="all"><div class="head"><div><h1>Магазин</h1><div class="sub">Рамки и фоны по одному. Покупаешь один раз, остаются навсегда</div></div></div>
   <div class="shp-car" data-i="0"><div class="shp-slides">${picks.map((f, n) => slide(f, n, picks.length)).join('')}</div><div class="shp-strip">${picks.map(th).join('')}</div></div>
