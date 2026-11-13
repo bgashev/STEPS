@@ -3563,7 +3563,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.820';
+const APP = 'VOOB (by BGASHEV) Mini App v1.821';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7818,7 +7818,7 @@ const ACT = {
   achclose: () => { hap.tap(); closeAchFull(); },
   pubprof: el => { hap.tap(); openPublicProfile(el.dataset.h); },
   fpback: () => { hap.tap(); fpBack(); },
-  gome: () => { hap.tap(); S.fprof = null; closeSheet(); if (S.tab !== 'me') { S.tab = 'me'; S.meSet = false; render(); } },
+  gome: () => { hap.tap(); S.fprof = null; closeSheet(); if (S.tab !== 'me' || S.meSet || S.pers) { S.tab = 'me'; S.meSet = false; S.pers = false; S.pzp = null; S.pzH = null; render(); } },   // v1.821: из «Настроек»/«Персонализации» (tab уже 'me') раньше не происходило ничего
   gift: el => { hap.tap(); openGiftPicker(+el.dataset.id); },
   ginbox: () => openGiftInbox(),
   gview: el => openGiftView(el.dataset.k, el.dataset.who),
