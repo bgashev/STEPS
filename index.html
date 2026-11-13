@@ -3431,6 +3431,13 @@ html.web #tabs .tbi{top:262px}
 .shp-th:hover{transform:translateY(-2px)}.shp-th.on{border-color:var(--text);background:rgba(255,255,255,.09)}
 .shp-thm{position:relative;width:46px;height:46px;border-radius:13px;overflow:hidden;flex:none;isolation:isolate}.shp-thm .hbgfx{border-radius:0}
 .shp-th b{display:block;font-size:14px}.shp-th small{display:block;color:var(--muted);font-size:12px}
+.cmp{margin-top:12px}.cmp-h{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}.cmp-h h3{margin:0;display:flex;align-items:center;gap:8px}.cmp-h h3 span{color:var(--muted);font-weight:600;font-size:12.5px;margin-left:4px}
+.cmp-hl{font-size:15px;margin-bottom:14px;line-height:1.45}.cmp-hl b.up{color:var(--green)}
+.cmp-rec{display:inline-flex;font-size:12px;font-weight:800;color:#fde68a;background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.35);padding:4px 11px;border-radius:99px;margin-bottom:10px}
+.cmp-tl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.cmp-t{background:var(--surface2);border-radius:18px;padding:14px;display:grid;gap:6px;min-width:0}
+.cmp-t small{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.05em}.cmp-t b{font-size:22px;letter-spacing:-.02em;white-space:nowrap}.cmp-t svg{width:100%;height:34px;margin-top:2px}
+.cmp-d{width:fit-content;font-weight:800;font-size:12px;padding:3px 9px;border-radius:99px}.cmp-d.up{background:rgba(95,201,138,.16);color:var(--green)}.cmp-d.dn{background:rgba(255,255,255,.07);color:var(--muted)}.cmp-d.nw{background:var(--accent-soft);color:var(--accent)}
+@media(max-width:560px){.cmp-tl{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .shp-btn{font:inherit;font-size:13px;font-weight:800;border:0;border-radius:99px;padding:9px 18px;background:var(--text);color:var(--bg);cursor:pointer;transition:transform .2s}
 .shp-btn.g{background:rgba(255,255,255,.16);color:#fff;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28)}.shp-btn:hover{transform:translateY(-2px)}
 #shpSkyFx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .5s ease;background:radial-gradient(90% 60vh at 72% 0,#1b2a5c 0,transparent 70%),radial-gradient(70% 55vh at 6% 100%,#3b1560 0,transparent 70%),radial-gradient(60% 45vh at 92% 58%,#12305a66 0,transparent 70%),#05060d}
@@ -3507,7 +3514,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.809';
+const APP = 'VOOB (by BGASHEV) Mini App v1.810';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4423,7 +4430,7 @@ function stpFx(el, inp, was, d, fast){
 }
 
 /* ========================================================== состояние === */
-const S = {tab:'home', limit:30, klimit:30, sp:'30', sm:'min', wp:'90'};
+const S = {tab:'home', limit:30, klimit:30, sp:'30', sm:'min', wp:'90', cb:'prev'};
 let sheetCtx = null;
 
 function greet(){
@@ -5986,6 +5993,37 @@ function heatHTML(ws){
     <div class="chartcap" id="hmcap">Нажми на день — покажу детали</div>
     <div class="hm-lg"><span>меньше</span>${[0, 1, 2, 3, 4].map(l => `<i class="hm-c l${l}"></i>`).join('')}<span>больше</span></div>`;
 }
+function cmpCard(ws){   // v1.810: «Сравнение с собой» в Итогах (плитки с трендом)
+  const L = S.sp === '7' ? 7 : 30, t = todayN(), s0 = t - L + 1, base = S.cb || 'prev', hasK = ws.some(w => kcal(w));
+  const first = ws.length ? Math.min(...ws.map(w => dn(w.date))) : t, K = Math.min(60, Math.max(0, Math.ceil((s0 - first) / L)));
+  const win = k => ws.filter(w => { const d = dn(w.date); return d >= s0 - k * L && d <= s0 - k * L + L - 1; });
+  const kcw = w => kcal(w) || 0;
+  const mets = [['МИНУТЫ', a => sum(a, w => w.minutes), fmtMin, 'p'], ['ТРЕНИРОВОК', a => a.length, v => String(Math.round(v)), 'a'], ['ДНЕЙ', a => new Set(a.map(w => w.date)).size, v => String(Math.round(v)), 'a'],
+    hasK ? ['ККАЛ', a => sum(a, kcw), numSep, 'p'] : ['ОЧКОВ XP', a => sum(a, workoutXp), numSep, 'p']];
+  const wins = []; for (let k = 0; k <= K; k++) wins.push(win(k));
+  const head = `<div class="cmp-h"><h3>${IC('stats', 18)}Сравнение<span>${L === 7 ? 'последние 7 дней' : 'последние 30 дней'}</span></h3>${seg('cb', [['prev', 'Прошлый'], ['best', 'Лучший'], ['avg', 'Средний']], 'fit')}</div>`;
+  if (K < 1 || !ws.some(w => dn(w.date) < s0)) return `<div class="card cmp">${head}<div class="muted" style="padding:6px 2px 2px">Пока не с чем сравнивать: как только накопится ещё один период, здесь появится динамика.</div></div>`;
+  const res = mets.map(([nm, f, fm, ty]) => {
+    const v = wins.map(f), cur = v[0], older = v.slice(1), b = base === 'best' ? Math.max(...older) : base === 'avg' ? sum(older) / older.length : older[0];
+    let d, up = cur >= b;
+    if (ty === 'p') d = b > 0 ? `${cur >= b ? '↑' : '↓'} ${Math.abs(Math.round((cur - b) / b * 100))}%` : cur > 0 ? 'новое' : '—';
+    else { const df = cur - Math.round(b); d = df === 0 ? '=' : `${df > 0 ? '↑' : '↓'} ${Math.abs(df)}`; up = df >= 0; }
+    const ser = v.slice(0, 6).reverse(); while (ser.length < 6) ser.unshift(0);
+    return {nm, cur, fm, d, up, ser, b, ty, rec: ty === 'p' && older.length && cur > Math.max(...older) && cur > 0};
+  });
+  const m0 = res[0], c1 = res[1], bn = {prev: 'прошлого периода', best: 'своего лучшего периода', avg: 'своей обычной нормы'}[base];
+  let hl;
+  if (m0.b > 0) {
+    const pct = Math.round(Math.abs(m0.cur - m0.b) / m0.b * 100), more = m0.cur >= m0.b;
+    hl = base === 'best' ? `Это <b>${Math.round(m0.cur / m0.b * 100)}%</b> от твоего лучшего периода по времени в движении` : `Ты ${more ? 'активнее' : 'спокойнее'} ${bn} на <b class="${more ? 'up' : ''}">${pct}%</b>`;
+    const dc = c1.cur - Math.round(c1.b);
+    if (dc < 0 && more && base !== 'best') hl += `, но тренировок на ${Math.abs(dc)} меньше: они стали длиннее`; else if (dc > 0 && !more && base !== 'best') hl += `, но тренировок на ${dc} больше: они стали короче`;
+    hl += '.';
+  } else hl = 'В прошлом периоде активности не было, поэтому всё считается «новым».';
+  const tile = r => { const mx = Math.max(...r.ser, 1);
+    return `<div class="cmp-t"><small>${r.nm}</small><b>${r.fm(r.cur)}</b><span class="cmp-d ${r.d === '=' || r.d === '—' ? 'nw' : r.d === 'новое' ? 'nw' : r.up ? 'up' : 'dn'}">${r.d}</span><svg viewBox="0 0 100 34" aria-hidden="true">${r.ser.map((x, i) => `<rect x="${2 + i * 17}" y="${(34 - Math.max(3, x / mx * 32)).toFixed(1)}" width="12" height="${Math.max(3, x / mx * 32).toFixed(1)}" rx="3" fill="${i === 5 ? 'var(--accent)' : 'var(--off)'}"/>`).join('')}</svg></div>`; };
+  return `<div class="card cmp">${head}${m0.rec ? `<div class="cmp-rec">★ Рекорд по времени в движении</div>` : ''}<div class="cmp-hl">${hl}</div><div class="cmp-tl">${res.map(tile).join('')}</div></div>`;
+}
 function viewStats(){
   const ws = valid(), pws = filterPeriod(ws, S.sp), n = pws.length, g = G();
   const PN = {'7': 'за 7 дней', '30': 'за 30 дней', '12m': 'за 12 месяцев', 'all': 'за всё время'}[S.sp] || '';
@@ -6016,6 +6054,7 @@ function viewStats(){
     const km = sum(pws, kmOf); if (km > 0.05) ex.splice(3, 0, kpi(kmF(km), 'Пройдено, примерно'));
     h += `<div class="kpis">${[kpi(n, plural(n, W_WORK)), kpi(days, plural(days, W_DAY) + ' с активностью')].concat(ex.slice(0, 6)).join('')}</div>`;
     h += '<!--/L-->';
+    h += cmpCard(ws);
     // по видам активности
     const by = new Map(); for (const w of pws) { const a = actOf(w); if (!by.has(a)) by.set(a, []); by.get(a).push(w); }
     const rows = [...by.entries()].map(([a, gl]) => [a, gl, sum(gl, w => w.minutes)]).sort((x, y) => y[2] - x[2]);
