@@ -3423,7 +3423,7 @@ html.web #tabs .tbi{top:262px}
 .me-prof.pubpg{max-width:560px;margin:0 auto}.hero:has(.hero-av .fav[class*=" fr-"]:not(.fr-classic)){padding-top:64px}   /* v1.790: рамка выступает за аватарку до 30% — шапка с overflow:hidden не должна её обрезать */
 .pz-card:has(.pz-av .fav[class*=" fr-"]:not(.fr-classic)){padding-top:84px}
 .spv-st{height:320px}.shp-bg.tall{height:170px}
-.spv-bs{display:flex;flex-direction:column;gap:8px;width:100%;align-items:center}.spv-gift{background:transparent!important;color:var(--text)!important;border:1px solid var(--border)}
+.spv-bs{display:flex;gap:8px;width:100%;max-width:440px;margin:0 auto}.spv-bs .spv-b{flex:1;min-width:0;max-width:none;padding:13px 10px;white-space:nowrap}.spv-gift{background:transparent!important;color:var(--text)!important;border:1px solid var(--border)}
 .spv-gl{position:absolute;inset:0;z-index:8;background:var(--surface);border-radius:28px;display:flex;flex-direction:column;animation:spvin .2s ease}.spv-glh{display:flex;align-items:center;gap:10px;padding:16px 18px 8px}.spv-glh b{font-size:17px}.spv-glb{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);color:var(--text);display:grid;place-items:center;cursor:pointer}
 .spv-gll{overflow:auto;padding:6px 12px 14px;display:flex;flex-direction:column;gap:4px}.spv-gr{font:inherit;color:var(--text);display:flex;align-items:center;gap:12px;padding:8px 10px;border:0;border-radius:16px;background:none;cursor:pointer;text-align:left}.spv-gr:hover{background:var(--surface2)}.spv-gr b{flex:1;font-weight:700}.spv-gr small{color:var(--muted)}.spv-gra .fav{width:42px!important;height:42px!important}
 .pzbuy{flex-wrap:wrap}.pzbuy .pzgo{flex:1 1 150px}.pzst{background:var(--accent)!important;color:var(--bg)!important;font-style:normal}
@@ -3469,7 +3469,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.793';
+const APP = 'VOOB (by BGASHEV) Mini App v1.794';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5119,7 +5119,7 @@ function shopPvDraw(dir, first){
   const btn = own ? `<button type="button" class="shp-btn spv-b own" disabled>${isPro() ? 'Открыто в PRO' : 'Уже у тебя'}</button>`
     : (kind === 'kit' && !kp) ? `<button type="button" class="shp-btn spv-b own" disabled>Скоро</button>`
     : `<button type="button" class="shp-btn spv-b" data-act="spvbuy">Купить · ⭐ ${price}</button>`;
-  const gift = (SHOP.gift && price) ? `<button type="button" class="shp-btn spv-b spv-gift" data-act="spvgift">🎁 Подарить · ⭐ ${price}</button>` : '';
+  const gift = price ? `<button type="button" class="shp-btn spv-b spv-gift" data-act="spvgift">Подарить · ⭐ ${price}</button>` : '';
   const up = (kind !== 'kit' && kp && BG_SVG[k] && FRAMES.some(x => x[0] === k && x[2]) && !own && !kitHas) ? `<button type="button" class="spv-up" data-act="spvbuy" data-kind="kit">или весь комплект рамка + фон за ⭐ ${kp}</button>` : '';
   const view = `<div class="spv-view${first ? '' : dir > 0 ? ' fr' : dir < 0 ? ' fl' : ''}">${stage}</div>`;
   const ft = `<small>${what} · ${SPV.i + 1} / ${n}</small><h3>${esc(f[1])}</h3><div class="spv-bs">${btn}${gift}</div>${up}`;
