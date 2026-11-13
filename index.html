@@ -3483,7 +3483,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.803';
+const APP = 'VOOB (by BGASHEV) Mini App v1.804';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6464,9 +6464,7 @@ function viewMeSettings(){
     <button type="button" class="ctr" data-act="ctopen" data-u="https://www.threads.com/@voob.kz"><span class="lg th">${SOC_LOGO.th}</span><span class="ctr-t"><b>Threads</b><small>@voob.kz</small></span><span class="ctr-go">${IC('chev', 16)}</span></button>
     <button type="button" class="ctr" data-act="ctopen" data-u="https://voob.kz"><span class="lg web"><svg width="64%" viewBox="0 0 100 60" fill="none" stroke="#fff" stroke-width="8.5" aria-hidden="true"><circle cx="37" cy="30" r="20"/><circle cx="63" cy="30" r="20" opacity=".92"/></svg></span><span class="ctr-t"><b>Сайт</b><small>voob.kz</small></span><span class="ctr-go">${IC('chev', 16)}</span></button></div></div>`;
   if (inTG) h += `<div class="card lrows"><button type="button" class="lrow" data-act="paysopen"><span class="lri">${IC('clock', 18)}</span><span class="lrt"><b>Платежи и возвраты</b><small>История оплат и заявка на возврат</small></span>${IC('chev', 16)}</button><button type="button" class="lrow" data-act="fbopen"><span class="lri">${IC('sparkle', 18)}</span><span class="lrt"><b>Идеи и жалобы</b><small>Сообщение уйдёт разработчику</small></span>${IC('chev', 16)}</button></div>`;
-  h += `<div class="card"><h3>${IC('cloud')}Данные</h3><div class="cap" style="margin:-6px 0 12px">Данные синхронизируются через сервер VOOB и привязаны к твоему Telegram: одинаковы на всех твоих устройствах.</div>
-    <div class="row" style="flex-wrap:wrap;gap:8px"><button class="btn ghost small" data-act="import">${IC('import', 16)}Импорт из VOOB для Windows</button><button class="btn ghost small" data-act="copy">${IC('export', 16)}Скопировать копию</button></div>
-    <div class="cap" style="margin-top:10px">Импорт: выбери файл STEPS_backup_….json из десктопной версии (Настройки → Резервная копия). Совпадающие записи не задублируются.</div></div>`;
+  h += `<div class="card lrows"><button type="button" class="lrow" data-act="copy"><span class="lri">${IC('export', 18)}</span><span class="lrt"><b>Копия данных</b><small>Скопировать резервную копию</small></span>${IC('chev', 16)}</button></div>`;
   if (inWeb) h += hkCardHTML();
   h += '<!--M3-->';
   if (inWebApp) { h += `<div class="card gsc" id="gs-card"><span class="gsc-ic"><svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg></span><div class="gsc-t" id="gs-state"><b>Вход через Google</b><small>Загрузка…</small></div><div class="gsc-a"><button type="button" class="btn small gsc-b" id="gs-link" data-act="gslink" hidden>Привязать</button><button type="button" class="btn ghost small gsc-b" id="gs-unl" data-act="gsunlink" hidden>Отвязать</button></div></div>`; setTimeout(gsMount, 0); }
