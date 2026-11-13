@@ -3399,22 +3399,37 @@ html.web #tabs .tbi{top:262px}
 .psc .gsc-b:not(.ghost){background:var(--text);color:var(--bg);border:0;font-weight:700}
 .psc .gsc-b.ghost{color:var(--text)}
 
-/* v1.780: Магазин «Журнал» */
-.shp-ban{display:grid;grid-template-columns:1.5fr 1fr;gap:12px;margin-top:6px}
-.shp-ban>div{position:relative;overflow:hidden;isolation:isolate;border-radius:24px;padding:22px;min-height:180px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--surface2);border:1px solid var(--border)}
-.shp-bgl{position:absolute;inset:0;z-index:-1;overflow:hidden}.shp-bgl .hbgfx{border-radius:0}
-.shp-bav{position:absolute;right:26px;top:22px}
-.shp-ban small{font-size:11px;letter-spacing:.1em;font-weight:700;color:#e6e6f2;text-shadow:0 1px 6px #0008}.shp-ban h3{font-size:21px;margin:3px 0 4px;text-shadow:0 1px 8px #0009}.shp-ban p{font-size:13px;color:#e6e6f2;margin:0;text-shadow:0 1px 6px #0009}
-.shp-lab{display:flex;justify-content:space-between;align-items:baseline;margin:22px 2px 8px}.shp-lab b{font-size:16px}.shp-lab span{color:var(--muted);font-size:12.5px}
-.shp-row{display:flex;gap:12px;overflow-x:auto;padding:6px 2px 14px}
-.shp-c{min-width:150px;flex:none;display:flex!important;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:18px 12px 14px!important;cursor:pointer;color:var(--text);font:inherit;transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .2s}
-.shp-c:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 55%,var(--border))}
-.shp-c b{font-size:13.5px;font-weight:750}
-.shp-pr.own{background:var(--surface);color:var(--muted);border:1px solid var(--border)}
-.shp-pr{font-size:12.5px;font-weight:800;background:var(--accent);color:var(--bg);border-radius:99px;padding:5px 14px}
-.shp-bg{position:relative;width:100%;height:80px;border-radius:14px;overflow:hidden;isolation:isolate}.shp-bg .hbgfx{border-radius:0}
-.shp-pro{margin-top:8px;border:1px dashed var(--border);border-radius:18px;padding:14px 18px;color:var(--muted);font-size:13px}.shp-pro b{color:var(--text);font-weight:600}
-@media(max-width:760px){.shp-ban{grid-template-columns:1fr}}
+/* v1.782: Магазин, широкая сетка */
+.shp-top{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:14px;margin-top:6px}
+.shp-side{display:grid;grid-template-rows:1fr 1fr;gap:14px}
+.shp-h{position:relative;overflow:hidden;isolation:isolate;border-radius:26px;border:1px solid var(--border);background:var(--surface2);display:flex;align-items:center;gap:18px;padding:24px 28px}
+.shp-h.big{min-height:250px;padding:30px 36px;flex-direction:row-reverse;justify-content:space-between}
+.shp-h.sm{min-height:118px;padding:16px 22px;flex-direction:row-reverse;justify-content:space-between}
+.shp-bgl{position:absolute;inset:0;z-index:-2;overflow:hidden}.shp-bgl .hbgfx{border-radius:0}
+.shp-h::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(10,10,14,.62),rgba(10,10,14,.05) 70%)}
+.shp-hav{flex:none}
+.shp-ht{min-width:0}.shp-ht small{font-size:11px;letter-spacing:.12em;font-weight:800;color:#e9e9f5;text-shadow:0 1px 6px #0009}
+.shp-ht h3{font-size:30px;letter-spacing:-.6px;margin:4px 0 14px;text-shadow:0 2px 12px #000a}.shp-h.sm h3{font-size:20px;margin:2px 0 10px}
+.shp-hb{display:flex;gap:8px;flex-wrap:wrap}
+.shp-btn{font:inherit;font-size:13px;font-weight:800;border:0;border-radius:99px;padding:9px 18px;background:var(--text);color:var(--bg);cursor:pointer;transition:transform .2s}
+.shp-btn.g{background:rgba(255,255,255,.16);color:#fff;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28)}.shp-btn:hover{transform:translateY(-2px)}
+.shp-h.sm .shp-btn{padding:7px 13px;font-size:12px}
+.shp-tabs{display:flex;gap:8px;margin:26px 0 4px;position:sticky;top:0;z-index:3;padding:10px 0;background:linear-gradient(var(--bg) 70%,transparent)}
+.shp-tabs button{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:99px;padding:8px 18px;cursor:pointer;transition:.2s}
+.shp-tabs button.on{background:var(--accent);color:var(--bg);border-color:transparent}
+.shp-wrap[data-t=fr] .s-bg,.shp-wrap[data-t=bg] .s-fr{display:none}
+.shp-lab{display:flex;justify-content:space-between;align-items:baseline;margin:16px 2px 12px}.shp-lab b{font-size:19px;letter-spacing:-.3px}.shp-lab span{color:var(--muted);font-size:12.5px}
+.shp-grid{display:grid;gap:14px}.shp-grid.fr{grid-template-columns:repeat(auto-fill,minmax(168px,1fr))}.shp-grid.bg{grid-template-columns:repeat(auto-fill,minmax(228px,1fr))}
+.shp-c{font:inherit;color:var(--text);display:flex;flex-direction:column;align-items:center;gap:11px;text-align:center;cursor:pointer;background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:14px 12px 16px;transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .2s,box-shadow .3s}
+.shp-c:hover{transform:translateY(-5px);border-color:color-mix(in srgb,var(--accent) 60%,var(--border));box-shadow:0 14px 30px -12px color-mix(in srgb,var(--accent) 45%,transparent)}
+.shp-c b{font-size:14px;font-weight:750}
+.shp-st{width:100%;height:112px;border-radius:16px;display:grid;place-items:center;background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--accent) 20%,var(--surface2)),var(--surface2) 72%)}
+.shp-bg{position:relative;width:100%;height:128px;border-radius:16px;overflow:hidden;isolation:isolate}.shp-bg .hbgfx{border-radius:0}
+.shp-bga{position:absolute;left:14px;bottom:12px;z-index:2;filter:drop-shadow(0 4px 10px #0007)}
+.shp-pr{font-size:12.5px;font-weight:800;background:var(--accent);color:var(--bg);border-radius:99px;padding:5px 15px}
+.shp-pr.own{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+.shp-pro{margin-top:22px;border:1px dashed var(--border);border-radius:18px;padding:14px 18px;color:var(--muted);font-size:13px}.shp-pro b{color:var(--text);font-weight:600}
+@media(max-width:900px){.shp-top{grid-template-columns:1fr}.shp-h.big{min-height:200px;padding:22px}.shp-ht h3{font-size:24px}}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -3429,7 +3444,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.781';
+const APP = 'VOOB (by BGASHEV) Mini App v1.782';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5622,21 +5637,26 @@ function historyHTML0(ws){
   return h;
 }
 
-function viewShop(){   // v1.780: «Магазин», вариант «Журнал»: подборки сверху, ленты рамок и фонов; оплата пока не подключена
-  if (!SHOP.ok) loadShop().then(() => { if (SHOP.ok && document.querySelector('.shp-ban')) render(); });
+function viewShop(){   // v1.782: «Магазин» (вариант «Журнал»), широкая сетка, везде твой аватар
+  if (!SHOP.ok) loadShop().then(() => { if (SHOP.ok && document.querySelector('.shp-wrap')) render(); });
+  const lv = myLevel(), name = displayName() || 'Гость', photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url) || '';
+  const av = (k, px) => frAv(k, px, lv, photo, name);
   const fr = FRAMES.filter(f => f[2]), bgs = BG_KEYS;
-    const me = (tgUser && (tgUser.first_name || '')) || 'V';
-  const av = (k, px) => frAv(k, px, {level: 0}, '', me);
+  const has = (kind, k) => isPro() || SHOP.owned.has(kind + ':' + k);
   const tag = (kind, k) => isPro() ? '<span class="shp-pr own">В PRO</span>' : SHOP.owned.has(kind + ':' + k) ? '<span class="shp-pr own">Куплено</span>' : `<span class="shp-pr">⭐ ${SHOP.prices[kind]}</span>`;
-  const fc = f => `<button type="button" class="card shp-c" data-act="shopbuy" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}">${av(f[0], 64)}<div><b>${esc(f[1])}</b></div>${tag('frame', f[0])}</button>`;
-  const bc = b => `<button type="button" class="card shp-c" data-act="shopbuy" data-kind="bg" data-k="${b[0]}" data-n="${esc(b[1])}"><div class="shp-bg">${bgFx(b[0])}</div><div><b>${esc(b[1])}</b></div>${tag('bg', b[0])}</button>`;
-  const f1 = fr[3] || fr[0], f2 = fr[6] || fr[1], b1 = bgs[0], b2 = bgs[1];
-  return `<div class="head"><div><h1>Магазин</h1><div class="sub">Новое, популярное и твоё</div></div></div>
-  <div class="shp-ban"><div class="shp-b1"><div class="shp-bgl">${bgFx(b1[0])}</div><div class="shp-bav">${av(f1[0], 96)}</div><small>НОВИНКА</small><h3>${esc(f1[1])} + фон «${esc(b1[1])}»</h3><p>Рамка ⭐ ${SHOP.prices.frame} · фон ⭐ ${SHOP.prices.bg}</p></div>
-  <div class="shp-b2"><div class="shp-bgl">${bgFx(b2[0])}</div><div class="shp-bav">${av(f2[0], 84)}</div><small>ПОДБОРКА</small><h3>${esc(f2[1])}</h3><p>⭐ ${SHOP.prices.frame}</p></div></div>
-  <div class="shp-lab"><b>Рамки</b><span>${fr.length}</span></div><div class="shp-row">${fr.map(fc).join('')}</div>
-  <div class="shp-lab"><b>Фоны</b><span>${bgs.length}</span></div><div class="shp-row">${bgs.map(bc).join('')}</div>
-  <div class="shp-pro"><b>В VOOB PRO всё это уже открыто</b></div>`;
+  const fc = f => `<button type="button" class="shp-c fr" data-act="shopbuy" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}"><div class="shp-st">${av(f[0], 76)}</div><b>${esc(f[1])}</b>${tag('frame', f[0])}</button>`;
+  const bc = b => `<button type="button" class="shp-c bg" data-act="shopbuy" data-kind="bg" data-k="${b[0]}" data-n="${esc(b[1])}"><div class="shp-bg">${bgFx(b[0])}<div class="shp-bga">${av('', 54)}</div></div><b>${esc(b[1])}</b>${tag('bg', b[0])}</button>`;
+  const paired = fr.filter(f => BG_SVG[f[0]]);
+  const pick = (i) => paired[(i * 7 + 3) % paired.length] || fr[i] || fr[0];
+  const hero = (f, cls, px) => { const bn = (BG_KEYS.find(x => x[0] === f[0]) || BG_KEYS[0]);
+    return `<div class="shp-h ${cls}"><div class="shp-bgl">${bgFx(bn[0])}</div><div class="shp-hav">${av(f[0], px)}</div><div class="shp-ht"><small>${cls === 'big' ? 'НОВИНКА' : 'ПОДБОРКА'}</small><h3>${esc(f[1])}</h3>
+      <div class="shp-hb"><button type="button" class="shp-btn" data-act="shopbuy" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}">${has('frame', f[0]) ? 'Рамка у тебя' : 'Рамка · ⭐ ' + SHOP.prices.frame}</button><button type="button" class="shp-btn g" data-act="shopbuy" data-kind="bg" data-k="${bn[0]}" data-n="${esc(bn[1])}">${has('bg', bn[0]) ? 'Фон у тебя' : 'Фон · ⭐ ' + SHOP.prices.bg}</button></div></div></div>`; };
+  return `<div class="shp-wrap" data-t="all"><div class="head"><div><h1>Магазин</h1><div class="sub">Рамки и фоны по одному. Покупаешь один раз, остаются навсегда</div></div></div>
+  <div class="shp-top">${hero(pick(0), 'big', 120)}<div class="shp-side">${hero(pick(1), 'sm', 76)}${hero(pick(2), 'sm', 76)}</div></div>
+  <div class="shp-tabs"><button type="button" class="on" data-act="shoptab" data-t="all">Всё</button><button type="button" data-act="shoptab" data-t="fr">Рамки · ${fr.length}</button><button type="button" data-act="shoptab" data-t="bg">Фоны · ${bgs.length}</button></div>
+  <section class="shp-sec s-fr"><div class="shp-lab"><b>Рамки</b><span>двигаются и светятся, как в профиле</span></div><div class="shp-grid fr">${fr.map(fc).join('')}</div></section>
+  <section class="shp-sec s-bg"><div class="shp-lab"><b>Фоны</b><span>карточка профиля целиком</span></div><div class="shp-grid bg">${bgs.map(bc).join('')}</div></section>
+  <div class="shp-pro"><b>В VOOB PRO всё это открыто сразу</b></div></div>`;
 }
 function viewWeight(){
   const es = weightsSorted(), goal = db.weight_goal || {};
@@ -6858,7 +6878,7 @@ function render(){
   const same = _rTab === rkey;
   if (same && inWeb && _navT && performance.now() - _navT < 700) { clearTimeout(_navDef); _navDef = setTimeout(render, Math.max(30, _navT + 720 - performance.now())); return; }   // v1.696: пока страница «въезжает», дозагрузки данных ждут — иначе она перерисовывалась на глазах
   if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
-  v.classList.toggle('w2', inWeb && (html.indexOf('class="me-l"') > -1 || html.indexOf('class="mset2"') > -1 || html.indexOf('class="pz2"') > -1));   // v1.636: ширину столбцов задаём до вставки — иначе страница сначала рисуется узкой и «прыгает»
+  v.classList.toggle('w2', inWeb && (html.indexOf('class="me-l"') > -1 || html.indexOf('class="mset2"') > -1 || html.indexOf('class="pz2"') > -1 || html.indexOf('class="shp-wrap"') > -1));   // v1.636: ширину столбцов задаём до вставки — иначе страница сначала рисуется узкой и «прыгает»
   v.classList.toggle('rr', same);                          // та же вкладка: обновляем без повторных «появлений»
   _rTab = rkey; _rHtml = html;
   if (same) morphSoft(v, html);   // v1.442: та же вкладка — правим только изменившееся, без мерцаний
@@ -6869,7 +6889,7 @@ function render(){
   document.querySelectorAll('.prox:not([data-ph])').forEach(el => { el.dataset.ph = 1; el.style.setProperty('--ph', -Math.round(performance.now() % 5000) + 'ms'); });   // блик PRO не начинается заново
   setTimeout(checkRewards, 700);
   const tb = $('#tabs'), ti = TABS.findIndex(t => t[0] === S.tab);
-  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + WM_LOGO(20) + '</span>' : '') + (inWeb ? '<span class="wver" data-act="copyver" title="Скопировать версию">WEB ' + ((APP.match(/v[\d.]+/) || [''])[0]) + '</span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${inWeb && k === 'me' ? 'Профиль' : l}${k === 'shop' ? '<span class="soon">скоро</span>' : ''}</button>`).join('') + (inWeb ? '<button type="button" class="siteb stb" data-act="webset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.3a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.4a2 2 0 0 0 .7 2.7l.2.1a2 2 0 0 1 1 1.7v.5a2 2 0 0 1-1 1.7l-.2.1a2 2 0 0 0-.7 2.7l.2.4a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.3a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.3a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.4a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.7v-.5a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.4a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.3a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span>Настройки</span></button><button type="button" class="siteb" data-act="tosite"><span>VOOB.KZ</span></button>' : '');
+  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + WM_LOGO(20) + '</span>' : '') + (inWeb ? '<span class="wver" data-act="copyver" title="Скопировать версию">WEB ' + ((APP.match(/v[\d.]+/) || [''])[0]) + '</span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${inWeb && k === 'me' ? 'Профиль' : l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb stb" data-act="webset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.3a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.4a2 2 0 0 0 .7 2.7l.2.1a2 2 0 0 1 1 1.7v.5a2 2 0 0 1-1 1.7l-.2.1a2 2 0 0 0-.7 2.7l.2.4a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.3a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.3a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.4a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.7v-.5a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.4a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.3a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span>Настройки</span></button><button type="button" class="siteb" data-act="tosite"><span>VOOB.KZ</span></button>' : '');
   tb.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   tb.style.setProperty('--ti', ti);
   updPCard();
@@ -7583,7 +7603,8 @@ const ACT = {
     if (on) { touchMeta('settings'); save(); toast('Оформление этого устройства теперь общее'); } else toast('Теперь у телефона своё оформление');
     render(); },
   frprev: el => openFramePrev(el.dataset.v || ''),
-  shopbuy: el => { const k = el.dataset.k, kind = el.dataset.kind; if (isPro() || SHOP.owned.has(kind + ':' + k)) { toast('«' + (el.dataset.n || '') + '» уже у тебя: примени в профиле'); return; } shopBuy(kind, k, el.dataset.n || ''); },
+  shoptab: el => { const w = el.closest('.shp-wrap'); if (!w) return; w.dataset.t = el.dataset.t; w.querySelectorAll('.shp-tabs button').forEach(x => x.classList.toggle('on', x === el)); },
+  shopbuy: el => { const k = el.dataset.k, kind = el.dataset.kind; if (!SHOP.ok) { toast('Покупки скоро откроются'); return; } if (isPro() || SHOP.owned.has(kind + ':' + k)) { toast('«' + (el.dataset.n || '') + '» уже у тебя: примени в профиле'); return; } shopBuy(kind, k, el.dataset.n || ''); },
   frnav: el => { frPrevShow(el.dataset.v || ''); hap.tap(); },
   frpro: () => openPro(),
   frmode: el => { if (!sheetCtx || sheetCtx.type !== 'frprev') return; sheetCtx.pv = el.dataset.v || 'av'; frPrevShow(sheetCtx.v); hap.tap(); },
