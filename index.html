@@ -3458,6 +3458,13 @@ html.web #tabs .tbi{top:262px}
 .spv-x{position:absolute;right:22px;top:22px;z-index:5;width:34px;height:34px;border-radius:50%;border:0;background:rgba(0,0,0,.45);color:#fff;font-size:14px;cursor:pointer;backdrop-filter:blur(6px)}
 .spv-ar{position:absolute;top:150px;z-index:5;width:42px;height:42px;margin-top:-21px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.42);color:#fff;font-size:26px;line-height:1;cursor:pointer;backdrop-filter:blur(6px);transition:transform .2s}.spv-ar:hover{transform:scale(1.1)}.spv-ar.l{left:24px}.spv-ar.r{right:24px}
 .spv-ft{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 8px 8px;text-align:center}.spv-ft small{color:var(--muted);font-weight:700;letter-spacing:.05em;font-size:11.5px;text-transform:uppercase}.spv-ft h3{margin:0;font-size:22px}
+.spv-ft{align-items:stretch!important;text-align:left!important;padding:16px 12px 8px!important}.spv-ft .spv-bs{max-width:none;margin:6px 0 0}.spv-hd{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.spv-pr{position:relative;overflow:hidden;flex:none;display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 15px 0 12px;border-radius:99px;background:linear-gradient(135deg,#3a2a08,#241a06);border:1px solid rgba(251,191,36,.55);box-shadow:0 0 18px rgba(251,191,36,.22),inset 0 1px 0 rgba(255,255,255,.12);font-weight:800;font-size:16px;color:#ffe9a8}
+.spv-pr .st{filter:drop-shadow(0 0 5px rgba(251,191,36,.8))}
+.spv-pr:after{content:"";position:absolute;top:0;bottom:0;width:36px;left:-50px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-18deg);animation:spvSw 3.4s ease-in-out infinite}
+.spv-pr.own{background:var(--surface2);border-color:var(--border);box-shadow:none;color:var(--muted);padding:0 14px;font-size:13px}.spv-pr.own:after{display:none}
+@keyframes spvSw{0%,55%{left:-50px}100%{left:130%}}
+@media(prefers-reduced-motion:reduce){.spv-pr:after{animation:none;display:none}}
 .spv-b{width:100%;max-width:340px;padding:13px 18px;font-size:15px;background:var(--accent);color:var(--bg)}.spv-b.own{background:var(--surface2);color:var(--muted);cursor:default;border:1px solid var(--border)}
 .spv-up{font:inherit;font-size:13px;font-weight:700;color:var(--accent);background:none;border:0;cursor:pointer;padding:4px 8px}
 @keyframes spvin{from{opacity:0}}@keyframes spvup{from{opacity:0;transform:translateY(24px) scale(.96)}}@keyframes spvr{from{opacity:0;transform:translateX(40px)}}@keyframes spvl{from{opacity:0;transform:translateX(-40px)}}
@@ -3489,7 +3496,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.805';
+const APP = 'VOOB (by BGASHEV) Mini App v1.806';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5175,11 +5182,12 @@ function shopPvDraw(dir, first){
   const what = {frame: 'Рамка', bg: 'Фон', kit: 'Комплект: рамка и фон'}[kind];
   const btn = own ? `<button type="button" class="shp-btn spv-b own" disabled>${isPro() ? 'Открыто в PRO' : 'Уже у тебя'}</button>`
     : (kind === 'kit' && !kp) ? `<button type="button" class="shp-btn spv-b own" disabled>Скоро</button>`
-    : `<button type="button" class="shp-btn spv-b" data-act="spvbuy">Купить · ⭐ ${price}</button>`;
-  const gift = price ? `<button type="button" class="shp-btn spv-b spv-gift" data-act="spvgift">Подарить · ⭐ ${price}</button>` : '';
+    : `<button type="button" class="shp-btn spv-b" data-act="spvbuy">Купить</button>`;
+  const gift = price ? `<button type="button" class="shp-btn spv-b spv-gift" data-act="spvgift">Подарить</button>` : '';
   const up = (kind !== 'kit' && kp && BG_SVG[k] && FRAMES.some(x => x[0] === k && x[2]) && !own && !kitHas) ? `<button type="button" class="spv-up" data-act="spvbuy" data-kind="kit">или весь комплект рамка + фон за ⭐ ${kp}</button>` : '';
+  const plate = own ? `<span class="spv-pr own">${isPro() ? 'В PRO' : 'Куплено'}</span>` : price ? `<span class="spv-pr"><span class="st">⭐</span>${price}</span>` : '';
   const view = `<div class="spv-view${first ? '' : dir > 0 ? ' fr' : dir < 0 ? ' fl' : ''}">${stage}</div>`;
-  const ft = `<small>${what} · ${SPV.i + 1} / ${n}</small><h3>${esc(f[1])}</h3><div class="spv-bs">${btn}${gift}</div>${up}`;
+  const ft = `<small>${what} · ${SPV.i + 1} / ${n}</small><div class="spv-hd"><h3>${esc(f[1])}</h3>${plate}</div><div class="spv-bs">${btn}${gift}</div>${up}`;
   let ov = document.querySelector('.spv');
   if (ov && ov.querySelector('.spv-box')) {   // листаем: меняем только содержимое, само окно не перерисовываем (без повторной анимации появления)
     ov.querySelector('.spv-view').outerHTML = view;
