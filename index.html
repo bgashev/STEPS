@@ -3398,6 +3398,22 @@ html.web #tabs .tbi{top:262px}
 .gsc-b#gs-link:hover{opacity:.9}
 .psc .gsc-b:not(.ghost){background:var(--text);color:var(--bg);border:0;font-weight:700}
 .psc .gsc-b.ghost{color:var(--text)}
+
+/* v1.780: Магазин «Журнал» */
+.shp-ban{display:grid;grid-template-columns:1.5fr 1fr;gap:12px;margin-top:6px}
+.shp-ban>div{position:relative;overflow:hidden;isolation:isolate;border-radius:24px;padding:22px;min-height:180px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--surface2);border:1px solid var(--border)}
+.shp-bgl{position:absolute;inset:0;z-index:-1;overflow:hidden}.shp-bgl .hbgfx{border-radius:0}
+.shp-bav{position:absolute;right:26px;top:22px}
+.shp-ban small{font-size:11px;letter-spacing:.1em;font-weight:700;color:#e6e6f2;text-shadow:0 1px 6px #0008}.shp-ban h3{font-size:21px;margin:3px 0 4px;text-shadow:0 1px 8px #0009}.shp-ban p{font-size:13px;color:#e6e6f2;margin:0;text-shadow:0 1px 6px #0009}
+.shp-lab{display:flex;justify-content:space-between;align-items:baseline;margin:22px 2px 8px}.shp-lab b{font-size:16px}.shp-lab span{color:var(--muted);font-size:12.5px}
+.shp-row{display:flex;gap:12px;overflow-x:auto;padding:6px 2px 14px}
+.shp-c{min-width:150px;flex:none;display:flex!important;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:18px 12px 14px!important;cursor:pointer;color:var(--text);font:inherit;transition:transform .3s cubic-bezier(.22,1,.36,1),border-color .2s}
+.shp-c:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 55%,var(--border))}
+.shp-c b{font-size:13.5px;font-weight:750}
+.shp-pr{font-size:12.5px;font-weight:800;background:var(--accent);color:var(--bg);border-radius:99px;padding:5px 14px}
+.shp-bg{position:relative;width:100%;height:80px;border-radius:14px;overflow:hidden;isolation:isolate}.shp-bg .hbgfx{border-radius:0}
+.shp-pro{margin-top:8px;border:1px dashed var(--border);border-radius:18px;padding:14px 18px;color:var(--muted);font-size:13px}.shp-pro b{color:var(--text);font-weight:600}
+@media(max-width:760px){.shp-ban{grid-template-columns:1fr}}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -3412,7 +3428,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.779';
+const APP = 'VOOB (by BGASHEV) Mini App v1.780';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5590,11 +5606,20 @@ function historyHTML0(ws){
   return h;
 }
 
-function viewShop(){   // v1.767: заготовка «Магазина» — позже покупка отдельных рамок, фонов и значков без PRO
-  return `<div class="head"><div><h1>Магазин</h1><div class="sub">Рамки, фоны и значки по одному, без подписки</div></div></div>
-  <div class="card shopsoon"><div class="ss-ic">${IC('shop', 34)}</div><h3>Скоро открытие</h3>
-  <div class="muted">Не хочешь PRO целиком? Здесь можно будет взять одну рамку, один фон или значок, и они останутся у тебя навсегда.</div>
-  <div class="ss-ch"><span>Рамки</span><span>Фоны</span><span>Значки</span></div></div>`;
+function viewShop(){   // v1.780: «Магазин», вариант «Журнал»: подборки сверху, ленты рамок и фонов; оплата пока не подключена
+  const fr = FRAMES.filter(f => f[2]), bgs = BG_KEYS.slice(0, 14);
+  const price = k => 40 + (k.length % 4) * 10;
+  const me = (tgUser && (tgUser.first_name || '')) || 'V';
+  const av = (k, px) => frAv(k, px, {level: 0}, '', me);
+  const fc = (f, i) => `<button type="button" class="card shp-c" data-act="shopbuy" data-n="${esc(f[1])}">${av(f[0], 64)}<div><b>${esc(f[1])}</b></div><span class="shp-pr">⭐ ${price(f[0])}</span></button>`;
+  const bc = b => `<button type="button" class="card shp-c" data-act="shopbuy" data-n="${esc(b[1])}"><div class="shp-bg">${bgFx(b[0])}</div><div><b>${esc(b[1])}</b></div><span class="shp-pr">⭐ ${price(b[0])}</span></button>`;
+  const f1 = fr[3] || fr[0], f2 = fr[6] || fr[1], b1 = bgs[0], b2 = bgs[1];
+  return `<div class="head"><div><h1>Магазин</h1><div class="sub">Новое, популярное и твоё</div></div></div>
+  <div class="shp-ban"><div class="shp-b1"><div class="shp-bgl">${bgFx(b1[0])}</div><div class="shp-bav">${av(f1[0], 96)}</div><small>НОВИНКА</small><h3>${esc(f1[1])} + фон «${esc(b1[1])}»</h3><p>Комплект за ⭐ 120</p></div>
+  <div class="shp-b2"><div class="shp-bgl">${bgFx(b2[0])}</div><div class="shp-bav">${av(f2[0], 84)}</div><small>ПОДБОРКА</small><h3>${esc(f2[1])}</h3><p>⭐ ${price(f2[0])}</p></div></div>
+  <div class="shp-lab"><b>Рамки</b><span>${fr.length}</span></div><div class="shp-row">${fr.slice(0, 16).map(fc).join('')}</div>
+  <div class="shp-lab"><b>Фоны</b><span>${bgs.length}</span></div><div class="shp-row">${bgs.map(bc).join('')}</div>
+  <div class="shp-pro"><b>В VOOB PRO всё это уже открыто</b></div>`;
 }
 function viewWeight(){
   const es = weightsSorted(), goal = db.weight_goal || {};
@@ -7541,6 +7566,7 @@ const ACT = {
     if (on) { touchMeta('settings'); save(); toast('Оформление этого устройства теперь общее'); } else toast('Теперь у телефона своё оформление');
     render(); },
   frprev: el => openFramePrev(el.dataset.v || ''),
+  shopbuy: el => toast('«' + (el.dataset.n || '') + '»: покупка скоро откроется'),
   frnav: el => { frPrevShow(el.dataset.v || ''); hap.tap(); },
   frpro: () => openPro(),
   frmode: el => { if (!sheetCtx || sheetCtx.type !== 'frprev') return; sheetCtx.pv = el.dataset.v || 'av'; frPrevShow(sheetCtx.v); hap.tap(); },
