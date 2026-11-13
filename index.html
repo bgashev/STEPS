@@ -3539,7 +3539,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.814';
+const APP = 'VOOB (by BGASHEV) Mini App v1.815';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5257,9 +5257,11 @@ async function shopGiftPick(){   // v1.792: подарить другу; v1.812:
   const el = document.getElementById('spv-gll'); if (!el) return;
   const fr = (FR.data && FR.data.friends) || [];
   el.innerHTML = fr.length ? fr.map((f, i) => `<button type="button" class="spv-gr" style="--i:${Math.min(i, 12)}" data-act="spvgiftto" data-id="${f.tg_id}" data-n="${esc(String(f.name || '').toLowerCase())}"><span class="spv-gra">${favHTML(f, 1)}</span><b>${esc(f.name)}</b><small class="spv-lv">Ур. ${f.level ? f.level.level : ''}</small><span class="spv-go">Подарить ${IC('chev', 14)}</span></button>`).join('') + '<div class="spv-gnone" hidden>Никого не нашли. Подарки можно отправлять только друзьям</div>' : '<div class="hint" style="padding:26px;text-align:center">Подарки можно отправлять только друзьям. Добавь друзей в разделе «Друзья»</div>';
+  settleScroll(el);
   const inp = document.getElementById('spv-gs'); if (inp && fr.length > 0 && !('ontouchstart' in window)) inp.focus({preventScroll: true});
   if (!fr.length && inp) inp.closest('.spv-gs').style.display = 'none';
 }
+function settleScroll(el){ if (!el) return; el.style.overflowY = 'hidden'; setTimeout(() => { el.style.overflowY = ''; }, 1250); }   // v1.815: пока ряды «въезжают» (translateY), список раздувается и мигает полоса прокрутки
 function fraFilter(inp){
   const q = inp.value.trim().toLowerCase(), l = document.querySelector('.fra-l'); if (!l) return; let n = 0;
   l.querySelectorAll('.fof').forEach(r => { const ok = !q || (r.dataset.n || '').includes(q); r.hidden = !ok; if (ok) n++; });
@@ -7709,7 +7711,7 @@ const ACT = {
     const rows = fl.map((x, i) => fofHTML(x).replace('<div class="fof', `<div style="--i:${Math.min(i, 12)}" data-n="${esc(String(x.name || '').toLowerCase())}" class="fof`)).join('');   // v1.813: окно «Друзья друга» в стиле выбора друга для подарка
     openSheet(`<div class="fra"><div class="spv-glh"><button type="button" class="spv-glb" data-act="frback" data-id="${id}" aria-label="Назад к профилю">${IC('back', 20)}</button><div class="spv-glt"><b>Друзья</b><small>${esc(f.name)} · ${fl.length}</small></div></div>`
       + (fl.length > 5 ? `<label class="spv-gs"><i>${IC('search', 18)}</i><input id="fra-s" type="text" inputmode="search" autocomplete="off" spellcheck="false" placeholder="Найти по имени" aria-label="Поиск"><button type="button" class="spv-gsx" data-act="fragsx" aria-label="Очистить" hidden>✕</button></label>` : '')
-      + `<div class="fra-l">${rows || '<div class="hint" style="padding:26px;text-align:center">Пока никого</div>'}<div class="spv-gnone" hidden>Никого не нашли</div></div></div>`, {type:'frall', id}); },
+      + `<div class="fra-l">${rows || '<div class="hint" style="padding:26px;text-align:center">Пока никого</div>'}<div class="spv-gnone" hidden>Никого не нашли</div></div></div>`, {type:'frall', id}); settleScroll(document.querySelector('.fra-l')); },
   fragsx: () => { const i = document.getElementById('fra-s'); if (i) { i.value = ''; fraFilter(i); i.focus(); } },
   rwok: () => { $('#cg').classList.remove('show'); setTimeout(showNextReward, 250); },
   frpoke: async el => {
