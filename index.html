@@ -3439,7 +3439,7 @@ html.web #tabs .tbi{top:262px}
 .cmp-d{width:fit-content;font-weight:800;font-size:12px;padding:3px 9px;border-radius:99px}.cmp-d.up{background:rgba(95,201,138,.16);color:var(--green)}.cmp-d.dn{background:rgba(255,255,255,.07);color:var(--muted)}.cmp-d.nw{background:var(--accent-soft);color:var(--accent)}
 @media(max-width:560px){.cmp-tl{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .fra{display:flex;flex-direction:column;max-height:min(66vh,620px)}.fra .spv-glh{padding:10px 6px 8px}.fra .spv-gs{margin:6px 6px 8px}
-.fra-l{flex:1;min-height:0;overflow:auto;padding:4px 0 10px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin}
+.fra-l{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:4px 8px 10px 2px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin}
 .fra-l .fof{padding:10px 14px 10px 10px;gap:16px;border:1px solid transparent;border-radius:22px;transition:background .25s,border-color .25s,transform .3s cubic-bezier(.22,1,.36,1);animation:spvRow .5s calc(var(--i,0) * 45ms + .1s) cubic-bezier(.22,1,.36,1) both}
 .fra-l .fof[hidden]{display:none}.fra-l .fof.tap:hover{background:var(--surface2);border-color:var(--border);transform:translateX(4px)}.fra-l .fof.tap:active{transform:scale(.985)}
 .fra-l .fof .fav{width:56px;height:56px;font-size:22px}.fra-l .fof .nm{font-weight:800;font-size:18px}
@@ -3478,7 +3478,7 @@ html.web #tabs .tbi{top:262px}
 .spv-gs:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft);color:var(--text)}.spv-gs i{display:flex}
 .spv-gs input{flex:1;min-width:0;font:inherit;font-size:16px;font-weight:600;color:var(--text);background:none;border:0;outline:0}.spv-gs input::placeholder{color:var(--muted);font-weight:500}
 .spv-gsx{width:28px;height:28px;border-radius:50%;border:0;background:var(--border);color:var(--text);font-size:11px;cursor:pointer}.spv-gsx:hover{background:var(--off)}
-.spv-gll{flex:1;min-height:0;overflow:auto;padding:6px 14px 20px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin}
+.spv-gll{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:6px 18px 20px 14px;display:flex;flex-direction:column;gap:6px;scrollbar-width:thin}
 .spv-gr{font:inherit;color:var(--text);display:flex;align-items:center;gap:16px;padding:12px 16px 12px 12px;border:1px solid transparent;border-radius:22px;background:none;cursor:pointer;text-align:left;transition:background .25s,border-color .25s,transform .3s cubic-bezier(.22,1,.36,1);animation:spvRow .5s calc(var(--i,0) * 45ms + .12s) cubic-bezier(.22,1,.36,1) both}
 .spv-gr[hidden],.spv-gnone[hidden]{display:none}
 .spv-gr:hover,.spv-gr:focus-visible{background:var(--surface2);border-color:var(--border);transform:translateX(4px);outline:0}.spv-gr:active{transform:scale(.985)}
@@ -3539,7 +3539,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.813';
+const APP = 'VOOB (by BGASHEV) Mini App v1.814';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
