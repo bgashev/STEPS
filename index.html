@@ -743,6 +743,22 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:calc(104px 
 #tabs .tab.on{color:var(--accent)}
 .tab.on .ti{transform:scale(1.12)}
 .tab:active .ti{transform:scale(.88)}
+/* v1.822: док «капля» (матовое стекло, пружина, перетаскивание) — только мобильная версия */
+html:not(.web) #tabs{background:linear-gradient(180deg,color-mix(in srgb,var(--surface) 70%,transparent),color-mix(in srgb,var(--surface) 55%,transparent));touch-action:pan-y;
+  box-shadow:0 14px 40px rgba(0,0,0,.3),inset 1.5px 1.5px 1px -.5px rgba(255,255,255,.55),inset -1px -1px 1px -.5px rgba(255,255,255,.22),inset 0 0 0 1px rgba(255,255,255,.07)}
+html[data-mode=light]:not(.web) #tabs{box-shadow:0 12px 34px rgba(30,30,60,.16),inset 1.5px 1.5px 1px -.5px rgba(255,255,255,.95),inset -1px -1px 1px -.5px rgba(255,255,255,.7),inset 0 0 0 1px rgba(255,255,255,.5)}
+html:not(.web) #tabs .tbi{left:0;top:0;bottom:auto;right:auto;width:76px;height:54px;transition:none;transform:none;will-change:transform;
+  background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.07));backdrop-filter:blur(2px) saturate(1.7) brightness(1.15);-webkit-backdrop-filter:blur(2px) saturate(1.7) brightness(1.15);
+  box-shadow:inset 1.5px 1.5px 1px -.5px rgba(255,255,255,.9),inset -1px -1px 1px -.5px rgba(255,255,255,.45),inset 0 0 0 1px rgba(255,255,255,.12),0 8px 22px rgba(0,0,0,.28)}
+html[data-mode=light]:not(.web) #tabs .tbi{background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.45));box-shadow:inset 1.5px 1.5px 1px -.5px #fff,inset -1px -1px 1px -.5px rgba(255,255,255,.9),0 6px 18px rgba(40,40,80,.18)}
+html:not(.web) #tabs .tbi::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(120% 90% at 30% 0%,rgba(255,255,255,.28),transparent 55%);pointer-events:none}
+.tbf{position:absolute;left:0;top:0;pointer-events:none;z-index:2;border:1.6px solid;mix-blend-mode:screen;opacity:0;will-change:transform}
+.tbf.c{border-color:rgba(34,211,238,.95)}.tbf.m{border-color:rgba(244,114,182,.95)}.tbf.v{border-color:rgba(139,92,246,.9)}
+html.web .tbf{display:none}
+#tabs.drag .tab.on:not(.near){color:color-mix(in srgb,var(--text) 62%,var(--surface))}
+#tabs.drag .tab.on:not(.near) .ti{transform:none}
+#tabs.drag .tab.near{color:var(--accent)}
+#tabs.drag .tab.near .ti{transform:scale(1.12)}
 #toast{bottom:calc(98px + env(safe-area-inset-bottom))}
 /* иконка активности в истории */
 .wa{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
@@ -3563,7 +3579,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.821';
+const APP = 'VOOB (by BGASHEV) Mini App v1.822';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7019,6 +7035,62 @@ function updPCard(){
   el.classList.toggle('on', on); el.style.setProperty('--tc', tc);
   if (el.dataset.sig === sig) return; el.dataset.sig = sig; el.classList.toggle('hasbg', !!bg); el.innerHTML = html;
 }
+/* v1.822: док «капля» — пружина, растяжение от скорости, перетаскивание, цветная кайма по краям */
+const DK = {x:0, v:0, tx:0, px:0, press:0, pt:0, drag:false, raf:0, last:0, W:70, H:54, ok:false, near:-1};
+function dkMeasure(){ const tb = $('#tabs'), t = tb && tb.querySelector('.tab'); if (!t) return false; DK.tb = tb; DK.W = t.offsetWidth + 4; DK.H = tb.clientHeight - 12; return DK.W > 10 && DK.H > 10; }
+function dkTarget(){ const t = DK.tb.querySelector('.tab.on'); return t ? t.offsetLeft + t.offsetWidth / 2 : null; }
+function dkDraw(){
+  const tb = DK.tb, lens = tb.querySelector('.tbi'); if (!lens) return;
+  const f = [...tb.querySelectorAll('.tbf')], sp = Math.min(Math.abs(DK.v) / 1100, .55), pr = DK.press;
+  const w = DK.W * (1 + sp * .55) * (1 + pr * .12), h = DK.H * (1 - sp * .18) * (1 + pr * .1), top = (tb.clientHeight - h) / 2, left = DK.x - w / 2;
+  const set = (el, dx, dy, g) => { el.style.width = (w + g) + 'px'; el.style.height = (h + g) + 'px'; el.style.borderRadius = ((h + g) / 2) + 'px'; el.style.transform = 'translate(' + (left + dx - g / 2) + 'px,' + (top + dy - g / 2) + 'px)'; };
+  set(lens, 0, 0, 0);
+  if (f.length === 3) { const it = Math.min(1, Math.abs(DK.v) / 800 + pr * .55), d = 1.2 + it * 4.5, dir = DK.v >= 0 ? 1 : -1;
+    set(f[0], -d * .9 * dir, -d * .35, 0); set(f[1], d * .9 * dir, d * .35, 0); set(f[2], 0, 0, it * 5);
+    f[0].style.opacity = f[1].style.opacity = (.15 + it * .85) * (pr > .02 || sp > .01 ? 1 : 0); f[2].style.opacity = it * .55; }
+}
+function dkLoop(t){
+  DK.raf = 0; const dt = Math.min(.032, (t - DK.last) / 1000 || .016); DK.last = t;
+  const red = matchMedia('(prefers-reduced-motion: reduce)').matches; let k = 360, c = 25; if (DK.drag) { k = 900; c = 60; } if (red) { k = 4000; c = 140; }
+  const tx = DK.drag ? DK.px : DK.tx;
+  DK.v += (k * (tx - DK.x) - c * DK.v) * dt; DK.x += DK.v * dt; DK.press += (DK.pt - DK.press) * Math.min(1, dt * 14);
+  dkDraw();
+  if (!DK.drag && Math.abs(tx - DK.x) < .2 && Math.abs(DK.v) < .5 && Math.abs(DK.press - DK.pt) < .01) { DK.x = tx; DK.v = 0; DK.press = DK.pt; dkDraw(); } else DK.raf = requestAnimationFrame(dkLoop);
+}
+function dkWake(){ if (!DK.raf) { DK.last = performance.now(); DK.raf = requestAnimationFrame(dkLoop); } }
+function dkSync(snap){
+  if (inWeb || !dkMeasure()) return; const tx = dkTarget(); if (tx == null) return; DK.tx = tx;
+  if (!DK.ok || snap) { DK.x = tx; DK.v = 0; DK.ok = true; dkDraw(); } else dkWake();
+  if (!DK.bound) { DK.bound = true; dkBind(); }
+}
+function dkBind(){
+  const tb = DK.tb; let sx = 0, id = null, started = false;
+  const near = x => { const ts = [...tb.querySelectorAll('.tab')]; let b = 0, bd = 1e9; ts.forEach((t, i) => { const d = Math.abs(t.offsetLeft + t.offsetWidth / 2 - x); if (d < bd) { bd = d; b = i; } }); return b; };
+  const lx = e => e.clientX - tb.getBoundingClientRect().left - tb.clientLeft;
+  tb.addEventListener('pointerdown', e => { if (!e.target.closest || !e.target.closest('.tab')) return; id = e.pointerId; sx = lx(e); started = true; DK.pt = 1; dkWake(); });
+  tb.addEventListener('pointermove', e => {
+    if (!started || e.pointerId !== id) return; const x = lx(e);
+    if (!DK.drag && Math.abs(x - sx) > 8) { DK.drag = true; tb.classList.add('drag'); try { tb.setPointerCapture(id); } catch (_) {} }
+    if (!DK.drag) return;
+    const ts = tb.querySelectorAll('.tab'), a = ts[0], z = ts[ts.length - 1];
+    DK.px = Math.max(a.offsetLeft + a.offsetWidth / 2, Math.min(z.offsetLeft + z.offsetWidth / 2, x));
+    const n = near(DK.px); if (n !== DK.near) { DK.near = n; ts.forEach((t, i) => t.classList.toggle('near', i === n)); try { hap.tap(); } catch (_) {} }
+    dkWake();
+  });
+  const end = e => {
+    if (!started || (e && e.pointerId !== id)) return; started = false; DK.pt = 0;
+    if (DK.drag) {
+      const ts = [...tb.querySelectorAll('.tab')], n = DK.near >= 0 ? DK.near : near(DK.px), el = ts[n];
+      DK.drag = false; DK.near = -1; tb.classList.remove('drag'); ts.forEach(t => t.classList.remove('near'));
+      const stop = ev => { ev.stopPropagation(); ev.preventDefault(); }; tb.addEventListener('click', stop, {capture:true, once:true}); setTimeout(() => tb.removeEventListener('click', stop, true), 400);
+      DK.tx = el.offsetLeft + el.offsetWidth / 2;
+      if (el && !el.classList.contains('on')) ACT.tab(el);
+    }
+    dkWake();
+  };
+  tb.addEventListener('pointerup', end); tb.addEventListener('pointercancel', end);
+  if (window.ResizeObserver) new ResizeObserver(() => { if (!DK.drag) dkSync(true); }).observe(tb);
+}
 const TABS = inWeb ? [['friends','Друзья','friends'],['weight','Вес','scale'],['stats','Итоги','stats'],['shop','Магазин','shop'],['me','Я','user']] : [['stats','Итоги','stats'],['weight','Вес','scale'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
 const VIEWS = {home:(inWeb && inTG ? viewHomeWeb : viewHome), weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe, shop:viewShop};
 // плавающая кнопка внизу по центру: на «Главной» — тренировка, во «Весе» — взвеситься
@@ -7243,9 +7315,10 @@ function render(){
   document.querySelectorAll('.prox:not([data-ph])').forEach(el => { el.dataset.ph = 1; el.style.setProperty('--ph', -Math.round(performance.now() % 5000) + 'ms'); });   // блик PRO не начинается заново
   setTimeout(checkRewards, 700);
   const tb = $('#tabs'), ti = TABS.findIndex(t => t[0] === S.tab);
-  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + WM_LOGO(20) + '</span>' : '') + (inWeb ? '<span class="wver" data-act="copyver" title="Скопировать версию">WEB ' + ((APP.match(/v[\d.]+/) || [''])[0]) + '</span>' : '') + '<i class="tbi"></i>' + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${inWeb && k === 'me' ? 'Профиль' : l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb stb" data-act="webset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.3a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.4a2 2 0 0 0 .7 2.7l.2.1a2 2 0 0 1 1 1.7v.5a2 2 0 0 1-1 1.7l-.2.1a2 2 0 0 0-.7 2.7l.2.4a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.3a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.3a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.4a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.7v-.5a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.4a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.3a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span>Настройки</span></button><button type="button" class="siteb" data-act="tosite"><span>VOOB.KZ</span></button>' : '');
+  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + WM_LOGO(20) + '</span>' : '') + (inWeb ? '<span class="wver" data-act="copyver" title="Скопировать версию">WEB ' + ((APP.match(/v[\d.]+/) || [''])[0]) + '</span>' : '') + '<i class="tbi"></i>' + (inWeb ? '' : '<i class="tbf c"></i><i class="tbf m"></i><i class="tbf v"></i>') + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${inWeb && k === 'me' ? 'Профиль' : l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb stb" data-act="webset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.3a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.4a2 2 0 0 0 .7 2.7l.2.1a2 2 0 0 1 1 1.7v.5a2 2 0 0 1-1 1.7l-.2.1a2 2 0 0 0-.7 2.7l.2.4a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.3a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.3a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.4a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.7v-.5a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.4a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.3a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span>Настройки</span></button><button type="button" class="siteb" data-act="tosite"><span>VOOB.KZ</span></button>' : '');
   tb.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
   tb.style.setProperty('--ti', ti);
+  dkSync();
   updPCard();
   updWBg();
   urlSync();
