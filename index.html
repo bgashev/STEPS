@@ -3417,7 +3417,7 @@ html.web #tabs .tbi{top:262px}
 .shp-tabs{display:flex;gap:6px;width:fit-content;max-width:100%;overflow-x:auto;scrollbar-width:none;margin:26px 0 8px;position:sticky;top:10px;z-index:3;padding:6px;border-radius:99px;border:1px solid var(--border);background:color-mix(in srgb,var(--bg) 72%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 8px 24px #0004}.shp-tabs::-webkit-scrollbar{display:none}.shp-tabs button{white-space:nowrap}
 .shp-tabs button{font:inherit;font-size:13px;font-weight:700;border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:99px;padding:8px 18px;cursor:pointer;transition:.2s}
 .shp-tabs button.on{background:var(--accent);color:var(--bg);border-color:transparent}
-.shp-gf{position:absolute;top:10px;right:10px;z-index:2;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--bg) 60%,transparent);border:1px solid var(--border);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:var(--text);transition:.2s}.shp-gf:hover{background:var(--accent);color:var(--bg)}.shp-gf:active{transform:scale(.9)}
+.shp-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px}.shp-gf{font-size:12px;font-weight:700;padding:6px 12px;border-radius:99px;background:transparent;border:1px solid var(--border);color:var(--text);transition:.2s}.shp-gf:hover{background:var(--accent);color:var(--bg)}.shp-gf:active{transform:scale(.9)}
 .shp-sec.s-mine{display:none}.shp-wrap[data-t=mine] .s-mine{display:block}.shp-wrap[data-t=mine] .s-fr,.shp-wrap[data-t=mine] .s-bg,.shp-wrap[data-t=mine] .s-kit{display:none}.shp-empty{padding:34px 12px;text-align:center;color:var(--muted);font-size:14px}
 .shp-wrap[data-t=fr] .s-bg,.shp-wrap[data-t=fr] .s-kit,.shp-wrap[data-t=bg] .s-fr,.shp-wrap[data-t=bg] .s-kit,.shp-wrap[data-t=kit] .s-fr,.shp-wrap[data-t=kit] .s-bg{display:none}
 
@@ -3470,7 +3470,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.795';
+const APP = 'VOOB (by BGASHEV) Mini App v1.796';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5758,12 +5758,12 @@ function viewShop(){   // v1.782: «Магазин» (вариант «Журн�
   const fr = FRAMES.filter(f => f[2]), bgs = BG_KEYS;
   const has = (kind, k) => isPro() || SHOP.owned.has(kind + ':' + k);
   const tag = (kind, k) => isPro() ? '<span class="shp-pr own">В PRO</span>' : SHOP.owned.has(kind + ':' + k) ? '<span class="shp-pr own">Куплено</span>' : `<span class="shp-pr">⭐ ${SHOP.prices[kind]}</span>`;
-  const gf = (kind, k) => SHOP.prices[kind] ? `<span class="shp-gf" role="button" aria-label="Подарить" title="Подарить" data-act="cardgift" data-kind="${kind}" data-k="${k}">${IC('gift', 16)}</span>` : '';
-  const fc = f => `<button type="button" class="shp-c fr" data-act="shopview" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}">${gf('frame', f[0])}<div class="shp-st">${av(f[0], 76)}</div><b>${esc(f[1])}</b>${tag('frame', f[0])}</button>`;
-  const bc = b => `<button type="button" class="shp-c bg" data-act="shopview" data-kind="bg" data-k="${b[0]}" data-n="${esc(b[1])}">${gf('bg', b[0])}<div class="shp-bg">${bgFx(b[0])}<div class="shp-bga">${av('', 54)}</div></div><b>${esc(b[1])}</b>${tag('bg', b[0])}</button>`;
+  const gf = (kind, k) => SHOP.prices[kind] ? `<span class="shp-gf" role="button" data-act="cardgift" data-kind="${kind}" data-k="${k}">Подарить</span>` : '';
+  const fc = f => `<button type="button" class="shp-c fr" data-act="shopview" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}"><div class="shp-st">${av(f[0], 76)}</div><b>${esc(f[1])}</b><div class="shp-row">${tag('frame', f[0])}${gf('frame', f[0])}</div></button>`;
+  const bc = b => `<button type="button" class="shp-c bg" data-act="shopview" data-kind="bg" data-k="${b[0]}" data-n="${esc(b[1])}"><div class="shp-bg">${bgFx(b[0])}<div class="shp-bga">${av('', 54)}</div></div><b>${esc(b[1])}</b><div class="shp-row">${tag('bg', b[0])}${gf('bg', b[0])}</div></button>`;
   const paired = fr.filter(f => BG_SVG[f[0]]), kp = SHOP.prices.kit, kits = paired;
   const kitHas = k => isPro() || (SHOP.owned.has('frame:' + k) && SHOP.owned.has('bg:' + k));
-  const kc = f => `<button type="button" class="shp-c kit" data-act="shopview" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}">${gf('kit', f[0])}<div class="shp-bg tall">${bgFx(f[0])}<div class="shp-kav">${av(f[0], 72)}</div></div><b>${esc(f[1])}</b>${kitHas(f[0]) ? '<span class="shp-pr own">' + (isPro() ? 'В PRO' : 'Куплено') + '</span>' : kp ? `<span class="shp-pr">⭐ ${kp} <s>${SHOP.prices.frame + SHOP.prices.bg}</s></span>` : '<span class="shp-pr own">Скоро</span>'}</button>`;
+  const kc = f => `<button type="button" class="shp-c kit" data-act="shopview" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}"><div class="shp-bg tall">${bgFx(f[0])}<div class="shp-kav">${av(f[0], 72)}</div></div><b>${esc(f[1])}</b><div class="shp-row">${kitHas(f[0]) ? '<span class="shp-pr own">' + (isPro() ? 'В PRO' : 'Куплено') + '</span>' : kp ? `<span class="shp-pr">⭐ ${kp} <s>${SHOP.prices.frame + SHOP.prices.bg}</s></span>` : '<span class="shp-pr own">Скоро</span>'}${gf('kit', f[0])}</div></button>`;
   const buyOwn = (kind, k) => SHOP.owned.has(kind + ':' + k);
   const mKits = kits.filter(f => buyOwn('frame', f[0]) && buyOwn('bg', f[0])), mFr = fr.filter(f => buyOwn('frame', f[0]) && !mKits.includes(f)), mBg = bgs.filter(b => buyOwn('bg', b[0]) && !mKits.some(f => f[0] === b[0]));
   const mineN = mKits.length + mFr.length + mBg.length;
