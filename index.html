@@ -2578,7 +2578,7 @@ html.web:root.thz-fin .mset-top::before{animation:msgIn 1.1s cubic-bezier(.22,.7
 .pfc .psec{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:2px 0 10px}
 .pfc .psec:not(:first-of-type){margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
 .pfc .f{margin-bottom:10px}
-.pf2{display:grid;grid-template-columns:1.25fr 1fr;gap:10px}
+.pf2{display:grid;grid-template-columns:1.25fr 1fr;gap:10px}.pf2.pfn{grid-template-columns:1.3fr 1fr}.pf2 .stp{border-radius:999px;min-height:50px;box-sizing:border-box;padding:5px}.pf2 .sb{width:38px;height:38px;border-radius:50%}.pf2 .sv input{width:2.4em}
 .pf2 .inp{text-align:left;padding:0 16px;display:block;height:50px;line-height:50px;min-width:0;border-radius:999px}
 .pf2 input[type=date].inp::-webkit-date-and-time-value{text-align:left;margin:0;height:50px;line-height:50px;min-height:0}
 .pf2 input[type=date].inp::-webkit-datetime-edit{padding:0;line-height:50px}
@@ -3476,7 +3476,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.798';
+const APP = 'VOOB (by BGASHEV) Mini App v1.799';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6424,12 +6424,14 @@ function viewMeSettings(){
   h += handleCard();
   h += `<div class="card pfc"><h3>${IC('user')}Профиль</h3>
     <div class="psec">О тебе</div>
-    <label class="f"><span>Имя</span><input class="inp" id="p-name" maxlength="32" placeholder="${esc((tgUser && tgUser.first_name) || 'Как тебя зовут?')}" value="${esc(p.name || '')}" data-ch="pname"></label>
-    <div class="pf2">
-      <label class="f"><span>Дата рождения</span><input class="inp" type="date" id="p-birth" value="${esc(p.birth || '')}" max="${isoOf(todayN())}" data-ch="pbirth"></label>
+    <div class="pf2 pfn">
+      <label class="f"><span>Имя</span><input class="inp" id="p-name" maxlength="32" placeholder="${esc((tgUser && tgUser.first_name) || 'Как тебя зовут?')}" value="${esc(p.name || '')}" data-ch="pname"></label>
       <div class="f"><span>Пол</span><div class="seg fill pf-sex" data-i="${p.sex === 'm' ? 0 : p.sex === 'f' ? 1 : -1}"><i class="pf-th"></i>${[['m','Муж.'],['f','Жен.']].map(([v, l]) => `<button type="button" class="${p.sex === v ? 'on' : ''}" data-act="sex" data-v="${v}">${l}</button>`).join('')}</div></div>
     </div>
-    ${stepper('height', 'Рост', hgt, 0, 230, 1, 0, 'см', 'height').replace('data-bind', 'data-jump="175" data-bind')}
+    <div class="pf2">
+      <label class="f"><span>Дата рождения</span><input class="inp" type="date" id="p-birth" value="${esc(p.birth || '')}" max="${isoOf(todayN())}" data-ch="pbirth"></label>
+      ${stepper('height', 'Рост', hgt, 0, 230, 1, 0, 'см', 'height').replace('data-bind', 'data-jump="175" data-bind')}
+    </div>
     <div class="psec">Расчёт · вес берётся из раздела «Вес»</div>
     <div class="bm" id="p-chips">${chips(age, b, bmr)}</div></div>`;
   h += '<!--M2-->';
