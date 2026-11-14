@@ -980,6 +980,7 @@ html.web #sheet.wkw .wk-f .feel-l{grid-column:1/-1;margin:2px 0 0}
 .rt-hero .go{margin-top:6px;justify-self:start;background:var(--accent);color:var(--on-accent);border-radius:12px;padding:8px 14px;font-weight:800;font-size:13px}.rt-hero u{text-decoration:none;color:var(--muted);font-size:11px}
 .rt-gl{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.rt-gl::-webkit-scrollbar{display:none}
 .rt-mini{position:relative;flex:none;width:94px;border:1px solid var(--border);background:var(--surface2);border-radius:16px;padding:12px 8px 10px;color:var(--text);font:inherit;cursor:pointer;display:grid;justify-items:center;gap:8px}.rt-mini .ic{width:46px;height:46px;border-radius:14px;background:var(--bg);display:grid;place-items:center;opacity:.55}.rt-mini .ic svg{width:32px;height:32px}.rt-mini b{font-size:11.5px;text-align:center}.rt-mini.ok .ic{opacity:1}.rt-mini .lkb{position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:7px;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;color:var(--muted)}.rt-mini .lkb svg{width:11px;height:11px}
+.rt-rs{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center;padding:12px;border-radius:20px;border:1px solid var(--accent);background:var(--accent-soft)}.rt-rs .ic{width:46px;height:46px;border-radius:14px;background:var(--bg);display:grid;place-items:center}.rt-rs .ic svg{width:32px;height:32px}.rt-rs .tx{display:grid;min-width:0}.rt-rs i{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}.rt-rs b{font-size:16px}.rt-rs small{color:var(--muted);font-size:12px}.rt-rs .bt{grid-column:1/-1;display:flex;gap:8px}.rt-rs .bt .rt-b{flex:1}
 .rt-sep small{float:right;letter-spacing:0;text-transform:none;font-size:11px;font-weight:600;color:var(--muted)}
 #sw.open{z-index:9700}
 .rt-card em{margin-left:auto;font-style:normal;font-size:11.5px;color:var(--accent);font-weight:700;white-space:nowrap}
@@ -7677,7 +7678,9 @@ const REST = (function(){
       h += `<div class="rt-ok">${IC('check', 44)}</div><div class="rt-done">Пора на подход</div><button type="button" class="rt-b pr wide" data-r="skip">Погнали</button>`;
     } else if (view === 'pick') {
       const pr = isPro(), pi = GAMES.map((g, i) => g.pro ? i : -1).filter(i => i >= 0), nowD = new Date(), dayN = Math.floor((nowD.getTime() - nowD.getTimezoneOffset() * 6e4) / 864e5), di = pi[dayN % pi.length], mm = Math.max(0, Math.floor((new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() + 1) - nowD) / 6e4)), nOpen = pr ? GAMES.length : GAMES.filter(g => !g.pro).length + 1, cardH = (g, i) => `<button type="button" class="rt-card" data-gi="${i}"><span class="ic">${ICO[g.k]}</span><span><b>${g.n}</b><small>${g.d}</small></span><em>рекорд ${s.best[g.k] || 0}</em></button>`;
+      const sv = svOk();
       h += `<div class="rt-h">Сыграть до гонга</div><div class="rt-p">Игра закончится вместе с отдыхом. Осталось <b data-rt="t"></b></div>`
+        + (sv ? `<div class="rt-rs"><span class="ic">${ICO[GAMES[sv.i].k]}</span><span class="tx"><i>Прерванная игра</i><b>${GAMES[sv.i].n}</b><small>Счёт ${sv.sc} · продолжим с того же места</small></span><span class="bt"><button type="button" class="rt-b pr sm" data-r="resume">Продолжить</button><button type="button" class="rt-b sm" data-r="fresh">Заново</button></span></div>` : '')
         + `<div class="rt-pg"><div class="ds">${GAMES.map((g, i) => `<i${(!g.pro || pr || i === di) ? ' class="on"' : ''}></i>`).join('')}</div><span>открыто <b>${nOpen}</b> из ${GAMES.length}</span></div>`
         + (pr ? '' : `<button type="button" class="rt-hero" data-gi="${di}"><span class="hb"></span><span class="hi">${ICO[GAMES[di].k]}</span><span class="ht"><i class="tg">★ Игра дня · бесплатно</i><b>${GAMES[di].n}</b><small>${GAMES[di].d}</small><span class="go">Сыграть сегодня</span><u>обновится через ${Math.floor(mm / 60)} ч ${mm % 60} мин</u></span></button>`)
         + `<div class="rt-sep">Всегда бесплатно</div>` + GAMES.map((g, i) => g.pro ? '' : cardH(g, i)).join('')
@@ -7700,6 +7703,8 @@ const REST = (function(){
     else if (r === 'skip') { hap.tap(); close(); }
     else if (r === 'min') { min = true; render(); }
     else if (r === 'game') { view = 'pick'; render(); }
+    else if (r === 'resume') { const v = svOk(); if (v) { hap.tap(); openGame(v.i, v); } }
+    else if (r === 'fresh') { const v = svOk(); if (v) { hap.tap(); s.sv = null; save(); openGame(v.i); } }
     else if (r === 'back') { view = 'rest'; render(); }
   }
   document.addEventListener('visibilitychange', () => { if (!document.hidden && run) tick(); });
@@ -7718,7 +7723,10 @@ const REST = (function(){
     {k:'jump', n:'Скачок', d:'Води пальцем, прыгай вверх, лови джетпак', f:mkJump, pro:1}
   ];
   const QUIPS = ['Рекорд — это круто, но подход сам себя не сделает.', 'Мышцы остывают, пока ты тут красуешься.', 'Ещё раз? Время есть. Пока есть.', 'Штанга скучает без тебя.', 'Хорошо играешь. Так же и подход закрой.'];
-  let G = null, GI = -1, raf = 0, lastT = 0, cv, cx, W, H, DPR = 1, quip = '', C = {}, gm = null, keyH = null;
+  let G = null, GI = -1, raf = 0, lastT = 0, cv, cx, W, H, DPR = 1, quip = '', C = {}, gm = null, keyH = null, cd = 0, cdN = 0;
+  const svOk = () => { const v = s.sv; if (!v || !v.d || !GAMES[v.i] || Date.now() - v.t > 6 * 36e5) return null; const g = GAMES[v.i]; return (!g.pro || isPro() || v.i === dayGi()) ? v : null; };
+  function snap(){ if (!G) return; try { if (G.dead || !(G.score > 0)) { if (s.sv) { s.sv = null; save(); } return; } s.sv = {i: GI, d: JSON.stringify(G), sc: G.score | 0, t: Date.now()}; save(); } catch (e) {} }
+  document.addEventListener('visibilitychange', () => { if (document.hidden) snap(); });
   function rr(c, x, y, w, h, r){ r = Math.min(r, w / 2, h / 2); c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
   function onDie(g, key){ g.dead = true; g.deadAt = performance.now(); sfx('die'); if (g.score > (s.best[key] || 0)) { s.best[key] = g.score; save(); g.newBest = true; hap.ok(); sfx('record'); } else { g.newBest = false; hap.warn(); }
     const l = left(); quip = l < 25 ? 'Гонг через ' + Math.ceil(l) + ' с. Штанга ждёт.' : QUIPS[Math.floor(Math.random() * QUIPS.length)]; }
@@ -8047,7 +8055,7 @@ const REST = (function(){
     return g; }
 
   function wrapT(c, t, x, y, mw, lh){ let l = ''; t.split(' ').forEach(w => { const n = l ? l + ' ' + w : w; if (c.measureText(n).width > mw && l) { c.fillText(l, x, y); y += lh; l = w; } else l = n; }); c.fillText(l, x, y); }
-  function openGame(i){
+  function openGame(i, sv){
     if (!run) return; const st = getComputedStyle(document.documentElement), v = n => st.getPropertyValue(n).trim() || '#888';
     C = {ac:v('--accent'), tx:v('--text'), mu:v('--muted'), bd:v('--border'), s2:v('--surface2'), bg:v('--bg'), gr:v('--green'), rd:v('--red'), ff:getComputedStyle(document.body).fontFamily || 'sans-serif'};
     view = 'rest'; if (el) el.style.display = 'none'; GI = i;
@@ -8055,22 +8063,23 @@ const REST = (function(){
     gm.innerHTML = '<div class="rt-gm"><div class="rt-gh"><div class="rt-gtm"><span class="time" data-rt="t"></span><small>ДО ГОНГА</small></div><div class="rt-gsc" id="rtgsc"></div><button type="button" class="rt-b sm" data-r="gback">К отдыху</button></div><i class="rt-gline"><b data-rt="ln"></b></i><canvas id="rtgc"></canvas></div>';
     document.body.appendChild(gm);
     cv = gm.querySelector('canvas'); DPR = Math.min(2, window.devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * DPR; cv.height = H * DPR; cx = cv.getContext('2d'); cx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    G = GAMES[i].f(); G.init(); lastT = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
+    G = GAMES[i].f(); G.init(); cd = 0; if (sv) { try { Object.assign(G, JSON.parse(sv.d)); cd = 3; cdN = 0; } catch (e) { G = GAMES[i].f(); G.init(); } } s.sv = null; save(); lastT = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
     const pp = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
     cv.addEventListener('pointerdown', e => { e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch (_) {} const [x, y] = pp(e); gdown(x, y); });
-    cv.addEventListener('pointermove', e => { if (!G || G.dead || !G.move) return; const [x, y] = pp(e); G.move(x, y); });
-    const pu = e => { if (!G || G.dead || !G.up) return; const [x, y] = pp(e); G.up(x, y); };
+    cv.addEventListener('pointermove', e => { if (!G || G.dead || cd > 0 || !G.move) return; const [x, y] = pp(e); G.move(x, y); });
+    const pu = e => { if (!G || G.dead || cd > 0 || !G.up) return; const [x, y] = pp(e); G.up(x, y); };
     cv.addEventListener('pointerup', pu); cv.addEventListener('pointercancel', pu);
     gm.querySelector('[data-r="gback"]').addEventListener('click', () => { stopGame(); if (el) { el.style.display = ''; render(); } });
     keyH = e => { if (G && (e.code === 'Space' || e.code === 'ArrowUp')) { e.preventDefault(); gtap(); } }; document.addEventListener('keydown', keyH);
     paint(left());
   }
-  function stopGame(){ cancelAnimationFrame(raf); G = null; if (gm) { gm.remove(); gm = null; } if (keyH) { document.removeEventListener('keydown', keyH); keyH = null; } if (el) el.style.display = ''; }
-  function gdown(x, y){ if (!G) return; if (G.dead) { if (performance.now() - G.deadAt > 500) G.init(); } else if (G.down) G.down(x, y); else G.tap(); }
-  function gtap(){ if (!G) return; if (G.dead) { if (performance.now() - G.deadAt > 500) G.init(); } else G.tap(); }
+  function stopGame(){ snap(); cd = 0; cancelAnimationFrame(raf); G = null; if (gm) { gm.remove(); gm = null; } if (keyH) { document.removeEventListener('keydown', keyH); keyH = null; } if (el) el.style.display = ''; }
+  function gdown(x, y){ if (!G || cd > 0) return; if (G.dead) { if (performance.now() - G.deadAt > 500) G.init(); } else if (G.down) G.down(x, y); else G.tap(); }
+  function gtap(){ if (!G || cd > 0) return; if (G.dead) { if (performance.now() - G.deadAt > 500) G.init(); } else G.tap(); }
   function loop(ts){
     if (!G) return; const dt = Math.min(.033, (ts - lastT) / 1000); lastT = ts;
-    G.update(dt); cx.clearRect(0, 0, W, H); G.draw(cx);
+    if (cd > 0) cd -= dt; else G.update(dt); cx.clearRect(0, 0, W, H); G.draw(cx);
+    if (cd > 0) { const n = Math.ceil(cd); if (n !== cdN) { cdN = n; hap.tap(); } cx.globalAlpha = .55; cx.fillStyle = C.bg; cx.fillRect(0, 0, W, H); cx.globalAlpha = 1; cx.textAlign = 'center'; cx.fillStyle = C.mu; cx.font = '700 15px ' + C.ff; cx.fillText('Продолжаем · приготовься', W / 2, H * .36); const fr = cd - Math.floor(cd), sc2 = 1 + fr * .35; cx.save(); cx.translate(W / 2, H * .36 + 74); cx.scale(sc2, sc2); cx.globalAlpha = .35 + .65 * (1 - fr); cx.fillStyle = C.ac; cx.font = '800 92px ' + C.ff; cx.fillText(n, 0, 0); cx.restore(); cx.globalAlpha = 1; }
     if (G.dead) { cx.globalAlpha = .8; cx.fillStyle = C.bg; cx.fillRect(0, 0, W, H); cx.globalAlpha = 1; cx.textAlign = 'center';
       cx.fillStyle = C.tx; cx.font = '800 26px ' + C.ff; cx.fillText(G.newBest ? 'Новый рекорд!' : 'Мимо!', W / 2, H * .36);
       cx.fillStyle = C.ac; cx.font = '800 54px ' + C.ff; cx.fillText(G.score, W / 2, H * .36 + 62);
