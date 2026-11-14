@@ -1926,6 +1926,8 @@ html.web .ib.shim:has(.ibl){width:auto;padding:0 18px 0 14px;gap:8px;display:inl
 #ntc.show .nt-bg{opacity:1}
 #ntc.show .nt-sh{transform:none}
 #ntc.k-gift{--ntc:#B4A7EE} #ntc.k-notice{--ntc:#7FB5FF} #ntc.k-promo{--ntc:#F2C14E}
+.nt-pic{margin:6px -6px 4px;border-radius:18px;overflow:hidden;background:var(--tile2,#ffffff0d);max-height:42vh}
+.nt-pic img{display:block;width:100%;max-height:42vh;object-fit:cover}
 .nt-art{position:relative;width:150px;height:150px;margin:4px auto 2px;display:grid;place-items:center}
 .nt-rays{position:absolute;inset:0;border-radius:50%;animation:ntSpin 14s linear infinite;
   background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--ntc) 32%,transparent) 0 8deg,transparent 8deg 30deg);
@@ -3579,7 +3581,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.824';
+const APP = 'VOOB (by BGASHEV) Mini App v1.825';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -8712,7 +8714,7 @@ function showNotice(){
   let el = $('#ntc'); if (!el) { el = document.createElement('div'); el.id = 'ntc'; document.body.appendChild(el); }
   el.className = 'k-' + k;
   el.innerHTML = `<div class="nt-bg" data-act="ntlater"></div><div class="nt-sh" role="dialog" aria-modal="true"><div class="grab"></div>
-    <div class="nt-art${k === 'gift' && PGIFTS.includes(n.gift_kind) ? ' prem' : ''}"><i class="nt-rays"></i>${k === 'gift' && PGIFTS.includes(n.gift_kind) ? sparkHTML(48) : ''}${art}</div><div class="nt-cap">${cap}</div><h2 class="nt-t">${esc(n.title || '')}</h2>
+    ${n.image_url && /^https:\/\//.test(n.image_url) ? `<div class="nt-pic"><img src="${esc(n.image_url)}" alt="" decoding="async"></div>` : `<div class="nt-art${k === 'gift' && PGIFTS.includes(n.gift_kind) ? ' prem' : ''}"><i class="nt-rays"></i>${k === 'gift' && PGIFTS.includes(n.gift_kind) ? sparkHTML(48) : ''}${art}</div>`}<div class="nt-cap">${cap}</div><h2 class="nt-t">${esc(n.title || '')}</h2>
     ${n.body ? `<div class="nt-b">${esc(n.body)}</div>` : ''}<div class="nt-s">— команда VOOB</div>
     <button class="btn primary nt-ok" data-act="ntok">${btn}</button>${cta && k !== 'gift' ? '<button class="btn ghost nt-no" data-act="ntlater">Не сейчас</button>' : ''}</div>`;
   requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
