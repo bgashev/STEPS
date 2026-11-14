@@ -851,12 +851,13 @@ html.web ::-webkit-scrollbar-corner{background:transparent}
 .lv-stop[hidden],.lv-add[hidden]{display:none!important}
 @media(prefers-reduced-motion:reduce){.lv-live,.lv-pr i.c{animation:none}}
 /* v1.828: карточка «Сделано одним человеком» (эскиз → экран) */
-.abt{padding:0;overflow:hidden;background:radial-gradient(120% 120% at 0 0,color-mix(in srgb,var(--accent) 24%,transparent),transparent 62%),var(--surface)}
-.abt .abi{height:172px;position:relative}.abt .abi svg{width:100%;height:100%;display:block;overflow:visible}
-.abt .abx{padding:0 18px 18px}.abt .abe{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--accent);margin-bottom:6px}
+.abt{overflow:hidden;background:radial-gradient(120% 120% at 0 0,color-mix(in srgb,var(--accent) 24%,transparent),transparent 62%),var(--surface)}
+.abt{display:flex;align-items:center;gap:6px;padding:8px 18px 8px 4px}.abt .abi{flex:none;width:136px;height:136px;position:relative}.abt .abi svg{width:100%;height:100%;display:block;overflow:visible}
+.abt .abx{padding:0;min-width:0;flex:1}.abt .abe{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--accent);margin-bottom:6px}
 .abt .abx b{display:block;font-size:19px;line-height:1.2;letter-spacing:-.01em;margin-bottom:6px}.abt .abx p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
 @keyframes abSp{to{transform:rotate(360deg)}}@keyframes abBob{50%{transform:translate(0,-6px)}}@keyframes abPu{50%{opacity:.35}}@keyframes abDs{to{stroke-dashoffset:-60}}
 .abt .ab-sp{transform-box:fill-box;transform-origin:center;animation:abSp 6s linear infinite}.abt .ab-bob{animation:abBob 4s ease-in-out infinite}.abt .ab-pu{animation:abPu 2.4s ease-in-out infinite}.abt .ab-ds{animation:abDs 3s linear infinite}
+@media(max-width:420px){.abt .abi{width:104px;height:104px}.abt .abx b{font-size:17px}.abt .abx p{font-size:12.5px}}
 @media(prefers-reduced-motion:reduce){.abt *{animation:none!important}}
 /* v1.827: развилка «Тренируюсь сейчас / Записать, что было» */
 .adch{display:grid;gap:12px;margin:2px 0 6px}
