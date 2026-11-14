@@ -978,7 +978,7 @@ html.web #sheet.wkw .wk-f .feel-l{grid-column:1/-1;margin:2px 0 0}
 .rt-hero .hi{flex:none;width:84px;height:84px;border-radius:22px;background:var(--bg);display:grid;place-items:center;box-shadow:0 10px 24px -8px #000}.rt-hero .hi svg{width:58px;height:58px}
 .rt-hero .ht{display:grid;gap:3px;min-width:0}.rt-hero .tg{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#ffc94a}.rt-hero b{font-size:19px}.rt-hero small{color:var(--muted);font-size:12px;line-height:1.35}
 .rt-hero .go{margin-top:6px;justify-self:start;background:var(--accent);color:var(--on-accent);border-radius:12px;padding:8px 14px;font-weight:800;font-size:13px}.rt-hero u{text-decoration:none;color:var(--muted);font-size:11px}
-.rt-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.rt-row::-webkit-scrollbar{display:none}
+.rt-gl{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.rt-gl::-webkit-scrollbar{display:none}
 .rt-mini{position:relative;flex:none;width:94px;border:1px solid var(--border);background:var(--surface2);border-radius:16px;padding:12px 8px 10px;color:var(--text);font:inherit;cursor:pointer;display:grid;justify-items:center;gap:8px}.rt-mini .ic{width:46px;height:46px;border-radius:14px;background:var(--bg);display:grid;place-items:center;opacity:.55}.rt-mini .ic svg{width:32px;height:32px}.rt-mini b{font-size:11.5px;text-align:center}.rt-mini.ok .ic{opacity:1}.rt-mini .lkb{position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:7px;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;color:var(--muted)}.rt-mini .lkb svg{width:11px;height:11px}
 .rt-sep small{float:right;letter-spacing:0;text-transform:none;font-size:11px;font-weight:600;color:var(--muted)}
 #sw.open{z-index:9700}
@@ -7682,7 +7682,7 @@ const REST = (function(){
         + (pr ? '' : `<button type="button" class="rt-hero" data-gi="${di}"><span class="hb"></span><span class="hi">${ICO[GAMES[di].k]}</span><span class="ht"><i class="tg">★ Игра дня · бесплатно</i><b>${GAMES[di].n}</b><small>${GAMES[di].d}</small><span class="go">Сыграть сегодня</span><u>обновится через ${Math.floor(mm / 60)} ч ${mm % 60} мин</u></span></button>`)
         + `<div class="rt-sep">Всегда бесплатно</div>` + GAMES.map((g, i) => g.pro ? '' : cardH(g, i)).join('')
         + `<div class="rt-sep">PRO${pr ? '' : '<small>каждый день одна — бесплатно</small>'}</div>`
-        + (pr ? GAMES.map((g, i) => g.pro ? cardH(g, i) : '').join('') : `<div class="rt-row">${pi.filter(i => i !== di).map(i => `<button type="button" class="rt-mini" data-gi="${i}"><i class="lkb">${IC('lock', 11)}</i><span class="ic">${ICO[GAMES[i].k]}</span><b>${GAMES[i].n}</b></button>`).join('')}</div>`)
+        + (pr ? GAMES.map((g, i) => g.pro ? cardH(g, i) : '').join('') : `<div class="rt-gl">${pi.filter(i => i !== di).map(i => `<button type="button" class="rt-mini" data-gi="${i}"><i class="lkb">${IC('lock', 11)}</i><span class="ic">${ICO[GAMES[i].k]}</span><b>${GAMES[i].n}</b></button>`).join('')}</div>`)
         + `<button type="button" class="rt-b gh" data-r="back">Нет, просто отдыхаю</button>`;
     } else {
       h += `<div class="rt-nx">Отдых${act ? ' · <b>' + esc(nameOf(act)) + '</b>' : ''}</div>
