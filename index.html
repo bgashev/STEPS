@@ -817,6 +817,26 @@ html.web ::-webkit-scrollbar-corner{background:transparent}
 #sheet.aw .act.pin:has(+ .act:not(.pin)){margin-bottom:0}
 @media(max-width:900px){#sheet.aw .acts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+/* v1.827: развилка «Тренируюсь сейчас / Записать, что было» */
+.adch{display:grid;gap:12px;margin:2px 0 6px}
+.adc{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:18px 16px;border-radius:24px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1),border-color .2s,background .2s;animation:adcIn .5s cubic-bezier(.2,.9,.25,1) both}
+.adc:nth-child(2){animation-delay:.07s}
+.adc:active{transform:scale(.975)}
+@media(hover:hover){.adc:hover{transform:translateY(-2px);border-color:var(--accent)}}
+@keyframes adcIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.adc .adi{flex:none;width:52px;height:52px;border-radius:18px;display:grid;place-items:center;background:var(--surface);border:1px solid var(--border);color:var(--accent)}
+.adc .adt{min-width:0;display:grid;gap:3px}
+.adc .adt b{font-size:17px;font-weight:800;letter-spacing:-.01em;line-height:1.2}
+.adc .adt span{color:var(--muted);font-size:12.5px;line-height:1.4;font-weight:500}
+.adc .adg{margin-left:auto;flex:none;color:var(--muted);opacity:.7}
+.adc.live{padding:22px 16px;border-color:color-mix(in srgb,var(--accent) 55%,transparent);background:radial-gradient(120% 140% at 0% 0%,color-mix(in srgb,var(--accent) 34%,transparent),transparent 62%),linear-gradient(160deg,var(--surface2),var(--surface))}
+.adc.live .adi{background:var(--accent);color:var(--on-accent);border:0;box-shadow:0 10px 26px -8px var(--accent)}
+.adc.live .adt b{font-size:19px}
+.adc.live .adg{color:var(--accent);opacity:1}
+.adc .adk{display:inline-flex;align-items:center;gap:6px;width:max-content;margin-top:4px;padding:3px 9px 3px 8px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.02em;color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent)}
+.adc .adk i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:adp 1.6s ease-in-out infinite}
+@keyframes adp{50%{opacity:.25;transform:scale(.7)}}
+@media(prefers-reduced-motion:reduce){.adc,.adc .adk i{animation:none}}
 .acts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:6px 0 16px}
 .act{position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px 12px;border-radius:22px;border:1px solid var(--border);background:var(--surface);font-weight:700;font-size:12.5px;text-align:center;}
 .act .ai{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent)}
@@ -3625,7 +3645,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.826';
+const APP = 'VOOB (by BGASHEV) Mini App v1.827';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7429,6 +7449,7 @@ function openSheet(html, ctx){
   sh.addEventListener('touchend', fin); sh.addEventListener('touchcancel', fin);
 })();
 function closeSheet(){
+  S.addMode = null;
   $('#sw').classList.remove('open');
   setTimeout(() => { if (!sheetCtx) $('#sheet').classList.remove('full'); }, 340);
   sheetCtx = null;
@@ -7441,12 +7462,13 @@ function feelPicker(v){
     `</div><span class="feel-l" id="f-feel-l" style="color:${FEEL[v][1]}">${FEEL[v][0]}</span></div></div>`;
 }
 function openWorkout(w, preset, hint, act, back){
-  const src = w || preset || {}, date = w ? w.date : isoOf(todayN()), f = clamp(parseInt(src.feeling) || 3, 1, 5);
+  const mode = (!w && !preset && S.addMode) || '', src = w || preset || {}, date = w ? w.date : isoOf(todayN() - (mode === 'past' ? 1 : 0)), f = clamp(parseInt(src.feeling) || 3, 1, 5);
   act = act || actOf(src); const st = STR[act], same = src.act === act;
+  if (mode && !hint) hint = mode === 'now' ? 'Идёт тренировка: отдых включится сам, в паузе можно сыграть' : 'Запись задним числом: поправь дату и подходы';
   openSheet(`${back ? '<div class="wstep"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></div>' : ''}<div class="row" style="gap:12px;margin-bottom:14px">${back ? `<button type="button" class="ib" data-act="sback" aria-label="Назад">${IC('back', 20)}</button>` : ''}<span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${w ? 'Редактирование' : 'Новая тренировка'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}${KG_ACT[act] && src.ex && typeof dbxName === 'function' && dbxName(src.ex, act) ? ' · ' + dbxName(src.ex, act) : ''}</div></div></div>${hint ? `<div class="hint">${hint}</div>` : ''}
     ${st ? `<div class="wkg"><div class="wk-d"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label></div>
       <div class="wk-s"><div class="f"><span>Подходы · ${KG_ACT[act] ? 'повторы × вес' : st[0] === 'secs' ? 'секунд в каждом' : 'повторов в каждом'}</span><div class="sl" id="f-sl">${slBlock(src, same, act, st)}</div>
-        <div class="sl-btns"><span class="slbb"><button type="button" class="btn ghost small" data-act="sladd">${IC('plus', 15)}Ещё подход</button><button type="button" class="btn ghost small" data-act="rest">${REST.WATCH}Отдых</button></span><span class="cap" id="sl-sum"></span></div></div>
+        <div class="sl-btns"><span class="slbb"><button type="button" class="btn ghost small" data-act="sladd">${IC('plus', 15)}Ещё подход</button>${mode === 'past' ? '' : `<button type="button" class="btn ghost small" data-act="rest">${REST.WATCH}Отдых</button>`}</span><span class="cap" id="sl-sum"></span></div></div>
         <div class="preview" id="f-prev"></div></div>
       <div class="wk-f">${feelPicker(f)}</div>
       <div class="wk-n"><label class="f"><span>Заметка</span><input class="inp" id="f-note" maxlength="140" placeholder="Необязательно" value="${esc(w ? w.note || '' : '')}"></label></div></div>`
@@ -7458,7 +7480,7 @@ function openWorkout(w, preset, hint, act, back){
     ${st ? '' : `<div class="preview" id="f-prev"></div>
     ${feelPicker(f)}
     <label class="f"><span>Заметка</span><input class="inp" id="f-note" maxlength="140" placeholder="Необязательно" value="${esc(w ? w.note || '' : '')}"></label>`}
-    <div class="sheet-btns">${w ? `<button class="btn ghost danger" data-act="wdel">${IC('trash')}</button>` : ''}${acLocked(w) ? `<div class="hint" style="margin:0;align-self:center">${IC('lock', 13)} Старше 2 дней — менять нельзя, только удалить</div>` : `<button class="btn primary" data-act="wsave">Сохранить</button>`}</div>`, {type:'workout', item:w, act, back});
+    <div class="sheet-btns">${w ? `<button class="btn ghost danger" data-act="wdel">${IC('trash')}</button>` : ''}${acLocked(w) ? `<div class="hint" style="margin:0;align-self:center">${IC('lock', 13)} Старше 2 дней — менять нельзя, только удалить</div>` : `<button class="btn primary" data-act="wsave">Сохранить</button>`}</div>`, {type:'workout', item:w, act, back, mode});
   updPreview();
 }
 /* v1.826: таймер отдыха между подходами (звук, вибрация) и мини-игры «Сыграть до гонга» */
@@ -7884,6 +7906,17 @@ async function copyBackup(){
 // v1.449: избранные виды активности — до FAV_MAX, закреплённые идут первыми
 const favMax = () => isPro() ? 5 : 1;   // v1.454: без PRO — одна закреплённая, с PRO — до 5
 function favActs(){ const f = Array.isArray(db.settings.fav) ? db.settings.fav : []; return f.filter(k => ACTS.some(a => a[0] === k && a[2])).slice(0, favMax()); }
+function openAddChoice(){
+  S.addMode = null;
+  const PLAY = '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.6v12.8a1 1 0 0 0 1.5.86l10.4-6.4a1 1 0 0 0 0-1.72L9.5 4.74A1 1 0 0 0 8 5.6z"/></svg>';
+  const CAL = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="4"/><path d="M8 3v4M16 3v4M3.5 10h17M9 15.2l2.1 2.1 4-4.1"/></svg>';
+  const CH = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5L12.5 9L7 14.5"/></svg>';
+  openSheet(`<h2>Добавить тренировку</h2><div class="cap" style="margin:-8px 0 14px">Что делаем?</div>
+    <div class="adch">
+      <button type="button" class="adc live" data-act="addgo" data-m="now"><span class="adi">${PLAY}</span><span class="adt"><b>Тренируюсь сейчас</b><span>Отмечай подходы, отдых включится сам, а в паузе можно сыграть до гонга</span><em class="adk" style="font-style:normal"><i></i>отдых и игры</em></span><span class="adg">${CH}</span></button>
+      <button type="button" class="adc" data-act="addgo" data-m="past"><span class="adi">${CAL}</span><span class="adt"><b>Записать, что было</b><span>Вчера или в любой день: упражнение, подходы, веса</span></span><span class="adg">${CH}</span></button>
+    </div>`, {type:'addch'});
+}
 function openActs(calm){   // calm — вернулись «назад»: без повторного каскада, раскрытость окна восстанавливается
   if (inWeb) { openActsWeb(calm); return; }
   openSheet(`<div class="wstep"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></div><h2>Что тренируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше привычная форма</div><div class="acts${calm ? ' calm' : ''}">` + actsHTML() + `</div>`, {type:'acts'});
@@ -7955,7 +7988,8 @@ function actsHTML(){
 }
 const ACT = {
   tab: el => { if (S.fprof) { S.fprof = null; _rTab = null; if (!sheetCtx) { try { if (ver('6.1')) tg.BackButton.hide(); } catch (e) {} } } if (S.tab !== el.dataset.tab || _rTab === null) { S.tab = el.dataset.tab; S.meSet = false; S.pers = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') { FR_TAB_T = performance.now(); if (!FR.data || Date.now() - (FR.at || 0) > 20000) loadFriends(); } } },
-  add: () => { hap.imp(); S.actsXl = false; openActs(false); },
+  add: () => { hap.imp(); S.actsXl = false; openAddChoice(); },
+  addgo: el => { hap.tap(); S.addMode = el.dataset.m === 'past' ? 'past' : 'now'; S.actsXl = false; openActs(false); },
   sback: () => { hap.tap(); stepBack(); },
   actcat: el => { S.awCat = el.dataset.v; document.querySelectorAll('.aw-c button').forEach(b => b.setAttribute('aria-pressed', b === el)); awFilter(); hap.tap(); },
   actfav: el => { const k = el.dataset.v, f = favActs(), on = f.includes(k);
@@ -7982,7 +8016,7 @@ const ACT = {
   actsoon: () => { hap.warn(); toast('Скоро — уже готовим ✨'); },
   rest: () => REST.start(sheetCtx && sheetCtx.act),
   rtog: el => { REST.toggle(el.dataset.k); hap.tap(); render(); },
-  sladd: () => { const sl = slRead(), sk = skRead(); if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } if (REST.s.auto) REST.start(sheetCtx && sheetCtx.act); sl.push(sl[sl.length - 1] || 10); if (sk.length) sk.push(sk[sk.length - 1]); hap.tap(); slRedraw(sl, sk);
+  sladd: () => { const sl = slRead(), sk = skRead(); if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } if (REST.s.auto || (sheetCtx && sheetCtx.mode === 'now')) REST.start(sheetCtx && sheetCtx.act); sl.push(sl[sl.length - 1] || 10); if (sk.length) sk.push(sk[sk.length - 1]); hap.tap(); slRedraw(sl, sk);
     const rows = document.querySelectorAll('#f-sl .slr:not(.slh)'); if (rows.length) rows[rows.length - 1].classList.add('new'); },
   sldel: el => { const sl = slRead(), sk = skRead(), i = +el.dataset.i; sl.splice(i, 1); sk.splice(i, 1); hap.tap(); slRedraw(sl, sk); },
   slcp: el => { const sl = slRead(), sk = skRead(), i = +el.dataset.i; if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } sl.splice(i + 1, 0, sl[i]); sk.splice(i + 1, 0, sk[i]); hap.tap(); slRedraw(sl, sk);
