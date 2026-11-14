@@ -971,6 +971,9 @@ html.web #sheet.wkw .wk-f .feel-l{grid-column:1/-1;margin:2px 0 0}
 .rt-card b{display:block;font-size:15px}.rt-card small{display:block;color:var(--muted);font-size:12px;line-height:1.35}
 .rt-card em{margin-left:auto;font-style:normal;font-size:11.5px;color:var(--accent);font-weight:700;white-space:nowrap}
 .rt-pill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom));z-index:9500;display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--text);box-shadow:0 10px 28px rgba(0,0,0,.4);font:700 16px/1 inherit;font-variant-numeric:tabular-nums;overflow:hidden;cursor:pointer;animation:rtup .35s cubic-bezier(.22,1,.36,1) both}
+/* v1.831: таймер отдыха не налезает на кнопку «Тренировка / Взвеситься»: пока кнопка на экране, плашка встаёт над ней */
+html:not(.web) .rt-pill{transition:bottom .35s cubic-bezier(.22,1,.36,1)}
+html:not(.web) body:has(#fab:not(.hide)) .rt-pill{bottom:calc(156px + env(safe-area-inset-bottom))}
 .rt-pill i{position:absolute;left:0;right:0;bottom:0;height:3px;background:transparent}.rt-pill i b{display:block;height:100%;width:0;background:var(--accent)}
 .rt-gmw{position:fixed;inset:0;z-index:9600;background:var(--bg);animation:rtfi .25s both;user-select:none;-webkit-user-select:none}
 .rt-gm{position:relative;height:100%;max-width:480px;margin:0 auto}
@@ -3686,7 +3689,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.830';
+const APP = 'VOOB (by BGASHEV) Mini App v1.831';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
