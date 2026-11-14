@@ -970,7 +970,18 @@ html.web #sheet.wkw .wk-f .feel-l{grid-column:1/-1;margin:2px 0 0}
 .rt-card .ic{width:50px;height:50px;border-radius:15px;background:var(--bg);display:grid;place-items:center;flex:none;color:var(--text)}
 .rt-card .ic svg{width:34px;height:34px}
 .rt-card b{display:block;font-size:15px}.rt-card small{display:block;color:var(--muted);font-size:12px;line-height:1.35}
-.rt-sh.pk{max-height:88vh;overflow-y:auto;overscroll-behavior:contain}.rt-sep{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--accent);margin:6px 2px 0}.rt-card.lk .ic{opacity:.55}.rt-card em.pr{background:var(--accent);color:var(--on-accent);border-radius:999px;padding:3px 9px;font-size:10.5px;letter-spacing:.06em}#sw.open{z-index:9700}
+.rt-sh.pk{max-height:88vh;overflow-y:auto;overscroll-behavior:contain}.rt-sep{font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--accent);margin:6px 2px 0}.rt-card.lk .ic{opacity:.55}.rt-card em.pr{background:var(--accent);color:var(--on-accent);border-radius:999px;padding:3px 9px;font-size:10.5px;letter-spacing:.06em}.rt-pg{display:flex;align-items:center;justify-content:center;gap:12px;color:var(--muted);font-size:12.5px}.rt-pg .ds{display:flex;gap:5px}.rt-pg .ds i{width:16px;height:6px;border-radius:3px;background:var(--border)}.rt-pg .ds i.on{background:var(--accent);box-shadow:0 0 10px rgba(180,167,238,.55)}.rt-pg b{color:var(--text)}
+@property --ra{syntax:'<angle>';inherits:false;initial-value:0deg}@keyframes rtspin{to{--ra:360deg}}
+.rt-hero{position:relative;display:flex;align-items:center;gap:14px;width:100%;border:0;border-radius:22px;padding:14px;background:var(--surface2);color:var(--text);font:inherit;text-align:left;cursor:pointer;overflow:hidden;isolation:isolate}.rt-hero:active{transform:scale(.98)}
+.rt-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 120% at 0 0,rgba(139,92,246,.28),transparent 60%);z-index:-1}
+.rt-hero .hb{position:absolute;inset:0;border-radius:inherit;padding:1.5px;background:conic-gradient(from var(--ra),transparent 0 55%,#8b5cf6 72%,#ffc94a 86%,transparent 95%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:rtspin 5s linear infinite;pointer-events:none}
+.rt-hero .hi{flex:none;width:84px;height:84px;border-radius:22px;background:var(--bg);display:grid;place-items:center;box-shadow:0 10px 24px -8px #000}.rt-hero .hi svg{width:58px;height:58px}
+.rt-hero .ht{display:grid;gap:3px;min-width:0}.rt-hero .tg{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#ffc94a}.rt-hero b{font-size:19px}.rt-hero small{color:var(--muted);font-size:12px;line-height:1.35}
+.rt-hero .go{margin-top:6px;justify-self:start;background:var(--accent);color:var(--on-accent);border-radius:12px;padding:8px 14px;font-weight:800;font-size:13px}.rt-hero u{text-decoration:none;color:var(--muted);font-size:11px}
+.rt-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.rt-row::-webkit-scrollbar{display:none}
+.rt-mini{position:relative;flex:none;width:94px;border:1px solid var(--border);background:var(--surface2);border-radius:16px;padding:12px 8px 10px;color:var(--text);font:inherit;cursor:pointer;display:grid;justify-items:center;gap:8px}.rt-mini .ic{width:46px;height:46px;border-radius:14px;background:var(--bg);display:grid;place-items:center;opacity:.55}.rt-mini .ic svg{width:32px;height:32px}.rt-mini b{font-size:11.5px;text-align:center}.rt-mini.ok .ic{opacity:1}.rt-mini .lkb{position:absolute;right:8px;top:8px;width:20px;height:20px;border-radius:7px;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;color:var(--muted)}.rt-mini .lkb svg{width:11px;height:11px}
+.rt-sep small{float:right;letter-spacing:0;text-transform:none;font-size:11px;font-weight:600;color:var(--muted)}
+#sw.open{z-index:9700}
 .rt-card em{margin-left:auto;font-style:normal;font-size:11.5px;color:var(--accent);font-weight:700;white-space:nowrap}
 .rt-pill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom));z-index:9500;display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--text);box-shadow:0 10px 28px rgba(0,0,0,.4);font:700 16px/1 inherit;font-variant-numeric:tabular-nums;overflow:hidden;cursor:pointer;animation:rtup .35s cubic-bezier(.22,1,.36,1) both}
 /* v1.831: таймер отдыха не налезает на кнопку «Тренировка / Взвеситься»: пока кнопка на экране, плашка встаёт над ней */
@@ -7665,8 +7676,13 @@ const REST = (function(){
     if (done) {
       h += `<div class="rt-ok">${IC('check', 44)}</div><div class="rt-done">Пора на подход</div><button type="button" class="rt-b pr wide" data-r="skip">Погнали</button>`;
     } else if (view === 'pick') {
+      const pr = isPro(), pi = GAMES.map((g, i) => g.pro ? i : -1).filter(i => i >= 0), nowD = new Date(), dayN = Math.floor((nowD.getTime() - nowD.getTimezoneOffset() * 6e4) / 864e5), di = pi[dayN % pi.length], mm = Math.max(0, Math.floor((new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() + 1) - nowD) / 6e4)), nOpen = pr ? GAMES.length : GAMES.filter(g => !g.pro).length + 1, cardH = (g, i) => `<button type="button" class="rt-card" data-gi="${i}"><span class="ic">${ICO[g.k]}</span><span><b>${g.n}</b><small>${g.d}</small></span><em>рекорд ${s.best[g.k] || 0}</em></button>`;
       h += `<div class="rt-h">Сыграть до гонга</div><div class="rt-p">Игра закончится вместе с отдыхом. Осталось <b data-rt="t"></b></div>`
-        + GAMES.map((g, i) => (g.pro && !GAMES[i - 1].pro ? '<div class="rt-sep">PRO · игры подписки</div>' : '') + `<button type="button" class="rt-card${g.pro && !isPro() ? ' lk' : ''}" data-gi="${i}"><span class="ic">${ICO[g.k]}</span><span><b>${g.n}</b><small>${g.d}</small></span>${g.pro && !isPro() ? '<em class="pr">PRO</em>' : `<em>рекорд ${s.best[g.k] || 0}</em>`}</button>`).join('')
+        + `<div class="rt-pg"><div class="ds">${GAMES.map((g, i) => `<i${(!g.pro || pr || i === di) ? ' class="on"' : ''}></i>`).join('')}</div><span>открыто <b>${nOpen}</b> из ${GAMES.length}</span></div>`
+        + (pr ? '' : `<button type="button" class="rt-hero" data-gi="${di}"><span class="hb"></span><span class="hi">${ICO[GAMES[di].k]}</span><span class="ht"><i class="tg">★ Игра дня · бесплатно</i><b>${GAMES[di].n}</b><small>${GAMES[di].d}</small><span class="go">Сыграть сегодня</span><u>обновится через ${Math.floor(mm / 60)} ч ${mm % 60} мин</u></span></button>`)
+        + `<div class="rt-sep">Всегда бесплатно</div>` + GAMES.map((g, i) => g.pro ? '' : cardH(g, i)).join('')
+        + `<div class="rt-sep">PRO${pr ? '' : '<small>каждый день одна — бесплатно</small>'}</div>`
+        + (pr ? GAMES.map((g, i) => g.pro ? cardH(g, i) : '').join('') : `<div class="rt-row">${pi.filter(i => i !== di).map(i => `<button type="button" class="rt-mini" data-gi="${i}"><i class="lkb">${IC('lock', 11)}</i><span class="ic">${ICO[GAMES[i].k]}</span><b>${GAMES[i].n}</b></button>`).join('')}</div>`)
         + `<button type="button" class="rt-b gh" data-r="back">Нет, просто отдыхаю</button>`;
     } else {
       h += `<div class="rt-nx">Отдых${act ? ' · <b>' + esc(nameOf(act)) + '</b>' : ''}</div>
@@ -7678,7 +7694,7 @@ const REST = (function(){
     paint(left());
   }
   function onClick(e){
-    const gi = e.target.closest('[data-gi]'); if (gi) { const gx = GAMES[+gi.dataset.gi]; if (gx.pro && !isPro()) { hap.tap(); min = true; render(); openPro(); return; } openGame(+gi.dataset.gi); return; }
+    const gi = e.target.closest('[data-gi]'); if (gi) { const gx = GAMES[+gi.dataset.gi]; if (gx.pro && !isPro() && +gi.dataset.gi !== dayGi()) { hap.tap(); min = true; render(); openPro(); return; } openGame(+gi.dataset.gi); return; }
     const b = e.target.closest('[data-r]'); if (!b) return; const r = b.dataset.r;
     if (r === 'm') adj(-15); else if (r === 'p') adj(15);
     else if (r === 'skip') { hap.tap(); close(); }
@@ -7689,6 +7705,7 @@ const REST = (function(){
   document.addEventListener('visibilitychange', () => { if (!document.hidden && run) tick(); });
 
   /* ---------- мини-игры ---------- */
+  const dayGi = () => { const pi = GAMES.map((g, i) => g.pro ? i : -1).filter(i => i >= 0), d = new Date(); return pi[Math.floor((d.getTime() - d.getTimezoneOffset() * 6e4) / 864e5) % pi.length]; };
   const GAMES = [
     {k:'flap', n:'Прыг-гантель', d:'Тап — взлёт. Пролетай между блинами', f:mkFlap},
     {k:'stack', n:'Башня', d:'Тап — поставить блок. Мимо — башня уже', f:mkStack},
