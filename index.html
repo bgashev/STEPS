@@ -817,6 +817,39 @@ html.web ::-webkit-scrollbar-corner{background:transparent}
 #sheet.aw .act.pin:has(+ .act:not(.pin)){margin-bottom:0}
 @media(max-width:900px){#sheet.aw .acts{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+/* v1.829: живая тренировка («Тренируюсь сейчас») */
+.lv-hd{display:flex;align-items:center;gap:12px;margin:0 0 14px}
+.lv-hd .wa{flex:none}.lv-hd .lv-tt{min-width:0;flex:1}
+.lv-hd h2{margin:0;display:flex;align-items:center;gap:8px;font-size:18px;letter-spacing:-.01em;white-space:nowrap}
+.lv-live{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 60%,transparent);animation:lvp 1.8s ease-out infinite;flex:none}
+@keyframes lvp{70%{box-shadow:0 0 0 9px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.lv-hd .cap{margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv-t{flex:none;font-variant-numeric:tabular-nums;font-weight:800;font-size:14px;padding:6px 11px;border-radius:999px;background:var(--surface2);border:1px solid var(--border);letter-spacing:.01em}
+.lv-pr{display:flex;gap:5px;margin:0 0 8px}.lv-pr i{flex:1;height:6px;border-radius:3px;background:var(--surface2);transition:background .35s,transform .35s}
+.lv-pr i.d{background:var(--accent)}.lv-pr i.c{background:color-mix(in srgb,var(--accent) 38%,var(--surface2));animation:lvc 1.6s ease-in-out infinite}
+@keyframes lvc{50%{opacity:.45}}
+.lv-cn{display:flex;align-items:baseline;justify-content:space-between;margin:0 2px 12px}.lv-cn b{font-size:15px}.lv-cn span{color:var(--muted);font-size:12.5px}
+.slr.lv.k{grid-template-columns:26px minmax(0,1fr) 12px minmax(0,1fr) 46px;gap:6px;padding:8px 8px 8px 8px;border-radius:20px;border:1px solid transparent;background:transparent;transition:opacity .3s,background .3s,border-color .3s}
+.slr.lv.k.nokg{grid-template-columns:26px minmax(0,1fr) 46px}
+.slr.lv .slg{border-radius:15px}
+.slr.lv.cur{background:color-mix(in srgb,var(--accent) 10%,var(--surface));border-color:color-mix(in srgb,var(--accent) 55%,transparent)}
+.slr.lv.todo{opacity:.62}.slr.lv.done{opacity:.72}
+.slr.lv.done .sln{background:var(--accent);color:var(--on-accent)}
+.slr.lv.done .slg{pointer-events:none}.slr.lv.done .sli,.slr.lv.done .slk{color:var(--muted)}
+.lvc{width:46px;height:46px;border-radius:16px;border:1.5px solid var(--border);background:var(--surface2);color:var(--muted);display:grid;place-items:center;cursor:pointer;transition:transform .15s,background .25s,border-color .25s,color .25s}
+.lvc:active{transform:scale(.88)}
+.slr.lv.cur .lvc{border-color:var(--accent);color:var(--accent)}
+.slr.lv.done .lvc{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.slr.lv.gone{display:none}
+.lv-fin{display:none;margin-top:10px}.lv.fin .lv-fin{display:block;animation:plIn .35s ease both}
+.lv-bar{position:sticky;bottom:-1px;margin:14px -4px -8px;padding:12px 4px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--sheet-bg,var(--bg)) 72%,transparent);display:grid;gap:8px;z-index:3}
+.lv-bar .lv-row{display:flex;gap:8px}
+.lv-go{flex:1;min-height:56px;border-radius:18px;font-size:16.5px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:9px}
+.lv-go svg{flex:none}
+.lv-add{flex:none;min-height:56px;border-radius:18px;padding:0 16px}
+.lv-stop{justify-self:center;color:var(--muted);font-size:13px;font-weight:600;padding:4px 10px;cursor:pointer}
+.lv-stop[hidden],.lv-add[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){.lv-live,.lv-pr i.c{animation:none}}
 /* v1.828: карточка «Сделано одним человеком» (эскиз → экран) */
 .abt{padding:0;overflow:hidden;background:radial-gradient(120% 120% at 0 0,color-mix(in srgb,var(--accent) 24%,transparent),transparent 62%),var(--surface)}
 .abt .abi{height:172px;position:relative}.abt .abi svg{width:100%;height:100%;display:block;overflow:visible}
@@ -3653,7 +3686,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.828';
+const APP = 'VOOB (by BGASHEV) Mini App v1.829';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7471,9 +7504,57 @@ function feelPicker(v){
     [1,2,3,4,5].map(i => `<button type="button" class="${i <= v ? 'on' : ''}" style="--c:${FEEL[i][1]}" data-act="feel" data-v="${i}" aria-label="${FEEL[i][0]}"></button>`).join('') +
     `</div><span class="feel-l" id="f-feel-l" style="color:${FEEL[v][1]}">${FEEL[v][0]}</span></div></div>`;
 }
+/* v1.829: живая тренировка — подходы отмечаются по ходу, отдых запускается после каждого */
+function slRowsLive(sl, st, sk, act){
+  const step = st[0] === 'secs' ? 5 : 1, kg = sk && KG_ACT[act], ks = act === 'barbell' ? 2.5 : 1, ck = IC('check', 20);
+  return sl.map((v, i) => `<div class="slr lv k${kg ? '' : ' nokg'} todo" data-i="${i}"><span class="sln">${i + 1}</span>
+    <div class="slg"><button type="button" class="slb" data-act="slstep" data-i="${i}" data-d="${-step}" aria-label="Меньше">${IC('minus', 15)}</button><input class="sli" type="number" inputmode="numeric" min="1" max="${st[1]}" value="${v}" data-i="${i}"><button type="button" class="slb" data-act="slstep" data-i="${i}" data-d="${step}" aria-label="Больше">${IC('plus', 15)}</button></div>
+    ${kg ? `<span class="slxx">×</span><div class="slg"><button type="button" class="slb" data-act="slstep" data-f="k" data-i="${i}" data-d="${-ks}" aria-label="Меньше вес">${IC('minus', 15)}</button><input class="slk" type="text" inputmode="decimal" value="${fmtKg(sk[i] || 0)}" data-i="${i}" aria-label="Вес, кг"><button type="button" class="slb" data-act="slstep" data-f="k" data-i="${i}" data-d="${ks}" aria-label="Больше вес">${IC('plus', 15)}</button></div>` : ''}
+    <button type="button" class="lvc" data-act="lvtick" data-i="${i}" aria-label="Подход выполнен">${ck}</button></div>`).join('');
+}
+function liveSync(){
+  const L = S.live, box = $('#f-sl'); if (!L || !box) return;
+  const rows = [...box.querySelectorAll('.slr.lv')], n = rows.length;
+  L.done = clamp(L.done, 0, n);
+  rows.forEach((r2, i) => { r2.classList.toggle('done', i < L.done); r2.classList.toggle('cur', i === L.done && !L.fin); r2.classList.toggle('todo', i > L.done || (i === L.done && L.fin)); r2.classList.toggle('gone', !!L.fin && i >= L.done); });
+  const total = L.fin ? L.done : n, all = L.done >= n;
+  const pr = $('#lv-pr'); if (pr) pr.innerHTML = Array.from({length:total}, (_, i) => `<i class="${i < L.done ? 'd' : i === L.done ? 'c' : ''}"></i>`).join('');
+  const cn = $('#lv-cn'); if (cn) cn.innerHTML = L.fin || all ? `<b>Тренировка готова</b><span>${L.done} из ${n} подходов</span>` : `<b>Подход ${L.done + 1} из ${n}</b><span id="sl-sum"></span>`;
+  const cp = $('#lv-cap'); if (cp && sheetCtx) { const a0 = sheetCtx.act, en = KG_ACT[a0] && sheetCtx.ex && typeof dbxName === 'function' ? dbxName(sheetCtx.ex, a0) : ''; cp.textContent = (ACTS.find(a => a[0] === a0) || ACTS[0])[1] + (en ? ' · ' + en : ''); }
+  const box2 = $('#lv'); if (box2) box2.classList.toggle('fin', !!(L.fin || all));
+  const go = $('#lv-go'); if (go) { const fin = L.fin || all; go.innerHTML = fin ? `${IC('check', 20)}Завершить тренировку` : `${IC('check', 20)}Подход выполнен`; go.dataset.act = fin ? 'lvfin' : 'lvdone'; }
+  const stp = $('#lv-stop'); if (stp) { stp.hidden = !(L.done >= 1 && (L.fin || !all)); stp.textContent = L.fin ? 'Вернуться к подходам' : 'Завершить досрочно'; }
+  const add = $('#lv-add'); if (add) add.hidden = !!L.fin;
+  const rb = $('#lv-rest'); if (rb) rb.hidden = !!(L.fin || all);
+  updPreview();
+}
+function liveTick(){
+  const el = $('#lv-t'); if (!el || !S.live) return;
+  const t = Math.max(0, Math.floor((Date.now() - S.live.t0) / 1000)), m = Math.floor(t / 60), s2 = t % 60, h2 = Math.floor(m / 60);
+  el.textContent = h2 ? `${h2}:${String(m % 60).padStart(2, '0')}:${String(s2).padStart(2, '0')}` : `${String(m).padStart(2, '0')}:${String(s2).padStart(2, '0')}`;
+  clearTimeout(S.live.tm); S.live.tm = setTimeout(liveTick, 1000);
+}
+function openLive(act, st, src, same, date, back, f){
+  const sl0 = same && slOf(src).length ? slOf(src) : (act === 'pullup' ? [8, 7, 6] : st[0] === 'secs' ? [45, 45, 45] : [12, 12, 12]);
+  let sk = null; if (KG_ACT[act]) { const k0 = same && slOf(src).length ? skOf(src) : []; sk = k0.some(x => x > 0) ? k0 : sl0.map(() => KG_ACT[act].def); }
+  if (S.live && S.live.tm) clearTimeout(S.live.tm);
+  S.live = {t0: Date.now(), done: 0, fin: false, tm: 0};
+  const exN = KG_ACT[act] && src.ex && typeof dbxName === 'function' && dbxName(src.ex, act) ? ' · ' + dbxName(src.ex, act) : '';
+  openSheet(`${back ? '<div class="wstep"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></div>' : ''}<div class="lv" id="lv">
+    <div class="lv-hd">${back ? `<button type="button" class="ib" data-act="sback" aria-label="Назад">${IC('back', 20)}</button>` : ''}<span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div class="lv-tt"><h2><i class="lv-live"></i>Тренировка идёт</h2><div class="cap" id="lv-cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}${exN}</div></div><span class="lv-t" id="lv-t">00:00</span></div>
+    <input type="hidden" id="f-date" value="${date}">
+    <div class="lv-pr" id="lv-pr"></div><div class="lv-cn" id="lv-cn"></div>
+    <div class="sl" id="f-sl">${slRowsLive(sl0, st, sk, act)}</div>
+    <div class="preview" id="f-prev" style="margin-top:8px"></div>
+    <div class="lv-fin">${feelPicker(f)}<label class="f"><span>Заметка</span><input class="inp" id="f-note" maxlength="140" placeholder="Необязательно" value=""></label></div>
+    <div class="lv-bar"><div class="lv-row"><button type="button" class="btn ghost lv-add" id="lv-add" data-act="sladd" aria-label="Ещё подход">${IC('plus', 18)}</button><button type="button" class="btn ghost lv-add" id="lv-rest" data-act="rest" aria-label="Отдых">${REST.WATCH}</button><button type="button" class="btn primary lv-go" id="lv-go" data-act="lvdone"></button></div><a class="lv-stop" id="lv-stop" data-act="lvstop" hidden></a></div>
+  </div>`, {type:'workout', item:null, act, back, mode:'now'});
+  liveSync(); liveTick();
+}
 function openWorkout(w, preset, hint, act, back){
   const mode = (!w && !preset && S.addMode) || '', src = w || preset || {}, date = w ? w.date : isoOf(todayN() - (mode === 'past' ? 1 : 0)), f = clamp(parseInt(src.feeling) || 3, 1, 5);
   act = act || actOf(src); const st = STR[act], same = src.act === act;
+  if (mode === 'now' && st) { openLive(act, st, src, same, date, back, f); return; }
   if (mode && !hint) hint = mode === 'now' ? 'Идёт тренировка: отдых включится сам, в паузе можно сыграть' : 'Запись задним числом: поправь дату и подходы';
   openSheet(`${back ? '<div class="wstep"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></div>' : ''}<div class="row" style="gap:12px;margin-bottom:14px">${back ? `<button type="button" class="ib" data-act="sback" aria-label="Назад">${IC('back', 20)}</button>` : ''}<span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${w ? 'Редактирование' : 'Новая тренировка'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}${KG_ACT[act] && src.ex && typeof dbxName === 'function' && dbxName(src.ex, act) ? ' · ' + dbxName(src.ex, act) : ''}</div></div></div>${hint ? `<div class="hint">${hint}</div>` : ''}
     ${st ? `<div class="wkg"><div class="wk-d"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label></div>
@@ -7720,7 +7801,7 @@ function slRowsHTML(sl, st, sk, act){
 }
 function slRead(){ const st = STR[sheetCtx && sheetCtx.act]; if (!st) return []; return [...document.querySelectorAll('#f-sl .sli')].map(i => clamp(Math.round(+i.value || 0), 1, st[1])); }
 function skRead(){ return [...document.querySelectorAll('#f-sl .slk')].map(i => Math.round(Math.min(150, Math.max(0, parseFloat(String(i.value).replace(',', '.')) || 0)) * 100) / 100); }
-function slRedraw(sl, sk){ const act = sheetCtx.act, st = STR[act], box = $('#f-sl'); if (!box) return; box.innerHTML = slRowsHTML(sl, st, KG_ACT[act] ? (sk || skRead()) : null, act); updPreview(); }
+function slRedraw(sl, sk){ const act = sheetCtx.act, st = STR[act], box = $('#f-sl'); if (!box) return; if (S.live && sheetCtx.mode === 'now' && $('#lv')) { box.innerHTML = slRowsLive(sl, st, KG_ACT[act] ? (sk || skRead()) : null, act); liveSync(); return; } box.innerHTML = slRowsHTML(sl, st, KG_ACT[act] ? (sk || skRead()) : null, act); updPreview(); }
 function updPreview(){
   const el = $('#f-prev'); if (!el) return;
   const act = sheetCtx && sheetCtx.act, st = STR[act];
@@ -8026,7 +8107,11 @@ const ACT = {
   actsoon: () => { hap.warn(); toast('Скоро — уже готовим ✨'); },
   rest: () => REST.start(sheetCtx && sheetCtx.act),
   rtog: el => { REST.toggle(el.dataset.k); hap.tap(); render(); },
-  sladd: () => { const sl = slRead(), sk = skRead(); if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } if (REST.s.auto || (sheetCtx && sheetCtx.mode === 'now')) REST.start(sheetCtx && sheetCtx.act); sl.push(sl[sl.length - 1] || 10); if (sk.length) sk.push(sk[sk.length - 1]); hap.tap(); slRedraw(sl, sk);
+  lvtick: el => { const L = S.live; if (!L) return; const i = +el.dataset.i; hap.tap(); if (i < L.done) { L.done = i; } else { L.done = i + 1; if (!L.fin) REST.start(sheetCtx && sheetCtx.act); } liveSync(); },
+  lvdone: () => { const L = S.live; if (!L) return; hap.ok(); L.done++; liveSync(); REST.start(sheetCtx && sheetCtx.act); },
+  lvstop: () => { const L = S.live; if (!L) return; hap.tap(); L.fin = !L.fin; liveSync(); },
+  lvfin: () => { const L = S.live; if (!L) return; if (L.done < 1) { hap.warn(); toast('Отметь хотя бы один подход'); return; } document.querySelectorAll('#f-sl .slr.lv').forEach((r2, i) => { if (i >= L.done) r2.remove(); }); clearTimeout(L.tm); saveWorkout(); },
+  sladd: () => { const sl = slRead(), sk = skRead(); if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } if (REST.s.auto && !(sheetCtx && sheetCtx.mode === 'now')) REST.start(sheetCtx && sheetCtx.act); sl.push(sl[sl.length - 1] || 10); if (sk.length) sk.push(sk[sk.length - 1]); hap.tap(); slRedraw(sl, sk);
     const rows = document.querySelectorAll('#f-sl .slr:not(.slh)'); if (rows.length) rows[rows.length - 1].classList.add('new'); },
   sldel: el => { const sl = slRead(), sk = skRead(), i = +el.dataset.i; sl.splice(i, 1); sk.splice(i, 1); hap.tap(); slRedraw(sl, sk); },
   slcp: el => { const sl = slRead(), sk = skRead(), i = +el.dataset.i; if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } sl.splice(i + 1, 0, sl[i]); sk.splice(i + 1, 0, sk[i]); hap.tap(); slRedraw(sl, sk);
