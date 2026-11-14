@@ -7978,12 +7978,12 @@ const REST = (function(){
       const py = g.y;
       if (g.jet > 0) { g.jet -= dt; g.vy = g.jet > .5 ? -980 : -980 * (g.jet / .5) - 260; g.y += g.vy * dt; const px = nm(g.x);
         for (let i = 0; i < 2; i++) g.pt.push({x: px + rnd(-6, 6) - g.face * 4, y: g.y + 20, vx: rnd(-40, 40), vy: rnd(140, 300), l: .35, m: .35, c: Math.random() < .5 ? '#ffb347' : '#ff6b3d'});
-        if (Math.random() < dt * 14) sfx('hop', 1); if (g.jet <= 0) g.sq = .6; }
+        if (Math.random() < dt * 14) sfx('hop', 1); if (g.jet <= 0) { g.jet = 0; g.sq = .6; } }
       else { g.vy += GR * dt; g.y += g.vy * dt; }
       if (g.vy < -560) { g.tr.push({x: nm(g.x), y: g.y}); if (g.tr.length > 7) g.tr.shift(); } else if (g.tr.length) g.tr.shift();
       g.pl.forEach(p => { if (p.t === 'm') p.x = nm(p.x + p.d * 70 * dt); if (p.br) p.br += dt; p.bt += dt;
         const dx = Math.abs(wd(g.x, p.x));
-        if (!g.jet && g.vy > 0 && !p.br && py + 16 <= p.y + 4 && g.y + 16 >= p.y && dx < PW / 2 + 10) {
+        if (g.jet <= 0 && g.vy > 0 && !p.br && py + 16 <= p.y + 4 && g.y + 16 >= p.y && dx < PW / 2 + 10) {
           if (p.t === 'b') { p.br = .01; sfx('thunk'); bstP(g, nm(g.x), p.y, 10, '#b68b5a', 100); return; }
           g.vy = p.t === 's' ? -V0 * 1.62 : -V0; g.sq = 1; p.bt = 0; sfx(p.t === 's' ? 'perfect' : 'hop', 2); const px = nm(g.x); g.rp = g.rp || []; g.rp.push({x: px, y: p.y, l: .4, c: p.t === 's' ? C.rd : C.tx});
           bstP(g, px, p.y, p.t === 's' ? 16 : 6, p.t === 's' ? C.rd : C.tx, 80); if (p.t === 's') popT(g, px, p.y - 34, 'ПРУЖИНА!', C.rd); }
@@ -7992,7 +7992,7 @@ const REST = (function(){
       g.rp = (g.rp || []).filter(q => (q.l -= dt) > 0);
       if (g.y < g.cam + H * .42) g.cam = g.y - H * .42; g.pl = g.pl.filter(p => p.y < g.cam + H + 60 && !(p.br > .6)); while (g.pl.reduce((m, p) => p.t === 'b' ? m : Math.min(m, p.y), 1e9) > g.cam - 120) gen();
       g.hs = Math.max(g.hs || 0, Math.floor((g.base - g.y) / 10)); g.score = g.hs + g.coinN * 5;
-      if (!g.jet && g.y > g.cam + H + 30) { g.sh = 1; sfx('die'); onDie(g, K); } };
+      if (g.jet <= 0 && g.y > g.cam + H + 30) { g.sh = 1; sfx('die'); onDie(g, K); } };
     const spring = (c, x, y, bt) => { const e = bt < .5 ? Math.exp(-bt * 7) * Math.cos(bt * 24) : 0, h = bt < .06 ? 7 : 20 + 12 * (bt < .5 ? e * (1 - bt) : 0), top = y - h;
       c.fillStyle = '#3b3b48'; rr(c, x - 15, y - 4, 30, 5, 2.5); c.fill();
       c.lineCap = 'round'; for (let pass = 0; pass < 2; pass++) { c.strokeStyle = pass ? '#e8e8f4' : '#7c7c92'; c.lineWidth = pass ? 1.6 : 3.6; c.beginPath(); const n = 4; for (let i = 0; i <= n; i++) { const yy = y - 4 - (h - 6) * i / n; c.moveTo(x - 10, yy); c.bezierCurveTo(x - 10, yy - (h - 6) / n * .45, x + 10, yy - (h - 6) / n * .55, x + 10, yy - (h - 6) / n); } c.stroke(); }
