@@ -7692,51 +7692,62 @@ const REST = (function(){
   function rr(c, x, y, w, h, r){ r = Math.min(r, w / 2, h / 2); c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
   function onDie(g, key){ g.dead = true; g.deadAt = performance.now(); sfx('die'); if (g.score > (s.best[key] || 0)) { s.best[key] = g.score; save(); g.newBest = true; hap.ok(); sfx('record'); } else { g.newBest = false; hap.warn(); }
     const l = left(); quip = l < 25 ? 'Гонг через ' + Math.ceil(l) + ' с. Штанга ждёт.' : QUIPS[Math.floor(Math.random() * QUIPS.length)]; }
-  function mkFlap(){ const g = {}, K = 'flap';
-    g.init = () => { g.y = H * .42; g.vy = 0; g.pipes = []; g.score = 0; g.dead = false; g.started = false; g.rot = 0; g.t = 0; g.lastGy = H * .45; };
-    g.tap = () => { g.started = true; g.vy = -405; sfx('hop'); };
-    g.update = dt => { g.t += dt; if (g.dead) return;
+  const bstP = (g, x, y, n, col, sp) => { g.pt = g.pt || []; for (let k = 0; k < n; k++) { const a = Math.random() * 6.283, v = (sp || 90) * (.4 + Math.random()); g.pt.push({x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 20, l: .5 + Math.random() * .4, m: .9, c: col}); } };
+  const popT = (g, x, y, t, col) => { g.pop = g.pop || []; g.pop.push({x, y, t, c: col, l: .8}); };
+  const stepFx = (g, dt) => { g.sh = Math.max(0, (g.sh || 0) - dt * 3); g.pt = (g.pt || []).filter(q => { q.l -= dt; q.x += q.vx * dt; q.y += q.vy * dt; q.vy += 300 * dt; return q.l > 0; }); g.pop = (g.pop || []).filter(q => { q.l -= dt; q.y -= 36 * dt; return q.l > 0; }); };
+  const drawFx = (c, g) => { (g.pt || []).forEach(q => { c.globalAlpha = Math.max(0, q.l / q.m); c.fillStyle = q.c; c.beginPath(); c.arc(q.x, q.y, 2.4, 0, 7); c.fill(); }); c.globalAlpha = 1;
+    c.textAlign = 'center'; c.font = '800 13px ' + C.ff; (g.pop || []).forEach(q => { c.globalAlpha = Math.min(1, q.l * 2); c.fillStyle = q.c; c.fillText(q.t, q.x, q.y); }); c.globalAlpha = 1; };
+  const mkStars = () => Array.from({length: 26}, () => ({x: Math.random() * 600, y: Math.random(), r: .6 + Math.random() * 1.4, z: .15 + Math.random() * .4}));
+  const drawStars = (c, g, off) => { (g.stars || []).forEach(q => { const x = ((q.x - off * q.z) % (W + 20) + (W + 20)) % (W + 20); c.globalAlpha = .16 + .22 * q.z; c.fillStyle = C.tx; c.beginPath(); c.arc(x, q.y * H * .8, q.r, 0, 7); c.fill(); }); c.globalAlpha = 1; };
+  function mkFlap(){ const g = {}, K = 'flap', GOLD = '#ffc94a';
+    g.init = () => { g.y = H * .42; g.vy = 0; g.pipes = []; g.score = 0; g.dead = false; g.started = false; g.rot = 0; g.t = 0; g.lastGy = H * .45; g.pt = []; g.pop = []; g.sh = 0; g.dist = 0; g.stars = mkStars(); };
+    g.tap = () => { g.started = true; g.vy = -405; sfx('hop'); bstP(g, 88, g.y + 8, 6, C.tx, 55); };
+    g.update = dt => { g.t += dt; stepFx(g, dt); if (g.dead) return;
       if (!g.started) { g.y = H * .42 + Math.sin(g.t * 4) * 8; return; }
       g.vy += 1450 * dt; g.y += g.vy * dt; g.rot = Math.max(-.5, Math.min(.9, g.vy / 600));
-      const sp = 140 + Math.min(g.score * 4, 100);
+      const sp = 140 + Math.min(g.score * 4, 100); g.dist += sp * dt;
       g.pipes.forEach(p => { p.x -= sp * dt; p.cy = p.gy + p.amp * Math.sin(g.t * 2.4 + p.ph); });
       if (!g.pipes.length || g.pipes[g.pipes.length - 1].x < W - 175) { const gap = 148 - Math.min(g.score * 2, 34), amp = (g.score >= 3 && Math.random() < .65) ? (26 + Math.random() * 28) : 0;
-        const gy = Math.max(gap / 2 + 50 + amp, Math.min(H - gap / 2 - 50 - amp, g.lastGy + (Math.random() - .5) * 230)); g.lastGy = gy; g.pipes.push({x:W + 30, gy, cy:gy, amp, ph:Math.random() * 6.28, gap, pass:false}); }
+        const gy = Math.max(gap / 2 + 50 + amp, Math.min(H - gap / 2 - 50 - amp, g.lastGy + (Math.random() - .5) * 230)); g.lastGy = gy; g.pipes.push({x:W + 30, gy, cy:gy, amp, ph:Math.random() * 6.28, gap, pass:false, coin: g.score >= 1 && Math.random() < .5, got:false}); }
       g.pipes = g.pipes.filter(p => p.x > -80);
       const bx = 88;
-      g.pipes.forEach(p => { if (!p.pass && p.x + 54 < bx) { p.pass = true; g.score++; sfx('ding', g.score - 1); }
-        if (bx + 17 > p.x && bx - 17 < p.x + 54) { if (g.y - 10 < p.cy - p.gap / 2 || g.y + 10 > p.cy + p.gap / 2) onDie(g, K); } });
-      if (g.y > H - 14 || g.y < -10) onDie(g, K); };
-    g.draw = c => {
+      g.pipes.forEach(p => { if (p.coin && !p.got && Math.abs(bx - (p.x + 27)) < 24 && Math.abs(g.y - p.cy) < 22) { p.got = true; g.score += 2; sfx('ding', Math.min(g.score, 10)); bstP(g, p.x + 27, p.cy, 12, GOLD, 120); popT(g, p.x + 27, p.cy - 18, '+2', GOLD); }
+        if (!p.pass && p.x + 54 < bx) { p.pass = true; g.score++; sfx('ding', g.score - 1); if (Math.abs(g.y - p.cy) < p.gap * .13) { g.score++; popT(g, bx + 30, g.y - 20, 'в яблочко +1', C.gr); bstP(g, bx, g.y, 8, C.gr, 90); } }
+        if (bx + 17 > p.x && bx - 17 < p.x + 54) { if (g.y - 10 < p.cy - p.gap / 2 || g.y + 10 > p.cy + p.gap / 2) g.sh = 1; bstP(g, bx, g.y, 16, C.rd, 150); onDie(g, K); } });
+      if (g.y > H - 14 || g.y < -10) { g.sh = 1; bstP(g, bx, Math.min(H - 14, Math.max(0, g.y)), 16, C.rd, 150); onDie(g, K); } };
+    g.draw = c => { c.save(); if (g.sh > 0) c.translate((Math.random() - .5) * 8 * g.sh, (Math.random() - .5) * 8 * g.sh); drawStars(c, g, g.dist);
       g.pipes.forEach(p => { const top = p.cy - p.gap / 2, bot = p.cy + p.gap / 2;
+        if (p.coin && !p.got) { const pr = 1 + .12 * Math.sin(g.t * 6); c.fillStyle = GOLD; c.globalAlpha = .25; c.beginPath(); c.arc(p.x + 27, p.cy, 15 * pr, 0, 7); c.fill(); c.globalAlpha = 1; c.beginPath(); c.arc(p.x + 27, p.cy, 7.5, 0, 7); c.fill(); c.strokeStyle = '#fff'; c.globalAlpha = .6; c.lineWidth = 1.5; c.beginPath(); c.arc(p.x + 27, p.cy, 10.5 * pr, g.t * 2, g.t * 2 + 2); c.stroke(); c.globalAlpha = 1; }
         c.fillStyle = C.s2; c.strokeStyle = C.ac; c.lineWidth = 1.5;
         rr(c, p.x, -10, 54, top + 10 - 14, 6); c.fill(); c.stroke(); rr(c, p.x - 5, top - 16, 64, 16, 6); c.fillStyle = C.ac; c.fill();
         c.fillStyle = C.s2; rr(c, p.x, bot + 14, 54, H - bot, 6); c.fill(); c.stroke(); rr(c, p.x - 5, bot, 64, 16, 6); c.fillStyle = C.ac; c.fill();
         c.globalAlpha = .25; c.strokeStyle = C.ac; c.lineWidth = 1; for (let y = top - 34; y > 0; y -= 14) { c.beginPath(); c.moveTo(p.x + 6, y); c.lineTo(p.x + 48, y); c.stroke(); } for (let y = bot + 34; y < H; y += 14) { c.beginPath(); c.moveTo(p.x + 6, y); c.lineTo(p.x + 48, y); c.stroke(); } c.globalAlpha = 1; });
       c.save(); c.translate(88, g.y); c.rotate(g.rot); c.fillStyle = C.tx; rr(c, -17, -3, 34, 6, 3); c.fill(); c.fillStyle = C.ac; rr(c, -21, -11, 8, 22, 3); c.fill(); rr(c, 13, -11, 8, 22, 3); c.fill(); c.restore();
-      c.fillStyle = C.bd; c.fillRect(0, H - 3, W, 3);
-      if (!g.started) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — взлёт', W / 2, H * .62); } };
+      c.fillStyle = C.bd; c.fillRect(0, H - 3, W, 3); drawFx(c, g);
+      if (!g.started) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — взлёт', W / 2, H * .62); } c.restore(); };
     return g; }
   function mkStack(){ const g = {}, K = 'stack', BH = 26;
     const sy = k => H - 64 - (k - g.cam) * BH;
-    g.init = () => { const w = 150; g.st = [{x:(W - w) / 2, w}]; g.mv = {x:0, w, d:1}; g.score = 0; g.dead = false; g.cam = 0; g.fall = []; g.perf = 0; g.flash = 0; g.t = 0; };
+    g.init = () => { const w = 150; g.st = [{x:(W - w) / 2, w}]; g.mv = {x:0, w, d:1}; g.score = 0; g.dead = false; g.cam = 0; g.fall = []; g.perf = 0; g.flash = 0; g.t = 0; g.pt = []; g.pop = []; g.sh = 0; g.rip = []; g.ms = 0; g.stars = mkStars(); };
     g.tap = () => { const top = g.st[g.st.length - 1], m = g.mv, l = Math.max(m.x, top.x), r = Math.min(m.x + m.w, top.x + top.w), lv = g.st.length;
-      if (r - l <= 1) { g.fall.push({x:m.x, w:m.w, lv, off:0, vy:0}); onDie(g, K); return; }
-      if (Math.abs(m.x - top.x) < 5) { m.x = top.x; g.perf++; g.flash = .8; sfx('perfect', Math.min(5, g.perf - 1)); if (g.perf >= 3 && m.w < W - 60) { m.w += 8; m.x = Math.max(0, m.x - 4); } }
-      else { g.perf = 0; sfx('thunk'); sfx('slice'); if (m.x < top.x) g.fall.push({x:m.x, w:top.x - m.x, lv, off:0, vy:0}); else g.fall.push({x:top.x + top.w, w:m.x + m.w - (top.x + top.w), lv, off:0, vy:0}); m.x = l; m.w = r - l; }
-      g.st.push({x:m.x, w:m.w}); g.score++; const d = g.score % 2 ? -1 : 1; g.mv = {x:d > 0 ? 0 : W - m.w, w:m.w, d}; };
-    g.update = dt => { g.t += dt; g.flash = Math.max(0, g.flash - dt);
+      if (r - l <= 1) { g.fall.push({x:m.x, w:m.w, lv, off:0, vy:0}); g.sh = 1; bstP(g, m.x + m.w / 2, sy(lv) - BH / 2, 14, C.rd, 140); onDie(g, K); return; }
+      if (Math.abs(m.x - top.x) < 5) { m.x = top.x; g.perf++; g.flash = .8; sfx('perfect', Math.min(5, g.perf - 1)); g.rip.push({x: m.x, w: m.w, k: lv, l: .5}); bstP(g, m.x, sy(lv) - BH / 2, 6, C.gr, 90); bstP(g, m.x + m.w, sy(lv) - BH / 2, 6, C.gr, 90); if (g.perf >= 3 && m.w < W - 60) { m.w += 8; m.x = Math.max(0, m.x - 4); } }
+      else { g.perf = 0; sfx('thunk'); sfx('slice'); g.sh = .35; bstP(g, (l + r) / 2, sy(lv) - BH / 2, 5, C.mu, 60); if (m.x < top.x) g.fall.push({x:m.x, w:top.x - m.x, lv, off:0, vy:0}); else g.fall.push({x:top.x + top.w, w:m.x + m.w - (top.x + top.w), lv, off:0, vy:0}); m.x = l; m.w = r - l; }
+      g.st.push({x:m.x, w:m.w}); g.score++; if (g.score % 10 === 0) { g.ms = 1.4; sfx('record'); bstP(g, W / 2, 90, 22, C.ac, 170); } const d = g.score % 2 ? -1 : 1; g.mv = {x:d > 0 ? 0 : W - m.w, w:m.w, d}; };
+    g.update = dt => { g.t += dt; stepFx(g, dt); g.flash = Math.max(0, g.flash - dt); g.ms = Math.max(0, g.ms - dt); g.rip = g.rip.filter(q => (q.l -= dt) > 0);
       g.cam += (Math.max(0, g.st.length - 8) - g.cam) * Math.min(1, dt * 6);
       g.fall.forEach(f => { f.vy += 1400 * dt; f.off += f.vy * dt; }); g.fall = g.fall.filter(f => f.off < H);
       if (g.dead) return; const m = g.mv, sp = 92 + Math.min(g.score * 4, 120); m.x += m.d * sp * dt;
       if (m.x < 0) { m.x = 0; m.d = 1; } if (m.x + m.w > W) { m.x = W - m.w; m.d = -1; } };
     const col = k => 'hsl(' + (255 + (k * 7) % 70) + ',68%,' + (70 - (k % 2) * 6) + '%)';
-    g.draw = c => {
+    g.draw = c => { c.save(); if (g.sh > 0) c.translate((Math.random() - .5) * 7 * g.sh, (Math.random() - .5) * 7 * g.sh); drawStars(c, g, g.cam * BH * 3);
       g.st.forEach((b, k) => { const y = sy(k); if (y < -BH || y > H + BH) return; c.fillStyle = col(k); rr(c, b.x, y - BH + 2, b.w, BH - 3, 5); c.fill(); });
       g.fall.forEach(f => { c.globalAlpha = .8; c.fillStyle = col(f.lv); rr(c, f.x, sy(f.lv) - BH + 2 + f.off, f.w, BH - 3, 5); c.fill(); c.globalAlpha = 1; });
       if (!g.dead) { c.fillStyle = col(g.st.length); rr(c, g.mv.x, sy(g.st.length) - BH + 2, g.mv.w, BH - 3, 5); c.fill(); }
+      g.rip.forEach(q => { const t = 1 - q.l / .5; c.globalAlpha = (1 - t) * .8; c.strokeStyle = C.gr; c.lineWidth = 2; rr(c, q.x - t * 10, sy(q.k) - BH + 2 - t * 8, q.w + t * 20, BH - 3 + t * 16, 8); c.stroke(); }); c.globalAlpha = 1; drawFx(c, g);
+      if (g.ms > 0) { c.globalAlpha = Math.min(1, g.ms * 1.2); c.fillStyle = C.ac; c.font = '800 34px ' + C.ff; c.textAlign = 'center'; c.fillText(g.score + ' этажей!', W / 2, 120 - (1.4 - g.ms) * 10); c.globalAlpha = 1; }
       if (g.flash > 0) { c.globalAlpha = Math.min(1, g.flash * 1.6); c.fillStyle = C.gr; c.font = '800 16px ' + C.ff; c.textAlign = 'center'; c.fillText(g.perf >= 3 ? 'ИДЕАЛЬНО ×' + g.perf + ' · блок шире' : 'ИДЕАЛЬНО', W / 2, 70 - (1 - g.flash) * 14); c.globalAlpha = 1; }
-      if (g.score === 0 && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — поставить блок', W / 2, H * .3); } };
+      if (g.score === 0 && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — поставить блок', W / 2, H * .3); } c.restore(); };
     return g; }
   function mkWave(){ const g = {}, K = 'wave', Rr = 12, SH = 26, GOLD = '#ffc94a';
     const base = () => { const p = total ? 1 - left() / total : 0; return H * .8 - H * .42 * Math.max(0, Math.min(1, p)); };
