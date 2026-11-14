@@ -7738,30 +7738,60 @@ const REST = (function(){
       if (g.flash > 0) { c.globalAlpha = Math.min(1, g.flash * 1.6); c.fillStyle = C.gr; c.font = '800 16px ' + C.ff; c.textAlign = 'center'; c.fillText(g.perf >= 3 ? 'ИДЕАЛЬНО ×' + g.perf + ' · блок шире' : 'ИДЕАЛЬНО', W / 2, 70 - (1 - g.flash) * 14); c.globalAlpha = 1; }
       if (g.score === 0 && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — поставить блок', W / 2, H * .3); } };
     return g; }
-  function mkWave(){ const g = {}, K = 'wave', Rr = 12;
+  function mkWave(){ const g = {}, K = 'wave', Rr = 12, SH = 26, GOLD = '#ffc94a';
     const base = () => { const p = total ? 1 - left() / total : 0; return H * .8 - H * .42 * Math.max(0, Math.min(1, p)); };
     const wy = x => base() + 20 * Math.sin(x * .021) + 11 * Math.sin(x * .052 + 1.3);
-    g.init = () => { g.sx = 0; g.vy = 0; g.score = 0; g.dead = false; g.obs = []; g.nextX = 420; g.t = 0; g.on = true; g.coy = 0; g.y = wy(g.sx + 96) - Rr; };
-    g.tap = () => { if (g.on || g.coy > 0) { g.vy = -540; g.on = false; g.coy = 0; sfx('bloop'); } };
-    g.update = dt => { g.t += dt; if (g.dead) return;
-      const sp = 150 + Math.min(g.score * 3, 80); g.sx += sp * dt; const xw = g.sx + 96;
-      while (g.nextX < g.sx + W + 80) { if (Math.random() < .55) g.obs.push({t:'s', x:g.nextX}); else for (let i = 0; i < 3; i++) g.obs.push({t:'o', x:g.nextX + i * 34, off:58 + Math.random() * 10 + (i === 1 ? 16 : 0)}); g.nextX += 250 + Math.random() * 130; }
+    g.init = () => { g.sx = 0; g.vy = 0; g.score = 0; g.dead = false; g.obs = []; g.nextX = 420; g.t = 0; g.on = true; g.coy = 0; g.buf = 0; g.combo = 0; g.cT = 0; g.pt = []; g.tr = []; g.pop = []; g.sh = 0; g.y = wy(g.sx + 96) - Rr;
+      g.stars = Array.from({length: 26}, () => ({x: Math.random() * 600, y: Math.random(), r: .6 + Math.random() * 1.4, z: .15 + Math.random() * .4})); };
+    const burst = (wx, y, n, col, sp) => { for (let k = 0; k < n; k++) { const a = Math.random() * 6.283, v = (sp || 90) * (.4 + Math.random()); g.pt.push({x: wx, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 30, l: .5 + Math.random() * .4, m: .9, c: col}); } };
+    const jump = () => { g.vy = -540; g.on = false; g.coy = 0; g.buf = 0; sfx('bloop'); burst(g.sx + 96, g.y + Rr, 6, C.tx, 60); };
+    g.tap = () => { if (g.on || g.coy > 0) jump(); else g.buf = .14; };
+    const spawn = () => { const r = Math.random(), x = g.nextX, hard = Math.min(1, g.score / 25);
+      if (r < .28) { const n = Math.random() < .25 + hard * .35 ? 2 : 1; for (let i = 0; i < n; i++) g.obs.push({t:'s', x: x + i * 24}); }
+      else if (r < .5) { for (let i = 0; i < 3; i++) g.obs.push({t:'o', x: x + i * 34, off: 58 + (i === 1 ? 16 : 0) + Math.random() * 6}); }
+      else if (r < .78) { g.obs.push({t:'s', x: x + 34}); g.obs.push({t:'o', x: x, off: 52}); g.obs.push({t:'o', x: x + 34, off: 86}); g.obs.push({t:'o', x: x + 68, off: 52}); }
+      else if (r < .9) { g.obs.push({t:'g', x: x + 20, off: 92}); g.obs.push({t:'o', x: x - 14, off: 66}); g.obs.push({t:'o', x: x + 54, off: 66}); }
+      else { g.obs.push({t:'s', x: x}); g.obs.push({t:'s', x: x + 60}); g.obs.push({t:'o', x: x + 30, off: 92}); }
+      g.nextX += 240 + Math.random() * 120 - hard * 40; };
+    g.update = dt => { g.t += dt; g.sh = Math.max(0, g.sh - dt * 3);
+      g.pt = g.pt.filter(q => { q.l -= dt; q.x += q.vx * dt; q.y += q.vy * dt; q.vy += 260 * dt; return q.l > 0; });
+      g.pop = g.pop.filter(q => { q.l -= dt; q.y -= 40 * dt; return q.l > 0; });
+      if (g.dead) return;
+      g.cT -= dt; if (g.cT <= 0) g.combo = 0;
+      const sp = 150 + Math.min(g.score * 3, 90); g.sx += sp * dt; const xw = g.sx + 96;
+      while (g.nextX < g.sx + W + 120) spawn();
       g.obs = g.obs.filter(o => o.x > g.sx - 40);
+      g.buf -= dt;
       g.vy += 1500 * dt; g.y += g.vy * dt; const gr = wy(xw) - Rr;
-      if (g.y >= gr) { if (!g.on && g.vy > 260) sfx('land'); g.y = gr; g.vy = 0; g.on = true; g.coy = .1; } else { g.on = false; g.coy -= dt; }
+      if (g.y >= gr) { const hard = !g.on && g.vy > 260; g.y = gr; g.vy = 0; g.on = true; g.coy = .1; if (hard) { sfx('land'); burst(xw, g.y + Rr, 5, C.ac, 50); } if (g.buf > 0) jump(); } else { g.on = false; g.coy -= dt; }
+      g.tr.push({x: xw, y: g.y}); if (g.tr.length > 14) g.tr.shift();
       let dead = false;
-      g.obs = g.obs.filter(o => { if (o.t === 's') { if (Math.abs(o.x - xw) < Rr + 6 && g.y + Rr > wy(o.x) - 22) dead = true; return true; }
-        const oy = wy(o.x) - o.off, dx = o.x - xw, dy = oy - g.y; if (dx * dx + dy * dy < (Rr + 9) * (Rr + 9)) { g.score++; sfx('spark', g.score - 1); return false; } return true; });
-      if (dead) onDie(g, K); };
+      g.obs = g.obs.filter(o => {
+        if (o.t === 's') { const dx = Math.abs(o.x - xw), hb = wy(o.x) - (g.y + Rr), w = Rr + 5; if (dx < w && hb < SH * .8 * (1 - dx / w) + 1) dead = true; return true; }
+        const oy = wy(o.x) - o.off, dx = o.x - xw, dy = oy - g.y, rr = o.t === 'g' ? Rr + 13 : Rr + 9;
+        if (dx * dx + dy * dy < rr * rr) { g.combo++; g.cT = 2.2; const gain = (o.t === 'g' ? 3 : 1) + (g.combo >= 6 ? 1 : 0); g.score += gain; sfx('spark', Math.min(g.score - 1, 12)); burst(o.x, oy, o.t === 'g' ? 14 : 8, o.t === 'g' ? GOLD : C.gr, 110); g.pop.push({x: o.x, y: oy - 14, l: .7, t: '+' + gain + (g.combo >= 3 ? ' ×' + g.combo : ''), c: o.t === 'g' ? GOLD : C.gr}); return false; }
+        return true; });
+      if (dead) { g.sh = 1; burst(xw, g.y, 18, C.rd, 160); onDie(g, K); } };
     g.draw = c => {
+      c.save(); if (g.sh > 0) c.translate((Math.random() - .5) * 8 * g.sh, (Math.random() - .5) * 8 * g.sh);
+      g.stars.forEach(q => { const x = ((q.x - g.sx * q.z) % (W + 20) + (W + 20)) % (W + 20); c.globalAlpha = .18 + .25 * q.z; c.fillStyle = C.tx; c.beginPath(); c.arc(x, q.y * H * .55, q.r, 0, 7); c.fill(); }); c.globalAlpha = 1;
       const surf = (off, a, lag) => { c.beginPath(); c.moveTo(0, H); for (let x = 0; x <= W; x += 6) c.lineTo(x, wy(g.sx + x + lag) + off); c.lineTo(W, H); c.closePath(); c.globalAlpha = a; c.fillStyle = C.ac; c.fill(); c.globalAlpha = 1; };
       surf(-12, .28, 70);
       g.obs.forEach(o => { const x = o.x - g.sx; if (x < -30 || x > W + 30) return; const y = wy(o.x);
-        if (o.t === 's') { c.fillStyle = C.rd; c.beginPath(); c.moveTo(x - 11, y + 4); c.lineTo(x, y - 28); c.lineTo(x + 11, y + 4); c.closePath(); c.fill(); }
-        else { const oy = y - o.off; c.globalAlpha = .25; c.fillStyle = C.gr; c.beginPath(); c.arc(x, oy, 13, 0, 7); c.fill(); c.globalAlpha = 1; c.beginPath(); c.arc(x, oy, 6.5, 0, 7); c.fill(); } });
+        if (o.t === 's') { const yl = wy(o.x - 11), yr = wy(o.x + 11), sl = (yr - yl) / 22, nx = sl / Math.hypot(1, sl) * 6, ny = -1 / Math.hypot(1, sl);
+          c.fillStyle = C.rd; c.beginPath(); c.moveTo(x - 11, yl + 5); c.lineTo(x + nx, y + ny * SH); c.lineTo(x + 11, yr + 5); c.closePath(); c.fill();
+          c.globalAlpha = .35; c.fillStyle = '#fff'; c.beginPath(); c.moveTo(x - 4, y - 4); c.lineTo(x + nx, y + ny * SH); c.lineTo(x, y - 2); c.closePath(); c.fill(); c.globalAlpha = 1; }
+        else { const oy = y - o.off + Math.sin(g.t * 3 + o.x * .05) * 3, gd = o.t === 'g', col = gd ? GOLD : C.gr, pr = 1 + .12 * Math.sin(g.t * 6 + o.x);
+          c.fillStyle = col; c.globalAlpha = .25; c.beginPath(); c.arc(x, oy, (gd ? 19 : 13) * pr, 0, 7); c.fill(); c.globalAlpha = 1; c.beginPath(); c.arc(x, oy, gd ? 9.5 : 6.5, 0, 7); c.fill();
+          if (gd) { c.strokeStyle = '#fff'; c.globalAlpha = .7; c.lineWidth = 2; c.beginPath(); c.arc(x, oy, 13 * pr, g.t * 2, g.t * 2 + 2); c.stroke(); c.globalAlpha = 1; } } });
       surf(0, .95, 0);
-      c.fillStyle = C.tx; c.beginPath(); c.arc(96, g.y, Rr, 0, 7); c.fill(); c.fillStyle = C.bg; c.beginPath(); c.arc(100, g.y - 2, 2.4, 0, 7); c.fill();
-      if (g.score === 0 && g.sx < 260) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — прыжок', W / 2, H * .3); } };
+      g.tr.forEach((q, i) => { c.globalAlpha = i / g.tr.length * .22; c.fillStyle = C.tx; c.beginPath(); c.arc(q.x - g.sx - (g.tr.length - i) * 0, q.y, Rr * (.4 + i / g.tr.length * .5), 0, 7); c.fill(); }); c.globalAlpha = 1;
+      g.pt.forEach(q => { c.globalAlpha = Math.max(0, q.l / q.m); c.fillStyle = q.c; c.beginPath(); c.arc(q.x - g.sx, q.y, 2.4, 0, 7); c.fill(); }); c.globalAlpha = 1;
+      if (!g.dead) { const sq = g.on ? 1 : Math.min(.1, Math.abs(g.vy) / 5000); c.save(); c.translate(96, g.y); c.scale(1 - sq, 1 + sq); c.fillStyle = C.tx; c.beginPath(); c.arc(0, 0, Rr, 0, 7); c.fill(); c.fillStyle = C.bg; c.beginPath(); c.arc(4, -2, 2.4, 0, 7); c.fill(); c.restore(); }
+      c.textAlign = 'center'; c.font = '800 13px ' + C.ff; g.pop.forEach(q => { c.globalAlpha = Math.min(1, q.l * 2); c.fillStyle = q.c; c.fillText(q.t, q.x - g.sx, q.y); }); c.globalAlpha = 1;
+      if (g.combo >= 3 && !g.dead) { c.fillStyle = C.ac; c.font = '800 15px ' + C.ff; c.textAlign = 'right'; c.fillText('серия ×' + g.combo, W - 16, 26); c.fillStyle = C.bd; c.fillRect(W - 76, 33, 60, 3); c.fillStyle = C.ac; c.fillRect(W - 76, 33, 60 * Math.max(0, g.cT / 2.2), 3); }
+      if (g.score === 0 && g.sx < 260) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — прыжок', W / 2, H * .3); }
+      c.restore(); };
     return g; }
   function wrapT(c, t, x, y, mw, lh){ let l = ''; t.split(' ').forEach(w => { const n = l ? l + ' ' + w : w; if (c.measureText(n).width > mw && l) { c.fillText(l, x, y); y += lh; l = w; } else l = n; }); c.fillText(l, x, y); }
   function openGame(i){
