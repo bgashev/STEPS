@@ -749,9 +749,9 @@ html:not(.web) #tabs{background:linear-gradient(180deg,color-mix(in srgb,var(--s
 html[data-mode=light]:not(.web) #tabs{box-shadow:0 12px 34px rgba(30,30,60,.16),inset 1px 1px 1px -.5px rgba(255,255,255,.8),inset -1px -1px 1px -.5px rgba(255,255,255,.4)}
 html:not(.web) #tabs .tbi{left:0;top:0;bottom:auto;right:auto;width:76px;height:54px;transition:none;transform:none;will-change:transform;
   background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.07));backdrop-filter:blur(2px) saturate(1.7) brightness(1.15);-webkit-backdrop-filter:blur(2px) saturate(1.7) brightness(1.15);
-  box-shadow:inset 1.5px 1.5px 1px -.5px rgba(255,255,255,.9),inset -1px -1px 1px -.5px rgba(255,255,255,.45),inset 0 0 0 1px rgba(255,255,255,.12),0 8px 22px rgba(0,0,0,.28)}
-html[data-mode=light]:not(.web) #tabs .tbi{background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.45));box-shadow:inset 1.5px 1.5px 1px -.5px #fff,inset -1px -1px 1px -.5px rgba(255,255,255,.9),0 6px 18px rgba(40,40,80,.18)}
-html:not(.web) #tabs .tbi::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(120% 90% at 30% 0%,rgba(255,255,255,.28),transparent 55%);pointer-events:none}
+  box-shadow:inset 1px 1px 1px -.5px rgba(255,255,255,.32),inset -1px -1px 1px -.5px rgba(255,255,255,.12),inset 0 0 0 1px rgba(255,255,255,.04),0 8px 22px rgba(0,0,0,.2)}
+html[data-mode=light]:not(.web) #tabs .tbi{background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.45));box-shadow:inset 1px 1px 1px -.5px rgba(255,255,255,.7),inset -1px -1px 1px -.5px rgba(255,255,255,.4),0 6px 18px rgba(40,40,80,.14)}
+html:not(.web) #tabs .tbi::after{content:"";position:absolute;inset:0;border-radius:inherit;background:radial-gradient(120% 90% at 30% 0%,rgba(255,255,255,.13),transparent 55%);pointer-events:none}
 .tbf{position:absolute;left:0;top:0;pointer-events:none;z-index:2;border:1.6px solid;mix-blend-mode:screen;opacity:0;will-change:transform}
 .tbf.c{border-color:rgba(34,211,238,.95)}.tbf.m{border-color:rgba(244,114,182,.95)}.tbf.v{border-color:rgba(139,92,246,.9)}
 html.web .tbf{display:none}
@@ -3579,7 +3579,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.823';
+const APP = 'VOOB (by BGASHEV) Mini App v1.824';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
