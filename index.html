@@ -876,6 +876,50 @@ html.web #sheet.wkw .wk-f .feel-l{grid-column:1/-1;margin:2px 0 0}
   html.web #sheet.wkw .wk-s .preview{margin-top:14px}
 }
 .sl-btns{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+/* v1.826: таймер отдыха и мини-игры */
+.slbb{display:flex;gap:8px;flex-wrap:wrap}
+.rt{position:fixed;inset:0;z-index:9500;pointer-events:none}
+.rt>*{pointer-events:auto}
+.rt-bd{position:absolute;inset:0;background:rgba(0,0,0,.55);animation:rtfi .25s both}
+.rt-sh{position:absolute;left:0;right:0;bottom:0;margin:0 auto;width:100%;max-width:480px;background:var(--surface);border-radius:30px 30px 0 0;border:1px solid var(--border);border-bottom:0;padding:14px 22px calc(26px + env(safe-area-inset-bottom));display:grid;justify-items:stretch;gap:12px;animation:rtup .45s cubic-bezier(.22,1,.36,1) both;color:var(--text)}
+.rt-gr{width:40px;height:4px;border-radius:2px;background:var(--off);justify-self:center}
+.rt-nx{text-align:center;color:var(--muted);font-size:13px}.rt-nx b{color:var(--text)}
+.rt-ring{position:relative;width:210px;height:210px;justify-self:center;display:grid;place-items:center}
+.rt-ring svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.rt-tr{stroke:var(--surface2)}.rt-pr{stroke:var(--accent)}
+.rt-t{font-size:52px;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.rt-row{display:flex;gap:10px;justify-content:center}
+.rt-b{border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:14px;height:42px;padding:0 16px;font:700 14px/1 inherit;cursor:pointer;transition:transform .12s}
+.rt-b:active{transform:scale(.96)}
+.rt-b.pr{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.rt-b.gh{background:none;color:var(--muted);justify-self:center;height:34px;font-size:13px}
+.rt-b.wide{width:100%;height:48px;font-size:15px}
+.rt-b.sm{height:36px;padding:0 12px;font-size:13px}
+.rt-gb{display:flex;align-items:center;justify-content:center;gap:9px;height:44px;border-radius:14px;border:1px solid color-mix(in srgb,var(--accent) 45%,transparent);background:var(--accent-soft);color:var(--accent);font:700 14px/1 inherit;cursor:pointer}
+.rt-gb svg{width:18px;height:18px}
+.rt-gb:active{transform:scale(.97)}
+.rt-ok{justify-self:center;width:84px;height:84px;border-radius:50%;background:color-mix(in srgb,var(--green) 18%,transparent);color:var(--green);display:grid;place-items:center;margin-top:6px;animation:rtpop .5s cubic-bezier(.22,1,.36,1) both}
+.rt-ok svg{stroke:currentColor;stroke-width:2.2;fill:none}
+.rt-done{text-align:center;font-size:22px;font-weight:800;margin-bottom:4px}
+.rt-h{text-align:center;font-size:20px;font-weight:800;margin-top:4px}
+.rt-p{text-align:center;color:var(--muted);font-size:13px}.rt-p b{color:var(--accent)}
+.rt-card{display:flex;align-items:center;gap:14px;text-align:left;border:1px solid var(--border);background:var(--surface2);border-radius:18px;padding:12px 14px;color:var(--text);cursor:pointer;font:inherit}
+.rt-card:active{border-color:var(--accent);transform:scale(.98)}
+.rt-card .ic{width:50px;height:50px;border-radius:15px;background:var(--bg);display:grid;place-items:center;flex:none;color:var(--text)}
+.rt-card .ic svg{width:34px;height:34px}
+.rt-card b{display:block;font-size:15px}.rt-card small{display:block;color:var(--muted);font-size:12px;line-height:1.35}
+.rt-card em{margin-left:auto;font-style:normal;font-size:11.5px;color:var(--accent);font-weight:700;white-space:nowrap}
+.rt-pill{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom));z-index:9500;display:flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);color:var(--text);box-shadow:0 10px 28px rgba(0,0,0,.4);font:700 16px/1 inherit;font-variant-numeric:tabular-nums;overflow:hidden;cursor:pointer;animation:rtup .35s cubic-bezier(.22,1,.36,1) both}
+.rt-pill i{position:absolute;left:0;right:0;bottom:0;height:3px;background:transparent}.rt-pill i b{display:block;height:100%;width:0;background:var(--accent)}
+.rt-gmw{position:fixed;inset:0;z-index:9600;background:var(--bg);animation:rtfi .25s both;user-select:none;-webkit-user-select:none}
+.rt-gm{position:relative;height:100%;max-width:480px;margin:0 auto}
+.rt-gh{position:absolute;left:0;right:0;top:0;height:86px;padding:max(18px,env(safe-area-inset-top)) 14px 0;display:flex;align-items:center;gap:10px;color:var(--text)}
+.rt-gtm{display:grid;line-height:1.05}.rt-gtm .time{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}.rt-gtm small{font-size:10.5px;color:var(--muted);letter-spacing:.08em;font-weight:600}
+.rt-gsc{flex:1;text-align:center;font-weight:700;font-size:13px;color:var(--muted)}.rt-gsc b{color:var(--text);font-size:20px;display:block;line-height:1.1}
+.rt-gline{position:absolute;left:14px;right:14px;top:max(86px,calc(68px + env(safe-area-inset-top)));height:3px;border-radius:2px;background:var(--surface2);overflow:hidden}.rt-gline b{display:block;height:100%;width:0;background:var(--accent)}
+.rt-gm canvas{position:absolute;left:0;right:0;top:calc(max(86px,68px + env(safe-area-inset-top)) + 8px);bottom:0;width:100%;height:calc(100% - max(86px,68px + env(safe-area-inset-top)) - 8px);touch-action:manipulation;cursor:pointer}
+@keyframes rtfi{from{opacity:0}}@keyframes rtup{from{transform:translateY(40px);opacity:0}}@keyframes rtpop{from{transform:scale(.6);opacity:0}}
+
 .act.soon{border-style:dashed;color:var(--muted);background:transparent}
 .act .afav{position:absolute;top:4px;right:4px;z-index:2;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--muted);opacity:.55;transition:opacity .2s,color .2s}
 .act .afav svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
@@ -3581,7 +3625,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.825';
+const APP = 'VOOB (by BGASHEV) Mini App v1.826';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5869,7 +5913,7 @@ function openPlan(p, act, back){
   openSheet(`<div class="row" style="gap:12px;margin-bottom:14px">${back ? `<button type="button" class="ib" data-act="sback" aria-label="Назад">${IC('back', 20)}</button>` : ''}<span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${p ? 'Редактирование плана' : 'Новый план'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}</div></div></div>
     ${st ? `<div class="g2">${dateF}<span></span></div>
       <div class="f"><span>Подходы · ${st[0] === 'secs' ? 'секунд в каждом' : 'повторов в каждом'}</span><div class="sl" id="f-sl">${slBlock(src, same, act, st)}</div>
-        <div class="sl-btns"><button type="button" class="btn ghost small" data-act="sladd">${IC('plus', 15)}Ещё подход</button><span class="cap" id="sl-sum"></span></div></div>`
+        <div class="sl-btns"><span class="slbb"><button type="button" class="btn ghost small" data-act="sladd">${IC('plus', 15)}Ещё подход</button><button type="button" class="btn ghost small" data-act="rest">${REST.WATCH}Отдых</button></span><span class="cap" id="sl-sum"></span></div></div>`
     : TIMEA[act] ? `<div class="g2">${dateF}${stepper('minutes', 'Время', (same && src.minutes) || (act === 'yoga' ? 20 : 40), 1, 240, 1, 0, 'мин')}</div>
       ${TIMEA[act][1] ? `<div class="g2">${stepper('speed', 'Средняя скорость', (same && +src.speed) || 18, 0, TIMEA[act][1], 0.5, 1, 'км/ч')}<span></span></div>` : ''}`
     : `<div class="g2">${dateF}${stepper('incline', 'Уклон', same && src.incline != null ? src.incline : 0, 0, 15, 1, 0, '%')}</div>
@@ -6630,6 +6674,7 @@ function viewMeSettings(){
     ${inTG ? `<div class="tgl${lookSync() ? ' on' : ''}" data-act="looksync" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)"><span class="sw2"></span><b>Одинаково на всех устройствах</b></div>
     <div class="cap" style="margin-top:8px">${lookSync() ? 'Тема, оттенок и акцентный цвет будут одинаковыми на всех твоих устройствах.' : 'Оформление хранится только на этом устройстве — на других тема и цвет могут быть другими.'}</div>` : ''}</div>`;
   h += langCardHTML();
+  h += REST.card();
   if (inTG) {
     if (PRIV.v == null && !PRIV.loading) { PRIV.loading = true; apiAuth('/friends/privacy', {}).then(j => { PRIV.v = !!j.private; PRIV.hf = !!j.hide_feed; if (S.tab === 'me') render(); }).catch(() => {}).finally(() => { PRIV.loading = false; }); }
     h += `<div class="card"><h3>${IC('lock')}Конфиденциальность</h3><div class="tgl${PRIV.v ? ' on' : ''}" data-act="privacy"><span class="sw2"></span><b>Закрытый профиль</b></div>
@@ -7401,7 +7446,7 @@ function openWorkout(w, preset, hint, act, back){
   openSheet(`${back ? '<div class="wstep"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></div>' : ''}<div class="row" style="gap:12px;margin-bottom:14px">${back ? `<button type="button" class="ib" data-act="sback" aria-label="Назад">${IC('back', 20)}</button>` : ''}<span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div><h2 style="margin:0">${w ? 'Редактирование' : 'Новая тренировка'}</h2><div class="cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}${KG_ACT[act] && src.ex && typeof dbxName === 'function' && dbxName(src.ex, act) ? ' · ' + dbxName(src.ex, act) : ''}</div></div></div>${hint ? `<div class="hint">${hint}</div>` : ''}
     ${st ? `<div class="wkg"><div class="wk-d"><label class="f"><span>Дата</span><input class="inp" type="date" id="f-date" value="${date}"></label></div>
       <div class="wk-s"><div class="f"><span>Подходы · ${KG_ACT[act] ? 'повторы × вес' : st[0] === 'secs' ? 'секунд в каждом' : 'повторов в каждом'}</span><div class="sl" id="f-sl">${slBlock(src, same, act, st)}</div>
-        <div class="sl-btns"><button type="button" class="btn ghost small" data-act="sladd">${IC('plus', 15)}Ещё подход</button><span class="cap" id="sl-sum"></span></div></div>
+        <div class="sl-btns"><span class="slbb"><button type="button" class="btn ghost small" data-act="sladd">${IC('plus', 15)}Ещё подход</button><button type="button" class="btn ghost small" data-act="rest">${REST.WATCH}Отдых</button></span><span class="cap" id="sl-sum"></span></div></div>
         <div class="preview" id="f-prev"></div></div>
       <div class="wk-f">${feelPicker(f)}</div>
       <div class="wk-n"><label class="f"><span>Заметка</span><input class="inp" id="f-note" maxlength="140" placeholder="Необязательно" value="${esc(w ? w.note || '' : '')}"></label></div></div>`
@@ -7416,6 +7461,211 @@ function openWorkout(w, preset, hint, act, back){
     <div class="sheet-btns">${w ? `<button class="btn ghost danger" data-act="wdel">${IC('trash')}</button>` : ''}${acLocked(w) ? `<div class="hint" style="margin:0;align-self:center">${IC('lock', 13)} Старше 2 дней — менять нельзя, только удалить</div>` : `<button class="btn primary" data-act="wsave">Сохранить</button>`}</div>`, {type:'workout', item:w, act, back});
   updPreview();
 }
+/* v1.826: таймер отдыха между подходами (звук, вибрация) и мини-игры «Сыграть до гонга» */
+const REST = (function(){
+  const KEY = 'voob.rest';
+  const DEF = {snd:1, vib:1, auto:0, game:1, per:{}, best:{}};
+  let s = Object.assign({}, DEF);
+  try { const o = JSON.parse(localStorage.getItem(KEY) || '{}'); s = Object.assign({}, DEF, o); s.per = o.per || {}; s.best = o.best || {}; } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} };
+  const DUR = {barbell:120, squat:90, pullup:90, pushup:60, dumbbell:60, burpee:45, abs:45, plank:45};
+  const R = 2 * Math.PI * 52;
+  let act = null, total = 0, endAt = 0, run = false, done = false, min = false, view = 'rest', iv = 0, el = null, pill = null, ac = null, doneT = 0;
+  const secFor = a => s.per[a] || DUR[a] || 90;
+  const left = () => Math.max(0, (endAt - Date.now()) / 1000);
+  const fmtT = x => { x = Math.max(0, Math.ceil(x)); return Math.floor(x / 60) + ':' + ('0' + (x % 60)).slice(-2); };
+  const nameOf = a => { const r = (typeof ACTS !== 'undefined' ? ACTS : []).find(x => x[0] === a); return r ? r[1] : ''; };
+  const PAD = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="11" rx="5.5"/><path d="M7 10.5v4M5 12.5h4"/><circle cx="16" cy="11.5" r=".8" fill="currentColor"/><circle cx="18.5" cy="13.5" r=".8" fill="currentColor"/></svg>';
+  const WATCH = '<svg class="ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 1.5M9.5 2.5h5"/></svg>';
+  const ICO = {
+    flap:'<svg viewBox="0 0 40 40"><g transform="rotate(-18 20 20)"><rect x="9" y="18" width="22" height="4" rx="2" fill="currentColor"/><rect x="5" y="11" width="6" height="18" rx="2.5" fill="var(--accent)"/><rect x="29" y="11" width="6" height="18" rx="2.5" fill="var(--accent)"/></g></svg>',
+    stack:'<svg viewBox="0 0 40 40"><rect x="8" y="27" width="24" height="7" rx="2" fill="var(--blue)"/><rect x="11" y="19" width="20" height="7" rx="2" fill="var(--accent)"/><rect x="13" y="11" width="16" height="7" rx="2" fill="var(--accent)" opacity=".6"/></svg>',
+    wave:'<svg viewBox="0 0 40 40"><path d="M2 24 Q8 16 14 24 T26 24 T38 24 V38 H2Z" fill="var(--accent)"/><circle cx="22" cy="13" r="5" fill="currentColor"/></svg>'
+  };
+
+  /* ---------- таймер ---------- */
+  function unlock(){ try { const C = window.AudioContext || window.webkitAudioContext; if (!C) return; ac = ac || new C(); if (ac.state === 'suspended') ac.resume(); } catch (e) {} }
+  function beep(){ if (!s.snd) return; try { unlock(); if (!ac) return; const t = ac.currentTime;
+    [660, 880, 1100].forEach((f, i) => { const o = ac.createOscillator(), g = ac.createGain(); o.type = 'sine'; o.frequency.value = f; o.connect(g); g.connect(ac.destination);
+      g.gain.setValueAtTime(0, t + i * .18); g.gain.linearRampToValueAtTime(.28, t + i * .18 + .02); g.gain.exponentialRampToValueAtTime(.001, t + i * .18 + .16); o.start(t + i * .18); o.stop(t + i * .18 + .17); }); } catch (e) {} }
+  function buzz(){ if (!s.vib) return; hap.seq([['n', 'success', 0], ['i', 'heavy', 180], ['i', 'heavy', 180], ['i', 'medium', 200]]); try { navigator.vibrate && navigator.vibrate([200, 100, 200, 100, 400]); } catch (e) {} }
+  function start(a){
+    if (run) { min = false; view = 'rest'; render(); return; }
+    act = a || (sheetCtx && sheetCtx.act) || null; total = secFor(act); endAt = Date.now() + total * 1000;
+    run = true; done = false; min = false; view = 'rest'; clearTimeout(doneT); unlock(); hap.tap();
+    clearInterval(iv); iv = setInterval(tick, 200); render();
+  }
+  function tick(){ if (!run) return; const l = left(); paint(l); if (l <= 0) finish(); }
+  function adj(d){ if (!run) return; const l = left(); if (l + d < 5) d = Math.ceil(5 - l); total = Math.max(15, total + d); endAt += d * 1000; if (act) { s.per[act] = total; save(); } hap.tap(); paint(left()); }
+  function finish(){
+    run = false; done = true; clearInterval(iv); stopGame(); min = false; view = 'rest'; beep(); buzz(); render();
+    clearTimeout(doneT); doneT = setTimeout(close, 9000);
+  }
+  function close(){ run = false; done = false; clearInterval(iv); clearTimeout(doneT); stopGame(); if (el) { el.remove(); el = null; } if (pill) { pill.remove(); pill = null; } }
+  function paint(l){
+    const p = total ? Math.min(1, Math.max(0, 1 - l / total)) : 0, t = fmtT(l);
+    document.querySelectorAll('#rt [data-rt="t"],.rt-pill [data-rt="t"],#rtgm [data-rt="t"]').forEach(e => { e.textContent = t; });
+    document.querySelectorAll('#rt .rt-pr').forEach(e => e.setAttribute('stroke-dashoffset', (R * p).toFixed(1)));
+    document.querySelectorAll('[data-rt="ln"]').forEach(e => { e.style.width = (p * 100) + '%'; });
+  }
+  function render(){
+    if (!run && !done) return;
+    if (min && run) {
+      if (el) { el.remove(); el = null; }
+      if (!pill) { pill = document.createElement('button'); pill.type = 'button'; pill.className = 'rt-pill'; pill.dataset.r = 'open'; pill.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 1.5M9.5 2.5h5"/></svg><span class="time" data-rt="t"></span><i><b data-rt="ln"></b></i>`; document.body.appendChild(pill); pill.addEventListener('click', () => { min = false; render(); }); }
+      paint(left()); return;
+    }
+    if (pill) { pill.remove(); pill = null; }
+    if (!el) { el = document.createElement('div'); el.id = 'rt'; el.className = 'rt'; document.body.appendChild(el); el.addEventListener('click', onClick); }
+    let h = '<div class="rt-bd" data-r="' + (done ? 'skip' : 'min') + '"></div><div class="rt-sh"><div class="rt-gr"></div>';
+    if (done) {
+      h += `<div class="rt-ok">${IC('check', 44)}</div><div class="rt-done">Пора на подход</div><button type="button" class="rt-b pr wide" data-r="skip">Погнали</button>`;
+    } else if (view === 'pick') {
+      h += `<div class="rt-h">Сыграть до гонга</div><div class="rt-p">Игра закончится вместе с отдыхом. Осталось <b data-rt="t"></b></div>`
+        + GAMES.map((g, i) => `<button type="button" class="rt-card" data-gi="${i}"><span class="ic">${ICO[g.k]}</span><span><b>${g.n}</b><small>${g.d}</small></span><em>рекорд ${s.best[g.k] || 0}</em></button>`).join('')
+        + `<button type="button" class="rt-b gh" data-r="back">Нет, просто отдыхаю</button>`;
+    } else {
+      h += `<div class="rt-nx">Отдых${act ? ' · <b>' + esc(nameOf(act)) + '</b>' : ''}</div>
+        <div class="rt-ring"><svg viewBox="0 0 120 120"><circle class="rt-tr" cx="60" cy="60" r="52" fill="none" stroke-width="7"/><circle class="rt-pr" cx="60" cy="60" r="52" fill="none" stroke-width="7" stroke-linecap="round" stroke-dasharray="${R}" stroke-dashoffset="0"/></svg><span class="rt-t" data-rt="t"></span></div>
+        <div class="rt-row"><button type="button" class="rt-b" data-r="m">−15 с</button><button type="button" class="rt-b pr" data-r="skip">Пропустить</button><button type="button" class="rt-b" data-r="p">+15 с</button></div>
+        ${s.game ? `<button type="button" class="rt-gb" data-r="game">${PAD}Сыграть до гонга</button>` : ''}`;
+    }
+    el.innerHTML = h + '</div>';
+    paint(left());
+  }
+  function onClick(e){
+    const gi = e.target.closest('[data-gi]'); if (gi) { openGame(+gi.dataset.gi); return; }
+    const b = e.target.closest('[data-r]'); if (!b) return; const r = b.dataset.r;
+    if (r === 'm') adj(-15); else if (r === 'p') adj(15);
+    else if (r === 'skip') { hap.tap(); close(); }
+    else if (r === 'min') { min = true; render(); }
+    else if (r === 'game') { view = 'pick'; render(); }
+    else if (r === 'back') { view = 'rest'; render(); }
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && run) tick(); });
+
+  /* ---------- мини-игры ---------- */
+  const GAMES = [
+    {k:'flap', n:'Прыг-гантель', d:'Тап — взлёт. Пролетай между блинами', f:mkFlap},
+    {k:'stack', n:'Башня', d:'Тап — поставить блок. Мимо — башня уже', f:mkStack},
+    {k:'wave', n:'Волна', d:'Тап — прыжок. Лови искры, обходи буи', f:mkWave}
+  ];
+  const QUIPS = ['Рекорд — это круто, но подход сам себя не сделает.', 'Мышцы остывают, пока ты тут красуешься.', 'Ещё раз? Время есть. Пока есть.', 'Штанга скучает без тебя.', 'Хорошо играешь. Так же и подход закрой.'];
+  let G = null, GI = -1, raf = 0, lastT = 0, cv, cx, W, H, DPR = 1, quip = '', C = {}, gm = null, keyH = null;
+  function rr(c, x, y, w, h, r){ r = Math.min(r, w / 2, h / 2); c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
+  function onDie(g, key){ g.dead = true; g.deadAt = performance.now(); if (g.score > (s.best[key] || 0)) { s.best[key] = g.score; save(); g.newBest = true; hap.ok(); } else { g.newBest = false; hap.warn(); }
+    const l = left(); quip = l < 25 ? 'Гонг через ' + Math.ceil(l) + ' с. Штанга ждёт.' : QUIPS[Math.floor(Math.random() * QUIPS.length)]; }
+  function mkFlap(){ const g = {}, K = 'flap';
+    g.init = () => { g.y = H * .42; g.vy = 0; g.pipes = []; g.score = 0; g.dead = false; g.started = false; g.rot = 0; g.t = 0; g.lastGy = H * .45; };
+    g.tap = () => { g.started = true; g.vy = -405; };
+    g.update = dt => { g.t += dt; if (g.dead) return;
+      if (!g.started) { g.y = H * .42 + Math.sin(g.t * 4) * 8; return; }
+      g.vy += 1450 * dt; g.y += g.vy * dt; g.rot = Math.max(-.5, Math.min(.9, g.vy / 600));
+      const sp = 140 + Math.min(g.score * 4, 100);
+      g.pipes.forEach(p => { p.x -= sp * dt; p.cy = p.gy + p.amp * Math.sin(g.t * 2.4 + p.ph); });
+      if (!g.pipes.length || g.pipes[g.pipes.length - 1].x < W - 175) { const gap = 148 - Math.min(g.score * 2, 34), amp = (g.score >= 3 && Math.random() < .65) ? (26 + Math.random() * 28) : 0;
+        const gy = Math.max(gap / 2 + 50 + amp, Math.min(H - gap / 2 - 50 - amp, g.lastGy + (Math.random() - .5) * 230)); g.lastGy = gy; g.pipes.push({x:W + 30, gy, cy:gy, amp, ph:Math.random() * 6.28, gap, pass:false}); }
+      g.pipes = g.pipes.filter(p => p.x > -80);
+      const bx = 88;
+      g.pipes.forEach(p => { if (!p.pass && p.x + 54 < bx) { p.pass = true; g.score++; }
+        if (bx + 17 > p.x && bx - 17 < p.x + 54) { if (g.y - 10 < p.cy - p.gap / 2 || g.y + 10 > p.cy + p.gap / 2) onDie(g, K); } });
+      if (g.y > H - 14 || g.y < -10) onDie(g, K); };
+    g.draw = c => {
+      g.pipes.forEach(p => { const top = p.cy - p.gap / 2, bot = p.cy + p.gap / 2;
+        c.fillStyle = C.s2; c.strokeStyle = C.ac; c.lineWidth = 1.5;
+        rr(c, p.x, -10, 54, top + 10 - 14, 6); c.fill(); c.stroke(); rr(c, p.x - 5, top - 16, 64, 16, 6); c.fillStyle = C.ac; c.fill();
+        c.fillStyle = C.s2; rr(c, p.x, bot + 14, 54, H - bot, 6); c.fill(); c.stroke(); rr(c, p.x - 5, bot, 64, 16, 6); c.fillStyle = C.ac; c.fill();
+        c.globalAlpha = .25; c.strokeStyle = C.ac; c.lineWidth = 1; for (let y = top - 34; y > 0; y -= 14) { c.beginPath(); c.moveTo(p.x + 6, y); c.lineTo(p.x + 48, y); c.stroke(); } for (let y = bot + 34; y < H; y += 14) { c.beginPath(); c.moveTo(p.x + 6, y); c.lineTo(p.x + 48, y); c.stroke(); } c.globalAlpha = 1; });
+      c.save(); c.translate(88, g.y); c.rotate(g.rot); c.fillStyle = C.tx; rr(c, -17, -3, 34, 6, 3); c.fill(); c.fillStyle = C.ac; rr(c, -21, -11, 8, 22, 3); c.fill(); rr(c, 13, -11, 8, 22, 3); c.fill(); c.restore();
+      c.fillStyle = C.bd; c.fillRect(0, H - 3, W, 3);
+      if (!g.started) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — взлёт', W / 2, H * .62); } };
+    return g; }
+  function mkStack(){ const g = {}, K = 'stack', BH = 26;
+    const sy = k => H - 64 - (k - g.cam) * BH;
+    g.init = () => { const w = 150; g.st = [{x:(W - w) / 2, w}]; g.mv = {x:0, w, d:1}; g.score = 0; g.dead = false; g.cam = 0; g.fall = []; g.perf = 0; g.flash = 0; g.t = 0; };
+    g.tap = () => { const top = g.st[g.st.length - 1], m = g.mv, l = Math.max(m.x, top.x), r = Math.min(m.x + m.w, top.x + top.w), lv = g.st.length;
+      if (r - l <= 1) { g.fall.push({x:m.x, w:m.w, lv, off:0, vy:0}); onDie(g, K); return; }
+      if (Math.abs(m.x - top.x) < 5) { m.x = top.x; g.perf++; g.flash = .8; if (g.perf >= 3 && m.w < W - 60) { m.w += 8; m.x = Math.max(0, m.x - 4); } }
+      else { g.perf = 0; if (m.x < top.x) g.fall.push({x:m.x, w:top.x - m.x, lv, off:0, vy:0}); else g.fall.push({x:top.x + top.w, w:m.x + m.w - (top.x + top.w), lv, off:0, vy:0}); m.x = l; m.w = r - l; }
+      g.st.push({x:m.x, w:m.w}); g.score++; const d = g.score % 2 ? -1 : 1; g.mv = {x:d > 0 ? 0 : W - m.w, w:m.w, d}; };
+    g.update = dt => { g.t += dt; g.flash = Math.max(0, g.flash - dt);
+      g.cam += (Math.max(0, g.st.length - 8) - g.cam) * Math.min(1, dt * 6);
+      g.fall.forEach(f => { f.vy += 1400 * dt; f.off += f.vy * dt; }); g.fall = g.fall.filter(f => f.off < H);
+      if (g.dead) return; const m = g.mv, sp = 92 + Math.min(g.score * 4, 120); m.x += m.d * sp * dt;
+      if (m.x < 0) { m.x = 0; m.d = 1; } if (m.x + m.w > W) { m.x = W - m.w; m.d = -1; } };
+    const col = k => 'hsl(' + (255 + (k * 7) % 70) + ',68%,' + (70 - (k % 2) * 6) + '%)';
+    g.draw = c => {
+      g.st.forEach((b, k) => { const y = sy(k); if (y < -BH || y > H + BH) return; c.fillStyle = col(k); rr(c, b.x, y - BH + 2, b.w, BH - 3, 5); c.fill(); });
+      g.fall.forEach(f => { c.globalAlpha = .8; c.fillStyle = col(f.lv); rr(c, f.x, sy(f.lv) - BH + 2 + f.off, f.w, BH - 3, 5); c.fill(); c.globalAlpha = 1; });
+      if (!g.dead) { c.fillStyle = col(g.st.length); rr(c, g.mv.x, sy(g.st.length) - BH + 2, g.mv.w, BH - 3, 5); c.fill(); }
+      if (g.flash > 0) { c.globalAlpha = Math.min(1, g.flash * 1.6); c.fillStyle = C.gr; c.font = '800 16px ' + C.ff; c.textAlign = 'center'; c.fillText(g.perf >= 3 ? 'ИДЕАЛЬНО ×' + g.perf + ' · блок шире' : 'ИДЕАЛЬНО', W / 2, 70 - (1 - g.flash) * 14); c.globalAlpha = 1; }
+      if (g.score === 0 && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — поставить блок', W / 2, H * .3); } };
+    return g; }
+  function mkWave(){ const g = {}, K = 'wave', Rr = 12;
+    const base = () => { const p = total ? 1 - left() / total : 0; return H * .8 - H * .42 * Math.max(0, Math.min(1, p)); };
+    const wy = x => base() + 20 * Math.sin(x * .021) + 11 * Math.sin(x * .052 + 1.3);
+    g.init = () => { g.sx = 0; g.vy = 0; g.score = 0; g.dead = false; g.obs = []; g.nextX = 420; g.t = 0; g.on = true; g.coy = 0; g.y = wy(g.sx + 96) - Rr; };
+    g.tap = () => { if (g.on || g.coy > 0) { g.vy = -540; g.on = false; g.coy = 0; } };
+    g.update = dt => { g.t += dt; if (g.dead) return;
+      const sp = 150 + Math.min(g.score * 3, 80); g.sx += sp * dt; const xw = g.sx + 96;
+      while (g.nextX < g.sx + W + 80) { if (Math.random() < .55) g.obs.push({t:'s', x:g.nextX}); else for (let i = 0; i < 3; i++) g.obs.push({t:'o', x:g.nextX + i * 34, off:58 + Math.random() * 10 + (i === 1 ? 16 : 0)}); g.nextX += 250 + Math.random() * 130; }
+      g.obs = g.obs.filter(o => o.x > g.sx - 40);
+      g.vy += 1500 * dt; g.y += g.vy * dt; const gr = wy(xw) - Rr;
+      if (g.y >= gr) { g.y = gr; g.vy = 0; g.on = true; g.coy = .1; } else { g.on = false; g.coy -= dt; }
+      let dead = false;
+      g.obs = g.obs.filter(o => { if (o.t === 's') { if (Math.abs(o.x - xw) < Rr + 6 && g.y + Rr > wy(o.x) - 22) dead = true; return true; }
+        const oy = wy(o.x) - o.off, dx = o.x - xw, dy = oy - g.y; if (dx * dx + dy * dy < (Rr + 9) * (Rr + 9)) { g.score++; return false; } return true; });
+      if (dead) onDie(g, K); };
+    g.draw = c => {
+      const surf = (off, a, lag) => { c.beginPath(); c.moveTo(0, H); for (let x = 0; x <= W; x += 6) c.lineTo(x, wy(g.sx + x + lag) + off); c.lineTo(W, H); c.closePath(); c.globalAlpha = a; c.fillStyle = C.ac; c.fill(); c.globalAlpha = 1; };
+      surf(-12, .28, 70);
+      g.obs.forEach(o => { const x = o.x - g.sx; if (x < -30 || x > W + 30) return; const y = wy(o.x);
+        if (o.t === 's') { c.fillStyle = C.rd; c.beginPath(); c.moveTo(x - 11, y + 4); c.lineTo(x, y - 28); c.lineTo(x + 11, y + 4); c.closePath(); c.fill(); }
+        else { const oy = y - o.off; c.globalAlpha = .25; c.fillStyle = C.gr; c.beginPath(); c.arc(x, oy, 13, 0, 7); c.fill(); c.globalAlpha = 1; c.beginPath(); c.arc(x, oy, 6.5, 0, 7); c.fill(); } });
+      surf(0, .95, 0);
+      c.fillStyle = C.tx; c.beginPath(); c.arc(96, g.y, Rr, 0, 7); c.fill(); c.fillStyle = C.bg; c.beginPath(); c.arc(100, g.y - 2, 2.4, 0, 7); c.fill();
+      if (g.score === 0 && g.sx < 260) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — прыжок', W / 2, H * .3); } };
+    return g; }
+  function wrapT(c, t, x, y, mw, lh){ let l = ''; t.split(' ').forEach(w => { const n = l ? l + ' ' + w : w; if (c.measureText(n).width > mw && l) { c.fillText(l, x, y); y += lh; l = w; } else l = n; }); c.fillText(l, x, y); }
+  function openGame(i){
+    if (!run) return; const st = getComputedStyle(document.documentElement), v = n => st.getPropertyValue(n).trim() || '#888';
+    C = {ac:v('--accent'), tx:v('--text'), mu:v('--muted'), bd:v('--border'), s2:v('--surface2'), bg:v('--bg'), gr:v('--green'), rd:v('--red'), ff:getComputedStyle(document.body).fontFamily || 'sans-serif'};
+    view = 'rest'; if (el) el.style.display = 'none'; GI = i;
+    gm = document.createElement('div'); gm.id = 'rtgm'; gm.className = 'rt-gmw';
+    gm.innerHTML = '<div class="rt-gm"><div class="rt-gh"><div class="rt-gtm"><span class="time" data-rt="t"></span><small>ДО ГОНГА</small></div><div class="rt-gsc" id="rtgsc"></div><button type="button" class="rt-b sm" data-r="gback">К отдыху</button></div><i class="rt-gline"><b data-rt="ln"></b></i><canvas id="rtgc"></canvas></div>';
+    document.body.appendChild(gm);
+    cv = gm.querySelector('canvas'); DPR = Math.min(2, window.devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * DPR; cv.height = H * DPR; cx = cv.getContext('2d'); cx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    G = GAMES[i].f(); G.init(); lastT = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
+    cv.addEventListener('pointerdown', e => { e.preventDefault(); gtap(); });
+    gm.querySelector('[data-r="gback"]').addEventListener('click', () => { stopGame(); if (el) { el.style.display = ''; render(); } });
+    keyH = e => { if (G && (e.code === 'Space' || e.code === 'ArrowUp')) { e.preventDefault(); gtap(); } }; document.addEventListener('keydown', keyH);
+    paint(left());
+  }
+  function stopGame(){ cancelAnimationFrame(raf); G = null; if (gm) { gm.remove(); gm = null; } if (keyH) { document.removeEventListener('keydown', keyH); keyH = null; } if (el) el.style.display = ''; }
+  function gtap(){ if (!G) return; if (G.dead) { if (performance.now() - G.deadAt > 500) G.init(); } else G.tap(); }
+  function loop(ts){
+    if (!G) return; const dt = Math.min(.033, (ts - lastT) / 1000); lastT = ts;
+    G.update(dt); cx.clearRect(0, 0, W, H); G.draw(cx);
+    if (G.dead) { cx.globalAlpha = .8; cx.fillStyle = C.bg; cx.fillRect(0, 0, W, H); cx.globalAlpha = 1; cx.textAlign = 'center';
+      cx.fillStyle = C.tx; cx.font = '800 26px ' + C.ff; cx.fillText(G.newBest ? 'Новый рекорд!' : 'Мимо!', W / 2, H * .36);
+      cx.fillStyle = C.ac; cx.font = '800 54px ' + C.ff; cx.fillText(G.score, W / 2, H * .36 + 62);
+      cx.fillStyle = C.mu; cx.font = '500 14px ' + C.ff; wrapT(cx, quip, W / 2, H * .36 + 96, W - 80, 20);
+      cx.fillStyle = C.tx; cx.font = '700 15px ' + C.ff; cx.fillText('Тап — ещё раз', W / 2, H * .36 + 170); }
+    const sc = document.getElementById('rtgsc'); if (sc) { const v = '<b>' + G.score + '</b>рекорд ' + Math.max(s.best[GAMES[GI].k] || 0, G.score); if (sc.dataset.v !== v) { sc.dataset.v = v; sc.innerHTML = v; } }
+    raf = requestAnimationFrame(loop);
+  }
+
+  /* ---------- настройки ---------- */
+  const card = () => `<div class="card"><h3>${WATCH.replace('class="ic" ', '')}Отдых между подходами</h3>
+    <div class="cap" style="margin:-6px 0 12px">Кнопка «Отдых» в форме тренировки запускает таймер. Время запоминается для каждого упражнения отдельно.</div>
+    <div class="tgl${s.snd ? ' on' : ''}" data-act="rtog" data-k="snd"><span class="sw2"></span><b>Звук в конце отдыха</b></div>
+    <div class="tgl${s.vib ? ' on' : ''}" data-act="rtog" data-k="vib" style="margin-top:12px"><span class="sw2"></span><b>Вибрация в конце отдыха</b></div>
+    <div class="tgl${s.auto ? ' on' : ''}" data-act="rtog" data-k="auto" style="margin-top:12px"><span class="sw2"></span><b>Запускать при «Ещё подход»</b></div>
+    <div class="tgl${s.game ? ' on' : ''}" data-act="rtog" data-k="game" style="margin-top:12px"><span class="sw2"></span><b>Мини-игры «Сыграть до гонга»</b></div>
+    <div class="cap" style="margin-top:8px">Игра идёт только пока длится отдых и закрывается вместе с таймером.</div></div>`;
+  return {start, card, s, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH};
+})();
+
 function slBlock(src, same, act, st){
   const sl0 = same && slOf(src).length ? slOf(src) : (act === 'pullup' ? [8, 7, 6] : st[0] === 'secs' ? [45, 45, 45] : [12, 12, 12]);
   let sk = null; if (KG_ACT[act]) { const k0 = same && slOf(src).length ? skOf(src) : []; sk = k0.some(x => x > 0) ? k0 : sl0.map(() => KG_ACT[act].def); }
@@ -7730,7 +7980,9 @@ const ACT = {
     const t = box.querySelector(`.act[data-k="${k}"] .afav`); if (t && t.animate && !on) t.animate([{transform:'scale(.3) rotate(-120deg)', opacity:.2}, {transform:'scale(1.55) rotate(18deg)', opacity:1, offset:.55}, {transform:'scale(1) rotate(0deg)', opacity:1}], {duration:640, delay:180, easing:'cubic-bezier(.2,.9,.3,1)', fill:'backwards'}); },
   actpick: el => { hap.tap(); S.actsXl = $('#sheet').classList.contains('xl'); if (KG_ACT[el.dataset.v]) { openDbx(el.dataset.v); return; } openWorkout(null, null, '', el.dataset.v, 'acts'); },
   actsoon: () => { hap.warn(); toast('Скоро — уже готовим ✨'); },
-  sladd: () => { const sl = slRead(), sk = skRead(); if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } sl.push(sl[sl.length - 1] || 10); if (sk.length) sk.push(sk[sk.length - 1]); hap.tap(); slRedraw(sl, sk);
+  rest: () => REST.start(sheetCtx && sheetCtx.act),
+  rtog: el => { REST.toggle(el.dataset.k); hap.tap(); render(); },
+  sladd: () => { const sl = slRead(), sk = skRead(); if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } if (REST.s.auto) REST.start(sheetCtx && sheetCtx.act); sl.push(sl[sl.length - 1] || 10); if (sk.length) sk.push(sk[sk.length - 1]); hap.tap(); slRedraw(sl, sk);
     const rows = document.querySelectorAll('#f-sl .slr:not(.slh)'); if (rows.length) rows[rows.length - 1].classList.add('new'); },
   sldel: el => { const sl = slRead(), sk = skRead(), i = +el.dataset.i; sl.splice(i, 1); sk.splice(i, 1); hap.tap(); slRedraw(sl, sk); },
   slcp: el => { const sl = slRead(), sk = skRead(), i = +el.dataset.i; if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } sl.splice(i + 1, 0, sl[i]); sk.splice(i + 1, 0, sk[i]); hap.tap(); slRedraw(sl, sk);
