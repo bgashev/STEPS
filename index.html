@@ -3893,6 +3893,10 @@ html.web #tabs .tbi{top:262px}
 .ax-hb{width:42px;height:42px;border-radius:15px;border:1px solid var(--border);background:var(--surface);color:var(--text);display:grid;place-items:center;flex:none;box-shadow:0 6px 16px -10px rgba(0,0,0,.4)}
 .ax-pg{padding-bottom:20px}.ax-bar{margin:0 0 4px}.ax-bk{display:inline-flex;align-items:center;gap:4px;border:0;background:none;color:var(--text);font:inherit;font-weight:700;font-size:15px;padding:6px 0;cursor:pointer}
 .ax-h1{font-size:30px;font-weight:850;letter-spacing:-.8px;margin:6px 0 2px}.ax-sub{color:var(--muted);font-size:13.5px;margin-bottom:14px}
+.ax-rb{display:flex;justify-content:space-between;align-items:center;margin:14px 2px 10px}.ax-rt{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px}.ax-gi{display:grid;grid-template-columns:1fr 1fr;gap:2.5px;width:15px;height:15px}.ax-gi i{border-radius:2.5px;background:currentColor;opacity:.75}.ax-gi i:first-child{opacity:1;background:var(--accent)}.ax-ra{border:0;background:none;color:var(--muted);font:inherit;font-weight:700;font-size:13px;padding:4px 2px;cursor:pointer}
+.ax-rr{display:flex;gap:10px;overflow-x:auto;margin:0 -18px 14px;padding:0 18px 2px;scrollbar-width:none;scroll-snap-type:x proximity;scroll-padding:0 18px}.ax-rr::-webkit-scrollbar{display:none}
+.ax-rc{flex:none;width:148px;scroll-snap-align:start;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:12px;display:flex;flex-direction:column;gap:2px}.ax-rtp{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;cursor:pointer}.ax-rtp .ax-ti{width:34px;height:34px;border-radius:12px}.ax-rk{width:34px;height:34px}.ax-rc b{display:block;font-size:16px;letter-spacing:-.3px}.ax-rc small{color:var(--muted);font-size:12px;display:block}
+.ax-rq{display:flex;gap:6px;margin-top:10px}.ax-rq button{flex:1;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:12px;padding:8px 0;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}.ax-rq button:active{transform:scale(.94)}
 .ax-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .ax-t{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:14px 14px 12px;min-height:128px;cursor:pointer;display:flex;flex-direction:column;gap:6px}
 .ax-th{display:flex;align-items:center;gap:8px;position:relative;z-index:2}.ax-th b{font-size:15px;font-weight:800}
@@ -6334,7 +6338,7 @@ function viewHome(web){
       <button type="button" class="gx2-ed" data-act="goaled" aria-label="Изменить цель">${IC('edit', 15)}</button></div>${gtxt}<div class="gx2-bar"><i style="width:${Math.min(100, pct)}%"></i></div>${gsBtn}</div>
       <div class="gm-s">${goalStrip(ws, g.days)}${note}</div></div>`),
     actionsH = `<div class="actions"><button class="btn ghost" data-act="plans">${IC('plan')}План${upPlans(ws).length ? `<span class="pn">${upPlans(ws).length}</span>` : ''}</button>${ws.length ? `<button class="btn ghost" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat')}Повторить</button>` : ''}</div>`;
-  h += web ? goalH + actionsH : actionsH + goalH + (inWeb ? '' : AX.tiles());
+  h += web ? goalH + actionsH : actionsH + (inWeb ? '' : AX.tiles()) + goalH;
   h += web ? feedShortHTML(6, 4) : feedTickerHTML();
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
   const due = dueWeekSummary(ws);
@@ -9600,11 +9604,13 @@ const AX = (function(){
   const back = (to, label) => `<div class="ax-bar"><button type="button" class="ax-bk" data-act="appback">${I('back', 18)}${label || 'Приложения'}</button></div>`;
   function ringSVG(p, over){ return `<div class="ax-ring"><svg viewBox="0 0 128 128"><defs><linearGradient id="axg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a3c"/><stop offset="1" stop-color="#f0446b"/></linearGradient><linearGradient id="axg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc247"/><stop offset="1" stop-color="#f08a2a"/></linearGradient></defs><circle class="tk" cx="64" cy="64" r="52"/><circle class="pr" cx="64" cy="64" r="52" stroke="url(#${over ? 'axg2' : 'axg1'})" style="stroke-dashoffset:${(326.7 * (1 - clamp(p, 0, 100) / 100)).toFixed(1)}"/></svg>`; }
   function homeTiles(){
-    const a = A(), w = wd(), wg = waterGoal(), d = day(), pct = Math.round(clamp(w / wg.goal, 0, 1) * 100);
+    const a = A(), w = wd(), wg = waterGoal(), d = day(), wp = clamp(w / wg.goal, 0, 1), cp = clamp(d.t.k / Math.max(1, d.budget), 0, 1), over = d.rem < 0, best = REST.list().reduce((m, x) => Math.max(m, x.best || 0), 0);
+    const ring = (p, c) => `<svg class="ax-rk" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="color-mix(in srgb,var(--text) 12%,transparent)" stroke-width="4"/><circle cx="18" cy="18" r="15" fill="none" stroke="${c}" stroke-width="4" stroke-linecap="round" stroke-dasharray="94.2" stroke-dashoffset="${(94.2 * (1 - p)).toFixed(1)}" transform="rotate(-90 18 18)"/></svg>`;
     let h = '';
-    if (a.pw !== 0) h += `<div class="ax-t ax-tw" data-act="appopen" data-s="water"><div class="wave" style="--w:${pct}%"><i class="bb" style="--l:16%;--d:0s"></i><i class="bb" style="--l:40%;--s:4px;--d:1.8s"></i><i class="bb" style="--l:66%;--s:7px;--d:3.1s"></i><i class="bb" style="--l:86%;--s:5px;--d:.9s"></i></div><div class="ax-th"><span class="ax-ti a-w">${AI('drop', 22)}</span><b>Вода</b></div><div class="ax-tn">${P0(w)}<i> / ${P0(wg.goal)} мл</i></div><button type="button" class="ax-tp" data-act="axwater" data-v="250">+250</button></div>`;
-    if (a.pc !== 0) { const over = d.rem < 0; h += `<div class="ax-t ax-tc" data-act="appopen" data-s="cal"><div class="ax-th"><span class="ax-ti a-c">${AI('cal', 22)}</span><b>Калории</b></div><div class="ax-tn">${P0(Math.abs(d.rem))}<i> ${over ? 'выше нормы' : 'осталось'}</i></div><div class="ax-tb"><i style="width:${clamp(d.t.k * 100 / d.budget, 0, 100)}%"${over ? ' class="o"' : ''}></i></div><button type="button" class="ax-tp" data-act="axadd" data-m="${mealOf()}">${I('plus', 14)}Добавить</button></div>`; }
-    return h ? `<div class="ax-tiles">${h}</div>` : '';
+    if (a.pw !== 0) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="water"><span class="ax-ti a-w">${AI('drop', 20)}</span>${ring(wp, '#3a9bf0')}</div><div data-act="appopen" data-s="water"><b>Вода</b><small>${P0(w)} / ${P0(wg.goal)} мл</small></div><div class="ax-rq"><button type="button" data-act="axwater" data-v="250">+250</button><button type="button" data-act="axwater" data-v="500">+500</button></div></div>`;
+    if (a.pc !== 0) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="cal"><span class="ax-ti a-c">${AI('cal', 20)}</span>${ring(cp, over ? '#e0a010' : '#f0752a')}</div><div data-act="appopen" data-s="cal"><b>Калории</b><small>${over ? P0(-d.rem) + ' выше нормы' : P0(d.rem) + ' осталось'}</small></div><div class="ax-rq"><button type="button" data-act="axadd" data-m="${mealOf()}">+ Еда</button><button type="button" data-act="axaddscan" data-m="${mealOf()}">Скан</button></div></div>`;
+    h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="games"><span class="ax-ti a-g">${AI('pad', 20)}</span></div><div data-act="appopen" data-s="games"><b>Игры</b><small>${best ? 'рекорд ' + P0(best) : 'размяться'}</small></div><div class="ax-rq"><button type="button" data-act="appopen" data-s="games">Играть</button></div></div>`;
+    return `<div class="ax-rb"><span class="ax-rt"><span class="ax-gi"><i></i><i></i><i></i><i></i></span>Приложения</span><button type="button" class="ax-ra" data-act="appsheet">все ›</button></div><div class="ax-rr">${h}</div>`;
   }
   function sheetHTML(){
     const a = A(), w = wd(), wg = waterGoal(), d = day(), g = d.g, wp = Math.round(clamp(w / wg.goal, 0, 1) * 100);
@@ -9867,7 +9873,7 @@ const AX = (function(){
   });
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.id === 'axs-n') acts.axnum(); });
   document.addEventListener('change', e => { if (e.target && e.target.id === 'ax-cu') { const c = CAL(); if (c.custom < 800) { c.custom = 800; e.target.value = 800; } save(); render(); } });
-  return {view, tiles:homeTiles, acts, leave, active:() => !!(S.app && ST.s), btn:() => `<button type="button" class="ax-hb" data-act="appsheet" aria-label="Приложения"><span class="gi"><i></i><i></i><i></i><i></i></span></button>`};
+  return {view, tiles:homeTiles, acts, leave, active:() => !!(S.app && ST.s), btn:() => ''};
 })();
 Object.assign(ACT, AX.acts);
 
