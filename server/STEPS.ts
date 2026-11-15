@@ -1342,6 +1342,42 @@ async function routeWelcomeClaim(body: any) {
   if (error) { await db.from("welcome_claims").delete().eq("tg_id", me).eq("day", d); return fail("Не удалось включить PRO", 500); }
   return json({ status: "ok", t: "pro", until, pro: await proStatus(me) });
 }
+/* №6: друг за награду. Пригласивший получает PRO, когда новичок (пришёл по дружбе в первые дни) сделал первую тренировку. Один новичок — одна награда; не больше REF_MAX друзей на человека. */
+const REF_DAYS = 2, REF_MAX = 5, REF_WINDOW = 30 * DAY;
+async function routeReferral(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const { data: mine } = await db.from("users").select("created_at").eq("tg_id", me).maybeSingle();
+  const { data: done } = await db.from("referral_rewards").select("newbie").eq("inviter", me);
+  const got = new Set((done ?? []).map((x: any) => Number(x.newbie)));
+  const rewarded: any[] = [];
+  let pending = 0;
+  if (mine?.created_at && got.size < REF_MAX) {
+    const { data: fr } = await db.from("friends").select("b, created_at").eq("a", me).limit(300);
+    const ids = (fr ?? []).map((f: any) => Number(f.b)).filter((b: number) => !got.has(b));
+    const { data: us } = ids.length ? await db.from("users").select("tg_id, first_name, created_at").in("tg_id", ids) : { data: [] };
+    const fat: Record<number, number> = {}; (fr ?? []).forEach((f: any) => { fat[Number(f.b)] = new Date(f.created_at).getTime(); });
+    for (const u of us ?? []) {
+      if (got.size + rewarded.length >= REF_MAX) break;
+      const uc = new Date(u.created_at).getTime(), mc = new Date(mine.created_at).getTime();
+      if (!(uc > mc) || Date.now() - uc > REF_WINDOW || fat[u.tg_id] - uc > 3 * DAY) continue;   // только настоящие новички, добавленные сразу
+      const { data: ws } = await db.from("records").select("id").eq("tg_id", u.tg_id).eq("kind", "workout").eq("deleted", false).limit(1);
+      if (!ws?.length) { pending++; continue; }
+      const { error: ie } = await db.from("referral_rewards").insert({ inviter: me, newbie: u.tg_id });
+      if (ie) continue;   // уже выдано (первичный ключ) или гонка
+      rewarded.push({ tg_id: u.tg_id, name: u.first_name || "Друг" });
+    }
+  }
+  let until: string | null = null;
+  if (rewarded.length) {
+    const { data: s } = await db.from("pro_subs").select("until, plan").eq("tg_id", me).maybeSingle();
+    const base = s?.until && new Date(s.until).getTime() > Date.now() ? new Date(s.until).getTime() : Date.now();
+    until = new Date(base + rewarded.length * REF_DAYS * DAY).toISOString();
+    const { error } = await db.from("pro_subs").upsert({ tg_id: me, until, plan: s?.plan ?? "welcome", updated_at: new Date().toISOString() }, { onConflict: "tg_id" });
+    if (error) { for (const r of rewarded) await db.from("referral_rewards").delete().eq("newbie", r.tg_id); return fail("Не удалось выдать награду", 500); }
+  }
+  return json({ status: "ok", days: REF_DAYS, max: REF_MAX, earned: got.size + rewarded.length, pending, rewarded, until });
+}
 async function routeNotifyAllow(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
@@ -1551,6 +1587,7 @@ Deno.serve(async (req) => {
       case "/welcome/status": return await routeWelcomeStatus(body);
       case "/welcome/claim": return await routeWelcomeClaim(body);
       case "/notify/allow": return await routeNotifyAllow(body);
+      case "/referral": return await routeReferral(body);
       case "/cron/remind": return await routeCronRemind(req);
       case "/sync": return await routeSync(body);
       case "/logout": return await routeLogout(body);

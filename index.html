@@ -62,6 +62,17 @@ h3 .ic{color:var(--accent)}
 .plr{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .plr:active{transform:scale(.985)}
 .plx{flex:none;width:38px;height:38px;border-radius:12px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer}
+.st-gq{display:flex;align-items:center;gap:12px;padding:12px 10px 12px 14px;position:relative}.st-gi{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;flex:none;color:var(--accent);background:var(--accent-soft)}
+.st-gt{flex:1;min-width:0}.st-gt b{display:block;font-size:14.5px}.st-gt small{display:block;color:var(--muted);font-size:11.5px;line-height:1.3;margin-top:2px}.st-gq .btn.sm{min-height:36px;padding:0 14px;flex:none}
+.st-gx{width:28px;height:28px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer;flex:none;border-radius:9px}
+.gq-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gq-o{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:12px;border-radius:18px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;transition:border-color .15s,transform .12s}
+.gq-o:active{transform:scale(.97)}.gq-o b{font-size:14px}.gq-o small{color:var(--muted);font-size:11.5px}.gq-i{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;margin-bottom:4px;background:var(--surface);color:var(--muted)}
+.gq-o.on{border-color:var(--accent);background:var(--accent-soft)}.gq-o.on .gq-i{background:var(--accent);color:var(--on-accent)}
+.gq-q{font-weight:700;font-size:13.5px;margin:18px 0 8px}.gq-d{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.gq-n{display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 4px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer}.gq-n b{font-size:20px}.gq-n small{font-size:10.5px;color:var(--muted)}
+.gq-n.on{border-color:var(--accent);background:var(--accent);color:var(--on-accent)}.gq-n.on small{color:var(--on-accent);opacity:.8}
+.inv-rw{display:flex;align-items:center;gap:8px;margin:10px 0 2px;padding:9px 12px;border-radius:14px;background:var(--accent-soft);font-size:12px;line-height:1.35}.inv-rw svg{flex:none;color:var(--accent)}
+@media(min-width:1000px){html.web #sheet.gqw{width:min(560px,calc(100% - 48px));max-width:none;padding:28px 30px 26px;-webkit-mask-image:none;mask-image:none}html.web #sheet.gqw .gq-g{gap:12px}html.web #sheet.gqw .plnb{min-width:260px;width:auto;margin:20px auto 0;display:flex}}
 .plhd{display:flex;align-items:center;gap:14px;margin-bottom:16px}.plhi{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;flex:none;color:var(--accent);background:var(--accent-soft)}
 .plht{flex:1;min-width:0}.plht h2{margin:0;font-size:22px;letter-spacing:-.01em}.plht .cap{margin-top:2px}
 .plcn{min-width:28px;height:28px;padding:0 9px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:13px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);flex:none}
@@ -3876,7 +3887,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.835';
+const APP = 'VOOB (by BGASHEV) Mini App v1.836';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5860,6 +5871,7 @@ function viewFriends(){
   if (S.inv == null) S.inv = !fr.length;
   if (!inWeb) h += `<div class="reveal${S.inv ? ' open' : ''}" id="inv"><div><div class="card inv2">
     <div class="inv-h"><span class="inv-ic">${IC('friends', 20)}</span><div><b>Пригласить друга</b><small>Ссылка или код — и вы сразу друзья</small></div></div>
+    <div class="inv-rw">${IC('gift', 15)}<span>Друг сделает первую тренировку — тебе +2 дня PRO${REF.info ? ` · получено ${REF.info.earned} из ${REF.info.max}` : ''}</span></div>
     <div class="inv-row">
     <button type="button" class="inv-share" data-act="frshare">${IC('export', 18)}<span>Отправить ссылку в Telegram</span>${IC('chev', 16)}</button>
     <button type="button" class="inv-code" data-act="frcode" aria-label="Скопировать код"><small>Мой код</small><b>${esc(d.code)}</b><i>${IC('link', 17)}</i></button></div>
@@ -6035,6 +6047,42 @@ async function copyStr(s){
 /* ============================================================ v1.832: «Старт» — удержание новичков ==== */
 const WK = {st:null, at:0, busy:false, ask:false};
 const WK_ICON = {gift:'gift', pro:'crown'};
+/* №5: цель новичка → недельная норма + готовые планы */
+const GQ_G = {
+  move: {t:'Двигаться больше', s:'мягкий старт, ходьба', ic:'steps', mix:[['run', 25, 4.5]]},
+  slim: {t:'Сбросить вес', s:'ходьба и велосипед', ic:'flame', mix:[['run', 40, 5], ['bike', 30, 15]]},
+  endu: {t:'Выносливость', s:'бег и ходьба, всё дольше', ic:'bolt', mix:[['run', 30, 6], ['run', 20, 4.5]]},
+  calm: {t:'Гибкость и покой', s:'растяжка и прогулки', ic:'yoga', mix:[['yoga', 20, 0], ['run', 25, 4.5]]}
+};
+let GQ = {g:'move', d:3};
+function gqSheet(){
+  const g = GQ.g, d = GQ.d;
+  openSheet(`<div class="plhd"><span class="plhi">${IC('target', 22)}</span><div class="plht"><h2>Твоя цель</h2><div class="cap">Выбери, что важно — я подберу нагрузку</div></div></div>
+    <div class="gq-g">${Object.entries(GQ_G).map(([k, o]) => `<button type="button" class="gq-o${k === g ? ' on' : ''}" data-act="gqpick" data-g="${k}"><span class="gq-i">${IC(o.ic, 20)}</span><b>${o.t}</b><small>${o.s}</small></button>`).join('')}</div>
+    <div class="gq-q">Сколько раз в неделю готов заниматься?</div>
+    <div class="gq-d">${[2, 3, 4, 5].map(n => `<button type="button" class="gq-n${n === d ? ' on' : ''}" data-act="gqd" data-d="${n}"><b>${n}</b><small>${n === 2 ? 'спокойно' : n === 3 ? 'оптимально' : n === 4 ? 'активно' : 'серьёзно'}</small></button>`).join('')}</div>
+    <button type="button" class="btn primary plnb" data-act="gqgo">${IC('check', 18)}Составить план на неделю</button>`, {type:'goalq'});
+}
+function gqBuild(){
+  const o = GQ_G[GQ.g] || GQ_G.move, n = GQ.d, t0 = todayN(), step = 7 / n, used = new Set();
+  const plans = [];
+  for (let i = 0; i < n; i++) {
+    let off = Math.min(6, Math.round(i * step) + 1); while (used.has(off) && off < 7) off++; used.add(off);
+    const [act, minutes, speed] = o.mix[i % o.mix.length];
+    plans.push({id:uid(), created:nowSec(), date:isoOf(t0 + off), act, minutes, speed, incline:0});
+  }
+  return plans;
+}
+/* №6: друг за награду — раз в сессию спрашиваем сервер, не пора ли выдать награду пригласившему */
+const REF = {at:0, busy:false, info:null};
+function loadReferral(force){
+  if (!inTG || REF.busy || (!force && REF.at && Date.now() - REF.at < 300000)) return;
+  REF.busy = true; REF.at = Date.now();
+  apiAuth('/referral', {}).then(j => {
+    if (!j || j.error) return; REF.info = j;
+    if (j.rewarded && j.rewarded.length) { const nm = j.rewarded.map(x => x.name).join(', '); hap.ok(); showProArrived(nm + ' сделал(а) первую тренировку — спасибо за приглашение!'); }
+  }).catch(() => {}).finally(() => { REF.busy = false; });
+}
 function loadWelcome(force){
   if (!inTG || WK.busy || (!force && WK.st && Date.now() - WK.at < 120000)) return;
   if (!force && WK.at && !WK.st && Date.now() - WK.at < 120000) return;
@@ -6063,6 +6111,11 @@ function startHTML(ws, doneToday){
       <p>Одно касание — и VOOB засчитает прогулку на 15 минут. Сразу получишь XP, уровень и достижение «Первый шаг».</p>
       <button type="button" class="btn primary" data-act="qwalk">${IC('check', 18)}Отметить прогулку · 15 мин</button>
       <button type="button" class="st-or" data-act="add">или записать подробно</button></div>`;
+  }
+  // №5 — цель и готовый план
+  if (!(db.settings.goal || {}).set && !(db.plans || []).length && ws.length < 5 && !lsGet('gq_skip')) {
+    h += `<div class="card st-gq"><span class="st-gi">${IC('target', 20)}</span><div class="st-gt"><b>Поставим цель?</b><small>Два вопроса — и я составлю план на неделю</small></div>
+      <button type="button" class="btn primary sm" data-act="goalq">Начать</button><button type="button" class="st-gx" data-act="gqskip" aria-label="Не сейчас">${IC('close', 16)}</button></div>`;
   }
   // №2 — неделя новичка
   const w = WK.st;
@@ -6111,7 +6164,7 @@ function viewHome(web){
   else if (rest.has(t + 1)) note = `<div class="note">${IC('rest', 15)}5 дней подряд — завтра и послезавтра отдых</div>`;
 
   const noGoal = !(db.settings.goal || {}).set;
-  loadWelcome();
+  loadWelcome(); loadReferral();
   let h = `<div class="head"><div><h1>${esc(greet())}</h1><div class="sub">${bits.join(' · ')}</div></div></div>
   ${planSuggestHTML(ws)}
   ${startHTML(ws, tMin > 0)}
@@ -7828,6 +7881,7 @@ function openSheet(html, ctx, keep){
   $('#sheet').classList.toggle('aw', !!(inWeb && ctx && ctx.type === 'acts'));   // WEB: широкое окно выбора активности
   $('#sheet').classList.toggle('wkw', !!(inWeb && ctx && ctx.type === 'workout' && STR[ctx.act]));   // до открытия: окно не меняет размер во время появления
   $('#sheet').classList.toggle('pf', !!ctx && BACK_T.has(ctx.type));
+  $('#sheet').classList.toggle('gqw', !!(inWeb && ctx && ctx.type === 'goalq'));
   $('#sheet').classList.toggle('plw', !!(inWeb && ctx && ctx.type === 'plans'));   // WEB: список планов — широкое окно
   $('#sheet').classList.toggle('pbw2', !!(inWeb && ctx && ctx.type === 'planb'));   // WEB: конструктор плана — широкое окно в две колонки
   $('#sheet').classList.toggle('half', !(inWeb && ctx && ctx.type === 'acts') && !!ctx && (ctx.type === 'acts' || ctx.type === 'planact' || ctx.type === 'frall'));
@@ -8875,6 +8929,15 @@ function actsHTML(){
 }
 const ACT = {
   tab: el => { if (S.fprof) { S.fprof = null; _rTab = null; if (!sheetCtx) { try { if (ver('6.1')) tg.BackButton.hide(); } catch (e) {} } } if (S.tab !== el.dataset.tab || _rTab === null) { S.tab = el.dataset.tab; S.meSet = false; S.pers = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') { FR_TAB_T = performance.now(); if (!FR.data || Date.now() - (FR.at || 0) > 20000) loadFriends(); } } },
+  goalq: () => { hap.tap(); gqSheet(); },
+  gqskip: () => { hap.tap(); lsSet('gq_skip', '1'); render(); },
+  gqpick: el => { hap.tap(); GQ.g = el.dataset.g; gqSheet(); },
+  gqd: el => { hap.tap(); GQ.d = +el.dataset.d; gqSheet(); },
+  gqgo: () => {
+    const ps = gqBuild(); ps.forEach(p => { db.plans.push(p); touch('plan', p); });
+    db.settings.goal = {count:GQ.d, days:7, set:true}; touchMeta('settings'); save(); closeSheet(); render(); hap.ok();
+    toast(`План готов · ${ps.length} занятий на неделю`);
+  },
   qwalk: () => {
     if (valid().length) return;
     const data = {date:isoOf(todayN()), act:'run', feeling:4, note:'', minutes:15, speed:4.5, incline:0};
