@@ -2142,6 +2142,10 @@ html.web .ib.shim:has(.ibl){width:auto;padding:0 18px 0 14px;gap:8px;display:inl
 #ntc.show{pointer-events:auto}
 #ntc.show .nt-bg{opacity:1}
 #ntc.show .nt-sh{transform:none}
+#ntc.k-poll{--ntc:#5FC98A} #ntc.k-poll .nt-sh{bottom:var(--kb,0px);transition:transform .42s cubic-bezier(.2,.9,.25,1),bottom .22s ease}
+.nt-q{position:relative;display:block;width:100%;min-height:92px;max-height:30vh;resize:none;margin:12px 0 4px;padding:13px 14px;border-radius:16px;border:1px solid var(--border);background:var(--tile2,#ffffff0d);color:var(--text);font:500 15px/1.4 inherit;font-family:inherit;text-align:left;outline:none;transition:border-color .2s}
+.nt-q:focus{border-color:color-mix(in srgb,var(--ntc) 70%,transparent)}
+.nt-qc{position:relative;text-align:right;color:var(--muted);font-size:11.5px;margin:0 2px 10px}
 #ntc.k-gift{--ntc:#B4A7EE} #ntc.k-notice{--ntc:#7FB5FF} #ntc.k-promo{--ntc:#F2C14E}
 .nt-pic{margin:6px -6px 4px;border-radius:18px;overflow:hidden;background:var(--tile2,#ffffff0d);max-height:42vh}
 .nt-pic img{display:block;width:100%;max-height:42vh;object-fit:cover}
@@ -4048,7 +4052,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.847';
+const APP = 'VOOB (by BGASHEV) Mini App v1.848';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10594,15 +10598,19 @@ function showNotice(){
   if (sheetCtx || $('#cg').classList.contains('show')) { setTimeout(showNotice, 4000); return; }
   ntcOpen = true;
   const n = NTC[0], k = n.kind || 'notice', cta = n.cta;
-  const cap = k === 'gift' ? 'Подарок от команды VOOB' : k === 'promo' ? 'VOOB · акция' : 'VOOB · уведомление';
-  const art = k === 'gift' ? `<div class="na-g">${giftArt(n.gift_kind)}</div>` : `<div class="na-i">${IC(k === 'promo' ? 'sparkle' : 'bolt', 30)}</div>`;
+  const cap = k === 'gift' ? 'Подарок от команды VOOB' : k === 'promo' ? 'VOOB · акция' : k === 'poll' ? 'VOOB · вопрос тебе' : 'VOOB · уведомление';
+  const art = k === 'gift' ? `<div class="na-g">${giftArt(n.gift_kind)}</div>` : `<div class="na-i">${IC(k === 'promo' ? 'sparkle' : k === 'poll' ? 'stats' : 'bolt', 30)}</div>`;
   const btn = k === 'gift' ? `${IC('gift', 18)}Забрать подарок` : cta === 'pro' ? `${IC('crown', 18)}Оформить PRO` : cta ? 'Подробнее' : 'Понятно';
   let el = $('#ntc'); if (!el) { el = document.createElement('div'); el.id = 'ntc'; document.body.appendChild(el); }
   el.className = 'k-' + k;
   el.innerHTML = `<div class="nt-bg" data-act="ntlater"></div><div class="nt-sh" role="dialog" aria-modal="true"><div class="grab"></div>
     ${n.image_url && /^https:\/\//.test(n.image_url) ? `<div class="nt-pic"><img src="${esc(n.image_url)}" alt="" decoding="async"></div>` : `<div class="nt-art${k === 'gift' && PGIFTS.includes(n.gift_kind) ? ' prem' : ''}"><i class="nt-rays"></i>${k === 'gift' && PGIFTS.includes(n.gift_kind) ? sparkHTML(48) : ''}${art}</div>`}<div class="nt-cap">${cap}</div><h2 class="nt-t">${esc(n.title || '')}</h2>
     ${n.body ? `<div class="nt-b">${esc(n.body)}</div>` : ''}<div class="nt-s">— команда VOOB</div>
-    <button class="btn primary nt-ok" data-act="ntok">${btn}</button>${cta && k !== 'gift' ? '<button class="btn ghost nt-no" data-act="ntlater">Не сейчас</button>' : ''}</div>`;
+    ${k === 'poll' ? `<textarea class="nt-q" id="ntq" maxlength="1000" rows="3" placeholder="Напиши ответ — так, как думаешь"></textarea><div class="nt-qc" id="ntqc">0 / 1000</div>
+    <button class="btn primary nt-ok" data-act="ntans" id="ntans" disabled>Отправить ответ</button><button class="btn ghost nt-no" data-act="ntlater">Не сейчас</button>`
+    : `<button class="btn primary nt-ok" data-act="ntok">${btn}</button>${cta && k !== 'gift' ? '<button class="btn ghost nt-no" data-act="ntlater">Не сейчас</button>' : ''}`}</div>`;
+  if (k === 'poll') { const q = el.querySelector('#ntq'), b = el.querySelector('#ntans'), c = el.querySelector('#ntqc');
+    q.addEventListener('input', () => { const l = q.value.trim().length; b.disabled = l < 2; c.textContent = q.value.length + ' / 1000'; }); }
   requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('show')));
   hap.imp();
   if (k === 'gift') setTimeout(confetti, 380);
@@ -10620,6 +10628,12 @@ Object.assign(ACT, {
     closeNotice(() => { if (n.kind === 'gift') { toast('Подарок уже в твоей коллекции 🎁'); scheduleSync(50); }
       else if (cta === 'pro') openPro()
       else if (cta && /^https:\/\//.test(cta)) { try { tg.openLink(cta); } catch (e) { window.open(cta, '_blank'); } } }, n.kind === 'gift' || cta ? 'click' : 'ack'); },
+  ntans: async () => { const q = $('#ntq'), b = $('#ntans'), n = NTC[0]; if (!q || !n || b.disabled) return; const text = q.value.trim(); if (text.length < 2) return;
+    b.disabled = true; b.textContent = 'Отправляю…';
+    try { const j = await apiAuth(EXTRA_API, {action:'seen', id:+n.id, act:'answer', text});
+      if (j.status === 'ok' || j.status === 'done') { hap.ok(); NTC.shift(); const el = $('#ntc'); el.classList.remove('show'); setTimeout(() => { el.innerHTML = ''; ntcOpen = false; if (NTC.length) setTimeout(showNotice, 400); }, 380); toast('Спасибо! Ответ у команды VOOB 💜'); return; }
+      throw new Error(j.error || 'bad'); }
+    catch (e) { hap.warn(); b.disabled = false; b.textContent = 'Отправить ответ'; toast('Не получилось отправить — попробуй ещё раз'); } },
   ntlater: () => { hap.tap(); closeNotice(null, 'dismiss'); },
   bgprev: el => openBgPrev(el.dataset.v || ''),
   bgpair: () => { if (!sheetCtx || sheetCtx.type !== 'bgprev') return; sheetCtx.kit = !sheetCtx.kit; bgPrevShow(sheetCtx.v); hap.tap(); },
