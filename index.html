@@ -4008,7 +4008,11 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 .ax-gd{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:10px;margin-bottom:12px;cursor:pointer}.ax-gd .im{width:64px;height:64px;border-radius:16px;overflow:hidden;flex:none;display:block}.ax-gd .im img,.ax-gc .th img{width:100%;height:100%;object-fit:cover;display:block}.ax-gd .tx{flex:1;min-width:0}.ax-gd .tx small:first-child{display:block;font-size:10.5px;font-weight:800;letter-spacing:.06em;color:var(--accent)}.ax-gd .tx b{display:block;font-size:17px;font-weight:850}.ax-gd .tx small{color:var(--muted);font-size:12px}
 .ax-gg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ax-gc{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:8px 8px 12px;cursor:pointer}.ax-gc .th{position:relative;aspect-ratio:1;border-radius:16px;overflow:hidden;background:var(--surface2);margin-bottom:8px;display:grid;place-items:center}.ax-gc .th svg{width:60%;height:60%}.ax-gc b{display:block;font-size:15px;font-weight:800;padding:0 4px}.ax-gc small{display:block;color:var(--muted);font-size:12px;padding:0 4px}.ax-gc .pro{position:absolute;top:8px;right:8px;font-size:10px;font-weight:850;letter-spacing:.05em;background:#111;color:#fff;border-radius:7px;padding:3px 7px}
 /* сканер */
-#ax-scan{position:fixed;inset:0;z-index:9950;background:#08080b;color:#fff;opacity:0;transition:opacity .25s;overflow:hidden}#ax-scan.on{opacity:1}
+#ax-scan{position:fixed;inset:0;z-index:9950;background:#08080b;color:#fff;overflow:hidden;clip-path:circle(0 at var(--ox,50%) var(--oy,70%));transition:clip-path .62s cubic-bezier(.2,.85,.22,1)}#ax-scan.on{clip-path:circle(150% at var(--ox,50%) var(--oy,70%))}
+#ax-scan::before{content:"";position:absolute;z-index:3;left:var(--ox,50%);top:var(--oy,70%);width:90px;height:90px;margin:-45px;border-radius:50%;border:2px solid rgba(124,255,178,.85);box-shadow:0 0 24px rgba(124,255,178,.5);transform:scale(.2);opacity:1;pointer-events:none;transition:transform .8s cubic-bezier(.2,.8,.3,1),opacity .8s ease-in}#ax-scan.on::before{transform:scale(16);opacity:0}
+#ax-scan video{transform:scale(1.22);filter:blur(14px) brightness(.6);transition:transform 1s cubic-bezier(.2,.8,.25,1) .1s,filter .9s ease-out .1s}#ax-scan.on video{transform:none;filter:none}
+#ax-scan .ctop,#ax-scan .hint,#ax-scan .cbot{opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .5s cubic-bezier(.2,.9,.3,1)}#ax-scan.on .ctop{opacity:1;transform:none;transition-delay:.3s}#ax-scan.on .hint{opacity:1;transform:none;transition-delay:.42s}#ax-scan.on .cbot{opacity:1;transform:none;transition-delay:.52s}
+#ax-scan .vf2{opacity:0;transform:scale(1.3);transition:opacity .4s ease .28s,transform .6s cubic-bezier(.2,1.1,.3,1) .28s}#ax-scan.on .vf2{opacity:1;transform:none}
 #ax-scan .bgc{position:absolute;inset:0;overflow:hidden;background:#0b0b10}#ax-scan .bgc i{position:absolute;left:var(--x);top:var(--y);width:260px;height:260px;margin:-130px;border-radius:50%;background:var(--c);filter:blur(70px);opacity:.55}#ax-scan video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9}
 #ax-scan .gl{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),transparent 28%,transparent 62%,rgba(0,0,0,.75))}
 #ax-scan .ctop{position:absolute;top:calc(16px + env(safe-area-inset-top) + var(--tg-content-safe-area-inset-top,0px));left:16px;right:16px;display:flex;justify-content:space-between;align-items:center}#ax-scan .cb{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);color:#fff;display:grid;place-items:center}#ax-scan.tor .cb:last-child{background:#ffd34a;color:#111}#ax-scan .cpill{font-weight:750;font-size:14px;padding:8px 16px;border-radius:99px;background:rgba(255,255,255,.14);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16)}
@@ -4076,7 +4080,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.870';
+const APP = 'VOOB (by BGASHEV) Mini App v1.871';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10084,6 +10088,7 @@ const AX = (function(){
   const SC = {el:null, stream:null, timer:0, det:null, rd:null, busy:false, torch:false, done:false};
   const okEAN = c => { if (!/^\d{8}$|^\d{12,13}$/.test(c)) return false; const d = c.split('').map(Number), n = d.pop(); let s = 0; d.reverse().forEach((x, i) => { s += x * (i % 2 === 0 ? 3 : 1); }); return (10 - s % 10) % 10 === n; };
   function loadZX(){ return new Promise((res, rej) => { if (window.ZXing) return res(); const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js'; s.onload = () => window.ZXing ? res() : rej(new Error('zx')); s.onerror = () => rej(new Error('zx')); document.head.appendChild(s); }); }
+  if (!window.__ltb) { window.__ltb = 1; document.addEventListener('pointerdown', e => { window.__lt = {x:e.clientX, y:e.clientY}; }, true); }
   async function openScan(){
     if (SC.el) return; SC.done = false; SC.busy = false;
     const el = document.createElement('div'); el.id = 'ax-scan'; SC.el = el;
@@ -10092,7 +10097,8 @@ const AX = (function(){
     <div class="vf2"><div class="ln"></div></div>
     <div class="hint"><b id="axs-t">Наведи на штрихкод</b><small id="axs-s">EAN-13 на упаковке, держи ровно</small></div>
     <div class="cbot"><div class="zm" id="axs-z"></div><div class="num"><input id="axs-n" type="text" inputmode="numeric" maxlength="14" placeholder="Или введи номер под штрихкодом"><button type="button" data-act="axnum">OK</button></div></div>`;
-    document.body.appendChild(el); requestAnimationFrame(() => el.classList.add('on'));
+    { const lt = window.__lt; if (lt) { el.style.setProperty('--ox', lt.x + 'px'); el.style.setProperty('--oy', lt.y + 'px'); } }
+    document.body.appendChild(el); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('on')));
     try { if (!ver || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw 0; } catch (e) { return scanErr('Камера недоступна в этом окне'); }
     try {
       SC.stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}, width:{ideal:1280}, height:{ideal:720}}, audio:false});
@@ -10115,7 +10121,7 @@ const AX = (function(){
     SC.busy = false;
   }
   function hit(code){ hap.ok(); if (SC.el) { SC.el.classList.add('ok'); const t = document.getElementById('axs-t'), u = document.getElementById('axs-s'); if (t) t.textContent = code; if (u) u.textContent = 'Готово'; } setTimeout(() => { closeScan(); lookup(code); }, 900); }
-  function closeScan(){ clearInterval(SC.timer); try { SC.stream && SC.stream.getTracks().forEach(t => t.stop()); } catch (e) {} SC.stream = null; const el = SC.el; SC.el = null; SC.det = null; SC.torch = false; if (el) { el.classList.remove('on'); setTimeout(() => el.remove(), 260); } }
+  function closeScan(){ clearInterval(SC.timer); try { SC.stream && SC.stream.getTracks().forEach(t => t.stop()); } catch (e) {} SC.stream = null; const el = SC.el; SC.el = null; SC.det = null; SC.torch = false; if (el) { el.classList.remove('on'); setTimeout(() => el.remove(), 520); } }
   async function torch(){ try { const tr = SC.stream && SC.stream.getVideoTracks()[0]; if (!tr) return; SC.torch = !SC.torch; await tr.applyConstraints({advanced:[{torch:SC.torch}]}); if (SC.el) SC.el.classList.toggle('tor', SC.torch); hap.tap(); } catch (e) { SC.torch = false; toast('Фонарик на этом устройстве недоступен'); } }
 
   /* ---------- Open Food Facts ---------- */
