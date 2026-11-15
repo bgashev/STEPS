@@ -908,7 +908,7 @@ html.web ::-webkit-scrollbar-corner{background:transparent}
 .pbadd{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:52px;border-radius:18px;border:1.5px dashed color-mix(in srgb,var(--accent) 55%,transparent);background:color-mix(in srgb,var(--accent) 8%,transparent);color:var(--accent);font:inherit;font-weight:800;font-size:15px;cursor:pointer;transition:transform .12s,background .2s}.pbadd:active{transform:scale(.98)}.pbadd.on{background:var(--accent);color:var(--on-accent);border-style:solid}.pbadd.on svg{transform:rotate(45deg)}.pbadd svg{transition:transform .25s}
 .pbpick{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s cubic-bezier(.22,1,.36,1),margin .35s}.pbpick>.pbpg{overflow:hidden;min-height:0}.pbpick.open{grid-template-rows:1fr;margin-top:10px}
 .pbpg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.pbp{display:grid;justify-items:center;gap:6px;padding:12px 6px 10px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:12px;font-weight:700;text-align:center;line-height:1.2;cursor:pointer}.pbp span{width:38px;height:38px;border-radius:12px;background:var(--surface);display:grid;place-items:center;color:var(--accent)}.pbp:active{transform:scale(.95);border-color:var(--accent)}
-.pbbar{position:sticky;bottom:-1px;margin:14px -18px -8px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 78%,transparent);display:flex;align-items:center;gap:12px;z-index:5}.pbtot{flex:1;min-width:0}.pbtot small{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800}.pbtot b{display:block;font-size:13.5px;line-height:1.3}.pbbar .btn{min-width:130px;min-height:50px;justify-content:center}.pbbar .btn:disabled{opacity:.4}
+.pbbar{position:sticky;bottom:calc(-22px - env(safe-area-inset-bottom));margin:14px -18px calc(-22px - env(safe-area-inset-bottom));padding:12px 18px calc(12px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;z-index:5}.pbtot{flex:1;min-width:0}.pbtot small{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800}.pbtot b{display:block;font-size:13.5px;line-height:1.3}.pbbar .btn{min-width:130px;min-height:50px;justify-content:center}.pbbar .btn:disabled{opacity:.4}
 .adc .adk{display:inline-flex;align-items:center;gap:6px;width:max-content;margin-top:4px;padding:3px 9px 3px 8px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.02em;color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent)}
 .adc .adk i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:adp 1.6s ease-in-out infinite}
 @keyframes adp{50%{opacity:.25;transform:scale(.7)}}
@@ -3759,6 +3759,93 @@ html.web #tabs .tbi{top:262px}
 .shp-pr.own{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
 .shp-pro{margin-top:22px;border:1px dashed var(--border);border-radius:18px;padding:14px 18px;color:var(--muted);font-size:13px}.shp-pro b{color:var(--text);font-weight:600}
 @media(max-width:900px){.shp-sl,.shp-sl.on{grid-template-columns:1fr;min-height:0}.shp-slides{min-height:480px}.shp-sa{order:-1;min-height:210px;padding-top:22px}.shp-sav{transform:scale(.8)}.shp-sx{padding:4px 22px 40px}.shp-sx h2{font-size:34px}.shp-th{flex-basis:176px}.shp-sl.on .shp-sav{animation:none}}
+
+/* v1.832: «Старт» — первый шаг, неделя новичка, серия, игра дня */
+.st-first{position:relative;overflow:hidden;text-align:center;padding:22px 18px 18px;border-radius:26px;background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 16%,var(--surface)),var(--surface) 70%)}
+.st-first .st-ring{width:64px;height:64px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;color:var(--bg);background:var(--accent);box-shadow:0 0 0 8px color-mix(in srgb,var(--accent) 16%,transparent);animation:stPulse 2.6s ease-in-out infinite}
+.st-first .st-ring svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+@keyframes stPulse{0%,100%{box-shadow:0 0 0 8px color-mix(in srgb,var(--accent) 16%,transparent)}50%{box-shadow:0 0 0 15px color-mix(in srgb,var(--accent) 6%,transparent)}}
+.st-first h2{margin:0 0 6px;font-size:21px;letter-spacing:-.01em}
+.st-first p{margin:0 auto 14px;max-width:290px;color:var(--muted);font-size:13.5px;line-height:1.45}
+.st-first .btn{width:100%;min-height:52px;font-size:16px;border-radius:18px}
+.st-first .st-or{display:block;margin:11px auto 0;background:none;border:0;color:var(--muted);font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.st-wk{padding:14px 16px 16px;border-radius:26px}
+.st-wh{display:flex;align-items:center;gap:11px;margin-bottom:12px}
+.st-wi{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.st-wi svg{stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.st-wh b{display:block;font-size:15px}.st-wh small{color:var(--muted);font-size:12px}
+.st-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px}
+.st-days i{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;color:var(--muted);background:var(--surface2);border:1px solid var(--border)}
+.st-days i svg{stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.st-days i.rw{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
+.st-days i.dn{background:var(--accent);color:var(--bg);border-color:var(--accent)}
+.st-days i.now{outline:2px solid var(--accent);outline-offset:2px}
+.st-wk .btn{width:100%;min-height:48px;border-radius:16px}
+.st-wn{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12.5px}
+.st-wn svg{stroke:currentColor;fill:none;stroke-width:1.6;flex:none}
+.st-sr{padding:14px 16px;border-radius:26px;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;align-items:center}
+.st-fl{display:flex;align-items:center;gap:10px}
+.st-fi{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,#ff8a3d 18%,transparent);color:#ff8a3d}
+.st-fi svg{stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.st-fl small.wr{display:block;color:#ff8a3d;font-weight:600;margin-top:1px}.st-fl.off .st-fi{background:var(--surface2);color:var(--muted)}
+.st-fl b{display:block;font-size:19px;line-height:1.1}.st-fl small{color:var(--muted);font-size:11.5px}
+.st-lv{min-width:0}
+.st-lt{display:flex;justify-content:space-between;gap:8px;white-space:nowrap;font-size:12px;color:var(--muted);margin-bottom:6px}.st-lt b{color:var(--text);font-weight:600}
+.st-bar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden}.st-bar i{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.st-nx{grid-column:1/-1;display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);padding-top:9px;border-top:1px solid var(--border);margin-top:4px}
+.st-nx svg{stroke:currentColor;fill:none;stroke-width:1.6;flex:none;color:var(--accent)}.st-nx b{color:var(--text);font-weight:600;margin-left:auto}
+.st-gm{width:100%;display:flex;align-items:center;gap:13px;text-align:left;padding:12px 14px;border-radius:24px;cursor:pointer;color:inherit;font:inherit}
+.st-gi{width:50px;height:50px;border-radius:15px;overflow:hidden;flex:none;display:grid;place-items:center;background:var(--surface2)}
+.st-gi img{width:100%;height:100%;object-fit:cover}
+.st-gm small{display:block;color:var(--accent);font-size:11px;font-weight:700;letter-spacing:.02em}
+.st-gm b{display:block;font-size:15.5px;margin:1px 0}.st-gm em{font-style:normal;color:var(--muted);font-size:12px}
+.st-gm .st-go{margin-left:auto;color:var(--muted)}.st-gm .st-go svg{stroke:currentColor;fill:none;stroke-width:1.8}
+
+/* v1.833 WEB: конструктор плана на большом экране */
+.pbw,.pbl,.pbr2{display:contents}.pbl .pbsec:first-child{margin-top:16px}.pbr2 .pbsec:first-child{margin-top:16px}.pbbar{order:9}
+@media (min-width:1000px){
+  html.web #sheet.pbw2{width:min(1040px,calc(100% - 48px));max-width:none;max-height:min(820px,calc(100vh - 48px));padding:24px 30px 24px;overflow-y:auto;-webkit-mask-image:none;mask-image:none}
+  html.web #sheet.pbw2 .pbhd{margin:0 0 4px 44px}
+  html.web #sheet.pbw2 .pbhd h2{font-size:24px;letter-spacing:-.01em}
+  html.web #sheet.pbw2 .pbw{display:grid;grid-template-columns:318px minmax(0,1fr);gap:30px;align-items:start;margin-top:8px}
+  html.web #sheet.pbw2 .pbl{display:block;position:sticky;top:0;padding:18px 18px 4px;border-radius:26px;background:var(--surface2);border:1px solid var(--border)}
+  html.web #sheet.pbw2 .pbr2{display:block;min-width:0}
+  html.web #sheet.pbw2 .pbl .pbsec:first-child{margin-top:0}
+  html.web #sheet.pbw2 .pbdays{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;overflow:visible;margin:0;padding:0}
+  html.web #sheet.pbw2 .pbd{min-width:0;width:100%;height:62px;background:var(--surface)}
+  html.web #sheet.pbw2 .pbd.on{background:var(--accent);border-color:transparent;color:var(--on-accent)}
+  html.web #sheet.pbw2 .pbd:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--border))}
+  html.web #sheet.pbw2 .pbstd{background:var(--surface);margin-bottom:14px}
+  html.web #sheet.pbw2 .pbbar{bottom:-24px;margin:18px -30px -24px;padding:14px 30px 18px;border-top:1px solid var(--border);background:var(--surface)}
+  html.web #sheet.pbw2 .pbbar .btn{min-width:200px}
+  html.web #sheet.pbw2 .pbpg{grid-template-columns:repeat(5,1fr)}
+  html.web #sheet.pbw2 .pbx{padding:16px 16px 12px;border-radius:24px}
+  html.web #sheet.pbw2 .pbempty{padding:56px 20px}
+}
+
+/* v1.833: подходы в конструкторе плана — ровная сетка: № · повторы · вес · отдых · ✕ */
+.pbh2{display:grid;grid-template-columns:22px repeat(var(--c,1),minmax(0,1fr)) 30px;gap:8px;padding:0 0 6px;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:center}
+.pbh2 .hs{display:none}
+.pbs2{display:grid;grid-template-columns:22px minmax(0,1fr) 30px;grid-template-areas:"n r x" ". s .";gap:6px 8px;align-items:center;padding:8px 0;border-top:1px solid var(--border)}
+.pbs2.k{grid-template-columns:22px minmax(0,1fr) minmax(0,1fr) 30px;grid-template-areas:"n r k x" ". s s ."}
+.pbh2{--c:1}.pbh2.k{--c:2}
+.pbs2 .sln{grid-area:n;width:auto;text-align:center;font-weight:800;color:var(--muted);font-size:13px}
+.pbs2>.pbn:nth-of-type(1){grid-area:r}.pbs2.k>.pbn:nth-of-type(2){grid-area:k}
+.pbs2 .pbn{display:grid;grid-template-columns:30px minmax(0,1fr) 30px;gap:3px;width:100%}
+.pbs2 .pbb{width:30px;height:40px;border-radius:12px}
+.pbs2 .pbi{width:100%;height:40px;font-size:16px;padding:0}
+.pbs2 .pbsx{grid-area:x;margin:0;width:30px;height:30px}
+.pbs2 .pbsx:hover{background:var(--surface);color:var(--text)}
+.pbs2 .pbr{grid-area:s;margin:0;display:grid;grid-template-columns:30px minmax(0,1fr) 30px;gap:3px;justify-content:stretch}
+.pbs2 .pbrt{width:100%;justify-content:center;height:30px;min-width:0;white-space:nowrap}
+.pbs2 .pbr .pbb.sm{height:30px}
+.pbx>.pbfoot{margin-top:6px;padding-top:10px;border-top:1px solid var(--border)}
+@media (min-width:1000px){
+  html.web #sheet.pbw2 .pbh2{grid-template-columns:24px repeat(var(--c,1),minmax(0,1fr)) minmax(0,1.25fr) 30px}
+  html.web #sheet.pbw2 .pbh2 .hs{display:block}
+  html.web #sheet.pbw2 .pbs2{grid-template-columns:24px minmax(0,1fr) minmax(0,1.25fr) 30px;grid-template-areas:"n r s x"}
+  html.web #sheet.pbw2 .pbs2.k{grid-template-columns:24px minmax(0,1fr) minmax(0,1fr) minmax(0,1.25fr) 30px;grid-template-areas:"n r k s x"}
+}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -3773,7 +3860,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.831';
+const APP = 'VOOB (by BGASHEV) Mini App v1.833';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5928,6 +6015,64 @@ async function copyStr(s){
 }
 
 /* ============================================================ экраны ==== */
+
+/* ============================================================ v1.832: «Старт» — удержание новичков ==== */
+const WK = {st:null, at:0, busy:false, ask:false};
+const WK_ICON = {gift:'gift', pro:'crown'};
+function loadWelcome(force){
+  if (!inTG || WK.busy || (!force && WK.st && Date.now() - WK.at < 120000)) return;
+  if (!force && WK.at && !WK.st && Date.now() - WK.at < 120000) return;
+  WK.busy = true; WK.at = Date.now();
+  apiAuth('/welcome/status', {}).then(j => { WK.st = j && !j.error ? j : null; }).catch(() => {}).finally(() => {
+    WK.busy = false; if (S.tab === 'home' && !S.fprof && !sheetCtx) render(); maybeAskNotify(); });
+}
+/* разрешение на сообщения от бота: спрашиваем один раз после первой тренировки, повтор — не раньше чем через неделю */
+function maybeAskNotify(){
+  try {
+    if (!inTG || WK.ask || !WK.st || WK.st.notify_ok || !valid().length || !tg || typeof tg.requestWriteAccess !== 'function' || !ver('6.9')) return;
+    const last = +(localStorage.getItem('voob_wa') || 0); if (last && Date.now() - last < 7 * 864e5) return;
+    WK.ask = true; localStorage.setItem('voob_wa', String(Date.now()));
+    let tries = 0;
+    const go = () => { if ((sheetCtx || $('#cg').classList.contains('show') || (typeof RW !== 'undefined' && RW.busy)) && ++tries < 8) return setTimeout(go, 2500);
+      if (tries >= 8) { WK.ask = false; localStorage.removeItem('voob_wa'); return; }
+      tg.requestWriteAccess(ok => { WK.ask = false; if (ok) { if (WK.st) WK.st.notify_ok = true; apiAuth('/notify/allow', {ok:true}).catch(() => {}); toast('Буду напоминать о серии и наградах'); } }); };
+    setTimeout(go, 2200);
+  } catch (e) {}
+}
+function startHTML(ws, doneToday){
+  let h = '';
+  // №1 — первый шаг в одно касание
+  if (!ws.length) {
+    h += `<div class="card st-first"><div class="st-ring">${IC('steps', 30)}</div><h2>Твой первый шаг</h2>
+      <p>Одно касание — и VOOB засчитает прогулку на 15 минут. Сразу получишь XP, уровень и достижение «Первый шаг».</p>
+      <button type="button" class="btn primary" data-act="qwalk">${IC('check', 18)}Отметить прогулку · 15 мин</button>
+      <button type="button" class="st-or" data-act="add">или записать подробно</button></div>`;
+  }
+  // №2 — неделя новичка
+  const w = WK.st;
+  if (w && w.eligible && w.days) {
+    const day = Math.min(7, w.day), got = new Set(w.days.filter(x => x.claimed).map(x => x.day)), by = {}; w.days.forEach(x => { by[x.day] = x; });
+    const ready = w.days.find(x => !x.claimed && x.day <= w.day), next = w.days.find(x => !x.claimed && x.day > w.day);
+    h += `<div class="card st-wk"><div class="st-wh"><span class="st-wi">${IC('gift', 18)}</span><div><b>Неделя новичка</b><small>день ${day} из 7 · награды за то, что ты здесь</small></div></div>
+      <div class="st-days">${[1,2,3,4,5,6,7].map(d => `<i class="${by[d] ? 'rw' : ''}${got.has(d) ? ' dn' : ''}${d === day ? ' now' : ''}">${got.has(d) ? IC('check', 13) : by[d] ? IC(WK_ICON[by[d].t], 13) : d}</i>`).join('')}</div>
+      ${ready ? `<button type="button" class="btn primary" data-act="wclaim" data-day="${ready.day}">${IC(WK_ICON[ready.t], 17)}Забрать · ${esc(ready.title)}</button>`
+        : next ? `<div class="st-wn">${IC(WK_ICON[next.t], 14)}<span>Следующая награда — день ${next.day}: ${esc(next.title)}</span></div>` : ''}</div>`;
+  }
+  // №4 — серия и «что дальше»
+  if (ws.length) {
+    const [cur] = dayStreaks(ws), L = myLevel(), nx = achievements().filter(a => !a.done && a.prog > 0 && a.icon !== 'crown').sort((a, b) => b.prog - a.prog)[0];
+    h += `<div class="card st-sr"><div class="st-fl${cur ? '' : ' off'}"><span class="st-fi">${IC('flame', 22)}</span><div><b>${cur}</b><small>${cur ? 'дн. подряд' : 'серия'}</small>${cur && !doneToday ? '<small class="wr">сегодня ещё нет</small>' : ''}</div></div>
+      <div class="st-lv"><div class="st-lt"><span>Уровень ${L.level} → ${L.level + 1}</span><b>ещё ${num(L.need - L.into, 0)} XP</b></div><div class="st-bar"><i style="width:${Math.round(L.into * 100 / Math.max(1, L.need))}%"></i></div></div>
+      ${nx ? `<div class="st-nx">${IC(nx.icon, 14)}<span>Ближайшая медаль · ${esc(nx.title)}</span><b>${nx.text}</b></div>` : ''}</div>`;
+  }
+  // №7 — игра дня
+  try {
+    const g = REST.dayInfo();
+    h += `<button type="button" class="card st-gm" data-act="playday"><span class="st-gi">${g.th}</span><span><small>★ ИГРА ДНЯ · БЕСПЛАТНО</small><b>${esc(g.n)}</b><em>${g.best ? 'твой рекорд ' + g.best : 'сыграй один раз — поставь рекорд'}</em></span><span class="st-go">${IC('chev', 18)}</span></button>`;
+  } catch (e) {}
+  return h;
+}
+
 function viewHome(web){
   const ws = valid(), g = G(), t = todayN(), info = goalInfo(ws), rest = restDays(ws), [cur] = dayStreaks(ws);
   const tMin = sum(ws.filter(w => dn(w.date) === t), w => w.minutes);
@@ -5950,7 +6095,10 @@ function viewHome(web){
   else if (rest.has(t + 1)) note = `<div class="note">${IC('rest', 15)}5 дней подряд — завтра и послезавтра отдых</div>`;
 
   const noGoal = !(db.settings.goal || {}).set;
+  loadWelcome();
   let h = `<div class="head"><div><h1>${esc(greet())}</h1><div class="sub">${bits.join(' · ')}</div></div></div>
+  ${planSuggestHTML(ws)}
+  ${startHTML(ws, tMin > 0)}
   ${noGoal ? `<div class="card gx2 gnew"><div class="gnew-ring">${IC('target', 30)}</div>
       <div class="gnew-t">Цель недели</div><div class="cap">Сколько тренировок и за сколько дней — решаешь ты. Кольцо прогресса появится, как только поставишь цель.</div>
       <button type="button" class="btn primary gnew-b" data-act="goaled">${IC('plus', 18)}Добавить свой план на неделю</button></div>` : `<div class="card gx2${done ? ' done' : ''}"><div class="gx2-h"><span class="gx2-ic">${IC('target', 17)}</span>
@@ -5958,7 +6106,6 @@ function viewHome(web){
       <button type="button" class="gx2-ed" data-act="goaled" aria-label="Изменить цель">${IC('edit', 17)}</button></div>
     <div class="gx-top">${segRing(info.shown, g.count, done, pct)}<div class="gx-txt">${gtxt}<div class="gx2-bar"><i style="width:${Math.min(100, pct)}%"></i></div>${gsBtn}</div></div>${goalStrip(ws, g.days)}${note}</div>`}
   <div class="actions"><button class="btn ghost" data-act="plans">${IC('plan')}План${upPlans(ws).length ? `<span class="pn">${upPlans(ws).length}</span>` : ''}</button>${ws.length ? `<button class="btn ghost" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat')}Повторить</button>` : ''}</div>`;
-  h += planSuggestHTML(ws);
   h += web ? feedShortHTML(6, 4) : feedTickerHTML();
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
   const due = dueWeekSummary(ws);
@@ -6022,9 +6169,10 @@ function planSuggestHTML(ws){
   const ps = todayPlans(ws);
   if (!ps.length) return '';
   const p = ps[0];
-  const par = planParams(p).map(([ic, v, t]) => `<span class="pc" title="${t}" aria-label="${t}: ${esc(v)}">${IC(ic, 13)}${esc(v)}</span>`).join('');
+  const an = (ACTS.find(x => x[0] === actOf(p)) || ACTS[0]), nameChip = `<span class="pc" title="Упражнение">${IC(an[0], 13)}${esc(an[1])}</span>`;
+  const par = nameChip + planParams(p).map(([ic, v, t]) => `<span class="pc" title="${t}" aria-label="${t}: ${esc(v)}">${IC(ic, 13)}${esc(v)}</span>`).join('');
   return `<div class="plsug" id="plsug"><div class="ph"><div class="pd">${IC('target', 18)}</div>
-    <div class="pt">План на сегодня<small>${ps.length > 1 ? `ещё ${ps.length - 1} в плане` : 'отметь, когда сделаешь'}</small></div>
+    <div class="pt">План на сегодня<small>${ps.length > 1 ? `ещё ${ps.length - 1} упр. в плане` : 'отметь, когда сделаешь'}</small></div>
     <div class="pb"><button class="ib" data-act="plskip" data-id="${esc(p.id)}" aria-label="Отклонить">${IC('close', 20)}</button>
     <button class="ib ok" data-act="pladd" data-id="${esc(p.id)}" aria-label="Добавить тренировку">${IC('check', 22)}<span class="bl">Добавить</span></button></div></div>
     ${par ? `<div class="pv">${par}</div>` : ''}</div>`;
@@ -6122,12 +6270,14 @@ function pbCardH(it, ei){
     <button type="button" class="pbq" data-act="pbdel" data-ei="${ei}" aria-label="Убрать упражнение">${IC('close', 15)}</button></div></div>`;
   let body = '';
   if (st) {
-    body = it.sl.map((v, i) => `<div class="pbs"><span class="sln">${i + 1}</span>${pbNum(ei, i, 'r', v, st[0] === 'secs' ? 'Секунды' : 'Повторы')}<span class="pbu">${st[0] === 'secs' ? 'сек' : 'повт'}</span>
-        ${kg ? `<span class="slxx">×</span>${pbNum(ei, i, 'k', fmtKg(it.sk[i] || 0), 'Вес, кг')}<span class="pbu">кг</span>` : ''}
-        ${it.sl.length > 1 ? `<button type="button" class="pbsx" data-act="pbsdel" data-ei="${ei}" data-i="${i}" aria-label="Убрать подход">${IC('close', 14)}</button>` : '<span class="pbsx"></span>'}</div>
-      <div class="pbr${it.rs[i] ? '' : ' z'}"><button type="button" class="pbb sm" data-act="pbs" data-ei="${ei}" data-i="${i}" data-f="s" data-d="-1" aria-label="Меньше отдыха">${IC('minus', 13)}</button>
-        <button type="button" class="pbrt" data-act="pbrc" data-ei="${ei}" data-i="${i}" aria-label="Сменить отдых"><svg width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="10" r="6"/><path d="M9 7v3.2l2 1.2M7 1.8h4"/></svg><span data-pbr="${ei}_${i}">${i === it.sl.length - 1 ? (it.rs[i] ? 'после: ' + fmtRs(it.rs[i]) : 'после: без отдыха') : fmtRs(it.rs[i])}</span></button>
-        <button type="button" class="pbb sm" data-act="pbs" data-ei="${ei}" data-i="${i}" data-f="s" data-d="1" aria-label="Больше отдыха">${IC('plus', 13)}</button></div>`).join('')
+    const lastI = it.sl.length - 1;
+    body = `<div class="pbh2${kg ? ' k' : ''}"><i></i><span>${st[0] === 'secs' ? 'Секунды' : 'Повторы'}</span>${kg ? '<span>Вес, кг</span>' : ''}<span class="hs">Отдых после подхода</span><i></i></div>`
+      + it.sl.map((v, i) => `<div class="pbs2${kg ? ' k' : ''}"><span class="sln">${i + 1}</span>${pbNum(ei, i, 'r', v, st[0] === 'secs' ? 'Секунды' : 'Повторы')}
+        ${kg ? pbNum(ei, i, 'k', fmtKg(it.sk[i] || 0), 'Вес, кг') : ''}
+        <div class="pbr${it.rs[i] ? '' : ' z'}"><button type="button" class="pbb sm" data-act="pbs" data-ei="${ei}" data-i="${i}" data-f="s" data-d="-1" aria-label="Меньше отдыха">${IC('minus', 13)}</button>
+          <button type="button" class="pbrt" data-act="pbrc" data-ei="${ei}" data-i="${i}" aria-label="Сменить отдых"><svg width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="10" r="6"/><path d="M9 7v3.2l2 1.2M7 1.8h4"/></svg><span data-pbr="${ei}_${i}">${i === lastI ? (it.rs[i] ? 'после: ' + fmtRs(it.rs[i]) : 'после: без отдыха') : fmtRs(it.rs[i])}</span></button>
+          <button type="button" class="pbb sm" data-act="pbs" data-ei="${ei}" data-i="${i}" data-f="s" data-d="1" aria-label="Больше отдыха">${IC('plus', 13)}</button></div>
+        ${it.sl.length > 1 ? `<button type="button" class="pbsx" data-act="pbsdel" data-ei="${ei}" data-i="${i}" aria-label="Убрать подход">${IC('close', 14)}</button>` : '<span class="pbsx"></span>'}</div>`).join('')
       + `<div class="pbfoot"><button type="button" class="btn ghost small" data-act="pbsadd" data-ei="${ei}">${IC('plus', 15)}Подход</button><button type="button" class="btn ghost small" data-act="pbrall" data-ei="${ei}">${REST.WATCH}Отдых всем</button></div>`;
   } else {
     const t = TIMEA[it.act];
@@ -6151,14 +6301,15 @@ function openPlanB(p){
   const days = pbDays(), std = REST.std(), inList = days.some(d => d.iso === PB.date);
   const favs = favActs(), list = [...favs.map(k => ACTS.find(a => a[0] === k)).filter(Boolean), ...ACTS.filter(a => a[2] && !favs.includes(a[0]))];
   openSheet(`<div class="pb"><div class="pbhd"><div><h2 style="margin:0">${p ? 'Редактирование плана' : 'Новый план'}</h2><div class="cap">Дата, упражнения, подходы, веса и отдых</div></div></div>
-    <div class="pbsec">Когда</div>
+    <div class="pbw"><div class="pbl"><div class="pbsec">Когда</div>
     <div class="pbdays" id="pb-days">${days.map(d => `<button type="button" class="pbd${d.iso === PB.date ? ' on' : ''}" data-act="pbdate" data-v="${d.iso}"><small>${d.lbl || d.wd}</small><b>${d.d}</b></button>`).join('')}<label class="pbd pbdo${inList ? '' : ' on'}"><small>Дата</small><b>${IC('plan', 17)}</b><input type="date" id="pb-date" value="${PB.date}" min="${isoOf(todayN())}"></label></div>
     <div class="pbsec">Название <em>необязательно</em></div>
     <input class="inp" id="pb-ttl" maxlength="40" placeholder="Например: Грудь и трицепс" value="${esc(PB.ttl)}">
     <div class="pbstd"><div><b>Стандартный отдых</b><small>для новых подходов · свой — у каждого подхода</small></div><div class="pbn"><button type="button" class="pbb" data-act="pbstd" data-d="-1" aria-label="Меньше">${IC('minus', 15)}</button><span class="pbsv" id="pb-std">${fmtRs(std)}</span><button type="button" class="pbb" data-act="pbstd" data-d="1" aria-label="Больше">${IC('plus', 15)}</button></div></div>
-    <div class="pbsec">Упражнения</div><div id="pb-list"></div>
+    </div><div class="pbr2"><div class="pbsec">Упражнения</div><div id="pb-list"></div>
     <button type="button" class="pbadd" id="pb-addb" data-act="pbadd">${IC('plus', 18)}Добавить упражнение</button>
     <div class="pbpick" id="pb-pick"><div class="pbpg">${list.map(([k, l]) => `<button type="button" class="pbp" data-act="pbpick" data-v="${k}"><span>${IC(k, 22)}</span>${l}</button>`).join('')}</div></div>
+    </div></div>
     <div class="pbbar"><div class="pbtot"><small>Итого</small><b id="pb-tot"></b></div><button class="btn primary" id="pb-save" data-act="pbsave">Сохранить</button></div></div>`, {type:'planb', item:p || null});
   pbRender();
 }
@@ -7661,6 +7812,7 @@ function openSheet(html, ctx, keep){
   $('#sheet').classList.toggle('aw', !!(inWeb && ctx && ctx.type === 'acts'));   // WEB: широкое окно выбора активности
   $('#sheet').classList.toggle('wkw', !!(inWeb && ctx && ctx.type === 'workout' && STR[ctx.act]));   // до открытия: окно не меняет размер во время появления
   $('#sheet').classList.toggle('pf', !!ctx && BACK_T.has(ctx.type));
+  $('#sheet').classList.toggle('pbw2', !!(inWeb && ctx && ctx.type === 'planb'));   // WEB: конструктор плана — широкое окно в две колонки
   $('#sheet').classList.toggle('half', !(inWeb && ctx && ctx.type === 'acts') && !!ctx && (ctx.type === 'acts' || ctx.type === 'planact' || ctx.type === 'frall'));
   $('#sheet').classList.toggle('fr', !!ctx && ctx.type === 'frall');   // выбор активности — до середины экрана, избранные под большим пальцем
   if (!keep) { $('#sheet').innerHTML = `<div class="grab"></div>` + sheetBack(ctx) + html; $('#sheet').scrollTop = 0; }
@@ -7800,7 +7952,7 @@ const REST = (function(){
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} };
   const DUR = {barbell:120, squat:90, pullup:90, pushup:60, dumbbell:60, burpee:45, abs:45, plank:45};
   const R = 2 * Math.PI * 52;
-  let cust = false, act = null, total = 0, endAt = 0, run = false, done = false, min = false, view = 'rest', iv = 0, el = null, pill = null, ac = null, doneT = 0;
+  let free = false, cust = false, act = null, total = 0, endAt = 0, run = false, done = false, min = false, view = 'rest', iv = 0, el = null, pill = null, ac = null, doneT = 0;
   const secFor = a => s.per[a] || DUR[a] || s.std || 90;
   const left = () => Math.max(0, (endAt - Date.now()) / 1000);
   const fmtT = x => { x = Math.max(0, Math.ceil(x)); return Math.floor(x / 60) + ':' + ('0' + (x % 60)).slice(-2); };
@@ -7851,7 +8003,7 @@ const REST = (function(){
   function start(a, sec){
     if (run) { min = false; view = 'rest'; render(); return; }
     act = a || (sheetCtx && sheetCtx.act) || null; cust = sec > 0; total = sec > 0 ? sec : secFor(act); endAt = Date.now() + total * 1000;
-    run = true; done = false; min = false; view = 'rest'; clearTimeout(doneT); unlock(); hap.tap();
+    free = false; run = true; done = false; min = false; view = 'rest'; clearTimeout(doneT); unlock(); hap.tap();
     clearInterval(iv); iv = setInterval(tick, 200); render();
   }
   function tick(){ if (!run) return; const l = left(); paint(l); if (l <= 0) finish(); }
@@ -7862,7 +8014,7 @@ const REST = (function(){
   }
   /* вернуть к идущей тренировке: окно могли смахнуть, пока шёл отдых */
   function backLive(){ try { if (!sheetCtx) resumeLive(); } catch (e) {} }
-  function close(){ run = false; done = false; clearInterval(iv); clearTimeout(doneT); stopGame(); try { setTimeout(updFab, 60); } catch (e) {} if (el) { el.remove(); el = null; } if (pill) { pill.remove(); pill = null; } }
+  function close(){ free = false; run = false; done = false; clearInterval(iv); clearTimeout(doneT); stopGame(); try { setTimeout(updFab, 60); } catch (e) {} if (el) { el.remove(); el = null; } if (pill) { pill.remove(); pill = null; } }
   function paint(l){
     const p = total ? Math.min(1, Math.max(0, 1 - l / total)) : 0, t = fmtT(l);
     document.querySelectorAll('#rt [data-rt="t"],.rt-pill [data-rt="t"],#rtgm [data-rt="t"]').forEach(e => { e.textContent = t; });
@@ -7880,7 +8032,7 @@ const REST = (function(){
     if (!el) { el = document.createElement('div'); el.id = 'rt'; el.className = 'rt'; document.body.appendChild(el); el.addEventListener('click', onClick); }
     let h = '<div class="rt-bd' + (done ? ' dn' : '') + '" data-r="' + (done ? 'skip' : 'min') + '"></div><div class="rt-sh' + (view === 'pick' ? ' pk' : '') + (done ? ' dn' : '') + '"><div class="rt-gr"></div>';
     if (done) {
-      const ttl = [...'Пора на подход'].map((c, ci) => c === ' ' ? ' ' : '<span style="--i:' + ci + '">' + c + '</span>').join('');
+      const ttl = [...(free ? 'Время вышло' : 'Пора на подход')].map((c, ci) => c === ' ' ? ' ' : '<span style="--i:' + ci + '">' + c + '</span>').join('');
       h += `<div class="rt-gong"><i class="rg"></i><i class="rg"></i><i class="rg"></i>${[0, 45, 90, 135, 180, 225, 270, 315].map(a => '<i class="sp" style="--a:' + a + 'deg"></i>').join('')}<div class="rc"><svg width="46" height="46" viewBox="0 0 18 18"><path d="M3.5 9.5L7.5 13.5L14.5 5"/></svg></div></div><div class="rt-done">${ttl}</div><div class="rt-sub">${act ? esc(nameOf(act)) + ' · отдых окончен' : 'Отдых окончен'}</div><button type="button" class="rt-b pr wide rt-go" data-r="skip">Погнали</button><div class="rt-auto"><b></b></div>`;
     } else if (view === 'pick') {
       const pr = isPro(), pi = GAMES.map((g, i) => g.pro ? i : -1).filter(i => i >= 0), nowD = new Date(), dayN = Math.floor((nowD.getTime() - nowD.getTimezoneOffset() * 6e4) / 864e5), di = pi[dayN % pi.length], mm = Math.max(0, Math.floor((new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() + 1) - nowD) / 6e4)), nOpen = pr ? GAMES.length : GAMES.filter(g => !g.pro).length + 1, cardH = (g, i) => `<button type="button" class="rt-card" data-gi="${i}" style="--h:${GH[g.k]};--i:${i}"><span class="ic">${TH(g.k)}</span><span><b>${g.n}</b><small>${g.d}</small></span><em><i>рекорд</i>${s.best[g.k] || 0}</em></button>`;
@@ -8401,7 +8553,9 @@ const REST = (function(){
     <div class="tgl${s.game ? ' on' : ''}" data-act="rtog" data-k="game" style="margin-top:12px"><span class="sw2"></span><b>Мини-игры «Сыграть до гонга»</b></div>
     <div class="cap" style="margin-top:8px">Игра идёт только пока длится отдых и закрывается вместе с таймером.</div>
     <div class="pbstd" style="margin-top:14px"><div><b>Стандартный отдых</b><small>для новых подходов в плане</small></div><div class="pbn"><button type="button" class="pbb" data-act="rtstd" data-d="-1" aria-label="Меньше">${IC('minus', 15)}</button><span class="pbsv" id="rt-std">${fmtRs(s.std || 90)}</span><button type="button" class="pbb" data-act="rtstd" data-d="1" aria-label="Больше">${IC('plus', 15)}</button></div></div></div>`;
-  return {start, card, s, std: () => s.std || 90, setStd(v){ s.std = v; save(); }, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH};
+  return {start, card, s, std: () => s.std || 90, setStd(v){ s.std = v; save(); }, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH,
+    dayInfo(){ const i = dayGi(), g = GAMES[i]; return {i, k:g.k, n:g.n, best:s.best[g.k] || 0, th:TH(g.k)}; },
+    playDay(){ if (run) { min = false; view = 'rest'; render(); return; } start(null, 300); free = true; openGame(dayGi()); }};
 })();
 
 function slBlock(src, same, act, st){
@@ -8704,6 +8858,28 @@ function actsHTML(){
 }
 const ACT = {
   tab: el => { if (S.fprof) { S.fprof = null; _rTab = null; if (!sheetCtx) { try { if (ver('6.1')) tg.BackButton.hide(); } catch (e) {} } } if (S.tab !== el.dataset.tab || _rTab === null) { S.tab = el.dataset.tab; S.meSet = false; S.pers = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') { FR_TAB_T = performance.now(); if (!FR.data || Date.now() - (FR.at || 0) > 20000) loadFriends(); } } },
+  qwalk: () => {
+    if (valid().length) return;
+    const data = {date:isoOf(todayN()), act:'run', feeling:4, note:'', minutes:15, speed:4.5, incline:0};
+    const bad = acCheck(data, null); if (bad) { hap.warn(); toast(bad); return; }
+    const xp0 = myLevel().xp, w = Object.assign({id:uid(), created:nowSec()}, data);
+    db.workouts.push(w); touch('workout', w); ME.at = 0; save(); render(); hap.ok();
+    const dx = myLevel().xp - xp0; toast('Первая прогулка записана' + (dx > 0 ? ` · +${dx} XP` : ''));
+    WK.at = 0; setTimeout(() => loadWelcome(true), 1200);
+  },
+  playday: () => { hap.tap(); try { REST.playDay(); } catch (e) {} },
+  wclaim: async el => {
+    const day = +el.dataset.day; if (!day || el.disabled) return; el.disabled = true; hap.imp();
+    try {
+      const j = await apiAuth('/welcome/claim', {day});
+      if (j && j.status === 'ok') {
+        if (j.t === 'gift') setGifts(j.gifts);
+        else { PROM.st = null; INBOX_PRO = true; setTimeout(() => showProArrived('VOOB'), 250); if (tgUser) { BDG_ASKED.delete(+tgUser.id); askBadges([tgUser.id]); } scheduleSync(50); }
+        hap.ok();
+      } else if (j && j.status === 'locked') toast('Эта награда откроется в свой день');
+      await loadWelcome(true);
+    } catch (e) { toast('Не получилось забрать награду — попробуй ещё раз'); el.disabled = false; }
+  },
   add: () => { hap.imp(); S.actsXl = false; openAddChoice(); },
   golive: () => { hap.imp(); if (!resumeLive()) updFab(); },
   addgo: el => { hap.tap(); S.addMode = el.dataset.m === 'past' ? 'past' : 'now'; S.actsXl = false; openActs(false); },

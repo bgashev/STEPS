@@ -1291,6 +1291,100 @@ async function routeLoginPoll(body: any) {
   return json({ status: "ok", token, user: await userInfo(data.tg_id) });
 }
 
+
+/* ---------- v1.832: приветственная неделя, разрешение на сообщения, напоминания ---------- */
+const TZ_MS = 5 * 3600 * 1000;   // Павлодар/Астана: UTC+5
+const lday = (ms: number) => Math.floor((ms + TZ_MS) / DAY);
+const WELCOME_KEEP = 9;          // награду дня можно забрать до 9-го дня с регистрации
+const WELCOME: Record<number, { t: "gift" | "pro"; kind?: string; days?: number; title: string; sub: string }> = {
+  1: { t: "gift", kind: "star", title: "Подарок от VOOB", sub: "Звезда в твою коллекцию" },
+  2: { t: "pro", days: 1, title: "PRO на сутки", sub: "Все рамки и фоны открыты на 24 часа" },
+  3: { t: "gift", kind: "dumbbell", title: "Золотая гантеля", sub: "Ещё один подарок в коллекцию" },
+  7: { t: "pro", days: 3, title: "PRO на 3 дня", sub: "Финал недели — всё открыто" },
+};
+async function welcomeState(me: number) {
+  const { data: u } = await db.from("users").select("created_at, notify_ok").eq("tg_id", me).maybeSingle();
+  if (!u?.created_at) return { eligible: false, notify_ok: !!u?.notify_ok };
+  const day = lday(Date.now()) - lday(new Date(u.created_at).getTime()) + 1;
+  const { data: cl } = await db.from("welcome_claims").select("day").eq("tg_id", me);
+  const got = new Set((cl ?? []).map((x: any) => x.day));
+  const left = Object.keys(WELCOME).map(Number).some((d) => !got.has(d));
+  return {
+    eligible: day >= 1 && day <= WELCOME_KEEP && left, day: Math.max(1, day), notify_ok: !!u.notify_ok,
+    days: Object.entries(WELCOME).map(([d, r]) => ({ day: +d, t: r.t, title: r.title, sub: r.sub, claimed: got.has(+d) })),
+  };
+}
+async function routeWelcomeStatus(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  return json(await welcomeState(me));
+}
+async function routeWelcomeClaim(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const d = Number(body?.day), r = WELCOME[d];
+  if (!r) return fail("Нет такой награды", 400);
+  const st: any = await welcomeState(me);
+  if (!st.eligible || d > st.day) return json({ status: "locked" });
+  const { error: ce } = await db.from("welcome_claims").insert({ tg_id: me, day: d });
+  if (ce) return json({ status: "done" });   // уже получено (первичный ключ)
+  if (r.t === "gift") {
+    const GIFTS = await giftTypes();
+    if (!GIFTS[r.kind!]) { await db.from("welcome_claims").delete().eq("tg_id", me).eq("day", d); return fail("Подарок недоступен", 500); }
+    const { error } = await db.from("gifts").insert({ from_id: ADMIN_TG_ID || me, to_id: me, kind: r.kind });
+    if (error) { await db.from("welcome_claims").delete().eq("tg_id", me).eq("day", d); return fail("Не удалось выдать подарок", 500); }
+    return json({ status: "ok", t: "gift", gifts: await myGifts(me) });
+  }
+  const { data: s } = await db.from("pro_subs").select("until, plan").eq("tg_id", me).maybeSingle();
+  const base = s?.until && new Date(s.until).getTime() > Date.now() ? new Date(s.until).getTime() : Date.now();
+  const until = new Date(base + r.days! * DAY).toISOString();
+  const { error } = await db.from("pro_subs").upsert({ tg_id: me, until, plan: s?.plan ?? "welcome", updated_at: new Date().toISOString() }, { onConflict: "tg_id" });
+  if (error) { await db.from("welcome_claims").delete().eq("tg_id", me).eq("day", d); return fail("Не удалось включить PRO", 500); }
+  return json({ status: "ok", t: "pro", until, pro: await proStatus(me) });
+}
+async function routeNotifyAllow(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  await db.from("users").update({ notify_ok: !!body?.ok }).eq("tg_id", me);
+  return json({ status: "ok" });
+}
+
+/* Напоминания: дёргается по расписанию (pg_cron → POST /cron/remind с заголовком x-cron-secret). Не чаще раза в 20 часов на человека, только 11:00–21:00 по Астане, максимум 3 «зова» новичку. */
+const CRON_SECRET = Deno.env.get("CRON_SECRET") ?? "";
+async function routeCronRemind(req: Request) {
+  if (!CRON_SECRET || !safeEqual(req.headers.get("x-cron-secret") ?? "", CRON_SECRET)) return fail("Нет доступа", 403);
+  const hour = new Date(Date.now() + TZ_MS).getUTCHours();
+  if (hour < 11 || hour >= 21) return json({ status: "quiet" });
+  const cool = new Date(Date.now() - 20 * 3600 * 1000).toISOString();
+  const { data: us } = await db.from("users").select("tg_id, first_name, handle, created_at, remind_n, remind_at, notify_ok")
+    .eq("notify_ok", true).or("blocked.is.null,blocked.eq.false").is("delete_at", null).lt("remind_n", 3).limit(400);
+  let sent = 0;
+  for (const u of us ?? []) {
+    if (u.remind_at && u.remind_at > cool) continue;
+    const age = Date.now() - new Date(u.created_at).getTime();
+    const { data: ws } = await db.from("records").select("data").eq("tg_id", u.tg_id).eq("kind", "workout").eq("deleted", false).limit(400);
+    const days = new Set((ws ?? []).map((r: any) => dnum(r.data?.date)).filter((x: any) => x != null));
+    const today = lday(Date.now());
+    let text = "";
+    if (days.size === 0) {
+      const need = [20 * 3600e3, 3 * DAY, 7 * DAY][u.remind_n];
+      if (age >= need) text = [
+        `👟 ${u.first_name || "Привет"}, твой первый шаг в VOOB — одно касание. Награда и достижение «Первый шаг» уже ждут.`,
+        `🎁 В VOOB идёт неделя новичка: тебя ждёт награда дня. Загляни — это быстро.`,
+        `✨ Последнее напоминание: отметь первую прогулку в VOOB — и получишь уровень, XP и достижение.`,
+      ][u.remind_n];
+    } else if (!days.has(today) && days.has(today - 1)) {
+      let run = 0; for (let d = today - 1; days.has(d); d--) run++;
+      if (run >= 3 && hour >= 17) text = `🔥 Серия ${run} дн. подряд — сегодня ещё без тренировки. Отметь её, пока серия не прервалась.`;
+    }
+    if (!text) continue;
+    const r = await tg("sendMessage", { chat_id: u.tg_id, text, reply_markup: openBtnMk() });
+    if (r?.ok) { sent++; await db.from("users").update({ remind_at: new Date().toISOString(), remind_n: days.size === 0 ? u.remind_n + 1 : u.remind_n }).eq("tg_id", u.tg_id); }
+    else await db.from("users").update({ notify_ok: false }).eq("tg_id", u.tg_id);   // бот заблокирован — больше не пишем
+  }
+  return json({ status: "ok", sent });
+}
+
 async function routeSync(body: any) {
   const tgId = await sessionUser(body?.token);
   if (!tgId) return noSession();
@@ -1454,6 +1548,10 @@ Deno.serve(async (req) => {
       case "/tg-webapp": return await routeWebApp(body);
       case "/login/start": return await routeLoginStart();
       case "/login/poll": return await routeLoginPoll(body);
+      case "/welcome/status": return await routeWelcomeStatus(body);
+      case "/welcome/claim": return await routeWelcomeClaim(body);
+      case "/notify/allow": return await routeNotifyAllow(body);
+      case "/cron/remind": return await routeCronRemind(req);
       case "/sync": return await routeSync(body);
       case "/logout": return await routeLogout(body);
       case "/avatar": return await routeAvatar(body);
