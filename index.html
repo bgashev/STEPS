@@ -4017,10 +4017,9 @@ html.web #tabs .tbi{top:262px}
 #ax-scan.ok .vf2{left:calc(50% - 125px);right:calc(50% - 125px);top:calc(22% + 75px);height:100px;border:2px solid #7cffb2;border-radius:20px;box-shadow:0 0 0 2000px rgba(5,5,8,.7),0 0 36px rgba(124,255,178,.65)}#ax-scan.ok .vf2 .ln{display:none}
 #ax-scan .hint{top:calc(22% + 272px);transition:top .75s cubic-bezier(.3,1.15,.3,1)}#ax-scan.ok .hint{top:calc(22% + 200px)}#ax-scan.ok .hint b{color:#9af0bd;font-family:ui-monospace,Menlo,monospace;letter-spacing:.14em}
 #ax-scan .zm{display:flex;justify-content:center;gap:4px;margin:0 auto 12px;width:max-content;background:rgba(255,255,255,.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:4px}#ax-scan .zm:empty{display:none}#ax-scan .zm button{border:0;background:none;color:rgba(255,255,255,.8);font:inherit;font-size:13px;font-weight:800;padding:8px 14px;border-radius:16px}#ax-scan .zm button.on{background:#fff;color:#111}
-.ax-hb{width:auto;height:48px;padding:0 16px 0 12px;gap:10px;border-radius:18px;display:flex;align-items:center;border:1px solid rgba(255,255,255,.14);background:linear-gradient(150deg,color-mix(in srgb,var(--accent) 30%,var(--surface)),var(--surface));box-shadow:0 10px 24px -12px var(--accent),0 1px 0 rgba(255,255,255,.18) inset;position:relative;overflow:hidden;font:inherit;transition:transform .2s}
-.ax-hb:active{transform:scale(.95)}.ax-hb b{font-size:14px;font-weight:800;letter-spacing:-.2px}
-.ax-hb .gi{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:22px;height:22px}.ax-hb .gi i{border-radius:6px;background:linear-gradient(150deg,#7fd3ff,#2f7bf0)}.ax-hb .gi i:nth-child(2){background:linear-gradient(150deg,#ffb04d,#f0446b)}.ax-hb .gi i:nth-child(3){background:linear-gradient(150deg,#a99bff,#5b43e8)}.ax-hb .gi i:nth-child(4){background:linear-gradient(150deg,#8ee6b0,#2fa66a)}
-.ax-hb::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.22),transparent);animation:axhs 5s ease-in-out infinite}@keyframes axhs{0%,70%{left:-60%}100%{left:130%}}
+.ax-hb{width:44px;height:44px;border-radius:16px;display:grid;place-items:center;border:1px solid var(--border);background:var(--surface);color:var(--text);box-shadow:none;font:inherit;padding:0;transition:transform .2s,background .2s}
+.ax-hb:active{transform:scale(.93);background:var(--surface2,var(--surface))}
+.ax-hb .gi{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:20px;height:20px}.ax-hb .gi i{border-radius:3px;background:currentColor;opacity:.78}.ax-hb .gi i:nth-child(1){opacity:1;background:var(--accent)}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -4035,7 +4034,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.842';
+const APP = 'VOOB (by BGASHEV) Mini App v1.843';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9868,7 +9867,7 @@ const AX = (function(){
   });
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.id === 'axs-n') acts.axnum(); });
   document.addEventListener('change', e => { if (e.target && e.target.id === 'ax-cu') { const c = CAL(); if (c.custom < 800) { c.custom = 800; e.target.value = 800; } save(); render(); } });
-  return {view, tiles:homeTiles, acts, leave, active:() => !!(S.app && ST.s), btn:() => `<button type="button" class="ax-hb" data-act="appsheet" aria-label="Приложения"><span class="gi"><i></i><i></i><i></i><i></i></span><b>Приложения</b></button>`};
+  return {view, tiles:homeTiles, acts, leave, active:() => !!(S.app && ST.s), btn:() => `<button type="button" class="ax-hb" data-act="appsheet" aria-label="Приложения"><span class="gi"><i></i><i></i><i></i><i></i></span></button>`};
 })();
 Object.assign(ACT, AX.acts);
 
