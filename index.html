@@ -4053,7 +4053,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.856';
+const APP = 'VOOB (by BGASHEV) Mini App v1.857';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6359,7 +6359,7 @@ function startHTML(ws, doneToday, mob, plsug){
   const items = [['first', P.first], ['gq', P.gq], ['wk', P.wk], ['plan', plsug], ['gm', P.gm]].filter(x => x[1]);
   const hero = items.length && items[0][0] !== 'gm' ? items.shift()[1] : '';
   const queue = items.map(x => x[1]).join('');
-  return hero + (queue ? `<div class="stq"><div class="stq-h">Ещё для тебя<em>${items.length}</em></div>${queue}</div>` : '') + (P.chips || '');
+  return hero + (queue ? `<div class="stq"><div class="stq-h">Ещё для тебя<em>${items.length}</em></div>${queue}</div>` : '');   // v1.857: плашки «серия / уровень / медаль» убраны, на их месте — цель недели
 }
 
 function viewHome(web){
@@ -6398,7 +6398,7 @@ function viewHome(web){
       <button type="button" class="gx2-ed" data-act="goaled" aria-label="Изменить цель">${IC('edit', 15)}</button></div>${gtxt}<div class="gx2-bar"><i style="width:${Math.min(100, pct)}%"></i></div>${gsBtn}</div>
       <div class="gm-s">${goalStrip(ws, g.days)}${note}</div></div>`),
     actionsH = `<div class="actions"><button class="btn ghost" data-act="plans">${IC('plan')}План${upPlans(ws).length ? `<span class="pn">${upPlans(ws).length}</span>` : ''}</button>${ws.length ? `<button class="btn ghost" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat')}Повторить</button>` : ''}</div>`;
-  h += web ? actionsH + AX.tiles(true) + goalH : actionsH + (inWeb ? '' : AX.tiles()) + goalH;
+  h += web ? actionsH + AX.tiles(true) + goalH : goalH + actionsH + (inWeb ? '' : AX.tiles());
   h += web ? feedShortHTML(6, 4) : feedTickerHTML();
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
   const due = dueWeekSummary(ws);
