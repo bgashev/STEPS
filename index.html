@@ -1091,6 +1091,24 @@ html:not(.web) body:has(#sw.open) .rt-pill{bottom:auto}
 .rt-gmw.apps .rt-gline{display:none}.rt-gmw.apps .rt-gtm,.rt-gmw.apps [data-r="gmin"]{display:none}.rt-gmw.apps .rt-gh{justify-content:space-between}.rt-gbs{display:flex;gap:8px}.rt-gbn{display:flex;align-items:center;gap:7px;height:42px;padding:0 14px;border-radius:14px;border:1.5px solid color-mix(in srgb,var(--text) 28%,transparent);background:color-mix(in srgb,var(--surface) 92%,var(--text) 8%);color:var(--text);font-family:inherit;font-weight:700;font-size:14px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.28);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}.rt-gbn svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.rt-gbn:active{transform:scale(.95)}.rt-gbn.sq{width:42px;padding:0;justify-content:center}.rt-gbn.pr{background:var(--accent);color:var(--on-accent);border-color:transparent}
 .rt-gline{position:absolute;left:14px;right:14px;top:var(--gh);height:3px;border-radius:2px;background:var(--surface2);overflow:hidden}.rt-gline b{display:block;height:100%;width:0;background:var(--accent)}
 .rt-gm canvas{position:absolute;left:0;right:0;top:calc(var(--gh) + 8px);bottom:0;width:100%;height:calc(100% - var(--gh) - 8px);touch-action:none;cursor:pointer}
+.rt-gbn.rk{flex:none;color:#ffd166;border-color:rgba(255,209,102,.5);background:linear-gradient(160deg,rgba(255,209,102,.2),rgba(255,140,60,.08)),color-mix(in srgb,var(--surface) 92%,var(--text) 8%)}.rt-gbn.rk:active{transform:scale(.93)}
+.rt-rk{position:absolute;inset:0;z-index:5;background:rgba(6,6,12,.62);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);display:flex;align-items:flex-start;justify-content:center;padding:calc(var(--gh) + 6px) 14px 14px;animation:rtfi .2s both}
+.rk-c{width:100%;max-width:420px;max-height:100%;display:flex;flex-direction:column;border-radius:26px;padding:1.5px;background:linear-gradient(150deg,#ffd166,var(--accent) 45%,#6c5ce7);box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 40px rgba(180,167,238,.18);animation:rtup .3s cubic-bezier(.2,1,.3,1) both}
+.rk-c>*{background:var(--bg)}.rk-h{display:flex;align-items:center;gap:10px;padding:16px 14px 12px 18px;border-radius:25px 25px 0 0;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 16%,var(--bg)),var(--bg))}
+.rk-t{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:850;letter-spacing:.16em;color:#ffd166}.rk-t svg{width:17px;height:17px;stroke:#ffd166;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.rk-h b{flex:1;min-width:0;font-size:17px;font-weight:850;letter-spacing:-.3px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk-x{flex:none;width:34px;height:34px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--text);display:grid;place-items:center;cursor:pointer}.rk-x svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
+.rk-l{overflow-y:auto;padding:4px 12px 14px;border-radius:0 0 25px 25px;display:flex;flex-direction:column;gap:7px;max-height:62vh}
+.rk-em{text-align:center;color:var(--muted);font-weight:700;font-size:14px;padding:22px 10px;line-height:1.45}.rk-em small{font-weight:600;font-size:12px;opacity:.8}
+.rk-r{position:relative;display:flex;align-items:center;gap:10px;padding:9px 12px 9px 9px;border-radius:16px;border:1px solid var(--border);background:var(--surface);overflow:hidden;animation:rtup .35s both}
+.rk-r::before{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--p);background:linear-gradient(90deg,color-mix(in srgb,var(--accent) 24%,transparent),transparent);pointer-events:none}
+.rk-r>*{position:relative}.rk-r.me{border-color:color-mix(in srgb,var(--accent) 70%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent),0 0 18px rgba(180,167,238,.2)}
+.rk-r.z{opacity:.55}.rk-r.z::before{display:none}
+.rk-n{width:26px;height:26px;border-radius:9px;display:grid;place-items:center;font-style:normal;font-weight:850;font-size:13px;background:var(--surface2);color:var(--muted);flex:none}
+.rk-r.m1 .rk-n{background:linear-gradient(145deg,#ffe38a,#f5a524);color:#4a2f00;box-shadow:0 0 12px rgba(255,200,70,.5)}.rk-r.m2 .rk-n{background:linear-gradient(145deg,#f1f3f8,#aab3c4);color:#2a303c}.rk-r.m3 .rk-n{background:linear-gradient(145deg,#ffc79a,#cd7f4a);color:#3d1f0a}
+.rk-a{width:34px;height:34px;border-radius:50%;flex:none;display:grid;place-items:center;font-weight:800;font-size:14px;background:linear-gradient(145deg,var(--accent),#6c5ce7);color:#fff;overflow:hidden}.rk-a img{width:100%;height:100%;object-fit:cover}
+.rk-nm{flex:1;min-width:0;font-weight:750;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rk-nm em{font-style:normal;margin-left:7px;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:99px;background:var(--accent);color:#14141a}
+.rk-s{font-size:19px;font-weight:850;letter-spacing:-.5px;font-variant-numeric:tabular-nums}.rk-r.z .rk-s{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0}
 @keyframes rtfi{from{opacity:0}}@keyframes rtup{from{transform:translateY(40px);opacity:0}}@keyframes rtpop{from{transform:scale(.6);opacity:0}}
 
 .act.soon{border-style:dashed;color:var(--muted);background:transparent}
@@ -4054,7 +4072,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.860';
+const APP = 'VOOB (by BGASHEV) Mini App v1.861';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -8397,12 +8415,12 @@ const REST = (function(){
     {k:'road', n:'Перебежка', d:'Тап — вперёд, свайп — в стороны', f:mkRoad, pro:1}
   ];
   const QUIPS = ['Рекорд — это круто, но подход сам себя не сделает.', 'Мышцы остывают, пока ты тут красуешься.', 'Ещё раз? Время есть. Пока есть.', 'Штанга скучает без тебя.', 'Хорошо играешь. Так же и подход закрой.', 'VOOB считает подходы. Ты — рекорды.', 'Между подходами в VOOB можно всё. Кроме лени.'];
-  let G = null, GI = -1, raf = 0, lastT = 0, cv, cx, W, H, DPR = 1, quip = '', C = {}, gm = null, keyH = null, cd = 0, cdN = 0;
+  let G = null, GI = -1, raf = 0, lastT = 0, cv, cx, W, H, DPR = 1, quip = '', C = {}, gm = null, keyH = null, cd = 0, cdN = 0, pz = false;
   const svOk = () => { const v = s.sv; if (!v || !v.d || !GAMES[v.i] || Date.now() - v.t > 6 * 36e5) return null; const g = GAMES[v.i]; return (!g.pro || isPro() || v.i === dayGi()) ? v : null; };
   function snap(){ if (!G) return; try { if (G.dead || !(G.score > 0)) { if (s.sv) { s.sv = null; save(); } return; } s.sv = {i: GI, d: JSON.stringify(G), sc: G.score | 0, t: Date.now()}; save(); } catch (e) {} }
   document.addEventListener('visibilitychange', () => { if (document.hidden) snap(); });
   function rr(c, x, y, w, h, r){ r = Math.min(r, w / 2, h / 2); c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
-  function onDie(g, key){ g.dead = true; g.deadAt = performance.now(); sfx('die'); if (g.score > (s.best[key] || 0)) { s.best[key] = g.score; save(); g.newBest = true; hap.ok(); sfx('record'); } else { g.newBest = false; hap.warn(); }
+  function onDie(g, key){ g.dead = true; g.deadAt = performance.now(); sfx('die'); if (g.score > (s.best[key] || 0)) { s.best[key] = g.score; save(); pushBest(key); g.newBest = true; hap.ok(); sfx('record'); } else { g.newBest = false; hap.warn(); }
     const l = left(); quip = apps ? ['Ещё разок?', 'Рекорд рядом.', 'Можно лучше — попробуй ещё.', 'Тап — и новая попытка.'][Math.floor(Math.random() * 4)] : l < 25 ? 'Гонг через ' + Math.ceil(l) + ' с. Штанга ждёт.' : QUIPS[Math.floor(Math.random() * QUIPS.length)]; }
   const bstP = (g, x, y, n, col, sp) => { g.pt = g.pt || []; for (let k = 0; k < n; k++) { const a = Math.random() * 6.283, v = (sp || 90) * (.4 + Math.random()); g.pt.push({x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 20, l: .5 + Math.random() * .4, m: .9, c: col}); } };
   const popT = (g, x, y, t, col) => { g.pop = g.pop || []; g.pop.push({x, y, t, c: col, l: .8}); };
@@ -9017,7 +9035,7 @@ const REST = (function(){
     C = {ac:v('--accent'), tx:v('--text'), mu:v('--muted'), bd:v('--border'), s2:v('--surface2'), bg:v('--bg'), gr:v('--green'), rd:v('--red'), ff:getComputedStyle(document.body).fontFamily || 'sans-serif'};
     view = 'rest'; if (el) el.style.display = 'none'; GI = i;
     gm = document.createElement('div'); gm.id = 'rtgm'; gm.className = 'rt-gmw' + (apps ? ' apps' : '');
-    gm.innerHTML = '<div class="rt-gm"><div class="rt-gh"><div class="rt-gtm"><span class="time" data-rt="t"></span><small>ДО ГОНГА</small></div><div class="rt-gsc" id="rtgsc"></div><div class="rt-gbs"><button type="button" class="rt-gbn sq" data-r="gmin" aria-label="Свернуть"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><button type="button" class="rt-gbn pr" data-r="gback"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>' + (apps ? 'Назад' : 'К отдыху') + '</button></div></div><i class="rt-gline"><b data-rt="ln"></b></i><canvas id="rtgc"></canvas></div>';
+    pz = false; gm.innerHTML = '<div class="rt-gm"><div class="rt-gh"><button type="button" class="rt-gbn sq rk" data-r="grk" aria-label="Рейтинг друзей"><svg viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0V4zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3M12 14v4M8.5 20h7"/></svg></button><div class="rt-gtm"><span class="time" data-rt="t"></span><small>ДО ГОНГА</small></div><div class="rt-gsc" id="rtgsc"></div><div class="rt-gbs"><button type="button" class="rt-gbn sq" data-r="gmin" aria-label="Свернуть"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><button type="button" class="rt-gbn pr" data-r="gback"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>' + (apps ? 'Назад' : 'К отдыху') + '</button></div></div><i class="rt-gline"><b data-rt="ln"></b></i><canvas id="rtgc"></canvas></div>';
     document.body.appendChild(gm);
     cv = gm.querySelector('canvas'); DPR = Math.min(2, window.devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * DPR; cv.height = H * DPR; cx = cv.getContext('2d'); cx.setTransform(DPR, 0, 0, DPR, 0, 0);
     egg = null; eggT = 14 + Math.random() * 14; G = GAMES[i].f(); G.init(); cd = 0; if (sv) { try { Object.assign(G, JSON.parse(sv.d)); cd = 3; cdN = 0; } catch (e) { G = GAMES[i].f(); G.init(); } } s.sv = null; save(); lastT = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
@@ -9027,16 +9045,41 @@ const REST = (function(){
     const pu = e => { if (!G || G.dead || cd > 0 || !G.up) return; const [x, y] = pp(e); G.up(x, y); };
     cv.addEventListener('pointerup', pu); cv.addEventListener('pointercancel', pu);
     gm.querySelector('[data-r="gback"]').addEventListener('click', () => { hap.tap(); if (apps) { close(); return; } stopGame(); if (el) { el.style.display = ''; render(); } });
+    gm.querySelector('[data-r="grk"]').addEventListener('click', () => { hap.tap(); openRank(); });
     gm.querySelector('[data-r="gmin"]').addEventListener('click', () => { hap.tap(); stopGame(); min = true; render(); });
     keyH = e => { if (G && (e.code === 'Space' || e.code === 'ArrowUp')) { e.preventDefault(); gtap(); } else if (G && G.key && !G.dead && cd <= 0 && /^Arrow/.test(e.code)) { e.preventDefault(); G.key(e.code); } }; document.addEventListener('keydown', keyH);
     paint(left());
   }
-  function stopGame(){ snap(); cd = 0; cancelAnimationFrame(raf); G = null; if (gm) { gm.remove(); gm = null; } if (keyH) { document.removeEventListener('keydown', keyH); keyH = null; } if (el) el.style.display = ''; }
+  /* v1.861: рейтинг друзей в игре */
+  function pushBest(k){ try { if (typeof apiAuth !== 'function' || !s.best[k]) return; apiAuth('/games/top', {bests:{[k]:s.best[k]}}).catch(() => {}); } catch (e) {} }
+  function openRank(){
+    if (!gm || !G) return; const old = gm.querySelector('.rt-rk'); if (old) { old.remove(); pz = false; return; }
+    const g = GAMES[GI], key = g.k; pz = true;
+    const bx = document.createElement('div'); bx.className = 'rt-rk';
+    bx.innerHTML = '<div class="rk-c"><div class="rk-h"><span class="rk-t"><svg viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0V4zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3M12 14v4M8.5 20h7"/></svg>РЕЙТИНГ</span><b>' + esc(g.n) + '</b><button type="button" class="rk-x" aria-label="Закрыть"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="rk-l"><div class="rk-em">Загружаю таблицу…</div></div></div>';
+    const shut = () => { bx.remove(); pz = false; lastT = performance.now(); };
+    bx.addEventListener('click', e => { if (e.target === bx || e.target.closest('.rk-x')) { hap.tap(); shut(); } });
+    gm.querySelector('.rt-gm').appendChild(bx);
+    const L = bx.querySelector('.rk-l');
+    const mine = Math.max(s.best[key] || 0, G && G.score || 0);
+    apiAuth('/games/top', {game:key, bests:Object.assign({}, s.best)}).then(j => {
+      if (!bx.isConnected) return;
+      const rows = (j.rows || []).slice(); const top = Math.max(1, ...rows.map(r => r.best));
+      if (rows.length <= 1) { L.innerHTML = '<div class="rk-em">Пока ты здесь один<br><small>Добавь друзей — и узнаешь, кто круче</small></div>' + (rows[0] ? row(rows[0], 0, top) : ''); return; }
+      L.innerHTML = rows.map((r, i) => row(r, i, top)).join('');
+    }).catch(() => { if (bx.isConnected) L.innerHTML = '<div class="rk-em">Не получилось загрузить<br><small>Проверь связь и открой снова</small></div>'; });
+    function row(r, i, top){
+      const ph = (typeof FR !== 'undefined' && FR.ph && FR.ph.get(r.tg_id)) || '', nm = r.name || 'Игрок', init = esc(nm.trim().charAt(0).toUpperCase() || '?');
+      const medal = r.best > 0 && i < 3 ? ' m' + (i + 1) : '';
+      return '<div class="rk-r' + (r.me ? ' me' : '') + medal + (r.best ? '' : ' z') + '" style="--p:' + Math.round(Math.max(4, r.best / top * 100)) + '%"><i class="rk-n">' + (r.best ? i + 1 : '–') + '</i><span class="rk-a">' + (ph ? '<img src="' + ph + '" alt="">' : init) + '</span><span class="rk-nm">' + esc(nm) + (r.me ? '<em>ты</em>' : '') + '</span><b class="rk-s">' + (r.best ? r.best : 'не играл') + '</b></div>';
+    }
+  }
+  function stopGame(){ snap(); cd = 0; pz = false; cancelAnimationFrame(raf); G = null; if (gm) { gm.remove(); gm = null; } if (keyH) { document.removeEventListener('keydown', keyH); keyH = null; } if (el) el.style.display = ''; }
   function gdown(x, y){ if (!G || cd > 0) return; if (G.dead) { if (performance.now() - G.deadAt > 500) G.init(); } else if (G.down) G.down(x, y); else G.tap(); }
   function gtap(){ if (!G || cd > 0) return; if (G.dead) { if (performance.now() - G.deadAt > 500) G.init(); } else G.tap(); }
   function loop(ts){
     if (!G) return; const dt = Math.min(.033, (ts - lastT) / 1000); lastT = ts;
-    if (cd > 0) cd -= dt; else G.update(dt); cx.clearRect(0, 0, W, H); G.draw(cx); if (cd <= 0) eggStep(dt); eggDraw(cx);
+    if (cd > 0) cd -= dt; else if (!pz) G.update(dt); cx.clearRect(0, 0, W, H); G.draw(cx); if (cd <= 0) eggStep(dt); eggDraw(cx);
     if (cd > 0) { const n = Math.ceil(cd); if (n !== cdN) { cdN = n; hap.tap(); } cx.globalAlpha = .55; cx.fillStyle = C.bg; cx.fillRect(0, 0, W, H); cx.globalAlpha = 1; cx.textAlign = 'center'; cx.fillStyle = C.mu; cx.font = '700 15px ' + C.ff; cx.fillText('Продолжаем · приготовься', W / 2, H * .36); const fr = cd - Math.floor(cd), sc2 = 1 + fr * .35; cx.save(); cx.translate(W / 2, H * .36 + 74); cx.scale(sc2, sc2); cx.globalAlpha = .35 + .65 * (1 - fr); cx.fillStyle = C.ac; cx.font = '800 92px ' + C.ff; cx.fillText(n, 0, 0); cx.restore(); cx.globalAlpha = 1; }
     if (G.dead) { cx.globalAlpha = .8; cx.fillStyle = C.bg; cx.fillRect(0, 0, W, H); cx.globalAlpha = 1; cx.textAlign = 'center';
       cx.fillStyle = C.tx; cx.font = '800 26px ' + C.ff; cx.fillText(G.newBest ? 'Новый рекорд!' : 'Мимо!', W / 2, H * .36);

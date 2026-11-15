@@ -1016,6 +1016,32 @@ const POKE_TEXTS = [
   "🔥 {n} уже в деле. Догоняй!",
   "😏 {n} заметил(а), что ты давно не заходил(а). Покажешь, на что способен?",
 ];
+/* v1.861: рейтинг друзей в играх: клиент присылает свои рекорды (только растут), получает таблицу по игре */
+async function routeGamesTop(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const bests = body?.bests && typeof body.bests === "object" ? body.bests : null;
+  if (bests) {
+    const rows = Object.entries(bests).filter(([k, v]) => /^[a-z0-9]{2,12}$/.test(k) && Number.isFinite(+v) && +v > 0 && +v < 1e6)
+      .slice(0, 40).map(([k, v]) => ({ tg_id: me, game: k, best: Math.floor(+v), updated: new Date().toISOString() }));
+    if (rows.length) {
+      const { data: have } = await db.from("game_scores").select("game, best").eq("tg_id", me).in("game", rows.map((r) => r.game));
+      const cur = new Map<string, number>((have ?? []).map((x: any) => [x.game, x.best]));
+      const up = rows.filter((r) => r.best > (cur.get(r.game) ?? 0));
+      if (up.length) await db.from("game_scores").upsert(up, { onConflict: "tg_id,game" });
+    }
+  }
+  const game = String(body?.game ?? "");
+  if (!/^[a-z0-9]{2,12}$/.test(game)) return json({ ok: true });
+  const dead = await deactivatedSet(await friendIds(me));
+  const ids = [me, ...(await friendIds(me)).filter((id) => !dead.has(id))];
+  const [sc, users] = await Promise.all([db.from("game_scores").select("tg_id, best").eq("game", game).in("tg_id", ids), usersMap(ids)]);
+  const bm = new Map<number, number>((sc.data ?? []).map((x: any) => [x.tg_id, x.best]));
+  const rows = ids.map((id) => ({ tg_id: id, name: displayName(users.get(id) ?? { tg_id: id }), best: bm.get(id) ?? 0, me: id === me }))
+    .sort((a, b) => b.best - a.best || (a.me ? -1 : 0));
+  return json({ game, rows });
+}
+
 async function routeFriendPoke(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
@@ -1601,6 +1627,7 @@ Deno.serve(async (req) => {
       case "/friends/respond": return await routeFriendRespond(body);
       case "/friends/privacy": return await routeFriendPrivacy(body);
       case "/friends/poke": return await routeFriendPoke(body);
+      case "/games/top": return await routeGamesTop(body);
       case "/gifts/send": return await routeGiftSend(body);
       case "/gifts/claim": return await routeGiftClaim(body);
       case "/profile/handle": return await routeHandle(body);
