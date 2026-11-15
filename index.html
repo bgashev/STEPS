@@ -891,7 +891,7 @@ html.web ::-webkit-scrollbar-corner{background:transparent}
 .pbd small{font-size:10.5px;font-weight:800;letter-spacing:.06em;color:var(--muted)}.pbd b{font-size:20px;font-weight:800;line-height:1;display:grid;place-items:center}
 .pbd:active{transform:scale(.94)}.pbd.on{background:var(--accent);border-color:transparent;color:var(--on-accent);box-shadow:0 10px 22px -12px var(--accent)}.pbd.on small{color:color-mix(in srgb,var(--on-accent) 70%,transparent)}
 .pbdo input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.pbdo svg{stroke:currentColor;fill:none;stroke-width:1.6}
-.pbstd{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:12px 14px;border-radius:18px;background:var(--surface2);border:1px solid var(--border)}.pbstd b{display:block;font-size:14.5px}.pbstd small{display:block;color:var(--muted);font-size:11.5px;line-height:1.35;margin-top:2px}
+.pbstd{display:flex;align-items:center;gap:12px;margin-top:14px;padding:12px 12px 12px 14px;border-radius:18px;background:var(--surface2);border:1px solid var(--border)}.pbsi{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;flex:none;color:var(--accent,#7c8cff);background:color-mix(in srgb,var(--accent,#7c8cff) 14%,transparent)}.pbst{flex:1;min-width:0}.pbstd b{display:block;font-size:14px;line-height:1.2}.pbstd small{display:block;color:var(--muted);font-size:11.5px;line-height:1.3;margin-top:3px}.pbcap{display:flex;align-items:center;flex:none;padding:3px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}.pbcap .pbb{width:32px;height:32px;border-radius:11px;border:0;background:transparent}.pbcap .pbb:active{background:var(--surface2)}.pbcap .pbsv{min-width:46px;font-size:15px}
 .pbn{display:flex;align-items:center;gap:6px;flex:none}.pbb{width:38px;height:38px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);display:grid;place-items:center;cursor:pointer;flex:none;transition:transform .12s}.pbb:active{transform:scale(.9)}.pbb.sm{width:30px;height:30px;border-radius:10px}
 .pbsv{min-width:50px;text-align:center;font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}
 .pbi{width:54px;height:38px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-size:17px;font-weight:800;text-align:center;min-width:0;-moz-appearance:textfield}.pbi:focus{outline:0;border-color:var(--accent)}
@@ -3815,7 +3815,7 @@ html.web #tabs .tbi{top:262px}
   html.web #sheet.pbw2 .pbd{min-width:0;width:100%;height:62px;background:var(--surface)}
   html.web #sheet.pbw2 .pbd.on{background:var(--accent);border-color:transparent;color:var(--on-accent)}
   html.web #sheet.pbw2 .pbd:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--border))}
-  html.web #sheet.pbw2 .pbstd{background:var(--surface);margin-bottom:14px}
+  html.web #sheet.pbw2 .pbstd{background:var(--surface);margin-bottom:14px}html.web #sheet.pbw2 .pbcap{background:var(--surface2)}
   html.web #sheet.pbw2 .pbbar{bottom:-24px;margin:18px -30px -24px;padding:14px 30px 18px;border-top:1px solid var(--border);background:var(--surface)}
   html.web #sheet.pbw2 .pbbar .btn{min-width:200px}
   html.web #sheet.pbw2 .pbpg{grid-template-columns:repeat(5,1fr)}
@@ -3860,7 +3860,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.833';
+const APP = 'VOOB (by BGASHEV) Mini App v1.834';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6305,7 +6305,7 @@ function openPlanB(p){
     <div class="pbdays" id="pb-days">${days.map(d => `<button type="button" class="pbd${d.iso === PB.date ? ' on' : ''}" data-act="pbdate" data-v="${d.iso}"><small>${d.lbl || d.wd}</small><b>${d.d}</b></button>`).join('')}<label class="pbd pbdo${inList ? '' : ' on'}"><small>Дата</small><b>${IC('plan', 17)}</b><input type="date" id="pb-date" value="${PB.date}" min="${isoOf(todayN())}"></label></div>
     <div class="pbsec">Название <em>необязательно</em></div>
     <input class="inp" id="pb-ttl" maxlength="40" placeholder="Например: Грудь и трицепс" value="${esc(PB.ttl)}">
-    <div class="pbstd"><div><b>Стандартный отдых</b><small>для новых подходов · свой — у каждого подхода</small></div><div class="pbn"><button type="button" class="pbb" data-act="pbstd" data-d="-1" aria-label="Меньше">${IC('minus', 15)}</button><span class="pbsv" id="pb-std">${fmtRs(std)}</span><button type="button" class="pbb" data-act="pbstd" data-d="1" aria-label="Больше">${IC('plus', 15)}</button></div></div>
+    <div class="pbstd"><span class="pbsi">${IC('clock', 18)}</span><div class="pbst"><b>Отдых</b><small>для новых подходов</small></div><div class="pbcap"><button type="button" class="pbb" data-act="pbstd" data-d="-1" aria-label="Меньше">${IC('minus', 14)}</button><span class="pbsv" id="pb-std">${fmtRs(std)}</span><button type="button" class="pbb" data-act="pbstd" data-d="1" aria-label="Больше">${IC('plus', 14)}</button></div></div>
     </div><div class="pbr2"><div class="pbsec">Упражнения</div><div id="pb-list"></div>
     <button type="button" class="pbadd" id="pb-addb" data-act="pbadd">${IC('plus', 18)}Добавить упражнение</button>
     <div class="pbpick" id="pb-pick"><div class="pbpg">${list.map(([k, l]) => `<button type="button" class="pbp" data-act="pbpick" data-v="${k}"><span>${IC(k, 22)}</span>${l}</button>`).join('')}</div></div>
@@ -8552,7 +8552,7 @@ const REST = (function(){
     <div class="tgl${s.auto ? ' on' : ''}" data-act="rtog" data-k="auto" style="margin-top:12px"><span class="sw2"></span><b>Запускать при «Ещё подход»</b></div>
     <div class="tgl${s.game ? ' on' : ''}" data-act="rtog" data-k="game" style="margin-top:12px"><span class="sw2"></span><b>Мини-игры «Сыграть до гонга»</b></div>
     <div class="cap" style="margin-top:8px">Игра идёт только пока длится отдых и закрывается вместе с таймером.</div>
-    <div class="pbstd" style="margin-top:14px"><div><b>Стандартный отдых</b><small>для новых подходов в плане</small></div><div class="pbn"><button type="button" class="pbb" data-act="rtstd" data-d="-1" aria-label="Меньше">${IC('minus', 15)}</button><span class="pbsv" id="rt-std">${fmtRs(s.std || 90)}</span><button type="button" class="pbb" data-act="rtstd" data-d="1" aria-label="Больше">${IC('plus', 15)}</button></div></div></div>`;
+    <div class="pbstd" style="margin-top:14px"><span class="pbsi">${IC('clock', 18)}</span><div class="pbst"><b>Отдых</b><small>для новых подходов</small></div><div class="pbcap"><button type="button" class="pbb" data-act="rtstd" data-d="-1" aria-label="Меньше">${IC('minus', 14)}</button><span class="pbsv" id="rt-std">${fmtRs(s.std || 90)}</span><button type="button" class="pbb" data-act="rtstd" data-d="1" aria-label="Больше">${IC('plus', 14)}</button></div></div></div>`;
   return {start, card, s, std: () => s.std || 90, setStd(v){ s.std = v; save(); }, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH,
     dayInfo(){ const i = dayGi(), g = GAMES[i]; return {i, k:g.k, n:g.n, best:s.best[g.k] || 0, th:TH(g.k)}; },
     playDay(){ if (run) { min = false; view = 'rest'; render(); return; } start(null, 300); free = true; openGame(dayGi()); }};
