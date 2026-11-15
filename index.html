@@ -3996,6 +3996,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 .ax-hist{background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden}.ax-hi{display:flex;align-items:center;gap:12px;padding:11px 8px 11px 14px}.ax-hi+.ax-hi{border-top:1px solid var(--border)}.ax-hi .ic{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:rgba(58,167,255,.14);color:#3a9bf0;flex:none}.ax-hi .t{flex:1;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}.ax-hi b{font-size:16px;font-weight:850;font-variant-numeric:tabular-nums}.ax-hi b em{font-style:normal;font-size:12px;color:var(--muted);font-weight:650}.ax-hi.old{opacity:.75}.ax-hi.old .ax-x{display:none}.ax-hi.old b{padding-right:10px}
 .ax-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:4px;margin-bottom:10px}.ax-seg button{border:0;background:none;color:var(--muted);font:inherit;font-weight:800;font-size:13px;padding:9px 0;border-radius:12px;cursor:pointer}.ax-seg button.on{background:var(--text);color:var(--bg)}
 .ax-sum{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.ax-sum>div{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:12px 14px}.ax-sum small{display:block;color:var(--muted);font-size:11.5px}.ax-sum b{display:block;font-size:21px;font-weight:850;letter-spacing:-.6px;font-variant-numeric:tabular-nums;margin-top:2px}.ax-sum em,.ax-wd em,.ax-dr em{font-style:normal;font-size:12px;color:var(--muted);font-weight:650;letter-spacing:0}
+.ax-clr{display:block;width:100%;margin:6px 0 12px;padding:12px;border-radius:999px;border:1px solid var(--border);background:none;color:var(--muted);font:inherit;font-weight:650;font-size:13.5px;cursor:pointer}.ax-clr.arm{color:#fff;background:#e0405f;border-color:transparent}
 .ax-seg.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:2px}.ax-seg.five button{font-size:12.5px;padding:10px 0;white-space:nowrap}.ax-cl.ov i{background:linear-gradient(180deg,#ffb04d,#f0446b)!important}
 .ax-wch{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:16px 12px 10px;margin-bottom:10px}.ax-bars{display:flex;gap:6px;height:130px;align-items:stretch;position:relative}.ax-bars.thin{gap:2px}.ax-cl{flex:1;min-width:0;border:0;background:none;padding:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative;cursor:pointer}.ax-cl i{display:block;width:100%;max-width:30px;border-radius:7px 7px 4px 4px;background:rgba(58,167,255,.5);transition:height .5s cubic-bezier(.2,.8,.2,1)}.thin .ax-cl i{border-radius:3px 3px 2px 2px}.ax-cl.ok i{background:linear-gradient(180deg,#8be0b0,#2fa968)}.ax-cl.sel i{background:linear-gradient(180deg,#7fd3ff,#2f7bf0);box-shadow:0 0 0 2px color-mix(in srgb,var(--text) 55%,transparent)}.ax-cl.ok.sel i{background:linear-gradient(180deg,#8be0b0,#2fa968)}.ax-cl.off{opacity:.35}.ax-cl .vl{font-size:10.5px;font-weight:800;color:var(--muted);margin-bottom:3px;min-height:12px;font-variant-numeric:tabular-nums}.ax-cl.sel .vl{color:var(--text)}
 .ax-gline{position:absolute;left:0;right:0;border-top:1.5px dashed rgba(47,169,104,.7);pointer-events:none;z-index:2}.ax-gline em{position:absolute;left:0;top:-15px;font-style:normal;font-size:10px;font-weight:800;color:#2fa968;background:var(--surface);padding:0 3px;border-radius:4px}
@@ -4080,7 +4081,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.876';
+const APP = 'VOOB (by BGASHEV) Mini App v1.877';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10104,7 +10105,7 @@ const AX = (function(){
     <div class="ax-sech"><span>Сегодня выпито</span><em class="ax-cnt">${log.length ? log.length + ' ' + (log.length === 1 ? 'раз' : log.length < 5 ? 'раза' : 'раз') : ''}</em></div>
     <div class="ax-hist">${log.length ? log.map(e => `<div class="ax-hi"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">${hhmm(e.t)}</span><b>+${P0(e.v)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdel" data-id="${e.id}" aria-label="Удалить">${I('x', 14)}</button></div>`).join('') : ''}${prior ? `<div class="ax-hi old"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">раньше</span><b>${P0(prior)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdelold" aria-label="Удалить">${I('x', 14)}</button></div>` : ''}${!log.length && !prior ? '<div class="ax-em" style="padding:14px">Пока ничего не выпито — нажми на стакан выше</div>' : ''}</div>
     ${waterStats()}
-    <div class="ax-note">Цель считается от веса (≈30 мл на кг) и сдвигается в дни с тренировкой.</div><div style="height:130px"></div>`;
+    <button type="button" class="ax-clr${ST.wclr ? ' arm' : ''}" data-act="axwclear">${ST.wclr ? 'Нажми ещё раз — сотру всю историю воды' : 'Очистить всю историю воды'}</button><div class="ax-note">Цель считается от веса (≈30 мл на кг) и сдвигается в дни с тренировкой.</div><div style="height:130px"></div>`;
   }
   function viewGames(){
     const L = REST.list(); const day = L.find(x => x.day);
@@ -10232,6 +10233,7 @@ const AX = (function(){
     axcper: el => { ST.cp = +el.dataset.p; ST.csel = null; ST.cmore = 10; hap.tap(); render(); },
     axcsel: el => { ST.csel = el.dataset.k; hap.tap(); render(); },
     axcmore: () => { ST.cmore += 20; hap.tap(); render(); },
+    axwclear: () => { if (!ST.wclr) { ST.wclr = 1; hap.tap(); render(); setTimeout(() => { if (ST.wclr) { ST.wclr = 0; if (ST.s === 'water') render(); } }, 4000); return; } ST.wclr = 0; db.water = {}; db.waterlog = {}; save(); hap.ok(); toast('История воды очищена'); render(); },
     axwper: el => { ST.wp = +el.dataset.p; ST.wsel = null; ST.wmore = 10; hap.tap(); render(); },
     axwsel: el => { ST.wsel = el.dataset.k; hap.tap(); render(); },
     axwmore: () => { ST.wmore += 20; hap.tap(); render(); },
