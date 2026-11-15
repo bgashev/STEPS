@@ -4052,7 +4052,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.849';
+const APP = 'VOOB (by BGASHEV) Mini App v1.850';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9864,7 +9864,7 @@ const AX = (function(){
     let h = '';
     if (a.pw !== 0) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="water"><span class="ax-ti a-w">${AI('drop', 20)}</span>${ring(wp, '#3a9bf0')}</div><div data-act="appopen" data-s="water"><b>Вода</b><small>${P0(w)} / ${P0(wg.goal)} мл</small></div><div class="ax-rq"><button type="button" data-act="axwater" data-v="250">+250</button><button type="button" data-act="axwater" data-v="500">+500</button></div></div>`;
     if (a.pc !== 0) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="cal"><span class="ax-ti a-c">${AI('cal', 20)}</span>${ring(cp, over ? '#e0a010' : '#f0752a')}</div><div data-act="appopen" data-s="cal"><b>Калории</b><small>${over ? P0(-d.rem) + ' выше нормы' : P0(d.rem) + ' осталось'}</small></div><div class="ax-rq"><button type="button" data-act="axadd" data-m="${mealOf()}">+ Еда</button><button type="button" data-act="axaddscan" data-m="${mealOf()}">Скан</button></div></div>`;
-    h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="games"><span class="ax-ti a-g">${AI('pad', 20)}</span></div><div data-act="appopen" data-s="games"><b>Игры</b><small>${best ? 'рекорд ' + P0(best) : 'размяться'}</small></div><div class="ax-rq"><button type="button" data-act="appopen" data-s="games">Играть</button></div></div>`;
+    h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="games"><span class="ax-ti a-g">${AI('pad', 20)}</span></div><div data-act="appopen" data-s="games"><b>Игры</b><small>${esc('Игра дня: ' + REST.dayInfo().n)}</small></div><div class="ax-rq"><button type="button" data-act="appopen" data-s="games">Играть</button></div></div>`;
     return `<div class="ax-rb"><span class="ax-rt"><span class="ax-gi"><i></i><i></i><i></i><i></i></span>Приложения</span><button type="button" class="ax-ra" data-act="appsheet">все ›</button></div><div class="ax-rr${wide ? ' w' : ''}">${h}</div>`;
   }
   function sheetHTML(){
