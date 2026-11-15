@@ -3911,9 +3911,10 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 .ax-tn{font-size:26px;font-weight:850;letter-spacing:-.8px;line-height:1.05;position:relative;z-index:2;font-variant-numeric:tabular-nums}.ax-tn i{font-style:normal;font-size:12.5px;color:var(--muted);font-weight:650;letter-spacing:0}
 .ax-tp{position:relative;z-index:2;margin-top:auto;align-self:flex-start;display:inline-flex;gap:4px;align-items:center;border:0;border-radius:99px;padding:7px 13px;font:inherit;font-size:13px;font-weight:800;color:var(--text);background:color-mix(in srgb,var(--text) 10%,transparent);cursor:pointer}
 .ax-tb{height:6px;border-radius:3px;background:color-mix(in srgb,var(--text) 10%,transparent);overflow:hidden;position:relative;z-index:2}.ax-tb i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#ffb04d,#f0446b)}.ax-tb i.o{background:linear-gradient(90deg,#ffc247,#f08a2a)}
-.wave{position:absolute;left:0;right:0;bottom:0;height:var(--w,0%);min-height:6px;background:linear-gradient(180deg,rgba(108,204,255,.42) 0%,rgba(52,140,244,.36) 55%,rgba(30,104,222,.34) 100%);transition:height .9s cubic-bezier(.2,.8,.2,1);pointer-events:none;z-index:1}
-.wave::before,.wave::after{content:"";position:absolute;left:0;right:0;top:-12px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 14' preserveAspectRatio='none'%3E%3Cpath d='M0 7Q15 0 30 7T60 7T90 7T120 7V14H0Z' fill='rgba(108,204,255,.42)'/%3E%3C/svg%3E") repeat-x 0 0/120px 14px;animation:axwv 7s linear infinite}
-.wave::after{top:-8px;opacity:.7;background-position:46px 0;animation-duration:11s;animation-direction:reverse}@keyframes axwv{to{background-position-x:120px}}
+.wave{position:absolute;left:0;right:0;bottom:0;height:var(--w,0%);min-height:6px;background:linear-gradient(180deg,rgba(108,204,255,.42) 0%,rgba(52,140,244,.36) 55%,rgba(30,104,222,.34) 100%);transition:height 1.1s cubic-bezier(.22,.9,.28,1);pointer-events:none;z-index:1}
+.wave::before,.wave::after{content:"";position:absolute;left:0;width:calc(100% + 480px);top:-13px;height:15px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 15' preserveAspectRatio='none'%3E%3Cpath d='M0 8C30 0 90 0 120 8S210 16 240 8V15H0Z' fill='rgba(108,204,255,.42)'/%3E%3C/svg%3E") repeat-x 0 0/240px 15px;animation:axwv2 9s linear infinite;animation-delay:var(--ph,0ms);will-change:transform}
+.wave::after{top:-9px;opacity:.65;animation-duration:14s;animation-direction:reverse;animation-delay:var(--ph2,0ms);transform:translateX(-120px)}@keyframes axwv2{to{transform:translateX(-240px)}}
+.wave{overflow:visible}
 .bb{position:absolute;bottom:4px;left:var(--l);width:var(--s,6px);height:var(--s,6px);border-radius:50%;background:rgba(255,255,255,.6);animation:axbub 5.5s ease-in infinite var(--d,0s);opacity:0}@keyframes axbub{0%{transform:translateY(0);opacity:0}15%{opacity:.8}100%{transform:translateY(-70px);opacity:0}}
 /* шторка */
 .ax-sh{padding:6px 2px 24px}.ax-st{font-size:28px;font-weight:850;letter-spacing:-.9px;line-height:1}.ax-ss{font-size:12.5px;color:var(--muted);margin:6px 0 16px}
@@ -4053,7 +4054,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.859';
+const APP = 'VOOB (by BGASHEV) Mini App v1.860';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -8823,29 +8824,37 @@ const REST = (function(){
 
   /* 2 · Байк: газ сам, зажми — крутишься в воздухе, садись на колёса */
   function mkBike(){ const g = {}, K = 'bike', GR = 1150, WR = 11, TOP = -560;
-    const base = () => H * .66, spd = () => 255 + Math.min(g.x / 60, 120);
+    const base = () => H * .66, spd = () => (255 + Math.min(g.x / 60, 120)) * (g.boost > 0 ? 1.2 : 1);
     const pcAt = x => { for (let i = g.pc.length - 1; i >= 0; i--) { const p = g.pc[i]; if (x >= p.x0 && x < p.x1) return p; } return null; };
     const gAt = x => { const p = pcAt(x); return !p || p.t === 'g' ? null : p.y0 + (p.y1 - p.y0) * (x - p.x0) / (p.x1 - p.x0); };
     const slope = p => p ? Math.atan2(p.y1 - p.y0, p.x1 - p.x0) : 0;
     const add = (t, len, dy) => { const p = {t, x0: g.ex, x1: g.ex + len, y0: g.ey, y1: g.ey + dy}; g.pc.push(p); g.ex = p.x1; g.ey = p.y1; return p; };
-    const gen = () => { const r = Math.random();
+    const gen = () => { const r = Math.random(), lv = Math.min(1, g.ex / 12000);
+      const ob = (p, f, h) => g.ob.push({x: p.x0 + (p.x1 - p.x0) * f, w: 22, h: h || 24 + Math.floor(rnd(0, 3)) * 4, y: p.y0});
       if (g.ex < 700) { add('f', 300, 0); return; }
-      if (r < .4) { const p = add('f', rnd(190, 260), 0); g.ob.push({x: p.x0 + (p.x1 - p.x0) * rnd(.4, .6), w: 22, h: 24 + Math.floor(rnd(0, 3)) * 4, y: p.y0}); }
-      else if (r < .52) add('f', rnd(120, 200), 0);
-      else { add('r', 100, -55); const T = 2 * -TOP / GR, gl = spd() * 1.12 * T * rnd(.45, .78), q = add('g', gl, 0);
-        for (let k = 1; k <= 3; k++) g.gm.push({x: q.x0 + gl * k / 4, y: q.y0 - 80 - 40 * Math.sin(k / 4 * Math.PI), got: 0}); add('d', 170, 55); if (Math.random() < .5) add('f', 120, 0); } };
+      if (r < .22) { const p = add('f', rnd(190, 260), 0); ob(p, rnd(.4, .6)); }
+      else if (r < .32 + lv * .06) { const p = add('f', rnd(440, 480), 0); ob(p, .2); ob(p, .8); }
+      else if (r < .42) add('f', rnd(120, 200), 0);
+      else if (r < .54) { const n = 2 + Math.floor(rnd(0, 2)); for (let k = 0; k < n; k++) { const a = add('u', 90, -28), b = add('d', 90, 28); g.gm.push({x: b.x0, y: a.y1 - 58, got: 0}); } if (Math.random() < .5) add('f', 90, 0); }
+      else if (r < .66) { const p = add('f', 240, 0); g.pads.push({x: p.x0 + 50, w: 80}); for (let k = 0; k < 4; k++) g.gm.push({x: p.x0 + 110 + k * 26, y: p.y0 - 34, got: 0}); }
+      else { const rh = rnd(45, 85); add('r', 100, -rh); const T = 2 * -TOP / GR, gl = spd() * 1.1 * T * rnd(.45, .78 + lv * .06), q = add('g', gl, 0), m = Math.random();
+        for (let k = 1; k <= 3; k++) g.gm.push({x: q.x0 + gl * k / 4, y: q.y0 - 80 - 40 * Math.sin(k / 4 * Math.PI), got: 0});
+        if (m < .5) add('d', 170, rh); else if (m < .75) { add('f', 150, 0); add('d', 110, rh); } else { add('u', 110, -26); add('d', 140, rh + 26); }
+        if (Math.random() < .4) add('f', 120, 0); } };
     const crash = why => { g.sh = 1; sfx('die'); bstP(g, g.x, g.y - 12, 22, C.rd, 200); for (let i = 0; i < 5; i++) g.deb.push({x: g.x, y: g.y - 14, vx: rnd(-160, 160), vy: rnd(-380, -120), a: rnd(0, 6), va: rnd(-9, 9), k: i}); popT(g, g.x, g.y - 46, why, C.rd); g.crashed = 1; onDie(g, K); };
-    g.init = () => { base0(g); g.pc = []; g.ob = []; g.gm = []; g.deb = []; g.ex = -300; g.ey = base(); g.x = 40; g.y = base(); g.vy = 0; g.ang = 0; g.w = 0; g.rot = 0; g.air = false; g.hold = false; g.ht = 0; g.cur = null; g.tr = 0; g.gn = 0; g.crashed = 0; g.trl = []; add('f', 1000, 0).x0 = -300; while (g.ex < 1500) gen(); };
+    g.init = () => { base0(g); g.pc = []; g.ob = []; g.gm = []; g.deb = []; g.ex = -300; g.ey = base(); g.pads = []; g.boost = 0; g.x = 40; g.y = base(); g.vy = 0; g.ang = 0; g.w = 0; g.rot = 0; g.air = false; g.hold = false; g.ht = 0; g.cur = null; g.tr = 0; g.gn = 0; g.crashed = 0; g.trl = []; add('f', 1000, 0).x0 = -300; while (g.ex < 1500) gen(); };
     g.down = () => { if (!g.hold) g.ht = 0; g.hold = true; if (!g.air && !g.dead) { g.air = true; g.vy = -470; g.w = 1.1; g.rot = 0; g.cur = null; sfx('hop'); } };
     g.up = () => { g.hold = false; g.ht = 0; };
     g.update = dt => { g.t += dt; stepFx(g, dt);
       if (g.dead) { g.deb.forEach(d => { d.vy += 1300 * dt; d.x += d.vx * dt; d.y += d.vy * dt; d.a += d.va * dt; }); return; }
-      const v = spd(); while (g.ex < g.x + W * 1.7) gen(); while (g.pc.length > 3 && g.pc[1].x1 < g.x - W) g.pc.shift(); g.ob = g.ob.filter(o => o.x > g.x - W); g.gm = g.gm.filter(m => m.x > g.x - W);
+      const v = spd(); while (g.ex < g.x + W * 1.7) gen(); while (g.pc.length > 3 && g.pc[1].x1 < g.x - W) g.pc.shift(); g.ob = g.ob.filter(o => o.x > g.x - W); g.pads = g.pads.filter(q => q.x + q.w > g.x - W); g.gm = g.gm.filter(m => m.x > g.x - W);
       if (g.hold) g.ht += dt;
-      if (g.air) { g.w = g.hold && g.ht > .16 ? -7.2 : g.w + (.6 - g.w) * Math.min(1, dt * 4); g.vy += GR * dt; g.x += v * dt; g.y += g.vy * dt; g.ang += g.w * dt; g.rot += g.w * dt;
+      if (g.air) { if (g.hold && g.ht > .16) { g.w = -7.2; g.rot += g.w * dt; g.ang += g.w * dt; }
+        else { let tg = null; for (const dx of [50, 130, 210]) { const pp = pcAt(g.x + dx); if (pp && pp.t !== 'g') { tg = slope(pp); break; } } if (tg === null) tg = g.vy < 0 ? -.2 : .26; g.w = nrm(tg - g.ang) * 6; g.ang += g.w * dt; }
+        g.vy += GR * dt; g.x += v * dt; g.y += g.vy * dt;
         const gy = gAt(g.x);
         if (gy !== null && g.y >= gy && g.vy >= 0) { const d = nrm(g.ang - slope(pcAt(g.x)));
-          if (Math.abs(d) > 1) { g.y = gy; crash('Не на колёса!'); return; }
+          if (Math.abs(d) > 1.15) { g.y = gy; crash('Не на колёса!'); return; }
           g.y = gy; g.air = false; g.vy = 0; const fl = Math.floor((Math.abs(g.rot) + 1) / TW2); g.rot = 0; g.ang = slope(pcAt(g.x)); sfx('land'); bstP(g, g.x, g.y, 6, C.mu, 80);
           if (fl > 0) { g.tr += fl * 5; sfx('perfect', Math.min(4, fl)); bstP(g, g.x, g.y - 10, 16, GD, 170); popT(g, g.x, g.y - 52, (fl > 1 ? 'x' + fl + ' ФЛИПА' : 'ФЛИП') + ' +' + fl * 5, GD); } }
         if (g.y > H + 90) { sfx('die'); g.sh = 1; onDie(g, K); return; } }
@@ -8853,6 +8862,7 @@ const REST = (function(){
         if (gy === null) { const p = g.cur; g.air = true; g.vy = p && p.t === 'r' ? TOP : 0; g.w = 1.1; g.rot = 0; sfx('hop'); }
         else { g.y = gy; g.cur = pcAt(g.x); g.ang += (slope(g.cur) - g.ang) * Math.min(1, dt * 14); } }
       if (g.air && g.vy < -120 && g.hold && g.ht > .16) { g.trl.push({x: g.x, y: g.y}); if (g.trl.length > 9) g.trl.shift(); } else if (g.trl.length) g.trl.shift();
+      if (g.boost > 0) g.boost -= dt; if (!g.air) for (const q of g.pads) if (!q.on && g.x > q.x && g.x < q.x + q.w) { q.on = 1; g.boost = 1.6; sfx('perfect', 2); bstP(g, g.x, g.y - 8, 14, C.ac, 190); popT(g, g.x, g.y - 52, 'БУСТ', C.ac); }
       for (const o of g.ob) if (g.x + 13 > o.x && g.x - 13 < o.x + o.w && g.y > o.y - o.h + 4) { crash('Врезался!'); return; }
       g.gm.forEach(m => { if (!m.got && Math.abs(g.x - m.x) < 28 && Math.abs(g.y - WR - m.y) < 30) { m.got = 1; g.gn++; sfx('spark', g.gn % 8); bstP(g, m.x, m.y, 10, GD, 120); popT(g, m.x, m.y - 20, '+2', GD); } });
       g.score = Math.floor(Math.max(0, g.x - 40) / 50) + g.tr + g.gn * 2; };
@@ -8862,6 +8872,7 @@ const REST = (function(){
         if (p.t === 'g') { c.strokeStyle = C.rd; c.globalAlpha = .35 + .15 * Math.sin(g.t * 6); c.lineWidth = 2; c.setLineDash([5, 7]); c.beginPath(); c.moveTo(x0, p.y0 + 14); c.lineTo(x1, p.y0 + 14); c.stroke(); c.setLineDash([]); c.globalAlpha = 1; return; }
         const gr = c.createLinearGradient(0, Math.min(p.y0, p.y1), 0, H); gr.addColorStop(0, C.s2); gr.addColorStop(1, C.bg); c.fillStyle = gr; c.beginPath(); c.moveTo(x0, p.y0); c.lineTo(x1, p.y1); c.lineTo(x1, H + 10); c.lineTo(x0, H + 10); c.closePath(); c.fill();
         c.save(); c.shadowColor = C.ac; c.shadowBlur = 10; c.strokeStyle = C.ac; c.lineWidth = 3; c.lineCap = 'round'; c.beginPath(); c.moveTo(x0, p.y0); c.lineTo(x1, p.y1); c.stroke(); c.restore(); });
+      g.pads.forEach(q => { const x = q.x - cx0, y = gAt(q.x + q.w / 2); if (y === null || x < -100 || x > W + 40) return; c.save(); c.shadowColor = C.ac; c.shadowBlur = 12; c.fillStyle = C.ac; c.globalAlpha = q.on ? .35 : .9; for (let k = 0; k < 3; k++) { const px = x + 8 + k * 24; c.beginPath(); c.moveTo(px, y - 1); c.lineTo(px + 10, y - 1); c.lineTo(px + 20, y - 6); c.lineTo(px + 10, y - 11); c.lineTo(px, y - 11); c.lineTo(px + 10, y - 6); c.closePath(); c.fill(); } c.restore(); });
       g.ob.forEach(o => { const x = o.x - cx0; if (x < -40 || x > W + 40) return; box(c, x, o.y, o.w, 8, o.h, C.rd); c.strokeStyle = '#fff'; c.globalAlpha = .6; c.lineWidth = 2; for (let k = 0; k < 2; k++) { c.beginPath(); c.moveTo(x + 4, o.y - 5 - k * 10); c.lineTo(x + o.w / 2, o.y - 12 - k * 10); c.lineTo(x + o.w - 4, o.y - 5 - k * 10); c.stroke(); } c.globalAlpha = 1; });
       g.gm.forEach(m => { if (m.got) return; const x = m.x - cx0, y = m.y + Math.sin(g.t * 4 + m.x) * 3; glow(c, x, y, 20, GD, .5); c.fillStyle = GD; poly(c, [[x, y - 9], [x + 7, y], [x, y + 9], [x - 7, y]]); c.fill(); });
       g.trl.forEach((q, i) => { c.globalAlpha = .08 + i * .03; c.fillStyle = C.ac; c.beginPath(); c.arc(q.x - cx0, q.y - WR, 10, 0, 7); c.fill(); }); c.globalAlpha = 1;
@@ -8869,10 +8880,11 @@ const REST = (function(){
         [-17, 17].forEach(wx => { c.fillStyle = C.bg; c.beginPath(); c.arc(wx, 0, WR, 0, 7); c.fill(); c.stroke(); c.save(); c.translate(wx, 0); c.rotate(g.t * 12); c.lineWidth = 1.3; c.beginPath(); c.moveTo(-WR + 2, 0); c.lineTo(WR - 2, 0); c.moveTo(0, -WR + 2); c.lineTo(0, WR - 2); c.stroke(); c.restore(); });
         c.strokeStyle = C.ac; c.lineWidth = 3.4; c.beginPath(); c.moveTo(-17, 0); c.lineTo(-4, -14); c.lineTo(11, -14); c.lineTo(17, 0); c.moveTo(-4, -14); c.lineTo(0, 0); c.lineTo(-17, 0); c.moveTo(11, -14); c.lineTo(14, -22); c.stroke();
         c.strokeStyle = col; c.lineWidth = 3.4; c.beginPath(); c.moveTo(-3, -17); c.lineTo(2, -29); c.lineTo(11, -23); c.stroke(); c.fillStyle = col; c.beginPath(); c.arc(3, -35, 5.2, 0, 7); c.fill(); c.fillStyle = C.ac; c.beginPath(); c.arc(3, -35, 5.2, Math.PI * 1.05, Math.PI * 1.95); c.fill(); c.restore(); };
+      if (g.boost > 0) { c.strokeStyle = C.ac; c.lineWidth = 2; c.globalAlpha = .45; for (let k = 0; k < 6; k++) { const yy = g.y - 8 - k * 7, xx = g.x - cx0 - 24 - ((g.t * 500 + k * 53) % 70); c.beginPath(); c.moveTo(xx, yy); c.lineTo(xx - 26, yy); c.stroke(); } c.globalAlpha = 1; }
       if (!g.crashed) bike(g.x - cx0, g.y, g.ang, C.tx);
       g.deb.forEach(d => { c.save(); c.translate(d.x - cx0, d.y); c.rotate(d.a); c.strokeStyle = d.k % 2 ? C.ac : C.tx; c.lineWidth = 3; c.beginPath(); if (d.k < 2) c.arc(0, 0, WR, 0, 7); else { c.moveTo(-9, 0); c.lineTo(9, 0); } c.stroke(); c.restore(); });
       c.save(); c.translate(-cx0, 0); drawFx(c, g); c.restore();
-      if (g.x < 600 && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — прыжок · зажми и держи — сальто', W / 2, H * .3); } c.restore(); };
+      if (g.x < 600 && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — прыжок · зажми и держи — сальто · стрелки — буст', W / 2, H * .3); } c.restore(); };
     return g; }
 
   /* 3 · Отскок: птичка скачет между стенами, на стенах растут шипы */
@@ -9046,7 +9058,7 @@ const REST = (function(){
     <div class="pbstd" style="margin-top:14px"><span class="pbsi">${IC('clock', 18)}</span><div class="pbst"><b>Отдых</b><small>для новых подходов</small></div><div class="pbcap"><button type="button" class="pbb" data-act="rtstd" data-d="-1" aria-label="Меньше">${IC('minus', 14)}</button><span class="pbsv" id="rt-std">${fmtRs(s.std || 90)}</span><button type="button" class="pbb" data-act="rtstd" data-d="1" aria-label="Больше">${IC('plus', 14)}</button></div></div></div>`;
   return {start, card, s, std: () => s.std || 90, setStd(v){ s.std = v; save(); }, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH,
     dayInfo(){ const i = dayGi(), g = GAMES[i]; return {i, k:g.k, n:g.n, best:s.best[g.k] || 0, th:TH(g.k)}; },
-    playDay(){ if (run) { min = false; view = 'rest'; render(); return; } start(null, 300); free = true; openGame(dayGi()); },
+    playDay(){ if (run) { min = false; view = 'rest'; render(); return; } start(null, 10800); free = true; apps = true; openGame(dayGi()); },   // v1.860: как play(): после выхода из игры окно закрывается, а не показывает таймер отдыха
     list(){ const d = dayGi(); return GAMES.map((g, i) => ({i, k:g.k, n:g.n, pro:!!g.pro, day:i === d, best:s.best[g.k] || 0, th:TH(g.k)})); },
     play(i){ if (!run) { start(null, 10800); free = true; } apps = true; openGame(i); }};
 })();
@@ -9869,6 +9881,7 @@ const AX = (function(){
     if (a.pw !== 0) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="water"><span class="ax-ti a-w">${AI('drop', 20)}</span>${ring(wp, '#3a9bf0')}</div><div data-act="appopen" data-s="water"><b>Вода</b><small>${P0(w)} / ${P0(wg.goal)} мл</small></div><div class="ax-rq"><button type="button" data-act="axwater" data-v="250">+250</button><button type="button" data-act="axwater" data-v="500">+500</button></div></div>`;
     if (a.pc !== 0) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="cal"><span class="ax-ti a-c">${AI('cal', 20)}</span>${ring(cp, over ? '#e0a010' : '#f0752a')}</div><div data-act="appopen" data-s="cal"><b>Калории</b><small>${over ? P0(-d.rem) + ' выше нормы' : P0(d.rem) + ' осталось'}</small></div><div class="ax-rq"><button type="button" data-act="axadd" data-m="${mealOf()}">+ Еда</button><button type="button" data-act="axaddscan" data-m="${mealOf()}">Скан</button></div></div>`;
     if (a.pg !== 0) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="games"><span class="ax-ti a-g">${AI('pad', 20)}</span></div><div data-act="appopen" data-s="games"><b>Игры</b><small>${esc('Игра дня: ' + REST.dayInfo().n)}</small></div><div class="ax-rq"><button type="button" data-act="appopen" data-s="games">Играть</button></div></div>`;
+    if (a.pm === 1 && !inWeb) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="shop"><span class="ax-ti a-s">${AI('shop', 20)}</span></div><div data-act="appopen" data-s="shop"><b>Магазин</b><small>рамки, фоны, комплекты</small></div><div class="ax-rq"><button type="button" data-act="appopen" data-s="shop">Открыть</button></div></div>`;
     return `<div class="ax-rb"><span class="ax-rt"><span class="ax-gi"><i></i><i></i><i></i><i></i></span>Приложения</span><button type="button" class="ax-ra" data-act="appsheet">все ›</button></div>${h ? `<div class="ax-rr${wide ? ' w' : ''}">${h}</div>` : ''}`;
   }
   function sheetHTML(){
@@ -9886,7 +9899,7 @@ const AX = (function(){
       <div class="ax-bt bg" data-act="appopen" data-s="games"><div class="h"><span class="ax-at sm a-g">${AI('pad', 18)}</span><span class="n">13 игр</span></div><div class="gt">Игры<small>играть →</small></div></div>
       ${inWeb ? '' : `<div class="ax-bt bs" data-act="appopen" data-s="shop"><div class="h"><span class="ax-at sm a-s">${AI('shop', 18)}</span><span class="n">рамки · фоны · комплекты</span></div><div class="gt">Магазин<small>выбрать →</small></div></div>`}
     </div>
-    <div class="ax-lab" style="margin:20px 6px 8px">На главной</div><div class="ax-grp"><div class="ax-li"><span class="ax-mi a-w">${AI('drop', 21)}</span><span class="tx"><b>Вода</b><small>быстрый +250 с главной</small></span>${sw('w', a.pw !== 0)}</div><div class="ax-li"><span class="ax-mi a-c">${AI('cal', 21)}</span><span class="tx"><b>Калории</b><small>сколько осталось на день</small></span>${sw('c', a.pc !== 0)}</div><div class="ax-li"><span class="ax-mi a-g">${AI('pad', 21)}</span><span class="tx"><b>Игры</b><small>игра дня и быстрый старт</small></span>${sw('g', a.pg !== 0)}</div></div>
+    <div class="ax-lab" style="margin:20px 6px 8px">На главной</div><div class="ax-grp"><div class="ax-li"><span class="ax-mi a-w">${AI('drop', 21)}</span><span class="tx"><b>Вода</b><small>быстрый +250 с главной</small></span>${sw('w', a.pw !== 0)}</div><div class="ax-li"><span class="ax-mi a-c">${AI('cal', 21)}</span><span class="tx"><b>Калории</b><small>сколько осталось на день</small></span>${sw('c', a.pc !== 0)}</div><div class="ax-li"><span class="ax-mi a-g">${AI('pad', 21)}</span><span class="tx"><b>Игры</b><small>игра дня и быстрый старт</small></span>${sw('g', a.pg !== 0)}</div>${inWeb ? '' : `<div class="ax-li"><span class="ax-mi a-s">${AI('shop', 21)}</span><span class="tx"><b>Магазин</b><small>рамки и фоны под рукой</small></span>${sw('m', a.pm === 1)}</div>`}</div>
     <button type="button" class="ax-sg" data-act="appsug"><span class="ax-mi a-g">${AI('bulb', 21)}</span><span class="tx"><b>Предложить</b><small>что добавить или улучшить в VOOB</small></span><i>›</i></button></div>`;
   }
   function pcls(c){ return c; }
@@ -9994,14 +10007,14 @@ const AX = (function(){
     <div class="ax-sech"><span>По дням</span></div><div class="ax-hist">${rows}</div>${st.D > ST.wmore ? `<button type="button" class="ax-more" data-act="axwmore">Показать ещё</button>` : ''}`;
   }
   function viewWater(){
-    const w = wd(), wg = waterGoal(), pct = Math.round(clamp(w / wg.goal, 0, 1) * 100), log = (wlog()[isoT()] || []).slice().reverse(), logSum = log.reduce((a, e) => a + e.v, 0), prior = Math.max(0, w - logSum), done = w >= wg.goal;
+    const w = wd(), wg = waterGoal(), pct = Math.round(clamp(w / wg.goal, 0, 1) * 100), log = (wlog()[isoT()] || []).slice().reverse(), logSum = log.reduce((a, e) => a + e.v, 0), prior = Math.max(0, w - logSum), done = w >= wg.goal, prevPct = ST.wp == null ? pct : ST.wp; ST.wp = pct; if (prevPct !== pct) requestAnimationFrame(() => requestAnimationFrame(() => { const e = document.querySelector('.ax-wt .wave'); if (e) e.style.setProperty('--w', pct + '%'); }));
     return back() + `<div class="ax-h1">Вода</div><div class="ax-sub">Цель на сегодня — ${P0(wg.goal)} мл${wg.tr ? ' · с тренировкой +500' : ''}</div>
-    <div class="ax-wt"><div class="wave" style="--w:${pct}%"><i class="bb" style="--l:16%;--d:0s"></i><i class="bb" style="--l:40%;--s:4px;--d:1.8s"></i><i class="bb" style="--l:66%;--s:7px;--d:3.1s"></i><i class="bb" style="--l:86%;--s:5px;--d:.9s"></i></div>
+    <div class="ax-wt"><div class="wave" style="--w:${prevPct}%;--ph:${-(Date.now() % 9000)}ms;--ph2:${-(Date.now() % 14000)}ms"><i class="bb" style="--l:16%;--d:0s"></i><i class="bb" style="--l:40%;--s:4px;--d:1.8s"></i><i class="bb" style="--l:66%;--s:7px;--d:3.1s"></i><i class="bb" style="--l:86%;--s:5px;--d:.9s"></i></div>
       <span class="pc">${pct}%</span><div class="n">${P0(w)}<i> мл</i></div><small>${done ? 'норма выполнена — отлично' : 'ещё ' + P0(wg.goal - w) + ' мл до нормы'}</small></div>
     <div class="ax-wb">${[150, 250, 330, 500].map(v => `<button type="button" data-act="axwater" data-v="${v}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${WIC[v]}</svg><b>+${v}</b><small>мл</small></button>`).join('')}</div>
     <div class="ax-wc"><input id="ax-wc" type="number" inputmode="numeric" placeholder="Свой объём, мл" min="10" max="2000"><button type="button" data-act="axwcust">Добавить</button></div>
     <div class="ax-sech"><span>Сегодня выпито</span><em class="ax-cnt">${log.length ? log.length + ' ' + (log.length === 1 ? 'раз' : log.length < 5 ? 'раза' : 'раз') : ''}</em></div>
-    <div class="ax-hist">${log.length ? log.map(e => `<div class="ax-hi"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">${hhmm(e.t)}</span><b>+${P0(e.v)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdel" data-id="${e.id}" aria-label="Удалить">${I('x', 14)}</button></div>`).join('') : ''}${prior ? `<div class="ax-hi old"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">раньше</span><b>${P0(prior)} <em>мл</em></b></div>` : ''}${!log.length && !prior ? '<div class="ax-em" style="padding:14px">Пока ничего не выпито — нажми на стакан выше</div>' : ''}</div>
+    <div class="ax-hist">${log.length ? log.map(e => `<div class="ax-hi"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">${hhmm(e.t)}</span><b>+${P0(e.v)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdel" data-id="${e.id}" aria-label="Удалить">${I('x', 14)}</button></div>`).join('') : ''}${prior ? `<div class="ax-hi old"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">раньше</span><b>${P0(prior)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdelold" aria-label="Удалить">${I('x', 14)}</button></div>` : ''}${!log.length && !prior ? '<div class="ax-em" style="padding:14px">Пока ничего не выпито — нажми на стакан выше</div>' : ''}</div>
     ${waterStats()}
     <div class="ax-note">Цель считается от веса (≈30 мл на кг) и сдвигается в дни с тренировкой.</div><div style="height:130px"></div>`;
   }
@@ -10124,12 +10137,13 @@ const AX = (function(){
     appopen: el => { if (sheetCtx && sheetCtx.type === 'apps') closeSheet(); const s = el.dataset.s; ST.stack = []; ST.s = ''; ST.off = 0; go(s); },
     axday: el => { ST.off = clamp(+el.dataset.o, -13, 0); hap.tap(); render(); },
     appback: () => goBack(),
-    axpin: el => { const a = A(), k = el.dataset.k === 'w' ? 'pw' : el.dataset.k === 'g' ? 'pg' : 'pc'; a[k] = a[k] === 0 ? 1 : 0; el.classList.toggle('on', a[k] !== 0); hap.tap(); save(); if (S.tab === 'home') render(); },
+    axpin: el => { const a = A(), k = el.dataset.k === 'w' ? 'pw' : el.dataset.k === 'g' ? 'pg' : el.dataset.k === 'm' ? 'pm' : 'pc'; a[k] = k === 'pm' ? (a[k] === 1 ? 0 : 1) : (a[k] === 0 ? 1 : 0); el.classList.toggle('on', k === 'pm' ? a[k] === 1 : a[k] !== 0); hap.tap(); save(); if (S.tab === 'home') render(); },
     axwater: (el) => { const v = +el.dataset.v, was = wd(), nv = addWater(v); hap.imp(); render(); if (nv >= waterGoal().goal && was < waterGoal().goal) { hap.ok(); toast('Норма воды выполнена'); } },
     axwcust: () => { const v = Math.round(num('ax-wc')); if (!(v >= 10 && v <= 2000)) { toast('Введи объём от 10 до 2000 мл'); return; } const was = wd(), nv = addWater(v); hap.imp(); render(); if (nv >= waterGoal().goal && was < waterGoal().goal) toast('Норма воды выполнена'); },
     axwper: el => { ST.wp = +el.dataset.p; ST.wsel = null; ST.wmore = 10; hap.tap(); render(); },
     axwsel: el => { ST.wsel = el.dataset.k; hap.tap(); render(); },
     axwmore: () => { ST.wmore += 20; hap.tap(); render(); },
+    axwdelold: () => { const k = isoT(), L = wlog(), sum = (L[k] || []).reduce((a, e) => a + e.v, 0), old = Math.max(0, wd(k) - sum); if (!old) return; db.water[k] = sum; save(); hap.tap(); render(); toast('Удалено −' + old + ' мл', 'Вернуть', () => { db.water[k] = sum + old; save(); render(); }); },
     axwdel: el => { const e = delWater(el.dataset.id); if (!e) return; hap.tap(); render(); toast('Удалено −' + e.v + ' мл', 'Вернуть', () => { addWater(e.v); render(); }); },
     axadd: el => { ST.meal = el.dataset.m || mealOf(); ST.q = ''; ST.quick = false; ST.pr = null; if (!S.app) { ST.stack = ['cal']; ST.s = 'add'; S.app = true; hap.tap(); render(); window.scrollTo(0, 0); } else go('add'); },
     axaddscan: el => { acts.axadd(el); setTimeout(() => openScan(), 50); },
