@@ -1088,7 +1088,7 @@ html:not(.web) body:has(#sw.open) .rt-pill{bottom:auto}
 .rt-gh{position:absolute;left:0;right:0;top:0;height:var(--gh);padding:calc(var(--gt) + 12px) 14px 0;display:flex;align-items:center;gap:8px;color:var(--text)}
 .rt-gtm{display:grid;line-height:1.05;flex:none}.rt-gtm .time{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}.rt-gtm small{font-size:10.5px;color:var(--muted);letter-spacing:.08em;font-weight:600}
 .rt-gsc{flex:1;text-align:center;font-weight:700;font-size:13px;color:var(--muted)}.rt-gsc b{color:var(--text);font-size:20px;display:block;line-height:1.1}
-.rt-gbs{display:flex;gap:8px}.rt-gbn{display:flex;align-items:center;gap:7px;height:42px;padding:0 14px;border-radius:14px;border:1.5px solid color-mix(in srgb,var(--text) 28%,transparent);background:color-mix(in srgb,var(--surface) 92%,var(--text) 8%);color:var(--text);font-family:inherit;font-weight:700;font-size:14px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.28);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}.rt-gbn svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.rt-gbn:active{transform:scale(.95)}.rt-gbn.sq{width:42px;padding:0;justify-content:center}.rt-gbn.pr{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.rt-gmw.apps .rt-gline{display:none}.rt-gmw.apps .rt-gtm,.rt-gmw.apps [data-r="gmin"]{display:none}.rt-gmw.apps .rt-gh{justify-content:space-between}.rt-gbs{display:flex;gap:8px}.rt-gbn{display:flex;align-items:center;gap:7px;height:42px;padding:0 14px;border-radius:14px;border:1.5px solid color-mix(in srgb,var(--text) 28%,transparent);background:color-mix(in srgb,var(--surface) 92%,var(--text) 8%);color:var(--text);font-family:inherit;font-weight:700;font-size:14px;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.28);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}.rt-gbn svg{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.rt-gbn:active{transform:scale(.95)}.rt-gbn.sq{width:42px;padding:0;justify-content:center}.rt-gbn.pr{background:var(--accent);color:var(--on-accent);border-color:transparent}
 .rt-gline{position:absolute;left:14px;right:14px;top:var(--gh);height:3px;border-radius:2px;background:var(--surface2);overflow:hidden}.rt-gline b{display:block;height:100%;width:0;background:var(--accent)}
 .rt-gm canvas{position:absolute;left:0;right:0;top:calc(var(--gh) + 8px);bottom:0;width:100%;height:calc(100% - var(--gh) - 8px);touch-action:none;cursor:pointer}
 @keyframes rtfi{from{opacity:0}}@keyframes rtup{from{transform:translateY(40px);opacity:0}}@keyframes rtpop{from{transform:scale(.6);opacity:0}}
@@ -3917,20 +3917,21 @@ html.web #tabs .tbi{top:262px}
 .ax-grp{background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden;margin-bottom:14px}.ax-li{display:flex;align-items:center;gap:12px;padding:11px 14px;position:relative}.ax-li+.ax-li::before{content:"";position:absolute;top:0;left:64px;right:0;height:1px;background:var(--border)}.ax-li .tx{flex:1;min-width:0}.ax-li .tx b{display:block;font-size:15px;font-weight:700}.ax-li .tx small{color:var(--muted);font-size:12px}
 .ax-sw{width:42px;height:26px;border-radius:99px;background:color-mix(in srgb,var(--text) 16%,transparent);position:relative;transition:.25s;flex:none;cursor:pointer}.ax-sw::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3);transition:.25s}.ax-sw.on{background:var(--green)}.ax-sw.on::after{transform:translateX(16px)}
 /* калории */
-.ax-cd{background:var(--surface);border:1px solid var(--border);border-radius:28px;padding:16px;margin-bottom:12px;background-image:linear-gradient(160deg,color-mix(in srgb,#ff9a3c 11%,var(--surface)),var(--surface) 62%)}
-.ax-top{position:relative;float:left;margin-right:16px}.ax-ring{width:132px;height:132px;position:relative;filter:drop-shadow(0 8px 16px rgba(240,90,60,.28))}.ax-ring svg{width:100%;height:100%;transform:rotate(-90deg)}.ax-ring circle{fill:none;stroke-width:12;stroke-linecap:round}.ax-ring .tk{stroke:color-mix(in srgb,var(--text) 9%,transparent)}.ax-ring .pr{stroke-dasharray:326.7;transition:stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1)}
-.ax-top .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center;line-height:1}.ax-top .mid b{font-size:32px;font-weight:850;letter-spacing:-1.4px}.ax-top .mid small{font-size:11px;color:var(--muted);margin-top:3px}
-.ax-tx{overflow:hidden;padding-top:14px}.ax-big{font-size:28px;font-weight:850;letter-spacing:-.8px;font-variant-numeric:tabular-nums}.ax-big i{font-style:normal;font-size:13px;color:var(--muted);font-weight:650;letter-spacing:0}.ax-cap{font-size:12.5px;color:var(--muted);margin:3px 0 8px}.ax-cap b{color:var(--text)}
-.ax-chip{display:inline-block;border-radius:99px;padding:4px 11px;font-size:11.5px;font-weight:800;background:rgba(47,169,104,.15);color:#2fa968}.ax-chip.o{background:rgba(240,138,42,.17);color:#e08a1a}.ax-chip.p{background:var(--accent-soft);color:var(--accent)}
-.ax-3{clear:both;display:grid;grid-template-columns:repeat(3,1fr);text-align:center;border-top:1px solid var(--border);margin-top:16px;padding:14px 0 12px}.ax-3 b{display:block;font-size:19px;font-weight:850;font-variant-numeric:tabular-nums}.ax-3 small{color:var(--muted);font-size:12px}
-.ax-cd>.ax-mr{display:inline-block;width:calc(33.3% - 8px);margin-right:6px;vertical-align:top}.ax-mh{display:flex;flex-direction:column;font-size:11px;color:var(--muted);margin-bottom:5px}.ax-mh b{color:var(--text);font-size:11.5px;font-variant-numeric:tabular-nums}.ax-bar2{height:7px;border-radius:4px;background:color-mix(in srgb,var(--text) 9%,transparent);overflow:hidden}.ax-bar2 i{display:block;height:100%;border-radius:4px;background:var(--c)}
+.ax-strip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:0 0 12px}.ax-d{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:16px;padding:8px 0 7px;display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit}.ax-d small{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase}.ax-d b{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}.ax-d i{width:5px;height:5px;border-radius:50%;background:transparent}.ax-d.has i{background:#f0752a}.ax-d.on{background:var(--text);color:var(--bg);border-color:var(--text)}.ax-d.on small{color:color-mix(in srgb,var(--bg) 70%,transparent)}.ax-d.on.has i{background:#ffb04d}
+.ax-cd{background:var(--surface);border:1px solid var(--border);border-radius:28px;padding:16px;margin-bottom:12px;background-image:linear-gradient(160deg,color-mix(in srgb,#ff9a3c 12%,var(--surface)),var(--surface) 60%);display:grid;grid-template-columns:auto 1fr;gap:6px 16px;align-items:center}
+.ax-cr{grid-row:1}.ax-top{position:relative;width:128px;height:128px}.ax-ring{width:128px;height:128px;position:relative;filter:drop-shadow(0 8px 16px rgba(240,90,60,.28))}.ax-ring svg{width:100%;height:100%;transform:rotate(-90deg)}.ax-ring circle{fill:none;stroke-width:12;stroke-linecap:round}.ax-ring .tk{stroke:color-mix(in srgb,var(--text) 10%,transparent)}.ax-ring .pr{stroke-dasharray:326.7;transition:stroke-dashoffset .9s cubic-bezier(.2,.8,.2,1)}
+.ax-top .mid{position:absolute;inset:0;display:grid;place-content:center;text-align:center;line-height:1}.ax-top .mid b{font-size:28px;font-weight:850;letter-spacing:-1.2px}.ax-top .mid small{font-size:11px;color:var(--muted);margin-top:3px}
+.ax-cx{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}.ax-big{font-size:30px;font-weight:850;letter-spacing:-1px;font-variant-numeric:tabular-nums;line-height:1}.ax-big i{display:block;font-style:normal;font-size:13px;color:var(--muted);font-weight:650;letter-spacing:0;margin-top:4px}.ax-cap{font-size:12.5px;color:var(--muted)}.ax-cap b{color:var(--text)}
+.ax-chip{display:inline-block;border-radius:99px;padding:4px 11px;font-size:11.5px;font-weight:800;background:rgba(47,169,104,.15);color:#2fa968;white-space:nowrap}.ax-chip.o{background:rgba(240,138,42,.17);color:#e08a1a}.ax-chip.p{background:var(--accent-soft);color:var(--accent)}
+.ax-ms{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;border-top:1px solid var(--border);margin-top:10px;padding-top:14px}.ax-m span{display:block;font-size:11.5px;color:var(--muted);margin-bottom:3px}.ax-m b{display:block;font-size:17px;font-weight:850;font-variant-numeric:tabular-nums;margin-bottom:7px}.ax-m b em{font-style:normal;font-size:11px;color:var(--muted);font-weight:650}.ax-bar2{height:6px;border-radius:3px;background:color-mix(in srgb,var(--text) 10%,transparent);overflow:hidden}.ax-bar2 i{display:block;height:100%;border-radius:3px;background:var(--c)}
+.ax-act{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:6px}.ax-ab1,.ax-ab2{border:0;border-radius:20px;font:inherit;font-weight:800;font-size:15px;display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 18px;cursor:pointer}.ax-ab1{background:linear-gradient(180deg,#34343c,#18181d);color:#fff;box-shadow:0 12px 24px -10px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.08) inset}.ax-ab2{background:var(--surface);color:var(--text);border:1px solid var(--border)}.ax-ab2 span{font-size:14px}
 .ax-sech{display:flex;align-items:center;justify-content:space-between;margin:16px 4px 8px;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}.ax-pl{border:0;border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;font-weight:800;background:color-mix(in srgb,var(--text) 9%,transparent);color:var(--text);text-transform:none;letter-spacing:0}
 .ax-meal{background:var(--surface);border:1px solid var(--border);border-radius:24px;margin-bottom:10px;overflow:hidden}.ax-mh2{display:flex;align-items:center;gap:10px;padding:12px 14px}.ax-mh2 b{font-size:16px;font-weight:800;flex:1}.ax-mh2 .k{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
 .ax-mic{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;flex:none}.ax-mic.o{background:rgba(255,138,61,.15);color:#f0752a}.ax-mic.g{background:rgba(95,201,138,.17);color:#2fa968}.ax-mic.v{background:rgba(90,100,200,.15);color:#5a64c8}.ax-mic.p{background:rgba(124,108,255,.15);color:#6a5af0}
 .ax-pb{width:32px;height:32px;border-radius:50%;border:0;background:color-mix(in srgb,var(--text) 9%,transparent);color:var(--text);display:grid;place-items:center;cursor:pointer}
 .ax-it{display:flex;align-items:center;gap:10px;padding:10px 8px 10px 14px;border-top:1px solid var(--border)}.ax-it .n{flex:1;min-width:0}.ax-it .n b{display:block;font-size:14.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ax-it .n small{color:var(--muted);font-size:11.5px}.ax-it .k{font-weight:800;font-variant-numeric:tabular-nums}.ax-x{border:0;background:none;color:var(--muted);width:30px;height:30px;display:grid;place-items:center}
 .ax-em{padding:2px 14px 12px;color:var(--muted);font-size:12.5px}
-.ax-fab{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom));z-index:8;display:inline-flex;align-items:center;gap:8px;border:0;border-radius:99px;padding:14px 24px;font:inherit;font-weight:800;color:#fff;background:linear-gradient(180deg,#34343c,#18181d);box-shadow:0 14px 30px -6px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08) inset;white-space:nowrap;width:max-content;cursor:pointer}
+
 /* добавление */
 .ax-srch{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:0 6px 0 12px;margin-bottom:10px;color:var(--muted)}.ax-srch input{flex:1;min-width:0;border:0;background:none;color:var(--text);font:inherit;font-size:15px;padding:13px 0;outline:0}.ax-sc{width:38px;height:38px;border-radius:12px;border:0;background:var(--text);color:var(--bg);display:grid;place-items:center}
 .ax-scanh{display:flex;align-items:center;gap:14px;padding:14px 16px;margin-bottom:14px;border-radius:24px;color:#fff;cursor:pointer;background:radial-gradient(120% 140% at 0% 0%,#4b4b58,#1b1b21 60%);box-shadow:0 14px 28px -14px rgba(0,0,0,.5);position:relative;overflow:hidden}.ax-scanh::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(124,255,178,.25),transparent 70%)}
@@ -3946,15 +3947,21 @@ html.web #tabs .tbi{top:262px}
 /* найден */
 .ax-prod{display:flex;gap:14px;align-items:center;margin:4px 0 14px}.ax-prod .im{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:28px;font-weight:850;color:#2f5fd0;background:linear-gradient(140deg,#dfe9ff,#b9d0ff);box-shadow:0 10px 22px -10px rgba(70,110,220,.55);flex:none}.ax-prod b{display:block;font-size:19px;font-weight:850;letter-spacing:-.3px}.ax-prod small{display:block;color:var(--muted);font-size:13px;margin:2px 0 6px}
 .ax-per{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.ax-per>div{text-align:center;border-radius:16px;padding:10px 2px;background:linear-gradient(180deg,color-mix(in srgb,var(--text) 4%,var(--surface)),var(--surface));border:1px solid var(--border)}.ax-per b{display:block;font-size:17px;font-weight:850}.ax-per small{color:var(--muted);font-size:11px}.ax-per>div:nth-child(2) b{color:#2fa968}.ax-per>div:nth-child(3) b{color:#d8960b}.ax-per>div:nth-child(4) b{color:#6a5af0}
-.ax-gram{display:flex;align-items:center;justify-content:center;gap:18px;margin:14px 0 10px}.ax-gram button{width:48px;height:48px;border-radius:50%;border:0;background:var(--surface);border:1px solid var(--border);color:var(--text);font:inherit;font-size:24px;font-weight:700;display:grid;place-items:center;box-shadow:0 4px 12px -6px rgba(0,0,0,.3)}.ax-gram button svg{display:none}.ax-gram label{display:flex;align-items:baseline;gap:4px}.ax-gram input{width:110px;border:0;background:none;color:var(--text);font:inherit;font-size:46px;font-weight:850;letter-spacing:-1.5px;text-align:center;outline:0}.ax-gram i{font-style:normal;color:var(--muted);font-size:18px;font-weight:700}
-.ax-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px}.ax-chips button{border:0;border-radius:99px;padding:9px 14px;font:inherit;font-size:13px;font-weight:750;background:var(--surface2);color:var(--text)}.ax-chips button.on{background:var(--text);color:var(--bg)}
+.ax-gram{display:flex;align-items:center;justify-content:center;gap:18px;margin:14px 0 10px}.ax-gram button{width:48px;height:48px;border-radius:50%;border:0;background:var(--surface);border:1px solid var(--border);color:var(--text);font:inherit;font-size:24px;font-weight:700;display:grid;place-items:center;box-shadow:0 4px 12px -6px rgba(0,0,0,.3)}.ax-gram button svg{display:none}.ax-gram label{display:flex;align-items:baseline;gap:2px;min-width:0}.ax-gram input{box-sizing:content-box;width:4ch;min-width:0;padding:0;margin:0;height:auto;border:0;background:none;color:var(--text);font:inherit;font-size:44px;font-weight:850;letter-spacing:-1.5px;text-align:center;outline:0;-moz-appearance:textfield;appearance:textfield}.ax-gram input::-webkit-outer-spin-button,.ax-gram input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}.ax-gram i{font-style:normal;color:var(--muted);font-size:18px;font-weight:700}
+.ax-chips.l{justify-content:flex-start}.ax-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:14px}.ax-chips button{border:0;border-radius:99px;padding:9px 14px;font:inherit;font-size:13px;font-weight:750;background:var(--surface2);color:var(--text)}.ax-chips button.on{background:var(--text);color:var(--bg)}
 .ax-tot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;border-radius:24px;margin-bottom:14px;background:linear-gradient(135deg,rgba(255,154,60,.16),rgba(240,68,107,.10));border:1px solid rgba(240,117,42,.16)}.ax-tot .big{font-size:34px;font-weight:850;letter-spacing:-1.2px;white-space:nowrap;line-height:1}.ax-tot .big i{font-style:normal;font-size:14px;font-weight:650;color:var(--muted);letter-spacing:0;margin-left:5px}.ax-tot small{display:block;color:var(--muted);font-size:12px;margin-top:5px}
 .ax-tot .mp{display:flex;gap:6px}.ax-tot .mp span{display:flex;flex-direction:column;align-items:center;background:color-mix(in srgb,var(--surface) 80%,transparent);border-radius:12px;padding:6px 9px;font-size:10px;color:var(--muted);min-width:44px;line-height:1.2}.ax-tot .mp b{font-size:14px;color:var(--text);font-weight:850}.ax-tot .mp span:nth-child(1) b{color:#2fa968}.ax-tot .mp span:nth-child(2) b{color:#d8960b}.ax-tot .mp span:nth-child(3) b{color:#6a5af0}
 .ax-form{padding:2px 0}.ax-f{display:block;padding:8px 14px}.ax-f span{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}.ax-f div{display:flex}
 .ax-seg{display:flex;background:var(--surface2);border-radius:16px;padding:4px;margin-bottom:14px}.ax-seg button{flex:1;border:0;border-radius:12px;padding:10px 4px;font:inherit;font-size:14px;font-weight:750;background:none;color:var(--muted)}.ax-seg button.on{background:var(--surface);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.18)}
 /* вода */
 .ax-wt{position:relative;overflow:hidden;height:250px;border-radius:30px;border:1px solid var(--border);background:linear-gradient(180deg,color-mix(in srgb,#9fd8ff 14%,var(--surface)),var(--surface));padding:18px;display:flex;flex-direction:column;justify-content:flex-end;margin-bottom:12px}.ax-wt .n{position:relative;z-index:2;font-size:60px;font-weight:850;letter-spacing:-2px;line-height:1}.ax-wt .n i{font-style:normal;font-size:20px;color:var(--muted);font-weight:700;letter-spacing:0}.ax-wt small{position:relative;z-index:2;color:var(--muted);font-size:14px;margin-top:6px}
-.ax-wb{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.ax-wb button{border:0;border-radius:18px;padding:15px 0;font:inherit;font-size:15px;font-weight:800;background:rgba(58,167,255,.13);color:#2278c8}.ax-wb button:active{transform:scale(.95)}
+.ax-wb{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.ax-wb button{border:1px solid rgba(80,170,255,.28);border-radius:20px;padding:12px 0 10px;font:inherit;display:flex;flex-direction:column;align-items:center;gap:2px;background:linear-gradient(180deg,rgba(86,176,255,.20),rgba(60,130,240,.08));color:#3a9bf0;box-shadow:0 10px 18px -14px rgba(40,120,240,.7)}.ax-wb button b{font-size:16px;font-weight:850;color:var(--text);margin-top:3px}.ax-wb button small{font-size:10.5px;color:var(--muted);margin-top:-1px}.ax-wb button:active{transform:scale(.94)}
+.ax-wt .pc{position:absolute;top:16px;right:16px;z-index:2;font-weight:850;font-size:13px;padding:6px 12px;border-radius:99px;background:rgba(255,255,255,.22);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--text);border:1px solid rgba(255,255,255,.2)}
+.ax-wc{display:flex;gap:8px;margin-top:10px}.ax-wc input{flex:1;min-width:0;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:16px;padding:13px 14px;font:inherit;font-size:15px;outline:0}.ax-wc button{border:0;border-radius:16px;padding:0 18px;font:inherit;font-weight:800;font-size:14px;background:var(--text);color:var(--bg)}
+.ax-cnt{font-style:normal;text-transform:none;letter-spacing:0;font-size:12px;font-weight:700}
+.ax-hist{background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden}.ax-hi{display:flex;align-items:center;gap:12px;padding:11px 8px 11px 14px}.ax-hi+.ax-hi{border-top:1px solid var(--border)}.ax-hi .ic{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:rgba(58,167,255,.14);color:#3a9bf0;flex:none}.ax-hi .t{flex:1;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}.ax-hi b{font-size:16px;font-weight:850;font-variant-numeric:tabular-nums}.ax-hi b em{font-style:normal;font-size:12px;color:var(--muted);font-weight:650}.ax-hi.old{opacity:.75}.ax-hi.old .ax-x{display:none}.ax-hi.old b{padding-right:10px}
+.ax-week{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;height:110px;align-items:end;background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:14px 12px 10px}.ax-wk{height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}.ax-wk i{display:block;width:100%;max-width:26px;border-radius:8px;background:rgba(58,167,255,.28)}.ax-wk.now i{background:linear-gradient(180deg,#7fd3ff,#2f7bf0)}.ax-wk.ok i{background:linear-gradient(180deg,#8be0b0,#2fa968)}.ax-wk small{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase}
+
 /* игры */
 .ax-gd{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:10px;margin-bottom:12px;cursor:pointer}.ax-gd .im{width:64px;height:64px;border-radius:16px;overflow:hidden;flex:none;display:block}.ax-gd .im img,.ax-gc .th img{width:100%;height:100%;object-fit:cover;display:block}.ax-gd .tx{flex:1;min-width:0}.ax-gd .tx small:first-child{display:block;font-size:10.5px;font-weight:800;letter-spacing:.06em;color:var(--accent)}.ax-gd .tx b{display:block;font-size:17px;font-weight:850}.ax-gd .tx small{color:var(--muted);font-size:12px}
 .ax-gg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ax-gc{background:var(--surface);border:1px solid var(--border);border-radius:22px;padding:8px 8px 12px;cursor:pointer}.ax-gc .th{position:relative;aspect-ratio:1;border-radius:16px;overflow:hidden;background:var(--surface2);margin-bottom:8px;display:grid;place-items:center}.ax-gc .th svg{width:60%;height:60%}.ax-gc b{display:block;font-size:15px;font-weight:800;padding:0 4px}.ax-gc small{display:block;color:var(--muted);font-size:12px;padding:0 4px}.ax-gc .pro{position:absolute;top:8px;right:8px;font-size:10px;font-weight:850;letter-spacing:.05em;background:#111;color:#fff;border-radius:7px;padding:3px 7px}
@@ -3983,7 +3990,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.840';
+const APP = 'VOOB (by BGASHEV) Mini App v1.841';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4092,7 +4099,7 @@ const kcalF = v => numSep(v) + ' ккал';
 function defaultDB(){
   return {v:1, updated:0, profile:{name:'', birth:'', sex:'', height:0},
     settings:{theme:'auto', accent:'lavender', goal:{count:3, days:7, set:false}},
-    workouts:[], weights:[], weight_goal:{}, plans:[], water:{}, food:{}, myfoods:[], cal:{}, apps:{},
+    workouts:[], weights:[], weight_goal:{}, plans:[], water:{}, waterlog:{}, food:{}, myfoods:[], cal:{}, apps:{},
     tomb:{}, metaU:{}, sync:{rev:0, dirty:{}, init:false}};
 }
 function normalize(d){
@@ -8132,7 +8139,7 @@ const REST = (function(){
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} };
   const DUR = {barbell:120, squat:90, pullup:90, pushup:60, dumbbell:60, burpee:45, abs:45, plank:45};
   const R = 2 * Math.PI * 52;
-  let free = false, cust = false, act = null, total = 0, endAt = 0, run = false, done = false, min = false, view = 'rest', iv = 0, el = null, pill = null, ac = null, doneT = 0;
+  let free = false, apps = false, cust = false, act = null, total = 0, endAt = 0, run = false, done = false, min = false, view = 'rest', iv = 0, el = null, pill = null, ac = null, doneT = 0;
   const secFor = a => s.per[a] || DUR[a] || s.std || 90;
   const left = () => Math.max(0, (endAt - Date.now()) / 1000);
   const fmtT = x => { x = Math.max(0, Math.ceil(x)); return Math.floor(x / 60) + ':' + ('0' + (x % 60)).slice(-2); };
@@ -8194,7 +8201,7 @@ const REST = (function(){
   }
   /* вернуть к идущей тренировке: окно могли смахнуть, пока шёл отдых */
   function backLive(){ try { if (!sheetCtx) resumeLive(); } catch (e) {} }
-  function close(){ free = false; run = false; done = false; clearInterval(iv); clearTimeout(doneT); stopGame(); try { setTimeout(updFab, 60); } catch (e) {} if (el) { el.remove(); el = null; } if (pill) { pill.remove(); pill = null; } }
+  function close(){ free = false; apps = false; run = false; done = false; clearInterval(iv); clearTimeout(doneT); stopGame(); try { setTimeout(updFab, 60); } catch (e) {} if (el) { el.remove(); el = null; } if (pill) { pill.remove(); pill = null; } }
   function paint(l){
     const p = total ? Math.min(1, Math.max(0, 1 - l / total)) : 0, t = fmtT(l);
     document.querySelectorAll('#rt [data-rt="t"],.rt-pill [data-rt="t"],#rtgm [data-rt="t"]').forEach(e => { e.textContent = t; });
@@ -8279,7 +8286,7 @@ const REST = (function(){
   document.addEventListener('visibilitychange', () => { if (document.hidden) snap(); });
   function rr(c, x, y, w, h, r){ r = Math.min(r, w / 2, h / 2); c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
   function onDie(g, key){ g.dead = true; g.deadAt = performance.now(); sfx('die'); if (g.score > (s.best[key] || 0)) { s.best[key] = g.score; save(); g.newBest = true; hap.ok(); sfx('record'); } else { g.newBest = false; hap.warn(); }
-    const l = left(); quip = l < 25 ? 'Гонг через ' + Math.ceil(l) + ' с. Штанга ждёт.' : QUIPS[Math.floor(Math.random() * QUIPS.length)]; }
+    const l = left(); quip = apps ? ['Ещё разок?', 'Рекорд рядом.', 'Можно лучше — попробуй ещё.', 'Тап — и новая попытка.'][Math.floor(Math.random() * 4)] : l < 25 ? 'Гонг через ' + Math.ceil(l) + ' с. Штанга ждёт.' : QUIPS[Math.floor(Math.random() * QUIPS.length)]; }
   const bstP = (g, x, y, n, col, sp) => { g.pt = g.pt || []; for (let k = 0; k < n; k++) { const a = Math.random() * 6.283, v = (sp || 90) * (.4 + Math.random()); g.pt.push({x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 20, l: .5 + Math.random() * .4, m: .9, c: col}); } };
   const popT = (g, x, y, t, col) => { g.pop = g.pop || []; g.pop.push({x, y, t, c: col, l: .8}); };
   const stepFx = (g, dt) => { g.sh = Math.max(0, (g.sh || 0) - dt * 3); g.pt = (g.pt || []).filter(q => { q.l -= dt; q.x += q.vx * dt; q.y += q.vy * dt; q.vy += 300 * dt; return q.l > 0; }); g.pop = (g.pop || []).filter(q => { q.l -= dt; q.y -= 36 * dt; return q.l > 0; }); };
@@ -8693,8 +8700,8 @@ const REST = (function(){
     if (!run) return; const st = getComputedStyle(document.documentElement), v = n => st.getPropertyValue(n).trim() || '#888';
     C = {ac:v('--accent'), tx:v('--text'), mu:v('--muted'), bd:v('--border'), s2:v('--surface2'), bg:v('--bg'), gr:v('--green'), rd:v('--red'), ff:getComputedStyle(document.body).fontFamily || 'sans-serif'};
     view = 'rest'; if (el) el.style.display = 'none'; GI = i;
-    gm = document.createElement('div'); gm.id = 'rtgm'; gm.className = 'rt-gmw';
-    gm.innerHTML = '<div class="rt-gm"><div class="rt-gh"><div class="rt-gtm"><span class="time" data-rt="t"></span><small>ДО ГОНГА</small></div><div class="rt-gsc" id="rtgsc"></div><div class="rt-gbs"><button type="button" class="rt-gbn sq" data-r="gmin" aria-label="Свернуть"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><button type="button" class="rt-gbn pr" data-r="gback"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>К отдыху</button></div></div><i class="rt-gline"><b data-rt="ln"></b></i><canvas id="rtgc"></canvas></div>';
+    gm = document.createElement('div'); gm.id = 'rtgm'; gm.className = 'rt-gmw' + (apps ? ' apps' : '');
+    gm.innerHTML = '<div class="rt-gm"><div class="rt-gh"><div class="rt-gtm"><span class="time" data-rt="t"></span><small>ДО ГОНГА</small></div><div class="rt-gsc" id="rtgsc"></div><div class="rt-gbs"><button type="button" class="rt-gbn sq" data-r="gmin" aria-label="Свернуть"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><button type="button" class="rt-gbn pr" data-r="gback"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>' + (apps ? 'Назад' : 'К отдыху') + '</button></div></div><i class="rt-gline"><b data-rt="ln"></b></i><canvas id="rtgc"></canvas></div>';
     document.body.appendChild(gm);
     cv = gm.querySelector('canvas'); DPR = Math.min(2, window.devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * DPR; cv.height = H * DPR; cx = cv.getContext('2d'); cx.setTransform(DPR, 0, 0, DPR, 0, 0);
     egg = null; eggT = 14 + Math.random() * 14; G = GAMES[i].f(); G.init(); cd = 0; if (sv) { try { Object.assign(G, JSON.parse(sv.d)); cd = 3; cdN = 0; } catch (e) { G = GAMES[i].f(); G.init(); } } s.sv = null; save(); lastT = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
@@ -8703,7 +8710,7 @@ const REST = (function(){
     cv.addEventListener('pointermove', e => { if (!G || G.dead || cd > 0 || !G.move) return; const [x, y] = pp(e); G.move(x, y); });
     const pu = e => { if (!G || G.dead || cd > 0 || !G.up) return; const [x, y] = pp(e); G.up(x, y); };
     cv.addEventListener('pointerup', pu); cv.addEventListener('pointercancel', pu);
-    gm.querySelector('[data-r="gback"]').addEventListener('click', () => { hap.tap(); stopGame(); if (el) { el.style.display = ''; render(); } });
+    gm.querySelector('[data-r="gback"]').addEventListener('click', () => { hap.tap(); if (apps) { close(); return; } stopGame(); if (el) { el.style.display = ''; render(); } });
     gm.querySelector('[data-r="gmin"]').addEventListener('click', () => { hap.tap(); stopGame(); min = true; render(); });
     keyH = e => { if (G && (e.code === 'Space' || e.code === 'ArrowUp')) { e.preventDefault(); gtap(); } }; document.addEventListener('keydown', keyH);
     paint(left());
@@ -8737,7 +8744,7 @@ const REST = (function(){
     dayInfo(){ const i = dayGi(), g = GAMES[i]; return {i, k:g.k, n:g.n, best:s.best[g.k] || 0, th:TH(g.k)}; },
     playDay(){ if (run) { min = false; view = 'rest'; render(); return; } start(null, 300); free = true; openGame(dayGi()); },
     list(){ const d = dayGi(); return GAMES.map((g, i) => ({i, k:g.k, n:g.n, pro:!!g.pro, day:i === d, best:s.best[g.k] || 0, th:TH(g.k)})); },
-    play(i){ if (!run) { start(null, 10800); free = true; } openGame(i); }};
+    play(i){ if (!run) { start(null, 10800); free = true; } apps = true; openGame(i); }};
 })();
 
 function slBlock(src, same, act, st){
@@ -9472,9 +9479,10 @@ const ACT = {
 const AX = (function(){
   const f1 = v => String(Math.round(v * 10) / 10).replace('.', ','), P0 = v => numSep(Math.max(0, v));
   const isoT = () => isoOf(todayN());
+  const curIso = () => (S.app && ST.s ? isoOf(todayN() + (ST.off || 0)) : isoT());
   const A = () => { if (!db.apps || typeof db.apps !== 'object') db.apps = {}; return db.apps; };
   const CAL = () => { if (!db.cal || typeof db.cal !== 'object') db.cal = {}; return db.cal; };
-  const ST = {s:'', stack:[], meal:'s', q:'', pr:null, g:100, quick:false, last:null};
+  const ST = {off:0, s:'', stack:[], meal:'s', q:'', pr:null, g:100, quick:false, last:null};
   const AIC = {
     drop:'<path d="M12 2.6c3.9 4.6 6.3 7.7 6.3 11a6.3 6.3 0 0 1-12.6 0c0-3.3 2.4-6.4 6.3-11z" fill="#fff"/><path d="M8.7 14.2a3.4 3.4 0 0 0 2.5 3.2" fill="none" stroke="#3b8cf5" stroke-opacity=".6" stroke-width="1.7" stroke-linecap="round"/>',
     cal:'<path d="M12 7.6C10.7 6.6 7 6.4 5.7 9.4c-1.1 3 .6 8.4 3.1 9.9 1 .6 2 .1 3.2-.1 1.2.2 2.2.7 3.2.1 2.5-1.5 4.2-6.9 3.1-9.9-1.3-3-5-2.8-6.3-1.8z" fill="#fff"/><path d="M12.2 7.4c-.1-2.2 1-3.8 3.2-4.5.1 2.2-.9 3.9-3.2 4.5z" fill="#fff" fill-opacity=".72"/>',
@@ -9506,7 +9514,9 @@ const AX = (function(){
   const wd = (iso) => { const w = db.water || {}; return +w[iso || isoT()] || 0; };
   function trainedToday(){ const t = todayN(); return valid().some(w => dn(w.date) === t && (+w.minutes || 0) > 0); }
   function waterGoal(){ const w = weightsSorted(), kg = w.length ? +w[w.length - 1].kg : 0; let g = kg ? Math.round(kg * 30 / 50) * 50 : 2000; g = clamp(g, 1500, 4000); const tr = trainedToday(); return {goal:g + (tr ? 500 : 0), base:g, tr}; }
-  function addWater(v){ if (!db.water || typeof db.water !== 'object') db.water = {}; const k = isoT(), now = wd(k), nv = clamp(now + v, 0, 9000); db.water[k] = nv; pruneDays(db.water); save(); return nv; }
+  function wlog(){ if (!db.waterlog || typeof db.waterlog !== 'object') db.waterlog = {}; return db.waterlog; }
+  function addWater(v){ if (!db.water || typeof db.water !== 'object') db.water = {}; const k = isoT(), now = wd(k), nv = clamp(now + v, 0, 9000), real = nv - now; if (real <= 0) return now; db.water[k] = nv; const L = wlog(); (L[k] = L[k] || []).push({id:uid(), t:Date.now(), v:real}); pruneDays(db.water); pruneDays(L); save(); return nv; }
+  function delWater(id){ const k = isoT(), L = wlog(), a = L[k] || [], i = a.findIndex(e => e.id === id); if (i < 0) return null; const e = a.splice(i, 1)[0]; db.water[k] = Math.max(0, wd(k) - e.v); save(); return e; }
   function pruneDays(o){ const keys = Object.keys(o); if (keys.length < 200) return; keys.sort().slice(0, keys.length - 180).forEach(k => delete o[k]); }
 
   /* ---------- цель по калориям ---------- */
@@ -9521,11 +9531,11 @@ const AX = (function(){
     const p = Pf.kg ? Math.round(1.6 * Pf.kg) : Math.round(goal * .2 / 4), fa = Math.round(goal * .28 / 9), cb = Math.max(0, Math.round((goal - p * 4 - fa * 9) / 4));
     return {ok, Pf, af, mode, floor, auto, custom, goal, p, f:fa, c:cb, miss:[!Pf.kg && 'вес', !Pf.h && 'рост', Pf.age == null && 'дату рождения', !(Pf.sex === 'm' || Pf.sex === 'f') && 'пол'].filter(Boolean)};
   }
-  const trainKcal = () => { const t = todayN(); return valid().filter(w => dn(w.date) === t).reduce((a, w) => a + (kcal(w) || 0), 0); };
-  const foodDay = (iso) => ((db.food || {})[iso || isoT()] || []);
+  const trainKcal = () => { const t = dn(curIso()); return valid().filter(w => dn(w.date) === t).reduce((a, w) => a + (kcal(w) || 0), 0); };
+  const foodDay = (iso) => ((db.food || {})[iso || curIso()] || []);
   function totals(iso){ const t = {k:0, p:0, f:0, c:0}; foodDay(iso).forEach(e => { t.k += e.k || 0; t.p += e.p || 0; t.f += e.f || 0; t.c += e.c || 0; }); return t; }
   function day(){ const g = goalInfo(), t = totals(), tr = trainKcal(), budget = g.goal + (CAL().train ? tr : 0); return {g, t, tr, budget, rem:budget - t.k}; }
-  function addEntry(e){ if (!db.food || typeof db.food !== 'object') db.food = {}; const k = isoT(); (db.food[k] = db.food[k] || []).push(Object.assign({id:uid(), t:Date.now()}, e)); pruneDays(db.food); save(); }
+  function addEntry(e){ if (!db.food || typeof db.food !== 'object') db.food = {}; const k = curIso(); (db.food[k] = db.food[k] || []).push(Object.assign({id:uid(), t:Date.now()}, e)); pruneDays(db.food); save(); }
 
   /* ---------- продукты ---------- */
   const SEED = [['Овсянка на молоке', 250, 102, 3.2, 4.1, 14.2], ['Гречка варёная', 200, 110, 4.2, 1.1, 21], ['Рис варёный', 200, 130, 2.7, .3, 28], ['Макароны варёные', 200, 158, 5.8, .9, 31], ['Картофель варёный', 200, 82, 2, .4, 17],
@@ -9536,7 +9546,7 @@ const AX = (function(){
     .map(r => ({nm:r[0], port:r[1], k:r[2], p:r[3], f:r[4], c:r[5], src:'seed'}));
   const mine = () => (db.myfoods = Array.isArray(db.myfoods) ? db.myfoods : []);
   function recents(){ const seen = new Set(), out = []; const days = Object.keys(db.food || {}).sort().reverse().slice(0, 14);
-    for (const d of days) for (const e of (db.food[d] || []).slice().reverse()) { if (seen.has(e.nm)) continue; seen.add(e.nm); const per = e.g > 0 ? 100 / e.g : 0; out.push({nm:e.nm, port:e.g, k:e.k * per, p:e.p * per, f:e.f * per, c:e.c * per, src:'recent'}); if (out.length >= 8) return out; } return out; }
+    for (const d of days) for (const e of (db.food[d] || []).slice().reverse()) { if (seen.has(e.nm)) continue; seen.add(e.nm); const per = e.g > 0 ? 100 / e.g : 0; out.push({nm:e.nm, port:e.g, u:e.u, k:e.k * per, p:e.p * per, f:e.f * per, c:e.c * per, src:'recent'}); if (out.length >= 8) return out; } return out; }
   function search(q){ q = (q || '').trim().toLowerCase(); const all = mine().concat(SEED);
     if (!q) { const r = recents().concat(mine().slice(-6).reverse()).slice(0, 10); return r.length ? {title:'Недавние', list:r} : {title:'Популярное', list:SEED.slice(0, 12)}; }
     return {title:'Найдено', list:all.filter(x => x.nm.toLowerCase().includes(q) || (x.br || '').toLowerCase().includes(q) || (x.code || '') === q).slice(0, 20)}; }
@@ -9555,33 +9565,34 @@ const AX = (function(){
   function sheetHTML(){
     const a = A(), w = wd(), wg = waterGoal(), d = day();
     const live = (k, l, ic, t, sub, pct) => `<div class="ax-a" data-act="appopen" data-s="${k}"><div class="ax-at ${t}">${AI(ic, 38)}</div><b>${l}</b><small>${sub}</small>${pct != null ? `<div class="ax-ab"><i style="width:${pct}%"></i></div>` : ''}</div>`;
-    const soon = (ic, l, c) => `<div class="ax-a ax-so"><div class="ax-at" style="--c:${c}">${AI(ic, 26)}</div><b>${l}</b></div>`;
     const sw = (k, on) => `<span class="ax-sw${on ? ' on' : ''}" data-act="axpin" data-k="${k}"></span>`;
     return `<div class="ax-sh"><div class="ax-st">Приложения</div><div class="ax-ss">всё под рукой — без лишних вкладок</div>
     <div class="ax-card"><div class="ax-lab">Доступно сейчас</div><div class="ax-row">${live('water', 'Вода', 'drop', 'a-w', P0(w) + ' / ' + P0(wg.goal), Math.round(clamp(w / wg.goal, 0, 1) * 100))}${live('cal', 'Калории', 'cal', 'a-c', P0(Math.abs(d.rem)) + (d.rem < 0 ? ' сверх' : ' осталось'), Math.round(clamp(d.t.k * 100 / d.budget, 0, 100)))}${live('games', 'Игры', 'pad', 'a-g', '9 игр')}</div></div>
-    <div class="ax-lab" style="margin:18px 6px 10px">Скоро</div><div class="ax-row ax-r5">${soon('moon', 'Сон', '#5a64c8')}${soon('steps', 'Шаги', '#2fa968')}${soon('hab', 'Привычки', '#2fa968')}${soon('book', 'Дневник', '#8a8a96')}${soon('timer', 'Таймер', '#8a8a96')}</div>
+    
     <div class="ax-lab" style="margin:20px 6px 8px">На главной</div><div class="ax-grp"><div class="ax-li"><span class="ax-mi a-w">${AI('drop', 21)}</span><span class="tx"><b>Вода</b><small>быстрый +250 с главной</small></span>${sw('w', a.pw !== 0)}</div><div class="ax-li"><span class="ax-mi a-c">${AI('cal', 21)}</span><span class="tx"><b>Калории</b><small>сколько осталось на день</small></span>${sw('c', a.pc !== 0)}</div></div></div>`;
   }
   function pcls(c){ return c; }
+  const WDS = ['вс', 'пн', 'вт', 'ср', 'чт', 'пт', 'сб'];
+  function dayLabel(){ const o = ST.off || 0; if (o === 0) return 'Сегодня, ' + fmtDate(todayN()); if (o === -1) return 'Вчера, ' + fmtDate(todayN() - 1); return fmtDate(todayN() + o); }
+  function stripHTML(){ let h = ''; for (let o = -6; o <= 0; o++) { const n = todayN() + o, iso = isoOf(n), has = ((db.food || {})[iso] || []).length > 0, dt = new Date(n * 864e5); h += `<button type="button" class="ax-d${o === (ST.off || 0) ? ' on' : ''}${has ? ' has' : ''}" data-act="axday" data-o="${o}"><small>${WDS[dt.getUTCDay()]}</small><b>${dt.getUTCDate()}</b><i></i></button>`; } return `<div class="ax-strip">${h}</div>`; }
   function viewCal(){
     const d = day(), g = d.g, over = d.rem < 0, pct = d.t.k * 100 / d.budget, hide = !!CAL().hide;
-    const bar = (l, v, m, c) => `<div class="ax-mr"><div class="ax-mh"><span>${l}</span><b>${hide ? '' : Math.round(v) + ' / ' + m + ' г'}</b></div><div class="ax-bar2"><i style="width:${clamp(v * 100 / Math.max(1, m), 0, 100)}%;--c:${c}"></i></div></div>`;
-    let h = back() + `<div class="ax-h1">Калории</div><div class="ax-sub">Сегодня, ${fmtDate(todayN())}</div>`;
-    h += `<div class="ax-cd"><div class="ax-top">${ringSVG(pct, over)}<div class="mid"><b>${hide ? '' : P0(Math.abs(d.rem))}</b><small>${over ? 'выше нормы' : 'осталось'}</small></div></div><div class="ax-tx"><div class="ax-big">${P0(d.t.k)}<i> из ${P0(d.budget)}</i></div><div class="ax-cap">цель на день · <b>${CAL().on ? 'своя' : g.mode === 'lose' ? 'сбросить' : g.mode === 'gain' ? 'набрать' : 'держать'}</b></div><span class="ax-chip${over ? ' o' : ''}">${over ? 'выше нормы' : 'в рамках'}</span></div></div>
-    <div class="ax-3"><div><b>${P0(d.t.k)}</b><small>съедено</small></div><div><b>${P0(d.budget)}</b><small>цель</small></div><div><b>${d.tr ? '+' + P0(d.tr) : '—'}</b><small>тренировка</small></div></div>
-    ${bar('Белки', d.t.p, g.p, '#2fa968')}${bar('Жиры', d.t.f, g.f, '#e0a010')}${bar('Углев.', d.t.c, g.c, '#6a5af0')}</div>`;
-    h += `<div class="ax-sech"><span>Приёмы пищи</span><button type="button" class="ax-pl" data-act="appopen" data-s="goal">Цель</button></div>`;
+    const mc = (l, v, m, c) => `<div class="ax-m"><span>${l}</span><b>${hide ? '·' : Math.round(v)}<em>${hide ? '' : ' / ' + m + ' г'}</em></b><div class="ax-bar2"><i style="width:${clamp(v * 100 / Math.max(1, m), 0, 100)}%;--c:${c}"></i></div></div>`;
+    let h = back() + `<div class="ax-h1">Калории</div><div class="ax-sub">${dayLabel()}</div>${stripHTML()}`;
+    h += `<div class="ax-cd"><div class="ax-top">${ringSVG(pct, over)}<div class="mid"><b>${hide ? '' : P0(Math.abs(d.rem))}</b><small>${over ? 'выше нормы' : 'осталось'}</small></div></div></div><div class="ax-cx"><div class="ax-big">${P0(d.t.k)}<i> из ${P0(d.budget)} ккал</i></div><div class="ax-cap">цель · <b>${CAL().on ? 'своя' : g.mode === 'lose' ? 'сбросить' : g.mode === 'gain' ? 'набрать' : 'держать'}</b></div><span class="ax-chip${over ? ' o' : ''}">${over ? 'выше нормы' : 'в рамках'}</span>${d.tr ? `<span class="ax-chip p">тренировка +${P0(d.tr)}</span>` : ''}</div>
+    <div class="ax-ms">${mc('Белки', d.t.p, g.p, '#2fa968')}${mc('Жиры', d.t.f, g.f, '#e0a010')}${mc('Углеводы', d.t.c, g.c, '#6a5af0')}</div></div>
+    <div class="ax-act"><button type="button" class="ax-ab1" data-act="axadd" data-m="${mealOf()}">${I('plus', 18)}Добавить еду</button><button type="button" class="ax-ab2" data-act="axaddscan" data-m="${mealOf()}" aria-label="Сканер штрихкода">${I('grid', 20)}<span>Скан</span></button></div>`;
+    h += `<div class="ax-sech"><span>Приёмы пищи</span><button type="button" class="ax-pl" data-act="appopen" data-s="goal">Моя цель</button></div>`;
     MEALS.forEach(m => { const es = foodDay().filter(e => e.m === m[0]), sum = es.reduce((a, e) => a + e.k, 0);
-      h += `<div class="ax-meal"><div class="ax-mh2"><span class="ax-mic ${m[3]}">${I(m[2], 18)}</span><b>${m[1]}</b><span class="k">${sum ? P0(sum) + ' ккал' : ''}</span><button type="button" class="ax-pb" data-act="axadd" data-m="${m[0]}" aria-label="Добавить">${I('plus', 16)}</button></div>${es.length ? es.map(e => `<div class="ax-it"><span class="n"><b>${esc(e.nm)}</b><small>${e.g ? Math.round(e.g) + ' г' : 'быстрый ввод'}${hide ? '' : ' · Б ' + f1(e.p) + ' · Ж ' + f1(e.f) + ' · У ' + f1(e.c)}</small></span><span class="k">${P0(e.k)}</span><button type="button" class="ax-x" data-act="axdel" data-id="${e.id}" aria-label="Удалить">${I('x', 14)}</button></div>`).join('') : `<div class="ax-em">пока пусто</div>`}</div>`; });
-    h += `<button type="button" class="ax-fab" data-act="axadd" data-m="${mealOf()}">${I('plus', 18)}Добавить еду</button><div style="height:150px"></div>`;
-    return h;
+      h += `<div class="ax-meal"><div class="ax-mh2"><span class="ax-mic ${m[3]}">${I(m[2], 18)}</span><b>${m[1]}</b><span class="k">${sum ? P0(sum) + ' ккал' : ''}</span><button type="button" class="ax-pb" data-act="axadd" data-m="${m[0]}" aria-label="Добавить">${I('plus', 16)}</button></div>${es.length ? es.map(e => `<div class="ax-it"><span class="n"><b>${esc(e.nm)}</b><small>${e.g ? Math.round(e.g) + ' ' + (e.u || 'г') : 'быстрый ввод'}${hide ? '' : ' · Б ' + f1(e.p) + ' · Ж ' + f1(e.f) + ' · У ' + f1(e.c)}</small></span><span class="k">${P0(e.k)}</span><button type="button" class="ax-x" data-act="axdel" data-id="${e.id}" aria-label="Удалить">${I('x', 14)}</button></div>`).join('') : `<div class="ax-em">пока пусто</div>`}</div>`; });
+    return h + `<div style="height:110px"></div>`;
   }
-  function itemRow(x, i){ const nm = esc(x.nm), sub = x.src === 'seed' || x.src === 'recent' ? `${Math.round(x.port)} г` : esc((x.br ? x.br + ' · ' : '') + (x.port ? Math.round(x.port) + ' г' : '100 г')); const k = Math.round(x.k * (x.port || 100) / 100);
+  function itemRow(x, i){ const nm = esc(x.nm), sub = x.src === 'seed' || x.src === 'recent' ? `${Math.round(x.port)} ${x.u || 'г'}` : esc((x.br ? x.br + ' · ' : '') + (x.port ? Math.round(x.port) + ' ' + (x.u || 'г') : '100 ' + (x.u || 'г'))); const k = Math.round(x.k * (x.port || 100) / 100);
     return `<div class="ax-li2" data-act="axpick" data-i="${i}"><span class="tx"><b>${nm}</b><small>${sub}</small></span><span class="k">${k} ккал</span><span class="pb">${I('plus', 14)}</span></div>`; }
   let LIST = [];
   function listHTML(q){ const r = search(q); LIST = r.list; return r.list.length ? `<div class="ax-lab" style="margin:16px 4px 8px">${r.title}</div><div class="ax-grp">${r.list.map(itemRow).join('')}</div>` : `<div class="ax-empty">Ничего не нашли по «${esc(q)}».<br>Отсканируй штрихкод или добавь продукт сам.<button type="button" class="ax-btn" data-act="axnew">${I('plus', 16)}Добавить свой продукт</button></div>`; }
   function viewAdd(){
-    const y = isoOf(todayN() - 1), ye = ((db.food || {})[y] || []).filter(e => e.m === ST.meal);
+    const y = isoOf(todayN() + (ST.off || 0) - 1), ye = ((db.food || {})[y] || []).filter(e => e.m === ST.meal);
     return back('', 'Калории') + `<div class="ax-h1">Добавить в ${MN[ST.meal]}</div><div class="ax-sub">Выбрано по времени суток</div>
     <div class="ax-srch">${I('search', 18)}<input id="ax-q" type="search" inputmode="search" placeholder="Найти продукт или блюдо" autocomplete="off" value="${esc(ST.q)}"><button type="button" class="ax-sc" data-act="axscan" aria-label="Сканер">${I('grid', 20)}</button></div>
     <div class="ax-scanh" data-act="axscan"><div class="bc"><i></i><span class="lz"></span></div><div class="tx"><b>Сканировать штрихкод</b><small>калории и БЖУ за секунду</small></div><span class="go">${I('chev', 18)}</span></div>
@@ -9590,19 +9601,25 @@ const AX = (function(){
   }
   function viewFound(){
     const pr = ST.pr; if (!pr) return viewAdd(); const g = ST.g, m = macro(pr, g);
-    const chips = [['100 г', 100]]; if (pr.port && pr.port !== 100) chips.push([(pr.src === 'off' ? '1 порция' : '1 порция') + ' · ' + Math.round(pr.port) + ' г', pr.port]); if (pr.pack && pr.pack !== pr.port) chips.push(['вся упаковка · ' + Math.round(pr.pack) + ' г', pr.pack]); chips.push(['200 г', 200]);
+    const u = pr.u || 'г', chips = [['100 ' + u, 100]]; if (pr.port && pr.port !== 100) chips.push([(pr.u === 'мл' ? 'порция' : '1 порция') + ' · ' + Math.round(pr.port) + ' ' + u, pr.port]); if (pr.pack && pr.pack !== pr.port) chips.push([(pr.u === 'мл' ? 'вся бутылка' : 'вся упаковка') + ' · ' + Math.round(pr.pack) + ' ' + u, pr.pack]); chips.push(['200 ' + u, 200]);
     return back('', 'Назад') + `<div class="ax-prod"><span class="im">${esc((pr.nm || '?').trim().charAt(0).toUpperCase())}</span><div><b>${esc(pr.nm)}</b><small>${esc(pr.br || '')}</small>${pr.src === 'off' ? '<span class="ax-chip">нашли по штрихкоду</span>' : pr.src === 'mine' ? '<span class="ax-chip p">твой продукт</span>' : ''}</div></div>
-    <div class="ax-per"><div><b>${Math.round(pr.k)}</b><small>ккал</small></div><div><b>${f1(pr.p)}</b><small>белки</small></div><div><b>${f1(pr.f)}</b><small>жиры</small></div><div><b>${f1(pr.c)}</b><small>углев.</small></div></div><div class="ax-note">на 100 г${pr.src === 'off' ? ' · источник: Open Food Facts' : pr.src === 'seed' ? ' · усреднённые значения' : ''}</div>
-    <div class="ax-gram"><button type="button" data-act="axg" data-d="-10">${I('x', 1)}−</button><label><input id="ax-g" type="number" inputmode="decimal" value="${Math.round(g)}"><i>г</i></label><button type="button" data-act="axg" data-d="10">+</button></div>
+    <div class="ax-per"><div><b>${Math.round(pr.k)}</b><small>ккал</small></div><div><b>${f1(pr.p)}</b><small>белки</small></div><div><b>${f1(pr.f)}</b><small>жиры</small></div><div><b>${f1(pr.c)}</b><small>углев.</small></div></div><div class="ax-note">на 100 ${pr.u || 'г'}${pr.src === 'off' ? ' · источник: Open Food Facts' : pr.src === 'seed' ? ' · усреднённые значения' : pr.est ? ' · ориентир — проверь по этикетке' : ''}</div>
+    <div class="ax-gram"><button type="button" data-act="axg" data-d="-10">${I('x', 1)}−</button><label><input id="ax-g" type="number" inputmode="decimal" value="${Math.round(g)}"><i>${pr.u || 'г'}</i></label><button type="button" data-act="axg" data-d="10">+</button></div>
     <div class="ax-chips">${chips.map(c => `<button type="button" class="${Math.round(c[1]) === Math.round(g) ? 'on' : ''}" data-act="axgset" data-v="${c[1]}">${c[0]}</button>`).join('')}</div>
     <div class="ax-tot"><div><div class="big"><span id="ax-fk">${Math.round(m.k)}</span><i>ккал</i></div><small>в этой порции</small></div><div class="mp"><span><b id="ax-fp">${f1(m.p)}</b>белки</span><span><b id="ax-ff">${f1(m.f)}</b>жиры</span><span><b id="ax-fc">${f1(m.c)}</b>углев.</span></div></div>
     <button type="button" class="ax-btn big" data-act="axaddfound">Добавить в ${MN[ST.meal]}</button>${pr.src === 'off' ? '<div class="ax-note c">Данные неверные? Исправь значения — твоя версия будет в приоритете.</div>' : ''}${pr.src === 'off' || pr.src === 'mine' ? `<button type="button" class="ax-link" data-act="axeditp">Исправить значения</button>` : ''}<div style="height:120px"></div>`;
   }
+  const PRESETS = [['Газировка', 'мл', 42, 0, 0, 10.6], ['Сок / нектар', 'мл', 46, .5, .1, 11], ['Энергетик', 'мл', 45, 0, 0, 11], ['Напиток без сахара', 'мл', 1, 0, 0, 0], ['Молочка', 'мл', 60, 3.2, 3, 4.7], ['Йогурт / десерт', 'г', 90, 4, 3, 12], ['Шоколад / конфеты', 'г', 540, 6, 31, 57], ['Печенье / выпечка', 'г', 430, 6, 17, 65], ['Чипсы / снеки', 'г', 530, 6, 33, 50], ['Колбаса / мясо', 'г', 280, 13, 25, 2], ['Сыр', 'г', 360, 25, 28, 0], ['Хлеб', 'г', 250, 8, 2, 49]];
+  function readNw(){ const g = id => { const e = document.getElementById(id); return e ? e.value : ''; }; const n = ST.nw = ST.nw || {}; if (document.getElementById('nw-nm')) { n.nm = g('nw-nm'); n.br = g('nw-br'); n.k = g('nw-k'); n.p = g('nw-p'); n.f = g('nw-f'); n.c = g('nw-c'); n.port = g('nw-g'); } return n; }
   function viewNew(){
-    const n = ST.nw || {}; const fld = (id, l, v, u) => `<label class="ax-f"><span>${l}</span><div><input id="${id}" type="${id === 'nw-nm' || id === 'nw-br' ? 'text' : 'number'}" ${id === 'nw-nm' || id === 'nw-br' ? '' : 'inputmode="decimal"'} value="${esc(v == null ? '' : v)}" placeholder="${u || ''}"></div></label>`;
-    return back('', 'Назад') + `<div class="ax-h1">${n.code ? 'Нет в базе' : 'Свой продукт'}</div><div class="ax-sub">${n.code ? 'Штрихкод ' + esc(n.code) + ' не найден. Заполни по этикетке — запомню на будущее.' : 'Значения — на 100 г, как на этикетке.'}</div>
-    <div class="ax-grp ax-form">${fld('nw-nm', 'Название', n.nm, 'Например: Йогурт Fruttis')}${fld('nw-br', 'Бренд', n.br, 'необязательно')}${fld('nw-k', 'Калории на 100 г', n.k, 'ккал')}${fld('nw-p', 'Белки', n.p, 'г')}${fld('nw-f', 'Жиры', n.f, 'г')}${fld('nw-c', 'Углеводы', n.c, 'г')}${fld('nw-g', 'Порция / упаковка', n.port, 'г, необязательно')}</div>
-    <button type="button" class="ax-btn big" data-act="axsavenew">Сохранить и добавить</button><div class="ax-note c">Продукт сохранится только у тебя.</div><div style="height:120px"></div>`;
+    const n = ST.nw || {}, u = n.u || 'г'; const fld = (id, l, v, un) => `<label class="ax-f"><span>${l}</span><div><input id="${id}" type="${id === 'nw-nm' || id === 'nw-br' ? 'text' : 'number'}" ${id === 'nw-nm' || id === 'nw-br' ? '' : 'inputmode="decimal"'} value="${esc(v == null ? '' : v)}" placeholder="${un || ''}"></div></label>`;
+    const head = n.est ? 'Нашли похожий продукт' : n.nm ? 'Почти нашли' : n.code ? 'Нет в базе' : 'Свой продукт';
+    const sub = n.est ? `Штрихкод ${esc(n.code)}: подставил значения похожего продукта как ориентир. Проверь по этикетке и поправь, если нужно.` : n.nm ? `Штрихкод ${esc(n.code)}: название нашлось, а калорий в базе нет. Впиши их с этикетки — запомню.` : n.code ? `Штрихкод ${esc(n.code)} не найден. Выбери тип ниже, чтобы подставить среднее, или впиши с этикетки — запомню на будущее.` : 'Значения — на 100 ' + u + ', как на этикетке.';
+    return back('', 'Назад') + `<div class="ax-h1">${head}</div><div class="ax-sub">${sub}</div>
+    <div class="ax-lab" style="margin:2px 4px 8px">Быстро: выбери тип</div><div class="ax-chips l">${PRESETS.map((p, i) => `<button type="button" data-act="axcat" data-i="${i}">${p[0]}</button>`).join('')}</div>
+    <div class="ax-seg" style="margin-top:12px"><button type="button" class="${u === 'г' ? 'on' : ''}" data-act="axunit" data-v="г">на 100 г</button><button type="button" class="${u === 'мл' ? 'on' : ''}" data-act="axunit" data-v="мл">на 100 мл</button></div>
+    <div class="ax-grp ax-form">${fld('nw-nm', 'Название', n.nm, 'Например: Pepsi 0,5')}${fld('nw-br', 'Бренд', n.br, 'необязательно')}${fld('nw-k', 'Калории на 100 ' + u, n.k, 'ккал')}${fld('nw-p', 'Белки', n.p, 'г')}${fld('nw-f', 'Жиры', n.f, 'г')}${fld('nw-c', 'Углеводы', n.c, 'г')}${fld('nw-g', 'Размер порции / упаковки', n.port, u + ', необязательно')}</div>
+    <button type="button" class="ax-btn big" data-act="axsavenew">Сохранить и добавить</button><div class="ax-note c">Продукт сохранится у тебя, и при следующем скане найдётся сразу.</div><div style="height:120px"></div>`;
   }
   function viewGoal(){
     const g = goalInfo(), c = CAL(), Pf = g.Pf;
@@ -9616,12 +9633,20 @@ const AX = (function(){
     <div class="ax-grp">${tg('on', 'Своя цифра', 'можно задать вручную', !!c.on)}${c.on ? `<div class="ax-qf"><input id="ax-cu" type="number" inputmode="numeric" placeholder="ккал в день" value="${c.custom || ''}"><span class="ax-note" style="margin:0">от 800 до 6 000</span></div>` : ''}${tg('train', 'Добавлять тренировки в бюджет', 'выкл: ' + (trainKcal() ? '+' + P0(trainKcal()) + ' ккал' : 'сожжённое') + ' показывается отдельно', !!c.train)}${tg('hide', 'Скрыть цифры, оставить кольцо', 'спокойный режим без счёта граммов', !!c.hide)}</div>
     <div class="ax-note">Нижняя граница безопасности: цель не опускается ниже 1 500 ккал для мужчин и 1 200 для женщин. Это общие ориентиры, не медицинская рекомендация. Свою цифру можно задать любую.</div><div style="height:130px"></div>`;
   }
+  const WIC = {150:'<path d="M5 8h10v6a5 5 0 0 1-10 0V8zM15 10h2.2a2 2 0 0 1 0 4H15M7 4.5v1.5M10 4.5v1.5M13 4.5v1.5"/>', 250:'<path d="M7 4h10l-1.2 15a2 2 0 0 1-2 1.8h-3.6a2 2 0 0 1-2-1.8L7 4zM7.6 10h8.8"/>', 330:'<rect x="8" y="3.5" width="8" height="17" rx="2.5"/><path d="M8 8h8M8 16h8"/>', 500:'<path d="M10 3h4v3l2 2.5V19a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V8.5L10 6V3zM8 12h8"/>'};
+  const hhmm = t => { const d = new Date(t); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); };
+  function weekWater(){ let h = '', gg = waterGoal().goal; for (let o = -6; o <= 0; o++) { const n = todayN() + o, iso = isoOf(n), v = wd(iso), dt = new Date(n * 864e5); h += `<div class="ax-wk${o === 0 ? ' now' : ''}${v >= gg ? ' ok' : ''}"><i style="height:${Math.max(4, Math.min(100, v * 100 / gg))}%"></i><small>${WDS[dt.getUTCDay()]}</small></div>`; } return h; }
   function viewWater(){
-    const w = wd(), wg = waterGoal(), pct = Math.round(clamp(w / wg.goal, 0, 1) * 100);
-    return back() + `<div class="ax-h1">Вода</div><div class="ax-sub">Цель на сегодня — ${P0(wg.goal)} мл</div>
-    <div class="ax-wt"><div class="wave" style="--w:${pct}%"><i class="bb" style="--l:16%;--d:0s"></i><i class="bb" style="--l:40%;--s:4px;--d:1.8s"></i><i class="bb" style="--l:66%;--s:7px;--d:3.1s"></i><i class="bb" style="--l:86%;--s:5px;--d:.9s"></i></div><div class="n">${P0(w)}<i> мл</i></div><small>${w >= wg.goal ? 'норма выполнена' : 'ещё ' + P0(wg.goal - w) + ' мл'}</small></div>
-    <div class="ax-wb">${[150, 250, 330, 500].map(v => `<button type="button" data-act="axwater" data-v="${v}">+${v}</button>`).join('')}</div>${w ? `<button type="button" class="ax-link" data-act="axwater" data-v="-250">−250 мл (поправить)</button>` : ''}
-    <div class="ax-note">Цель считается от веса (≈30 мл на кг)${wg.tr ? ' и сегодня +500 мл за тренировку' : ' и сдвигается в дни с тренировкой'}.</div><div style="height:130px"></div>`;
+    const w = wd(), wg = waterGoal(), pct = Math.round(clamp(w / wg.goal, 0, 1) * 100), log = (wlog()[isoT()] || []).slice().reverse(), logSum = log.reduce((a, e) => a + e.v, 0), prior = Math.max(0, w - logSum), done = w >= wg.goal;
+    return back() + `<div class="ax-h1">Вода</div><div class="ax-sub">Цель на сегодня — ${P0(wg.goal)} мл${wg.tr ? ' · с тренировкой +500' : ''}</div>
+    <div class="ax-wt"><div class="wave" style="--w:${pct}%"><i class="bb" style="--l:16%;--d:0s"></i><i class="bb" style="--l:40%;--s:4px;--d:1.8s"></i><i class="bb" style="--l:66%;--s:7px;--d:3.1s"></i><i class="bb" style="--l:86%;--s:5px;--d:.9s"></i></div>
+      <span class="pc">${pct}%</span><div class="n">${P0(w)}<i> мл</i></div><small>${done ? 'норма выполнена — отлично' : 'ещё ' + P0(wg.goal - w) + ' мл до нормы'}</small></div>
+    <div class="ax-wb">${[150, 250, 330, 500].map(v => `<button type="button" data-act="axwater" data-v="${v}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${WIC[v]}</svg><b>+${v}</b><small>мл</small></button>`).join('')}</div>
+    <div class="ax-wc"><input id="ax-wc" type="number" inputmode="numeric" placeholder="Свой объём, мл" min="10" max="2000"><button type="button" data-act="axwcust">Добавить</button></div>
+    <div class="ax-sech"><span>Сегодня выпито</span><em class="ax-cnt">${log.length ? log.length + ' ' + (log.length === 1 ? 'раз' : log.length < 5 ? 'раза' : 'раз') : ''}</em></div>
+    <div class="ax-hist">${log.length ? log.map(e => `<div class="ax-hi"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">${hhmm(e.t)}</span><b>+${P0(e.v)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdel" data-id="${e.id}" aria-label="Удалить">${I('x', 14)}</button></div>`).join('') : ''}${prior ? `<div class="ax-hi old"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">раньше</span><b>${P0(prior)} <em>мл</em></b></div>` : ''}${!log.length && !prior ? '<div class="ax-em" style="padding:14px">Пока ничего не выпито — нажми на стакан выше</div>' : ''}</div>
+    <div class="ax-sech"><span>7 дней</span></div><div class="ax-week">${weekWater()}</div>
+    <div class="ax-note">Цель считается от веса (≈30 мл на кг) и сдвигается в дни с тренировкой.</div><div style="height:130px"></div>`;
   }
   function viewGames(){
     const L = REST.list(); const day = L.find(x => x.day);
@@ -9633,7 +9658,7 @@ const AX = (function(){
 
   /* ---------- навигация ---------- */
   function go(s, replace){ if (ST.s && !replace) ST.stack.push(ST.s); ST.s = s; S.app = true; hap.tap(); render(); window.scrollTo(0, 0); }
-  function leave(){ ST.s = ''; ST.stack = []; S.app = false; _rTab = null; }
+  function leave(){ ST.off = 0; ST.s = ''; ST.stack = []; S.app = false; _rTab = null; }
   function goBack(){ const p = ST.stack.pop(); hap.tap(); if (!p) { leave(); render(); return; } ST.s = p; if (p === 'add') ST.pr = null; render(); }
   function openSheetApps(){ hap.tap(); openSheet(sheetHTML(), {type:'apps'}); }
 
@@ -9676,20 +9701,41 @@ const AX = (function(){
 
   /* ---------- Open Food Facts ---------- */
   const offKey = c => 'voob.off.' + c;
-  function offMap(code, j){ const p = j && j.product; if (!p) return null; const n = p.nutriments || {}; let k = +n['energy-kcal_100g']; if (!(k >= 0) || n['energy-kcal_100g'] == null) { const kj = +n['energy_100g']; k = kj > 0 ? kj / 4.184 : NaN; }
-    const nm = (p.product_name_ru || p.product_name || '').trim(); if (!nm || !(k >= 0)) return null;
-    return {code, nm, br:(p.brands || '').split(',')[0].trim(), k:Math.round(k), p:+n.proteins_100g || 0, f:+n.fat_100g || 0, c:+n.carbohydrates_100g || 0, port:+p.serving_quantity > 0 ? +p.serving_quantity : 0, pack:+p.product_quantity > 0 ? +p.product_quantity : 0, src:'off'}; }
+  const unitOf = q => /(^|[\d\s,.])(мл|ml|л|l|cl|сл)\b/i.test(q || '') && !/(\d\s*(г|g|кг|kg)\b)/i.test(q || '') ? 'мл' : '';
+  const variants = c => { const o = [c]; if (c.length === 12) o.push('0' + c); if (c.length === 13 && c[0] === '0') o.push(c.slice(1)); return o; };
+  function offMap(code, j){ const p = j && j.product; if (!p) return null; const n = p.nutriments || {}; let k = n['energy-kcal_100g'] != null ? +n['energy-kcal_100g'] : NaN; if (!(k >= 0)) { const kj = +n['energy_100g']; k = kj > 0 ? kj / 4.184 : NaN; }
+    const nm = (p.product_name_ru || p.product_name || p.generic_name_ru || p.generic_name || '').trim(), br = (p.brands || '').split(',')[0].trim(), qt = p.quantity || '', u = unitOf(qt);
+    const pack = +p.product_quantity > 0 ? +p.product_quantity : 0, port = +p.serving_quantity > 0 ? +p.serving_quantity : 0;
+    if (!nm) return null;
+    const base = {code, nm, br, port, pack, u};
+    if (!(k >= 0)) { const kn = Object.keys(n).filter(x => /_100g$/.test(x)); return kn.length ? null : {partial:true, code, nm, br, port, pack, u}; }
+    return Object.assign(base, {k:Math.round(k), p:+n.proteins_100g || 0, f:+n.fat_100g || 0, c:+n.carbohydrates_100g || 0, src:'off'}); }
+  const OFFF = 'product_name,product_name_ru,generic_name,generic_name_ru,brands,quantity,serving_quantity,product_quantity,nutriments';
+  async function jget(url, ms){ const ac = new AbortController(), t = setTimeout(() => ac.abort(), ms || 9000); try { const r = await fetch(url, {signal:ac.signal}); if (!r.ok) return null; return await r.json(); } finally { clearTimeout(t); } }
+  async function offByCode(code){ let part = null, net = false;
+    for (const c of variants(code)) { try { const j = await jget('https://world.openfoodfacts.org/api/v2/product/' + encodeURIComponent(c) + '.json?fields=' + OFFF); net = true; if (j && j.status === 1) { const m = offMap(c, j); if (m && !m.partial) return {pr:m}; if (m && m.partial && !part) part = m; } } catch (e) {} }
+    return {part, net}; }
+  async function offGuess(name){ try { const j = await jget('https://world.openfoodfacts.org/cgi/search.pl?search_terms=' + encodeURIComponent(name) + '&search_simple=1&action=process&json=1&page_size=8&fields=' + OFFF); for (const p of ((j && j.products) || [])) { const m = offMap('', {product:p}); if (m && !m.partial) return m; } } catch (e) {} return null; }
+  async function nameByCode(code){ try { const j = await jget('https://api.upcitemdb.com/prod/trial/lookup?upc=' + encodeURIComponent(code), 7000); const it = j && j.items && j.items[0]; if (it && it.title) return {nm:it.title.trim(), br:(it.brand || '').trim(), u:unitOf(it.size || it.title)}; } catch (e) {} return null; }
+  const FOODAPI = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-food';
+  async function foodSrv(body){ if (!inTG) return null; const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 6000); try { const r = await fetch(FOODAPI, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), signal:ctl.signal}); return r.ok ? await r.json() : null; } catch (e) { return null; } finally { clearTimeout(t); } }
+  const fromSrv = x => ({code:x.code, nm:x.name, br:x.brand || '', k:+x.k, p:+x.p, f:+x.f, c:+x.c, u:x.u === 'мл' ? 'мл' : '', src:'off', shared:true});
+  function contribute(pr, src){ if (!inTG || !pr || !pr.code || !(pr.k >= 0) || pr.est) return; (async () => { try { const tok = await ensureToken(); await foodSrv({act:'contribute', token:tok, code:String(pr.code), name:pr.nm, brand:pr.br || '', k:pr.k, p:pr.p || 0, f:pr.f || 0, c:pr.c || 0, u:pr.u === 'мл' ? 'мл' : 'г', src}); } catch (e) {} })(); }
+  let _sq = 0;
+  function srvSearch(q){ clearTimeout(_sq); q = (q || '').trim(); if (q.length < 3) return; _sq = setTimeout(async () => { const r = await foodSrv({act:'search', q}); if (!r || !r.items || ST.q.trim() !== q) return; const box = document.getElementById('ax-list'); if (!box) return; const have = new Set((LIST || []).map(x => (x.nm || '').toLowerCase())); const add = r.items.map(fromSrv).filter(x => !have.has(x.nm.toLowerCase())); if (!add.length) return; const base = (LIST || []).length; LIST = (LIST || []).concat(add); const emp = box.querySelector('.ax-empty'); if (emp) emp.remove(); box.insertAdjacentHTML('beforeend', `<div class="ax-lab" style="margin:16px 4px 8px">Из общей базы VOOB</div><div class="ax-grp">${add.map((x, i) => itemRow(x, base + i)).join('')}</div>`); }, 450); }
   async function lookup(code){
-    const own = mine().find(x => x.code === code); if (own) return openFound(Object.assign({}, own, {src:'mine'}));
-    let c = null; try { c = JSON.parse(localStorage.getItem(offKey(code)) || 'null'); } catch (e) {}
-    if (c && c.nm) return openFound(c);
+    const vs = variants(code), own = mine().find(x => vs.includes(x.code)); if (own) return openFound(Object.assign({}, own, {src:'mine'}));
+    for (const c of vs) { let ch = null; try { ch = JSON.parse(localStorage.getItem(offKey(c)) || 'null'); } catch (e) {} if (ch && ch.nm && ch.k != null) return openFound(ch); }
     toast('Ищу продукт…');
-    try { const ac = new AbortController(), t = setTimeout(() => ac.abort(), 9000);
-      const r = await fetch('https://world.openfoodfacts.org/api/v2/product/' + encodeURIComponent(code) + '.json?fields=product_name,product_name_ru,brands,quantity,serving_quantity,product_quantity,nutriments', {signal:ac.signal}); clearTimeout(t);
-      const j = await r.json(), pr = r.ok && j && j.status === 1 ? offMap(code, j) : null;
-      if (pr) { try { localStorage.setItem(offKey(code), JSON.stringify(pr)); } catch (e) {} return openFound(pr); }
-    } catch (e) { toast('Нет связи с базой — заполни продукт сам'); }
-    ST.nw = {code}; ST.s === 'new' ? render() : go('new');
+    const sv = await foodSrv({act:'lookup', codes:vs});
+    if (sv && sv.items && sv.items.length) { const pr = fromSrv(sv.items[0]); try { localStorage.setItem(offKey(code), JSON.stringify(pr)); } catch (e) {} return openFound(pr); }
+    const r = await offByCode(code);
+    if (r.pr) { try { localStorage.setItem(offKey(code), JSON.stringify(r.pr)); } catch (e) {} contribute(r.pr, 'off'); return openFound(r.pr); }
+    // не нашли с БЖУ: берём название (OFF без калорий или другая база), ищем похожий продукт и подставляем значения как ориентир
+    let nm = r.part || await nameByCode(code), nw = {code};
+    if (nm) { Object.assign(nw, {nm:nm.nm, br:nm.br, port:nm.port || '', u:nm.u || ''}); const g = await offGuess((nm.br ? nm.br + ' ' : '') + nm.nm); if (g) Object.assign(nw, {k:g.k, p:g.p, f:g.f, c:g.c, est:true, u:nw.u || g.u}); }
+    ST.nw = nw; if (!r.net && !nm) toast('Нет связи с базой — заполни продукт сам');
+    ST.s === 'new' ? render() : go('new');
   }
   function openFound(pr){ ST.pr = pr; ST.g = pr.port || 100; ST.s === 'found' ? render() : go('found'); }
 
@@ -9698,24 +9744,30 @@ const AX = (function(){
   function recalc(){ const pr = ST.pr; if (!pr) return; const m = macro(pr, ST.g), set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; }; set('ax-fk', Math.round(m.k)); set('ax-fp', f1(m.p)); set('ax-ff', f1(m.f)); set('ax-fc', f1(m.c)); document.querySelectorAll('.ax-chips button').forEach(b => b.classList.toggle('on', Math.round(+b.dataset.v) === Math.round(ST.g))); }
   const acts = {
     appsheet: () => openSheetApps(),
-    appopen: el => { if (sheetCtx && sheetCtx.type === 'apps') closeSheet(); const s = el.dataset.s; ST.stack = []; ST.s = ''; go(s); },
+    appopen: el => { if (sheetCtx && sheetCtx.type === 'apps') closeSheet(); const s = el.dataset.s; ST.stack = []; ST.s = ''; ST.off = 0; go(s); },
+    axday: el => { ST.off = clamp(+el.dataset.o, -13, 0); hap.tap(); render(); },
     appback: () => goBack(),
     axpin: el => { const a = A(), k = el.dataset.k === 'w' ? 'pw' : 'pc'; a[k] = a[k] === 0 ? 1 : 0; el.classList.toggle('on', a[k] !== 0); hap.tap(); save(); if (S.tab === 'home') render(); },
-    axwater: (el) => { const v = +el.dataset.v; const nv = addWater(v); v > 0 ? hap.imp() : hap.tap(); if (S.app) render(); else render(); if (nv >= waterGoal().goal && v > 0 && nv - v < waterGoal().goal) toast('Норма воды выполнена'); },
+    axwater: (el) => { const v = +el.dataset.v, was = wd(), nv = addWater(v); hap.imp(); render(); if (nv >= waterGoal().goal && was < waterGoal().goal) { hap.ok(); toast('Норма воды выполнена'); } },
+    axwcust: () => { const v = Math.round(num('ax-wc')); if (!(v >= 10 && v <= 2000)) { toast('Введи объём от 10 до 2000 мл'); return; } const was = wd(), nv = addWater(v); hap.imp(); render(); if (nv >= waterGoal().goal && was < waterGoal().goal) toast('Норма воды выполнена'); },
+    axwdel: el => { const e = delWater(el.dataset.id); if (!e) return; hap.tap(); render(); toast('Удалено −' + e.v + ' мл', 'Вернуть', () => { addWater(e.v); render(); }); },
     axadd: el => { ST.meal = el.dataset.m || mealOf(); ST.q = ''; ST.quick = false; ST.pr = null; if (!S.app) { ST.stack = ['cal']; ST.s = 'add'; S.app = true; hap.tap(); render(); window.scrollTo(0, 0); } else go('add'); },
+    axaddscan: el => { acts.axadd(el); setTimeout(() => openScan(), 50); },
     axquick: () => { ST.quick = !ST.quick; hap.tap(); render(); },
     axquickadd: () => { const k = Math.round(num('ax-qk')); if (!(k > 0 && k < 6000)) { toast('Введи калории'); return; } const nm = (document.getElementById('ax-qn') || {}).value || 'Быстрый ввод'; addEntry({m:ST.meal, nm:nm.trim() || 'Быстрый ввод', g:0, k, p:0, f:0, c:0}); hap.ok(); backToCal(); },
-    axrep: () => { const y = isoOf(todayN() - 1); ((db.food || {})[y] || []).filter(e => e.m === ST.meal).forEach(e => addEntry({m:e.m, nm:e.nm, g:e.g, k:e.k, p:e.p, f:e.f, c:e.c})); hap.ok(); toast('Добавлено'); backToCal(); },
+    axrep: () => { const y = isoOf(todayN() + (ST.off || 0) - 1); ((db.food || {})[y] || []).filter(e => e.m === ST.meal).forEach(e => addEntry({m:e.m, nm:e.nm, g:e.g, k:e.k, p:e.p, f:e.f, c:e.c})); hap.ok(); toast('Добавлено'); backToCal(); },
     axpick: el => { const x = LIST[+el.dataset.i]; if (!x) return; openFound(Object.assign({}, x, {src:x.src || 'mine'})); },
     axg: el => { ST.g = clamp((+ST.g || 0) + (+el.dataset.d), 1, 3000); const i = document.getElementById('ax-g'); if (i) i.value = Math.round(ST.g); hap.tap(); recalc(); },
     axgset: el => { ST.g = +el.dataset.v; const i = document.getElementById('ax-g'); if (i) i.value = Math.round(ST.g); hap.tap(); recalc(); },
-    axaddfound: () => { const pr = ST.pr; if (!pr) return; const g = clamp(+ST.g || 0, 1, 3000), m = macro(pr, g); addEntry({m:ST.meal, nm:pr.nm + (pr.br && pr.src === 'off' ? ' · ' + pr.br : ''), g, k:Math.round(m.k), p:+m.p.toFixed(1), f:+m.f.toFixed(1), c:+m.c.toFixed(1)}); hap.ok(); backToCal(); },
-    axdel: el => { const k = isoT(), a = (db.food || {})[k]; if (!a) return; const i = a.findIndex(e => e.id === el.dataset.id); if (i < 0) return; const gone = a.splice(i, 1)[0]; save(); hap.tap(); render(); toast('Удалено', 'Вернуть', () => { (db.food[k] = db.food[k] || []).push(gone); save(); render(); }); },
+    axaddfound: () => { const pr = ST.pr; if (!pr) return; const g = clamp(+ST.g || 0, 1, 3000), m = macro(pr, g); addEntry({m:ST.meal, nm:pr.nm + (pr.br && pr.src === 'off' ? ' · ' + pr.br : ''), g, u:pr.u || '', k:Math.round(m.k), p:+m.p.toFixed(1), f:+m.f.toFixed(1), c:+m.c.toFixed(1)}); hap.ok(); backToCal(); },
+    axdel: el => { const k = curIso(), a = (db.food || {})[k]; if (!a) return; const i = a.findIndex(e => e.id === el.dataset.id); if (i < 0) return; const gone = a.splice(i, 1)[0]; save(); hap.tap(); render(); toast('Удалено', 'Вернуть', () => { (db.food[k] = db.food[k] || []).push(gone); save(); render(); }); },
     axnew: () => { ST.nw = {}; go('new'); },
-    axeditp: () => { const p = ST.pr; ST.nw = {code:p.code, nm:p.nm, br:p.br, k:Math.round(p.k), p:p.p, f:p.f, c:p.c, port:p.port || ''}; go('new'); },
+    axeditp: () => { const p = ST.pr; ST.nw = {code:p.code, nm:p.nm, br:p.br, u:p.u || '', k:Math.round(p.k), p:p.p, f:p.f, c:p.c, port:p.port || ''}; go('new'); },
     axsavenew: () => { const nm = ((document.getElementById('nw-nm') || {}).value || '').trim(), k = num('nw-k'); if (!nm) { toast('Введи название'); return; } if (!(k >= 0 && k < 1000)) { toast('Укажи калории на 100 г'); return; }
-      const pr = {id:uid(), code:(ST.nw && ST.nw.code) || '', nm, br:((document.getElementById('nw-br') || {}).value || '').trim(), k:Math.round(k), p:Math.max(0, num('nw-p') || 0), f:Math.max(0, num('nw-f') || 0), c:Math.max(0, num('nw-c') || 0), port:Math.max(0, num('nw-g') || 0), src:'mine'};
-      const a = mine(), i = pr.code ? a.findIndex(x => x.code === pr.code) : -1; if (i >= 0) a[i] = pr; else a.push(pr); save(); hap.ok(); ST.nw = null; ST.stack.pop(); openFound(pr); },
+      const pr = {id:uid(), code:(ST.nw && ST.nw.code) || '', nm, br:((document.getElementById('nw-br') || {}).value || '').trim(), k:Math.round(k), p:Math.max(0, num('nw-p') || 0), f:Math.max(0, num('nw-f') || 0), c:Math.max(0, num('nw-c') || 0), port:Math.max(0, num('nw-g') || 0), u:(ST.nw && ST.nw.u) || '', src:'mine'};
+      const a = mine(), i = pr.code ? a.findIndex(x => x.code === pr.code) : -1; if (i >= 0) a[i] = pr; else a.push(pr); save(); contribute(pr, 'user'); hap.ok(); ST.nw = null; ST.stack.pop(); openFound(pr); },
+    axcat: el => { const n = readNw(), p = PRESETS[+el.dataset.i]; Object.assign(n, {u:p[1] === 'мл' ? 'мл' : '', k:p[2], p:p[3], f:p[4], c:p[5], est:true}); if (!n.nm) n.nm = p[0]; hap.tap(); render(); },
+    axunit: el => { const n = readNw(); n.u = el.dataset.v === 'мл' ? 'мл' : ''; hap.tap(); render(); },
     axmode: el => { CAL().mode = el.dataset.v; save(); hap.tap(); render(); },
     axtog: el => { const c = CAL(), k = el.dataset.k; c[k] = !c[k]; if (k === 'on' && c.on && !(+c.custom >= 800)) c.custom = goalInfo().auto; save(); hap.tap(); render(); },
     axgame: el => { const i = +el.dataset.i; const L = REST.list().find(x => x.i === i); if (L && L.pro && !isPro() && !L.day) { hap.tap(); openPro(); return; } REST.play(i); },
@@ -9728,7 +9780,7 @@ const AX = (function(){
   // поля ввода: пересчёт без перерисовки, чтобы не закрывалась клавиатура
   document.addEventListener('input', e => { const t = e.target; if (!t || !t.id) return;
     if (t.id === 'ax-g') { ST.g = clamp(parseFloat(String(t.value).replace(',', '.')) || 0, 0, 3000); recalc(); }
-    else if (t.id === 'ax-q') { ST.q = t.value; const box = document.getElementById('ax-list'); if (box) box.innerHTML = listHTML(ST.q); }
+    else if (t.id === 'ax-q') { ST.q = t.value; const box = document.getElementById('ax-list'); if (box) box.innerHTML = listHTML(ST.q); srvSearch(ST.q); }
     else if (t.id === 'ax-cu') { const v = Math.round(parseFloat(t.value) || 0); CAL().custom = clamp(v, 0, 6000); persist(); }
   });
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.id === 'axs-n') acts.axnum(); });
