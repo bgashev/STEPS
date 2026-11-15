@@ -3897,6 +3897,8 @@ html.web #tabs .tbi{top:262px}
 .ax-rr{display:flex;gap:10px;overflow-x:auto;margin:0 -18px 14px;padding:0 18px 2px;scrollbar-width:none;scroll-snap-type:x proximity;scroll-padding:0 18px}.ax-rr::-webkit-scrollbar{display:none}
 .ax-rc{flex:none;width:148px;scroll-snap-align:start;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:12px;display:flex;flex-direction:column;gap:2px}.ax-rtp{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;cursor:pointer}.ax-rtp .ax-ti{width:34px;height:34px;border-radius:12px}.ax-rk{width:34px;height:34px}.ax-rc b{display:block;font-size:16px;letter-spacing:-.3px}.ax-rc small{color:var(--muted);font-size:12px;display:block}
 .ax-rq{display:flex;gap:6px;margin-top:10px}.ax-rq button{flex:1;border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:12px;padding:8px 0;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}.ax-rq button:active{transform:scale(.94)}
+.ax-rr.w{display:grid;grid-template-columns:repeat(3,1fr);overflow:visible;margin:0 0 14px;padding:0}.ax-rr.w .ax-rc{width:auto}
+html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .ax-sh{padding:0}html.web .ax-hub .ax-ss{margin-bottom:14px}html.web .ax-bk:hover,html.web .ax-d:hover,html.web .ax-rc:hover,html.web .ax-bt:hover,html.web .ax-dr:hover{filter:brightness(1.06)}html.web .ax-bt,html.web .ax-rc,html.web .ax-gc,html.web .ax-li2,html.web .ax-cl{cursor:pointer}
 .ax-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
 .ax-t{position:relative;overflow:hidden;background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:14px 14px 12px;min-height:128px;cursor:pointer;display:flex;flex-direction:column;gap:6px}
 .ax-th{display:flex;align-items:center;gap:8px;position:relative;z-index:2}.ax-th b{font-size:15px;font-weight:800}
@@ -4046,7 +4048,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.845';
+const APP = 'VOOB (by BGASHEV) Mini App v1.847';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4155,7 +4157,7 @@ const kcalF = v => numSep(v) + ' ккал';
 function defaultDB(){
   return {v:1, updated:0, profile:{name:'', birth:'', sex:'', height:0},
     settings:{theme:'auto', accent:'lavender', goal:{count:3, days:7, set:false}},
-    workouts:[], weights:[], weight_goal:{}, plans:[], water:{}, waterlog:{}, food:{}, myfoods:[], cal:{}, apps:{},
+    workouts:[], weights:[], weight_goal:{}, plans:[], water:{}, waterlog:{}, food:{}, myfoods:[], cal:{}, apps:{}, appU:{}, appSig:{},
     tomb:{}, metaU:{}, sync:{rev:0, dirty:{}, init:false}};
 }
 function normalize(d){
@@ -4399,7 +4401,7 @@ function persist(){
   clearTimeout(saveTimer);
   saveTimer = setTimeout(flush, 500);
 }
-function save(){ persist(); scheduleSync(1500); }
+function save(){ try { appScan(); } catch (e) {} persist(); scheduleSync(1500); }
 async function flush(){
   if (!hasCloud || saving || !dirty) return;
   saving = true; dirty = false; setSync('load');
@@ -4426,8 +4428,16 @@ function carryLocal(cd, loc){
     if (kind === 'meta') {
       const lu = (loc.metaU || {})[id] || 0;
       if (lu > (cd.metaU[id] || 0)) {
-        if (id === 'profile') cd.profile = loc.profile; else if (id === 'settings') cd.settings = loc.settings; else if (id === 'weight_goal') cd.weight_goal = loc.weight_goal;
+        if (id === 'apps') { cd.cal = loc.cal; cd.apps = loc.apps; cd.myfoods = loc.myfoods; } else if (id === 'profile') cd.profile = loc.profile; else if (id === 'settings') cd.settings = loc.settings; else if (id === 'weight_goal') cd.weight_goal = loc.weight_goal;
         cd.metaU[id] = lu; cd.sync.dirty[key] = 1;
+      }
+      continue;
+    }
+    if (kind === 'appday') {
+      const lu = (loc.appU || {})[id] || 0; cd.appU = cd.appU || {};
+      if (lu > (cd.appU[id] || 0)) {
+        for (const f of ['water', 'waterlog', 'food']) { cd[f] = cd[f] || {}; if (loc[f] && loc[f][id] != null) cd[f][id] = loc[f][id]; else delete cd[f][id]; }
+        cd.appU[id] = lu; cd.sync.dirty[key] = 1;
       }
       continue;
     }
@@ -4469,6 +4479,22 @@ function tombstone(kind, item){             // запись удалена — �
   db.tomb[key] = Math.max(Date.now(), (item.updated || 0) + 1);
   db.sync.dirty[key] = 1;
 }
+/* v1.847: вода и еда из «Приложений» едут на сервер: по записи на день (kind appday) + общие настройки (meta apps) */
+function appDayData(iso){ return {w:+(db.water || {})[iso] || 0, l:(db.waterlog || {})[iso] || [], f:(db.food || {})[iso] || []}; }
+function appDaySig(iso){ const d = appDayData(iso); return (d.w || d.l.length || d.f.length) ? JSON.stringify(d) : ''; }
+function appMetaSig(){ return JSON.stringify([db.cal || {}, db.apps || {}, db.myfoods || []]); }
+function appScan(force){
+  db.appSig = db.appSig || {}; db.appU = db.appU || {};
+  const isos = new Set([...Object.keys(db.water || {}), ...Object.keys(db.waterlog || {}), ...Object.keys(db.food || {}), ...Object.keys(db.appSig)]);
+  for (const iso of isos) {
+    if (!ISO_RE.test(iso)) continue;
+    const sg = appDaySig(iso);
+    if (force ? !sg : (db.appSig[iso] || '') === sg) continue;
+    db.appSig[iso] = sg; db.appU[iso] = Math.max(Date.now(), (db.appU[iso] || 0) + 1); db.sync.dirty['appday:' + iso] = 1;
+  }
+  const ms = appMetaSig();
+  if (force ? ms !== '[{},{},[]]' : db.appSig._m !== ms) { if (db.appSig._m !== undefined || force) touchMeta('apps'); db.appSig._m = ms; }
+}
 function touchMeta(id){
   db.metaU[id] = Math.max(Date.now(), (db.metaU[id] || 0) + 1);
   db.sync.dirty['meta:' + id] = 1;
@@ -4476,6 +4502,7 @@ function touchMeta(id){
 function metaData(id){
   if (id === 'profile') return {name:db.profile.name || '', birth:db.profile.birth || '', sex:db.profile.sex || '', height:+db.profile.height || 0};
   if (id === 'settings') return Object.assign({goal:db.settings.goal}, Array.isArray(db.settings.fav) ? {fav:db.settings.fav.slice(0, 6)} : {}, lookSync() ? {accent:db.settings.accent, theme:db.settings.theme, dv:db.settings.dv || 'graphite', ...(db.settings.tex ? {tex:db.settings.tex} : {})} : {}, db.settings.frame ? {frame:db.settings.frame} : {}, db.settings.bg ? {bg:db.settings.bg} : {}, db.settings.badge ? {badge:db.settings.badge} : {}, Array.isArray(db.settings.seen_ach) ? {ach:db.settings.seen_ach.slice(0, 60)} : {}, db.settings.seen_lvl != null ? {lvl:+db.settings.seen_lvl || 1} : {});
+  if (id === 'apps') return {cal:db.cal || {}, apps:db.apps || {}, myfoods:(db.myfoods || []).slice(0, 300)};
   return db.weight_goal || {};
 }
 function applyMeta(id, d){
@@ -4499,16 +4526,23 @@ function applyMeta(id, d){
     if (Array.isArray(d.ach)) db.settings.seen_ach = [...new Set([...(Array.isArray(db.settings.seen_ach) ? db.settings.seen_ach : []), ...d.ach.filter(x => typeof x === 'string')])];   // v1.617: «уже поздравляли» едет между устройствами
     if (+d.lvl > 0) db.settings.seen_lvl = Math.max(+db.settings.seen_lvl || 0, Math.min(999, +d.lvl));
     if (Array.isArray(d.fav)) db.settings.fav = d.fav.filter(x => typeof x === 'string').slice(0, 6);
+  } else if (id === 'apps') {
+    if (d.cal && typeof d.cal === 'object') db.cal = d.cal;
+    if (d.apps && typeof d.apps === 'object') db.apps = d.apps;
+    if (Array.isArray(d.myfoods)) db.myfoods = d.myfoods.slice(0, 300);
+    db.appSig = db.appSig || {}; db.appSig._m = appMetaSig();
   } else if (id === 'weight_goal') db.weight_goal = (d && typeof d === 'object') ? d : {};
 }
 function splitKey(key){ const i = key.indexOf(':'); return [key.slice(0, i), key.slice(i + 1)]; }
 function curUpdated(key){
   const [kind, id] = splitKey(key);
   if (kind === 'meta') return db.metaU[id] || 0;
+  if (kind === 'appday') return (db.appU || {})[id] || 0;
   const it = (COLL[kind] ? COLL[kind]() : []).find(x => String(x.id) === id);
   return it ? (it.updated || 0) : (db.tomb[key] || 0);
 }
 function markAllDirty(){
+  try { appScan(true); } catch (e) {}
   for (const kind of Object.keys(COLL)) for (const it of COLL[kind]()) {
     if (!it || it.id == null) continue;
     if (!it.updated) it.updated = Math.round((+it.created || 0) * 1000) || 1;
@@ -4527,6 +4561,7 @@ function pendingRows(){
   for (const key of Object.keys(db.sync.dirty)) {
     const [kind, id] = splitKey(key);
     if (kind === 'meta') { rows.push({kind, id, data:metaData(id), updated:db.metaU[id] || 1, deleted:false}); continue; }
+    if (kind === 'appday') { rows.push({kind, id, data:appDayData(id), updated:(db.appU || {})[id] || 1, deleted:false}); continue; }
     if (!COLL[kind]) { delete db.sync.dirty[key]; continue; }
     const it = COLL[kind]().find(x => String(x.id) === id);
     if (it) { const data = Object.assign({}, it); delete data.updated; rows.push({kind, id, data, updated:it.updated || 1, deleted:false}); }
@@ -4542,6 +4577,16 @@ function applyRemote(rows){
     const key = r.kind + ':' + r.id, ru = +r.updated || 0;
     if (r.kind === 'meta') {
       if (ru > (db.metaU[r.id] || 0)) { applyMeta(r.id, r.data); db.metaU[r.id] = ru; delete db.sync.dirty[key]; changed = true; }
+      continue;
+    }
+    if (r.kind === 'appday') {
+      if (!ISO_RE.test(String(r.id)) || ru <= ((db.appU || {})[r.id] || 0)) continue;
+      const d = r.data || {}, iso = String(r.id);
+      db.water = db.water || {}; db.waterlog = db.waterlog || {}; db.food = db.food || {};
+      if (+d.w > 0) db.water[iso] = Math.min(9000, +d.w); else delete db.water[iso];
+      if (Array.isArray(d.l) && d.l.length) db.waterlog[iso] = d.l.slice(0, 200); else delete db.waterlog[iso];
+      if (Array.isArray(d.f) && d.f.length) db.food[iso] = d.f.slice(0, 300); else delete db.food[iso];
+      db.appU = db.appU || {}; db.appSig = db.appSig || {}; db.appU[iso] = ru; db.appSig[iso] = appDaySig(iso); delete db.sync.dirty[key]; changed = true;
       continue;
     }
     if (!COLL[r.kind]) continue;
@@ -4583,7 +4628,8 @@ async function syncNow(){
   syncing = true; setSrv('load');
   try {
     let tok = await ensureToken(false);
-    if (!db.sync.init) { markAllDirty(); db.sync.init = true; }
+    if (!db.sync.init) { markAllDirty(); db.sync.init = true; db.sync.app = 1; }
+    else if (!db.sync.app) { try { appScan(true); } catch (e) {} db.sync.app = 1; }
     const rows = pendingRows(), snap = rows.map(r => [r.kind + ':' + r.id, r.updated]);
     const body = {since:db.sync.rev || 0, rows};
     let res;
@@ -4614,6 +4660,7 @@ async function syncNow(){
 const IP = {
   search:'<circle cx="8" cy="8" r="5"/><path d="M12 12L15.5 15.5"/>',
   walk:'<path d="M3 5H15M6 9H15M9 13H15"/>',
+  apps:'<rect x="2.6" y="2.6" width="5.4" height="5.4" rx="1.7"/><rect x="10" y="2.6" width="5.4" height="5.4" rx="1.7"/><rect x="2.6" y="10" width="5.4" height="5.4" rx="1.7"/><rect x="10" y="10" width="5.4" height="5.4" rx="1.7"/>',
   shop:'<path d="M3 6.2h12l-.9 9H3.9L3 6.2Z"/><path d="M6.4 6.2V5a2.6 2.6 0 0 1 5.2 0v1.2"/>',
   scale:'<rect x="2" y="2" width="14" height="14" rx="4"/><path d="M5.5 8A3.5 3.5 0 0 1 12.5 8M9 8L10.6 6"/>',
   stats:'<path d="M4 15V10M9 15V6M14 15V3"/>',
@@ -6346,7 +6393,7 @@ function viewHome(web){
       <button type="button" class="gx2-ed" data-act="goaled" aria-label="Изменить цель">${IC('edit', 15)}</button></div>${gtxt}<div class="gx2-bar"><i style="width:${Math.min(100, pct)}%"></i></div>${gsBtn}</div>
       <div class="gm-s">${goalStrip(ws, g.days)}${note}</div></div>`),
     actionsH = `<div class="actions"><button class="btn ghost" data-act="plans">${IC('plan')}План${upPlans(ws).length ? `<span class="pn">${upPlans(ws).length}</span>` : ''}</button>${ws.length ? `<button class="btn ghost" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat')}Повторить</button>` : ''}</div>`;
-  h += web ? goalH + actionsH : actionsH + (inWeb ? '' : AX.tiles()) + goalH;
+  h += web ? actionsH + AX.tiles(true) + goalH : actionsH + (inWeb ? '' : AX.tiles()) + goalH;
   h += web ? feedShortHTML(6, 4) : feedTickerHTML();
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
   const due = dueWeekSummary(ws);
@@ -7800,8 +7847,8 @@ function dkBind(){
   tb.addEventListener('pointerup', end); tb.addEventListener('pointercancel', end);
   if (window.ResizeObserver) new ResizeObserver(() => { if (!DK.drag) dkSync(true); }).observe(tb);
 }
-const TABS = inWeb ? [['friends','Друзья','friends'],['weight','Вес','scale'],['stats','Итоги','stats'],['shop','Магазин','shop'],['me','Я','user']] : [['stats','Итоги','stats'],['weight','Вес','scale'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
-const VIEWS = {home:(inWeb && inTG ? viewHomeWeb : viewHome), weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe, shop:viewShop};
+const TABS = inWeb ? [['friends','Друзья','friends'],['weight','Вес','scale'],['stats','Итоги','stats'],['apps','Приложения','apps'],['shop','Магазин','shop'],['me','Я','user']] : [['stats','Итоги','stats'],['weight','Вес','scale'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
+const VIEWS = {home:(inWeb && inTG ? viewHomeWeb : viewHome), weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe, shop:viewShop, apps:() => AX.hub()};
 // плавающая кнопка внизу по центру: на «Главной» — тренировка, во «Весе» — взвеситься
 const FAB = {home:['add', 'Тренировка'], weight:['kadd', 'Взвеситься']};
 let fabY = 0, fabMiniOn = false;
@@ -8010,7 +8057,7 @@ function segSlide(instant){
 }
 function render(){
   if (inWeb && inTG && S.tab === 'me' && !S.meSet && !S.pers && !S.fprof) S.tab = 'home';   // v1.637 WEB: «Я» и «Главная» — одна страница
-  const html = S.fprof ? viewFProf() : (S.app && !inWeb) ? AX.view() : VIEWS[S.tab](), v = $('#view'), rkey = S.fprof ? 'fp' : (S.app && !inWeb) ? 'app' : S.tab;
+  const html = S.fprof ? viewFProf() : S.app ? AX.view() : VIEWS[S.tab](), v = $('#view'), rkey = S.fprof ? 'fp' : S.app ? 'app' : S.tab;
   shpSkySync();
   const same = _rTab === rkey;
   if (same && inWeb && _navT && performance.now() - _navT < 700) { clearTimeout(_navDef); _navDef = setTimeout(render, Math.max(30, _navT + 720 - performance.now())); return; }   // v1.696: пока страница «въезжает», дозагрузки данных ждут — иначе она перерисовывалась на глазах
@@ -9611,14 +9658,14 @@ const AX = (function(){
   /* ---------- вёрстка ---------- */
   const back = (to, label) => `<div class="ax-bar"><button type="button" class="ax-bk" data-act="appback">${I('back', 18)}${label || 'Приложения'}</button></div>`;
   function ringSVG(p, over){ return `<div class="ax-ring"><svg viewBox="0 0 128 128"><defs><linearGradient id="axg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a3c"/><stop offset="1" stop-color="#f0446b"/></linearGradient><linearGradient id="axg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffc247"/><stop offset="1" stop-color="#f08a2a"/></linearGradient></defs><circle class="tk" cx="64" cy="64" r="52"/><circle class="pr" cx="64" cy="64" r="52" stroke="url(#${over ? 'axg2' : 'axg1'})" style="stroke-dashoffset:${(326.7 * (1 - clamp(p, 0, 100) / 100)).toFixed(1)}"/></svg>`; }
-  function homeTiles(){
+  function homeTiles(wide){
     const a = A(), w = wd(), wg = waterGoal(), d = day(), wp = clamp(w / wg.goal, 0, 1), cp = clamp(d.t.k / Math.max(1, d.budget), 0, 1), over = d.rem < 0, best = REST.list().reduce((m, x) => Math.max(m, x.best || 0), 0);
     const ring = (p, c) => `<svg class="ax-rk" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="color-mix(in srgb,var(--text) 12%,transparent)" stroke-width="4"/><circle cx="18" cy="18" r="15" fill="none" stroke="${c}" stroke-width="4" stroke-linecap="round" stroke-dasharray="94.2" stroke-dashoffset="${(94.2 * (1 - p)).toFixed(1)}" transform="rotate(-90 18 18)"/></svg>`;
     let h = '';
     if (a.pw !== 0) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="water"><span class="ax-ti a-w">${AI('drop', 20)}</span>${ring(wp, '#3a9bf0')}</div><div data-act="appopen" data-s="water"><b>Вода</b><small>${P0(w)} / ${P0(wg.goal)} мл</small></div><div class="ax-rq"><button type="button" data-act="axwater" data-v="250">+250</button><button type="button" data-act="axwater" data-v="500">+500</button></div></div>`;
     if (a.pc !== 0) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="cal"><span class="ax-ti a-c">${AI('cal', 20)}</span>${ring(cp, over ? '#e0a010' : '#f0752a')}</div><div data-act="appopen" data-s="cal"><b>Калории</b><small>${over ? P0(-d.rem) + ' выше нормы' : P0(d.rem) + ' осталось'}</small></div><div class="ax-rq"><button type="button" data-act="axadd" data-m="${mealOf()}">+ Еда</button><button type="button" data-act="axaddscan" data-m="${mealOf()}">Скан</button></div></div>`;
     h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="games"><span class="ax-ti a-g">${AI('pad', 20)}</span></div><div data-act="appopen" data-s="games"><b>Игры</b><small>${best ? 'рекорд ' + P0(best) : 'размяться'}</small></div><div class="ax-rq"><button type="button" data-act="appopen" data-s="games">Играть</button></div></div>`;
-    return `<div class="ax-rb"><span class="ax-rt"><span class="ax-gi"><i></i><i></i><i></i><i></i></span>Приложения</span><button type="button" class="ax-ra" data-act="appsheet">все ›</button></div><div class="ax-rr">${h}</div>`;
+    return `<div class="ax-rb"><span class="ax-rt"><span class="ax-gi"><i></i><i></i><i></i><i></i></span>Приложения</span><button type="button" class="ax-ra" data-act="appsheet">все ›</button></div><div class="ax-rr${wide ? ' w' : ''}">${h}</div>`;
   }
   function sheetHTML(){
     const a = A(), w = wd(), wg = waterGoal(), d = day(), g = d.g, wp = Math.round(clamp(w / wg.goal, 0, 1) * 100);
@@ -9913,7 +9960,8 @@ const AX = (function(){
   });
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.id === 'axs-n') acts.axnum(); });
   document.addEventListener('change', e => { if (e.target && e.target.id === 'ax-cu') { const c = CAL(); if (c.custom < 800) { c.custom = 800; e.target.value = 800; } save(); render(); } });
-  return {view, tiles:homeTiles, acts, leave, active:() => !!(S.app && ST.s), btn:() => ''};
+  function hub(){ return `<div class="ax-pg ax-hub">${sheetHTML().replace('<div class="ax-sh"><div class="ax-st">Приложения</div>', '<div class="ax-sh"><div class="ax-h1">Приложения</div>')}</div>`; }
+  return {view, hub, tiles:homeTiles, acts, leave, active:() => !!(S.app && ST.s), btn:() => ''};
 })();
 Object.assign(ACT, AX.acts);
 
@@ -10297,7 +10345,7 @@ function showWebLogin(){
 
 /* ============================================================ запуск ==== */
 /* v1.694 WEB: у вкладок свои адреса (app.voob.kz/friends, /settings …). В Telegram адрес не трогаем */
-const ROUTES = {'/':{t:'home', n:''}, '/stats':{t:'stats', n:'Итоги'}, '/weight':{t:'weight', n:'Вес'}, '/friends':{t:'friends', n:'Друзья'}, '/shop':{t:'shop', n:'Магазин'}, '/settings':{t:'me', set:1, n:'Настройки'}, '/personalization':{t:'me', set:1, pers:1, n:'Персонализация'}};
+const ROUTES = {'/':{t:'home', n:''}, '/stats':{t:'stats', n:'Итоги'}, '/weight':{t:'weight', n:'Вес'}, '/friends':{t:'friends', n:'Друзья'}, '/shop':{t:'shop', n:'Магазин'}, '/apps':{t:'apps', n:'Приложения'}, '/settings':{t:'me', set:1, n:'Настройки'}, '/personalization':{t:'me', set:1, pers:1, n:'Персонализация'}};
 let pendHandle = null, PUBH = null;   // v1.762: ссылка на профиль app.voob.kz/@ник
 const HRX = /^\/@([A-Za-z][A-Za-z0-9_]{2,19})$/;
 const frHandle = f => f && (f.handle || f.username) || '';
@@ -10307,7 +10355,7 @@ function pathNow(){
   if (PUBH && sheetCtx && sheetCtx.type === 'pub') return '/@' + PUBH;
   if (S.tab === 'me' && S.pers) return '/personalization';
   if (S.tab === 'me' && S.meSet) return '/settings';
-  if (S.tab === 'stats' || S.tab === 'weight' || S.tab === 'friends' || S.tab === 'shop') return '/' + S.tab;
+  if (S.tab === 'stats' || S.tab === 'weight' || S.tab === 'friends' || S.tab === 'shop' || S.tab === 'apps') return '/' + S.tab;
   return '/';
 }
 function urlSync(){
