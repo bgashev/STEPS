@@ -3976,6 +3976,51 @@ html.web #tabs .tbi{top:262px}
 #ax-scan .okc{position:absolute;inset:0;display:grid;place-items:center;color:#06210f;opacity:0;transform:scale(.6);transition:.35s;background:rgba(124,255,178,.92)}#ax-scan.ok .okc{opacity:1;transform:none}#ax-scan.ok .sweep{display:none}
 #ax-scan .hint{position:absolute;left:0;right:0;top:calc(25% + 232px);text-align:center;padding:0 24px}#ax-scan .hint b{display:block;font-size:17px;font-weight:800}#ax-scan .hint small{display:block;color:rgba(255,255,255,.65);margin-top:4px;font-size:13px}
 #ax-scan .cbot{position:absolute;left:16px;right:16px;bottom:calc(26px + env(safe-area-inset-bottom))}#ax-scan .num{display:flex;gap:8px;background:rgba(255,255,255,.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:6px 6px 6px 16px}#ax-scan .num input{flex:1;min-width:0;border:0;background:none;color:#fff;font:inherit;font-size:15px;outline:0}#ax-scan .num input::placeholder{color:rgba(255,255,255,.55)}#ax-scan .num button{border:0;border-radius:14px;padding:10px 18px;font:inherit;font-weight:800;background:#fff;color:#111}
+/* v1.842: шторка «Бенто», форма продукта «Карточка», поиск «Радар», сканер «Прицел» */
+.ax-at.sm{width:34px;height:34px;border-radius:12px;box-shadow:0 8px 14px -8px var(--gl),0 0 0 1px rgba(255,255,255,.14) inset}
+.ax-bn{display:grid;grid-template-columns:1.08fr 1fr;gap:10px;margin-bottom:6px}
+.ax-bt{border-radius:26px;position:relative;overflow:hidden;padding:14px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;min-height:126px}.ax-bt:active{transform:scale(.97)}
+.ax-bt .h{display:flex;align-items:center;gap:8px;font-weight:800;font-size:15px}
+.ax-bt .big{font-size:30px;font-weight:850;letter-spacing:-1.2px;line-height:1;font-variant-numeric:tabular-nums;margin-top:8px}.ax-bt .big i{font-size:12px;font-style:normal;font-weight:700;color:var(--muted);letter-spacing:0}
+.ax-bt.bw{grid-row:1/3;min-height:262px;background:linear-gradient(165deg,#17325f,#0c1a38);border-color:rgba(124,170,255,.25);color:#fff}
+.bw .liq{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(180deg,#58a0ff,#2f63d8);transition:height .9s cubic-bezier(.3,.9,.3,1)}
+.bw .liq svg{position:absolute;left:0;top:-12px;width:200%;height:13px;animation:axwv 5s linear infinite}.bw .liq svg+svg{top:-8px;opacity:.5;animation-duration:8s;animation-direction:reverse}
+@keyframes axwv{to{transform:translateX(-50%)}}
+.bw .z{position:relative;flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.bw .big{font-size:40px;margin-top:0}.bw .big i{color:rgba(255,255,255,.7)}.bw small{display:block;font-size:12px;opacity:.75;margin-top:6px}
+.bw .pl{border:0;border-radius:16px;padding:12px;font:inherit;font-size:14px;font-weight:850;background:#fff;color:#0b1a3a;width:100%}.bw .pl:active{transform:scale(.96)}
+.bk .ms{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.bk .m span{display:block;font-size:10px;font-weight:700;color:var(--muted);margin-bottom:4px}.bk .m em{display:block;height:4px;border-radius:2px;background:var(--border);overflow:hidden}.bk .m i{display:block;height:100%;border-radius:2px}
+.ax-bt.bg{background:linear-gradient(160deg,#4a37c9,#1d1650);border-color:rgba(160,140,255,.3);color:#fff}.bg::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(181,166,255,.4),transparent 70%)}
+.bg .h{justify-content:space-between;position:relative;z-index:1}.bg .n{font-size:11px;font-weight:800;padding:3px 8px;border-radius:99px;background:rgba(255,255,255,.16)}.bg .gt{position:relative;z-index:1;font-size:18px;font-weight:850}.bg .gt small{display:block;font-size:12px;font-weight:600;color:#cdc5ff;margin-top:2px}
+.ax-nc{background:var(--surface);border:1px solid var(--border);border-radius:26px;padding:16px;margin-bottom:14px}
+.ax-nl{display:flex;align-items:center;gap:16px;margin-bottom:12px}.ax-nl .rg{position:relative;width:104px;height:104px;flex:none}.ax-nl .rg svg{width:100%;height:100%}.ax-nl .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}.ax-nl .c b{font-size:24px;font-weight:850;letter-spacing:-.8px;line-height:1}.ax-nl .c small{font-size:10px;color:var(--muted);margin-top:3px;font-weight:600}
+.ax-nl .mb{flex:1;display:flex;flex-direction:column;gap:9px}.ax-nl .mb div{display:grid;grid-template-columns:50px 1fr 38px;align-items:center;gap:8px;font-size:12px;font-weight:650}.ax-nl .mb span{color:var(--muted)}.ax-nl .mb em{height:6px;border-radius:3px;background:var(--border);overflow:hidden}.ax-nl .mb i{display:block;height:100%;border-radius:3px;transition:width .4s}.ax-nl .mb b{text-align:right;color:var(--muted);font-weight:650}
+.ax-nw{font-size:12px;font-weight:650;border-radius:12px;padding:9px 12px;margin-bottom:12px}.ax-nw.w{color:#e0a010;background:rgba(224,160,16,.12)}.ax-nw.ok{color:#2fa968;padding:0 2px}
+.ax-nf{display:block}.ax-nf>span{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:650;color:var(--muted);margin:0 0 6px 4px}.ax-nf>span i{width:8px;height:8px;border-radius:50%}
+.ax-nf>div{position:relative}.ax-nf input{width:100%;border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:16px;padding:14px;font:inherit;font-size:17px;font-weight:650;outline:0;transition:border-color .2s,box-shadow .2s}.ax-nf input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}.ax-nf em{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-style:normal;font-weight:700;font-size:13px;color:var(--muted);pointer-events:none}.ax-nf div:has(em) input{padding-right:48px}
+.ax-nf.full{margin-bottom:10px}.ax-nf input.big{font-size:19px;font-weight:750}.ax-n2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}.ax-n2:last-child{margin-bottom:0}
+#ax-srch{position:fixed;inset:0;z-index:9960;background:radial-gradient(90% 55% at 50% 42%,#1c1c2a,#07070b);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .25s}#ax-srch.on{opacity:1}
+#ax-srch .rd{position:relative;width:260px;height:260px;display:grid;place-items:center}
+#ax-srch .p{position:absolute;width:250px;height:250px;border-radius:50%;border:1.5px solid rgba(156,203,255,.55);animation:axpu 2.2s ease-out infinite}#ax-srch .p:nth-child(2){animation-delay:.73s}#ax-srch .p:nth-child(3){animation-delay:1.46s}
+@keyframes axpu{from{transform:scale(.3);opacity:.9}to{transform:scale(1);opacity:0}}
+#ax-srch .sw{position:absolute;width:250px;height:250px;border-radius:50%;background:conic-gradient(from 0deg,rgba(156,203,255,0),rgba(156,203,255,.38) 70deg,rgba(156,203,255,0) 71deg);-webkit-mask:radial-gradient(circle,transparent 44px,#000 45px);mask:radial-gradient(circle,transparent 44px,#000 45px);animation:axsp 1.7s linear infinite}@keyframes axsp{to{transform:rotate(360deg)}}
+#ax-srch .bl{position:absolute;width:9px;height:9px;border-radius:50%;background:#fff;box-shadow:0 0 12px 3px rgba(156,203,255,.8);opacity:0;animation:axbl 1.7s ease-in-out infinite}@keyframes axbl{0%,100%{opacity:0;transform:scale(.3)}40%{opacity:1;transform:scale(1)}70%{opacity:0}}
+#ax-srch .orb{position:relative;z-index:2;width:88px;height:88px;border-radius:30%;display:grid;place-items:center;color:#fff;background:linear-gradient(160deg,#9ccbff,#6a5cf0);box-shadow:0 12px 34px -6px rgba(106,92,240,.65),0 0 0 1px rgba(255,255,255,.2) inset}
+#ax-srch .dg{position:absolute;bottom:-6px;font:700 17px ui-monospace,Menlo,monospace;letter-spacing:.18em;color:#9ccbff;white-space:nowrap}
+#ax-srch .rd.done .p,#ax-srch .rd.done .sw,#ax-srch .rd.done .bl{display:none}
+#ax-srch .rd.done .orb{background:linear-gradient(160deg,#8ee6b0,#2fa66a);box-shadow:0 12px 34px -6px rgba(47,166,106,.65);animation:axpo .6s cubic-bezier(.2,1.6,.4,1)}#ax-srch .rd.bad .orb{background:linear-gradient(160deg,#ffb08a,#e5586e);box-shadow:0 12px 34px -6px rgba(229,88,110,.6)}
+#ax-srch .rd.done::after{content:"";position:absolute;width:88px;height:88px;border-radius:30%;border:3px solid #6fcf97;animation:axbu .9s ease-out forwards}#ax-srch .rd.bad::after{border-color:#ffb26b}
+@keyframes axpo{0%{transform:scale(.7)}100%{transform:scale(1)}}@keyframes axbu{to{transform:scale(2.8);opacity:0}}
+#ax-srch .st{margin-top:30px;font-size:18px;font-weight:800}#ax-srch .sb{margin-top:6px;font-size:14px;color:rgba(255,255,255,.65);min-height:20px;padding:0 30px;text-align:center}
+#ax-scan .vf2{position:absolute;left:24px;right:24px;top:22%;height:250px;border-radius:30px;border:1.5px dashed rgba(255,255,255,.5);box-shadow:0 0 0 2000px rgba(5,5,8,.6);overflow:hidden;transition:left .75s cubic-bezier(.3,1.15,.3,1),right .75s cubic-bezier(.3,1.15,.3,1),top .75s cubic-bezier(.3,1.15,.3,1),height .75s cubic-bezier(.3,1.15,.3,1),border-color .3s,box-shadow .5s,border-radius .5s}
+#ax-scan .vf2 .ln{position:absolute;left:14px;right:14px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff,transparent);box-shadow:0 0 14px 2px rgba(255,255,255,.5);animation:axln 1.9s ease-in-out infinite alternate}@keyframes axln{from{top:12%}to{top:88%}}
+#ax-scan.ok .vf2{left:calc(50% - 125px);right:calc(50% - 125px);top:calc(22% + 75px);height:100px;border:2px solid #7cffb2;border-radius:20px;box-shadow:0 0 0 2000px rgba(5,5,8,.7),0 0 36px rgba(124,255,178,.65)}#ax-scan.ok .vf2 .ln{display:none}
+#ax-scan .hint{top:calc(22% + 272px);transition:top .75s cubic-bezier(.3,1.15,.3,1)}#ax-scan.ok .hint{top:calc(22% + 200px)}#ax-scan.ok .hint b{color:#9af0bd;font-family:ui-monospace,Menlo,monospace;letter-spacing:.14em}
+#ax-scan .zm{display:flex;justify-content:center;gap:4px;margin:0 auto 12px;width:max-content;background:rgba(255,255,255,.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:4px}#ax-scan .zm:empty{display:none}#ax-scan .zm button{border:0;background:none;color:rgba(255,255,255,.8);font:inherit;font-size:13px;font-weight:800;padding:8px 14px;border-radius:16px}#ax-scan .zm button.on{background:#fff;color:#111}
+.ax-hb{width:auto;height:48px;padding:0 16px 0 12px;gap:10px;border-radius:18px;display:flex;align-items:center;border:1px solid rgba(255,255,255,.14);background:linear-gradient(150deg,color-mix(in srgb,var(--accent) 30%,var(--surface)),var(--surface));box-shadow:0 10px 24px -12px var(--accent),0 1px 0 rgba(255,255,255,.18) inset;position:relative;overflow:hidden;font:inherit;transition:transform .2s}
+.ax-hb:active{transform:scale(.95)}.ax-hb b{font-size:14px;font-weight:800;letter-spacing:-.2px}
+.ax-hb .gi{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:22px;height:22px}.ax-hb .gi i{border-radius:6px;background:linear-gradient(150deg,#7fd3ff,#2f7bf0)}.ax-hb .gi i:nth-child(2){background:linear-gradient(150deg,#ffb04d,#f0446b)}.ax-hb .gi i:nth-child(3){background:linear-gradient(150deg,#a99bff,#5b43e8)}.ax-hb .gi i:nth-child(4){background:linear-gradient(150deg,#8ee6b0,#2fa66a)}
+.ax-hb::after{content:"";position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.22),transparent);animation:axhs 5s ease-in-out infinite}@keyframes axhs{0%,70%{left:-60%}100%{left:130%}}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -3990,7 +4035,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.841';
+const APP = 'VOOB (by BGASHEV) Mini App v1.842';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9563,12 +9608,19 @@ const AX = (function(){
     return h ? `<div class="ax-tiles">${h}</div>` : '';
   }
   function sheetHTML(){
-    const a = A(), w = wd(), wg = waterGoal(), d = day();
-    const live = (k, l, ic, t, sub, pct) => `<div class="ax-a" data-act="appopen" data-s="${k}"><div class="ax-at ${t}">${AI(ic, 38)}</div><b>${l}</b><small>${sub}</small>${pct != null ? `<div class="ax-ab"><i style="width:${pct}%"></i></div>` : ''}</div>`;
+    const a = A(), w = wd(), wg = waterGoal(), d = day(), g = d.g, wp = Math.round(clamp(w / wg.goal, 0, 1) * 100);
     const sw = (k, on) => `<span class="ax-sw${on ? ' on' : ''}" data-act="axpin" data-k="${k}"></span>`;
+    const WV = c => `<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M0 7Q12.5 0 25 7T50 7T75 7T100 7T125 7T150 7T175 7T200 7V14H0Z" fill="${c}"/></svg>`;
+    const mb = (l, v, m, c) => `<div class="m"><span>${l}</span><em><i style="width:${clamp(v * 100 / Math.max(1, m), 0, 100)}%;background:${c}"></i></em></div>`;
     return `<div class="ax-sh"><div class="ax-st">Приложения</div><div class="ax-ss">всё под рукой — без лишних вкладок</div>
-    <div class="ax-card"><div class="ax-lab">Доступно сейчас</div><div class="ax-row">${live('water', 'Вода', 'drop', 'a-w', P0(w) + ' / ' + P0(wg.goal), Math.round(clamp(w / wg.goal, 0, 1) * 100))}${live('cal', 'Калории', 'cal', 'a-c', P0(Math.abs(d.rem)) + (d.rem < 0 ? ' сверх' : ' осталось'), Math.round(clamp(d.t.k * 100 / d.budget, 0, 100)))}${live('games', 'Игры', 'pad', 'a-g', '9 игр')}</div></div>
-    
+    <div class="ax-bn">
+      <div class="ax-bt bw" data-act="appopen" data-s="water"><div class="liq" style="height:${Math.max(10, wp)}%">${WV('#58a0ff')}${WV('#9ccbff')}</div>
+        <div class="z"><div class="h"><span class="ax-at sm a-w">${AI('drop', 18)}</span>Вода</div><div><div class="big">${P0(w)}<i> мл</i></div><small>из ${P0(wg.goal)} · ${wp}%</small></div><button type="button" class="pl" data-act="axbw">+250 мл</button></div></div>
+      <div class="ax-bt bk" data-act="appopen" data-s="cal"><div class="h"><span class="ax-at sm a-c">${AI('cal', 18)}</span>Калории</div>
+        <div class="big">${P0(Math.abs(d.rem))}<i> ${d.rem < 0 ? 'сверх' : 'осталось'}</i></div>
+        <div class="ms">${mb('Б', d.t.p, g.p, '#7cc0ff')}${mb('Ж', d.t.f, g.f, '#ffd36b')}${mb('У', d.t.c, g.c, '#6fcf97')}</div></div>
+      <div class="ax-bt bg" data-act="appopen" data-s="games"><div class="h"><span class="ax-at sm a-g">${AI('pad', 18)}</span><span class="n">9 игр</span></div><div class="gt">Игры<small>играть →</small></div></div>
+    </div>
     <div class="ax-lab" style="margin:20px 6px 8px">На главной</div><div class="ax-grp"><div class="ax-li"><span class="ax-mi a-w">${AI('drop', 21)}</span><span class="tx"><b>Вода</b><small>быстрый +250 с главной</small></span>${sw('w', a.pw !== 0)}</div><div class="ax-li"><span class="ax-mi a-c">${AI('cal', 21)}</span><span class="tx"><b>Калории</b><small>сколько осталось на день</small></span>${sw('c', a.pc !== 0)}</div></div></div>`;
   }
   function pcls(c){ return c; }
@@ -9611,14 +9663,24 @@ const AX = (function(){
   }
   const PRESETS = [['Газировка', 'мл', 42, 0, 0, 10.6], ['Сок / нектар', 'мл', 46, .5, .1, 11], ['Энергетик', 'мл', 45, 0, 0, 11], ['Напиток без сахара', 'мл', 1, 0, 0, 0], ['Молочка', 'мл', 60, 3.2, 3, 4.7], ['Йогурт / десерт', 'г', 90, 4, 3, 12], ['Шоколад / конфеты', 'г', 540, 6, 31, 57], ['Печенье / выпечка', 'г', 430, 6, 17, 65], ['Чипсы / снеки', 'г', 530, 6, 33, 50], ['Колбаса / мясо', 'г', 280, 13, 25, 2], ['Сыр', 'г', 360, 25, 28, 0], ['Хлеб', 'г', 250, 8, 2, 49]];
   function readNw(){ const g = id => { const e = document.getElementById(id); return e ? e.value : ''; }; const n = ST.nw = ST.nw || {}; if (document.getElementById('nw-nm')) { n.nm = g('nw-nm'); n.br = g('nw-br'); n.k = g('nw-k'); n.p = g('nw-p'); n.f = g('nw-f'); n.c = g('nw-c'); n.port = g('nw-g'); } return n; }
+  function nwLive(n){
+    const k = +n.k || 0, p = +n.p || 0, f = +n.f || 0, c = +n.c || 0, mx = Math.max(1, p, f, c), R = 40, C = 2 * Math.PI * R, off = C * (1 - Math.min(1, Math.max(k / 600, .006))), est = 4 * p + 9 * f + 4 * c, u = n.u === 'мл' ? 'мл' : 'г';
+    const bar = (l, v, col) => `<div><span>${l}</span><em><i style="width:${v / mx * 100}%;background:${col}"></i></em><b>${f1(v)} г</b></div>`;
+    let warn = ''; if (k > 0 && est > 0) warn = Math.abs(k - est) > Math.max(25, k * .25) ? `<div class="ax-nw w">По БЖУ получается ≈ ${P0(est)} ккал, а указано ${P0(k)}. Проверь цифры с упаковки.</div>` : `<div class="ax-nw ok">✓ Калории сходятся с БЖУ</div>`;
+    return `<div class="ax-nl"><div class="rg"><svg viewBox="0 0 100 100"><defs><linearGradient id="nwg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffb26b"/><stop offset="1" stop-color="#e5586e"/></linearGradient></defs><circle cx="50" cy="50" r="${R}" fill="none" stroke="var(--border)" stroke-width="9"/><circle cx="50" cy="50" r="${R}" fill="none" stroke="url(#nwg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C}" stroke-dashoffset="${off}" transform="rotate(-90 50 50)"/></svg><div class="c"><b>${P0(k)}</b><small>ккал / 100 ${u}</small></div></div><div class="mb">${bar('Белки', p, '#7cc0ff')}${bar('Жиры', f, '#ffd36b')}${bar('Углев.', c, '#6fcf97')}</div></div>${warn}`;
+  }
   function viewNew(){
-    const n = ST.nw || {}, u = n.u || 'г'; const fld = (id, l, v, un) => `<label class="ax-f"><span>${l}</span><div><input id="${id}" type="${id === 'nw-nm' || id === 'nw-br' ? 'text' : 'number'}" ${id === 'nw-nm' || id === 'nw-br' ? '' : 'inputmode="decimal"'} value="${esc(v == null ? '' : v)}" placeholder="${un || ''}"></div></label>`;
+    const n = ST.nw || {}, u = n.u || 'г'; const nf = (id, l, v, un, col) => `<label class="ax-nf"><span>${col ? `<i style="background:${col}"></i>` : ''}${l}</span><div><input id="${id}" type="number" inputmode="decimal" value="${esc(v == null ? '' : v)}" placeholder="0"><em>${un}</em></div></label>`;
+    const tf = (id, l, v, ph) => `<label class="ax-nf"><span>${l}</span><div><input id="${id}" type="text" value="${esc(v == null ? '' : v)}" placeholder="${ph}"></div></label>`;
     const head = n.est ? 'Нашли похожий продукт' : n.nm ? 'Почти нашли' : n.code ? 'Нет в базе' : 'Свой продукт';
     const sub = n.est ? `Штрихкод ${esc(n.code)}: подставил значения похожего продукта как ориентир. Проверь по этикетке и поправь, если нужно.` : n.nm ? `Штрихкод ${esc(n.code)}: название нашлось, а калорий в базе нет. Впиши их с этикетки — запомню.` : n.code ? `Штрихкод ${esc(n.code)} не найден. Выбери тип ниже, чтобы подставить среднее, или впиши с этикетки — запомню на будущее.` : 'Значения — на 100 ' + u + ', как на этикетке.';
     return back('', 'Назад') + `<div class="ax-h1">${head}</div><div class="ax-sub">${sub}</div>
     <div class="ax-lab" style="margin:2px 4px 8px">Быстро: выбери тип</div><div class="ax-chips l">${PRESETS.map((p, i) => `<button type="button" data-act="axcat" data-i="${i}">${p[0]}</button>`).join('')}</div>
     <div class="ax-seg" style="margin-top:12px"><button type="button" class="${u === 'г' ? 'on' : ''}" data-act="axunit" data-v="г">на 100 г</button><button type="button" class="${u === 'мл' ? 'on' : ''}" data-act="axunit" data-v="мл">на 100 мл</button></div>
-    <div class="ax-grp ax-form">${fld('nw-nm', 'Название', n.nm, 'Например: Pepsi 0,5')}${fld('nw-br', 'Бренд', n.br, 'необязательно')}${fld('nw-k', 'Калории на 100 ' + u, n.k, 'ккал')}${fld('nw-p', 'Белки', n.p, 'г')}${fld('nw-f', 'Жиры', n.f, 'г')}${fld('nw-c', 'Углеводы', n.c, 'г')}${fld('nw-g', 'Размер порции / упаковки', n.port, u + ', необязательно')}</div>
+    <div class="ax-nc"><div id="nw-live">${nwLive(n)}</div>
+      <label class="ax-nf full"><span>Название</span><div><input id="nw-nm" type="text" class="big" value="${esc(n.nm == null ? '' : n.nm)}" placeholder="Например: Pepsi 0,5"></div></label>
+      <div class="ax-n2">${nf('nw-k', 'Калории', n.k, 'ккал', '#ffb26b')}${nf('nw-p', 'Белки', n.p, 'г', '#7cc0ff')}${nf('nw-f', 'Жиры', n.f, 'г', '#ffd36b')}${nf('nw-c', 'Углеводы', n.c, 'г', '#6fcf97')}</div>
+      <div class="ax-n2">${tf('nw-br', 'Бренд', n.br, 'необязательно')}${nf('nw-g', 'Порция / упаковка', n.port, u)}</div></div>
     <button type="button" class="ax-btn big" data-act="axsavenew">Сохранить и добавить</button><div class="ax-note c">Продукт сохранится у тебя, и при следующем скане найдётся сразу.</div><div style="height:120px"></div>`;
   }
   function viewGoal(){
@@ -9671,9 +9733,9 @@ const AX = (function(){
     const el = document.createElement('div'); el.id = 'ax-scan'; SC.el = el;
     el.innerHTML = `<div class="bgc"><i style="--x:14%;--y:22%;--c:#3a4a7a"></i><i style="--x:78%;--y:30%;--c:#7a3a4a"></i><i style="--x:40%;--y:78%;--c:#2f6a58"></i></div><video playsinline muted autoplay></video><div class="gl"></div>
     <div class="ctop"><button type="button" class="cb" data-act="axscanx" aria-label="Закрыть">${I('back', 20)}</button><span class="cpill">Сканер</span><button type="button" class="cb" data-act="axtor" aria-label="Фонарик">${I('bolt', 20)}</button></div>
-    <div class="vf"><span class="c1"></span><span class="c2"></span><span class="c3"></span><span class="c4"></span><div class="sweep"></div><div class="okc">${I('check', 36)}</div></div>
+    <div class="vf2"><div class="ln"></div></div>
     <div class="hint"><b id="axs-t">Наведи на штрихкод</b><small id="axs-s">EAN-13 на упаковке, держи ровно</small></div>
-    <div class="cbot"><div class="num"><input id="axs-n" type="text" inputmode="numeric" maxlength="14" placeholder="Или введи номер под штрихкодом"><button type="button" data-act="axnum">OK</button></div></div>`;
+    <div class="cbot"><div class="zm" id="axs-z"></div><div class="num"><input id="axs-n" type="text" inputmode="numeric" maxlength="14" placeholder="Или введи номер под штрихкодом"><button type="button" data-act="axnum">OK</button></div></div>`;
     document.body.appendChild(el); requestAnimationFrame(() => el.classList.add('on'));
     try { if (!ver || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw 0; } catch (e) { return scanErr('Камера недоступна в этом окне'); }
     try {
@@ -9682,6 +9744,7 @@ const AX = (function(){
       if ('BarcodeDetector' in window) { try { SC.det = new BarcodeDetector({formats:['ean_13', 'ean_8', 'upc_a', 'upc_e']}); } catch (e) { SC.det = null; } }
       if (!SC.det) { try { await loadZX(); const hs = new Map(); hs.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [ZXing.BarcodeFormat.EAN_13, ZXing.BarcodeFormat.EAN_8, ZXing.BarcodeFormat.UPC_A, ZXing.BarcodeFormat.UPC_E]); hs.set(ZXing.DecodeHintType.TRY_HARDER, true); SC.rd = new ZXing.MultiFormatReader(); SC.rd.setHints(hs); } catch (e) { return scanErr('Сканер не загрузился — введи номер вручную'); } }
       SC.timer = setInterval(scanTick, SC.det ? 220 : 160);
+      try { const tr = SC.stream.getVideoTracks()[0], cp = tr.getCapabilities && tr.getCapabilities(), z = document.getElementById('axs-z'); if (cp && cp.zoom && z) { const lv = [.5, 1, 2].filter(x => x >= cp.zoom.min - .01 && x <= cp.zoom.max + .01); if (lv.length > 1) z.innerHTML = lv.map(x => `<button type="button" class="${x === 1 ? 'on' : ''}" data-act="axzoom" data-v="${x}">${x === .5 ? '0.5' : x}×</button>`).join(''); } } catch (e) {}
     } catch (e) { scanErr('Нет доступа к камере — разреши её или введи номер вручную'); }
   }
   function scanErr(t){ const s = document.getElementById('axs-s'); if (s) s.textContent = t; const e = document.getElementById('axs-t'); if (e) e.textContent = 'Камера не работает'; }
@@ -9695,7 +9758,7 @@ const AX = (function(){
     } catch (e) {}
     SC.busy = false;
   }
-  function hit(code){ hap.ok(); if (SC.el) SC.el.classList.add('ok'); setTimeout(() => { closeScan(); lookup(code); }, 650); }
+  function hit(code){ hap.ok(); if (SC.el) { SC.el.classList.add('ok'); const t = document.getElementById('axs-t'), u = document.getElementById('axs-s'); if (t) t.textContent = code; if (u) u.textContent = 'Готово'; } setTimeout(() => { closeScan(); lookup(code); }, 900); }
   function closeScan(){ clearInterval(SC.timer); try { SC.stream && SC.stream.getTracks().forEach(t => t.stop()); } catch (e) {} SC.stream = null; const el = SC.el; SC.el = null; SC.det = null; SC.torch = false; if (el) { el.classList.remove('on'); setTimeout(() => el.remove(), 260); } }
   async function torch(){ try { const tr = SC.stream && SC.stream.getVideoTracks()[0]; if (!tr) return; SC.torch = !SC.torch; await tr.applyConstraints({advanced:[{torch:SC.torch}]}); if (SC.el) SC.el.classList.toggle('tor', SC.torch); hap.tap(); } catch (e) { SC.torch = false; toast('Фонарик на этом устройстве недоступен'); } }
 
@@ -9723,20 +9786,37 @@ const AX = (function(){
   function contribute(pr, src){ if (!inTG || !pr || !pr.code || !(pr.k >= 0) || pr.est) return; (async () => { try { const tok = await ensureToken(); await foodSrv({act:'contribute', token:tok, code:String(pr.code), name:pr.nm, brand:pr.br || '', k:pr.k, p:pr.p || 0, f:pr.f || 0, c:pr.c || 0, u:pr.u === 'мл' ? 'мл' : 'г', src}); } catch (e) {} })(); }
   let _sq = 0;
   function srvSearch(q){ clearTimeout(_sq); q = (q || '').trim(); if (q.length < 3) return; _sq = setTimeout(async () => { const r = await foodSrv({act:'search', q}); if (!r || !r.items || ST.q.trim() !== q) return; const box = document.getElementById('ax-list'); if (!box) return; const have = new Set((LIST || []).map(x => (x.nm || '').toLowerCase())); const add = r.items.map(fromSrv).filter(x => !have.has(x.nm.toLowerCase())); if (!add.length) return; const base = (LIST || []).length; LIST = (LIST || []).concat(add); const emp = box.querySelector('.ax-empty'); if (emp) emp.remove(); box.insertAdjacentHTML('beforeend', `<div class="ax-lab" style="margin:16px 4px 8px">Из общей базы VOOB</div><div class="ax-grp">${add.map((x, i) => itemRow(x, base + i)).join('')}</div>`); }, 450); }
-  async function lookup(code){
-    const vs = variants(code), own = mine().find(x => vs.includes(x.code)); if (own) return openFound(Object.assign({}, own, {src:'mine'}));
-    for (const c of vs) { let ch = null; try { ch = JSON.parse(localStorage.getItem(offKey(c)) || 'null'); } catch (e) {} if (ch && ch.nm && ch.k != null) return openFound(ch); }
-    toast('Ищу продукт…');
+  /* ---------- анимация поиска продукта (радар) ---------- */
+  const SR = {el:null, t0:0, tm:[]};
+  function srchTxt(t, s){ const a = document.getElementById('axr-t'), b = document.getElementById('axr-s'); if (a && t != null) a.textContent = t; if (b && s != null) b.textContent = s; }
+  function srchKill(){ SR.tm.forEach(clearTimeout); SR.tm = []; const e = SR.el; SR.el = null; if (e) { e.classList.remove('on'); setTimeout(() => e.remove(), 260); } }
+  function srchShow(code){
+    srchKill(); const el = document.createElement('div'); el.id = 'ax-srch'; SR.el = el; SR.t0 = Date.now();
+    el.innerHTML = `<div class="rd" id="axr"><i class="p"></i><i class="p"></i><i class="p"></i><div class="sw"></div>${[[40,60],[190,50],[205,170],[55,190],[120,25]].map((p, i) => `<i class="bl" style="left:${p[0]}px;top:${p[1]}px;animation-delay:${i * .33}s"></i>`).join('')}<div class="orb" id="axr-o">${I('grid', 34)}</div><div class="dg" id="axr-d"></div></div><div class="st" id="axr-t">Читаю штрихкод…</div><div class="sb" id="axr-s"></div>`;
+    document.body.appendChild(el); requestAnimationFrame(() => el.classList.add('on'));
+    for (let i = 1; i <= code.length; i++) SR.tm.push(setTimeout(() => { const d = document.getElementById('axr-d'); if (d) d.textContent = code.slice(0, i); }, 120 + i * 70));
+    SR.tm.push(setTimeout(() => srchTxt('Ищу в базе товаров…'), 1000));
+  }
+  function srchEnd(ok, fn, name){
+    if (!SR.el) { fn(); return; }
+    SR.tm.push(setTimeout(() => { const rd = document.getElementById('axr'), o = document.getElementById('axr-o'); if (!rd || !SR.el) { fn(); return; }
+      rd.classList.add('done'); if (!ok) rd.classList.add('bad'); if (o) o.innerHTML = I(ok ? 'check' : 'x', 34); srchTxt(ok ? 'Найдено' : 'В базе нет', ok ? (name || '') : 'добавь продукт сам'); ok ? hap.ok() : hap.tap();
+      SR.tm.push(setTimeout(() => { srchKill(); fn(); }, ok ? 800 : 900)); }, Math.max(0, 1700 - (Date.now() - SR.t0))));
+  }
+  async function lookupCore(code){
+    const vs = variants(code), own = mine().find(x => vs.includes(x.code)); if (own) { const o = Object.assign({}, own, {src:'mine'}); return srchEnd(true, () => openFound(o), o.nm); }
+    for (const c of vs) { let ch = null; try { ch = JSON.parse(localStorage.getItem(offKey(c)) || 'null'); } catch (e) {} if (ch && ch.nm && ch.k != null) return srchEnd(true, () => openFound(ch), ch.nm); }
     const sv = await foodSrv({act:'lookup', codes:vs});
-    if (sv && sv.items && sv.items.length) { const pr = fromSrv(sv.items[0]); try { localStorage.setItem(offKey(code), JSON.stringify(pr)); } catch (e) {} return openFound(pr); }
+    if (sv && sv.items && sv.items.length) { const pr = fromSrv(sv.items[0]); try { localStorage.setItem(offKey(code), JSON.stringify(pr)); } catch (e) {} return srchEnd(true, () => openFound(pr), pr.nm); }
     const r = await offByCode(code);
-    if (r.pr) { try { localStorage.setItem(offKey(code), JSON.stringify(r.pr)); } catch (e) {} contribute(r.pr, 'off'); return openFound(r.pr); }
+    if (r.pr) { try { localStorage.setItem(offKey(code), JSON.stringify(r.pr)); } catch (e) {} contribute(r.pr, 'off'); return srchEnd(true, () => openFound(r.pr), r.pr.nm); }
     // не нашли с БЖУ: берём название (OFF без калорий или другая база), ищем похожий продукт и подставляем значения как ориентир
     let nm = r.part || await nameByCode(code), nw = {code};
     if (nm) { Object.assign(nw, {nm:nm.nm, br:nm.br, port:nm.port || '', u:nm.u || ''}); const g = await offGuess((nm.br ? nm.br + ' ' : '') + nm.nm); if (g) Object.assign(nw, {k:g.k, p:g.p, f:g.f, c:g.c, est:true, u:nw.u || g.u}); }
     ST.nw = nw; if (!r.net && !nm) toast('Нет связи с базой — заполни продукт сам');
-    ST.s === 'new' ? render() : go('new');
+    srchEnd(!!nm, () => { ST.s === 'new' ? render() : go('new'); }, nm && nm.nm);
   }
+  async function lookup(code){ srchShow(String(code)); try { await lookupCore(code); } catch (e) { srchKill(); throw e; } }
   function openFound(pr){ ST.pr = pr; ST.g = pr.port || 100; ST.s === 'found' ? render() : go('found'); }
 
   /* ---------- действия ---------- */
@@ -9774,6 +9854,8 @@ const AX = (function(){
     axscan: () => { hap.tap(); openScan(); },
     axscanx: () => { hap.tap(); closeScan(); },
     axtor: () => torch(),
+    axzoom: el => { try { const tr = SC.stream && SC.stream.getVideoTracks()[0]; if (!tr) return; tr.applyConstraints({advanced:[{zoom:+el.dataset.v}]}); document.querySelectorAll('#axs-z button').forEach(b => b.classList.toggle('on', b === el)); hap.tap(); } catch (e) {} },
+    axbw: () => { addWater(250); hap.imp(); render(); openSheetApps(); },
     axnum: () => { const c = ((document.getElementById('axs-n') || {}).value || '').replace(/\D/g, ''); if (c.length < 8) { toast('Введи номер из 8–13 цифр'); return; } closeScan(); lookup(c); }
   };
   function backToCal(){ ST.pr = null; ST.stack = ['cal']; ST.s = 'cal'; render(); window.scrollTo(0, 0); }
@@ -9781,11 +9863,12 @@ const AX = (function(){
   document.addEventListener('input', e => { const t = e.target; if (!t || !t.id) return;
     if (t.id === 'ax-g') { ST.g = clamp(parseFloat(String(t.value).replace(',', '.')) || 0, 0, 3000); recalc(); }
     else if (t.id === 'ax-q') { ST.q = t.value; const box = document.getElementById('ax-list'); if (box) box.innerHTML = listHTML(ST.q); srvSearch(ST.q); }
+    else if (t.id.indexOf('nw-') === 0) { const l = document.getElementById('nw-live'); if (l) l.innerHTML = nwLive(readNw()); }
     else if (t.id === 'ax-cu') { const v = Math.round(parseFloat(t.value) || 0); CAL().custom = clamp(v, 0, 6000); persist(); }
   });
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.id === 'axs-n') acts.axnum(); });
   document.addEventListener('change', e => { if (e.target && e.target.id === 'ax-cu') { const c = CAL(); if (c.custom < 800) { c.custom = 800; e.target.value = 800; } save(); render(); } });
-  return {view, tiles:homeTiles, acts, leave, active:() => !!(S.app && ST.s), btn:() => `<button type="button" class="ax-hb" data-act="appsheet" aria-label="Приложения">${I('grid', 20)}</button>`};
+  return {view, tiles:homeTiles, acts, leave, active:() => !!(S.app && ST.s), btn:() => `<button type="button" class="ax-hb" data-act="appsheet" aria-label="Приложения"><span class="gi"><i></i><i></i><i></i><i></i></span><b>Приложения</b></button>`};
 })();
 Object.assign(ACT, AX.acts);
 
