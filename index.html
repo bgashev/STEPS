@@ -3887,7 +3887,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.837';
+const APP = 'VOOB (by BGASHEV) Mini App v1.838';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9999,10 +9999,10 @@ function showNotice(){
   hap.imp();
   if (k === 'gift') setTimeout(confetti, 380);
 }
-function closeNotice(after){
+function closeNotice(after, act){
   const el = $('#ntc'), n = NTC.shift();
   if (el) el.classList.remove('show');
-  if (n) apiAuth(EXTRA_API, {action:'seen', id:+n.id}).catch(() => {});
+  if (n) apiAuth(EXTRA_API, {action:'seen', id:+n.id, act:act || ''}).catch(() => {});
   setTimeout(() => { if (el && !el.classList.contains('show')) el.innerHTML = ''; after && after(); ntcOpen = false; if (NTC.length) setTimeout(showNotice, 400); }, 380);
 }
 Object.assign(ACT, {
@@ -10011,8 +10011,8 @@ Object.assign(ACT, {
   ntok: () => { const n = NTC[0] || {}, cta = n.cta; hap.ok();
     closeNotice(() => { if (n.kind === 'gift') { toast('Подарок уже в твоей коллекции 🎁'); scheduleSync(50); }
       else if (cta === 'pro') openPro()
-      else if (cta && /^https:\/\//.test(cta)) { try { tg.openLink(cta); } catch (e) { window.open(cta, '_blank'); } } }); },
-  ntlater: () => { hap.tap(); closeNotice(); },
+      else if (cta && /^https:\/\//.test(cta)) { try { tg.openLink(cta); } catch (e) { window.open(cta, '_blank'); } } }, n.kind === 'gift' || cta ? 'click' : 'ack'); },
+  ntlater: () => { hap.tap(); closeNotice(null, 'dismiss'); },
   bgprev: el => openBgPrev(el.dataset.v || ''),
   bgpair: () => { if (!sheetCtx || sheetCtx.type !== 'bgprev') return; sheetCtx.kit = !sheetCtx.kit; bgPrevShow(sheetCtx.v); hap.tap(); },
   bgnav: el => { bgPrevShow(el.dataset.v || ''); hap.tap(); },
