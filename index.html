@@ -4073,7 +4073,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.863';
+const APP = 'VOOB (by BGASHEV) Mini App v1.864';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6429,7 +6429,7 @@ function viewHome(web){
     const hf0 = S.hflt && ws.some(w => actOf(w) === S.hflt) ? S.hflt : '', ws0 = ws;
     { const ws = hf0 ? ws0.filter(w => actOf(w) === hf0) : ws0;   // v1.452: цифры сверху — по выбранному виду
     const kcs = ws.map(kcal);
-    h += `<div class="kpis">${kpi(ws.length, 'Тренировок')}${kpi(fmtMin(sum(ws, w => w.minutes)), 'Всего времени')}${hf0 && STR[hf0] ? kpi(numSep(sum(ws, strTotal)) + (STR[hf0][0] === 'secs' ? ' сек' : ''), STR[hf0][0] === 'secs' ? 'Под нагрузкой' : 'Повторений') : hf0 && !['run', 'bike'].includes(hf0) ? kpi(numSep(sum(ws, workoutXp)), 'XP заработано') : kpi(kmF(sum(ws, kmOf)), 'Пройдено, примерно')}${kpi(kcs.some(Boolean) ? kcalF(sum(kcs, k => k || 0)) : '—', kcs.some(Boolean) ? 'Сожжено, примерно' : 'Ккал: укажи вес')}</div>`;
+    /* v1.864: блок цифр (тренировок, время, км, ккал) убран с главной */
   } }
   h += historyHTML(ws);
   return `<div class="hm">${h}</div>` + '<div class="wdock-sp"></div>';   // место под кнопку «Тренировка»
