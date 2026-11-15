@@ -1031,6 +1031,13 @@ async function routeGamesTop(body: any) {
       if (up.length) await db.from("game_scores").upsert(up, { onConflict: "tg_id,game" });
     }
   }
+  const played = String(body?.played ?? "");
+  if (/^[a-z0-9]{2,12}$/.test(played)) {          // v1.878: +1 партия в игре
+    const { data: row } = await db.from("game_scores").select("best, plays").eq("tg_id", me).eq("game", played).maybeSingle();
+    const now = new Date().toISOString();
+    if (row) await db.from("game_scores").update({ plays: ((row as any).plays ?? 0) + 1, last_played: now }).eq("tg_id", me).eq("game", played);
+    else await db.from("game_scores").insert({ tg_id: me, game: played, best: 0, plays: 1, last_played: now, updated: now });
+  }
   const game = String(body?.game ?? "");
   if (!/^[a-z0-9]{2,12}$/.test(game)) return json({ ok: true });
   const dead = await deactivatedSet(await friendIds(me));

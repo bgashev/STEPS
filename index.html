@@ -4081,7 +4081,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.877';
+const APP = 'VOOB (by BGASHEV) Mini App v1.878';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -8429,7 +8429,8 @@ const REST = (function(){
   function snap(){ if (!G) return; try { if (G.dead || !(G.score > 0)) { if (s.sv) { s.sv = null; save(); } return; } s.sv = {i: GI, d: JSON.stringify(G), sc: G.score | 0, t: Date.now()}; save(); } catch (e) {} }
   document.addEventListener('visibilitychange', () => { if (document.hidden) snap(); });
   function rr(c, x, y, w, h, r){ r = Math.min(r, w / 2, h / 2); c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
-  function onDie(g, key){ g.dead = true; g.deadAt = performance.now(); sfx('die'); if (g.score > (s.best[key] || 0)) { s.best[key] = g.score; save(); pushBest(key); g.newBest = true; hap.ok(); sfx('record'); } else { g.newBest = false; hap.warn(); }
+  function onDie(g, key){ g.dead = true; g.deadAt = performance.now(); sfx('die'); const rec = g.score > (s.best[key] || 0); if (rec) { s.best[key] = g.score; save(); g.newBest = true; hap.ok(); sfx('record'); } else { g.newBest = false; hap.warn(); }
+    pushBest(key);
     const l = left(); quip = apps ? ['Ещё разок?', 'Рекорд рядом.', 'Можно лучше — попробуй ещё.', 'Тап — и новая попытка.'][Math.floor(Math.random() * 4)] : l < 25 ? 'Гонг через ' + Math.ceil(l) + ' с. Штанга ждёт.' : QUIPS[Math.floor(Math.random() * QUIPS.length)]; }
   const bstP = (g, x, y, n, col, sp) => { g.pt = g.pt || []; for (let k = 0; k < n; k++) { const a = Math.random() * 6.283, v = (sp || 90) * (.4 + Math.random()); g.pt.push({x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 20, l: .5 + Math.random() * .4, m: .9, c: col}); } };
   const popT = (g, x, y, t, col) => { g.pop = g.pop || []; g.pop.push({x, y, t, c: col, l: .8}); };
@@ -9060,7 +9061,7 @@ const REST = (function(){
     paint(left());
   }
   /* v1.861: рейтинг друзей в игре */
-  function pushBest(k){ try { if (typeof apiAuth !== 'function' || !s.best[k]) return; apiAuth('/games/top', {bests:{[k]:s.best[k]}}).catch(() => {}); } catch (e) {} }
+  function pushBest(k){ try { if (typeof apiAuth !== 'function') return; const b = {}; if (s.best[k]) b[k] = s.best[k]; apiAuth('/games/top', {bests:b, played:k}).catch(() => {}); } catch (e) {} }
   function openRank(){
     if (!gm || !G) return; const old = gm.querySelector('.rt-rk'); if (old) { old.remove(); pz = false; return; }
     const g = GAMES[GI], key = g.k; pz = true;
