@@ -4072,7 +4072,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.861';
+const APP = 'VOOB (by BGASHEV) Mini App v1.862';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6371,7 +6371,7 @@ function startHTML(ws, doneToday, mob, plsug){
   try {
     if (isPro()) throw 0;
     const g = REST.dayInfo();
-    h += P.gm = `<button type="button" class="card st-gm" data-act="playday"><span class="st-gi">${g.th}</span><span><small>★ ИГРА ДНЯ · БЕСПЛАТНО</small><b>${esc(g.n)}</b><em>${g.best ? 'твой рекорд ' + g.best : 'сыграй один раз — поставь рекорд'}</em></span><span class="st-go">${IC('chev', 18)}</span></button>`;
+    h += P.gm = `<button type="button" class="card st-gm" data-act="playday"><span class="st-gi">${g.th}</span><span><small>${isPro() ? '★ ИГРА ДНЯ' : '★ ИГРА ДНЯ · БЕСПЛАТНО'}</small><b>${esc(g.n)}</b><em>${g.best ? 'твой рекорд ' + g.best : 'сыграй один раз — поставь рекорд'}</em></span><span class="st-go">${IC('chev', 18)}</span></button>`;
   } catch (e) {}
   if (!mob) return h;
   // мобильная раскладка «Один герой»: главный блок сверху, остальное — «Ещё для тебя», метрики одним рядом
@@ -10064,7 +10064,7 @@ const AX = (function(){
   function viewGames(){
     const L = REST.list(); const day = L.find(x => x.day);
     return back() + `<div class="ax-h1">Игры</div><div class="ax-sub">Играй когда угодно, не только между подходами</div>
-    ${day ? `<div class="ax-gd" data-act="axgame" data-i="${day.i}"><span class="im">${day.th}</span><span class="tx"><small>★ ИГРА ДНЯ · БЕСПЛАТНО</small><b>${esc(day.n)}</b><small>твой рекорд ${day.best ? P0(day.best) : '—'}</small></span><button type="button" class="ax-btn sm">Играть</button></div>` : ''}
+    ${day && !isPro() ? `<div class="ax-gd" data-act="axgame" data-i="${day.i}"><span class="im">${day.th}</span><span class="tx"><small>★ ИГРА ДНЯ · БЕСПЛАТНО</small><b>${esc(day.n)}</b><small>твой рекорд ${day.best ? P0(day.best) : '—'}</small></span><button type="button" class="ax-btn sm">Играть</button></div>` : ''}
     <div class="ax-gg">${L.map(x => `<div class="ax-gc" data-act="axgame" data-i="${x.i}"><div class="th">${x.th}${x.pro && !isPro() ? '<span class="pro">PRO</span>' : ''}</div><b>${esc(x.n)}</b><small>${x.pro && !isPro() && !x.day ? 'открыть с PRO' : x.best ? 'рекорд ' + P0(x.best) : 'без рекорда'}</small></div>`).join('')}<div class="ax-gc ax-gs" data-act="appgsug"><div class="th"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><b>Предложить</b><small>свою игру</small></div></div><div style="height:130px"></div>`;
   }
   function view(){ const s = ST.s; return `<div class="ax-pg">${s === 'cal' ? viewCal() : s === 'water' ? viewWater() : s === 'games' ? viewGames() : s === 'shop' ? back() + viewShop() : s === 'add' ? viewAdd() : s === 'found' ? viewFound() : s === 'new' ? viewNew() : s === 'goal' ? viewGoal() : ''}</div>`; }
