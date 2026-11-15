@@ -4053,7 +4053,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.858';
+const APP = 'VOOB (by BGASHEV) Mini App v1.859';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9868,8 +9868,8 @@ const AX = (function(){
     let h = '';
     if (a.pw !== 0) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="water"><span class="ax-ti a-w">${AI('drop', 20)}</span>${ring(wp, '#3a9bf0')}</div><div data-act="appopen" data-s="water"><b>Вода</b><small>${P0(w)} / ${P0(wg.goal)} мл</small></div><div class="ax-rq"><button type="button" data-act="axwater" data-v="250">+250</button><button type="button" data-act="axwater" data-v="500">+500</button></div></div>`;
     if (a.pc !== 0) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="cal"><span class="ax-ti a-c">${AI('cal', 20)}</span>${ring(cp, over ? '#e0a010' : '#f0752a')}</div><div data-act="appopen" data-s="cal"><b>Калории</b><small>${over ? P0(-d.rem) + ' выше нормы' : P0(d.rem) + ' осталось'}</small></div><div class="ax-rq"><button type="button" data-act="axadd" data-m="${mealOf()}">+ Еда</button><button type="button" data-act="axaddscan" data-m="${mealOf()}">Скан</button></div></div>`;
-    h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="games"><span class="ax-ti a-g">${AI('pad', 20)}</span></div><div data-act="appopen" data-s="games"><b>Игры</b><small>${esc('Игра дня: ' + REST.dayInfo().n)}</small></div><div class="ax-rq"><button type="button" data-act="appopen" data-s="games">Играть</button></div></div>`;
-    return `<div class="ax-rb"><span class="ax-rt"><span class="ax-gi"><i></i><i></i><i></i><i></i></span>Приложения</span><button type="button" class="ax-ra" data-act="appsheet">все ›</button></div><div class="ax-rr${wide ? ' w' : ''}">${h}</div>`;
+    if (a.pg !== 0) h += `<div class="ax-rc"><div class="ax-rtp" data-act="appopen" data-s="games"><span class="ax-ti a-g">${AI('pad', 20)}</span></div><div data-act="appopen" data-s="games"><b>Игры</b><small>${esc('Игра дня: ' + REST.dayInfo().n)}</small></div><div class="ax-rq"><button type="button" data-act="appopen" data-s="games">Играть</button></div></div>`;
+    return `<div class="ax-rb"><span class="ax-rt"><span class="ax-gi"><i></i><i></i><i></i><i></i></span>Приложения</span><button type="button" class="ax-ra" data-act="appsheet">все ›</button></div>${h ? `<div class="ax-rr${wide ? ' w' : ''}">${h}</div>` : ''}`;
   }
   function sheetHTML(){
     const a = A(), w = wd(), wg = waterGoal(), d = day(), g = d.g, wp = Math.round(clamp(w / wg.goal, 0, 1) * 100);
@@ -9886,7 +9886,7 @@ const AX = (function(){
       <div class="ax-bt bg" data-act="appopen" data-s="games"><div class="h"><span class="ax-at sm a-g">${AI('pad', 18)}</span><span class="n">13 игр</span></div><div class="gt">Игры<small>играть →</small></div></div>
       ${inWeb ? '' : `<div class="ax-bt bs" data-act="appopen" data-s="shop"><div class="h"><span class="ax-at sm a-s">${AI('shop', 18)}</span><span class="n">рамки · фоны · комплекты</span></div><div class="gt">Магазин<small>выбрать →</small></div></div>`}
     </div>
-    <div class="ax-lab" style="margin:20px 6px 8px">На главной</div><div class="ax-grp"><div class="ax-li"><span class="ax-mi a-w">${AI('drop', 21)}</span><span class="tx"><b>Вода</b><small>быстрый +250 с главной</small></span>${sw('w', a.pw !== 0)}</div><div class="ax-li"><span class="ax-mi a-c">${AI('cal', 21)}</span><span class="tx"><b>Калории</b><small>сколько осталось на день</small></span>${sw('c', a.pc !== 0)}</div></div>
+    <div class="ax-lab" style="margin:20px 6px 8px">На главной</div><div class="ax-grp"><div class="ax-li"><span class="ax-mi a-w">${AI('drop', 21)}</span><span class="tx"><b>Вода</b><small>быстрый +250 с главной</small></span>${sw('w', a.pw !== 0)}</div><div class="ax-li"><span class="ax-mi a-c">${AI('cal', 21)}</span><span class="tx"><b>Калории</b><small>сколько осталось на день</small></span>${sw('c', a.pc !== 0)}</div><div class="ax-li"><span class="ax-mi a-g">${AI('pad', 21)}</span><span class="tx"><b>Игры</b><small>игра дня и быстрый старт</small></span>${sw('g', a.pg !== 0)}</div></div>
     <button type="button" class="ax-sg" data-act="appsug"><span class="ax-mi a-g">${AI('bulb', 21)}</span><span class="tx"><b>Предложить</b><small>что добавить или улучшить в VOOB</small></span><i>›</i></button></div>`;
   }
   function pcls(c){ return c; }
@@ -10124,7 +10124,7 @@ const AX = (function(){
     appopen: el => { if (sheetCtx && sheetCtx.type === 'apps') closeSheet(); const s = el.dataset.s; ST.stack = []; ST.s = ''; ST.off = 0; go(s); },
     axday: el => { ST.off = clamp(+el.dataset.o, -13, 0); hap.tap(); render(); },
     appback: () => goBack(),
-    axpin: el => { const a = A(), k = el.dataset.k === 'w' ? 'pw' : 'pc'; a[k] = a[k] === 0 ? 1 : 0; el.classList.toggle('on', a[k] !== 0); hap.tap(); save(); if (S.tab === 'home') render(); },
+    axpin: el => { const a = A(), k = el.dataset.k === 'w' ? 'pw' : el.dataset.k === 'g' ? 'pg' : 'pc'; a[k] = a[k] === 0 ? 1 : 0; el.classList.toggle('on', a[k] !== 0); hap.tap(); save(); if (S.tab === 'home') render(); },
     axwater: (el) => { const v = +el.dataset.v, was = wd(), nv = addWater(v); hap.imp(); render(); if (nv >= waterGoal().goal && was < waterGoal().goal) { hap.ok(); toast('Норма воды выполнена'); } },
     axwcust: () => { const v = Math.round(num('ax-wc')); if (!(v >= 10 && v <= 2000)) { toast('Введи объём от 10 до 2000 мл'); return; } const was = wd(), nv = addWater(v); hap.imp(); render(); if (nv >= waterGoal().goal && was < waterGoal().goal) toast('Норма воды выполнена'); },
     axwper: el => { ST.wp = +el.dataset.p; ST.wsel = null; ST.wmore = 10; hap.tap(); render(); },
