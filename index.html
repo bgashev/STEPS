@@ -883,6 +883,32 @@ html.web ::-webkit-scrollbar-corner{background:transparent}
 .adc.live .adt b{font-size:19px}
 .adc.live .adg{color:var(--accent);opacity:1}
 .adc.go{border-color:color-mix(in srgb,var(--accent) 45%,transparent);background:var(--on-accent);color:var(--accent)}.adc.go .adi{background:var(--accent);color:var(--on-accent);border:0}.adc.go .adt span{color:color-mix(in srgb,var(--accent) 72%,transparent)}.adc.go .adg{color:var(--accent);opacity:1}
+/* конструктор плана */
+.pb{display:grid;gap:0;padding-bottom:4px;min-width:0}.pbhd{display:flex;align-items:center;gap:12px;margin:0 0 6px 40px;min-height:36px}
+.pbsec{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:800;color:var(--muted);margin:16px 2px 8px;display:flex;align-items:center;gap:8px}.pbsec em{font-style:normal;letter-spacing:0;text-transform:none;font-weight:600;opacity:.7;font-size:11.5px}
+.pbdays{display:flex;gap:8px;overflow-x:auto;margin:0 -18px;padding:2px 18px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}.pbdays::-webkit-scrollbar{display:none}
+.pbd{position:relative;flex:none;scroll-snap-align:start;min-width:58px;height:66px;border-radius:18px;border:1px solid var(--border);background:var(--surface2);color:var(--text);display:grid;place-items:center;align-content:center;gap:2px;cursor:pointer;font:inherit;padding:0 8px;transition:transform .15s,background .2s,border-color .2s}
+.pbd small{font-size:10.5px;font-weight:800;letter-spacing:.06em;color:var(--muted)}.pbd b{font-size:20px;font-weight:800;line-height:1;display:grid;place-items:center}
+.pbd:active{transform:scale(.94)}.pbd.on{background:var(--accent);border-color:transparent;color:var(--on-accent);box-shadow:0 10px 22px -12px var(--accent)}.pbd.on small{color:color-mix(in srgb,var(--on-accent) 70%,transparent)}
+.pbdo input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.pbdo svg{stroke:currentColor;fill:none;stroke-width:1.6}
+.pbstd{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:12px 14px;border-radius:18px;background:var(--surface2);border:1px solid var(--border)}.pbstd b{display:block;font-size:14.5px}.pbstd small{display:block;color:var(--muted);font-size:11.5px;line-height:1.35;margin-top:2px}
+.pbn{display:flex;align-items:center;gap:6px;flex:none}.pbb{width:38px;height:38px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);display:grid;place-items:center;cursor:pointer;flex:none;transition:transform .12s}.pbb:active{transform:scale(.9)}.pbb.sm{width:30px;height:30px;border-radius:10px}
+.pbsv{min-width:50px;text-align:center;font-weight:800;font-size:16px;font-variant-numeric:tabular-nums}
+.pbi{width:54px;height:38px;border-radius:12px;border:1px solid var(--border);background:var(--surface);color:var(--text);font:inherit;font-size:17px;font-weight:800;text-align:center;min-width:0;-moz-appearance:textfield}.pbi:focus{outline:0;border-color:var(--accent)}
+.pbx{margin:0 0 12px;padding:12px 12px 10px;border-radius:22px;border:1px solid var(--border);background:var(--surface2);animation:rtup .4s cubic-bezier(.22,1,.36,1) both}
+.pbxh{display:flex;align-items:center;gap:10px;margin-bottom:10px}.pbxh .wa{flex:none;width:40px;height:40px}.pbxt{flex:1;min-width:0}.pbxt b{display:block;font-size:15.5px}.pbxt small{display:block;color:var(--muted);font-size:11.5px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pbxa{display:flex;gap:2px;flex:none}.pbq{width:30px;height:32px;border-radius:10px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer}.pbq:active{background:var(--surface)}.pbq:disabled{opacity:.25;pointer-events:none}
+.pbs{display:flex;align-items:center;gap:4px;min-width:0}.pbs .sln{flex:none;width:20px;text-align:center;font-weight:800;color:var(--muted);font-size:13px}.pbs .slxx{color:var(--muted);font-weight:700;flex:none}
+.pbu{font-size:11px;color:var(--muted);flex:none;margin-left:-1px;min-width:0}.pbsx{margin-left:auto;flex:none;width:24px;height:28px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer;border-radius:9px}
+.pbs .pbb{width:30px;height:38px;border-radius:11px}.pbs .pbi{width:40px;font-size:16px}.pbs .pbn{gap:3px}.pbs .sln{width:16px}
+.pbr{display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 0 8px 26px}.pbr .pbb.sm{color:var(--muted)}
+.pbrt{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 12px;border-radius:99px;border:1px dashed color-mix(in srgb,var(--accent) 45%,transparent);background:color-mix(in srgb,var(--accent) 9%,transparent);color:var(--text);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;font-variant-numeric:tabular-nums}.pbrt svg{color:var(--accent);flex:none}.pbr.z .pbrt{border-color:var(--border);background:transparent;color:var(--muted)}.pbr.z .pbrt svg{color:var(--muted)}
+.pbfoot{display:flex;gap:8px;margin-top:2px}.pbfoot .btn{flex:1;justify-content:center}.pbt{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pbt .f{margin-bottom:0}.pbt .pbn{justify-content:space-between}.pbt .pbi{flex:1;width:auto}
+.pbempty{display:grid;justify-items:center;gap:6px;text-align:center;padding:26px 16px;border-radius:22px;border:1px dashed var(--border);color:var(--muted);margin-bottom:12px}.pbempty b{color:var(--text);font-size:15px}.pbempty span{font-size:12.5px;line-height:1.4;max-width:260px}
+.pbadd{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:52px;border-radius:18px;border:1.5px dashed color-mix(in srgb,var(--accent) 55%,transparent);background:color-mix(in srgb,var(--accent) 8%,transparent);color:var(--accent);font:inherit;font-weight:800;font-size:15px;cursor:pointer;transition:transform .12s,background .2s}.pbadd:active{transform:scale(.98)}.pbadd.on{background:var(--accent);color:var(--on-accent);border-style:solid}.pbadd.on svg{transform:rotate(45deg)}.pbadd svg{transition:transform .25s}
+.pbpick{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s cubic-bezier(.22,1,.36,1),margin .35s}.pbpick>.pbpg{overflow:hidden;min-height:0}.pbpick.open{grid-template-rows:1fr;margin-top:10px}
+.pbpg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.pbp{display:grid;justify-items:center;gap:6px;padding:12px 6px 10px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:12px;font-weight:700;text-align:center;line-height:1.2;cursor:pointer}.pbp span{width:38px;height:38px;border-radius:12px;background:var(--surface);display:grid;place-items:center;color:var(--accent)}.pbp:active{transform:scale(.95);border-color:var(--accent)}
+.pbbar{position:sticky;bottom:-1px;margin:14px -18px -8px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 78%,transparent);display:flex;align-items:center;gap:12px;z-index:5}.pbtot{flex:1;min-width:0}.pbtot small{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800}.pbtot b{display:block;font-size:13.5px;line-height:1.3}.pbbar .btn{min-width:130px;min-height:50px;justify-content:center}.pbbar .btn:disabled{opacity:.4}
 .adc .adk{display:inline-flex;align-items:center;gap:6px;width:max-content;margin-top:4px;padding:3px 9px 3px 8px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.02em;color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent)}
 .adc .adk i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:adp 1.6s ease-in-out infinite}
 @keyframes adp{50%{opacity:.25;transform:scale(.7)}}
@@ -5977,7 +6003,7 @@ function viewHomeWeb(){
 /* план на сегодня: пунктирная карточка-предложение (полного раздела «План» в мобильной версии нет) */
 function todayPlans(ws){
   const t = isoOf(todayN());
-  const ps = (db.plans || []).filter(p => p && p.date === t && !p.skipped && !p.done_id).sort((a, b) => (a.created || 0) - (b.created || 0));
+  const ps = (db.plans || []).filter(p => p && p.date === t && !p.skipped && !p.done_id).sort((a, b) => (a.created || 0) - (b.created || 0) || (a.ord || 0) - (b.ord || 0));
   const linked = new Set((db.plans || []).map(p => p && p.done_id).filter(Boolean));
   const free = ws.filter(w => w.date === t && !linked.has(w.id)).length;   // тренировка в тот же день закрывает план (как на ПК)
   return ps.slice(free);
@@ -6003,6 +6029,7 @@ function planSuggestHTML(ws){
     <button class="ib ok" data-act="pladd" data-id="${esc(p.id)}" aria-label="Добавить тренировку">${IC('check', 22)}<span class="bl">Добавить</span></button></div></div>
     ${par ? `<div class="pv">${par}</div>` : ''}</div>`;
 }
+function pbGroups(list){ const out = [], seen = new Set(); for (const p of list) { if (p.grp) { if (seen.has(p.grp)) continue; seen.add(p.grp); out.push(list.filter(x => x.grp === p.grp).sort((a, b) => (a.ord || 0) - (b.ord || 0))); } else out.push([p]); } return out; }
 function findPlan(id){ return (db.plans || []).find(p => String(p.id) === String(id)); }
 
 /* v1.452: планы в мобильной версии — список, создание, правка, удаление (формат записи тот же, что на ПК) */
@@ -6019,8 +6046,8 @@ function planDay(iso){
 function openPlans(){
   const list = upPlans(valid());
   openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC('plan', 22)}</span><div><h2 style="margin:0">План</h2><div class="cap">Что собираешься сделать — в нужный день появится на главной</div></div></div>`
-    + (list.length ? list.map(p => { const a = actOf(p), par = planParams(p).map(x => x[1]).join(' · ');
-        return `<div class="wi plr" data-act="pledit" data-id="${esc(p.id)}"><span class="wa">${IC(a, 20)}</span><div style="flex:1;min-width:0"><div style="font-weight:700">${planDay(p.date)}</div><div class="cap">${(ACTS.find(x => x[0] === a) || ACTS[0])[1]}${par ? ' · ' + esc(par) : ''}</div></div><button type="button" class="plx" data-act="pldel" data-id="${esc(p.id)}" aria-label="Удалить план">${IC('trash', 18)}</button></div>`; }).join('')
+    + (list.length ? pbGroups(list).map(g => { const p = g[0], a = actOf(p), multi = g.length > 1, par = multi ? '' : planParams(p).map(x => x[1]).join(' · '), nm = x => (ACTS.find(y => y[0] === actOf(x)) || ACTS[0])[1], sets = g.reduce((t, x) => t + (Array.isArray(x.sl) ? x.sl.length : 0), 0), head = p.ttl || (multi ? g.slice(0, 3).map(nm).join(' · ') + (g.length > 3 ? ' +' + (g.length - 3) : '') : nm(p));
+        return `<div class="wi plr" data-act="pledit" data-id="${esc(p.id)}"><span class="wa">${IC(a, 20)}</span><div style="flex:1;min-width:0"><div style="font-weight:700">${planDay(p.date)}</div><div class="cap">${esc(head)}${multi ? ` · ${g.length} упр.${sets ? ' · ' + sets + ' подх.' : ''}` : par ? ' · ' + esc(par) : ''}</div></div><button type="button" class="plx" data-act="pldel" data-id="${esc(p.id)}" aria-label="Удалить план">${IC('trash', 18)}</button></div>`; }).join('')
       : `<div class="hint">Планов пока нет — добавь первый.</div>`)
     + `<button class="btn primary" style="width:100%;justify-content:center;min-height:50px;margin-top:6px" data-act="plnew">${IC('plus', 18)}Новый план</button>`, {type:'plans'});
 }
@@ -6059,6 +6086,125 @@ function savePlan(){
   touch('plan', p); save(); closeSheet(); render(); hap.ok();
   toast(item ? 'План обновлён' : data.date === isoOf(todayN()) ? 'План на сегодня добавлен' : `План сохранён · ${planDay(data.date).toLowerCase()}`);
 }
+
+/* ================= конструктор плана (мобильная версия): дата, несколько упражнений, подходы, веса, отдых ================= */
+let PB = null;
+const PB_RS = [0, 30, 45, 60, 90, 120, 180, 240];
+const fmtRs = s => s <= 0 ? 'без отдыха' : Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2);
+const pbDays = () => { const t = todayN(), o = []; for (let i = 0; i < 14; i++) { const n = t + i, d = new Date(n * DAY); o.push({iso:isoOf(n), wd:['ВС','ПН','ВТ','СР','ЧТ','ПТ','СБ'][d.getUTCDay()], d:d.getUTCDate(), lbl:i === 0 ? 'Сегодня' : i === 1 ? 'Завтра' : ''}); } return o; };
+function pbNewItem(act){
+  const st = STR[act], std = REST.std();
+  if (st) { const rep = act === 'pullup' ? [8, 7, 6] : st[0] === 'secs' ? [45, 45, 45] : [12, 12, 12]; return {k:uid(), act, sl:rep.slice(), sk:KG_ACT[act] ? rep.map(() => KG_ACT[act].def) : null, rs:rep.map(() => std)}; }
+  if (TIMEA[act]) return {k:uid(), act, minutes:act === 'yoga' ? 20 : 40, speed:TIMEA[act][1] ? 18 : 0, incline:0};
+  return {k:uid(), act, minutes:30, speed:4.5, incline:0};
+}
+function pbGroup(p){ return p.grp ? (db.plans || []).filter(x => x && x.grp === p.grp).sort((a, b) => (a.ord || 0) - (b.ord || 0) || (a.created || 0) - (b.created || 0)) : [p]; }
+function pbFrom(p){
+  const std = REST.std(), today = isoOf(todayN());
+  if (!p) return {date:today, ttl:'', grp:null, items:[], orig:[], pick:false, dirty:false};
+  const g = pbGroup(p), items = g.map(x => { const act = actOf(x), st = STR[act];
+    if (st) { const sl = slOf(x), sk = KG_ACT[act] ? skOf(x) : null, rs = Array.isArray(x.rs) && x.rs.length === sl.length ? x.rs.map(v => +v || 0) : sl.map(() => std); return {k:uid(), id:x.id, act, sl, sk, rs}; }
+    return {k:uid(), id:x.id, act, minutes:+x.minutes || 30, speed:+x.speed || 0, incline:+x.incline || 0}; });
+  return {date:p.date, ttl:p.ttl || '', grp:p.grp || null, items, orig:g.map(x => x.id), pick:false, dirty:false};
+}
+function pbEst(it){
+  if (!STR[it.act]) return +it.minutes || 0;
+  const st = STR[it.act], work = it.sl.reduce((a, x) => a + x * (st[0] === 'secs' ? 1 : 3), 0), rest = it.rs.reduce((a, x, i) => a + (i < it.sl.length - 1 ? x : 0), 0);
+  return Math.max(1, Math.round((work + rest) / 60));
+}
+function pbNum(ei, i, f, val, label){ return `<div class="pbn"><button type="button" class="pbb" data-act="pbs" data-ei="${ei}" data-i="${i}" data-f="${f}" data-d="-1" aria-label="Меньше">${IC('minus', 15)}</button><input class="pbi" inputmode="${f === 'k' || f === 'v' ? 'decimal' : 'numeric'}" data-ei="${ei}" data-i="${i}" data-f="${f}" value="${val}" aria-label="${label}"><button type="button" class="pbb" data-act="pbs" data-ei="${ei}" data-i="${i}" data-f="${f}" data-d="1" aria-label="Больше">${IC('plus', 15)}</button></div>`; }
+function pbCardH(it, ei){
+  const a = ACTS.find(x => x[0] === it.act) || ACTS[0], st = STR[it.act], kg = KG_ACT[it.act], n = PB.items.length;
+  const head = `<div class="pbxh"><span class="wa">${IC(it.act, 20)}</span><div class="pbxt"><b>${a[1]}</b><small data-pbs="${ei}">${pbSumItem(it)}</small></div>
+    <div class="pbxa"><button type="button" class="pbq" data-act="pbmv" data-ei="${ei}" data-d="-1" aria-label="Выше"${ei ? '' : ' disabled'}><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L9 6.5l5 5"/></svg></button>
+    <button type="button" class="pbq" data-act="pbmv" data-ei="${ei}" data-d="1" aria-label="Ниже"${ei < n - 1 ? '' : ' disabled'}><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5l5 5 5-5"/></svg></button>
+    <button type="button" class="pbq" data-act="pbdup" data-ei="${ei}" aria-label="Дублировать"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="8.5" height="8.5" rx="2"/><path d="M11.5 3.8V3.5A1.5 1.5 0 0 0 10 2H4.5A1.5 1.5 0 0 0 3 3.5V10a1.5 1.5 0 0 0 1.5 1.5h.3"/></svg></button>
+    <button type="button" class="pbq" data-act="pbdel" data-ei="${ei}" aria-label="Убрать упражнение">${IC('close', 15)}</button></div></div>`;
+  let body = '';
+  if (st) {
+    body = it.sl.map((v, i) => `<div class="pbs"><span class="sln">${i + 1}</span>${pbNum(ei, i, 'r', v, st[0] === 'secs' ? 'Секунды' : 'Повторы')}<span class="pbu">${st[0] === 'secs' ? 'сек' : 'повт'}</span>
+        ${kg ? `<span class="slxx">×</span>${pbNum(ei, i, 'k', fmtKg(it.sk[i] || 0), 'Вес, кг')}<span class="pbu">кг</span>` : ''}
+        ${it.sl.length > 1 ? `<button type="button" class="pbsx" data-act="pbsdel" data-ei="${ei}" data-i="${i}" aria-label="Убрать подход">${IC('close', 14)}</button>` : '<span class="pbsx"></span>'}</div>
+      <div class="pbr${it.rs[i] ? '' : ' z'}"><button type="button" class="pbb sm" data-act="pbs" data-ei="${ei}" data-i="${i}" data-f="s" data-d="-1" aria-label="Меньше отдыха">${IC('minus', 13)}</button>
+        <button type="button" class="pbrt" data-act="pbrc" data-ei="${ei}" data-i="${i}" aria-label="Сменить отдых"><svg width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="10" r="6"/><path d="M9 7v3.2l2 1.2M7 1.8h4"/></svg><span data-pbr="${ei}_${i}">${i === it.sl.length - 1 ? (it.rs[i] ? 'после: ' + fmtRs(it.rs[i]) : 'после: без отдыха') : fmtRs(it.rs[i])}</span></button>
+        <button type="button" class="pbb sm" data-act="pbs" data-ei="${ei}" data-i="${i}" data-f="s" data-d="1" aria-label="Больше отдыха">${IC('plus', 13)}</button></div>`).join('')
+      + `<div class="pbfoot"><button type="button" class="btn ghost small" data-act="pbsadd" data-ei="${ei}">${IC('plus', 15)}Подход</button><button type="button" class="btn ghost small" data-act="pbrall" data-ei="${ei}">${REST.WATCH}Отдых всем</button></div>`;
+  } else {
+    const t = TIMEA[it.act];
+    body = `<div class="pbt"><div class="f"><span>Время, мин</span>${pbNum(ei, 0, 'm', it.minutes, 'Минуты')}</div>
+      ${t ? (t[1] ? `<div class="f"><span>Скорость, км/ч</span>${pbNum(ei, 0, 'v', fmtKg(it.speed), 'Скорость')}</div>` : '') : `<div class="f"><span>Скорость, км/ч</span>${pbNum(ei, 0, 'v', fmtKg(it.speed), 'Скорость')}</div><div class="f"><span>Уклон, %</span>${pbNum(ei, 0, 'n', it.incline, 'Уклон')}</div>`}</div>`;
+  }
+  return `<div class="pbx" data-ei="${ei}">${head}${body}</div>`;
+}
+function pbSumItem(it){ const st = STR[it.act]; if (!st) return fmtMin(+it.minutes || 0) + (it.speed ? ` · ${fmtKg(it.speed)} км/ч` : ''); const same = it.sl.every(x => x === it.sl[0]); return (same ? `${it.sl.length}×${it.sl[0]}` : `${it.sl.length} ${plural(it.sl.length, ['подход', 'подхода', 'подходов'])}`) + (it.sk && it.sk.some(x => x > 0) ? ` · ${fmtKg(kgAvg(it.sl, it.sk))} кг` : '') + ` · ≈${pbEst(it)} мин`; }
+function pbTotals(){ const its = PB.items, sets = its.reduce((a, it) => a + (STR[it.act] ? it.sl.length : 0), 0), min = its.reduce((a, it) => a + pbEst(it), 0); return `${its.length} ${plural(its.length, ['упражнение', 'упражнения', 'упражнений'])}${sets ? ` · ${sets} ${plural(sets, ['подход', 'подхода', 'подходов'])}` : ''} · ≈${min} мин`; }
+function pbRender(){
+  const L = $('#pb-list'); if (!L) return;
+  L.innerHTML = PB.items.length ? PB.items.map(pbCardH).join('') : `<div class="pbempty">${IC('plan', 26)}<b>Пока пусто</b><span>Добавь первое упражнение — подходы, веса и отдых настроишь тут же</span></div>`;
+  pbFoot();
+  const pk = $('#pb-pick'); if (pk) pk.classList.toggle('open', !!PB.pick);
+  const ab = $('#pb-addb'); if (ab) ab.classList.toggle('on', !!PB.pick);
+}
+function pbFoot(){ const t = $('#pb-tot'); if (t) t.textContent = PB.items.length ? pbTotals() : 'Добавь упражнения'; const sb = $('#pb-save'); if (sb) sb.disabled = !PB.items.length; PB.items.forEach((it, ei) => { const s = document.querySelector(`[data-pbs="${ei}"]`); if (s) s.textContent = pbSumItem(it); }); }
+function openPlanB(p){
+  PB = pbFrom(p);
+  const days = pbDays(), std = REST.std(), inList = days.some(d => d.iso === PB.date);
+  const favs = favActs(), list = [...favs.map(k => ACTS.find(a => a[0] === k)).filter(Boolean), ...ACTS.filter(a => a[2] && !favs.includes(a[0]))];
+  openSheet(`<div class="pb"><div class="pbhd"><div><h2 style="margin:0">${p ? 'Редактирование плана' : 'Новый план'}</h2><div class="cap">Дата, упражнения, подходы, веса и отдых</div></div></div>
+    <div class="pbsec">Когда</div>
+    <div class="pbdays" id="pb-days">${days.map(d => `<button type="button" class="pbd${d.iso === PB.date ? ' on' : ''}" data-act="pbdate" data-v="${d.iso}"><small>${d.lbl || d.wd}</small><b>${d.d}</b></button>`).join('')}<label class="pbd pbdo${inList ? '' : ' on'}"><small>Дата</small><b>${IC('plan', 17)}</b><input type="date" id="pb-date" value="${PB.date}" min="${isoOf(todayN())}"></label></div>
+    <div class="pbsec">Название <em>необязательно</em></div>
+    <input class="inp" id="pb-ttl" maxlength="40" placeholder="Например: Грудь и трицепс" value="${esc(PB.ttl)}">
+    <div class="pbstd"><div><b>Стандартный отдых</b><small>для новых подходов · свой — у каждого подхода</small></div><div class="pbn"><button type="button" class="pbb" data-act="pbstd" data-d="-1" aria-label="Меньше">${IC('minus', 15)}</button><span class="pbsv" id="pb-std">${fmtRs(std)}</span><button type="button" class="pbb" data-act="pbstd" data-d="1" aria-label="Больше">${IC('plus', 15)}</button></div></div>
+    <div class="pbsec">Упражнения</div><div id="pb-list"></div>
+    <button type="button" class="pbadd" id="pb-addb" data-act="pbadd">${IC('plus', 18)}Добавить упражнение</button>
+    <div class="pbpick" id="pb-pick"><div class="pbpg">${list.map(([k, l]) => `<button type="button" class="pbp" data-act="pbpick" data-v="${k}"><span>${IC(k, 22)}</span>${l}</button>`).join('')}</div></div>
+    <div class="pbbar"><div class="pbtot"><small>Итого</small><b id="pb-tot"></b></div><button class="btn primary" id="pb-save" data-act="pbsave">Сохранить</button></div></div>`, {type:'planb', item:p || null});
+  pbRender();
+}
+function pbSave(){
+  if (!PB || !PB.items.length) { hap.warn(); toast('Добавь хотя бы одно упражнение'); return; }
+  const iso = ISO_RE.test(PB.date) ? PB.date : isoOf(todayN()), grp = PB.grp || uid(), ttl = ($('#pb-ttl') ? $('#pb-ttl').value : PB.ttl).trim().slice(0, 40), created = nowSec(), keep = new Set();
+  PB.items.forEach((it, ord) => {
+    const data = {date:iso, act:it.act, grp, ord, ttl}, st = STR[it.act];
+    if (st) { const n = it.sl.length, v = Math.round(it.sl.reduce((a, x) => a + x, 0) / Math.max(1, n)); Object.assign(data, {sets:n, [st[0]]:v, sl:it.sl.slice(), minutes:strMinL(it.act, it.sl), speed:0, incline:0, rs:it.rs.slice()}); if (KG_ACT[it.act]) { data.sk = it.sk.slice(); data.kg = kgAvg(it.sl, it.sk); } }
+    else Object.assign(data, {minutes:Math.round(+it.minutes || 1), speed:TIMEA[it.act] ? (TIMEA[it.act][1] ? +it.speed || 0 : 0) : +it.speed || 0, incline:TIMEA[it.act] ? 0 : Math.round(+it.incline || 0)});
+    let p = it.id ? findPlan(it.id) : null;
+    if (p) { ['sets', 'reps', 'secs', 'kg', 'sl', 'sk', 'rs'].forEach(k => delete p[k]); Object.assign(p, data); delete p.skipped; }
+    else { p = Object.assign({id:uid(), created}, data); db.plans.push(p); }
+    keep.add(p.id); touch('plan', p);
+  });
+  PB.orig.filter(id => !keep.has(id)).forEach(id => { const p = findPlan(id); if (p) { db.plans.splice(db.plans.indexOf(p), 1); tombstone('plan', p); } });
+  const n = PB.items.length, edit = PB.orig.length > 0; PB = null;
+  save(); closeSheet(); render(); hap.ok();
+  toast(edit ? 'План обновлён' : iso === isoOf(todayN()) ? 'План на сегодня добавлен' : `План сохранён · ${planDay(iso).toLowerCase()}${n > 1 ? ` · ${n} упр.` : ''}`);
+}
+function pbStep(el){
+  const it = PB.items[+el.dataset.ei]; if (!it) return; const f = el.dataset.f, i = +el.dataset.i, d = +el.dataset.d, st = STR[it.act];
+  let v;
+  if (f === 'r') { const step = st[0] === 'secs' ? 5 : 1; v = clamp(it.sl[i] + d * step, 1, st[1]); it.sl[i] = v; }
+  else if (f === 'k') { const ks = it.act === 'barbell' ? 2.5 : 1; v = Math.round(clamp((it.sk[i] || 0) + d * ks, 0, 150) * 100) / 100; it.sk[i] = v; }
+  else if (f === 's') { v = clamp((it.rs[i] || 0) + d * 15, 0, 600); it.rs[i] = v; }
+  else if (f === 'm') { v = clamp((+it.minutes || 0) + d, 1, 240); it.minutes = v; }
+  else if (f === 'v') { const mx = TIMEA[it.act] ? TIMEA[it.act][1] : 12, stp = TIMEA[it.act] ? .5 : .1; v = Math.round(clamp((+it.speed || 0) + d * stp, 0, mx) * 10) / 10; it.speed = v; }
+  else if (f === 'n') { v = clamp((+it.incline || 0) + d, 0, 15); it.incline = v; }
+  hap.tap(); pbSync(it, +el.dataset.ei, f, i);
+}
+function pbSync(it, ei, f, i){
+  if (f === 's') { const r = document.querySelector(`[data-pbr="${ei}_${i}"]`); if (r) { r.textContent = i === it.sl.length - 1 ? (it.rs[i] ? 'после: ' + fmtRs(it.rs[i]) : 'после: без отдыха') : fmtRs(it.rs[i]); const row = r.closest('.pbr'); if (row) row.classList.toggle('z', !it.rs[i]); } }
+  else { const inp = document.querySelector(`.pbi[data-ei="${ei}"][data-i="${i}"][data-f="${f}"]`); if (inp) inp.value = f === 'r' ? it.sl[i] : f === 'k' ? fmtKg(it.sk[i]) : f === 'm' ? it.minutes : f === 'v' ? fmtKg(it.speed) : it.incline; }
+  pbFoot();
+}
+function pbType(inp, commit){
+  const it = PB && PB.items[+inp.dataset.ei]; if (!it) return; const f = inp.dataset.f, i = +inp.dataset.i, st = STR[it.act], raw = parseFloat(String(inp.value).replace(',', '.'));
+  if (isNaN(raw)) { if (commit) pbSync(it, +inp.dataset.ei, f, i); return; }
+  if (f === 'r') it.sl[i] = clamp(Math.round(raw), 1, st[1]); else if (f === 'k') it.sk[i] = Math.round(clamp(raw, 0, 150) * 100) / 100; else if (f === 'm') it.minutes = clamp(Math.round(raw), 1, 240);
+  else if (f === 'v') it.speed = Math.round(clamp(raw, 0, TIMEA[it.act] ? TIMEA[it.act][1] : 12) * 10) / 10; else if (f === 'n') it.incline = clamp(Math.round(raw), 0, 15);
+  if (commit) pbSync(it, +inp.dataset.ei, f, i); else pbFoot();
+}
+document.addEventListener('input', e => { const t = e.target; if (t && t.classList && t.classList.contains('pbi')) pbType(t, false); else if (t && t.id === 'pb-ttl' && PB) PB.ttl = t.value; });
+document.addEventListener('change', e => { const t = e.target; if (t && t.classList && t.classList.contains('pbi')) pbType(t, true); else if (t && t.id === 'pb-date' && PB && ISO_RE.test(t.value)) { PB.date = t.value; pbDaysSync(); } });
+function pbDaysSync(){ const box = $('#pb-days'); if (!box) return; let hit = false; box.querySelectorAll('.pbd[data-v]').forEach(b => { const on = b.dataset.v === PB.date; b.classList.toggle('on', on); hit = hit || on; }); const o = box.querySelector('.pbdo'); if (o) o.classList.toggle('on', !hit); const di = $('#pb-date'); if (di && di.value !== PB.date) di.value = PB.date; }
 
 function historyHTML(ws){
   let hidden = 0;
@@ -7505,7 +7651,7 @@ function render(){
 
 /* ============================================================ шторки ==== */
 // v1.447: в профилях — аккуратная кнопка «назад» слева сверху (липкая, не уезжает при прокрутке)
-const BACK_T = new Set(['fprof', 'pub']);
+const BACK_T = new Set(['fprof', 'pub', 'planb']);
 const sheetBack = ctx => ctx && BACK_T.has(ctx.type) && !(inTG && ver('6.1')) ? `<button type="button" class="fp-back" data-act="close" aria-label="Назад">${IC('chev', 20)}</button>` : '';
 function openSheet(html, ctx, keep){
   { const sh0 = $('#sheet'); if (!keep && S.liveCtx && S.live && ctx !== S.liveCtx && sh0.querySelector('#lv')) { const fr = document.createDocumentFragment(); while (sh0.firstChild) fr.appendChild(sh0.firstChild); liveNodes = fr; } }
@@ -7601,6 +7747,7 @@ function liveTick(){
 }
 /* идущая тренировка: окно можно смахнуть или закрыть уведомлением — тогда рядом с «+ Тренировка» появляется «Продолжить» */
 let liveNodes = null;
+function liveRest(i){ const L = S.live, a = sheetCtx && sheetCtx.act; if (L && L.rs && i < L.rs.length) { if (L.rs[i] > 0) REST.start(a, L.rs[i]); } else REST.start(a); }
 function liveAlive(){ const L = S.live; return !!(L && S.liveCtx && Date.now() - L.t0 < 6 * 36e5 && (document.querySelector('#sheet #lv') || liveNodes)); }
 function liveInfo(){ const L = S.live, root = liveNodes || document.querySelector('#sheet'), n = root ? root.querySelectorAll('.slr.lv').length : 0, a0 = S.liveCtx && S.liveCtx.act; return {name: (ACTS.find(a => a[0] === a0) || ACTS[0])[1], done: L ? L.done : 0, n, min: L ? Math.floor((Date.now() - L.t0) / 6e4) : 0}; }
 function resumeLive(){ if (!liveAlive()) return false; const sh = $('#sheet'); if (!sh.querySelector('#lv') && liveNodes) { sh.textContent = ''; sh.appendChild(liveNodes); liveNodes = null; } openSheet(null, S.liveCtx, true); liveSync(); liveTick(); return true; }
@@ -7608,7 +7755,7 @@ function openLive(act, st, src, same, date, back, f){
   const sl0 = same && slOf(src).length ? slOf(src) : (act === 'pullup' ? [8, 7, 6] : st[0] === 'secs' ? [45, 45, 45] : [12, 12, 12]);
   let sk = null; if (KG_ACT[act]) { const k0 = same && slOf(src).length ? skOf(src) : []; sk = k0.some(x => x > 0) ? k0 : sl0.map(() => KG_ACT[act].def); }
   if (S.live && S.live.tm) clearTimeout(S.live.tm);
-  S.live = {t0: Date.now(), done: 0, fin: false, tm: 0}; S.liveCtx = null; liveNodes = null;
+  S.live = {t0: Date.now(), done: 0, fin: false, tm: 0, rs: Array.isArray(src.rs) && src.rs.length ? src.rs.map(x => +x || 0) : null}; S.liveCtx = null; liveNodes = null;
   const exN = KG_ACT[act] && src.ex && typeof dbxName === 'function' && dbxName(src.ex, act) ? ' · ' + dbxName(src.ex, act) : '';
   openSheet(`${back ? '<div class="wstep"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></div>' : ''}<div class="lv" id="lv">
     <div class="lv-hd">${back ? `<button type="button" class="ib" data-act="sback" aria-label="Назад">${IC('back', 20)}</button>` : ''}<span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div class="lv-tt"><h2><i class="lv-live"></i>Тренировка идёт</h2><div class="cap" id="lv-cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}${exN}</div></div><span class="lv-t" id="lv-t">00:00</span></div>
@@ -7622,7 +7769,7 @@ function openLive(act, st, src, same, date, back, f){
   S.liveCtx = sheetCtx; liveSync(); liveTick();
 }
 function openWorkout(w, preset, hint, act, back){
-  const mode = (!w && !preset && S.addMode) || '', src = w || preset || {}, date = w ? w.date : isoOf(todayN() - (mode === 'past' ? 1 : 0)), f = clamp(parseInt(src.feeling) || 3, 1, 5);
+  const mode = (!w && (!preset || (Array.isArray(preset.rs) && preset.rs.length)) && S.addMode) || '', src = w || preset || {}, date = w ? w.date : isoOf(todayN() - (mode === 'past' ? 1 : 0)), f = clamp(parseInt(src.feeling) || 3, 1, 5);
   act = act || actOf(src); const st = STR[act], same = src.act === act;
   if (mode === 'now' && st) { openLive(act, st, src, same, date, back, f); return; }
   if (mode && !hint) hint = mode === 'now' ? 'Идёт тренировка: отдых включится сам, в паузе можно сыграть' : 'Запись задним числом: поправь дату и подходы';
@@ -7647,14 +7794,14 @@ function openWorkout(w, preset, hint, act, back){
 /* v1.826: таймер отдыха между подходами (звук, вибрация) и мини-игры «Сыграть до гонга» */
 const REST = (function(){
   const KEY = 'voob.rest';
-  const DEF = {snd:1, vib:1, auto:0, game:1, per:{}, best:{}};
+  const DEF = {snd:1, vib:1, auto:0, game:1, std:90, per:{}, best:{}};
   let s = Object.assign({}, DEF);
   try { const o = JSON.parse(localStorage.getItem(KEY) || '{}'); s = Object.assign({}, DEF, o); s.per = o.per || {}; s.best = o.best || {}; } catch (e) {}
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} };
   const DUR = {barbell:120, squat:90, pullup:90, pushup:60, dumbbell:60, burpee:45, abs:45, plank:45};
   const R = 2 * Math.PI * 52;
-  let act = null, total = 0, endAt = 0, run = false, done = false, min = false, view = 'rest', iv = 0, el = null, pill = null, ac = null, doneT = 0;
-  const secFor = a => s.per[a] || DUR[a] || 90;
+  let cust = false, act = null, total = 0, endAt = 0, run = false, done = false, min = false, view = 'rest', iv = 0, el = null, pill = null, ac = null, doneT = 0;
+  const secFor = a => s.per[a] || DUR[a] || s.std || 90;
   const left = () => Math.max(0, (endAt - Date.now()) / 1000);
   const fmtT = x => { x = Math.max(0, Math.ceil(x)); return Math.floor(x / 60) + ':' + ('0' + (x % 60)).slice(-2); };
   const nameOf = a => { const r = (typeof ACTS !== 'undefined' ? ACTS : []).find(x => x[0] === a); return r ? r[1] : ''; };
@@ -7701,14 +7848,14 @@ const REST = (function(){
     else if (k === 'record') { [0, 2, 4, 5, 7].forEach((st, i) => tn(PENTA[st], PENTA[st], .22, 'triangle', .13, .5 + i * .09)); }
   } catch (e) {} }
   function buzz(){ if (!s.vib) return; hap.seq([['n', 'success', 0], ['i', 'heavy', 180], ['i', 'heavy', 180], ['i', 'medium', 200]]); try { navigator.vibrate && navigator.vibrate([200, 100, 200, 100, 400]); } catch (e) {} }
-  function start(a){
+  function start(a, sec){
     if (run) { min = false; view = 'rest'; render(); return; }
-    act = a || (sheetCtx && sheetCtx.act) || null; total = secFor(act); endAt = Date.now() + total * 1000;
+    act = a || (sheetCtx && sheetCtx.act) || null; cust = sec > 0; total = sec > 0 ? sec : secFor(act); endAt = Date.now() + total * 1000;
     run = true; done = false; min = false; view = 'rest'; clearTimeout(doneT); unlock(); hap.tap();
     clearInterval(iv); iv = setInterval(tick, 200); render();
   }
   function tick(){ if (!run) return; const l = left(); paint(l); if (l <= 0) finish(); }
-  function adj(d){ if (!run) return; const l = left(); if (l + d < 5) d = Math.ceil(5 - l); total = Math.max(15, total + d); endAt += d * 1000; if (act) { s.per[act] = total; save(); } hap.tap(); paint(left()); }
+  function adj(d){ if (!run) return; const l = left(); if (l + d < 5) d = Math.ceil(5 - l); total = Math.max(15, total + d); endAt += d * 1000; if (act && !cust) { s.per[act] = total; save(); } hap.tap(); paint(left()); }
   function finish(){
     run = false; done = true; clearInterval(iv); stopGame(); min = false; view = 'rest'; beep(); buzz(); render();
     clearTimeout(doneT); doneT = setTimeout(close, 9000);
@@ -8221,8 +8368,9 @@ const REST = (function(){
     <div class="tgl${s.vib ? ' on' : ''}" data-act="rtog" data-k="vib" style="margin-top:12px"><span class="sw2"></span><b>Вибрация в конце отдыха</b></div>
     <div class="tgl${s.auto ? ' on' : ''}" data-act="rtog" data-k="auto" style="margin-top:12px"><span class="sw2"></span><b>Запускать при «Ещё подход»</b></div>
     <div class="tgl${s.game ? ' on' : ''}" data-act="rtog" data-k="game" style="margin-top:12px"><span class="sw2"></span><b>Мини-игры «Сыграть до гонга»</b></div>
-    <div class="cap" style="margin-top:8px">Игра идёт только пока длится отдых и закрывается вместе с таймером.</div></div>`;
-  return {start, card, s, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH};
+    <div class="cap" style="margin-top:8px">Игра идёт только пока длится отдых и закрывается вместе с таймером.</div>
+    <div class="pbstd" style="margin-top:14px"><div><b>Стандартный отдых</b><small>для новых подходов в плане</small></div><div class="pbn"><button type="button" class="pbb" data-act="rtstd" data-d="-1" aria-label="Меньше">${IC('minus', 15)}</button><span class="pbsv" id="rt-std">${fmtRs(s.std || 90)}</span><button type="button" class="pbb" data-act="rtstd" data-d="1" aria-label="Больше">${IC('plus', 15)}</button></div></div></div>`;
+  return {start, card, s, std: () => s.std || 90, setStd(v){ s.std = v; save(); }, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH};
 })();
 
 function slBlock(src, same, act, st){
@@ -8554,8 +8702,8 @@ const ACT = {
   actsoon: () => { hap.warn(); toast('Скоро — уже готовим ✨'); },
   rest: () => REST.start(sheetCtx && sheetCtx.act),
   rtog: el => { REST.toggle(el.dataset.k); hap.tap(); render(); },
-  lvtick: el => { const L = S.live; if (!L) return; const i = +el.dataset.i; hap.tap(); if (i < L.done) { L.done = i; } else { L.done = i + 1; if (!L.fin) REST.start(sheetCtx && sheetCtx.act); } liveSync(); },
-  lvdone: () => { const L = S.live; if (!L) return; hap.ok(); L.done++; liveSync(); REST.start(sheetCtx && sheetCtx.act); },
+  lvtick: el => { const L = S.live; if (!L) return; const i = +el.dataset.i; hap.tap(); if (i < L.done) { L.done = i; } else { L.done = i + 1; if (!L.fin) liveRest(i); } liveSync(); },
+  lvdone: () => { const L = S.live; if (!L) return; hap.ok(); L.done++; liveSync(); liveRest(L.done - 1); },
   lvstop: () => { const L = S.live; if (!L) return; hap.tap(); L.fin = !L.fin; liveSync(); },
   lvfin: () => { const L = S.live; if (!L) return; if (L.done < 1) { hap.warn(); toast('Отметь хотя бы один подход'); return; } document.querySelectorAll('#f-sl .slr.lv').forEach((r2, i) => { if (i >= L.done) r2.remove(); }); clearTimeout(L.tm); S.liveCtx = null; saveWorkout(); },
   sladd: () => { const sl = slRead(), sk = skRead(); if (sl.length >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } if (REST.s.auto && !(sheetCtx && sheetCtx.mode === 'now')) REST.start(sheetCtx && sheetCtx.act); sl.push(sl[sl.length - 1] || 10); if (sk.length) sk.push(sk[sk.length - 1]); hap.tap(); slRedraw(sl, sk);
@@ -8622,7 +8770,7 @@ const ACT = {
       <button type="button" class="btn primary gei-ok" data-act="close">Понятно</button></div>`); },
   gexp: el => { const w = el.closest('.gwrap'); if (!w) return; hap.tap(); w.classList.toggle('open');
     el.setAttribute('aria-label', w.classList.contains('open') ? 'Свернуть' : 'Показать все подарки'); },
-  pladd: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.imp();
+  pladd: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.imp(); if (Array.isArray(p.rs) && p.rs.length && STR[actOf(p)]) S.addMode = 'now';
     openWorkout(null, p, 'Параметры из плана — поправь, если нужно'); if (sheetCtx) sheetCtx.plan = p; },
   plskip: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.tap();
     const done = () => { p.skipped = true; touch('plan', p); save(); render();
@@ -8630,13 +8778,27 @@ const ACT = {
     const c = $('#plsug'); if (c) { c.classList.add('out'); setTimeout(done, 260); } else done(); },
   asfree: () => { hap.tap(); try { localStorage.setItem('voob_asfree', asFree() ? '0' : '1'); } catch (e) {} invalidate(); applyTheme(); render(); toast(asFree() ? 'Режим без PRO включён' : 'PRO вернулся'); },
   plans: () => { hap.tap(); openPlans(); },
-  plnew: () => { hap.tap(); openPlanActs(); },
+  plnew: () => { hap.tap(); openPlanB(null); },
   plact: el => { hap.tap(); openPlan(null, el.dataset.v, true); },
-  pledit: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.tap(); openPlan(p, actOf(p)); },
+  pledit: el => { const p = findPlan(el.dataset.id); if (!p) return; hap.tap(); openPlanB(p); },
   plsave: savePlan,
-  pldel: el => { const p = findPlan(el.dataset.id); if (!p) return; const idx = db.plans.indexOf(p), inForm = sheetCtx && sheetCtx.type === 'plan';
-    db.plans.splice(idx, 1); tombstone('plan', p); save(); hap.warn(); render(); if (inForm) closeSheet(); else openPlans();
-    toast('План удалён', 'Отменить', () => { db.plans.splice(Math.min(idx, db.plans.length), 0, p); touch('plan', p); save(); render(); if (sheetCtx && sheetCtx.type === 'plans') openPlans(); }); },
+  pldel: el => { const p = findPlan(el.dataset.id); if (!p) return; const all = pbGroup(p), at = all.map(x => [x, db.plans.indexOf(x)]), inForm = sheetCtx && (sheetCtx.type === 'plan' || sheetCtx.type === 'planb');
+    all.forEach(x => { db.plans.splice(db.plans.indexOf(x), 1); tombstone('plan', x); }); PB = null; save(); hap.warn(); render(); if (inForm) closeSheet(); else openPlans();
+    toast(all.length > 1 ? 'План удалён · ' + all.length + ' упр.' : 'План удалён', 'Отменить', () => { at.forEach(([x, i]) => { db.plans.splice(Math.min(i, db.plans.length), 0, x); touch('plan', x); }); save(); render(); if (sheetCtx && sheetCtx.type === 'plans') openPlans(); }); },
+  pbdate: el => { if (!PB) return; PB.date = el.dataset.v; pbDaysSync(); hap.tap(); },
+  pbstd: el => { if (!PB) return; const old = REST.std(), nv = clamp(old + (+el.dataset.d) * 15, 15, 600); REST.setStd(nv); PB.items.forEach(it => { if (it.rs) it.rs = it.rs.map(x => x === old ? nv : x); }); const e = $('#pb-std'); if (e) e.textContent = fmtRs(nv); hap.tap(); pbRender(); },
+  pbs: el => { if (PB) pbStep(el); },
+  pbrc: el => { if (!PB) return; const it = PB.items[+el.dataset.ei], i = +el.dataset.i, nx = PB_RS.find(x => x > (it.rs[i] || 0)); it.rs[i] = nx === undefined ? 0 : nx; hap.tap(); pbSync(it, +el.dataset.ei, 's', i); },
+  pbrall: el => { if (!PB) return; const it = PB.items[+el.dataset.ei]; it.rs = it.rs.map(() => it.rs[0]); hap.tap(); pbRender(); },
+  pbsadd: el => { if (!PB) return; const it = PB.items[+el.dataset.ei], n = it.sl.length; if (n >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } it.sl.push(it.sl[n - 1]); if (it.sk) it.sk.push(it.sk[n - 1]); it.rs.push(it.rs[n - 1]); hap.tap(); pbRender(); },
+  pbsdel: el => { if (!PB) return; const it = PB.items[+el.dataset.ei], i = +el.dataset.i; if (it.sl.length < 2) return; it.sl.splice(i, 1); if (it.sk) it.sk.splice(i, 1); it.rs.splice(i, 1); hap.tap(); pbRender(); },
+  pbadd: () => { if (!PB) return; PB.pick = !PB.pick; hap.tap(); pbRender(); if (PB.pick) setTimeout(() => { const pk = $('#pb-pick'); if (pk) pk.scrollIntoView({block:'nearest', behavior:'smooth'}); }, 80); },
+  pbpick: el => { if (!PB) return; PB.items.push(pbNewItem(el.dataset.v)); PB.pick = false; hap.imp(); pbRender(); setTimeout(() => { const c = document.querySelector(`.pbx[data-ei="${PB.items.length - 1}"]`); if (c) c.scrollIntoView({block:'center', behavior:'smooth'}); }, 80); },
+  pbdel: el => { if (!PB) return; const ei = +el.dataset.ei, it = PB.items[ei]; PB.items.splice(ei, 1); hap.warn(); pbRender(); toast('Упражнение убрано', 'Отменить', () => { if (!PB) return; PB.items.splice(Math.min(ei, PB.items.length), 0, it); pbRender(); }); },
+  pbdup: el => { if (!PB) return; const ei = +el.dataset.ei, c = JSON.parse(JSON.stringify(PB.items[ei])); c.k = uid(); delete c.id; PB.items.splice(ei + 1, 0, c); hap.tap(); pbRender(); },
+  pbmv: el => { if (!PB) return; const ei = +el.dataset.ei, j = ei + (+el.dataset.d); if (j < 0 || j >= PB.items.length) return; [PB.items[ei], PB.items[j]] = [PB.items[j], PB.items[ei]]; hap.tap(); pbRender(); },
+  pbsave: pbSave,
+  rtstd: el => { const nv = clamp(REST.std() + (+el.dataset.d) * 15, 15, 600); REST.setStd(nv); const e = $('#rt-std'); if (e) e.textContent = fmtRs(nv); hap.tap(); },
   frload: () => { FR.err = ''; hap.tap(); const b = document.querySelector('[data-act=frload]'); if (b) b.classList.add('spin'); loadFriends(true); },
   frinv: el => { if (inWeb) { hap.imp(); if (S.inv) fpClose(); else fpOpen(); return; } S.inv = !S.inv; hap.imp(); el.classList.toggle('on', S.inv); const r = $('#inv'); if (r) r.classList.toggle('open', S.inv); const l = el.querySelector('.ibl'); if (l) l.textContent = S.inv ? 'Закрыть' : 'Добавить друга'; if (inWeb && S.inv) setTimeout(() => { const i = $('#fr-code'); if (i) i.focus(); }, 280); },
   frzoom: el => openZoom(+el.dataset.id, el),
