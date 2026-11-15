@@ -3887,7 +3887,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.836';
+const APP = 'VOOB (by BGASHEV) Mini App v1.837';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6134,8 +6134,9 @@ function startHTML(ws, doneToday){
       <div class="st-lv"><div class="st-lt"><span>Уровень ${L.level} → ${L.level + 1}</span><b>ещё ${num(L.need - L.into, 0)} XP</b></div><div class="st-bar"><i style="width:${Math.round(L.into * 100 / Math.max(1, L.need))}%"></i></div></div>
       ${nx ? `<div class="st-nx">${IC(nx.icon, 14)}<span>Ближайшая медаль · ${esc(nx.title)}</span><b>${nx.text}</b></div>` : ''}</div>`;
   }
-  // №7 — игра дня
+  // №7 — игра дня (у PRO все игры и так открыты — плитку не показываем)
   try {
+    if (isPro()) throw 0;
     const g = REST.dayInfo();
     h += `<button type="button" class="card st-gm" data-act="playday"><span class="st-gi">${g.th}</span><span><small>★ ИГРА ДНЯ · БЕСПЛАТНО</small><b>${esc(g.n)}</b><em>${g.best ? 'твой рекорд ' + g.best : 'сыграй один раз — поставь рекорд'}</em></span><span class="st-go">${IC('chev', 18)}</span></button>`;
   } catch (e) {}
