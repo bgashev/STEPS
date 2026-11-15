@@ -8884,7 +8884,7 @@ const REST = (function(){
       if (!g.crashed) bike(g.x - cx0, g.y, g.ang, C.tx);
       g.deb.forEach(d => { c.save(); c.translate(d.x - cx0, d.y); c.rotate(d.a); c.strokeStyle = d.k % 2 ? C.ac : C.tx; c.lineWidth = 3; c.beginPath(); if (d.k < 2) c.arc(0, 0, WR, 0, 7); else { c.moveTo(-9, 0); c.lineTo(9, 0); } c.stroke(); c.restore(); });
       c.save(); c.translate(-cx0, 0); drawFx(c, g); c.restore();
-      if (g.x < 600 && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — прыжок · зажми и держи — сальто · стрелки — буст', W / 2, H * .3); } c.restore(); };
+      if (g.x < 600 && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — прыжок · зажми и держи — сальто', W / 2, H * .3); } c.restore(); };
     return g; }
 
   /* 3 · Отскок: птичка скачет между стенами, на стенах растут шипы */
