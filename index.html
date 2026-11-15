@@ -3828,6 +3828,21 @@ html.web #tabs .tbi{top:262px}
 .st-gm b{display:block;font-size:15.5px;margin:1px 0}.st-gm em{font-style:normal;color:var(--muted);font-size:12px}
 .st-gm .st-go{margin-left:auto;color:var(--muted)}.st-gm .st-go svg{stroke:currentColor;fill:none;stroke-width:1.8}
 
+/* v1.839 мобильная главная «Один герой»: главный блок, «Ещё для тебя», метрики рядом, компактная цель */
+.stq{margin-bottom:12px}.stq>*{margin-bottom:8px}.stq>*:last-child{margin-bottom:0}
+.stq-h{font-size:12px;color:var(--muted);font-weight:700;margin:0 2px 6px!important;display:flex;gap:6px;align-items:center}.stq-h em{font-style:normal;background:var(--surface2);border-radius:8px;padding:0 6px;font-size:11px}
+.stq .plsug{margin-bottom:8px;padding:10px 12px 10px 14px;border-radius:20px}.stq .plsug .pd{width:32px;height:32px}.stq .plsug .ib{width:42px;height:42px}.stq .plsug .pv{margin-top:8px}
+.stq .st-gm{padding:9px 12px;border-radius:20px}.stq .st-gi{width:42px;height:42px;border-radius:13px}
+.stc{display:flex;gap:8px;margin:0 0 12px}.stc-i{flex:1 1 0;min-width:0;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:9px 10px;position:relative;overflow:hidden}
+.stc-ic{width:28px;height:28px;border-radius:10px;background:var(--surface2);display:grid;place-items:center;flex:none;color:var(--text)}.stc-ic.fl{background:color-mix(in srgb,#ff8a3d 18%,transparent);color:#ff8a3d}.stc-i.off .stc-ic.fl{background:var(--surface2);color:var(--muted)}
+.stc-ic svg{stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.stc-t{min-width:0;line-height:1.15}.stc-t b{display:block;font-size:14px;font-weight:800;white-space:nowrap}.stc-t small{display:block;color:var(--muted);font-size:10.5px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.stc-t small.wr{color:#ff8a3d;font-weight:600}
+.stc-b{position:absolute;left:10px;right:10px;bottom:0;height:3px;background:var(--surface2);border-radius:2px;overflow:hidden}.stc-b u{display:block;height:100%;background:var(--accent);border-radius:2px;text-decoration:none}
+.gx2m{display:grid!important;grid-template-columns:auto 1fr;gap:6px 14px;align-items:center}.gm-r{display:grid;place-items:center}
+.gm-h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.gm-h .gx2-t{font-size:13.5px}.gm-h .gx2-t small{font-size:11.5px;font-weight:500}.gm-h .gx2-ed{width:30px;height:30px;border-radius:10px}
+.gx2m .gt{font-size:17px;margin-top:6px}.gx2m .gs{font-size:11.5px;margin-top:2px}.gx2m .gx2-bar{height:8px;margin-top:8px}.gx2m .gsbtn{margin-top:8px}.gm-s{grid-column:1/-1}.gx2m .gx-strip{margin-top:6px}
+@media(max-width:520px){html:not(.web) .hm .kpis{grid-template-columns:repeat(4,1fr);gap:6px}html:not(.web) .hm .kpi{padding:10px 9px;min-width:0;border-radius:16px}html:not(.web) .hm .kv{font-size:15px;white-space:nowrap}html:not(.web) .hm .kc{font-size:10.5px;line-height:1.2}}
+
 /* v1.833 WEB: конструктор плана на большом экране */
 .pbw,.pbl,.pbr2{display:contents}.pbl .pbsec:first-child{margin-top:16px}.pbr2 .pbsec:first-child{margin-top:16px}.pbbar{order:9}
 @media (min-width:1000px){
@@ -3887,7 +3902,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.838';
+const APP = 'VOOB (by BGASHEV) Mini App v1.839';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6103,18 +6118,18 @@ function maybeAskNotify(){
     setTimeout(go, 2200);
   } catch (e) {}
 }
-function startHTML(ws, doneToday){
-  let h = '';
+function startHTML(ws, doneToday, mob, plsug){
+  let h = '', P = {};   // P — части для мобильной раскладки
   // №1 — первый шаг в одно касание
   if (!ws.length) {
-    h += `<div class="card st-first"><div class="st-ring">${IC('steps', 30)}</div><h2>Твой первый шаг</h2>
+    h += P.first = `<div class="card st-first"><div class="st-ring">${IC('steps', 30)}</div><h2>Твой первый шаг</h2>
       <p>Одно касание — и VOOB засчитает прогулку на 15 минут. Сразу получишь XP, уровень и достижение «Первый шаг».</p>
       <button type="button" class="btn primary" data-act="qwalk">${IC('check', 18)}Отметить прогулку · 15 мин</button>
       <button type="button" class="st-or" data-act="add">или записать подробно</button></div>`;
   }
   // №5 — цель и готовый план
   if (!(db.settings.goal || {}).set && !(db.plans || []).length && ws.length < 5 && !lsGet('gq_skip')) {
-    h += `<div class="card st-gq"><span class="st-gi">${IC('target', 20)}</span><div class="st-gt"><b>Поставим цель?</b><small>Два вопроса — и я составлю план на неделю</small></div>
+    h += P.gq = `<div class="card st-gq"><span class="st-gi">${IC('target', 20)}</span><div class="st-gt"><b>Поставим цель?</b><small>Два вопроса — и я составлю план на неделю</small></div>
       <button type="button" class="btn primary sm" data-act="goalq">Начать</button><button type="button" class="st-gx" data-act="gqskip" aria-label="Не сейчас">${IC('close', 16)}</button></div>`;
   }
   // №2 — неделя новичка
@@ -6122,7 +6137,7 @@ function startHTML(ws, doneToday){
   if (w && w.eligible && w.days) {
     const day = Math.min(7, w.day), got = new Set(w.days.filter(x => x.claimed).map(x => x.day)), by = {}; w.days.forEach(x => { by[x.day] = x; });
     const ready = w.days.find(x => !x.claimed && x.day <= w.day), next = w.days.find(x => !x.claimed && x.day > w.day);
-    h += `<div class="card st-wk"><div class="st-wh"><span class="st-wi">${IC('gift', 18)}</span><div><b>Неделя новичка</b><small>день ${day} из 7 · награды за то, что ты здесь</small></div></div>
+    h += P.wk = `<div class="card st-wk"><div class="st-wh"><span class="st-wi">${IC('gift', 18)}</span><div><b>Неделя новичка</b><small>день ${day} из 7 · награды за то, что ты здесь</small></div></div>
       <div class="st-days">${[1,2,3,4,5,6,7].map(d => `<i class="${by[d] ? 'rw' : ''}${got.has(d) ? ' dn' : ''}${d === day ? ' now' : ''}">${got.has(d) ? IC('check', 13) : by[d] ? IC(WK_ICON[by[d].t], 13) : d}</i>`).join('')}</div>
       ${ready ? `<button type="button" class="btn primary" data-act="wclaim" data-day="${ready.day}">${IC(WK_ICON[ready.t], 17)}Забрать · ${esc(ready.title)}</button>`
         : next ? `<div class="st-wn">${IC(WK_ICON[next.t], 14)}<span>Следующая награда — день ${next.day}: ${esc(next.title)}</span></div>` : ''}</div>`;
@@ -6130,17 +6145,25 @@ function startHTML(ws, doneToday){
   // №4 — серия и «что дальше»
   if (ws.length) {
     const [cur] = dayStreaks(ws), L = myLevel(), nx = achievements().filter(a => !a.done && a.prog > 0 && a.icon !== 'crown').sort((a, b) => b.prog - a.prog)[0];
-    h += `<div class="card st-sr"><div class="st-fl${cur ? '' : ' off'}"><span class="st-fi">${IC('flame', 22)}</span><div><b>${cur}</b><small>${cur ? 'дн. подряд' : 'серия'}</small>${cur && !doneToday ? '<small class="wr">сегодня ещё нет</small>' : ''}</div></div>
+    h += P.sr = `<div class="card st-sr"><div class="st-fl${cur ? '' : ' off'}"><span class="st-fi">${IC('flame', 22)}</span><div><b>${cur}</b><small>${cur ? 'дн. подряд' : 'серия'}</small>${cur && !doneToday ? '<small class="wr">сегодня ещё нет</small>' : ''}</div></div>
       <div class="st-lv"><div class="st-lt"><span>Уровень ${L.level} → ${L.level + 1}</span><b>ещё ${num(L.need - L.into, 0)} XP</b></div><div class="st-bar"><i style="width:${Math.round(L.into * 100 / Math.max(1, L.need))}%"></i></div></div>
       ${nx ? `<div class="st-nx">${IC(nx.icon, 14)}<span>Ближайшая медаль · ${esc(nx.title)}</span><b>${nx.text}</b></div>` : ''}</div>`;
+    P.chips = `<div class="stc"><div class="stc-i${cur ? '' : ' off'}"><span class="stc-ic fl">${IC('flame', 16)}</span><span class="stc-t"><b>${cur}${cur ? ' дн.' : ''}</b><small${cur && !doneToday ? ' class="wr"' : ''}>${cur && !doneToday ? 'сегодня нет' : 'серия'}</small></span></div>
+      <div class="stc-i"><span class="stc-ic">${IC('bolt', 16)}</span><span class="stc-t"><b>Ур. ${L.level}</b><small>ещё ${num(L.need - L.into, 0)} XP</small></span><i class="stc-b"><u style="width:${Math.round(L.into * 100 / Math.max(1, L.need))}%"></u></i></div>
+      ${nx ? `<div class="stc-i" title="${esc(nx.title)}"><span class="stc-ic">${IC(nx.icon, 16)}</span><span class="stc-t"><b>${nx.text}</b><small>${esc(nx.title)}</small></span></div>` : ''}</div>`;
   }
   // №7 — игра дня (у PRO все игры и так открыты — плитку не показываем)
   try {
     if (isPro()) throw 0;
     const g = REST.dayInfo();
-    h += `<button type="button" class="card st-gm" data-act="playday"><span class="st-gi">${g.th}</span><span><small>★ ИГРА ДНЯ · БЕСПЛАТНО</small><b>${esc(g.n)}</b><em>${g.best ? 'твой рекорд ' + g.best : 'сыграй один раз — поставь рекорд'}</em></span><span class="st-go">${IC('chev', 18)}</span></button>`;
+    h += P.gm = `<button type="button" class="card st-gm" data-act="playday"><span class="st-gi">${g.th}</span><span><small>★ ИГРА ДНЯ · БЕСПЛАТНО</small><b>${esc(g.n)}</b><em>${g.best ? 'твой рекорд ' + g.best : 'сыграй один раз — поставь рекорд'}</em></span><span class="st-go">${IC('chev', 18)}</span></button>`;
   } catch (e) {}
-  return h;
+  if (!mob) return h;
+  // мобильная раскладка «Один герой»: главный блок сверху, остальное — «Ещё для тебя», метрики одним рядом
+  const items = [['first', P.first], ['gq', P.gq], ['wk', P.wk], ['plan', plsug], ['gm', P.gm]].filter(x => x[1]);
+  const hero = items.length && items[0][0] !== 'gm' ? items.shift()[1] : '';
+  const queue = items.map(x => x[1]).join('');
+  return hero + (queue ? `<div class="stq"><div class="stq-h">Ещё для тебя<em>${items.length}</em></div>${queue}</div>` : '') + (P.chips || '');
 }
 
 function viewHome(web){
@@ -6167,15 +6190,19 @@ function viewHome(web){
   const noGoal = !(db.settings.goal || {}).set;
   loadWelcome(); loadReferral();
   let h = `<div class="head"><div><h1>${esc(greet())}</h1><div class="sub">${bits.join(' · ')}</div></div></div>
-  ${planSuggestHTML(ws)}
-  ${startHTML(ws, tMin > 0)}
-  ${noGoal ? `<div class="card gx2 gnew"><div class="gnew-ring">${IC('target', 30)}</div>
+  ${web ? planSuggestHTML(ws) + startHTML(ws, tMin > 0) : startHTML(ws, tMin > 0, true, planSuggestHTML(ws))}
+`;
+  const goalH = noGoal ? `<div class="card gx2 gnew"><div class="gnew-ring">${IC('target', 30)}</div>
       <div class="gnew-t">Цель недели</div><div class="cap">Сколько тренировок и за сколько дней — решаешь ты. Кольцо прогресса появится, как только поставишь цель.</div>
-      <button type="button" class="btn primary gnew-b" data-act="goaled">${IC('plus', 18)}Добавить свой план на неделю</button></div>` : `<div class="card gx2${done ? ' done' : ''}"><div class="gx2-h"><span class="gx2-ic">${IC('target', 17)}</span>
+      <button type="button" class="btn primary gnew-b" data-act="goaled">${IC('plus', 18)}Добавить свой план на неделю</button></div>` : (web ? `<div class="card gx2${done ? ' done' : ''}"><div class="gx2-h"><span class="gx2-ic">${IC('target', 17)}</span>
       <div class="gx2-t">Цель недели<small>${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</small></div>
       <button type="button" class="gx2-ed" data-act="goaled" aria-label="Изменить цель">${IC('edit', 17)}</button></div>
-    <div class="gx-top">${segRing(info.shown, g.count, done, pct)}<div class="gx-txt">${gtxt}<div class="gx2-bar"><i style="width:${Math.min(100, pct)}%"></i></div>${gsBtn}</div></div>${goalStrip(ws, g.days)}${note}</div>`}
-  <div class="actions"><button class="btn ghost" data-act="plans">${IC('plan')}План${upPlans(ws).length ? `<span class="pn">${upPlans(ws).length}</span>` : ''}</button>${ws.length ? `<button class="btn ghost" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat')}Повторить</button>` : ''}</div>`;
+    <div class="gx-top">${segRing(info.shown, g.count, done, pct)}<div class="gx-txt">${gtxt}<div class="gx2-bar"><i style="width:${Math.min(100, pct)}%"></i></div>${gsBtn}</div></div>${goalStrip(ws, g.days)}${note}</div>` : `<div class="card gx2 gx2m${done ? ' done' : ''}"><div class="gm-r">${segRing(info.shown, g.count, done, pct, 78)}</div>
+      <div class="gm-t"><div class="gm-h"><div class="gx2-t">Цель недели<small>${npw(g.count, W_WORK)} за ${npw(g.days, W_DAY)}</small></div>
+      <button type="button" class="gx2-ed" data-act="goaled" aria-label="Изменить цель">${IC('edit', 15)}</button></div>${gtxt}<div class="gx2-bar"><i style="width:${Math.min(100, pct)}%"></i></div>${gsBtn}</div>
+      <div class="gm-s">${goalStrip(ws, g.days)}${note}</div></div>`),
+    actionsH = `<div class="actions"><button class="btn ghost" data-act="plans">${IC('plan')}План${upPlans(ws).length ? `<span class="pn">${upPlans(ws).length}</span>` : ''}</button>${ws.length ? `<button class="btn ghost" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat')}Повторить</button>` : ''}</div>`;
+  h += web ? goalH + actionsH : actionsH + goalH;
   h += web ? feedShortHTML(6, 4) : feedTickerHTML();
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
   const due = dueWeekSummary(ws);
