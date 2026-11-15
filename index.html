@@ -4011,7 +4011,7 @@ html.web #tabs .tbi{top:262px}
 #ax-srch .rd.done .orb{background:linear-gradient(160deg,#8ee6b0,#2fa66a);box-shadow:0 12px 34px -6px rgba(47,166,106,.65);animation:axpo .6s cubic-bezier(.2,1.6,.4,1)}#ax-srch .rd.bad .orb{background:linear-gradient(160deg,#ffb08a,#e5586e);box-shadow:0 12px 34px -6px rgba(229,88,110,.6)}
 #ax-srch .rd.done::after{content:"";position:absolute;width:88px;height:88px;border-radius:30%;border:3px solid #6fcf97;animation:axbu .9s ease-out forwards}#ax-srch .rd.bad::after{border-color:#ffb26b}
 @keyframes axpo{0%{transform:scale(.7)}100%{transform:scale(1)}}@keyframes axbu{to{transform:scale(2.8);opacity:0}}
-#ax-srch .st{margin-top:30px;font-size:18px;font-weight:800}#ax-srch .sb{margin-top:6px;font-size:14px;color:rgba(255,255,255,.65);min-height:20px;padding:0 30px;text-align:center}
+#ax-srch .st{margin-top:30px;font-size:18px;font-weight:800}#ax-srch .sb{width:100%;max-width:320px;margin-top:6px;font-size:14px;color:rgba(255,255,255,.65);min-height:20px;padding:0 30px;text-align:center}
 #ax-scan .vf2{position:absolute;left:24px;right:24px;top:22%;height:250px;border-radius:30px;border:1.5px dashed rgba(255,255,255,.5);box-shadow:0 0 0 2000px rgba(5,5,8,.6);overflow:hidden;transition:left .75s cubic-bezier(.3,1.15,.3,1),right .75s cubic-bezier(.3,1.15,.3,1),top .75s cubic-bezier(.3,1.15,.3,1),height .75s cubic-bezier(.3,1.15,.3,1),border-color .3s,box-shadow .5s,border-radius .5s}
 #ax-scan .vf2 .ln{position:absolute;left:14px;right:14px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff,transparent);box-shadow:0 0 14px 2px rgba(255,255,255,.5);animation:axln 1.9s ease-in-out infinite alternate}@keyframes axln{from{top:12%}to{top:88%}}
 #ax-scan.ok .vf2{left:calc(50% - 125px);right:calc(50% - 125px);top:calc(22% + 75px);height:100px;border:2px solid #7cffb2;border-radius:20px;box-shadow:0 0 0 2000px rgba(5,5,8,.7),0 0 36px rgba(124,255,178,.65)}#ax-scan.ok .vf2 .ln{display:none}
@@ -9679,7 +9679,7 @@ const AX = (function(){
     <div class="ax-nc"><div id="nw-live">${nwLive(n)}</div>
       <label class="ax-nf full"><span>Название</span><div><input id="nw-nm" type="text" class="big" value="${esc(n.nm == null ? '' : n.nm)}" placeholder="Например: Pepsi 0,5"></div></label>
       <div class="ax-n2">${nf('nw-k', 'Калории', n.k, 'ккал', '#ffb26b')}${nf('nw-p', 'Белки', n.p, 'г', '#7cc0ff')}${nf('nw-f', 'Жиры', n.f, 'г', '#ffd36b')}${nf('nw-c', 'Углеводы', n.c, 'г', '#6fcf97')}</div>
-      <div class="ax-n2">${tf('nw-br', 'Бренд', n.br, 'необязательно')}${nf('nw-g', 'Порция / упаковка', n.port, u)}</div></div>
+      <div class="ax-n2">${tf('nw-br', 'Бренд', n.br, 'по желанию')}${nf('nw-g', 'Порция / упаковка', n.port, u)}</div></div>
     <button type="button" class="ax-btn big" data-act="axsavenew">Сохранить и добавить</button><div class="ax-note c">Продукт сохранится у тебя, и при следующем скане найдётся сразу.</div><div style="height:120px"></div>`;
   }
   function viewGoal(){
