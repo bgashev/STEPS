@@ -579,6 +579,13 @@ input[type=date].inp{display:block}
   animation:plIn .35s ease both}
 .wdock.center{right:auto;left:50%;transform:translateX(-50%);animation:none;
   transition:opacity .25s ease,transform .3s cubic-bezier(.2,.8,.2,1)}
+#fab .wd-add.wd-go{flex:none;max-width:0;opacity:0;padding:0!important;margin-left:-10px;border:0 solid color-mix(in srgb,var(--accent) 55%,transparent)!important;border-width:0!important;transform:translateX(-30px) scale(.82);pointer-events:none;overflow:hidden;white-space:nowrap;gap:8px;
+  background:var(--on-accent)!important;color:var(--accent)!important;box-shadow:0 14px 34px -12px rgba(0,0,0,.55)!important;
+  transition:max-width .6s cubic-bezier(.22,1,.36,1),opacity .3s ease .1s,margin .6s cubic-bezier(.22,1,.36,1),padding .6s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1.25,.36,1)}
+#fab.has-go .wd-add.wd-go{max-width:230px;opacity:1;margin-left:0;padding:0 20px 0 16px!important;border-width:1.5px!important;transform:none;pointer-events:auto}
+#fab .wd-go .gdot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none;animation:lvp 1.8s ease-out infinite}
+#fab.solo .wd-add:not(.wd-go){display:none}
+#fab.solo.hide{opacity:1}
 #fab.hide{opacity:0;transform:translate(-50%,14px) scale(.9);pointer-events:none}
 #fab .wd-add{overflow:hidden;white-space:nowrap;justify-content:center;transition:width .36s cubic-bezier(.2,.8,.2,1),transform .12s}
 #fab .fi{display:flex}
@@ -875,6 +882,7 @@ html.web ::-webkit-scrollbar-corner{background:transparent}
 .adc.live .adi{background:var(--accent);color:var(--on-accent);border:0;box-shadow:0 10px 26px -8px var(--accent)}
 .adc.live .adt b{font-size:19px}
 .adc.live .adg{color:var(--accent);opacity:1}
+.adc.go{border-color:color-mix(in srgb,var(--accent) 45%,transparent);background:var(--on-accent);color:var(--accent)}.adc.go .adi{background:var(--accent);color:var(--on-accent);border:0}.adc.go .adt span{color:color-mix(in srgb,var(--accent) 72%,transparent)}.adc.go .adg{color:var(--accent);opacity:1}
 .adc .adk{display:inline-flex;align-items:center;gap:6px;width:max-content;margin-top:4px;padding:3px 9px 3px 8px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.02em;color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent)}
 .adc .adk i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:adp 1.6s ease-in-out infinite}
 @keyframes adp{50%{opacity:.25;transform:scale(.7)}}
@@ -3296,6 +3304,8 @@ html.web .mset-top:has(> [data-act="fpback"])::before{display:none!important}   
  html.web #fab.wdock,html.web #fab.wdock.center{transition:opacity .6s cubic-bezier(.22,.7,.2,1),transform .7s cubic-bezier(.2,.9,.25,1),filter .6s cubic-bezier(.22,.7,.2,1)}
  html.web #fab.first{transition:none!important;animation:fabInW .8s cubic-bezier(.2,.9,.25,1) both}
  @keyframes fabInW{from{opacity:0;transform:translateY(-8px) scale(.92);filter:blur(12px)}60%{filter:blur(0)}to{opacity:1;transform:none;filter:blur(0)}}
+ html.web #fab .wd-add.wd-go,html.web #fab.mini .wd-add.wd-go{background:var(--on-accent)!important;color:var(--accent)!important;border:0 solid color-mix(in srgb,var(--accent) 55%,transparent)!important;border-width:0!important;padding:0!important;height:46px}
+ html.web #fab.has-go .wd-add.wd-go,html.web #fab.has-go.mini .wd-add.wd-go{border-width:1.5px!important;padding:0 20px 0 16px!important}
  html.web #fab .wd-add,html.web #fab.mini .wd-add{height:46px;padding:0 20px 0 16px;gap:8px;justify-content:center;border-radius:999px;background:var(--accent)!important;color:var(--on-accent)!important;border:0;box-shadow:0 8px 22px -10px var(--accent)!important}
  html.web #fab.mini .fl{display:inline-block}
  html.web #fab .wd-add:hover{filter:brightness(1.08)}
@@ -3727,7 +3737,7 @@ html.web #tabs .tbi{top:262px}
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
 <main id="view"></main>
-<div id="fab" class="wdock center hide"><button class="wd-add" data-act="add" type="button"><span class="fi"></span><span class="fl"></span></button></div>
+<div id="fab" class="wdock center hide"><button class="wd-add" data-act="add" type="button"><span class="fi"></span><span class="fl"></span></button><button class="wd-add wd-go" data-act="golive" type="button" aria-label="Продолжить тренировку"><i class="gdot"></i><span class="gl">Продолжить</span></button></div>
 <nav id="tabs"></nav>
 <div id="sw"><div id="sbd" data-act="close"></div><div id="sheet"></div></div>
 <div id="toast"></div>
@@ -7286,7 +7296,9 @@ function updFab(){
   const b = box.querySelector('button'), fl = b.querySelector('.fl'), fi = b.querySelector('.fi');
   const cfg = S.fprof ? null : FAB[S.tab];   // v1.704: в чужом профиле кнопки «Тренировка» нет
   if (!fi.innerHTML) fi.innerHTML = IC('plus', 20);
-  if (!cfg) { box.classList.add('hide'); return; }
+  const go = !sheetCtx && liveAlive(); box.classList.toggle('has-go', go);
+  if (!cfg) { if (go && updFab.ok) { box.classList.remove('hide'); box.classList.add('solo'); } else { box.classList.add('hide'); box.classList.remove('solo'); } return; }
+  box.classList.remove('solo');
   if (!updFab.ok) { b.dataset.act = cfg[0]; fl.textContent = cfg[1]; return; }   // пока приложение не «устоялось» (шрифты, размер окна Telegram, восстановление прокрутки) кнопка скрыта и не двигается
   const wasHidden = box.classList.contains('hide');
   if (wasHidden && !updFab.shown) {          // самый первый показ: кнопка появляется один раз, мягко, уже с готовыми цветом и текстом
@@ -7495,7 +7507,8 @@ function render(){
 // v1.447: в профилях — аккуратная кнопка «назад» слева сверху (липкая, не уезжает при прокрутке)
 const BACK_T = new Set(['fprof', 'pub']);
 const sheetBack = ctx => ctx && BACK_T.has(ctx.type) && !(inTG && ver('6.1')) ? `<button type="button" class="fp-back" data-act="close" aria-label="Назад">${IC('chev', 20)}</button>` : '';
-function openSheet(html, ctx){
+function openSheet(html, ctx, keep){
+  { const sh0 = $('#sheet'); if (!keep && S.liveCtx && S.live && ctx !== S.liveCtx && sh0.querySelector('#lv')) { const fr = document.createDocumentFragment(); while (sh0.firstChild) fr.appendChild(sh0.firstChild); liveNodes = fr; } }
   sheetCtx = ctx;
   $('#sheet').classList.remove('top');
   $('#sheet').classList.remove('xl', 'gw');
@@ -7504,10 +7517,10 @@ function openSheet(html, ctx){
   $('#sheet').classList.toggle('pf', !!ctx && BACK_T.has(ctx.type));
   $('#sheet').classList.toggle('half', !(inWeb && ctx && ctx.type === 'acts') && !!ctx && (ctx.type === 'acts' || ctx.type === 'planact' || ctx.type === 'frall'));
   $('#sheet').classList.toggle('fr', !!ctx && ctx.type === 'frall');   // выбор активности — до середины экрана, избранные под большим пальцем
-  $('#sheet').innerHTML = `<div class="grab"></div>` + sheetBack(ctx) + html;
-  $('#sheet').scrollTop = 0;
+  if (!keep) { $('#sheet').innerHTML = `<div class="grab"></div>` + sheetBack(ctx) + html; $('#sheet').scrollTop = 0; }
   $('#sw').classList.add('open');
   try { if (ver('6.1')) tg.BackButton.show(); } catch (e) {}
+  try { updFab(); } catch (e) {}
 }
 // v1.447: шторку можно смахнуть вниз (когда она прокручена к началу). Окна «по центру» (.top) не смахиваются
 (function(){ const sh = $('#sheet'), sw = $('#sw'), bd = $('#sbd'); if (!sh) return;
@@ -7549,6 +7562,7 @@ function closeSheet(){
   sheetCtx = null;
   if (document.activeElement) document.activeElement.blur();
   try { if (ver('6.1') && !S.fprof) tg.BackButton.hide(); } catch (e) {}
+  try { updFab(); } catch (e) {}
 }
 function feelPicker(v){
   return `<div class="f"><span>Состояние во время тренировки</span><div class="row"><div class="feel" id="f-feel" data-v="${v}">` +
@@ -7585,11 +7599,16 @@ function liveTick(){
   el.textContent = h2 ? `${h2}:${String(m % 60).padStart(2, '0')}:${String(s2).padStart(2, '0')}` : `${String(m).padStart(2, '0')}:${String(s2).padStart(2, '0')}`;
   clearTimeout(S.live.tm); S.live.tm = setTimeout(liveTick, 1000);
 }
+/* идущая тренировка: окно можно смахнуть или закрыть уведомлением — тогда рядом с «+ Тренировка» появляется «Продолжить» */
+let liveNodes = null;
+function liveAlive(){ const L = S.live; return !!(L && S.liveCtx && Date.now() - L.t0 < 6 * 36e5 && (document.querySelector('#sheet #lv') || liveNodes)); }
+function liveInfo(){ const L = S.live, root = liveNodes || document.querySelector('#sheet'), n = root ? root.querySelectorAll('.slr.lv').length : 0, a0 = S.liveCtx && S.liveCtx.act; return {name: (ACTS.find(a => a[0] === a0) || ACTS[0])[1], done: L ? L.done : 0, n, min: L ? Math.floor((Date.now() - L.t0) / 6e4) : 0}; }
+function resumeLive(){ if (!liveAlive()) return false; const sh = $('#sheet'); if (!sh.querySelector('#lv') && liveNodes) { sh.textContent = ''; sh.appendChild(liveNodes); liveNodes = null; } openSheet(null, S.liveCtx, true); liveSync(); liveTick(); return true; }
 function openLive(act, st, src, same, date, back, f){
   const sl0 = same && slOf(src).length ? slOf(src) : (act === 'pullup' ? [8, 7, 6] : st[0] === 'secs' ? [45, 45, 45] : [12, 12, 12]);
   let sk = null; if (KG_ACT[act]) { const k0 = same && slOf(src).length ? skOf(src) : []; sk = k0.some(x => x > 0) ? k0 : sl0.map(() => KG_ACT[act].def); }
   if (S.live && S.live.tm) clearTimeout(S.live.tm);
-  S.live = {t0: Date.now(), done: 0, fin: false, tm: 0};
+  S.live = {t0: Date.now(), done: 0, fin: false, tm: 0}; S.liveCtx = null; liveNodes = null;
   const exN = KG_ACT[act] && src.ex && typeof dbxName === 'function' && dbxName(src.ex, act) ? ' · ' + dbxName(src.ex, act) : '';
   openSheet(`${back ? '<div class="wstep"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></div>' : ''}<div class="lv" id="lv">
     <div class="lv-hd">${back ? `<button type="button" class="ib" data-act="sback" aria-label="Назад">${IC('back', 20)}</button>` : ''}<span class="wa" style="width:44px;height:44px">${IC(act, 22)}</span><div class="lv-tt"><h2><i class="lv-live"></i>Тренировка идёт</h2><div class="cap" id="lv-cap">${(ACTS.find(a => a[0] === act) || ACTS[0])[1]}${exN}</div></div><span class="lv-t" id="lv-t">00:00</span></div>
@@ -7695,8 +7714,8 @@ const REST = (function(){
     clearTimeout(doneT); doneT = setTimeout(close, 9000);
   }
   /* вернуть к идущей тренировке: окно могли смахнуть, пока шёл отдых */
-  function backLive(){ try { if (S.live && S.liveCtx && !sheetCtx && document.querySelector('#sheet #lv')) { sheetCtx = S.liveCtx; document.querySelector('#sw').classList.add('open'); try { if (ver('6.1')) tg.BackButton.show(); } catch (e) {} liveSync(); } } catch (e) {} }
-  function close(){ run = false; done = false; clearInterval(iv); clearTimeout(doneT); stopGame(); if (el) { el.remove(); el = null; } if (pill) { pill.remove(); pill = null; } }
+  function backLive(){ try { if (!sheetCtx) resumeLive(); } catch (e) {} }
+  function close(){ run = false; done = false; clearInterval(iv); clearTimeout(doneT); stopGame(); try { setTimeout(updFab, 60); } catch (e) {} if (el) { el.remove(); el = null; } if (pill) { pill.remove(); pill = null; } }
   function paint(l){
     const p = total ? Math.min(1, Math.max(0, 1 - l / total)) : 0, t = fmtT(l);
     document.querySelectorAll('#rt [data-rt="t"],.rt-pill [data-rt="t"],#rtgm [data-rt="t"]').forEach(e => { e.textContent = t; });
@@ -8430,7 +8449,7 @@ function openAddChoice(){
   const CAL = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="4"/><path d="M8 3v4M16 3v4M3.5 10h17M9 15.2l2.1 2.1 4-4.1"/></svg>';
   const CH = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5L12.5 9L7 14.5"/></svg>';
   openSheet(`<h2>Добавить тренировку</h2><div class="cap" style="margin:-8px 0 14px">Что делаем?</div>
-    <div class="adch">
+    <div class="adch">${liveAlive() ? (() => { const li = liveInfo(); return `<button type="button" class="adc go" data-act="golive"><span class="adi">${PLAY}</span><span class="adt"><b>Продолжить тренировку</b><span>${esc(li.name)} · подходов ${li.done} из ${li.n} · ${li.min} мин</span></span><span class="adg">${CH}</span></button>`; })() : ''}
       <button type="button" class="adc live" data-act="addgo" data-m="now"><span class="adi">${PLAY}</span><span class="adt"><b>Тренируюсь сейчас</b><span>Отмечай подходы, отдых включится сам, а в паузе можно сыграть до гонга</span><em class="adk" style="font-style:normal"><i></i>отдых и игры</em></span><span class="adg">${CH}</span></button>
       <button type="button" class="adc" data-act="addgo" data-m="past"><span class="adi">${CAL}</span><span class="adt"><b>Записать, что было</b><span>Вчера или в любой день: упражнение, подходы, веса</span></span><span class="adg">${CH}</span></button>
     </div>`, {type:'addch'});
@@ -8507,6 +8526,7 @@ function actsHTML(){
 const ACT = {
   tab: el => { if (S.fprof) { S.fprof = null; _rTab = null; if (!sheetCtx) { try { if (ver('6.1')) tg.BackButton.hide(); } catch (e) {} } } if (S.tab !== el.dataset.tab || _rTab === null) { S.tab = el.dataset.tab; S.meSet = false; S.pers = false; fabMini(false); fabY = 0; render(); window.scrollTo(0, 0); hap.tap(); if (S.tab === 'friends') { FR_TAB_T = performance.now(); if (!FR.data || Date.now() - (FR.at || 0) > 20000) loadFriends(); } } },
   add: () => { hap.imp(); S.actsXl = false; openAddChoice(); },
+  golive: () => { hap.imp(); if (!resumeLive()) updFab(); },
   addgo: el => { hap.tap(); S.addMode = el.dataset.m === 'past' ? 'past' : 'now'; S.actsXl = false; openActs(false); },
   sback: () => { hap.tap(); stepBack(); },
   actcat: el => { S.awCat = el.dataset.v; document.querySelectorAll('.aw-c button').forEach(b => b.setAttribute('aria-pressed', b === el)); awFilter(); hap.tap(); },
