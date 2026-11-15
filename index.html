@@ -62,6 +62,22 @@ h3 .ic{color:var(--accent)}
 .plr{cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .plr:active{transform:scale(.985)}
 .plx{flex:none;width:38px;height:38px;border-radius:12px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer}
+.plhd{display:flex;align-items:center;gap:14px;margin-bottom:16px}.plhi{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;flex:none;color:var(--accent);background:var(--accent-soft)}
+.plht{flex:1;min-width:0}.plht h2{margin:0;font-size:22px;letter-spacing:-.01em}.plht .cap{margin-top:2px}
+.plcn{min-width:28px;height:28px;padding:0 9px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:13px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);flex:none}
+.plg{display:grid;gap:8px}
+.ple{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:26px 22px 24px;margin-bottom:12px;border-radius:22px;background:var(--surface2);border:1px dashed color-mix(in srgb,var(--accent) 35%,var(--border))}
+.plei{width:64px;height:64px;border-radius:22px;display:grid;place-items:center;margin-bottom:6px;color:var(--accent);background:var(--accent-soft)}
+.ple b{font-size:16px}.ple small{color:var(--muted);font-size:12.5px;line-height:1.45;max-width:300px}
+.plnb{width:100%;justify-content:center;min-height:52px;margin-top:12px;border-radius:16px;font-weight:700}
+@media(min-width:1000px){
+  html.web #sheet.plw{width:min(720px,calc(100% - 48px));max-width:none;max-height:min(760px,calc(100vh - 48px));padding:28px 30px 26px;overflow-y:auto;-webkit-mask-image:none;mask-image:none}
+  html.web #sheet.plw .plhd{margin-bottom:22px;gap:16px}html.web #sheet.plw .plhi{width:54px;height:54px;border-radius:18px}
+  html.web #sheet.plw .plht h2{font-size:26px}html.web #sheet.plw .plht .cap{font-size:13px}
+  html.web #sheet.plw .plg{grid-template-columns:1fr 1fr;gap:10px}html.web #sheet.plw .plg .wi{margin:0;transition:border-color .15s,transform .12s}html.web #sheet.plw .plg .wi:hover{border-color:color-mix(in srgb,var(--accent) 55%,var(--border))}
+  html.web #sheet.plw .ple{padding:44px 30px 40px;border-radius:26px}html.web #sheet.plw .plei{width:76px;height:76px;border-radius:26px}html.web #sheet.plw .ple b{font-size:18px}html.web #sheet.plw .ple small{font-size:13.5px;max-width:380px}
+  html.web #sheet.plw .plnb{width:auto;min-width:260px;margin:18px auto 0;display:flex}
+}
 .seg{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .seg::-webkit-scrollbar{display:none}
 .seg button{flex:none;border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:12px;padding:7px 12px;font-size:13px;font-weight:650;transition:color .18s,background .18s,border-color .18s,box-shadow .18s}
@@ -3860,7 +3876,7 @@ html.web #tabs .tbi{top:262px}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.834';
+const APP = 'VOOB (by BGASHEV) Mini App v1.835';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6193,11 +6209,11 @@ function planDay(iso){
 }
 function openPlans(){
   const list = upPlans(valid());
-  openSheet(`<div class="row" style="gap:12px;margin-bottom:14px"><span class="wa" style="width:44px;height:44px">${IC('plan', 22)}</span><div><h2 style="margin:0">План</h2><div class="cap">Что собираешься сделать — в нужный день появится на главной</div></div></div>`
-    + (list.length ? pbGroups(list).map(g => { const p = g[0], a = actOf(p), multi = g.length > 1, par = multi ? '' : planParams(p).map(x => x[1]).join(' · '), nm = x => (ACTS.find(y => y[0] === actOf(x)) || ACTS[0])[1], sets = g.reduce((t, x) => t + (Array.isArray(x.sl) ? x.sl.length : 0), 0), head = p.ttl || (multi ? g.slice(0, 3).map(nm).join(' · ') + (g.length > 3 ? ' +' + (g.length - 3) : '') : nm(p));
-        return `<div class="wi plr" data-act="pledit" data-id="${esc(p.id)}"><span class="wa">${IC(a, 20)}</span><div style="flex:1;min-width:0"><div style="font-weight:700">${planDay(p.date)}</div><div class="cap">${esc(head)}${multi ? ` · ${g.length} упр.${sets ? ' · ' + sets + ' подх.' : ''}` : par ? ' · ' + esc(par) : ''}</div></div><button type="button" class="plx" data-act="pldel" data-id="${esc(p.id)}" aria-label="Удалить план">${IC('trash', 18)}</button></div>`; }).join('')
-      : `<div class="hint">Планов пока нет — добавь первый.</div>`)
-    + `<button class="btn primary" style="width:100%;justify-content:center;min-height:50px;margin-top:6px" data-act="plnew">${IC('plus', 18)}Новый план</button>`, {type:'plans'});
+  openSheet(`<div class="plhd"><span class="plhi">${IC('plan', 22)}</span><div class="plht"><h2>План</h2><div class="cap">Что собираешься сделать — в нужный день появится на главной</div></div>${list.length ? `<span class="plcn">${pbGroups(list).length}</span>` : ''}</div>`
+    + (list.length ? '<div class="plg">' + pbGroups(list).map(g => { const p = g[0], a = actOf(p), multi = g.length > 1, par = multi ? '' : planParams(p).map(x => x[1]).join(' · '), nm = x => (ACTS.find(y => y[0] === actOf(x)) || ACTS[0])[1], sets = g.reduce((t, x) => t + (Array.isArray(x.sl) ? x.sl.length : 0), 0), head = p.ttl || (multi ? g.slice(0, 3).map(nm).join(' · ') + (g.length > 3 ? ' +' + (g.length - 3) : '') : nm(p));
+        return `<div class="wi plr" data-act="pledit" data-id="${esc(p.id)}"><span class="wa">${IC(a, 20)}</span><div style="flex:1;min-width:0"><div style="font-weight:700">${planDay(p.date)}</div><div class="cap">${esc(head)}${multi ? ` · ${g.length} упр.${sets ? ' · ' + sets + ' подх.' : ''}` : par ? ' · ' + esc(par) : ''}</div></div><button type="button" class="plx" data-act="pldel" data-id="${esc(p.id)}" aria-label="Удалить план">${IC('trash', 18)}</button></div>`; }).join('') + '</div>'
+      : `<div class="ple"><span class="plei">${IC('plan', 30)}</span><b>Планов пока нет</b><small>Запланируй тренировку на любой день — в нужный момент она появится на главной подсказкой.</small></div>`)
+    + `<button class="btn primary plnb" data-act="plnew">${IC('plus', 18)}Новый план</button>`, {type:'plans'});
 }
 function openPlanActs(){
   openSheet(`<h2>Что планируем?</h2><div class="cap" style="margin:-8px 0 12px">Выбери активность — дальше параметры и дата</div><div class="acts">`
@@ -7812,6 +7828,7 @@ function openSheet(html, ctx, keep){
   $('#sheet').classList.toggle('aw', !!(inWeb && ctx && ctx.type === 'acts'));   // WEB: широкое окно выбора активности
   $('#sheet').classList.toggle('wkw', !!(inWeb && ctx && ctx.type === 'workout' && STR[ctx.act]));   // до открытия: окно не меняет размер во время появления
   $('#sheet').classList.toggle('pf', !!ctx && BACK_T.has(ctx.type));
+  $('#sheet').classList.toggle('plw', !!(inWeb && ctx && ctx.type === 'plans'));   // WEB: список планов — широкое окно
   $('#sheet').classList.toggle('pbw2', !!(inWeb && ctx && ctx.type === 'planb'));   // WEB: конструктор плана — широкое окно в две колонки
   $('#sheet').classList.toggle('half', !(inWeb && ctx && ctx.type === 'acts') && !!ctx && (ctx.type === 'acts' || ctx.type === 'planact' || ctx.type === 'frall'));
   $('#sheet').classList.toggle('fr', !!ctx && ctx.type === 'frall');   // выбор активности — до середины экрана, избранные под большим пальцем
