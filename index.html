@@ -4081,7 +4081,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.878';
+const APP = 'VOOB (by BGASHEV) Mini App v1.879';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9062,6 +9062,8 @@ const REST = (function(){
   }
   /* v1.861: рейтинг друзей в игре */
   function pushBest(k){ try { if (typeof apiAuth !== 'function') return; const b = {}; if (s.best[k]) b[k] = s.best[k]; apiAuth('/games/top', {bests:b, played:k}).catch(() => {}); } catch (e) {} }
+  /* v1.879: старые рекорды (до починки прав в БД) не дошли до сервера — отправляем все локальные один раз за запуск */
+  setTimeout(() => { try { if (typeof apiAuth === 'function' && Object.keys(s.best).length) apiAuth('/games/top', {bests:Object.assign({}, s.best)}).catch(() => {}); } catch (e) {} }, 6000);
   function openRank(){
     if (!gm || !G) return; const old = gm.querySelector('.rt-rk'); if (old) { old.remove(); pz = false; return; }
     const g = GAMES[GI], key = g.k; pz = true;
@@ -9074,7 +9076,7 @@ const REST = (function(){
     const mine = Math.max(s.best[key] || 0, G && G.score || 0);
     apiAuth('/games/top', {game:key, bests:Object.assign({}, s.best)}).then(j => {
       if (!bx.isConnected) return;
-      const rows = (j.rows || []).slice(); const top = Math.max(1, ...rows.map(r => r.best));
+      const rows = (j.rows || []).slice(); rows.forEach(r => { if (r.me && mine > r.best) r.best = mine; }); rows.sort((x, y) => y.best - x.best || (x.me ? -1 : 0)); const top = Math.max(1, ...rows.map(r => r.best));
       if (rows.length <= 1) { L.innerHTML = '<div class="rk-em">Пока ты здесь один<br><small>Добавь друзей — и узнаешь, кто круче</small></div>' + (rows[0] ? row(rows[0], 0, top) : ''); return; }
       L.innerHTML = rows.map((r, i) => row(r, i, top)).join('');
     }).catch(() => { if (bx.isConnected) L.innerHTML = '<div class="rk-em">Не получилось загрузить<br><small>Проверь связь и открой снова</small></div>'; });
