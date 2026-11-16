@@ -10853,7 +10853,7 @@ async function init(){
   scheduleSync(100);
   try { if (inWeb && !inWebApp) showWebLogin(); /* v1.744: WEB только после входа через Telegram */ } catch (e) {}
   if (inTG) setTimeout(() => { loadFriends(); loadFeed(true); }, 900);   // к моменту перехода во вкладку всё уже свежее
-  try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); else { const TM = {stats:'stats', apps:'apps', home:'home', friends:'friends', me:'me', settings:'me', profile:'me'}, tk = TM[String(sp || '').toLowerCase()]; if (tk) setTimeout(() => { try { ACT.tab({dataset: {tab: tk}}); } catch (e) {} }, 600); } } catch (e) {}
+  try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); else { const TM = {stats:'stats', apps:'apps', home:'home', friends:'friends', me:'me', profile:'me'}, tk = TM[String(sp || '').toLowerCase()]; if (tk) setTimeout(() => { try { ACT.tab({dataset: {tab: tk}}); } catch (e) {} }, 600); else if (/^(settings|me_settings)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'me') ACT.tab({dataset: {tab: 'me'}}); ACT.meset(); } catch (e) {} }, 700); } } catch (e) {}
   if (!hasCloud) return;
   try {
     const c = await cloudLoad();
