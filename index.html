@@ -4096,6 +4096,45 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 .ax-hb{width:44px;height:44px;border-radius:16px;display:grid;place-items:center;border:1px solid var(--border);background:var(--surface);color:var(--text);box-shadow:none;font:inherit;padding:0;transition:transform .2s,background .2s}
 .ax-hb:active{transform:scale(.93);background:var(--surface2,var(--surface))}
 .ax-hb .gi{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:20px;height:20px}.ax-hb .gi i{border-radius:3px;background:currentColor;opacity:.78}.ax-hb .gi i:nth-child(1){opacity:1;background:var(--accent)}
+/* v1.883: в веб-версии на широком экране сканера штрихкода нет — камера не нужна */
+@media(min-width:900px){html.web .ax-ab2,html.web .ax-sc,html.web .ax-scanh{display:none!important}html.web .ax-act{grid-template-columns:1fr}}
+/* v1.883: покупка PRO-игр */
+.gbuy{text-align:center;display:grid;gap:10px;justify-items:center}.gb-th{width:96px;height:96px;border-radius:28px;overflow:hidden;display:grid;place-items:center;box-shadow:0 12px 32px rgba(0,0,0,.35)}.gb-th>*{width:100%;height:100%}
+.gbuy h2{margin:0}.gbuy .cap{max-width:320px}.gb-b{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px}.gb-b b{font-weight:850}.gb-b small{font-size:11px;font-weight:800;color:#2a1a00;background:linear-gradient(120deg,#F5B23C,#FFE08A);padding:2px 7px;border-radius:99px}
+.gb-b:not(.primary){background:var(--surface2)!important;color:var(--text)!important;border:1px solid var(--border)!important}.gb-b span{font-weight:750}
+.gb-pro{border:0;background:none;color:var(--muted);font:inherit;font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:6px;padding:8px;cursor:pointer}
+.rt-mini{position:relative}.rt-mini .pc{font-style:normal;font-size:10.5px;font-weight:800;color:#E3B341;margin-top:2px}
+/* v1.883: «Приложения», «Калории», «Вода» для широкого экрана веб-версии */
+@media(min-width:1200px){
+html.web .ax-pg{max-width:1120px}
+html.web .ax-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:28px;align-items:start}
+html.web .ax-cols:not(:has(.ax-c3)) .ax-c1{position:sticky;top:16px}
+html.web .ax-cols:has(.ax-c3){grid-template-areas:"a b" "c b"}
+html.web .ax-cols:has(.ax-c3) .ax-c1{grid-area:a}html.web .ax-cols:has(.ax-c3) .ax-c2{grid-area:b}html.web .ax-cols:has(.ax-c3) .ax-c3{grid-area:c}
+html.web .ax-c2>.ax-sech:first-child{margin-top:0}
+html.web .ax-wt{height:340px}
+html.web .ax-wt .n{font-size:68px}
+html.web .ax-strip{max-width:none;gap:10px}
+html.web .ax-d{padding:12px 0 10px}
+html.web .ax-hub .ax-sh{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:28px;align-content:start}
+html.web .ax-hub .ax-st,html.web .ax-hub .ax-ss,html.web .ax-hub .ax-bn{grid-column:1/-1}
+html.web .ax-hub .ax-bn{grid-template-columns:1.25fr 1fr 1fr 1fr;gap:16px;margin-bottom:10px}html.web .ax-hub .ax-bn .ax-bt.bg{grid-column:auto;min-height:230px}
+html.web .ax-hub .ax-bt,html.web .ax-hub .ax-bt.bw{min-height:230px;padding:18px;grid-row:auto}
+html.web .ax-hub .ax-lab,html.web .ax-hub .ax-grp{grid-column:1}
+html.web .ax-hub .ax-sg{grid-column:2;grid-row:4/6;align-self:start;margin-top:0;min-height:96px}
+html.web .ax-gg{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
+}
+/* v1.883: «Вес» в «Приложениях»; в мобильном доке — только иконки */
+.ax-at.a-wt{background:linear-gradient(150deg,#6fe3b0,#1fa874);color:#fff}
+.ax-bt.bwt .big{font-size:30px}.ax-bn .ax-bt.bg{grid-column:1/-1;min-height:98px}.ax-bt.bwt .wsm{color:var(--muted);font-size:12px}
+html:not(.web) #tabs .tab .tl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+html:not(.web) #tabs .tab{justify-content:center;gap:0}
+html:not(.web) #tabs .tab .ti,html:not(.web) #tabs .tab .ti svg{width:26px;height:26px}
+.shp-sec.s-game{display:none}.shp-wrap[data-t=all] .s-game,.shp-wrap[data-t=game] .s-game{display:block}
+.shp-wrap[data-t=game] .s-fr,.shp-wrap[data-t=game] .s-bg,.shp-wrap[data-t=game] .s-kit,.shp-wrap[data-t=game] .s-mine{display:none}
+.shp-grid.gm{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
+.shp-c.gm{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}.gm-th{width:84px;height:84px;border-radius:24px;overflow:hidden;display:grid;place-items:center}.gm-th>*{width:100%;height:100%}
+.shp-c.gmall{grid-column:1/-1;flex-direction:row;justify-content:space-between;text-align:left;gap:12px;padding:14px;background:linear-gradient(160deg,color-mix(in srgb,#E3B341 16%,var(--surface2)),var(--surface2));border-color:#E3B341}.gmall .gm-ic{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:color-mix(in srgb,#E3B341 22%,transparent);color:#E3B341;flex:none}.gmall .gm-tx{flex:1;min-width:0;display:grid;gap:2px}.gmall .gm-tx small{color:var(--muted);font-size:12px}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -4110,7 +4149,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.882';
+const APP = 'VOOB (by BGASHEV) Mini App v1.883';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5595,6 +5634,8 @@ const PAY_ST = {paid: ['Оплачено', 'ok'], refunded: ['Возвращен
 const RF_WHY = [['nofx', 'Оплата прошла, но не появилось или не работает'], ['mistake', 'Оплатил по ошибке'], ['other', 'Другое']];
 function payName(x){
   if (x.src === 'pro') return 'VOOB PRO · ' + (x.plan === 'year' ? 'год' : 'месяц');
+  if (x.kind === 'games') return 'Все PRO-игры';
+  if (x.kind === 'game') { const g = (typeof REST !== 'undefined' ? REST.list() : []).find(a => a.k === x.item); return 'Игра «' + (g ? g.n : x.item) + '»'; }
   const f = FRAMES.find(a => a[0] === x.item), b = BG_KEYS.find(a => a[0] === x.item);
   const nm = x.kind === 'bg' ? (b ? b[1] : x.item) : (f ? f[1] : x.item);
   return (x.kind === 'frame' ? 'Рамка «' : x.kind === 'bg' ? 'Фон «' : 'Комплект «') + nm + '»';
@@ -5809,7 +5850,20 @@ const FR_LEGACY = {aurora:'crystal', gold:'laurel', neon:'pulse', flame:'flame',
 function frNorm(k){ return (k && FR_LEGACY[k]) || k || ''; }
 const asFree = () => { try { return localStorage.getItem('voob_asfree') === '1'; } catch (e) { return false; } };   // только для создателя: смотреть как без PRO
 function isPro(){ { const c = tgUser && BDG.get(tgUser.id); if (c && c.creator && asFree()) return false; } if (typeof INBOX_FRESH !== 'undefined' && INBOX_FRESH) return INBOX_PRO;   /* v1.460: как только сервер ответил — верим только ему (устаревший кэш не держит PRO) */ if (typeof INBOX_PRO !== 'undefined' && INBOX_PRO) return true; const b = tgUser && BDG.get(tgUser.id); return !!(b && (b.pro || b.creator)); }
-const SHOP = {owned: new Set(), prices: {frame: 30, bg: 25}, ok: 0}, FRS = new Map();   // v1.781: купленные рамки/фоны (навсегда); FRS — купленные рамки друзей
+const SHOP = {owned: new Set(), prices: {frame: 30, bg: 25, game: 19, games: 99}, ok: 0}, FRS = new Map();   // v1.781: купленные рамки/фоны (навсегда); FRS — купленные рамки друзей
+/* v1.883: PRO-игры можно купить навсегда: ⭐ за одну или все сразу */
+function gameOwn(k){ return isPro() || SHOP.owned.has('games:all') || SHOP.owned.has('game:' + k); }
+function gameLoad(){ if (!SHOP.ok) loadShop().then(() => { if (SHOP.ok) { try { shopRefreshViews(); } catch (e) {} } }); }
+function shopRefreshViews(){ if (typeof REST !== 'undefined' && REST.refresh) REST.refresh(); if (document.querySelector('.ax-gg')) render(); }
+function gameBuy(k){
+  const g = REST.list().find(x => x.k === k); if (!g) return; gameLoad(); hap.tap();
+  const p1 = SHOP.prices.game || 19, pa = SHOP.prices.games || 99, left = REST.list().filter(x => x.pro && !gameOwn(x.k)).length;
+  openSheet(`<div class="gbuy"><div class="gb-th">${g.th}</div><div class="ppl-k">ИГРА</div><h2>${esc(g.n)}</h2><div class="cap">Открывается навсегда и без подписки. Играй между подходами и в разделе «Игры».</div>
+    <button type="button" class="btn primary gb-b" data-act="gbuy" data-k="${g.k}" data-n="${esc(g.n)}">Купить игру · ⭐ ${p1}</button>
+    ${left > 1 ? `<button type="button" class="btn gb-b" data-act="gbuyall"><span>Все PRO-игры · ${left}</span><b>⭐ ${pa}</b>${left * p1 > pa ? `<small>−${Math.round((1 - pa / (left * p1)) * 100)}%</small>` : ''}</button>` : ''}
+    <button type="button" class="gb-pro" data-act="gbpro">${IC('crown', 14)}или весь VOOB PRO</button></div>`, {type:'gbuy'});
+}
+
 async function loadShop(force){
   if (SHOP.ok && !force) return;
   if (SHOP.busy && !force) return SHOP.busy;
@@ -5913,7 +5967,7 @@ async function shopBuy(kind, item, name){
   try {
     const j = await apiAuth('/shop/invoice', {kind, item});
     if (!j.link) throw new Error(j.error || 'нет счёта');
-    const paid = () => { hap.ok(); SHOP.owned.add(kind + ':' + item); if (kind === 'kit') { SHOP.owned.add('frame:' + item); SHOP.owned.add('bg:' + item); } toast('✨ «' + name + '» теперь твой навсегда'); loadShop(true).then(() => { render(); if (SPV) shopPvDraw(0); }); render(); if (SPV) shopPvDraw(0); if (sheetCtx && sheetCtx.type === 'frprev') frPrevShow(sheetCtx.v); else if (sheetCtx && sheetCtx.type === 'bgprev') bgPrevShow(sheetCtx.v); };
+    const paid = () => { hap.ok(); SHOP.owned.add(kind + ':' + item); if (kind === 'games') SHOP.owned.add('games:all'); if (kind === 'kit') { SHOP.owned.add('frame:' + item); SHOP.owned.add('bg:' + item); } toast('✨ «' + name + '» теперь твой навсегда'); loadShop(true).then(() => { render(); if (SPV) shopPvDraw(0); try { shopRefreshViews(); closeSheet && sheetCtx && sheetCtx.type === 'gbuy' && closeSheet(); } catch (e) {} }); render(); if (SPV) shopPvDraw(0); if (sheetCtx && sheetCtx.type === 'frprev') frPrevShow(sheetCtx.v); else if (sheetCtx && sheetCtx.type === 'bgprev') bgPrevShow(sheetCtx.v); };
     if (ver('6.1') && tg.openInvoice) tg.openInvoice(j.link, st => { if (st === 'paid') paid(); });
     else { openTG(j.link); toast('Оплати в Telegram и вернись сюда'); }
   } catch (e) { toast('Не получилось: ' + e.message); }
@@ -6758,6 +6812,12 @@ function shpSkySync(){   // v1.807: звёздное небо на ВСЮ стр
     } else e.classList.add('on');
   } else if (e) { e.classList.remove('on'); setTimeout(() => { if (!e.classList.contains('on')) e.remove(); }, 550); }
 }
+function shopGames(){   // v1.883: PRO-игры за ⭐ навсегда
+  const L = REST.list().filter(x => x.pro), left = L.filter(x => !gameOwn(x.k)), p1 = SHOP.prices.game || 19, pa = SHOP.prices.games || 99;
+  const st = k => isPro() ? '<span class="shp-pr own">В PRO</span>' : gameOwn(k) ? '<span class="shp-pr own">Куплено</span>' : `<span class="shp-pr">⭐ ${p1}</span>`;
+  const all = left.length ? (isPro() ? '' : `<button type="button" class="shp-c gmall" data-act="gbuyall"><div class="gm-ic">${IC('crown', 26)}</div><div class="gm-tx"><b>Все PRO-игры · ${left.length}</b><small>одной покупкой${left.length * p1 > pa ? ' · выгода ' + Math.round((1 - pa / (left.length * p1)) * 100) + '%' : ''}</small></div><span class="shp-pr">⭐ ${pa}</span></button>`) : `<div class="shp-c gmall own"><div class="gm-ic">${IC('check', 26)}</div><div class="gm-tx"><b>Все PRO-игры открыты</b><small>играй между подходами и в «Играх»</small></div></div>`;
+  return `<div class="shp-grid gm">${all}${L.map(g => `<button type="button" class="shp-c gm" data-act="shopgame" data-k="${g.k}"><div class="gm-th">${g.th}</div><b>${esc(g.n)}</b><div class="shp-row">${st(g.k)}</div></button>`).join('')}</div>`;
+}
 function viewShop(){   // v1.782: «Магазин» (вариант «Журнал»), широкая сетка, везде твой аватар
   if (!SHOP.ok) loadShop().then(() => { if (SHOP.ok && document.querySelector('.shp-wrap')) render(); });
   const lv = myLevel(), name = displayName() || 'Гость', photo = (tgUser && FR.ph.get(+tgUser.id)) || (tgUser && tgUser.photo_url) || '';
@@ -6786,10 +6846,11 @@ function viewShop(){   // v1.782: «Магазин» (вариант «Журн�
   const th = (f, n) => { const bn = (BG_KEYS.find(x => x[0] === f[0]) || BG_KEYS[0]); return `<button type="button" class="shp-th${n ? '' : ' on'}" data-act="shpslide" data-i="${n}"><span class="shp-thm">${bgFx(bn[0])}</span><span><b>${esc(f[1])}</b><small>${kp ? 'комплект · ⭐ ' + kp : 'рамка · ⭐ ' + SHOP.prices.frame}</small></span></button>`; };
   return `<div class="shp-wrap" data-t="all"><div class="head"><div><h1>Магазин</h1><div class="sub">Рамки, фоны и комплекты для твоего профиля. Купил один раз, остаются навсегда</div></div></div>
   <div class="shp-car" data-i="0"><div class="shp-slides">${picks.map((f, n) => slide(f, n, picks.length)).join('')}</div><div class="shp-strip">${picks.map(th).join('')}</div></div>
-  <div class="shp-tabs"><button type="button" class="on" data-act="shoptab" data-t="all">Всё</button><button type="button" data-act="shoptab" data-t="kit">Комплекты · ${kits.length}</button><button type="button" data-act="shoptab" data-t="fr">Рамки · ${fr.length}</button><button type="button" data-act="shoptab" data-t="bg">Фоны · ${bgs.length}</button><button type="button" class="shp-mine" data-act="shoptab" data-t="mine">${IC('check', 14)}Мои покупки${mineN ? ' · ' + mineN : ''}</button></div>
+  <div class="shp-tabs"><button type="button" class="on" data-act="shoptab" data-t="all">Всё</button><button type="button" data-act="shoptab" data-t="kit">Комплекты · ${kits.length}</button><button type="button" data-act="shoptab" data-t="fr">Рамки · ${fr.length}</button><button type="button" data-act="shoptab" data-t="bg">Фоны · ${bgs.length}</button><button type="button" data-act="shoptab" data-t="game">Игры · ${REST.list().filter(x => x.pro).length}</button><button type="button" class="shp-mine" data-act="shoptab" data-t="mine">${IC('check', 14)}Мои покупки${mineN ? ' · ' + mineN : ''}</button></div>
   <section class="shp-sec s-kit"><div class="shp-lab"><b>Комплекты</b><span>рамка и фон одного стиля${kp ? ' за ⭐ ' + kp + ' вместо ' + (SHOP.prices.frame + SHOP.prices.bg) : ''}</span></div><div class="shp-grid bg">${kits.map(kc).join('')}</div></section>
   <section class="shp-sec s-fr"><div class="shp-lab"><b>Рамки</b><span>двигаются и светятся, как в профиле</span></div><div class="shp-grid fr">${fr.map(fc).join('')}</div></section>
   <section class="shp-sec s-bg"><div class="shp-lab"><b>Фоны</b><span>карточка профиля целиком</span></div><div class="shp-grid bg">${bgs.map(bc).join('')}</div></section>
+  <section class="shp-sec s-game"><div class="shp-lab"><b>Игры</b><span>PRO-игры навсегда · без подписки</span></div>${shopGames()}</section>
   <section class="shp-sec s-mine"><div class="shp-lab"><b>Мои покупки</b><span>${isPro() ? 'всё остальное уже открыто в PRO' : 'остаются у тебя навсегда'}</span></div>${mineHTML}</section>
   <div class="shp-pro"><b>В VOOB PRO всё это открыто сразу</b></div></div>`;
 }
@@ -7909,7 +7970,7 @@ function dkBind(){
   tb.addEventListener('pointerup', end); tb.addEventListener('pointercancel', end);
   if (window.ResizeObserver) new ResizeObserver(() => { if (!DK.drag) dkSync(true); }).observe(tb);
 }
-const TABS = inWeb ? [['friends','Друзья','friends'],['weight','Вес','scale'],['stats','Итоги','stats'],['apps','Приложения','apps'],['shop','Магазин','shop'],['me','Я','user']] : [['stats','Итоги','stats'],['weight','Вес','scale'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
+const TABS = inWeb ? [['friends','Друзья','friends'],['stats','Итоги','stats'],['apps','Приложения','apps'],['shop','Магазин','shop'],['me','Я','user']] : [['stats','Итоги','stats'],['apps','Приложения','apps'],['home','Главная','home'],['friends','Друзья','friends'],['me','Я','user']];
 const VIEWS = {home:(inWeb && inTG ? viewHomeWeb : viewHome), weight:viewWeight, stats:viewStats, friends:viewFriends, me:viewMe, shop:viewShop, apps:() => AX.hub()};
 // плавающая кнопка внизу по центру: на «Главной» — тренировка, во «Весе» — взвеситься
 const FAB = {home:['add', 'Тренировка'], weight:['kadd', 'Взвеситься']};
@@ -8134,9 +8195,9 @@ function render(){
   festCountUp();
   document.querySelectorAll('.prox:not([data-ph])').forEach(el => { el.dataset.ph = 1; el.style.setProperty('--ph', -Math.round(performance.now() % 5000) + 'ms'); });   // блик PRO не начинается заново
   setTimeout(checkRewards, 700);
-  const tb = $('#tabs'), ti = TABS.findIndex(t => t[0] === S.tab);
-  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + WM_LOGO(20) + '</span>' : '') + (inWeb ? '<span class="wver" data-act="copyver" title="Скопировать версию">WEB ' + ((APP.match(/v[\d.]+/) || [''])[0]) + '</span>' : '') + '<i class="tbi"></i>' + (inWeb ? '' : '<i class="tbf c"></i><i class="tbf m"></i><i class="tbf v"></i>') + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}"><span class="ti">${IC(ic, 22)}</span>${inWeb && k === 'me' ? 'Профиль' : l}</button>`).join('') + (inWeb ? '<button type="button" class="siteb stb" data-act="webset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.3a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.4a2 2 0 0 0 .7 2.7l.2.1a2 2 0 0 1 1 1.7v.5a2 2 0 0 1-1 1.7l-.2.1a2 2 0 0 0-.7 2.7l.2.4a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.3a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.3a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.4a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.7v-.5a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.4a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.3a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span>Настройки</span></button><button type="button" class="siteb" data-act="tosite"><span>VOOB.KZ</span></button>' : '');
-  tb.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === S.tab));
+  const tb = $('#tabs'), tk = S.tab === 'weight' ? 'apps' : S.tab, ti = TABS.findIndex(t => t[0] === tk);   // v1.883: «Вес» живёт внутри «Приложений», в доке подсвечиваем их
+  if (!tb.querySelector('.tab')) tb.innerHTML = (inWeb ? '<span class="brand">' + WM_LOGO(20) + '</span>' : '') + (inWeb ? '<span class="wver" data-act="copyver" title="Скопировать версию">WEB ' + ((APP.match(/v[\d.]+/) || [''])[0]) + '</span>' : '') + '<i class="tbi"></i>' + (inWeb ? '' : '<i class="tbf c"></i><i class="tbf m"></i><i class="tbf v"></i>') + TABS.map(([k, l, ic]) => `<button type="button" class="tab" data-act="tab" data-tab="${k}" aria-label="${inWeb && k === 'me' ? 'Профиль' : l}"><span class="ti">${IC(ic, 22)}</span><span class="tl">${inWeb && k === 'me' ? 'Профиль' : l}</span></button>`).join('') + (inWeb ? '<button type="button" class="siteb stb" data-act="webset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.3a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.4a2 2 0 0 0 .7 2.7l.2.1a2 2 0 0 1 1 1.7v.5a2 2 0 0 1-1 1.7l-.2.1a2 2 0 0 0-.7 2.7l.2.4a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.3a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.3a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.4a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.7v-.5a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.4a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.3a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span>Настройки</span></button><button type="button" class="siteb" data-act="tosite"><span>VOOB.KZ</span></button>' : '');
+  tb.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.tab === tk));
   tb.style.setProperty('--ti', ti);
   dkSync();
   updPCard();
@@ -8391,15 +8452,15 @@ const REST = (function(){
       const ttl = [...(free ? 'Время вышло' : 'Пора на подход')].map((c, ci) => c === ' ' ? ' ' : '<span style="--i:' + ci + '">' + c + '</span>').join('');
       h += `<div class="rt-gong"><i class="rg"></i><i class="rg"></i><i class="rg"></i>${[0, 45, 90, 135, 180, 225, 270, 315].map(a => '<i class="sp" style="--a:' + a + 'deg"></i>').join('')}<div class="rc"><svg width="46" height="46" viewBox="0 0 18 18"><path d="M3.5 9.5L7.5 13.5L14.5 5"/></svg></div></div><div class="rt-done">${ttl}</div><div class="rt-sub">${act ? esc(nameOf(act)) + ' · отдых окончен' : 'Отдых окончен'}</div><button type="button" class="rt-b pr wide rt-go" data-r="skip">Погнали</button><div class="rt-auto"><b></b></div>`;
     } else if (view === 'pick') {
-      const pr = isPro(), pi = GAMES.map((g, i) => g.pro ? i : -1).filter(i => i >= 0), nowD = new Date(), dayN = Math.floor((nowD.getTime() - nowD.getTimezoneOffset() * 6e4) / 864e5), di = pi[dayN % pi.length], mm = Math.max(0, Math.floor((new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() + 1) - nowD) / 6e4)), nOpen = pr ? GAMES.length : GAMES.filter(g => !g.pro).length + 1, cardH = (g, i) => `<button type="button" class="rt-card" data-gi="${i}" style="--h:${GH[g.k]};--i:${i}"><span class="ic">${TH(g.k)}</span><span><b>${g.n}</b><small>${g.d}</small></span><em><i>рекорд</i>${s.best[g.k] || 0}</em></button>`;
-      const sv = svOk();
+      const own = i => gameOwn(GAMES[i].k), pi = GAMES.map((g, i) => g.pro ? i : -1).filter(i => i >= 0), pr = pi.every(own), nowD = new Date(), dayN = Math.floor((nowD.getTime() - nowD.getTimezoneOffset() * 6e4) / 864e5), di = pi[dayN % pi.length], mm = Math.max(0, Math.floor((new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate() + 1) - nowD) / 6e4)), nOpen = GAMES.filter((g, i) => !g.pro || own(i) || i === di).length, cardH = (g, i) => `<button type="button" class="rt-card" data-gi="${i}" style="--h:${GH[g.k]};--i:${i}"><span class="ic">${TH(g.k)}</span><span><b>${g.n}</b><small>${g.d}</small></span><em><i>рекорд</i>${s.best[g.k] || 0}</em></button>`;
+      const sv = svOk(); gameLoad();
       h += `<div class="rt-h">Сыграть до гонга</div><div class="rt-p">Игра закончится вместе с отдыхом. Осталось <b data-rt="t"></b></div>`
         + (sv ? `<div class="rt-rs" style="--h:${GH[GAMES[sv.i].k]}"><span class="ic">${TH(GAMES[sv.i].k)}</span><span class="tx"><i>Прерванная игра</i><b>${GAMES[sv.i].n}</b><small>Счёт ${sv.sc} · продолжим с того же места</small></span><span class="bt"><button type="button" class="rt-b pr sm" data-r="resume">Продолжить</button><button type="button" class="rt-b sm" data-r="fresh">Заново</button></span></div>` : '')
-        + `<div class="rt-pg"><div class="ds">${GAMES.map((g, i) => `<i${(!g.pro || pr || i === di) ? ' class="on"' : ''}></i>`).join('')}</div><span>открыто <b>${nOpen}</b> из ${GAMES.length}</span></div>`
-        + (pr ? '' : `<button type="button" class="rt-hero" data-gi="${di}" style="--h:${GH[GAMES[di].k]}"><span class="hb"></span><span class="hi">${TH(GAMES[di].k)}</span><span class="ht"><i class="tg">★ Игра дня · бесплатно</i><b>${GAMES[di].n}</b><small>${GAMES[di].d}</small><span class="go">Сыграть сегодня</span><u>обновится через ${Math.floor(mm / 60)} ч ${mm % 60} мин</u></span></button>`)
+        + `<div class="rt-pg"><div class="ds">${GAMES.map((g, i) => `<i${(!g.pro || own(i) || i === di) ? ' class="on"' : ''}></i>`).join('')}</div><span>открыто <b>${nOpen}</b> из ${GAMES.length}</span></div>`
+        + (own(di) ? '' : `<button type="button" class="rt-hero" data-gi="${di}" style="--h:${GH[GAMES[di].k]}"><span class="hb"></span><span class="hi">${TH(GAMES[di].k)}</span><span class="ht"><i class="tg">★ Игра дня · бесплатно</i><b>${GAMES[di].n}</b><small>${GAMES[di].d}</small><span class="go">Сыграть сегодня</span><u>обновится через ${Math.floor(mm / 60)} ч ${mm % 60} мин</u></span></button>`)
         + `<div class="rt-sep">Всегда бесплатно</div>` + GAMES.map((g, i) => g.pro ? '' : cardH(g, i)).join('')
         + `<div class="rt-sep">PRO${pr ? '' : '<small>каждый день одна — бесплатно</small>'}</div>`
-        + (pr ? GAMES.map((g, i) => g.pro ? cardH(g, i) : '').join('') : `<div class="rt-gl">${pi.filter(i => i !== di).map(i => `<button type="button" class="rt-mini" data-gi="${i}" style="--h:${GH[GAMES[i].k]}"><i class="lkb">${IC('lock', 11)}</i><span class="ic">${TH(GAMES[i].k)}</span><b>${GAMES[i].n}</b></button>`).join('')}</div>`)
+        + pi.filter(own).map(i => cardH(GAMES[i], i)).join('') + (pr ? '' : `<div class="rt-gl">${pi.filter(i => i !== di && !own(i)).map(i => `<button type="button" class="rt-mini" data-gi="${i}" style="--h:${GH[GAMES[i].k]}"><i class="lkb">${IC('lock', 11)}</i><span class="ic">${TH(GAMES[i].k)}</span><b>${GAMES[i].n}</b><em class="pc">⭐ ${SHOP.prices.game || 19}</em></button>`).join('')}</div>`)
         + `<button type="button" class="rt-b gh" data-r="back">Нет, просто отдыхаю</button>`;
     } else {
       h += `<div class="rt-nx">Отдых${act ? ' · <b>' + esc(nameOf(act)) + '</b>' : ''}</div>
@@ -8411,7 +8472,7 @@ const REST = (function(){
     paint(left());
   }
   function onClick(e){
-    const gi = e.target.closest('[data-gi]'); if (gi) { const gx = GAMES[+gi.dataset.gi]; if (gx.pro && !isPro() && +gi.dataset.gi !== dayGi()) { hap.tap(); min = true; render(); openPro(); return; } openGame(+gi.dataset.gi); return; }
+    const gi = e.target.closest('[data-gi]'); if (gi) { const gx = GAMES[+gi.dataset.gi]; if (gx.pro && !gameOwn(gx.k) && +gi.dataset.gi !== dayGi()) { hap.tap(); min = true; render(); gameBuy(gx.k); return; } openGame(+gi.dataset.gi); return; }
     const b = e.target.closest('[data-r]'); if (!b) return; const r = b.dataset.r;
     if (r === 'm') adj(-15); else if (r === 'p') adj(15);
     else if (r === 'skip') { hap.tap(); close(); backLive(); }
@@ -8454,7 +8515,7 @@ const REST = (function(){
   ];
   const QUIPS = ['Рекорд — это круто, но подход сам себя не сделает.', 'Мышцы остывают, пока ты тут красуешься.', 'Ещё раз? Время есть. Пока есть.', 'Штанга скучает без тебя.', 'Хорошо играешь. Так же и подход закрой.', 'VOOB считает подходы. Ты — рекорды.', 'Между подходами в VOOB можно всё. Кроме лени.'];
   let G = null, GI = -1, raf = 0, lastT = 0, cv, cx, W, H, DPR = 1, quip = '', C = {}, gm = null, keyH = null, cd = 0, cdN = 0, pz = false;
-  const svOk = () => { const v = s.sv; if (!v || !v.d || !GAMES[v.i] || Date.now() - v.t > 6 * 36e5) return null; const g = GAMES[v.i]; return (!g.pro || isPro() || v.i === dayGi()) ? v : null; };
+  const svOk = () => { const v = s.sv; if (!v || !v.d || !GAMES[v.i] || Date.now() - v.t > 6 * 36e5) return null; const g = GAMES[v.i]; return (!g.pro || gameOwn(g.k) || v.i === dayGi()) ? v : null; };
   function snap(){ if (!G) return; try { if (G.dead || !(G.score > 0)) { if (s.sv) { s.sv = null; save(); } return; } s.sv = {i: GI, d: JSON.stringify(G), sc: G.score | 0, t: Date.now()}; save(); } catch (e) {} }
   document.addEventListener('visibilitychange', () => { if (document.hidden) snap(); });
   function rr(c, x, y, w, h, r){ r = Math.min(r, w / 2, h / 2); c.beginPath(); c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r); c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath(); }
@@ -9151,7 +9212,8 @@ const REST = (function(){
   return {start, card, s, std: () => s.std || 90, setStd(v){ s.std = v; save(); }, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH,
     dayInfo(){ const i = dayGi(), g = GAMES[i]; return {i, k:g.k, n:g.n, best:s.best[g.k] || 0, th:TH(g.k)}; },
     playDay(){ if (run) { min = false; view = 'rest'; render(); return; } start(null, 10800); free = true; apps = true; openGame(dayGi()); },   // v1.860: как play(): после выхода из игры окно закрывается, а не показывает таймер отдыха
-    list(){ const d = dayGi(); return GAMES.map((g, i) => ({i, k:g.k, n:g.n, pro:!!g.pro, day:i === d, best:s.best[g.k] || 0, th:TH(g.k)})); },
+    refresh(){ if (run && view === 'pick') render(); },
+    list(){ const d = dayGi(); return GAMES.map((g, i) => ({i, k:g.k, n:g.n, pro:!!g.pro, own:!g.pro || gameOwn(g.k), day:i === d, best:s.best[g.k] || 0, th:TH(g.k)})); },
     play(i){ if (!run) { start(null, 10800); free = true; } apps = true; openGame(i); }};
 })();
 
@@ -9704,6 +9766,10 @@ const ACT = {
   gwsel: el => gwSel(el.dataset.k),
   gsend: el => { const f = FR.data && FR.data.friends.find(x => x.tg_id === +el.dataset.id); if (!f) return; hap.tap(); giftConfirm(f, el.dataset.k); },
   gno: () => { hap.tap(); closeGc(); },
+  shopgame: el => { const k = el.dataset.k; if (gameOwn(k)) { toast('Эта игра уже у тебя'); return; } gameBuy(k); },
+  gbuy: el => { shopBuy('game', el.dataset.k, el.dataset.n); },
+  gbuyall: () => { shopBuy('games', 'all', 'Все PRO-игры'); },
+  gbpro: () => { closeSheet(); openPro(); },
   gprolock: () => { hap.warn(); proToast('Премиум-подарки — только для PRO. Получатель берёт +200 очков'); },
   gdo: async el => {
     const id = +el.dataset.id, k = el.dataset.k, f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
@@ -9978,7 +10044,7 @@ const AX = (function(){
     return `<div class="ax-rb"><span class="ax-rt"><span class="ax-gi"><i></i><i></i><i></i><i></i></span>Приложения</span><button type="button" class="ax-ra" data-act="appsheet">все ›</button></div>${h ? `<div class="ax-rr${wide ? ' w' : ''}${(h.match(/class="ax-rc"/g) || []).length === 1 ? ' one' : ''}">${h}</div>` : ''}`;
   }
   function sheetHTML(){
-    const a = A(), w = wd(), wg = waterGoal(), d = day(), g = d.g, wp = Math.round(clamp(w / wg.goal, 0, 1) * 100);
+    const a = A(), w = wd(), wg = waterGoal(), d = day(), g = d.g, wlast = (() => { try { const es = weightsSorted(); return es.length ? es[es.length - 1] : null; } catch (e) { return null; } })(), wp = Math.round(clamp(w / wg.goal, 0, 1) * 100);
     const sw = (k, on) => `<span class="ax-sw${on ? ' on' : ''}" data-act="axpin" data-k="${k}"></span>`;
     const WV = c => `<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M0 7Q12.5 0 25 7T50 7T75 7T100 7T125 7T150 7T175 7T200 7V14H0Z" fill="${c}"/></svg>`;
     const mb = (l, v, m, c) => `<div class="m"><span>${l}</span><em><i style="width:${clamp(v * 100 / Math.max(1, m), 0, 100)}%;background:${c}"></i></em></div>`;
@@ -9989,6 +10055,7 @@ const AX = (function(){
       <div class="ax-bt bk" data-act="appopen" data-s="cal"><div class="h"><span class="ax-at sm a-c">${AI('cal', 18)}</span>Калории</div>
         <div class="big">${P0(Math.abs(d.rem))}<i> ${d.rem < 0 ? 'сверх' : 'осталось'}</i></div>
         <div class="ms">${mb('Б', d.t.p, g.p, '#7cc0ff')}${mb('Ж', d.t.f, g.f, '#ffd36b')}${mb('У', d.t.c, g.c, '#6fcf97')}</div></div>
+      <div class="ax-bt bwt" data-act="appweight"><div class="h"><span class="ax-at sm a-wt">${IC('scale', 18)}</span>Вес</div><div class="big">${wlast ? f1(wlast.kg) : '—'}<i> ${wlast ? 'кг' : 'добавь первый'}</i></div><small class="wsm">${wlast ? 'последнее взвешивание' : 'следи за динамикой'}</small></div>
       <div class="ax-bt bg" data-act="appopen" data-s="games"><div class="h"><span class="ax-at sm a-g">${AI('pad', 18)}</span><span class="n">13 игр</span></div><div class="gt">Игры<small>играть →</small></div></div>
       ${inWeb ? '' : `<div class="ax-bt bs" data-act="appopen" data-s="shop"><div class="h"><span class="ax-at sm a-s">${AI('shop', 18)}</span><span class="n">рамки · фоны · комплекты</span></div><div class="gt">Магазин<small>выбрать →</small></div></div>`}
     </div>
@@ -10039,13 +10106,13 @@ const AX = (function(){
     const d = day(), g = d.g, over = d.rem < 0, pct = d.t.k * 100 / d.budget, hide = !!CAL().hide;
     const mc = (l, v, m, c) => `<div class="ax-m"><span>${l}</span><b>${hide ? '·' : Math.round(v)}<em>${hide ? '' : ' / ' + m + ' г'}</em></b><div class="ax-bar2"><i style="width:${clamp(v * 100 / Math.max(1, m), 0, 100)}%;--c:${c}"></i></div></div>`;
     let h = back() + `<div class="ax-h1">Калории</div><div class="ax-sub">${dayLabel()}</div>${stripHTML()}`;
-    h += `<div class="ax-cd"><div class="ax-top">${ringSVG(pct, over)}<div class="mid"><b>${hide ? '' : P0(Math.abs(d.rem))}</b><small>${over ? 'выше нормы' : 'осталось'}</small></div></div></div><div class="ax-cx"><div class="ax-big">${P0(d.t.k)}<i> из ${P0(d.budget)} ккал</i></div><div class="ax-cap">цель · <b>${CAL().on ? 'своя' : g.mode === 'lose' ? 'сбросить' : g.mode === 'gain' ? 'набрать' : 'держать'}</b></div><span class="ax-chip${over ? ' o' : ''}">${over ? 'выше нормы' : 'в рамках'}</span>${d.tr ? `<span class="ax-chip p">тренировка +${P0(d.tr)}</span>` : ''}</div>
+    h += `<div class="ax-cols"><div class="ax-c1"><div class="ax-cd"><div class="ax-top">${ringSVG(pct, over)}<div class="mid"><b>${hide ? '' : P0(Math.abs(d.rem))}</b><small>${over ? 'выше нормы' : 'осталось'}</small></div></div></div><div class="ax-cx"><div class="ax-big">${P0(d.t.k)}<i> из ${P0(d.budget)} ккал</i></div><div class="ax-cap">цель · <b>${CAL().on ? 'своя' : g.mode === 'lose' ? 'сбросить' : g.mode === 'gain' ? 'набрать' : 'держать'}</b></div><span class="ax-chip${over ? ' o' : ''}">${over ? 'выше нормы' : 'в рамках'}</span>${d.tr ? `<span class="ax-chip p">тренировка +${P0(d.tr)}</span>` : ''}</div>
     <div class="ax-ms">${mc('Белки', d.t.p, g.p, '#2fa968')}${mc('Жиры', d.t.f, g.f, '#e0a010')}${mc('Углеводы', d.t.c, g.c, '#6a5af0')}</div></div>
     <div class="ax-act"><button type="button" class="ax-ab1" data-act="axadd" data-m="${mealOf()}">${I('plus', 18)}Добавить еду</button><button type="button" class="ax-ab2" data-act="axaddscan" data-m="${mealOf()}" aria-label="Сканер штрихкода">${I('grid', 20)}<span>Скан</span></button></div>`;
-    h += `<div class="ax-sech"><span>Приёмы пищи</span><button type="button" class="ax-pl" data-act="appopen" data-s="goal">Моя цель</button></div>`;
+    h += `</div><div class="ax-c2"><div class="ax-sech"><span>Приёмы пищи</span><button type="button" class="ax-pl" data-act="appopen" data-s="goal">Моя цель</button></div>`;
     MEALS.forEach(m => { const es = foodDay().filter(e => e.m === m[0]), sum = es.reduce((a, e) => a + e.k, 0);
       h += `<div class="ax-meal"><div class="ax-mh2"><span class="ax-mic ${m[3]}">${I(m[2], 18)}</span><b>${m[1]}</b><span class="k">${sum ? P0(sum) + ' ккал' : ''}</span><button type="button" class="ax-pb" data-act="axadd" data-m="${m[0]}" aria-label="Добавить">${I('plus', 16)}</button></div>${es.length ? es.map(e => `<div class="ax-it"><span class="n"><b>${esc(e.nm)}</b><small>${e.g ? Math.round(e.g) + ' ' + (e.u || 'г') : 'быстрый ввод'}${hide ? '' : ' · Б ' + f1(e.p) + ' · Ж ' + f1(e.f) + ' · У ' + f1(e.c)}</small></span><span class="k">${P0(e.k)}</span><button type="button" class="ax-x" data-act="axdel" data-id="${e.id}" aria-label="Удалить">${I('x', 14)}</button></div>`).join('') : `<div class="ax-em">пока пусто</div>`}</div>`; });
-    return h + calStats() + `<div style="height:110px"></div>`;
+    return h + `</div><div class="ax-c3">` + calStats() + `</div></div><div style="height:110px"></div>`;
   }
   function itemRow(x, i){ const nm = esc(x.nm), sub = x.src === 'seed' || x.src === 'recent' ? `${Math.round(x.port)} ${x.u || 'г'}` : esc((x.br ? x.br + ' · ' : '') + (x.port ? Math.round(x.port) + ' ' + (x.u || 'г') : '100 ' + (x.u || 'г'))); const k = Math.round(x.k * (x.port || 100) / 100);
     return `<div class="ax-li2" data-act="axpick" data-i="${i}"><span class="tx"><b>${nm}</b><small>${sub}</small></span><span class="k">${k} ккал</span><span class="pb">${I('plus', 14)}</span></div>`; }
@@ -10138,20 +10205,20 @@ const AX = (function(){
   function viewWater(){
     const w = wd(), wg = waterGoal(), pct = Math.round(clamp(w / wg.goal, 0, 1) * 100), log = (wlog()[isoT()] || []).slice().reverse(), logSum = log.reduce((a, e) => a + e.v, 0), prior = Math.max(0, w - logSum), done = w >= wg.goal, prevPct = ST.wp == null ? pct : ST.wp; ST.wp = pct; if (prevPct !== pct) requestAnimationFrame(() => requestAnimationFrame(() => { const e = document.querySelector('.ax-wt .wave'); if (e) e.style.setProperty('--w', pct + '%'); }));
     return back() + `<div class="ax-h1">Вода</div><div class="ax-sub">Цель на сегодня — ${P0(wg.goal)} мл${wg.tr ? ' · с тренировкой +500' : ''}</div>
-    <div class="ax-wt"><div class="wave" style="--w:${prevPct}%;--ph:${-(Date.now() % 9000)}ms;--ph2:${-(Date.now() % 14000)}ms"><i class="bb" style="--l:16%;--d:0s"></i><i class="bb" style="--l:40%;--s:4px;--d:1.8s"></i><i class="bb" style="--l:66%;--s:7px;--d:3.1s"></i><i class="bb" style="--l:86%;--s:5px;--d:.9s"></i></div>
+    <div class="ax-cols"><div class="ax-c1"><div class="ax-wt"><div class="wave" style="--w:${prevPct}%;--ph:${-(Date.now() % 9000)}ms;--ph2:${-(Date.now() % 14000)}ms"><i class="bb" style="--l:16%;--d:0s"></i><i class="bb" style="--l:40%;--s:4px;--d:1.8s"></i><i class="bb" style="--l:66%;--s:7px;--d:3.1s"></i><i class="bb" style="--l:86%;--s:5px;--d:.9s"></i></div>
       <span class="pc">${pct}%</span><div class="n">${P0(w)}<i> мл</i></div><small>${done ? 'норма выполнена — отлично' : 'ещё ' + P0(wg.goal - w) + ' мл до нормы'}</small></div>
     <div class="ax-wb">${[150, 250, 330, 500].map(v => `<button type="button" data-act="axwater" data-v="${v}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${WIC[v]}</svg><b>+${v}</b><small>мл</small></button>`).join('')}</div>
     <div class="ax-wc"><input id="ax-wc" type="number" inputmode="numeric" placeholder="Свой объём, мл" min="10" max="2000"><button type="button" data-act="axwcust">Добавить</button></div>
-    <div class="ax-sech"><span>Сегодня выпито</span><em class="ax-cnt">${log.length ? log.length + ' ' + (log.length === 1 ? 'раз' : log.length < 5 ? 'раза' : 'раз') : ''}</em></div>
+    </div><div class="ax-c2"><div class="ax-sech"><span>Сегодня выпито</span><em class="ax-cnt">${log.length ? log.length + ' ' + (log.length === 1 ? 'раз' : log.length < 5 ? 'раза' : 'раз') : ''}</em></div>
     <div class="ax-hist">${log.length ? log.map(e => `<div class="ax-hi"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">${hhmm(e.t)}</span><b>+${P0(e.v)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdel" data-id="${e.id}" aria-label="Удалить">${I('x', 14)}</button></div>`).join('') : ''}${prior ? `<div class="ax-hi old"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">раньше</span><b>${P0(prior)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdelold" aria-label="Удалить">${I('x', 14)}</button></div>` : ''}${!log.length && !prior ? '<div class="ax-em" style="padding:14px">Пока ничего не выпито — нажми на стакан выше</div>' : ''}</div>
     ${waterStats()}
-    <button type="button" class="ax-clr${ST.wclr ? ' arm' : ''}" data-act="axwclear">${ST.wclr ? 'Нажми ещё раз — сотру всю историю воды' : 'Очистить всю историю воды'}</button><div class="ax-note">Цель считается от веса (≈30 мл на кг) и сдвигается в дни с тренировкой.</div><div style="height:130px"></div>`;
+    <button type="button" class="ax-clr${ST.wclr ? ' arm' : ''}" data-act="axwclear">${ST.wclr ? 'Нажми ещё раз — сотру всю историю воды' : 'Очистить всю историю воды'}</button><div class="ax-note">Цель считается от веса (≈30 мл на кг) и сдвигается в дни с тренировкой.</div></div></div><div style="height:130px"></div>`;
   }
   function viewGames(){
-    const L = REST.list(); const day = L.find(x => x.day);
+    gameLoad(); const L = REST.list(); const day = L.find(x => x.day);
     return back() + `<div class="ax-h1">Игры</div><div class="ax-sub">Играй когда угодно, не только между подходами</div>
-    ${day && !isPro() ? `<div class="ax-gd" data-act="axgame" data-i="${day.i}"><span class="im">${day.th}</span><span class="tx"><small>★ ИГРА ДНЯ · БЕСПЛАТНО</small><b>${esc(day.n)}</b><small>твой рекорд ${day.best ? P0(day.best) : '—'}</small></span><button type="button" class="ax-btn sm">Играть</button></div>` : ''}
-    <div class="ax-gg">${L.map(x => `<div class="ax-gc" data-act="axgame" data-i="${x.i}"><div class="th">${x.th}${x.pro && !isPro() ? '<span class="pro">PRO</span>' : ''}</div><b>${esc(x.n)}</b><small>${x.pro && !isPro() && !x.day ? 'открыть с PRO' : x.best ? 'рекорд ' + P0(x.best) : 'без рекорда'}</small></div>`).join('')}<div class="ax-gc ax-gs" data-act="appgsug"><div class="th"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><b>Предложить</b><small>свою игру</small></div></div><div style="height:130px"></div>`;
+    ${day && !day.own ? `<div class="ax-gd" data-act="axgame" data-i="${day.i}"><span class="im">${day.th}</span><span class="tx"><small>★ ИГРА ДНЯ · БЕСПЛАТНО</small><b>${esc(day.n)}</b><small>твой рекорд ${day.best ? P0(day.best) : '—'}</small></span><button type="button" class="ax-btn sm">Играть</button></div>` : ''}
+    <div class="ax-gg">${L.map(x => `<div class="ax-gc" data-act="axgame" data-i="${x.i}"><div class="th">${x.th}${!x.own ? '<span class="pro">PRO</span>' : ''}</div><b>${esc(x.n)}</b><small>${!x.own && !x.day ? '⭐ ' + (SHOP.prices.game || 19) : x.best ? 'рекорд ' + P0(x.best) : 'без рекорда'}</small></div>`).join('')}<div class="ax-gc ax-gs" data-act="appgsug"><div class="th"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><b>Предложить</b><small>свою игру</small></div></div><div style="height:130px"></div>`;
   }
   function view(){ const s = ST.s; return `<div class="ax-pg">${s === 'cal' ? viewCal() : s === 'water' ? viewWater() : s === 'games' ? viewGames() : s === 'shop' ? back() + viewShop() : s === 'add' ? viewAdd() : s === 'found' ? viewFound() : s === 'new' ? viewNew() : s === 'goal' ? viewGoal() : ''}</div>`; }
 
@@ -10264,6 +10331,7 @@ const AX = (function(){
     appsheet: () => openSheetApps(),
     appgsug: () => { hap.tap(); openFeedback('idea', null, 'game'); },
     appsug: () => { hap.tap(); if (sheetCtx && sheetCtx.type === 'apps') closeSheet(); setTimeout(() => openFeedback('idea', null, true), 60); },
+    appweight: el => { if (sheetCtx && sheetCtx.type === 'apps') closeSheet(); ACT.tab({dataset: {tab: 'weight'}}); },
     appopen: el => { if (sheetCtx && sheetCtx.type === 'apps') closeSheet(); const s = el.dataset.s; ST.stack = []; ST.s = ''; ST.off = 0; go(s); },
     axday: el => { ST.off = clamp(+el.dataset.o, -13, 0); hap.tap(); render(); },
     appback: () => goBack(),
@@ -10298,7 +10366,7 @@ const AX = (function(){
     axunit: el => { const n = readNw(); n.u = el.dataset.v === 'мл' ? 'мл' : ''; hap.tap(); render(); },
     axmode: el => { CAL().mode = el.dataset.v; save(); hap.tap(); render(); },
     axtog: el => { const c = CAL(), k = el.dataset.k; c[k] = !c[k]; if (k === 'on' && c.on && !(+c.custom >= 800)) c.custom = goalInfo().auto; save(); hap.tap(); render(); },
-    axgame: el => { const i = +el.dataset.i; const L = REST.list().find(x => x.i === i); if (L && L.pro && !isPro() && !L.day) { hap.tap(); openPro(); return; } REST.play(i); },
+    axgame: el => { const i = +el.dataset.i; const L = REST.list().find(x => x.i === i); if (L && !L.own && !L.day) { hap.tap(); gameBuy(L.k); return; } REST.play(i); },
     axscan: () => { hap.tap(); openScan(); },
     axscanx: () => { hap.tap(); closeScan(); },
     axtor: () => torch(),

@@ -339,7 +339,13 @@ async function shopPrices(): Promise<Record<string, number>> {
   return o;
 }
 // есть ли у человека предмет (комплект считается, если есть и рамка, и фон)
+// v1.883: PRO-игры за ⭐ навсегда: «game» — одна игра, «games» — все сразу (item = all)
+const SHOP_GAMES = new Set(["tile", "slice", "memo", "aim", "jump", "dart", "bike", "spk", "zig", "road"]);
 async function shopHas(tg: number, kind: string, item: string) {
+  if (kind === "game" || kind === "games") {
+    const { data: g } = await db.from("shop_owned").select("kind, item").eq("tg_id", tg).in("kind", ["game", "games"]).is("refunded_at", null);
+    return (g ?? []).some((r: any) => r.kind === "games" || (kind === "game" && r.item === item));
+  }
   const { data } = await db.from("shop_owned").select("kind").eq("tg_id", tg).eq("item", item).is("refunded_at", null);
   const k = new Set((data ?? []).map((r: any) => r.kind));
   return kind === "kit" ? k.has("kit") || (k.has("frame") && k.has("bg")) : k.has(kind) || k.has("kit");
@@ -354,7 +360,10 @@ async function routeShopInvoice(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
   const kind = String(body?.kind ?? ""), item = String(body?.item ?? "");
-  if (!["frame", "bg", "kit"].includes(kind) || !SHOP_RE.test(item)) return fail("Неизвестный предмет");
+  if (!["frame", "bg", "kit", "game", "games"].includes(kind) || !SHOP_RE.test(item)) return fail("Неизвестный предмет");
+  if (kind === "game" && !SHOP_GAMES.has(item)) return fail("Неизвестная игра");
+  if (kind === "games" && item !== "all") return fail("Неизвестный предмет");
+  if ((kind === "game" || kind === "games") && Number(body?.for ?? 0)) return fail("Игры пока нельзя дарить", 400);
   if (await isLocked(me)) return fail("Оплата недоступна, пока подписка заморожена или аккаунт ждёт удаления", 423);
   const stars = (await shopPrices())[kind];
   if (!stars) return fail("Цена не задана", 500);
@@ -364,11 +373,11 @@ async function routeShopInvoice(body: any) {
     if ((await deactivatedSet([to])).size) return fail("Пользователь недоступен", 404);
   }
   if (await shopHas(to || me, kind, item)) return fail(to ? "Это уже есть у друга" : "Это уже у тебя", 409);
-  const what = kind === "frame" ? "Рамка для аватарки" : kind === "kit" ? "Комплект: рамка и фон" : "Фон профиля";
+  const what = kind === "frame" ? "Рамка для аватарки" : kind === "kit" ? "Комплект: рамка и фон" : kind === "game" ? "Игра в VOOB" : kind === "games" ? "Все PRO-игры VOOB" : "Фон профиля";
   const title = to ? (kind === "frame" ? "Подарок: рамка для друга" : kind === "kit" ? "Подарок: комплект" : "Подарок: фон для друга") : what;
   const fu = to ? await userInfo(to) as any : null;
   const r = await tg("createInvoiceLink", {
-    title, description: (to ? `${what} в VOOB для ${displayName(fu)}. Останется у друга навсегда.` : `${what} в VOOB. Остаётся у тебя навсегда.`).slice(0, 255),
+    title, description: (to ? `${what} в VOOB для ${displayName(fu)}. Останется у друга навсегда.` : kind === "game" || kind === "games" ? `${what}: играй между подходами и в разделе «Игры». Остаётся у тебя навсегда, без подписки.` : `${what} в VOOB. Остаётся у тебя навсегда.`).slice(0, 255),
     payload: to ? `shop:${kind}:${item}:${me}:${to}` : `shop:${kind}:${item}:${me}`,
     provider_token: "", currency: "XTR", prices: [{ label: title, amount: stars }],
   });
@@ -399,7 +408,7 @@ async function routeShopLooks(body: any) {
   return json({ bgs, frs });
 }
 function parseShopPayload(s: string) {
-  const m = /^shop:(frame|bg|kit):([a-z0-9]{3,16}):(\d+)(?::(\d+))?$/.exec(s || "");
+  const m = /^shop:(frame|bg|kit|game|games):([a-z0-9]{3,16}):(\d+)(?::(\d+))?$/.exec(s || "");
   return m ? { kind: m[1], item: m[2], tg: Number(m[3]), to: m[4] ? Number(m[4]) : 0 } : null;
 }
 
@@ -445,7 +454,7 @@ async function onPaid(msg: any) {
     }
     const row = Array.isArray(data) ? data[0] : data;
     if (row?.dup) return;
-    const word = sh.kind === "frame" ? "Рамка" : sh.kind === "kit" ? "Комплект" : "Фон";
+    const word = sh.kind === "frame" ? "Рамка" : sh.kind === "kit" ? "Комплект" : sh.kind === "game" ? "Игра" : sh.kind === "games" ? "Все игры" : "Фон";
     if (sh.to) {                                             // v1.792: подарок другу
       await db.from("shop_owned").update({ payer_id: msg.from.id }).eq("charge_id", sp.telegram_payment_charge_id);
       const fu = await userInfo(sh.to) as any, me = await userInfo(msg.from.id) as any;
