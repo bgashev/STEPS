@@ -8372,7 +8372,7 @@ const REST = (function(){
   const DUR = {barbell:120, squat:90, pullup:90, pushup:60, dumbbell:60, burpee:45, abs:45, plank:45};
   const R = 2 * Math.PI * 52;
   let free = false, apps = false, cust = false, act = null, total = 0, endAt = 0, run = false, done = false, min = false, view = 'rest', iv = 0, el = null, pill = null, ac = null, doneT = 0;
-  const secFor = a => s.per[a] || DUR[a] || s.std || 90;
+  const secFor = a => s.per[a] || DUR[a] || s.std || 120;
   const left = () => Math.max(0, (endAt - Date.now()) / 1000);
   const fmtT = x => { x = Math.max(0, Math.ceil(x)); return Math.floor(x / 60) + ':' + ('0' + (x % 60)).slice(-2); };
   const nameOf = a => { const r = (typeof ACTS !== 'undefined' ? ACTS : []).find(x => x[0] === a); return r ? r[1] : ''; };
@@ -9215,7 +9215,7 @@ const REST = (function(){
     <div class="tgl${s.game ? ' on' : ''}" data-act="rtog" data-k="game" style="margin-top:12px"><span class="sw2"></span><b>Мини-игры «Сыграть до гонга»</b></div>
     <div class="cap" style="margin-top:8px">Игра идёт только пока длится отдых и закрывается вместе с таймером.</div>
     <div class="pbstd" style="margin-top:14px"><span class="pbsi">${IC('clock', 18)}</span><div class="pbst"><b>Отдых</b><small>для новых подходов</small></div><div class="pbcap"><button type="button" class="pbb" data-act="rtstd" data-d="-1" aria-label="Меньше">${IC('minus', 14)}</button><span class="pbsv" id="rt-std">${fmtRs(s.std || 90)}</span><button type="button" class="pbb" data-act="rtstd" data-d="1" aria-label="Больше">${IC('plus', 14)}</button></div></div></div>`;
-  return {start, card, s, std: () => s.std || 90, setStd(v){ s.std = v; save(); }, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH,
+  return {start, card, s, std: () => s.std || 120, setStd(v){ s.std = v; save(); }, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH,
     dayInfo(){ const i = dayGi(), g = GAMES[i]; return {i, k:g.k, n:g.n, best:s.best[g.k] || 0, th:TH(g.k)}; },
     playDay(){ if (run) { min = false; view = 'rest'; render(); return; } start(null, 10800); free = true; apps = true; openGame(dayGi()); },   // v1.860: как play(): после выхода из игры окно закрывается, а не показывает таймер отдыха
     refresh(){ if (run && view === 'pick') render(); },
