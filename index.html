@@ -1112,21 +1112,28 @@ html:not(.web) body:has(#sw.open) .rt-pill{bottom:auto}
 @keyframes rkshm{from{background-position:120% 0}to{background-position:-120% 0}}
 .rt-rk .rk-t svg{animation:rkbob 1.6s ease-in-out infinite}@keyframes rkbob{50%{transform:translateY(-2.5px) rotate(-6deg)}}
 .rk-s{font-size:19px;font-weight:850;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
-/* v1.880: подиум рейтинга — стеклянные ступени топ-3 */
-.rk-pod{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;align-items:end;padding:14px 4px 8px}
-.rk-pc{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;animation:rtup .45s both}
-.rk-pc .rk-a{width:46px;height:46px;font-size:18px}.rk-pc.p1 .rk-a{width:58px;height:58px;font-size:22px;box-shadow:0 0 0 2.5px #ffd166,0 0 24px rgba(255,209,102,.45)}
-.rk-pc.p2 .rk-a{box-shadow:0 0 0 2px #cfd5e2}.rk-pc.p3 .rk-a{box-shadow:0 0 0 2px #e39a5b}
-.rk-pc.me .rk-a{box-shadow:0 0 0 2.5px var(--accent),0 0 20px rgba(180,167,238,.5)}
-.rk-cr{width:22px;height:22px;stroke:#ffd166;fill:rgba(255,209,102,.25);stroke-width:2;margin-bottom:-4px;animation:rkbob 1.8s ease-in-out infinite}
-.rk-pn{max-width:100%;font-size:12.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rk-pc.me .rk-pn{color:var(--accent)}
-.rk-pb{position:relative;width:100%;border-radius:14px 14px 5px 5px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:9px 0 6px;border:1px solid rgba(255,255,255,.16);transform-origin:bottom;animation:rkgrow .7s both cubic-bezier(.2,.9,.2,1);background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.04))}
-.rk-pb::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.22),transparent 40%);pointer-events:none}
-.rk-pb b{font-size:21px;font-weight:900;letter-spacing:-.5px;font-variant-numeric:tabular-nums}.rk-pb i{font-style:normal;font-size:12px;font-weight:900;opacity:.6}
-.rk-pc.p1 .rk-pb{height:112px;background:linear-gradient(180deg,rgba(255,209,102,.7),rgba(255,209,102,.1));border-color:rgba(255,209,102,.6);box-shadow:0 0 26px rgba(255,209,102,.22)}
-.rk-pc.p2 .rk-pb{height:84px;background:linear-gradient(180deg,rgba(207,213,226,.55),rgba(207,213,226,.07))}
-.rk-pc.p3 .rk-pb{height:64px;background:linear-gradient(180deg,rgba(227,154,91,.6),rgba(227,154,91,.07))}
-.rk-pc.me .rk-pb{border-color:var(--accent)}
+/* v1.880: подиум рейтинга — стеклянные ступени топ-3, металлические кольца, 2.5D-грань, прожектор */
+.rk-pod{position:relative;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:9px;align-items:end;padding:22px 4px 14px;margin-bottom:4px;isolation:isolate}
+.rk-pod::before{content:"";position:absolute;left:50%;top:-6px;width:78%;height:92%;transform:translateX(-50%);background:radial-gradient(60% 70% at 50% 0,rgba(255,209,102,.20),transparent 72%);z-index:-1;pointer-events:none}
+.rk-pod::after{content:"";position:absolute;left:6%;right:6%;bottom:8px;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);box-shadow:0 0 14px rgba(180,167,238,.5)}
+.rk-pc{--mc:#cfd5e2;--mg:rgba(207,213,226,.22);position:relative;display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;animation:rtup .5s both}
+.rk-pc.p1{--mc:#ffd166;--mg:rgba(255,209,102,.5)}.rk-pc.p3{--mc:#e39a5b;--mg:rgba(227,154,91,.35)}
+.rk-pc .rk-a{width:48px;height:48px;font-size:18px;box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--mc),0 6px 22px var(--mg)}
+.rk-pc.p1 .rk-a{width:62px;height:62px;font-size:24px;box-shadow:0 0 0 3.5px var(--bg),0 0 0 6px var(--mc),0 0 30px var(--mg)}
+.rk-pc.me .rk-a{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--accent),0 6px 24px rgba(180,167,238,.55)}
+.rk-cr{width:26px;height:26px;stroke:#ffd166;fill:rgba(255,209,102,.3);stroke-width:1.8;margin-bottom:-6px;filter:drop-shadow(0 0 8px rgba(255,209,102,.7));animation:rkbob 1.8s ease-in-out infinite}
+.rk-sp{position:absolute;width:7px;height:7px;background:#fff;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);opacity:0;animation:rkspk 2.4s ease-in-out infinite;pointer-events:none}
+@keyframes rkspk{0%,100%{opacity:0;transform:scale(.3)}50%{opacity:.95;transform:scale(1.1)}}
+.rk-pn{max-width:100%;font-size:12.5px;font-weight:800;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rk-pc.me .rk-pn{color:var(--accent)}
+.rk-pb{position:relative;width:100%;border-radius:14px 14px 4px 4px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;padding:15px 0 0;border:1px solid rgba(255,255,255,.14);border-bottom:0;transform-origin:bottom;animation:rkgrow .8s both cubic-bezier(.2,.9,.2,1);background:linear-gradient(180deg,color-mix(in srgb,var(--mc) 42%,transparent),color-mix(in srgb,var(--mc) 5%,transparent) 88%);box-shadow:0 -10px 30px var(--mg)}
+.rk-pb::before{content:"";position:absolute;left:0;right:0;top:0;height:9px;background:linear-gradient(180deg,rgba(255,255,255,.55),color-mix(in srgb,var(--mc) 45%,transparent));border-bottom:1px solid rgba(255,255,255,.35)}
+.rk-pb::after{content:"";position:absolute;inset:0;background:linear-gradient(112deg,rgba(255,255,255,.22) 0,transparent 34%,transparent 62%,rgba(255,255,255,.07) 100%);pointer-events:none}
+.rk-pb b{position:relative;z-index:1;font-size:24px;font-weight:900;letter-spacing:-.8px;font-variant-numeric:tabular-nums;text-shadow:0 2px 12px rgba(0,0,0,.35)}
+.rk-pb i{position:absolute;left:0;right:0;bottom:-8px;text-align:center;font-style:normal;font-weight:900;font-size:62px;line-height:1;color:transparent;-webkit-text-stroke:1.5px color-mix(in srgb,var(--mc) 55%,transparent);opacity:.75}
+.rk-pc.p1 .rk-pb{height:142px}.rk-pc.p2 .rk-pb{height:110px}.rk-pc.p3 .rk-pb{height:94px}
+.rk-pc.p1 .rk-pb i{font-size:66px}.rk-pc.p2 .rk-pb i{font-size:52px}.rk-pc.p3 .rk-pb i{font-size:46px}
+.rk-pc.me .rk-pb{border-color:var(--accent);box-shadow:0 -10px 30px rgba(180,167,238,.35)}
+.rk-you{font-size:9px;font-weight:900;letter-spacing:.12em;background:var(--accent);color:#1D1D24;padding:2px 7px;border-radius:7px;margin-top:-3px}
 @keyframes rkgrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 .rk-l .rk-r>.rk-n{border-radius:50%;width:28px;height:28px;font-size:12.5px;border:1px solid var(--border);background:linear-gradient(145deg,var(--surface2),var(--surface))}
 .rk-r.z .rk-s{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0}
@@ -4099,7 +4106,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.880';
+const APP = 'VOOB (by BGASHEV) Mini App v1.881';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9099,11 +9106,12 @@ const REST = (function(){
       /* v1.880: стеклянный подиум для топ-3 (с результатом > 0), остальные друзья — списком с номером места */
       const pn = Math.min(3, rows.filter(r => r.best > 0).length);
       L.innerHTML = (pn ? podium(rows.slice(0, pn)) : '') + rows.slice(pn).map((r, i) => row(r, i + pn, top)).join('');
+      L.querySelectorAll('.rk-pb b[data-v]').forEach(e => { const v = +e.dataset.v, t0 = performance.now(); (function st(t){ const k = Math.min(1, (t - t0 - 250) / 800); e.textContent = k <= 0 ? 0 : Math.round(v * (1 - Math.pow(1 - k, 3))); if (k < 1 && e.isConnected) requestAnimationFrame(st); else e.textContent = v; })(t0); });
     }).catch(() => { if (bx.isConnected) L.innerHTML = '<div class="rk-em">Не получилось загрузить<br><small>Проверь связь и открой снова</small></div>'; });
     function podium(t){
       const ord = t.length === 3 ? [1, 0, 2] : t.length === 2 ? [1, 0] : [0];
       return '<div class="rk-pod">' + ord.map(i => { const r = t[i], ph = (typeof FR !== 'undefined' && FR.ph && FR.ph.get(r.tg_id)) || '', nm = r.name || 'Игрок', init = esc(nm.trim().charAt(0).toUpperCase() || '?');
-        return '<div class="rk-pc p' + (i + 1) + (r.me ? ' me' : '') + '" style="animation-delay:' + i * 90 + 'ms">' + (i === 0 ? '<svg class="rk-cr" viewBox="0 0 24 24"><path d="M3 18l1.5-10 5 4L12 5l2.5 7 5-4L21 18z"/></svg>' : '') + '<span class="rk-a">' + (ph ? '<img src="' + ph + '" alt="">' : init) + '</span><span class="rk-pn">' + esc(r.me ? 'Ты' : nm) + '</span><span class="rk-pb"><b>' + r.best + '</b><i>' + (i + 1) + '</i></span></div>'; }).join('') + '</div>';
+        return '<div class="rk-pc p' + (i + 1) + (r.me ? ' me' : '') + '" style="animation-delay:' + i * 90 + 'ms">' + (i === 0 ? '<svg class="rk-cr" viewBox="0 0 24 24"><path d="M3 18l1.5-10 5 4L12 5l2.5 7 5-4L21 18z"/></svg>' : '') + '<span class="rk-a">' + (ph ? '<img src="' + ph + '" alt="">' : init) + '</span>' + '<span class="rk-pn">' + esc(nm) + '</span>' + (r.me ? '<span class="rk-you">ТЫ</span>' : '') + '<span class="rk-pb"><b data-v="' + r.best + '">0</b><i>' + (i + 1) + '</i></span>' + (i === 0 ? '<u class="rk-sp" style="left:8%;top:14px"></u><u class="rk-sp" style="right:6%;top:30px;animation-delay:.8s"></u><u class="rk-sp" style="left:20%;top:64px;animation-delay:1.5s;width:5px;height:5px"></u>' : '') + '</div>'; }).join('') + '</div>';
     }
     function row(r, i, top){
       const ph = (typeof FR !== 'undefined' && FR.ph && FR.ph.get(r.tg_id)) || '', nm = r.name || 'Игрок', init = esc(nm.trim().charAt(0).toUpperCase() || '?');
