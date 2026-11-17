@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.964';
+const APP = 'VOOB (by BGASHEV) Mini App v1.965';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -8806,26 +8806,34 @@ const REST = (function(){
       c.save(); c.globalAlpha = al == null ? 1 : al; c.lineJoin = 'round';
       c.fillStyle = gold ? '#c8921a' : 'hsl(' + h + ',58%,45%)'; c.beginPath(); c.moveTo(D[0], D[1]); c.lineTo(Cc[0], Cc[1]); c.lineTo(Cc[0], Cc[1] + th); c.lineTo(D[0], D[1] + th); c.closePath(); c.fill();
       c.fillStyle = gold ? '#8a5f08' : 'hsl(' + h + ',60%,31%)'; c.beginPath(); c.moveTo(B[0], B[1]); c.lineTo(Cc[0], Cc[1]); c.lineTo(Cc[0], Cc[1] + th); c.lineTo(B[0], B[1] + th); c.closePath(); c.fill();
-      c.fillStyle = gold ? '#ffd75a' : 'hsl(' + h + ',' + (mv ? 88 : 70) + '%,' + (mv ? 72 : 63) + '%)'; c.beginPath(); c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); c.lineTo(Cc[0], Cc[1]); c.lineTo(D[0], D[1]); c.closePath(); c.fill();
+      c.fillStyle = gold ? '#ffd75a' : 'hsl(' + h + ',68%,62%)'; c.beginPath(); c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); c.lineTo(Cc[0], Cc[1]); c.lineTo(D[0], D[1]); c.closePath(); c.fill();
       if (fl > 0) { c.globalAlpha = Math.min(1, fl) * (al == null ? 1 : al); c.fillStyle = '#fff'; c.fill(); c.globalAlpha = al == null ? 1 : al; }
-      c.strokeStyle = 'rgba(255,255,255,' + (mv ? .95 : .5) + ')'; c.lineWidth = mv ? 2.4 : 1.2; c.beginPath(); if (mv) { c.moveTo(A[0], A[1]); c.lineTo(B[0], B[1]); c.lineTo(Cc[0], Cc[1]); c.lineTo(D[0], D[1]); c.closePath(); } else { c.moveTo(D[0], D[1]); c.lineTo(Cc[0], Cc[1]); c.lineTo(B[0], B[1]); } c.stroke();
-      c.strokeStyle = 'rgba(0,0,0,.25)'; c.lineWidth = 1; c.beginPath(); c.moveTo(Cc[0], Cc[1]); c.lineTo(Cc[0], Cc[1] + th); c.stroke(); c.restore(); };
-    g.draw = c => { c.save(); if (g.sh > 0) c.translate((Math.random() - .5) * 7 * g.sh, (Math.random() - .5) * 7 * g.sh);
+      c.restore(); };
+    const drawIso = c => { c.save(); if (g.sh > 0) c.translate((Math.random() - .5) * 7 * g.sh, (Math.random() - .5) * 7 * g.sh);
       const hb = g.hb, bg = c.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, 'hsl(' + ((hb + 40) % 360) + ',45%,9%)'); bg.addColorStop(1, 'hsl(' + hb + ',50%,20%)'); c.fillStyle = bg; c.fillRect(-10, -10, W + 20, H + 20);
       drawStars(c, g, g.cam * BH * 3); (g.dust || []).forEach(q => { c.globalAlpha = .25 + .25 * Math.sin(g.t * 2 + q.ph); c.fillStyle = '#fff'; c.beginPath(); c.arc(q.x + Math.sin(g.t + q.ph) * 8, q.y, q.r, 0, 7); c.fill(); }); c.globalAlpha = 1;
       { const tp = ip(W / 2, 0, g.st.length - 1); glow(c, tp[0], tp[1], 190, 'hsl(' + ((hb + 25) % 360) + ',90%,65%)', .22); }
       g.st.forEach((b, k) => { const y = sy(k); if (y < -BH * 2 || y > H + BH * 6) return; const last = k === g.st.length - 1; blk(c, b.x, b.w, k, last ? Math.sin(g.bn * 3.14) * 4 : 0, last ? g.flash * .55 : 0, false); });
       g.fall.forEach(f => { blk(c, f.x + (f.dx || 0), f.w, f.lv, f.off, 0, false, Math.max(0, .9 - f.off / (H * .7))); });
       g.rip.forEach(q => { const t = 1 - q.l / .5, e = t * 22, d = DP / 2, P1 = ip(q.x - e, -d - e, q.k), P2 = ip(q.x + q.w + e, -d - e, q.k), P3 = ip(q.x + q.w + e, d + e, q.k), P4 = ip(q.x - e, d + e, q.k); c.globalAlpha = (1 - t) * .9; c.strokeStyle = '#fff'; c.lineWidth = 2.5; c.shadowColor = C.gr; c.shadowBlur = 12; c.beginPath(); c.moveTo(P1[0], P1[1]); c.lineTo(P2[0], P2[1]); c.lineTo(P3[0], P3[1]); c.lineTo(P4[0], P4[1]); c.closePath(); c.stroke(); c.shadowBlur = 0; }); c.globalAlpha = 1;
-      if (!g.dead) { const m = g.mv, k = g.st.length; if (g.turbo) { const q = ip(m.x + m.w / 2, 0, k); glow(c, q[0], q[1], m.w * .9, GD, .5); } const top = g.st[k - 1], l = Math.max(m.x, top.x), r = Math.min(m.x + m.w, top.x + top.w), d = DP / 2;
-        if (r > l) { const P = [ip(l, -d, k - 1), ip(r, -d, k - 1), ip(r, d, k - 1), ip(l, d, k - 1)]; c.fillStyle = 'rgba(255,255,255,.3)'; c.beginPath(); P.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath(); c.fill(); }
-        blk(c, m.x, m.w, k, 0, g.turbo ? .12 * (1 + Math.sin(g.t * 14)) : 0, g.turbo, null, true);
-        [[m.x, Math.min(m.x + m.w, top.x)], [Math.max(m.x, top.x + top.w), m.x + m.w]].forEach(([a0, a1]) => { if (a1 - a0 > .5) { const P = [ip(a0, -d, k), ip(a1, -d, k), ip(a1, d, k), ip(a0, d, k)]; c.fillStyle = 'rgba(255,70,90,.5)'; c.beginPath(); P.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath(); c.fill(); } });
-        if (Math.abs(m.x - top.x) < 5) { const P = [ip(m.x, -d, k), ip(m.x + m.w, -d, k), ip(m.x + m.w, d, k), ip(m.x, d, k)]; c.strokeStyle = C.gr; c.lineWidth = 3.4; c.beginPath(); P.forEach((q, i) => i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1])); c.closePath(); c.stroke(); } }
+      if (!g.dead) { const m = g.mv, k = g.st.length; if (g.turbo) { const q = ip(m.x + m.w / 2, 0, k); glow(c, q[0], q[1], m.w * .9, GD, .5); } blk(c, m.x, m.w, k, 0, g.turbo ? .12 * (1 + Math.sin(g.t * 14)) : 0, g.turbo); }
       drawFx(c, g);
       if (g.ms > 0) { c.globalAlpha = Math.min(1, g.ms * 1.2); c.fillStyle = C.ac; c.font = '800 34px ' + C.ff; c.textAlign = 'center'; c.fillText(g.mf + ' этажей!', W / 2, 120 - (1.4 - g.ms) * 10); c.globalAlpha = 1; }
       if (g.flash > 0) { c.globalAlpha = Math.min(1, g.flash * 1.6); c.fillStyle = C.gr; c.font = '800 16px ' + C.ff; c.textAlign = 'center'; c.fillText(g.perf >= 3 ? 'ИДЕАЛЬНО ×' + g.perf + ' · блок шире' : 'ИДЕАЛЬНО', W / 2, 70 - (1 - g.flash) * 14); c.globalAlpha = 1; }
       if (g.score === 0 && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — поставить блок', W / 2, H * .3); } c.restore(); };
+    const colF = k => 'hsl(' + (255 + (k * 7) % 70) + ',68%,' + (70 - (k % 2) * 6) + '%)';
+    const drawFlat = c => { c.save(); if (g.sh > 0) c.translate((Math.random() - .5) * 7 * g.sh, (Math.random() - .5) * 7 * g.sh); drawStars(c, g, g.cam * BH * 3);
+      g.st.forEach((b, k) => { const y = sy(k); if (y < -BH || y > H + BH) return; c.fillStyle = colF(k); rr(c, b.x, y - BH + 2, b.w, BH - 3, 5); c.fill(); });
+      g.fall.forEach(f => { c.globalAlpha = .8; c.fillStyle = colF(f.lv); rr(c, f.x, sy(f.lv) - BH + 2 + f.off, f.w, BH - 3, 5); c.fill(); c.globalAlpha = 1; });
+      if (!g.dead) { c.fillStyle = g.turbo ? GD : colF(g.st.length); if (g.turbo) glow(c, g.mv.x + g.mv.w / 2, sy(g.st.length) - BH / 2, g.mv.w * .8, GD, .45); rr(c, g.mv.x, sy(g.st.length) - BH + 2, g.mv.w, BH - 3, 5); c.fill(); }
+      g.rip.forEach(q => { const t = 1 - q.l / .5; c.globalAlpha = (1 - t) * .8; c.strokeStyle = C.gr; c.lineWidth = 2; rr(c, q.x - t * 10, sy(q.k) - BH + 2 - t * 8, q.w + t * 20, BH - 3 + t * 16, 8); c.stroke(); }); c.globalAlpha = 1; drawFx(c, g);
+      if (g.ms > 0) { c.globalAlpha = Math.min(1, g.ms * 1.2); c.fillStyle = C.ac; c.font = '800 34px ' + C.ff; c.textAlign = 'center'; c.fillText(g.mf + ' этажей!', W / 2, 120 - (1.4 - g.ms) * 10); c.globalAlpha = 1; }
+      if (g.flash > 0) { c.globalAlpha = Math.min(1, g.flash * 1.6); c.fillStyle = C.gr; c.font = '800 16px ' + C.ff; c.textAlign = 'center'; c.fillText(g.perf >= 3 ? 'ИДЕАЛЬНО ×' + g.perf + ' · блок шире' : 'ИДЕАЛЬНО', W / 2, 70 - (1 - g.flash) * 14); c.globalAlpha = 1; }
+      if (g.score === 0 && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — поставить блок', W / 2, H * .3); } c.restore(); };
+    const pill = () => ({x: W / 2 - 92, y: H * .3 + 26, w: 184, h: 34});
+    g.draw = c => { (s.stk === 'f' ? drawFlat : drawIso)(c);
+      if (g.score === 0 && !g.dead) { const q = pill(); c.save(); c.fillStyle = 'rgba(255,255,255,.1)'; rr(c, q.x, q.y, q.w, q.h, 17); c.fill(); c.strokeStyle = 'rgba(255,255,255,.28)'; c.lineWidth = 1.2; c.stroke(); c.fillStyle = '#fff'; c.font = '700 13px ' + C.ff; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('Вид: ' + (s.stk === 'f' ? 'плоский' : 'изометрия') + '  ⇄', W / 2, q.y + q.h / 2 + 1); c.restore(); } };
+    g.down = (x, y) => { const q = pill(); if (g.score === 0 && !g.dead && x >= q.x - 8 && x <= q.x + q.w + 8 && y >= q.y - 8 && y <= q.y + q.h + 8) { s.stk = s.stk === 'f' ? '' : 'f'; save(); hap.tap(); return; } g.tap(); };
     return g; }
 
   function mkWave(){ const g = {}, K = 'wave', Rr = 12, SH = 26, GOLD = '#ffc94a';
