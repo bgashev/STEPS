@@ -4310,7 +4310,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.920';
+const APP = 'VOOB (by BGASHEV) Mini App v1.921';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -4983,6 +4983,7 @@ const IP = {
 (function(){ let s = '<circle cx="9" cy="9" r="2.6"/><circle cx="9" cy="9" r="5"/>';
   for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; s += `<path d="M${(9+5*Math.cos(a)).toFixed(2)} ${(9+5*Math.sin(a)).toFixed(2)}L${(9+7*Math.cos(a)).toFixed(2)} ${(9+7*Math.sin(a)).toFixed(2)}"/>`; }
   IP.gear = s; })();
+IP.pad = '<path d="M5 6.2h8a3.2 3.2 0 0 1 3.1 2.6l.6 3.2a2 2 0 0 1-3.4 1.7L11.6 12H6.4l-1.7 1.7A2 2 0 0 1 1.3 12l.6-3.2A3.2 3.2 0 0 1 5 6.2Z"/><path d="M5.4 8.3v2.5M4.15 9.55h2.5"/><path d="M12 8.7h.01M13.6 10.3h.01"/>';   // v1.921: значок «Игры»
 function IC(n, s = 18){
   if (n.startsWith('n:')) return `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 18 18"><circle cx="9" cy="9" r="7.4"/><text x="9" y="9.4" text-anchor="middle" dominant-baseline="middle" font-size="${n.length > 4 ? 6 : 7}" font-weight="800" fill="currentColor" stroke="none">${n.slice(2)}</text></svg>`;
   return `<svg class="ic" width="${s}" height="${s}" viewBox="0 0 18 18">${IP[n] || ''}</svg>`;
@@ -5724,7 +5725,7 @@ function openGiftPicker(id){
 }
 /* v1.429 · М5: VOOB PRO в подарок другу — оплата звёздами */
 const GP = {id:0, plan:'year', plans:[]};
-const PRO_PERKS = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Значок у имени'], ['gift', 'Премиум-подарки'], ['bolt', '5 подарков в месяц']];
+const PRO_PERKS = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Значок у имени'], ['gift', 'Премиум-подарки'], ['pad', 'Игры'], ['bolt', '5 подарков в месяц']];
 const gpEmblem = (n = 34) => `<div class="ppl-em"><i></i><i></i><span>${IC('crown', n)}</span></div>`;
 const gpPer = p => Math.max(1, Math.round(p.stars / Math.max(1, p.days) * 10) / 10);
 function gpSave(p, plans){ const m = plans.find(x => x.plan === 'month'); if (!m || p.plan === 'month') return 0; const v = Math.round((1 - p.stars / (m.stars * p.days / Math.max(1, m.days))) * 100); return v > 0 ? v : 0; }
@@ -7757,7 +7758,7 @@ function proCardHTML(){
   const plan = (p, best) => p ? `<button type="button" class="prox-plan${best ? ' best' : ''}" data-act="probuy" data-v="${p.plan}"><i>${best ? 'Год' : 'Месяц'}</i>
     <b>${p.stars}<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#E9B949" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.1l-5.7 3.2 1.2-6.4L2.8 9.5l6.4-.8L12 2.8Z"/></svg></b>
     <small>${best ? `≈ ${Math.round(p.stars / 12)} ⭐ в месяц` : 'в месяц'}</small>${p.bonus_days ? `<em>+${p.bonus_days} дней в подарок</em>` : ''}${best && save > 0 ? `<u>−${save}%</u>` : ''}</button>` : '';
-  const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки']];
+  const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки'], ['pad', 'Игры']];
   const min = !!lsGet('voob_pro_min');            // v1.438: плашку можно свернуть, выбор запоминается
   const sub = st.frozen ? `заморожен до ${fmtDate(dn(String(st.frozen_until).slice(0, 10)))}` : st.active ? `до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : (m ? `от ${m.stars} ⭐ в месяц` : 'больше возможностей');   // v1.451: коротко — без обрезки
   const plansH = (st.plans || []).length ? `<div class="prox-plans">${plan(m)}${plan(y, true)}</div>` : '<div class="cap">Загружаю тарифы…</div>', noteH = '<div class="prox-note">Оплата звёздами Telegram · без автопродления</div>';
@@ -7793,7 +7794,7 @@ function proSheetHTML(back){
   const star = '<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#E9B949" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.1l-5.7 3.2 1.2-6.4L2.8 9.5l6.4-.8L12 2.8Z"/></svg>';
   const plan = (p, best) => p ? `<button type="button" class="prox-plan${best ? ' best' : ''}" data-act="probuy" data-v="${p.plan}"><i>${best ? 'Год' : 'Месяц'}</i><b>${p.stars}${star}</b>
     <small>${best ? `≈ ${Math.round(p.stars / 12)} ⭐ в месяц` : 'в месяц'}</small>${p.bonus_days ? `<em>+${p.bonus_days} дней в подарок</em>` : ''}${best && save > 0 ? `<u>−${save}%</u>` : ''}</button>` : '';
-  const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки'], ['bolt', 'До 5 закреплённых']];
+  const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки'], ['pad', 'Игры'], ['bolt', 'До 5 закреплённых']];
   return (back && !(inTG && ver('6.1')) ? `<button type="button" class="fp-back" data-act="sback" aria-label="Назад">${IC('chev', 20)}</button>` : '')
     + `<div class="prosh"><div class="prox-em">${IC('crown', 26)}</div><h2>VOOB PRO</h2>
     <div class="cap">${st.frozen ? `Заморожена до ${fmtDate(dn(String(st.frozen_until).slice(0, 10)))}` : st.active ? `Подписка активна до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : 'Больше возможностей для твоих тренировок'}</div>
@@ -11412,7 +11413,7 @@ function lvSheetHTML(xp, name){
 ACT.lvinfo = el => { hap.imp(); openSheet(lvSheetHTML(+el.dataset.xp || 0, el.dataset.nm || ''), {type:'lv'}); $('#sheet').classList.add('xl'); };
 // М2 п.10: плашка «подписчик VOOB PRO» по нажатию на значок PRO
 function proPlateHTML(name){
-  const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки'], ['bolt', 'До 5 закреплённых']];
+  const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки'], ['pad', 'Игры'], ['bolt', 'До 5 закреплённых']];
   return `<div class="ppl"><div class="ppl-em"><i></i><i></i><span>${IC('crown', 34)}</span></div><div class="ppl-k">VOOB PRO</div>
     <h2>${name ? esc(name) : 'Этот пользователь'}</h2><div class="cap">подписчик VOOB PRO</div>
     <div class="prox-perks" style="justify-content:center">${perks.map(([i, t]) => `<span>${IC(i, 13)}${t}</span>`).join('')}</div>
@@ -11455,8 +11456,8 @@ ACT.promo = async el => {
 /* ===== v1.911: плашка «Вышла новая версия» с кнопкой «Обновить» (= аккуратный перезапуск) ===== */
 Object.assign(I18N.en, {"Вышла новая версия": "A new version is out", "уже ждёт тебя": "is ready for you", "Обновить": "Update", "Обновляю…": "Updating…", "Готово": "Done", "Позже": "Later"});
 Object.assign(I18N.kk, {"Вышла новая версия": "Жаңа нұсқа шықты", "уже ждёт тебя": "сені күтіп тұр", "Обновить": "Жаңарту", "Обновляю…": "Жаңартылуда…", "Готово": "Дайын", "Позже": "Кейін"});
-Object.assign(I18N.en, {"ОСТОРОЖНО · БОМБЫ": "WATCH OUT · BOMBS", "ЗАМОРОЗКА": "FREEZE", "уже есть PRO": "already has PRO", "Подписка активна": "Subscription is active", "Дарить PRO сейчас не нужно: подписка уже работает. Загляни, когда она закончится, — или выбери для друга обычный подарок.": "No need to gift PRO right now: the subscription is active. Come back when it ends — or pick a regular gift.", "Понятно": "Got it", "У друга уже есть PRO": "Your friend already has PRO"});
-Object.assign(I18N.kk, {"ОСТОРОЖНО · БОМБЫ": "ЕСКЕР · БОМБАЛАР", "ЗАМОРОЗКА": "МҰЗДАТУ", "уже есть PRO": "PRO бар", "Подписка активна": "Жазылым белсенді", "Дарить PRO сейчас не нужно: подписка уже работает. Загляни, когда она закончится, — или выбери для друга обычный подарок.": "Қазір PRO сыйлаудың қажеті жоқ: жазылым жұмыс істеп тұр. Аяқталғанда қайта кір — немесе қарапайым сыйлық таңда.", "Понятно": "Түсінікті", "У друга уже есть PRO": "Досыңда PRO бар"});
+Object.assign(I18N.en, {"Игры": "Games", "ОСТОРОЖНО · БОМБЫ": "WATCH OUT · BOMBS", "ЗАМОРОЗКА": "FREEZE", "уже есть PRO": "already has PRO", "Подписка активна": "Subscription is active", "Дарить PRO сейчас не нужно: подписка уже работает. Загляни, когда она закончится, — или выбери для друга обычный подарок.": "No need to gift PRO right now: the subscription is active. Come back when it ends — or pick a regular gift.", "Понятно": "Got it", "У друга уже есть PRO": "Your friend already has PRO"});
+Object.assign(I18N.kk, {"Игры": "Ойындар", "ОСТОРОЖНО · БОМБЫ": "ЕСКЕР · БОМБАЛАР", "ЗАМОРОЗКА": "МҰЗДАТУ", "уже есть PRO": "PRO бар", "Подписка активна": "Жазылым белсенді", "Дарить PRO сейчас не нужно: подписка уже работает. Загляни, когда она закончится, — или выбери для друга обычный подарок.": "Қазір PRO сыйлаудың қажеті жоқ: жазылым жұмыс істеп тұр. Аяқталғанда қайта кір — немесе қарапайым сыйлық таңда.", "Понятно": "Түсінікті", "У друга уже есть PRO": "Досыңда PRO бар"});
 delete _lc.en; delete _lc.kk;
 (function(){
   try { const u = new URL(location.href); if (u.searchParams.has('_v')) { u.searchParams.delete('_v'); history.replaceState(null, '', u.pathname + u.search + u.hash); } } catch (e) {}   // метка запасного обновления — убираем из адреса
