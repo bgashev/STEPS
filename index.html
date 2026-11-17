@@ -1485,7 +1485,7 @@ html.web .head{position:relative}
   transition:opacity .5s cubic-bezier(.22,.7,.2,1),transform .7s cubic-bezier(.2,.9,.25,1),filter .5s cubic-bezier(.22,.7,.2,1),visibility 0s .7s}
 .invpop.open{pointer-events:auto;visibility:visible;opacity:1;transform:none;filter:blur(0);transition-delay:0s}
 /* v1.754: стильное окно подтверждения (WEB) */
-#cfm{position:fixed;inset:0;z-index:400;display:grid;place-items:center;padding:20px;background:rgba(6,6,10,.5);-webkit-backdrop-filter:blur(14px) saturate(.9);backdrop-filter:blur(14px) saturate(.9);opacity:0;transition:opacity .3s ease}
+#cfm{position:fixed;inset:0;z-index:9970;display:grid;place-items:center;padding:20px;background:rgba(6,6,10,.5);-webkit-backdrop-filter:blur(14px) saturate(.9);backdrop-filter:blur(14px) saturate(.9);opacity:0;transition:opacity .3s ease}
 #cfm.on{opacity:1}
 .cfm-bx{width:min(360px,100%);text-align:center;padding:26px 22px 20px;border-radius:28px;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--border);box-shadow:0 40px 90px -30px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.06);transform:translateY(14px) scale(.94);filter:blur(6px);transition:transform .45s cubic-bezier(.2,1.1,.3,1),filter .35s ease}
 #cfm.on .cfm-bx{transform:none;filter:none}
@@ -4184,7 +4184,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.889';
+const APP = 'VOOB (by BGASHEV) Mini App v1.890';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9659,7 +9659,7 @@ const ACT = {
     hap.seq([['i', 'medium', 0]]); try { navigator.vibrate && !ver('6.1') && navigator.vibrate(18); } catch (e) {}   // v1.618: отклик сразу, до любых проверок
     const id = +el.dataset.id, f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
     if (f.poke_wait) { hap.warn(); toast(`Уже взбодрил(а) — снова можно через ${f.poke_wait} ч`); return; }
-    if (!(await ask(`Бот сразу напишет ${f.name}. Повторить можно будет только через несколько часов.`, {title:'Взбодрить друга?', ok:'Взбодрить', icon:'bolt'}))) return;   // v1.888: подтверждение от случайных нажатий
+    if (!(await askStyled(`${f.name} получит заряд бодрости от бота ⚡`, {title:'Взбодрить друга?', ok:'Давай', no:'Не сейчас', icon:'bolt'}))) return;   // v1.890: своё дружелюбное окно вместо системного Cancel/OK
     try { const j = await apiAuth('/friends/poke', {tg_id:id});
       if (j.status === 'soon') { f.poke_wait = j.hours; toast(`Уже взбодрил(а) — снова можно через ${j.hours} ч`); }
       else { f.poke_wait = j.hours || 12; toast(j.status === 'undelivered' ? `${f.name} ещё не писал(а) боту — сообщение не дошло` : `Ты взбодрил(а) ${f.name} ⚡ Бот уже передал`); hap.seq([['n', 'success', 0], ['i', 'heavy', 140], ['i', 'light', 90]]); }
