@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.960';
+const APP = 'VOOB (by BGASHEV) Mini App v1.961';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9332,17 +9332,16 @@ const REST = (function(){
     const PBD = [['#16181e'], ['#1b1620'], ['#13191a'], ['#1a1812'], ['#1b1418'], ['#12161c']], RIM = '#e2492b', RIM_D = '#a8321c';
     const starP = (c, x, y, R, r, rot) => { c.beginPath(); for (let i = 0; i < 10; i++) { const a = rot + i * Math.PI / 5 - Math.PI / 2, d = i % 2 ? r : R; c.lineTo(x + Math.cos(a) * d, y + Math.sin(a) * d); } c.closePath(); };
     const drawStar = (c, x, y, R, rot) => { c.save(); c.lineJoin = 'round'; starP(c, x, y, R, R * .5, rot); c.fillStyle = '#ffd53d'; c.fill(); c.lineWidth = 2.4; c.strokeStyle = '#f2a21c'; c.stroke(); c.restore(); };
+    const RIMC = '#55b0d9', RIMP = '#8b9aa3';
     const drawHoopBack = (c, h, past) => { const r = h.hw, ry = r * .3, pl = 1 + .1 * h.pu; c.save(); c.translate(h.x, h.y); c.rotate(h.th); c.scale(pl, pl);
-      c.fillStyle = past ? '#2b2e37' : '#4a3a40'; c.beginPath(); c.ellipse(0, 0, r - 2, ry - .5, 0, 0, 7); c.fill(); c.fillStyle = past ? 'rgba(255,255,255,.04)' : 'rgba(255,255,255,.12)'; c.beginPath(); c.ellipse(0, -ry * .18, r * .72, ry * .55, 0, 0, 7); c.fill();
-      c.strokeStyle = past ? '#3f434b' : RIM_D; c.lineWidth = 7; c.beginPath(); c.ellipse(0, 0, r, ry, 0, Math.PI, 2 * Math.PI); c.stroke(); c.restore(); };
-    const drawHoopFront = (c, h, past) => { const r = h.hw, ry = r * .3, nh = r * 1.15 + (h.id === g.cid && g.aim ? Math.min(24, g.pull * .12) : 0), br = r * .5, pl = 1 + .1 * h.pu, j = h.sw * Math.sin(g.t * 15); c.save(); c.translate(h.x, h.y); c.rotate(h.th); c.scale(pl, pl); c.globalAlpha = past ? .4 : 1;
-      c.beginPath(); c.moveTo(-r, 0); c.quadraticCurveTo(0, ry * 2.2, r, 0); c.bezierCurveTo(r * .92, nh * .5, br * 1.15 + j * .5, nh * .82, br + j * .5, nh); c.quadraticCurveTo(j * .5, nh + ry * .9, -br + j * .5, nh); c.bezierCurveTo(-br * 1.15 + j * .5, nh * .82, -r * .92, nh * .5, -r, 0); c.closePath();
-      const ng = c.createLinearGradient(0, 0, 0, nh); ng.addColorStop(0, 'rgba(255,255,255,.2)'); ng.addColorStop(1, 'rgba(255,255,255,.04)'); c.fillStyle = ng; c.fill();
-      c.save(); c.clip(); c.strokeStyle = 'rgba(255,255,255,.85)'; c.lineWidth = 1.7; c.beginPath(); for (let i = -1; i <= 7; i++) { const x0 = -r + (2 * r / 6) * i; c.moveTo(x0, 0); c.lineTo(x0 * .45 + (r * .5) + j * .5 - r * .5 + 2 * br * .5 - br + (i + 1) * 0, nh); c.moveTo(x0, 0); c.lineTo(x0 * .45 + j * .5 + (r * 2 / 6) * 4 * .0, nh); } c.stroke(); c.restore();
-      c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = 1.4; c.beginPath(); [.35, .68].forEach(f => { c.moveTo(-r * (1 - .5 * f) + j * .3 * f, nh * f); c.lineTo(r * (1 - .5 * f) + j * .3 * f, nh * f); }); c.stroke();
-      c.strokeStyle = past ? '#6b7078' : RIM; c.lineWidth = 7.5; c.lineCap = 'round'; c.beginPath(); c.ellipse(0, 0, r, ry, 0, 0, Math.PI); c.stroke();
-      if (!past) { c.strokeStyle = 'rgba(255,255,255,.4)'; c.lineWidth = 1.8; c.beginPath(); c.ellipse(0, -1.4, r - 3, ry - 1.5, 0, .5, Math.PI - .5); c.stroke(); }
-      c.fillStyle = past ? '#555a62' : RIM_D; [-1, 1].forEach(sd => { c.beginPath(); c.arc(sd * r, 0, 5, 0, 7); c.fill(); }); c.restore(); };
+      c.fillStyle = past ? 'rgba(20,28,50,.22)' : 'rgba(10,30,70,.3)'; c.beginPath(); c.ellipse(0, 0, r, ry, 0, 0, 7); c.fill();
+      c.strokeStyle = past ? RIMP : RIMC; c.lineWidth = 11; c.beginPath(); c.ellipse(0, 0, r, ry, 0, Math.PI, 2 * Math.PI); c.stroke(); c.restore(); };
+    const drawHoopFront = (c, h, past) => { const r = h.hw, ry = r * .3, nh = r * 1.05 + (h.id === g.cid && g.aim ? Math.min(24, g.pull * .12) : 0), br = r * .36, pl = 1 + .1 * h.pu, j = h.sw * Math.sin(g.t * 15); c.save(); c.translate(h.x, h.y); c.rotate(h.th); c.scale(pl, pl); c.globalAlpha = past ? .55 : 1;
+      const P = (u, v) => { const w = r * (1 - v) + br * v; return [u * w + j * v * v, v * nh + ry * 1.7 * v * (1 - u * u * .85)]; };
+      const out = () => { c.beginPath(); for (let i = 0; i <= 14; i++) { const q = P(-1 + i / 7, 1 - 0); } c.moveTo(-r, 0); for (let i = 0; i <= 16; i++) { const v = i / 16, q = P(-1, v); c.lineTo(q[0], q[1]); } for (let i = 0; i <= 16; i++) { const u = -1 + 2 * i / 16, q = P(u, 1); c.lineTo(q[0], q[1]); } for (let i = 16; i >= 0; i--) { const v = i / 16, q = P(1, v); c.lineTo(q[0], q[1]); } c.closePath(); };
+      c.save(); out(); c.clip(); c.strokeStyle = '#fff'; c.lineWidth = 4; c.lineJoin = 'round'; for (let dir = -1; dir <= 1; dir += 2) for (let a0 = -3; a0 <= 3; a0 += .67) { c.beginPath(); for (let i = 0; i <= 12; i++) { const v = i / 12, q = P(a0 + dir * v * 1.0, v); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); } c.stroke(); } c.restore();
+      c.strokeStyle = '#fff'; c.lineWidth = 4.6; out(); c.stroke();
+      c.strokeStyle = past ? RIMP : RIMC; c.lineWidth = 11; c.lineCap = 'round'; c.beginPath(); c.ellipse(0, 0, r, ry, 0, 0, Math.PI); c.stroke(); c.restore(); };
     const ballDraw = c => { const b = g.b, fire = g.combo >= 3, sq = g.sq, sx = 1 + .2 * Math.sin(sq * 3) * (sq > 0 ? 1 : 0), sy = 1 / sx; c.save(); c.translate(b.x, b.y);
       if (fire) { const gl = c.createRadialGradient(0, 0, 0, 0, 0, BR * 2.6); gl.addColorStop(0, 'rgba(255,190,70,.55)'); gl.addColorStop(1, 'rgba(255,90,30,0)'); c.fillStyle = gl; c.beginPath(); c.arc(0, 0, BR * 2.6, 0, 7); c.fill(); }
       c.scale(sx, sy); c.rotate(b.a); c.fillStyle = '#ef8c2c'; c.beginPath(); c.arc(0, 0, BR, 0, 7); c.fill(); c.save(); c.beginPath(); c.arc(0, 0, BR, 0, 7); c.clip(); c.strokeStyle = '#2a1608'; c.lineWidth = 2.4; c.beginPath(); c.moveTo(-BR, 0); c.lineTo(BR, 0); c.moveTo(0, -BR); c.lineTo(0, BR); c.stroke(); c.beginPath(); c.arc(-BR * 1.2, 0, BR * .9, -1, 1); c.stroke(); c.beginPath(); c.arc(BR * 1.2, 0, BR * .9, Math.PI - 1, Math.PI + 1); c.stroke(); c.restore();
