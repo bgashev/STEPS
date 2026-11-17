@@ -4237,7 +4237,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.907';
+const APP = 'VOOB (by BGASHEV) Mini App v1.908';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6946,7 +6946,7 @@ function viewShop(){   // v1.782: «Магазин» (вариант «Журн�
 }
 function viewWeight(){
   const es = weightsSorted(), goal = db.weight_goal || {};
-  let h = `<div class="head"><div><h1>Вес</h1><div class="sub">${es.length ? npw(es.length, W_ENTRY) + ' — продолжай в том же духе' : 'Следи за весом и иди к цели'}</div></div></div>`;
+  let h = `<div class="ax-bar"><button type="button" class="ax-bk" data-act="weightback">${IC('back', 18)}Приложения</button></div><div class="head"><div><h1>Вес</h1><div class="sub">${es.length ? npw(es.length, W_ENTRY) + ' — продолжай в том же духе' : 'Следи за весом и иди к цели'}</div></div></div>`;
   if (!es.length) return h + `<div class="card empty"><div class="badge">${IC('scale', 30)}</div><h3 style="justify-content:center">Здесь будет твой вес</h3><div class="muted" style="margin-bottom:16px">Добавь первое взвешивание — появятся график, ИМТ, прогноз и цель.</div><button class="btn primary" data-act="kadd">${IC('plus')}Первое взвешивание</button></div>`;
   const t = todayN(), daily = dailyWeights(), curE = last(es), cur = +curE.kg, lastD = dn(curE.date);
   const gs = weightGoalState(goal, cur), dir = gs ? gs.direction : 0;
@@ -10418,6 +10418,7 @@ const AX = (function(){
     appsheet: () => openSheetApps(),
     appgsug: () => { hap.tap(); openFeedback('idea', null, 'game'); },
     appsug: () => { hap.tap(); if (sheetCtx && sheetCtx.type === 'apps') closeSheet(); setTimeout(() => openFeedback('idea', null, true), 60); },
+    weightback: () => { hap.tap(); ACT.tab({dataset: {tab: 'apps'}}); },   // v1.908: «Приложения» из раздела «Вес»
     appweight: el => { if (sheetCtx && sheetCtx.type === 'apps') closeSheet(); ACT.tab({dataset: {tab: 'weight'}}); },
     appopen: el => { if (sheetCtx && sheetCtx.type === 'apps') closeSheet(); const s = el.dataset.s; ST.stack = []; ST.s = ''; ST.off = 0; go(s); },
     axday: el => { ST.off = clamp(+el.dataset.o, -13, 0); hap.tap(); render(); },
