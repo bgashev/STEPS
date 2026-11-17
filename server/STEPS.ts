@@ -340,7 +340,7 @@ async function shopPrices(): Promise<Record<string, number>> {
 }
 // есть ли у человека предмет (комплект считается, если есть и рамка, и фон)
 // v1.883: PRO-игры за ⭐ навсегда: «game» — одна игра, «games» — все сразу (item = all)
-const SHOP_GAMES = new Set(["tile", "slice", "memo", "aim", "jump", "dart", "bike", "spk", "zig", "road"]);
+const SHOP_GAMES = new Set(["tile", "slice", "memo", "aim", "jump", "dart", "bike", "spk", "zig", "road", "dunk", "hit"]);
 async function shopHas(tg: number, kind: string, item: string) {
   if (kind === "game" || kind === "games") {
     const { data: g } = await db.from("shop_owned").select("kind, item").eq("tg_id", tg).in("kind", ["game", "games"]).is("refunded_at", null);
