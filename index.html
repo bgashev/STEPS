@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.973';
+const APP = 'VOOB (by BGASHEV) Mini App v1.974';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5848,7 +5848,7 @@ function openFeedback(type, target, sug){
   openSheet(`<h2>${target ? 'Пожаловаться на ' + esc(f ? f.name : 'пользователя') : sug === 'game' ? 'Предложить игру' : sug ? 'Предложить в VOOB' : 'Идеи и жалобы'}</h2>
     <div class="hint">${target ? 'Опиши, что случилось. Жалобу увидит только разработчик.' : sug === 'game' ? 'Какую игру добавить в VOOB? Опиши механику или назови игру-образец — читаю всё сам, лучшие идеи делаю.' : sug ? 'Что добавить, что улучшить, чего не хватает? Опиши своими словами — читаю всё сам, лучшие идеи попадают в следующие версии.' : 'Пиши как есть — читаю всё сам. Лучшие идеи попадут в следующие версии.'}</div>
     ${target || sug ? '' : `<div class="seg fill" style="margin-bottom:12px" id="fb-type">${FB_TYPES.map(([v, l]) => `<button type="button" class="${S.fbType === v ? 'on' : ''}" data-act="fbtype" data-v="${v}">${l}</button>`).join('')}</div>`}
-    <textarea class="inp" id="fb-text" maxlength="1000" rows="5" placeholder="${target ? 'Что не так?' : sug === 'game' ? 'Например: змейка, где растёшь от съеденных гантелей' : sug ? 'Например: хочу трекер сна, или чтобы в играх была таблица лидеров' : 'Например: хочу тёмную тему ещё темнее'}" style="resize:vertical;min-height:120px"></textarea>
+    <textarea class="inp" id="fb-text" maxlength="1000" rows="5" placeholder="${target ? 'Что не так?' : sug === 'game' ? 'Например: бильярд, где шары — гантели, или онлайн-дуэль на выносливость' : sug ? 'Например: хочу трекер сна, или чтобы в играх была таблица лидеров' : 'Например: хочу тёмную тему ещё темнее'}" style="resize:vertical;min-height:120px"></textarea>
     <button class="btn primary" style="width:100%;margin-top:12px" data-act="fbsend"${target ? ` data-target="${target}"` : ''}>Отправить</button>`, {type:'feedback'});
 }
 function pubHTML(j){
