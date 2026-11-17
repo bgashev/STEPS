@@ -1051,12 +1051,9 @@ async function routeGamesTop(body: any) {
   if (!/^[a-z0-9]{2,12}$/.test(game)) return json({ ok: true });
   const dead = await deactivatedSet(await friendIds(me));
   const ids = [me, ...(await friendIds(me)).filter((id) => !dead.has(id))];
-  const [sc, users, pf] = await Promise.all([db.from("game_scores").select("tg_id, best").eq("game", game).in("tg_id", ids), usersMap(ids),
-    db.from("records").select("tg_id, data, deleted").eq("kind", "meta").eq("id", "profile").in("tg_id", ids)]);
+  const [sc, users] = await Promise.all([db.from("game_scores").select("tg_id, best").eq("game", game).in("tg_id", ids), usersMap(ids)]);
   const bm = new Map<number, number>((sc.data ?? []).map((x: any) => [x.tg_id, x.best]));
-  /* v1.898: из профиля отдаём только пол (m/f) — чтобы писать «не играла» / «не играл» */
-  const sm = new Map<number, string>((pf.data ?? []).filter((x: any) => !x.deleted && (x.data?.sex === "m" || x.data?.sex === "f")).map((x: any) => [x.tg_id, x.data.sex]));
-  const rows = ids.map((id) => ({ tg_id: id, name: displayName(users.get(id) ?? { tg_id: id }), best: bm.get(id) ?? 0, me: id === me, sex: sm.get(id) ?? "" }))
+  const rows = ids.map((id) => ({ tg_id: id, name: displayName(users.get(id) ?? { tg_id: id }), best: bm.get(id) ?? 0, me: id === me }))
     .sort((a, b) => b.best - a.best || (a.me ? -1 : 0));
   return json({ game, rows });
 }
