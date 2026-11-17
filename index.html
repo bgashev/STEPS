@@ -4310,7 +4310,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.922';
+const APP = 'VOOB (by BGASHEV) Mini App v1.923';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9277,33 +9277,51 @@ const REST = (function(){
   function mkZig(){ const g = {}, K = 'zig', TX = 30, TY = 15, TH = 16, HW = .5;
     const pj = (a, b) => [(a - b) * TX, -(a + b) * TY];
     const sm = p => p.a + p.b;
-    const grow = () => { while (sm(g.pts[g.pts.length - 1]) < g.pa + g.pb + 28) { const l = g.pts[g.pts.length - 1], L = g.pts.length < 2 ? 5.5 : rnd(2.4, 5), ax = l.ax;
-      const q = {a: l.a + (ax === 0 ? L : 0), b: l.b + (ax === 1 ? L : 0), ax: ax ^ 1}; g.pts.push(q);
-      for (let k = 0, n = Math.random() < .55 ? 1 + (Math.random() < .35 ? 1 : 0) : 0; k < n; k++) { const f = rnd(.2, .85); g.gm.push({a: l.a + (q.a - l.a) * f, b: l.b + (q.b - l.b) * f, got: 0}); } } };
+    const STN = ['Разминка', 'Ступеньки', 'Шпильки', 'Ритм', 'Скорость', 'Безумие'], stgOf = v => Math.min(5, Math.floor(v / 28));
+    const grow = () => { while (sm(g.pts[g.pts.length - 1]) < g.pa + g.pb + 46) { const l = g.pts[g.pts.length - 1], ax = l.ax, st = stgOf(g.score + 14);   // v1.923: дорога строится с запасом и плавно проявляется; короткие «ступеньки» из быстрых поворотов
+      if (!g.ql.length && g.pts.length >= 3 && st > 0 && Math.random() < [0, .3, .4, .5, .55, .6][st]) { const n = 3 + Math.floor(Math.random() * (1 + st)), Lb = 2 - st * .1; for (let i = 0; i < n; i++) g.ql.push(Lb + rnd(0, .25)); }
+      const sh = g.ql.length > 0, L = g.pts.length < 2 ? 5.5 : sh ? g.ql.shift() : rnd(2.4 - st * .08, 5 - st * .2);
+      const q = {a: l.a + (ax === 0 ? L : 0), b: l.b + (ax === 1 ? L : 0), ax: ax ^ 1, sh}; g.pts.push(q);
+      for (let k = 0, n = Math.random() < (sh ? .3 : .55) ? 1 + (Math.random() < .35 && !sh ? 1 : 0) : 0; k < n; k++) { const f = rnd(.2, .85); g.gm.push({a: l.a + (q.a - l.a) * f, b: l.b + (q.b - l.b) * f, got: 0}); } } };
     const inRoad = (a, b) => { for (let j = Math.max(0, g.si - 1); j < Math.min(g.pts.length - 1, g.si + 4); j++) { const p = g.pts[j], q = g.pts[j + 1];
       if (p.ax === 0 ? (a >= p.a - HW && a <= q.a + HW && Math.abs(b - p.b) <= HW) : (b >= p.b - HW && b <= q.b + HW && Math.abs(a - p.a) <= HW)) return true; } return false; };
-    g.init = () => { base0(g); g.pts = [{a: 0, b: 0, ax: 0}]; g.gm = []; g.pa = 0; g.pb = 0; g.ax = 0; g.si = 0; g.started = false; g.fl = 0; g.fy = 0; g.fvy = 0; g.cx = 0; g.cy = 0; g.gn = 0; g.trl = []; grow(); };
-    g.tap = () => { if (!g.started) { g.started = true; return; } if (g.fl) return; g.ax ^= 1; sfx('bloop'); };
+    g.init = () => { base0(g); g.pts = [{a: 0, b: 0, ax: 0}]; g.gm = []; g.pa = 0; g.pb = 0; g.ax = 0; g.si = 0; g.started = false; g.fl = 0; g.fy = 0; g.fvy = 0; g.cx = 0; g.cy = 0; g.gn = 0; g.trl = []; g.ql = []; g.stg = 0; g.sf = 0; grow(); };
+    g.tap = () => { if (!g.started) { g.started = true; return; } if (g.fl) return; g.ax ^= 1; sfx('bloop'); { const p = pj(g.pa, g.pb); bstP(g, W / 2 + p[0] - g.cx, H * .64 + p[1] - g.cy - 8, 9, hue(200 + g.stg * 40), 120); } };
     g.update = dt => { g.t += dt; stepFx(g, dt); const p = pj(g.pa, g.pb); g.cx += (p[0] - g.cx) * Math.min(1, dt * 9); g.cy += (p[1] - g.cy) * Math.min(1, dt * 9);
       if (g.fl) { g.fvy += 1500 * dt; g.fy += g.fvy * dt; g.pa += (g.ax === 0 ? 1 : 0) * dt * 1.2; g.pb += (g.ax === 1 ? 1 : 0) * dt * 1.2; return; } if (g.dead || !g.started) return;
-      const v = 3.1 + Math.min(2.8, g.score * .022); if (g.ax === 0) g.pa += v * dt; else g.pb += v * dt;
+      const v = 3 + 2.1 * (1 - Math.exp(-g.score / 90)); if (g.ax === 0) g.pa += v * dt; else g.pb += v * dt;
       while (g.si + 1 < g.pts.length - 1 && sm(g.pts[g.si + 1]) <= g.pa + g.pb) g.si++;
       g.trl.push([g.pa, g.pb]); if (g.trl.length > 14) g.trl.shift();
+      { const pp = pj(g.pa, g.pb); if (Math.random() < .6) bstP(g, W / 2 + pp[0] - g.cx, H * .64 + pp[1] - g.cy - 6, 1, hue(200 + g.stg * 40), 40); }
       g.gm.forEach(m => { if (!m.got && Math.abs(m.a - g.pa) + Math.abs(m.b - g.pb) < .6) { m.got = 1; g.gn++; sfx('spark', g.gn % 8); popT(g, W / 2, H * .5, '+2', GD); bstP(g, W / 2, H * .62, 12, GD, 130); } });
       g.score = Math.floor((g.pa + g.pb) / 3) + g.gn * 2;
+      { const st = stgOf(g.score); if (st > g.stg) { g.stg = st; g.sf = .7; popT(g, W / 2, H * .3, 'ЭТАП ' + (st + 1) + ' · ' + STN[st], hue(200 + st * 40)); sfx('perfect', 6 + st); hap.ok(); bstP(g, W / 2, H * .6, 26, hue(200 + st * 40), 240); } }
+      g.sf = Math.max(0, g.sf - dt * 1.6);
       if (!inRoad(g.pa, g.pb)) { g.fl = 1; g.fvy = -60; g.sh = .6; sfx('bloop', 0); onDie(g, K); return; }
       grow(); if (g.si > 12) { g.pts.splice(0, 8); g.si -= 8; g.gm = g.gm.filter(m => m.a + m.b > g.pa + g.pb - 10); } };
     g.draw = c => { c.save(); shk(c, g, 6); drawStars(c, g, g.cx * .5); const ox = W / 2 - g.cx, oy = H * .64 - g.cy, S = (a, b) => { const p = pj(a, b); return [ox + p[0], oy + p[1]]; };
-      for (let j = Math.min(g.pts.length - 2, g.si + 14); j >= Math.max(0, g.si - 4); j--) { const p = g.pts[j], q = g.pts[j + 1], A0 = p.a - (p.ax === 0 ? HW : HW), A1 = (p.ax === 0 ? q.a : p.a) + HW, B0 = p.b - HW, B1 = (p.ax === 1 ? q.b : p.b) + HW, a0 = p.ax === 0 ? p.a - HW : A0, b0 = B0;
-        const c00 = S(a0, b0), c10 = S(A1, b0), c11 = S(A1, B1), c01 = S(a0, B1);
+      const cur = g.pa + g.pb, hh = (200 + g.stg * 40) % 360;
+      glow(c, W * .5, H * .28, 270, 'hsl(' + hh + ',80%,55%)', .1 + g.stg * .025);
+      if (g.stg >= 3) { c.strokeStyle = 'rgba(255,255,255,.07)'; c.lineWidth = 2; for (let i = 0; i < 9; i++) { const x = (i * 59.3) % W, y = (g.t * (380 + g.stg * 60) + i * 137) % (H + 80) - 40; c.beginPath(); c.moveTo(x, y); c.lineTo(x - 10, y + 44); c.stroke(); } }   // линии скорости
+      let jm = Math.min(g.pts.length - 2, g.si + 40); while (jm > g.si && sm(g.pts[jm]) - cur > 48) jm--;
+      for (let j = jm; j >= Math.max(0, g.si - 6); j--) { const p = g.pts[j], q = g.pts[j + 1], dm = (sm(p) + sm(q)) / 2 - cur; let al = 1, dy = 0;
+        if (dm > 28) { let k = Math.min(1, Math.max(0, (46 - dm) / 16)); k = k * k * (3 - 2 * k); al = k; dy = (1 - k) * 80; }   // дорога плавно вырастает из тумана
+        else if (dm < -2) { const k = Math.min(1, (-dm - 2) / 8); al = 1 - k; dy = k * k * 110; }   // пройденная — осыпается вниз
+        if (al <= .01) continue;
+        const B0 = p.b - HW, a0 = p.a - HW, A1 = (p.ax === 0 ? q.a : p.a) + HW, B1 = (p.ax === 1 ? q.b : p.b) + HW, S2 = (a, b) => { const z = S(a, b); return [z[0], z[1] + dy]; };
+        const c00 = S2(a0, B0), c10 = S2(A1, B0), c11 = S2(A1, B1), c01 = S2(a0, B1); c.globalAlpha = al;
         c.fillStyle = C.ac; poly(c, [c01, c00, [c00[0], c00[1] + TH], [c01[0], c01[1] + TH]]); c.fill(); c.fillStyle = 'rgba(0,0,0,.42)'; c.fill();
         c.fillStyle = C.ac; poly(c, [c00, c10, [c10[0], c10[1] + TH], [c00[0], c00[1] + TH]]); c.fill(); c.fillStyle = 'rgba(0,0,0,.26)'; c.fill();
-        c.fillStyle = C.ac; poly(c, [c00, c10, c11, c01]); c.fill(); c.fillStyle = 'rgba(255,255,255,' + (j % 2 ? .1 : .18) + ')'; c.fill(); }
-      g.gm.forEach(m => { if (m.got) return; const s = S(m.a, m.b), y = s[1] - 12 + Math.sin(g.t * 4 + m.a) * 3; glow(c, s[0], y, 18, GD, .5); c.fillStyle = GD; poly(c, [[s[0], y - 8], [s[0] + 6, y], [s[0], y + 8], [s[0] - 6, y]]); c.fill(); });
+        c.fillStyle = C.ac; poly(c, [c00, c10, c11, c01]); c.fill(); c.fillStyle = 'rgba(255,255,255,' + (j % 2 ? .1 : .18) + ')'; c.fill();
+        c.fillStyle = 'hsla(' + hh + ',85%,62%,' + (.08 + g.stg * .03) + ')'; c.fill();
+        if (q.sh) { c.fillStyle = 'hsla(' + ((hh + 140) % 360) + ',95%,66%,' + (.16 + .08 * Math.sin(g.t * 6 - dm)) + ')'; c.fill(); }
+        const nr = Math.max(0, 1 - Math.abs(dm) / 5) * .22 + Math.max(0, Math.sin(g.t * 3 - dm * .5)) * .05; if (nr > .01) { c.fillStyle = 'rgba(255,255,255,' + nr + ')'; c.fill(); }   // подсветка под шаром и бегущая волна
+        c.strokeStyle = 'rgba(255,255,255,.22)'; c.lineWidth = 1; c.stroke(); c.globalAlpha = 1; }
+      g.gm.forEach(m => { if (m.got) return; const gd = m.a + m.b - cur; if (gd > 46) return; const ga = Math.min(1, Math.max(0, (46 - gd) / 12)), s = S(m.a, m.b), y = s[1] - 12 + Math.sin(g.t * 4 + m.a) * 3 + (1 - ga) * 40; c.globalAlpha = ga; glow(c, s[0], y, 18, GD, .5); c.fillStyle = GD; poly(c, [[s[0], y - 8], [s[0] + 6, y], [s[0], y + 8], [s[0] - 6, y]]); c.fill(); c.globalAlpha = 1; });
       g.trl.forEach((t, i) => { const s = S(t[0], t[1]); c.globalAlpha = i / g.trl.length * .3; c.fillStyle = C.tx; c.beginPath(); c.arc(s[0], s[1] - 11, 3 + i * .3, 0, 7); c.fill(); }); c.globalAlpha = 1;
       const s = S(g.pa, g.pb); if (!g.fl) { c.fillStyle = 'rgba(0,0,0,.4)'; c.beginPath(); c.ellipse(s[0], s[1] + 1, 10, 4.5, 0, 0, 7); c.fill(); }
       const gr = c.createRadialGradient(s[0] - 4, s[1] - 15 + g.fy, 1, s[0], s[1] - 11 + g.fy, 12); gr.addColorStop(0, '#fff'); gr.addColorStop(.35, C.tx); gr.addColorStop(1, C.mu); c.fillStyle = gr; c.beginPath(); c.arc(s[0], s[1] - 11 + g.fy, 11, 0, 7); c.fill();
-      drawFx(c, g); if (!g.started) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — старт. Потом тап — поворот', W / 2, H * .84); } c.restore(); };
+      drawFx(c, g); if (g.sf > 0) { c.fillStyle = 'hsla(' + hh + ',90%,70%,' + g.sf * .35 + ')'; c.fillRect(0, 0, W, H); } if (!g.started) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — старт. Потом тап — поворот', W / 2, H * .84); } c.restore(); };
     return g; }
 
   /* 5 · Перебежка: клетки, машины, поезда, река — вперёд как можно дальше */
