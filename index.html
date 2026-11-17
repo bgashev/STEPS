@@ -4188,7 +4188,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.899';
+const APP = 'VOOB (by BGASHEV) Mini App v1.900';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9176,7 +9176,7 @@ const REST = (function(){
     function row(r, i, top){
       const ph = (typeof FR !== 'undefined' && FR.ph && FR.ph.get(r.tg_id)) || '', nm = r.name || 'Игрок', init = esc(nm.trim().charAt(0).toUpperCase() || '?');
       const medal = r.best > 0 && i < 3 ? ' m' + (i + 1) : '';
-      return '<div class="rk-r' + (r.me ? ' me' : '') + medal + (r.best ? '' : ' z') + '" style="animation-delay:' + Math.min(i, 8) * 60 + 'ms;--p:' + Math.round(Math.max(4, r.best / top * 100)) + '%"><i class="rk-n">' + (r.best ? i + 1 : '–') + '</i><span class="rk-a">' + (ph ? '<img src="' + ph + '" alt="">' : init) + '</span><span class="rk-nm">' + esc(nm) + (r.me ? '<em>ты</em>' : '') + '</span><b class="rk-s">' + (r.best ? r.best : 'нет рекорда') + '</b></div>';
+      return '<div class="rk-r' + (r.me ? ' me' : '') + medal + (r.best ? '' : ' z') + '" style="animation-delay:' + Math.min(i, 8) * 60 + 'ms;--p:' + Math.round(Math.max(4, r.best / top * 100)) + '%"><i class="rk-n">' + (r.best ? i + 1 : '–') + '</i><span class="rk-a">' + (ph ? '<img src="' + ph + '" alt="">' : init) + '</span><span class="rk-nm">' + esc(nm) + (r.me ? '<em>ты</em>' : '') + '</span><b class="rk-s">' + (r.best ? r.best : '———') + '</b></div>';
     }
   }
   function stopGame(){ snap(); cd = 0; pz = false; cancelAnimationFrame(raf); G = null; if (gm) { gm.remove(); gm = null; } if (keyH) { document.removeEventListener('keydown', keyH); keyH = null; } if (el) el.style.display = ''; }
