@@ -3889,6 +3889,14 @@ html.web #tabs .tbi{top:262px}
 .st-first h2{margin:0 0 6px;font-size:21px;letter-spacing:-.01em}
 .st-first p{margin:0 auto 14px;max-width:290px;color:var(--muted);font-size:13.5px;line-height:1.45}
 .st-first .btn{width:100%;min-height:52px;font-size:16px;border-radius:18px}
+.ax-in{animation:axin .55s cubic-bezier(.16,.9,.28,1) both}
+.ax-out{animation:axout .5s cubic-bezier(.16,.9,.28,1) both}
+@keyframes axin{from{opacity:0;transform:translateX(34px) scale(.975)}55%{opacity:1}to{opacity:1;transform:none}}
+@keyframes axout{from{opacity:0;transform:translateX(-26px) scale(.985)}55%{opacity:1}to{opacity:1;transform:none}}
+.ax-in .ax-h,.ax-in .ax-top,.ax-in .card{animation:axrise .6s cubic-bezier(.16,.9,.28,1) both}
+.ax-in .card:nth-child(2){animation-delay:.05s}.ax-in .card:nth-child(3){animation-delay:.1s}.ax-in .card:nth-child(4){animation-delay:.15s}
+@keyframes axrise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.ax-in,.ax-out,.ax-in .card{animation-duration:.01s!important;animation-delay:0s!important}}
 .st-ch{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .st-cb{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:11px;align-items:center;text-align:left;padding:11px 12px;border-radius:18px;border:1px solid var(--border);background:color-mix(in srgb,var(--accent) 7%,var(--surface2));color:var(--text);cursor:pointer;transition:transform .18s cubic-bezier(.2,1.4,.4,1),border-color .2s,background .2s;animation:stcb .5s both}
 .st-cb:nth-child(2){animation-delay:.06s}.st-cb:nth-child(3){animation-delay:.12s}.st-cb:nth-child(4){animation-delay:.18s}
@@ -4231,7 +4239,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.905';
+const APP = 'VOOB (by BGASHEV) Mini App v1.906';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -8282,9 +8290,10 @@ function render(){
   if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
   v.classList.toggle('w2', inWeb && (html.indexOf('class="me-l"') > -1 || html.indexOf('class="mset2"') > -1 || html.indexOf('class="pz2"') > -1 || html.indexOf('class="shp-wrap"') > -1));   // v1.636: ширину столбцов задаём до вставки — иначе страница сначала рисуется узкой и «прыгает»
   v.classList.toggle('rr', same);                          // та же вкладка: обновляем без повторных «появлений»
-  _rTab = rkey; _rHtml = html;
+  const prevT = _rTab; _rTab = rkey; _rHtml = html;
   if (same) morphSoft(v, html);   // v1.442: та же вкладка — правим только изменившееся, без мерцаний
-  else { v.innerHTML = html; revealNew(v); if (S.tab === 'weight') weightIntro(v); if (S.tab === 'stats') statsIntro(v); }
+  else { v.innerHTML = html; revealNew(v);
+    { const dir = rkey === 'app' ? 'ax-in' : prevT === 'app' ? 'ax-out' : ''; if (dir) { v.classList.remove('ax-in', 'ax-out'); void v.offsetWidth; v.classList.add(dir); setTimeout(() => v.classList.remove(dir), 700); } }   /* v1.906: плавный въезд приложения из раздела и возврат назад */ if (S.tab === 'weight') weightIntro(v); if (S.tab === 'stats') statsIntro(v); }
   updFab();
   bmTween();
   festCountUp();
