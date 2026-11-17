@@ -4213,7 +4213,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.901';
+const APP = 'VOOB (by BGASHEV) Mini App v1.902';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9161,23 +9161,27 @@ const REST = (function(){
     gm.querySelector('[data-r="grk"]').addEventListener('click', () => { hap.tap(); openRank(); });
     gm.querySelector('[data-r="gmin"]').addEventListener('click', () => { hap.tap(); stopGame(); min = true; render(); });
     keyH = e => { if (G && (e.code === 'Space' || e.code === 'ArrowUp')) { e.preventDefault(); gtap(); } else if (G && G.key && !G.dead && cd <= 0 && /^Arrow/.test(e.code)) { e.preventDefault(); G.key(e.code); } }; document.addEventListener('keydown', keyH);
-    paint(left()); beatCheck(GAMES[i].k);
+    paint(left()); beatLoop(GAMES[i].k);
   }
   /* v1.861: рейтинг друзей в игре */
   function pushBest(k, n){ try { if (typeof apiAuth !== 'function') return; n = n || 0; const b = {}; if (s.best[k]) b[k] = s.best[k]; apiAuth('/games/top', {bests:b, played:n ? undefined : k}).catch(() => { if (n < 3) setTimeout(() => pushBest(k, n + 1), [3000, 10000, 30000][n]); }); } catch (e) {} }
   /* v1.879: старые рекорды (до починки прав в БД) не дошли до сервера — отправляем все локальные один раз за запуск */
   setTimeout(() => { try { if (typeof apiAuth === 'function' && Object.keys(s.best).length) apiAuth('/games/top', {bests:Object.assign({}, s.best)}).catch(() => {}); } catch (e) {} }, 6000);
   /* v1.901: плашка «друг побил твой рекорд»: сравниваем с тем, что видели в прошлый раз (хранится у аккаунта) */
+  let bti = 0, btb = false;
+  function beatLoop(key){ clearInterval(bti); beatCheck(key); bti = setInterval(() => { if (!gm) { clearInterval(bti); return; } if (!document.hidden) beatCheck(key); }, 5000); }   /* проверка каждые 5 с, пока открыта игра */
   function beatCheck(key){
-    try { if (typeof apiAuth !== 'function') return;
-      apiAuth('/games/top', {game:key, bests:Object.assign({}, s.best)}).then(j => {
-        const me = s.best[key] || 0, sn = (s.seen = s.seen || {}), m = (sn[key] = sn[key] || {}), hits = [];
-        (j.rows || []).forEach(r => { if (r.me) return; const was = m[r.tg_id];
-          if (was !== undefined && me > 0 && r.best > me && was <= me) hits.push(r);
-          if (was === undefined || r.best > was) m[r.tg_id] = r.best; });
-        save(); if (hits.length) { hits.sort((a, b) => b.best - a.best); beatShow(hits.slice(0, 3), key, me); }
-      }).catch(() => {});
-    } catch (e) {}
+    try { if (typeof apiAuth !== 'function' || btb) return; btb = true;
+      const bs = {}; if (s.best[key]) bs[key] = s.best[key];
+      apiAuth('/games/top', {game:key, bests:bs}).then(j => {
+        btb = false; if (!gm) return;
+        const me = s.best[key] || 0, sn = (s.seen = s.seen || {}), m = (sn[key] = sn[key] || {}), hits = [], busy = !!gm.querySelector('.bt');
+        (j.rows || []).forEach(r => { if (r.me) return; const was = m[r.tg_id], hit = was !== undefined && me > 0 && r.best > me && was <= me;
+          if (hit) hits.push(r);
+          if ((was === undefined || r.best > was) && !(hit && busy)) m[r.tg_id] = r.best; });   // пока висит другая плашка, новое побитие не «съедаем» — покажем на следующей проверке
+        save(); if (hits.length && !busy) { hits.sort((a, b) => b.best - a.best); beatShow(hits.slice(0, 3), key, me); }
+      }).catch(() => { btb = false; });
+    } catch (e) { btb = false; }
   }
   function beatShow(q, key, me){
     if (!gm || !q.length) return; const r = q.shift(), g = GAMES.find(x => x.k === key), nm = r.name || 'Друг';
@@ -9230,7 +9234,7 @@ const REST = (function(){
       return '<div class="rk-r' + (r.me ? ' me' : '') + medal + (r.best ? '' : ' z') + '" style="animation-delay:' + Math.min(i, 8) * 60 + 'ms;--p:' + Math.round(Math.max(4, r.best / top * 100)) + '%"><i class="rk-n">' + (r.best ? i + 1 : '–') + '</i><span class="rk-a">' + (ph ? '<img src="' + ph + '" alt="">' : init) + '</span><span class="rk-nm">' + esc(nm) + (r.me ? '<em>ты</em>' : '') + '</span><b class="rk-s">' + (r.best ? r.best : '———') + '</b></div>';
     }
   }
-  function stopGame(){ snap(); cd = 0; pz = false; cancelAnimationFrame(raf); G = null; if (gm) { gm.remove(); gm = null; } if (keyH) { document.removeEventListener('keydown', keyH); keyH = null; } if (el) el.style.display = ''; }
+  function stopGame(){ clearInterval(bti); snap(); cd = 0; pz = false; cancelAnimationFrame(raf); G = null; if (gm) { gm.remove(); gm = null; } if (keyH) { document.removeEventListener('keydown', keyH); keyH = null; } if (el) el.style.display = ''; }
   function gdown(x, y){ if (!G || cd > 0) return; if (G.dead) { if (performance.now() - G.deadAt > 500) G.init(); } else if (G.down) G.down(x, y); else G.tap(); }
   function gtap(){ if (!G || cd > 0) return; if (G.dead) { if (performance.now() - G.deadAt > 500) G.init(); } else G.tap(); }
   function loop(ts){
