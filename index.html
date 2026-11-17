@@ -1575,7 +1575,7 @@ html.web .ib.shim:has(.ibl){width:auto;padding:0 18px 0 14px;gap:8px;display:inl
 /* кнопка «Друзья · N» в профиле друга */
 .fchipb{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);background:var(--surface2);border-radius:999px;padding:5px 12px 5px 6px;font-weight:700;font-size:13px;margin:12px 0 2px;color:var(--text)}
 .fchipb .stk{display:flex}
-.fchipb .stk .fav{width:26px;height:26px;font-size:11px;box-shadow:0 0 0 2px var(--surface2)}
+.fchipb .stk .fav{width:26px;height:26px;font-size:11px;box-shadow:0 0 0 1.5px color-mix(in srgb,var(--text) 30%,transparent),0 0 0 3.5px var(--surface2)}   /* v1.910: тонкий светлый контур + зазор цвета плитки — аватарки не сливаются */
 .fchipb .stk .fav+.fav{margin-left:-9px}
 .fchipb .stk .fav .lvb{display:none}
 .fp-head .fav{cursor:zoom-in}
@@ -1731,7 +1731,7 @@ html.web .ib.shim:has(.ibl){width:auto;padding:0 18px 0 14px;gap:8px;display:inl
 .fp3 .fpb b{font-size:12.5px!important;white-space:nowrap}
 .fp3 .fpb.frb{background:var(--surface2)!important;border-color:var(--border)!important;color:var(--text)!important}
 .fpb .stk3{display:flex;align-items:center;justify-content:center;height:34px;font-style:normal}
-.fpb .stk3 .fav{width:28px;height:28px;font-size:12px;box-shadow:0 0 0 2px var(--surface2)}
+.fpb .stk3 .fav{width:28px;height:28px;font-size:12px;box-shadow:0 0 0 1.5px color-mix(in srgb,var(--text) 30%,transparent),0 0 0 3.5px var(--surface2)}
 .fpb .stk3 .fav{overflow:hidden;position:relative}.fpb .stk3 .fav+.fav{margin-left:-9px}.fpb .stk3 .fav:nth-child(1){z-index:3}.fpb .stk3 .fav:nth-child(2){z-index:2}.fpb .stk3 .fav:nth-child(3){z-index:1}.fpb .stk3 .fav .fi{width:100%;height:100%}.fpb .stk3 .fav .lvb{display:none}
 .fpb .stk3 .fe{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--text) 8%,transparent);color:var(--muted)}
 .fpb.frb:disabled{opacity:.6}
@@ -4247,7 +4247,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.909';
+const APP = 'VOOB (by BGASHEV) Mini App v1.910';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
