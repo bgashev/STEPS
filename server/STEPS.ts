@@ -363,7 +363,6 @@ async function routeShopInvoice(body: any) {
   if (!["frame", "bg", "kit", "game", "games"].includes(kind) || !SHOP_RE.test(item)) return fail("Неизвестный предмет");
   if (kind === "game" && !SHOP_GAMES.has(item)) return fail("Неизвестная игра");
   if (kind === "games" && item !== "all") return fail("Неизвестный предмет");
-  if ((kind === "game" || kind === "games") && Number(body?.for ?? 0)) return fail("Игры пока нельзя дарить", 400);
   if (await isLocked(me)) return fail("Оплата недоступна, пока подписка заморожена или аккаунт ждёт удаления", 423);
   const stars = (await shopPrices())[kind];
   if (!stars) return fail("Цена не задана", 500);
@@ -374,10 +373,10 @@ async function routeShopInvoice(body: any) {
   }
   if (await shopHas(to || me, kind, item)) return fail(to ? "Это уже есть у друга" : "Это уже у тебя", 409);
   const what = kind === "frame" ? "Рамка для аватарки" : kind === "kit" ? "Комплект: рамка и фон" : kind === "game" ? "Игра в VOOB" : kind === "games" ? "Все PRO-игры VOOB" : "Фон профиля";
-  const title = to ? (kind === "frame" ? "Подарок: рамка для друга" : kind === "kit" ? "Подарок: комплект" : "Подарок: фон для друга") : what;
+  const title = to ? (kind === "frame" ? "Подарок: рамка для друга" : kind === "kit" ? "Подарок: комплект" : kind === "game" ? "Подарок: игра для друга" : kind === "games" ? "Подарок: все PRO-игры" : "Подарок: фон для друга") : what;
   const fu = to ? await userInfo(to) as any : null;
   const r = await tg("createInvoiceLink", {
-    title, description: (to ? `${what} в VOOB для ${displayName(fu)}. Останется у друга навсегда.` : kind === "game" || kind === "games" ? `${what}: играй между подходами и в разделе «Игры». Остаётся у тебя навсегда, без подписки.` : `${what} в VOOB. Остаётся у тебя навсегда.`).slice(0, 255),
+    title, description: (to ? `${what}${kind === "game" || kind === "games" ? "" : " в VOOB"} для ${displayName(fu)}. Останется у друга навсегда.` : kind === "game" || kind === "games" ? `${what}: играй между подходами и в разделе «Игры». Остаётся у тебя навсегда, без подписки.` : `${what} в VOOB. Остаётся у тебя навсегда.`).slice(0, 255),
     payload: to ? `shop:${kind}:${item}:${me}:${to}` : `shop:${kind}:${item}:${me}`,
     provider_token: "", currency: "XTR", prices: [{ label: title, amount: stars }],
   });
@@ -459,7 +458,8 @@ async function onPaid(msg: any) {
       await db.from("shop_owned").update({ payer_id: msg.from.id }).eq("charge_id", sp.telegram_payment_charge_id);
       const fu = await userInfo(sh.to) as any, me = await userInfo(msg.from.id) as any;
       await tg("sendMessage", { chat_id: msg.chat.id, text: `🎁 Готово! ${displayName(fu)} получит подарок: ${word.toLowerCase()} в VOOB навсегда.\n\nСпасибо за щедрость 💛`, reply_markup: openBtnMk() });
-      notify(sh.to, `🎁 ${displayName(me)} дарит тебе ${word.toLowerCase()} в VOOB!\n\nОткрой Персонализацию, чтобы применить подарок.`);
+      const acc = sh.kind === "frame" ? "рамку" : sh.kind === "kit" ? "комплект" : sh.kind === "game" ? "игру" : sh.kind === "games" ? "все PRO-игры" : "фон";
+      notify(sh.to, `🎁 ${displayName(me)} дарит тебе ${acc} в VOOB!\n\n${sh.kind === "game" || sh.kind === "games" ? "Открой раздел «Игры» — подарок уже там." : "Открой Персонализацию, чтобы применить подарок."}`);
       if (ADMIN_TG_ID) tg("sendMessage", { chat_id: ADMIN_TG_ID, text: `🎁 Магазин-подарок · ${sh.kind}:${sh.item} · ${sp.total_amount}⭐\n${displayName(me)} (id ${msg.from.id}) → ${displayName(fu)} (id ${sh.to})\ncharge: ${sp.telegram_payment_charge_id}` }).catch(() => {});
       return;
     }

@@ -3895,6 +3895,16 @@ html.web #tabs .tbi{top:262px}
 .ax-in .card:nth-child(2){animation-delay:.06s}.ax-in .card:nth-child(3){animation-delay:.12s}.ax-in .card:nth-child(4){animation-delay:.18s}.ax-in .card:nth-child(n+5){animation-delay:.24s}
 @keyframes axrise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.ax-in,.ax-out,.ax-in .card{animation-duration:.01s!important;animation-delay:0s!important}}
+.gb-gf{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;margin-top:10px;min-height:46px;border-radius:16px;border:1px solid color-mix(in srgb,#ffd166 45%,var(--border));background:color-mix(in srgb,#ffd166 9%,var(--surface2));color:#ffd166;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.gb-gf svg{stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.gb-gf:active{transform:scale(.97)}
+.gg-h{margin:0 0 12px}.gg-h b{display:block;font-size:20px;letter-spacing:-.01em}.gg-h small{color:var(--muted);font-size:13px}
+.gg-s{display:flex;align-items:center;gap:9px;padding:0 14px;height:44px;border-radius:14px;background:var(--surface2);border:1px solid var(--border);margin-bottom:10px}
+.gg-s i{display:grid;place-items:center;color:var(--muted)}.gg-s input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--text);font:inherit;font-size:16px}
+.gg-l{max-height:52vh;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.gg-r{display:flex;align-items:center;gap:12px;width:100%;padding:9px 12px;border-radius:18px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;text-align:left;cursor:pointer;animation:ggin .45s calc(var(--i)*45ms) cubic-bezier(.2,.9,.3,1) both;transition:transform .15s}
+.gg-r:active{transform:scale(.97)}.gg-r[hidden]{display:none}.gg-r b{flex:1;min-width:0;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gg-go{display:inline-flex;align-items:center;gap:3px;font-size:13px;font-weight:700;color:#ffd166}.gg-go svg{stroke:currentColor;fill:none;stroke-width:2}
+@keyframes ggin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .st-ch{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .st-cb{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:11px;align-items:center;text-align:left;padding:11px 12px;border-radius:18px;border:1px solid var(--border);background:color-mix(in srgb,var(--accent) 7%,var(--surface2));color:var(--text);cursor:pointer;transition:transform .18s cubic-bezier(.2,1.4,.4,1),border-color .2s,background .2s;animation:stcb .5s both}
 .st-cb:nth-child(2){animation-delay:.06s}.st-cb:nth-child(3){animation-delay:.12s}.st-cb:nth-child(4){animation-delay:.18s}
@@ -4237,7 +4247,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.908';
+const APP = 'VOOB (by BGASHEV) Mini App v1.909';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5949,6 +5959,7 @@ function gameBuy(k){
   openSheet(`<div class="gbuy"><div class="gb-th">${g.th}</div><div class="ppl-k">ИГРА</div><h2>${esc(g.n)}</h2><div class="cap">Открывается навсегда и без подписки. Играй между подходами и в разделе «Игры».</div>
     <button type="button" class="btn primary gb-b" data-act="gbuy" data-k="${g.k}" data-n="${esc(g.n)}">Купить игру · ⭐ ${p1}</button>
     ${left > 1 ? `<button type="button" class="btn gb-b" data-act="gbuyall"><span>Все PRO-игры · ${left}</span><b>⭐ ${pa}</b>${left * p1 > pa ? `<small>−${Math.round((1 - pa / (left * p1)) * 100)}%</small>` : ''}</button>` : ''}
+    <button type="button" class="gb-gf" data-act="ggift" data-kind="game" data-k="${g.k}" data-n="${esc(g.n)}">${IC('gift', 15)}Подарить другу · ⭐ ${p1}</button>
     <button type="button" class="gb-pro" data-act="gbpro">${IC('crown', 14)}или весь VOOB PRO</button></div>`, {type:'gbuy'});
 }
 
@@ -6059,6 +6070,34 @@ async function shopBuy(kind, item, name){
     if (ver('6.1') && tg.openInvoice) tg.openInvoice(j.link, st => { if (st === 'paid') paid(); });
     else { openTG(j.link); toast('Оплати в Telegram и вернись сюда'); }
   } catch (e) { toast('Не получилось: ' + e.message); }
+}
+/* v1.909: подарить игру другу (из магазина и из окна покупки игры) */
+let GG = null;
+async function gameGift(kind, item, name){
+  if (!SHOP.ok) { toast('Покупки скоро откроются'); return; }
+  GG = {kind, item, name}; hap.tap(); const pr = SHOP.prices[kind] || (kind === 'game' ? 19 : 99);
+  const open = async () => {
+    openSheet(`<div class="gg"><div class="gg-h"><b>Кому подарить?</b><small>«${esc(name)}» · ⭐ ${pr}</small></div>
+      <label class="gg-s"><i>${IC('search', 18)}</i><input id="gg-s" type="text" inputmode="search" autocomplete="off" spellcheck="false" placeholder="Найти друга по имени" aria-label="Поиск друга"></label>
+      <div class="gg-l" id="gg-l"><div class="hint" style="padding:26px;text-align:center">Загружаю друзей…</div></div></div>`, {type:'ggift'});
+    try { if (!FR.data) await loadFriends(); } catch (e) {}
+    const el = document.getElementById('gg-l'); if (!el) return; const fr = (FR.data && FR.data.friends) || [];
+    el.innerHTML = fr.length ? fr.map((f, i) => `<button type="button" class="gg-r" style="--i:${Math.min(i, 12)}" data-act="ggiftto" data-id="${f.tg_id}" data-n="${esc(String(f.name || '').toLowerCase())}"><span class="gg-a">${favHTML(f, 1)}</span><b>${esc(f.name)}</b><span class="gg-go">Подарить ${IC('chev', 14)}</span></button>`).join('') + '<div class="hint gg-no" hidden style="padding:22px;text-align:center">Никого не нашёл</div>'
+      : '<div class="hint" style="padding:26px;text-align:center">Подарки можно дарить друзьям. Добавь друзей — и возвращайся 🎁</div>';
+    if (!fr.length) { const s = document.querySelector('.gg-s'); if (s) s.style.display = 'none'; }
+  };
+  if (sheetCtx) { closeSheet(); setTimeout(open, 120); } else open();
+}
+document.addEventListener('input', e => { if (e.target && e.target.id === 'gg-s') { const q = e.target.value.trim().toLowerCase(), l = document.getElementById('gg-l'); if (!l) return; let n = 0; l.querySelectorAll('.gg-r').forEach(r => { const ok = !q || (r.dataset.n || '').includes(q); r.hidden = !ok; if (ok) n++; }); const no = l.querySelector('.gg-no'); if (no) no.hidden = n > 0; } });
+async function gameGiftTo(id){
+  if (!GG) return; const g = GG, f = FR.data && FR.data.friends.find(x => x.tg_id === id); hap.imp();
+  try {
+    const j = await apiAuth('/shop/invoice', {kind:g.kind, item:g.item, for:id});
+    if (!j.link) throw new Error(j.error || 'нет счёта');
+    const done = () => { hap.ok(); try { closeSheet(); } catch (e) {} toast('🎁 «' + g.name + '» отправлена' + (f ? ' — ' + f.name : '')); try { confetti(); } catch (e) {} };
+    if (ver('6.1') && tg.openInvoice) tg.openInvoice(j.link, st => { if (st === 'paid') done(); });
+    else { openTG(j.link); toast('Оплати в Telegram — подарок придёт другу сразу'); }
+  } catch (e) { toast(e.message || 'Не получилось'); }
 }
 function frOwned(k){ return isPro() || SHOP.owned.has('frame:' + k); }   // рамки аватарки — только PRO (отдельной выдачи рамок больше нет)
 function frameOf(f){
@@ -6906,7 +6945,7 @@ function shopGames(){   // v1.883: PRO-игры за ⭐ навсегда
   const L = REST.list().filter(x => x.pro), left = L.filter(x => !gameOwn(x.k)), p1 = SHOP.prices.game || 19, pa = SHOP.prices.games || 99;
   const st = k => isPro() ? '<span class="shp-pr own">В PRO</span>' : gameOwn(k) ? '<span class="shp-pr own">Куплено</span>' : `<span class="shp-pr">⭐ ${p1}</span>`;
   const all = left.length ? (isPro() ? '' : `<button type="button" class="shp-c gmall" data-act="gbuyall"><div class="gm-ic">${IC('crown', 26)}</div><div class="gm-tx"><b>Все PRO-игры · ${left.length}</b><small>одной покупкой${left.length * p1 > pa ? ' · выгода ' + Math.round((1 - pa / (left.length * p1)) * 100) + '%' : ''}</small></div><span class="shp-pr">⭐ ${pa}</span></button>`) : `<div class="shp-c gmall own"><div class="gm-ic">${IC('check', 26)}</div><div class="gm-tx"><b>Все PRO-игры открыты</b><small>играй между подходами и в «Играх»</small></div></div>`;
-  return `<div class="shp-grid gm">${all}${L.map(g => `<button type="button" class="shp-c gm" data-act="shopgame" data-k="${g.k}"><div class="gm-th">${g.th}</div><b>${esc(g.n)}</b><div class="shp-row">${st(g.k)}</div></button>`).join('')}</div>`;
+  return `<div class="shp-grid gm">${all}${L.map(g => `<button type="button" class="shp-c gm" data-act="shopgame" data-k="${g.k}"><div class="gm-th">${g.th}</div><b>${esc(g.n)}</b><div class="shp-row">${st(g.k)}${SHOP.prices.game ? `<span class="shp-gf" role="button" data-act="ggift" data-kind="game" data-k="${g.k}" data-n="${esc(g.n)}">Подарить</span>` : ''}</div></button>`).join('')}</div>`;
 }
 function viewShop(){   // v1.782: «Магазин» (вариант «Журнал»), широкая сетка, везде твой аватар
   if (!SHOP.ok) loadShop().then(() => { if (SHOP.ok && document.querySelector('.shp-wrap')) render(); });
@@ -9848,6 +9887,8 @@ const ACT = {
   gno: () => { hap.tap(); closeGc(); },
   shopgame: el => { const k = el.dataset.k; if (gameOwn(k)) { toast('Эта игра уже у тебя'); return; } gameBuy(k); },
   gbuy: el => { shopBuy('game', el.dataset.k, el.dataset.n); },
+  ggift: el => { gameGift(el.dataset.kind || 'game', el.dataset.k, el.dataset.n); },
+  ggiftto: el => { gameGiftTo(+el.dataset.id); },
   gbuyall: () => { shopBuy('games', 'all', 'Все PRO-игры'); },
   gbpro: () => { closeSheet(); openPro(); },
   gprolock: () => { hap.warn(); proToast('Премиум-подарки — только для PRO. Получатель берёт +200 очков'); },
