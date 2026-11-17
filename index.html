@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.956';
+const APP = 'VOOB (by BGASHEV) Mini App v1.957';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9286,7 +9286,7 @@ const REST = (function(){
     return g; }
 
   /* 14 · Данк (v1.930): оттяни и брось мяч в кольцо; 2.5D, чистые броски — серия */
-  function mkDunk(){ const g = {}, K = 'dunk', BR = 17, GRV = 1500, SN = ['Разминка', 'Дворик', 'Неон', 'Закат', 'Ночь', 'Космос', 'Лава', 'Хаос'];
+  function mkDunk(){ const g = {}, K = 'dunk', BR = 19, GRV = 1500, SN = ['Разминка', 'Дворик', 'Неон', 'Закат', 'Ночь', 'Космос', 'Лава', 'Хаос'];
     const cl = (v, a, b) => Math.max(a, Math.min(b, v)), stg = () => Math.min(7, Math.floor(g.caught / 6)), dif = () => 1 - Math.exp(-g.n / 16), hb0 = () => (262 + stg() * 37) % 360, rimH = () => [14, 208, 152, 268, 338, 32, 18, 190][stg() % 8];
     const cur = () => g.hs.find(h => h.id === g.cid) || g.hs[0], U = h => ({x: Math.sin(h.th), y: -Math.cos(h.th)}), T = h => ({x: Math.cos(h.th), y: Math.sin(h.th)});
     const holdPos = () => { const h = cur(), u = U(h), off = 7 + (g.aim ? Math.min(30, g.pull * .22) : 0); return [h.x - u.x * off, h.y - u.y * off]; };
@@ -9379,14 +9379,14 @@ const REST = (function(){
     g.init = () => { base0(g); const bm = (() => { try { const d = document.createElement('div'); d.style.cssText = 'position:fixed;left:0;bottom:0;width:0;height:0;padding-bottom:max(env(safe-area-inset-bottom,0px),var(--tg-safe-area-inset-bottom,0px),var(--tg-content-safe-area-inset-bottom,0px))'; document.body.appendChild(d); const v = parseFloat(getComputedStyle(d).paddingBottom) || 0; d.remove(); return v; } catch (e) { return 0; } })();
       g.fy = H - Math.max(bm, 0) - 40; g.caught = 0; g.combo = 0; g.tm = 1; g.rp = []; g.cf = []; g.pk = []; g.tr = []; g.sb = null; g.stv = 0; g.fl = 0; g.sq = 0; g.touched = false; g.dir = 1; g.old = null; g.bar = null;
       g.h = newHoop(null); g.h.in = 1; g.h.side = 1; g.h.y0 = g.h.y = H * .5; g.b = {x: W / 2, y: H * .42, vx: 0, vy: 0, a: 0}; g.state = 'ready'; g.pop = 0; };
-    g.tap = () => { if (g.dead) return; const b = g.b; if (g.state === 'ready') g.state = 'fly'; { const hx = wallX(g.h) + inw(g.h) * LL() * .5, dx = hx - b.x; g.dir = dx >= 0 ? 1 : -1; b.vx = g.dir * cl(Math.abs(dx) * 1.5, 38, spd() + 90); } b.vy = -JUMP; g.sq = .6; sfx('hop', 3); hap.tap(); g.rp.push({x: b.x, y: b.y + BR, l: .3, c: 'rgba(255,255,255,.8)', r: 26}); bstP(g, b.x, b.y + BR, 5, '#fff', 70); };
+    g.tap = () => { if (g.dead) return; const b = g.b; if (g.state === 'ready') g.state = 'fly'; { const hx = wallX(g.h) + inw(g.h) * LL() * .5, dx = hx - b.x; const ad = Math.abs(dx), near = LL() * 1.1, below = b.y > g.h.y - 6 && Math.abs(b.x - wallX(g.h)) < LL() + BR + 10; if (below) { g.dir = inw(g.h); b.vx = g.dir * 60; } else { g.dir = dx >= 0 ? 1 : -1; const k = ad < near ? Math.pow(ad / near, 1.4) : 1; b.vx = g.dir * Math.min(spd() + 90, ad * 1.5) * k; } } b.vy = -JUMP; g.sq = .6; sfx('hop', 3); hap.tap(); g.rp.push({x: b.x, y: b.y + BR, l: .3, c: 'rgba(255,255,255,.8)', r: 26}); bstP(g, b.x, b.y + BR, 5, '#fff', 70); };
     const die = why => { g.sh = 1; g.fl = 1; bstP(g, g.b.x, g.b.y, 24, C.rd, 200); popT(g, W / 2, H * .36, why, C.rd); sfx('die'); onDie(g, K); };
     const conf = (x, y, n, hu) => { for (let i = 0; i < n; i++) g.cf.push({x, y, vx: rnd(-280, 280), vy: rnd(-460, -90), r: rnd(3, 6.5), rot: rnd(0, 6), vr: rnd(-10, 10), c: 'hsl(' + ((hu + rnd(-50, 80) + 360) % 360) + ',90%,62%)', l: 1.3}); };
     const scored = h => { const per = !g.touched; let add = 1; g.caught++; g.tm = Math.min(1, g.tm + .38 + (per ? Math.min(.2, .04 * (g.combo + 1)) : 0)); g.touched = false; h.sw = 9; h.pu = 1;
       const hx = wallX(h) + inw(h) * LL() * .5;
       if (per) { g.combo++; add = Math.min(6, 1 + g.combo); popT(g, hx, h.y - 70, 'ЧИСТО ×' + g.combo + '  +' + add, GD); sfx('perfect', Math.min(9, g.combo + 2)); bstP(g, hx, h.y, 26, GD, 240); g.fl = .3; conf(hx, h.y, 26, rimH()); } else { g.combo = 0; popT(g, hx, h.y - 55, '+1', '#fff'); sfx('spark', 3); bstP(g, hx, h.y, 12, '#fff', 150); conf(hx, h.y, 10, rimH()); }
       g.score += add; g.rp.push({x: hx, y: h.y, l: .55, c: per ? '#ffb000' : '#fff', r: 80}); g.rp.push({x: hx, y: h.y, l: .4, c: 'hsl(' + rimH() + ',95%,62%)', r: 55}); g.sh = Math.max(g.sh, .25); hap.tap();
-      const st = stg(); if (st > g.stv) { g.stv = st; g.sb = {a: 0}; sfx('perfect', 7); conf(W / 2, H * .35, 30, hb0()); } if (st >= 3 && !g.bar) g.bar = {y: H * .5, len: 64, sp: 1.1, ph: 0, x: W / 2};
+      const st = stg(); if (st > g.stv) { g.stv = st; g.sb = {a: 0}; sfx('perfect', 7); conf(W / 2, H * .35, 30, hb0()); }
       g.old = h; h.fade = .5; g.h = newHoop(h); };
     const bump = (b, nx, ny, e) => { const vn = b.vx * nx + b.vy * ny; if (vn < 0) { b.vx -= (1 + e) * vn * nx; b.vy -= (1 + e) * vn * ny; g.dir = b.vx >= 0 ? 1 : -1; return true; } return false; };
     g.update = dt => { g.t += dt; g.pe = g.pe || []; g.pn = (g.pn === undefined ? 4 : g.pn) - dt; if (g.pn <= 0 && !g.dead) { g.pn = rnd(5, 9); const k = Math.floor(Math.random() * 3); g.pe.push(k === 0 ? {k, l: 1.6, m: 1.6, y: rnd(H * .15, H * .7), d: Math.random() < .5 ? 1 : -1} : k === 1 ? {k, l: 1.3, m: 1.3, c: Array.from({length: 4}, () => ({x: rnd(0, W), y: rnd(-20, H * .4), v: rnd(380, 560)}))} : {k, l: 1.4, m: 1.4}); } g.pe.forEach(q => q.l -= dt); g.pe = g.pe.filter(q => q.l > 0); stepFx(g, dt); g.sq = Math.max(0, g.sq - dt * 4); g.fl = Math.max(0, g.fl - dt * 2.5); g.pop = Math.max(0, g.pop - dt * 3); if (g.sb) { g.sb.a += dt; if (g.sb.a > 2.4) g.sb = null; }
@@ -9405,7 +9405,7 @@ const REST = (function(){
           const bx0 = Math.min(w, w + s * 10), bx1 = Math.max(w, w + s * 10), by0 = h.y - 66, by1 = h.y + 16, qx = cl(b.x, bx0, bx1), qy = cl(b.y, by0, by1), dx = b.x - qx, dy = b.y - qy, d = Math.hypot(dx, dy);
           if (d < BR && d > .001) { b.x = qx + dx / d * BR; b.y = qy + dy / d * BR; if (bump(b, dx / d, dy / d, .6)) { g.touched = true; h.sw = 3; sfx('thunk'); bstP(g, qx, qy, 5, '#fff', 80); } }
           { const dx2 = b.x - tx, dy2 = b.y - h.y, d2 = Math.hypot(dx2, dy2), md = BR + 6; if (d2 < md && d2 > .001) { b.x = tx + dx2 / d2 * md; b.y = h.y + dy2 / d2 * md; if (bump(b, dx2 / d2, dy2 / d2, .55)) { g.touched = true; h.sw = 4; sfx('thunk'); bstP(g, tx, h.y, 6, 'hsl(' + rimH() + ',95%,65%)', 100); } } }
-          const dist = Math.abs(b.x - w); if (py < h.y && b.y >= h.y && b.vy > 0 && dist > 10 && dist < L - 2) scored(h); }
+          const dist = Math.abs(b.x - w); if (py > h.y && b.y <= h.y && b.vy < 0 && dist > 6 && dist < L + 2) { b.y = h.y + 1; b.vy = Math.abs(b.vy) * .3; b.vx += inw(h) * 50; g.touched = true; h.sw = 3; sfx('thunk'); bstP(g, b.x, h.y, 5, '#fff', 80); } if (py < h.y && b.y >= h.y && b.vy > 0 && dist > 10 && dist < L - 2) scored(h); }
         if (g.bar) { const x0 = g.bar.x - g.bar.len, x1 = g.bar.x + g.bar.len, qx = cl(b.x, x0, x1), dx = b.x - qx, dy = b.y - g.bar.y, d = Math.hypot(dx, dy), md = BR + 6; if (d < md && d > .001) { b.x = qx + dx / d * md; b.y = g.bar.y + dy / d * md; if (bump(b, dx / d, dy / d, .75)) { g.touched = true; sfx('thunk'); bstP(g, qx, g.bar.y, 6, '#8fe3ff', 90); } } } }
       g.pk.forEach(q => { if (!q.got && Math.hypot(b.x - q.x, b.y - q.y) < 30) { q.got = 1; if (q.k === 's') { g.score += 2; popT(g, q.x, q.y - 24, '+2', GD); sfx('spark', 6); bstP(g, q.x, q.y, 14, GD, 150); } else { g.tm = Math.min(1, g.tm + .25); popT(g, q.x, q.y - 24, '+ВРЕМЯ', '#8fe3ff'); sfx('record'); bstP(g, q.x, q.y, 14, '#8fe3ff', 150); } g.rp.push({x: q.x, y: q.y, l: .35, c: q.k === 's' ? GD : '#8fe3ff', r: 50}); } });
       g.tr.push([b.x, b.y]); if (g.tr.length > (g.combo >= 3 ? 14 : 8)) g.tr.shift(); if (g.combo >= 3 && Math.random() < .8) bstP(g, b.x, b.y, 1, Math.random() < .5 ? '#ffb347' : '#ff6b3d', 70); };
