@@ -4291,6 +4291,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 .upd-c.busy .upd-x{display:none}
 .upd-b{position:absolute;left:28px;right:28px;bottom:5px;height:2.5px;border-radius:3px;overflow:hidden;background:color-mix(in srgb,var(--text) 10%,transparent);opacity:0;transition:opacity .3s}
 .upd-b i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent2,var(--accent)));transform:scaleX(0);transform-origin:left;transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+.upd-go,.upd-x{cursor:pointer}html.web .upd-c{cursor:grab}html.web #upd{top:16px}html.web .upd-go:hover{filter:brightness(1.08)}html.web .upd-x:hover{color:var(--text)}
 .upd-c.busy .upd-b{opacity:1}.upd-c.busy .upd-b i{transform:scaleX(.82)}.upd-c.done .upd-b i{transform:scaleX(1);transition-duration:.35s}
 @media (prefers-reduced-motion:reduce){.upd-c{transition:opacity .25s!important;transform:none!important;filter:none!important}.upd-c::before,.upd-m::after,.upd-go::after,.upd-gl,.upd-gr{animation:none!important}.upd-t,.upd-go,.upd-x{transition:opacity .25s!important;transform:none!important}}
 </style>
@@ -4307,7 +4308,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.911';
+const APP = 'VOOB (by BGASHEV) Mini App v1.912';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11360,7 +11361,6 @@ Object.assign(I18N.kk, {"Вышла новая версия": "Жаңа нұсқ
 delete _lc.en; delete _lc.kk;
 (function(){
   try { const u = new URL(location.href); if (u.searchParams.has('_v')) { u.searchParams.delete('_v'); history.replaceState(null, '', u.pathname + u.search + u.hash); } } catch (e) {}   // метка запасного обновления — убираем из адреса
-  if (!REALTG) return;
   const m0 = /Mini App v(\d+)\.(\d+)/.exec(APP); if (!m0) return;
   const CUR = +m0[1] * 1e6 + +m0[2], RE = /VOOB \(by BGASHEV\) Mini App v(\d+)\.(\d+)'/, sleep = ms => new Promise(r => setTimeout(r, ms));
   let lastChk = 0, busy = false, checking = false, shown = '', dismissed = '';
@@ -11376,7 +11376,7 @@ delete _lc.en; delete _lc.kk;
   async function grab(url, hdr, ms){ const ac = new AbortController(), tm = setTimeout(() => ac.abort(), ms);
     try { return await fetch(url, {cache:'no-store', headers:hdr || {}, signal:ac.signal}); } finally { clearTimeout(tm); } }
   async function remoteVer(){
-    const url = location.origin + location.pathname.replace(/[^/]*$/, '') + 'index.html?_c=' + Date.now();
+    const url = (inWeb ? location.origin + '/' : location.origin + location.pathname.replace(/[^/]*$/, '')) + 'index.html?_c=' + Date.now();   // WEB: адреса вида /friends — всегда корень сайта
     try {   // 1) дёшево: окно ≈90 КБ вокруг строки с версией
       const r = await grab(url, {Range:'bytes=1370000-1460000'}, 12000);
       if (r.status === 206) { const v = parse(RE.exec(await r.text())); if (v) return v; }
@@ -11402,7 +11402,7 @@ delete _lc.en; delete _lc.kk;
       if (db && db.sync && Object.keys(db.sync.dirty || {}).length) await Promise.race([syncNow(), sleep(2500)]); } catch (e) {}
     let ok = true;
     try { const ac = new AbortController(), tm = setTimeout(() => ac.abort(), 15000);   // свежая копия страницы прямо в кэш — перезапуск гарантированно поднимет новую версию
-      const r = await fetch(location.href.split('#')[0], {cache:'reload', signal:ac.signal}); ok = r.ok; await r.blob(); clearTimeout(tm); } catch (e) { ok = false; }
+      const r = await fetch(inWeb ? location.origin + '/' : location.href.split('#')[0], {cache:'reload', signal:ac.signal}); ok = r.ok; await r.blob(); clearTimeout(tm); } catch (e) { ok = false; }
     await sleep(Math.max(0, 1500 - (performance.now() - t0)));
     c.classList.add('done'); sub.textContent = 'Готово'; ar.innerHTML = '<path d="M4 9.4l3.3 3.3L14 5.6"/>'; hap.ok();
     await sleep(520);
