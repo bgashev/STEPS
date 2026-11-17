@@ -1749,6 +1749,11 @@ html.web .ib.shim:has(.ibl){width:auto;padding:0 18px 0 14px;gap:8px;display:inl
 .prox-perks span{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:650;padding:6px 10px;border-radius:999px;background:color-mix(in srgb,var(--text) 5%,transparent);border:1px solid rgba(233,185,73,.16)}
 .prox-perks svg{color:#E9B949}
 .prox-plans{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.prox-have{display:flex;align-items:center;gap:12px;margin:12px 0 4px;padding:12px 14px;border-radius:18px;background:linear-gradient(135deg,rgba(233,185,73,.17),rgba(233,185,73,.05));border:1px solid rgba(233,185,73,.32)}
+.prox-have .ph-ok{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;flex:none;background:linear-gradient(150deg,#ffe08a,#e9a93a);color:#3a2600;box-shadow:0 6px 14px -6px rgba(233,185,73,.7)}
+.prox-have b{display:block;font-size:16px;font-weight:850;letter-spacing:-.2px}
+.prox-have small{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.prox-ext{display:block;margin:8px auto 0;border:0;background:none;color:var(--muted);font:inherit;font-size:13px;font-weight:700;padding:6px 12px;border-radius:10px}.prox-ext:active{opacity:.6}
 .prox-plan{position:relative;text-align:left;border-radius:18px;padding:12px 12px 10px;font:inherit;color:var(--text);cursor:pointer;background:color-mix(in srgb,var(--text) 5%,transparent);
   border:1.4px solid color-mix(in srgb,var(--text) 26%,transparent);transition:transform .12s}
 .prox-plan:active{transform:scale(.97)}
@@ -4183,7 +4188,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.893';
+const APP = 'VOOB (by BGASHEV) Mini App v1.894';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7198,6 +7203,8 @@ Object.assign(I18N.en, {"Магазин": "Shop", "скоро": "soon", "Рам�
 Object.assign(I18N.kk, {"Магазин": "Дүкен", "скоро": "жақында", "Рамки, фоны и значки по одному, без подписки": "Жиектер, фондар және белгілер бір-бірден, жазылымсыз", "Скоро открытие": "Жақында ашылады", "Не хочешь PRO целиком? Здесь можно будет взять одну рамку, один фон или значок, и они останутся у тебя навсегда.": "PRO толық қажет емес пе? Мұнда бір жиекті, бір фонды немесе белгіні алуға болады, ол саған мәңгіге қалады.", "Рамки": "Жиектер", "Фоны": "Фондар", "Значки": "Белгілер", "Сейчас у тебя временный ник — придумай свой, чтобы ссылку легко запомнить": "Қазір сенде уақытша ник бар — сілтемені оңай есте сақтау үшін өзіңдікін ойлап тап", "Вход по паролю": "Құпиясөзбен кіру", "Включён · логин": "Қосулы · логин", "Не задан · логин будет": "Орнатылмаған · логин болады", "Задать": "Орнату", "Изменить": "Өзгерту", "Удалить": "Жою", "Сначала задай @username в профиле — он станет логином": "Алдымен профильде @username орнат — ол логин болады", "Для подтверждения пришлём 4-значный код в Telegram-бот.": "Растау үшін Telegram-ботқа 4 таңбалы код жібереміз.", "Код из бота": "Боттағы код", "Получить код в боте": "Кодты ботта алу", "Код отправлен в бота VOOB.": "Код VOOB ботына жіберілді.", "Код уже отправлен — загляни в бота.": "Код жіберіліп қойған — ботқа кіріп қара.", "Код не отправился — открой бота VOOB, нажми «Start» и попробуй снова": "Код жіберілмеді — VOOB ботын ашып, «Start» бас та, қайта байқап көр", "Введи его ниже.": "Оны төменге енгіз.", "Задать пароль": "Құпиясөз орнату", "Сменить пароль": "Құпиясөзді ауыстыру", "Удалить пароль": "Құпиясөзді жою", "Новый пароль (от 8 символов)": "Жаңа құпиясөз (8 таңбадан)", "Повтори пароль": "Құпиясөзді қайталаңыз", "Пароли не совпадают": "Құпиясөздер сәйкес келмейді", "Пароль: минимум 8 символов": "Құпиясөз: кемінде 8 таңба", "Пароль нужен только для входа в WEB, Telegram остаётся основным входом": "Құпиясөз тек WEB-ке кіру үшін қажет, Telegram негізгі кіру жолы болып қалады", "Сменить или удалить пароль можно только с кодом из бота": "Құпиясөзді тек боттағы кодпен ауыстыруға немесе жоюға болады", "Пароль сохранён": "Құпиясөз сақталды", "Пароль удалён": "Құпиясөз жойылды", "Теперь в WEB можно войти по логину и паролю. Вход через Telegram работает как раньше.": "Енді WEB-ке логин және құпиясөзбен кіруге болады. Telegram арқылы кіру бұрынғыдай жұмыс істейді.", "Вход по логину и паролю перестанет работать": "Логин және құпиясөзбен кіру жұмысын тоқтатады", "Вход через Telegram продолжит работать как раньше": "Telegram арқылы кіру бұрынғыдай жұмыс істейді", "Задать пароль можно снова в любой момент": "Құпиясөзді кез келген уақытта қайта орнатуға болады", "Неверный логин или пароль": "Логин немесе құпиясөз қате", "Слишком много попыток. Подожди 15 минут.": "Тым көп әрекет. 15 минут күт.", "Введи логин и пароль": "Логин мен құпиясөзді енгіз", "Войти по логину и паролю": "Логин және құпиясөзбен кіру", "Логин — твой @username в VOOB": "Логин — VOOB-тағы @username", "Логин — твой @username в VOOB. Пароль можно задать в настройках после входа через Telegram.": "Логин — VOOB-тағы @username. Құпиясөзді Telegram арқылы кіргеннен кейін баптауларда орнатуға болады.", "Пароль": "Құпиясөз", "или": "немесе", "Вход через Google": "Google арқылы кіру", "Привязан": "Байланған", "Не привязан · Telegram остаётся основным входом": "Байланбаған · Telegram негізгі кіру жолы болып қалады", "Отвязать Google": "Google-ды ажырату", "Не получилось привязать Google": "Google-ды байлау сәтсіз болды", "Вход в WEB теперь только через Telegram или Google.": "Енді WEB-ке тек Telegram немесе Google арқылы кіруге болады.", "Вход в WEB теперь только через Telegram. Привязать Google можно снова в любой момент.": "Енді WEB-ке тек Telegram арқылы кіруге болады. Google-ды кез келген уақытта қайта байлауға болады.", "Привязать Google можно снова в любой момент": "Google-ды кез келген уақытта қайта байлауға болады", "перестанет открывать этот аккаунт VOOB": "осы VOOB аккаунтын ашуды тоқтатады"});
 Object.assign(I18N.en, {"Одиночные": "Solo", "По сети": "Online", "Игры по сети — скоро": "Online games are coming soon"});
 Object.assign(I18N.kk, {"Одиночные": "Жеке", "По сети": "Желіде", "Игры по сети — скоро": "Желілік ойындар жақында"});
+Object.assign(I18N.en, {"Ты в PRO": "You're in PRO", "Все возможности открыты": "Everything is unlocked", "Продлить подписку": "Extend subscription", "Скрыть тарифы": "Hide plans"});
+Object.assign(I18N.kk, {"Ты в PRO": "Сен PRO-дасың", "Все возможности открыты": "Барлық мүмкіндік ашық", "Продлить подписку": "Жазылымды ұзарту", "Скрыть тарифы": "Тарифтерді жасыру"});
 const tgLang = () => { const c = String((tgUser && tgUser.language_code) || (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code) || 'ru').slice(0, 2).toLowerCase(); return c === 'kk' || c === 'en' ? c : 'ru'; };
 const langSync = () => { try { return localStorage.getItem(LTK) === '1'; } catch (e) { return false; } };
 const curLang = () => { if (langSync()) return tgLang(); try { const v = localStorage.getItem(LK); return LANGS.some(l => l[0] === v) ? v : 'ru'; } catch (e) { return 'ru'; } };
@@ -7574,7 +7581,10 @@ function viewMeSettings(){
   return `<div class="mset2"><div class="ms-h">${q1[0]}</div><div class="ms-l">${q2[0]}</div><div class="ms-r">${q3[0]}</div><div class="ms-f">${q3[1]}</div></div>`;
 }
 /* ---- PRO (v1.423) ---- */
-const PROM = {st:null, busy:false};
+const PROM = {st:null, busy:false, ext:false};
+/* v1.894: у активного PRO вместо цен — состояние «Ты в PRO»; тарифы открываются кнопкой «Продлить» (кроме «навсегда») */
+function proHaveHTML(st){ return `<div class="prox-have"><span class="ph-ok">${IC('check', 18)}</span><div><b>Ты в PRO</b><small>Все возможности открыты</small></div></div>`; }
+const proForever = st => /^\d{4}/.test(String(st.until || '')) && +String(st.until).slice(0, 4) >= 2090;
 function proCardHTML(){
   if (!PROM.st && !PROM.busy) { PROM.busy = true; apiAuth('/pro/status', {}).then(j => { setProSt(j); if (S.tab === 'me' && S.meSet) render(); }).catch(() => {}).finally(() => { PROM.busy = false; }); }
   const st = PROM.st || {}, by = Object.fromEntries((st.plans || []).map(p => [p.plan, p])), m = by.month, y = by.year;
@@ -7585,12 +7595,15 @@ function proCardHTML(){
   const perks = [['stats', 'Статистика+'], ['clock', 'Вся история'], ['sparkle', 'Рамки'], ['palette', 'Фоны и цвета'], ['crown', 'Галочка'], ['gift', 'Особые подарки']];
   const min = !!lsGet('voob_pro_min');            // v1.438: плашку можно свернуть, выбор запоминается
   const sub = st.frozen ? `заморожен до ${fmtDate(dn(String(st.frozen_until).slice(0, 10)))}` : st.active ? `до ${fmtDate(dn(String(st.until).slice(0, 10)))}` : (m ? `от ${m.stars} ⭐ в месяц` : 'больше возможностей');   // v1.451: коротко — без обрезки
+  const plansH = (st.plans || []).length ? `<div class="prox-plans">${plan(m)}${plan(y, true)}</div>` : '<div class="cap">Загружаю тарифы…</div>', noteH = '<div class="prox-note">Оплата звёздами Telegram · без автопродления</div>';
+  const have = st.active && !st.frozen, bodyH = st.frozen ? fzBlockHTML(st)
+    : have ? proHaveHTML(st) + fzBlockHTML(st) + (proForever(st) ? '' : (PROM.ext ? plansH + noteH : '') + `<button type="button" class="prox-ext" data-act="proext">${PROM.ext ? 'Скрыть тарифы' : 'Продлить подписку'}</button>`)
+    : plansH + noteH;
   return `<div class="prox${min ? ' min' : ''}"><div class="prox-top" data-act="promin" role="button" aria-expanded="${!min}"><div class="prox-em">${IC('crown', 22)}</div><div style="min-width:0"><div class="prox-t">VOOB PRO</div><div class="prox-s${PROM.st ? '' : ' ld'}"><span>${sub}</span></div></div>
     <span class="prox-pill${st.frozen ? ' ice' : st.active ? ' on' : ''}${PROM.st ? '' : ' ld'}">${st.frozen ? 'ЗАМОРОЖЕН' : st.active ? 'АКТИВЕН' : 'ОФОРМИТЬ'}</span><span class="prox-tg">${IC('chev', 16)}</span></div>
     <div class="prox-body"><div>
     <div class="prox-perks">${perks.map(([i, t]) => `<span>${IC(i, 13)}${t}</span>`).join('')}</div>
-    ${fzBlockHTML(st) || ((st.plans || []).length ? `<div class="prox-plans">${plan(m)}${plan(y, true)}</div>` : '<div class="cap">Загружаю тарифы…</div>')}
-    <div class="prox-note">Оплата звёздами Telegram · без автопродления</div></div></div></div>`;
+    ${bodyH}</div></div></div>`;
 }
 async function proBuy(plan){
   hap.imp();
@@ -7626,7 +7639,8 @@ function proSheetHTML(back){
 // блок тарифов: пока цены грузятся — «скелет» того же размера, потом цены проявляются из размытия (без скачка высоты)
 function proPlansHTML(){
   const st = PROM.st || {};
-  if (st.active || st.frozen) return '';
+  if (st.frozen) return '';
+  if (st.active) return proHaveHTML(st);
   const by = Object.fromEntries((st.plans || []).map(p => [p.plan, p])), m = by.month, y = by.year;
   if (!(st.plans || []).length) return `<div class="prox-plans pl-sk"><div class="prox-plan"><i>&nbsp;</i><b>&nbsp;</b><small>&nbsp;</small><em>&nbsp;</em></div><div class="prox-plan best"><i>&nbsp;</i><b>&nbsp;</b><small>&nbsp;</small><em>&nbsp;</em></div></div>`;
   const save = m && y ? Math.round(100 - y.stars * 100 / (m.stars * 12)) : 0;
@@ -9671,6 +9685,7 @@ const ACT = {
   frback: el => { hap.tap(); const id = +el.dataset.id; closeSheet(); if (S.fprof !== id && !(FR.data && FR.data.me && FR.data.me.tg_id === id)) openFriendProfile(id); },
   achall: () => openAchFull(),
   probuy: el => proBuy(el.dataset.v),
+  proext: () => { hap.tap(); PROM.ext = !PROM.ext; render(); },
   prosheet: () => openPro(),
   promin: el => { hap.tap(); const c = el.closest('.prox'); if (!c) return; const m = !c.classList.contains('min');
     c.classList.toggle('min', m); el.setAttribute('aria-expanded', String(!m)); lsSet('voob_pro_min', m); },
