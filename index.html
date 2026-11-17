@@ -679,6 +679,8 @@ input[type=date].inp{display:block}
 .gpro-art{width:130px;height:130px;margin:4px auto 8px;filter:drop-shadow(0 10px 26px rgba(155,107,255,.45));animation:sshBeat 2.4s ease-in-out infinite}
 .gpro-art svg{width:100%;height:100%;display:block}
 .gpro-sh h2{margin:4px 0 6px}
+.gpx-hv{display:inline-flex;align-items:center;gap:6px;margin:6px auto 12px;padding:7px 13px;border-radius:999px;font-size:12.5px;font-weight:750;color:#E9B949;background:rgba(227,179,65,.13);border:1px solid rgba(227,179,65,.4)}
+.gpx-have .cap{max-width:290px;margin:0 auto 20px;text-wrap:balance}.gpx-have .gpx-go{width:100%}
 .gpro-plans{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .gpro-plan{display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px 8px;border-radius:18px;border:1.5px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;cursor:pointer}
 .gpro-plan i{font-style:normal;font-size:12px;color:var(--muted);font-weight:700}
@@ -4308,7 +4310,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.914';
+const APP = 'VOOB (by BGASHEV) Mini App v1.915';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5736,9 +5738,20 @@ function gpRefresh(){
   if (box) box.querySelectorAll('.gpx-plan').forEach(b => b.classList.toggle('on', b.dataset.v === GP.plan));
   if (go && p) go.innerHTML = `${IC('gift', 18)}Подарить за ${p.stars}<svg width="18" height="18" viewBox="0 0 24 24"><path fill="#E9B949" d="m12 2.8 2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.1l-5.7 3.2 1.2-6.4L2.8 9.5l6.4-.8L12 2.8Z"/></svg>`;
 }
+const gpHave = b => !!(b && (b.v || b.creator || b.pro));   // v1.915: у получателя уже действует PRO
+function gpHaveHTML(f, b){
+  let until = ''; try { if (b && b.until) until = payDate(b.until); } catch (e) {}
+  return `<div class="gpro-sh gpx gpx-have"><div class="gpx-top">${gpEmblem()}</div><div class="ppl-k">VOOB PRO</div><h2>У ${esc(f.name)} уже есть PRO</h2>
+    <span class="gpx-hv">${IC('check', 15)}Подписка активна${until ? ' до ' + esc(until) : ''}</span>
+    <div class="cap">Дарить PRO сейчас не нужно: подписка уже работает. Загляни, когда она закончится, — или выбери для друга обычный подарок.</div>
+    <button type="button" class="btn primary gpx-go" data-act="close">Понятно</button></div>`;
+}
 async function openGiftPro(id){
   const f = FR.data && FR.data.friends.find(x => x.tg_id === id); if (!f) return;
   GP.id = id; GP.plan = 'year'; GP.plans = [];
+  if (gpHave(BDG.get(+id))) { hap.tap(); openSheet(gpHaveHTML(f, BDG.get(+id)), {type:'giftpro'}); $('#sheet').classList.add('top'); return; }
+  apiAuth(BADGES_API, {ids:[id]}).then(j => { const b = (j.badges || {})[id]; if (b) { BDG.set(+id, b); lsSet(BDK, Object.fromEntries(BDG)); }
+    const sh = $('#gp-plans') && $('#gp-plans').closest('.gpro-sh'); if (gpHave(b) && GP.id === id && sh) { hap.warn(); sh.outerHTML = gpHaveHTML(f, b); } }).catch(() => {});
   openSheet(`<div class="gpro-sh gpx"><div class="gpx-top">${gpEmblem()}</div><div class="ppl-k">ПОДАРОК</div><h2>VOOB PRO для ${esc(f.name)}</h2>
     <div class="cap">Подписка включится сразу, а в коллекции друга появится подарок «VOOB PRO». Твоя энергия подарков не тратится.</div>
     <div class="prox-perks" style="justify-content:center">${PRO_PERKS.map(([i, t]) => `<span>${IC(i, 13)}${t}</span>`).join('')}</div>
@@ -5756,6 +5769,7 @@ async function openGiftPro(id){
   } catch (e) { const el = $('#gp-plans'); if (el) el.innerHTML = `<div class="hint">Нет связи: ${esc(e.message)}</div>`; }
 }
 async function buyGiftPro(id, plan, btn){
+  if (gpHave(BDG.get(+id))) { hap.warn(); toast('У друга уже есть PRO'); return; }
   hap.tap(); if (btn) { btn.disabled = true; btn.classList.add('busy'); }
   const done = () => { if (btn) { btn.disabled = false; btn.classList.remove('busy'); } };
   const f = FR.data && FR.data.friends.find(x => x.tg_id === id), pl = GP.plans.find(x => x.plan === plan) || {days: 30};
@@ -11358,6 +11372,8 @@ ACT.promo = async el => {
 /* ===== v1.911: плашка «Вышла новая версия» с кнопкой «Обновить» (= аккуратный перезапуск) ===== */
 Object.assign(I18N.en, {"Вышла новая версия": "A new version is out", "уже ждёт тебя": "is ready for you", "Обновить": "Update", "Обновляю…": "Updating…", "Готово": "Done", "Позже": "Later"});
 Object.assign(I18N.kk, {"Вышла новая версия": "Жаңа нұсқа шықты", "уже ждёт тебя": "сені күтіп тұр", "Обновить": "Жаңарту", "Обновляю…": "Жаңартылуда…", "Готово": "Дайын", "Позже": "Кейін"});
+Object.assign(I18N.en, {"уже есть PRO": "already has PRO", "Подписка активна": "Subscription is active", "Дарить PRO сейчас не нужно: подписка уже работает. Загляни, когда она закончится, — или выбери для друга обычный подарок.": "No need to gift PRO right now: the subscription is active. Come back when it ends — or pick a regular gift.", "Понятно": "Got it", "У друга уже есть PRO": "Your friend already has PRO"});
+Object.assign(I18N.kk, {"уже есть PRO": "PRO бар", "Подписка активна": "Жазылым белсенді", "Дарить PRO сейчас не нужно: подписка уже работает. Загляни, когда она закончится, — или выбери для друга обычный подарок.": "Қазір PRO сыйлаудың қажеті жоқ: жазылым жұмыс істеп тұр. Аяқталғанда қайта кір — немесе қарапайым сыйлық таңда.", "Понятно": "Түсінікті", "У друга уже есть PRO": "Досыңда PRO бар"});
 delete _lc.en; delete _lc.kk;
 (function(){
   try { const u = new URL(location.href); if (u.searchParams.has('_v')) { u.searchParams.delete('_v'); history.replaceState(null, '', u.pathname + u.search + u.hash); } } catch (e) {}   // метка запасного обновления — убираем из адреса
