@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.950';
+const APP = 'VOOB (by BGASHEV) Mini App v1.951';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -8734,7 +8734,7 @@ const REST = (function(){
     {k:'spk', n:'Отскок', d:'Тап — взлёт. Не задень шипы на стенах', f:mkSpk, pro:1},
     {k:'zig', n:'Зигзаг', d:'Тап — поворот на 90°. Держись дороги', f:mkZig, pro:1},
     {k:'road', n:'Перебежка', d:'Тап — вперёд, свайп — в стороны', f:mkRoad, pro:1},
-    {k:'snake', beta:true, n:'Змейка', d:'Свайпай, собирай яблоки, не врезайся', f:mkSnake},
+    {k:'snake', beta:true, pro:true, n:'Змейка', d:'Свайпай, собирай яблоки, не врезайся', f:mkSnake},
     {k:'dunk', beta:true, pro:true, n:'Данк', d:'Оттяни и брось мяч в кольцо. Чистый бросок — серия', f:mkDunk},
     {k:'hit', beta:true, pro:true, n:'Баскет', d:'Тап — мяч подпрыгивает. Попади в кольцо на стене', f:mkHit}
   ];
