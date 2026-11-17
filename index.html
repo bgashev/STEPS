@@ -4310,7 +4310,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.919';
+const APP = 'VOOB (by BGASHEV) Mini App v1.920';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9217,27 +9217,55 @@ const REST = (function(){
   /* 3 · Отскок: птичка скачет между стенами, на стенах растут шипы */
   function mkSpk(){ const g = {}, K = 'spk', GR = 1500, FL = -440, N = 9, SP = 21;
     const y0 = () => 58, sh = () => (H - 116) / N, yc = i => y0() + (i + .5) * sh(), BR = 12;
-    const mkWall = (side, n) => { const s = new Set(); while (s.size < n) s.add(Math.floor(Math.random() * N)); g[side] = Array.from({length: N}, (_, i) => ({k: g[side] ? g[side][i].k : 0, on: s.has(i) ? 1 : 0})); };
-    g.init = () => { base0(g); g.x = W / 2; g.y = H * .45; g.vy = 0; g.dir = 1; g.started = false; g.L = Array.from({length: N}, () => ({k: 0, on: 0})); g.R = Array.from({length: N}, () => ({k: 0, on: 0})); g.gem = null; g.bn = 0; };
+    const STG = [[0, 'Разминка', 265], [6, 'Разгон', 285], [14, 'Пульс', 310], [24, 'Орбиты', 335], [36, 'Безумие', 375]];   // v1.920: [отскоков, название, оттенок фона]
+    const stage = () => STG.reduce((a, q, i) => g.bn >= q[0] ? i : a, 0);
+    const mkWall = (side, n) => { const bn = g.bn, s = new Set(); while (s.size < n) s.add(Math.floor(Math.random() * N));
+      g[side] = Array.from({length: N}, (_, i) => { const on = s.has(i) ? 1 : 0, p = bn >= 14 && on && Math.random() < Math.min(.7, .25 + (bn - 14) * .02); return {k: g[side] ? g[side][i].k : 0, on, pu: p ? rnd(.9, 1.5) : 0, tm: p ? rnd(.3, 1) : 0}; }); };
+    g.init = () => { base0(g); g.x = W / 2; g.y = H * .45; g.vy = 0; g.dir = 1; g.started = false; g.L = Array.from({length: N}, () => ({k: 0, on: 0, pu: 0, tm: 0})); g.R = Array.from({length: N}, () => ({k: 0, on: 0, pu: 0, tm: 0})); g.gem = null; g.bn = 0;
+      g.tr = []; g.rp = []; g.wf = []; g.hu = 265; g.sxo = 0; g.bnr = null; g.sq = 0; g.fl = 0; g.stg = 0; g.orbs = []; };
     g.tap = () => { g.started = true; g.vy = FL; sfx('hop'); bstP(g, g.x, g.y + 10, 6, C.tx, 60); };
-    g.update = dt => { g.t += dt; stepFx(g, dt); [g.L, g.R].forEach(w => w.forEach(s => { s.k += ((s.on ? 1 : 0) - s.k) * Math.min(1, dt * 12); }));
+    g.update = dt => { g.t += dt; stepFx(g, dt); g.fl = Math.max(0, g.fl - dt * 2.4); g.sq = Math.max(0, g.sq - dt * 5);
+      g.rp = g.rp.filter(q => (q.l -= dt) > 0); g.wf = g.wf.filter(q => (q.l -= dt) > 0); if (g.bnr && (g.bnr.l -= dt) <= 0) g.bnr = null; g.hu += (STG[g.stg][2] - g.hu) * Math.min(1, dt * 1.6);
+      [g.L, g.R].forEach(w => w.forEach(s => { s.k += ((s.on ? 1 : 0) - s.k) * Math.min(1, dt * 12); }));
       if (g.dead) return; if (!g.started) { g.y = H * .45 + Math.sin(g.t * 4) * 8; return; }
-      const vx = 165 + Math.min(g.score, 40) * 1.6; g.vy += GR * dt; g.y += g.vy * dt; g.x += g.dir * vx * dt;
+      [g.L, g.R].forEach(w => w.forEach(s => { if (s.pu) { s.tm -= dt; if (s.tm <= 0) { s.on = s.on ? 0 : 1; s.tm = s.pu * (s.on ? 1.1 : .8); } } }));   // пульсирующие шипы
+      const vx = 165 + Math.min(g.score, 60) * 2.1; g.sxo += -g.dir * vx * dt * .5; g.vy += GR * dt; g.y += g.vy * dt; g.x += g.dir * vx * dt;
+      g.tr.push({x: g.x, y: g.y}); if (g.tr.length > 14) g.tr.shift();
+      g.orbs.forEach(o => { o.age += dt; o.px = o.ox + Math.sin(g.t * o.sp * .6 + o.ph) * 34; o.py = o.cy + Math.sin(g.t * o.sp + o.ph) * o.amp; });
       const hit = side => { for (let i = 0; i < N; i++) { const s = g[side][i]; if (s.k < .3) continue; const dy = Math.abs(g.y - yc(i)), h = sh() * .4, d = side === 'L' ? g.x - BR : W - g.x - BR; if (dy < h + 3 && d < SP * s.k * Math.max(0, 1 - dy / h) + 2) return true; } return false; };
-      if (g.x - BR <= 0) { g.x = BR; g.dir = 1; g.bn++; g.score++; sfx('ding', g.bn); g.L.forEach(s => s.on = 0); mkWall('R', Math.min(2 + Math.floor(g.bn / 4), 5)); bstP(g, BR, g.y, 7, C.tx, 90); if (!g.gem && Math.random() < .35) g.gem = {x: rnd(W * .3, W * .7), y: rnd(H * .25, H * .7)}; }
-      else if (g.x + BR >= W) { g.x = W - BR; g.dir = -1; g.bn++; g.score++; sfx('ding', g.bn); g.R.forEach(s => s.on = 0); mkWall('L', Math.min(2 + Math.floor(g.bn / 4), 5)); bstP(g, W - BR, g.y, 7, C.tx, 90); if (!g.gem && Math.random() < .35) g.gem = {x: rnd(W * .3, W * .7), y: rnd(H * .25, H * .7)}; }
-      if (g.gem && Math.hypot(g.x - g.gem.x, g.y - g.gem.y) < 24) { sfx('spark', g.bn); bstP(g, g.gem.x, g.gem.y, 12, GD, 140); popT(g, g.gem.x, g.gem.y - 20, '+3', GD); g.score += 3; g.gem = null; }
-      if (hit('L') || hit('R') || g.y < 22 + BR * .4 || g.y > H - 22 - BR * .4) { g.sh = 1; bstP(g, g.x, g.y, 18, C.rd, 170); onDie(g, K); } };
+      const bounce = L => { g.x = L ? BR : W - BR; g.dir = L ? 1 : -1; g.bn++; g.score++; sfx('ding', g.bn); g[L ? 'L' : 'R'].forEach(s => { s.on = 0; s.pu = 0; }); mkWall(L ? 'R' : 'L', Math.min(2 + Math.floor(g.bn / 3), 6));
+        bstP(g, g.x, g.y, 7, C.tx, 90); g.sq = 1; g.wf.push({x: L ? 0 : W, y: g.y, l: .55}); g.rp.push({x: L ? 0 : W, y: g.y, l: .5, m: .5});
+        if (!g.gem && Math.random() < .35) g.gem = {x: rnd(W * .3, W * .7), y: rnd(H * .25, H * .7)};
+        const ns = stage(); if (ns > g.stg) { g.stg = ns; g.bnr = {t: STG[ns][1], l: 2.2}; g.fl = .5; g.rp.push({x: g.x, y: g.y, l: 1, m: 1, big: 1}); sfx('perfect', 6); hap.ok(); }
+        const want = g.bn >= 36 ? 2 : g.bn >= 24 ? 1 : 0; while (g.orbs.length < want) { const o = {ox: rnd(W * .32, W * .68), cy: rnd(H * .32, H * .68), amp: rnd(H * .12, H * .22), sp: rnd(1.1, 1.8), ph: rnd(0, 6.28), age: 0, r: 11}; o.px = o.ox; o.py = o.cy; g.orbs.push(o); }
+        if (g.bn % 10 === 0) { g.fl = Math.max(g.fl, .3); popT(g, W / 2, H * .35, g.bn + '', GD); bstP(g, W / 2, H * .35, 16, GD, 200); } };
+      if (g.x - BR <= 0) bounce(true); else if (g.x + BR >= W) bounce(false);
+      if (g.gem && Math.hypot(g.x - g.gem.x, g.y - g.gem.y) < 24) { sfx('spark', g.bn); bstP(g, g.gem.x, g.gem.y, 12, GD, 140); popT(g, g.gem.x, g.gem.y - 20, '+3', GD); g.rp.push({x: g.gem.x, y: g.gem.y, l: .5, m: .5, c: GD, big: 0, rnd: 1}); g.score += 3; g.gem = null; }
+      if (hit('L') || hit('R') || g.y < 22 + BR * .4 || g.y > H - 22 - BR * .4 || g.orbs.some(o => o.age > .6 && Math.hypot(g.x - o.px, g.y - o.py) < BR + o.r - 2)) { g.sh = 1; g.fl = .5; bstP(g, g.x, g.y, 18, C.rd, 170); bstP(g, g.x, g.y, 10, '#fff', 120); g.rp.push({x: g.x, y: g.y, l: .6, m: .6, c: C.rd, rnd: 1}); onDie(g, K); } };
     g.draw = c => { c.save(); shk(c, g, 8); drawStars(c, g, g.t * 14);
+      const hu = ((g.hu % 360) + 360) % 360; glow(c, W * .5, H * .12, 280, 'hsl(' + Math.round(hu) + ',80%,58%)', .16); glow(c, W * .5, H * .92, 280, 'hsl(' + Math.round((hu + 40) % 360) + ',80%,55%)', .12);   // фон меняет оттенок по стадиям
+      for (let i = 0; i < 10; i++) { c.globalAlpha = .06; c.fillStyle = 'hsl(' + Math.round((hu + i * 20) % 360) + ',80%,62%)'; c.beginPath(); c.arc((i * 77 + Math.sin(g.t * .3 + i) * 22 + W) % W, H - ((i * 131 + g.t * (10 + i % 4 * 5)) % H), 6 + i % 4 * 4, 0, 7); c.fill(); } c.globalAlpha = 1;
+      if (g.bn >= 6) { c.fillStyle = '#fff'; for (let i = 0; i < 7; i++) { const lx = ((i * 83 + g.sxo) % (W + 80) + (W + 80)) % (W + 80) - 40; c.globalAlpha = .06 + .04 * (i % 3); c.fillRect(lx, 80 + (i * 119) % (H - 160), 36 + (i % 3) * 20, 1.5); } c.globalAlpha = 1; }
       c.fillStyle = C.tx; c.globalAlpha = .06; c.font = '800 150px ' + C.ff; c.textAlign = 'center'; c.fillText(g.score, W / 2, H * .5 + 50); c.globalAlpha = 1;
       c.fillStyle = C.s2; c.fillRect(0, 0, 6, H); c.fillRect(W - 6, 0, 6, H); c.fillStyle = C.ac; c.globalAlpha = .5; c.fillRect(0, 0, 2, H); c.fillRect(W - 2, 0, 2, H); c.globalAlpha = 1;
+      g.wf.forEach(q => { const k = q.l / .55; glow(c, q.x, q.y, 110, C.ac, .55 * k); });   // вспышка стены при отскоке
+      { const pu = .1 + .06 * Math.sin(g.t * 3); [[0, 1], [H, -1]].forEach(([y, d]) => { const gr = c.createLinearGradient(0, y, 0, y + d * 70); gr.addColorStop(0, 'rgba(239,107,115,' + (pu + .12) + ')'); gr.addColorStop(1, 'rgba(239,107,115,0)'); c.fillStyle = gr; c.fillRect(0, d > 0 ? 0 : H - 70, W, 70); }); }
       c.fillStyle = C.rd; for (let x = 0; x < W; x += 18) { c.beginPath(); c.moveTo(x, 0); c.lineTo(x + 9, 22); c.lineTo(x + 18, 0); c.fill(); c.beginPath(); c.moveTo(x, H); c.lineTo(x + 9, H - 22); c.lineTo(x + 18, H); c.fill(); }
-      ['L', 'R'].forEach(side => g[side].forEach((s, i) => { if (s.k < .02) return; const L = side === 'L', x = L ? 6 : W - 6, d = L ? 1 : -1, h = sh() * .4, y = yc(i); c.fillStyle = C.rd; c.beginPath(); c.moveTo(x, y - h); c.lineTo(x + d * SP * s.k, y); c.lineTo(x, y + h); c.fill(); }));
-      if (g.gem) { const m = g.gem, p = 1 + .15 * Math.sin(g.t * 6); glow(c, m.x, m.y, 26, GD, .5); c.fillStyle = GD; poly(c, [[m.x, m.y - 10 * p], [m.x + 8 * p, m.y], [m.x, m.y + 10 * p], [m.x - 8 * p, m.y]]); c.fill(); }
-      c.save(); c.translate(g.x, g.y); c.rotate(Math.max(-.5, Math.min(.6, g.vy / 900)) * g.dir); c.scale(g.dir, 1);
+      ['L', 'R'].forEach(side => g[side].forEach((s, i) => { const L = side === 'L', x = L ? 6 : W - 6, d = L ? 1 : -1, h = sh() * .4, y = yc(i);
+        if (s.pu && !s.on && s.tm < .5 && g.started) { const w = 1 - s.tm / .5; c.save(); c.globalAlpha = .25 + .5 * w * (.6 + .4 * Math.sin(g.t * 30)); c.strokeStyle = C.rd; c.lineWidth = 1.6; c.setLineDash([4, 4]); c.beginPath(); c.moveTo(x, y - h); c.lineTo(x + d * SP, y); c.lineTo(x, y + h); c.closePath(); c.stroke(); c.restore(); }   // предупреждение: шип сейчас выдвинется
+        if (s.k < .02) return; glow(c, x + d * SP * s.k * .4, y, 26, C.rd, .22 * s.k); c.fillStyle = C.rd; c.beginPath(); c.moveTo(x, y - h); c.lineTo(x + d * SP * s.k, y); c.lineTo(x, y + h); c.fill(); }));
+      g.rp.forEach(q => { const k = q.l / q.m; c.globalAlpha = k * .7; c.strokeStyle = q.c || C.ac; c.lineWidth = 2.5 * k + .5; c.beginPath(); if (q.big || q.rnd) c.arc(q.x, q.y, 8 + (1 - k) * (q.big ? 240 : 40), 0, 7); else c.ellipse(q.x, q.y, 6 + (1 - k) * 16, 14 + (1 - k) * 60, 0, 0, 7); c.stroke(); }); c.globalAlpha = 1;
+      if (g.gem) { const m = g.gem, p = 1 + .15 * Math.sin(g.t * 6); glow(c, m.x, m.y, 26, GD, .5); c.fillStyle = GD; poly(c, [[m.x, m.y - 10 * p], [m.x + 8 * p, m.y], [m.x, m.y + 10 * p], [m.x - 8 * p, m.y]]); c.fill(); c.strokeStyle = GD; c.globalAlpha = .5; c.lineWidth = 1.5; c.beginPath(); c.arc(m.x, m.y, 16 + 4 * Math.sin(g.t * 4), 0, 7); c.stroke(); c.globalAlpha = 1; }
+      g.orbs.forEach(o => { const e = Math.min(1, o.age * 2), sc = e < 1 ? 1.4 - .4 * e : 1; c.save(); c.translate(o.px, o.py); c.scale(e * sc, e * sc); glow(c, 0, 0, 36, C.rd, .45); c.rotate(g.t * 2.2); c.fillStyle = C.rd; for (let k = 0; k < 8; k++) { c.rotate(.7854); c.beginPath(); c.moveTo(-3, -o.r + 1); c.lineTo(0, -o.r - 6); c.lineTo(3, -o.r + 1); c.fill(); }
+        let gr = c.createRadialGradient(-3, -3, 1, 0, 0, o.r); gr.addColorStop(0, '#4a4b58'); gr.addColorStop(1, '#14141a'); c.fillStyle = gr; c.strokeStyle = C.rd; c.lineWidth = 2.5; c.beginPath(); c.arc(0, 0, o.r, 0, 7); c.fill(); c.stroke(); c.restore(); });   // орбы-мины
+      g.tr.forEach((q, i) => { const k = i / g.tr.length; c.globalAlpha = k * .35; c.fillStyle = 'hsl(' + Math.round((hu + 40) % 360) + ',85%,65%)'; c.beginPath(); c.arc(q.x, q.y, BR * (.3 + k * .6), 0, 7); c.fill(); }); c.globalAlpha = 1;
+      glow(c, g.x, g.y, 34, C.ac, .25);
+      c.save(); c.translate(g.x, g.y); c.rotate(Math.max(-.5, Math.min(.6, g.vy / 900)) * g.dir); c.scale(g.dir * (1 - .2 * g.sq), 1 + .2 * g.sq);
       c.fillStyle = C.ac; c.beginPath(); c.arc(0, 0, BR, 0, 7); c.fill(); c.fillStyle = C.tx; c.beginPath(); c.ellipse(-3, 3 + Math.sin(g.t * 20) * 2.5, 7, 4.2, -.5 + Math.sin(g.t * 20) * .4, 0, 7); c.fill();
       c.fillStyle = '#fff'; c.beginPath(); c.arc(5, -3, 3.4, 0, 7); c.fill(); c.fillStyle = C.bg; c.beginPath(); c.arc(6, -3, 1.7, 0, 7); c.fill(); c.fillStyle = GD; c.beginPath(); c.moveTo(11, 0); c.lineTo(18, 2); c.lineTo(11, 5); c.fill(); c.restore();
-      drawFx(c, g); if (!g.started) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — взлёт. Не задень шипы', W / 2, H * .62); } c.restore(); };
+      drawFx(c, g); if (g.fl > 0) { c.globalAlpha = Math.min(.4, g.fl * .5); c.fillStyle = '#fff'; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }
+      if (g.bnr) { const k = Math.max(0, Math.min(1, g.bnr.l, (2.2 - g.bnr.l) * 4)); c.globalAlpha = k; c.fillStyle = C.tx; c.font = '800 28px ' + C.ff; c.textAlign = 'center'; c.fillText(g.bnr.t, W / 2, H * .24 - (1 - k) * 10); c.fillStyle = C.mu; c.font = '600 12px ' + C.ff; c.fillText('становится сложнее', W / 2, H * .24 + 20); c.globalAlpha = 1; }
+      if (!g.started) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — взлёт. Не задень шипы', W / 2, H * .62); } c.restore(); };
     return g; }
 
   /* 4 · Зиг: шарик катится по узкой дороге, тап — поворот на 90° (2.5D) */
