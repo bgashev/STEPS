@@ -1092,6 +1092,31 @@ html:not(.web) body:has(#sw.open) .rt-pill{bottom:auto}
 .rt-gline{position:absolute;left:14px;right:14px;top:var(--gh);height:3px;border-radius:2px;background:var(--surface2);overflow:hidden}.rt-gline b{display:block;height:100%;width:0;background:var(--accent)}
 .rt-gm canvas{position:absolute;left:0;right:0;top:calc(var(--gh) + 8px);bottom:0;width:100%;height:calc(100% - var(--gh) - 8px);touch-action:none;cursor:pointer}
 .rt-gbn.rk{flex:none;color:#ffd166;border-color:rgba(255,209,102,.5);background:linear-gradient(160deg,rgba(255,209,102,.2),rgba(255,140,60,.08)),color-mix(in srgb,var(--surface) 92%,var(--text) 8%)}.rt-gbn.rk:active{transform:scale(.93)}
+/* v1.901: плашка «друг побил твой рекорд» при входе в игру */
+.bt{position:absolute;z-index:8;top:calc(var(--gh) + 6px);left:12px;right:12px;max-width:400px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:9px 16px 11px 10px;border-radius:24px;background:linear-gradient(135deg,rgba(38,32,24,.86),rgba(20,20,30,.86));-webkit-backdrop-filter:blur(20px) saturate(1.5);backdrop-filter:blur(20px) saturate(1.5);border:1px solid rgba(255,209,102,.28);box-shadow:0 16px 40px rgba(0,0,0,.5),0 0 34px rgba(255,209,102,.16),inset 0 1px 0 rgba(255,255,255,.1);overflow:hidden;cursor:pointer;animation:btin .7s cubic-bezier(.2,1.3,.3,1) both}
+.bt.out{animation:btout .38s cubic-bezier(.5,0,.8,.4) both}
+@keyframes btin{0%{opacity:0;transform:translateY(-34px) scale(.86);filter:blur(10px)}60%{opacity:1;filter:blur(0)}100%{opacity:1;transform:none;filter:blur(0)}}
+@keyframes btout{to{opacity:0;transform:translateY(-26px) scale(.94);filter:blur(8px)}}
+.bt-sw{position:absolute;inset:0;pointer-events:none;background:linear-gradient(105deg,transparent 34%,rgba(255,225,150,.3) 50%,transparent 66%);transform:translateX(-130%);animation:btsw 1.2s .45s cubic-bezier(.3,.6,.3,1) forwards}
+@keyframes btsw{to{transform:translateX(130%)}}
+.bt-a{position:relative;flex:none;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#ffd166;background:#1d1d26;box-shadow:0 0 0 2px #14141c,0 0 0 3.5px #ffd166,0 0 18px rgba(255,209,102,.5);animation:btpl 1.8s .5s ease-in-out 2}
+@keyframes btpl{50%{box-shadow:0 0 0 2px #14141c,0 0 0 3.5px #ffd166,0 0 30px rgba(255,209,102,.85)}}
+.bt-a img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.bt-bd{position:absolute;right:-5px;bottom:-4px;width:20px;height:20px;border-radius:50%;background:linear-gradient(145deg,#ffe29a,#ffb43a);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #14141c;animation:btpop .5s .55s cubic-bezier(.2,1.8,.4,1) both}
+.bt-bd svg{width:11px;height:11px;fill:#2a1d05}
+@keyframes btpop{from{transform:scale(0) rotate(-40deg)}to{transform:none}}
+.bt-tx{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+.bt-tx b{font-size:15px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em}
+.bt-tx small{font-size:12px;font-weight:600;color:rgba(255,255,255,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bt-sc{flex:none;display:flex;align-items:center;gap:6px}
+.bt-sc em{font-style:normal;font-size:13px;font-weight:700;color:rgba(255,255,255,.45)}
+.bt-sc svg{width:13px;height:13px;stroke:#ffd166;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.bt-sc strong{font-size:24px;font-weight:900;color:#ffd166;letter-spacing:-.02em;text-shadow:0 0 18px rgba(255,209,102,.55);font-variant-numeric:tabular-nums;min-width:1ch}
+.bt-pr{position:absolute;left:0;bottom:0;height:2.5px;width:100%;background:linear-gradient(90deg,#ffd166,#ff9f43);transform-origin:left;animation:btpr 5s .7s linear forwards;opacity:.9}
+@keyframes btpr{to{transform:scaleX(0)}}
+.bt-p{position:absolute;left:32px;top:50%;width:5px;height:5px;margin:-2.5px;border-radius:50%;background:#ffd166;opacity:0;pointer-events:none;animation:btsp .95s .5s cubic-bezier(.1,.7,.3,1) forwards}
+@keyframes btsp{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2)}}
+@media (prefers-reduced-motion:reduce){.bt,.bt *{animation-duration:.01s!important;animation-delay:0s!important}}
 .rt-rk{position:absolute;inset:0;z-index:5;background:rgba(6,6,12,.62);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);display:flex;align-items:flex-start;justify-content:center;padding:calc(var(--gh) + 6px) 14px 14px;animation:rtfi .2s both}
 .rk-c{width:100%;max-width:420px;max-height:100%;display:flex;flex-direction:column;border-radius:26px;padding:1.5px;background:linear-gradient(150deg,#ffd166,var(--accent) 45%,#6c5ce7);box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 40px rgba(180,167,238,.18);animation:rtup .3s cubic-bezier(.2,1,.3,1) both}
 .rk-c>*{background:var(--bg)}.rk-h{display:flex;align-items:center;gap:10px;padding:16px 14px 12px 18px;border-radius:25px 25px 0 0;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 16%,var(--bg)),var(--bg))}
@@ -4188,7 +4213,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.900';
+const APP = 'VOOB (by BGASHEV) Mini App v1.901';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9136,12 +9161,38 @@ const REST = (function(){
     gm.querySelector('[data-r="grk"]').addEventListener('click', () => { hap.tap(); openRank(); });
     gm.querySelector('[data-r="gmin"]').addEventListener('click', () => { hap.tap(); stopGame(); min = true; render(); });
     keyH = e => { if (G && (e.code === 'Space' || e.code === 'ArrowUp')) { e.preventDefault(); gtap(); } else if (G && G.key && !G.dead && cd <= 0 && /^Arrow/.test(e.code)) { e.preventDefault(); G.key(e.code); } }; document.addEventListener('keydown', keyH);
-    paint(left());
+    paint(left()); beatCheck(GAMES[i].k);
   }
   /* v1.861: рейтинг друзей в игре */
   function pushBest(k, n){ try { if (typeof apiAuth !== 'function') return; n = n || 0; const b = {}; if (s.best[k]) b[k] = s.best[k]; apiAuth('/games/top', {bests:b, played:n ? undefined : k}).catch(() => { if (n < 3) setTimeout(() => pushBest(k, n + 1), [3000, 10000, 30000][n]); }); } catch (e) {} }
   /* v1.879: старые рекорды (до починки прав в БД) не дошли до сервера — отправляем все локальные один раз за запуск */
   setTimeout(() => { try { if (typeof apiAuth === 'function' && Object.keys(s.best).length) apiAuth('/games/top', {bests:Object.assign({}, s.best)}).catch(() => {}); } catch (e) {} }, 6000);
+  /* v1.901: плашка «друг побил твой рекорд»: сравниваем с тем, что видели в прошлый раз (хранится у аккаунта) */
+  function beatCheck(key){
+    try { if (typeof apiAuth !== 'function') return;
+      apiAuth('/games/top', {game:key, bests:Object.assign({}, s.best)}).then(j => {
+        const me = s.best[key] || 0, sn = (s.seen = s.seen || {}), m = (sn[key] = sn[key] || {}), hits = [];
+        (j.rows || []).forEach(r => { if (r.me) return; const was = m[r.tg_id];
+          if (was !== undefined && me > 0 && r.best > me && was <= me) hits.push(r);
+          if (was === undefined || r.best > was) m[r.tg_id] = r.best; });
+        save(); if (hits.length) { hits.sort((a, b) => b.best - a.best); beatShow(hits.slice(0, 3), key, me); }
+      }).catch(() => {});
+    } catch (e) {}
+  }
+  function beatShow(q, key, me){
+    if (!gm || !q.length) return; const r = q.shift(), g = GAMES.find(x => x.k === key), nm = r.name || 'Друг';
+    const ph = (typeof FR !== 'undefined' && FR.ph && FR.ph.get(r.tg_id)) || '', init = esc(nm.trim().charAt(0).toUpperCase() || '?');
+    const b = document.createElement('div'); b.className = 'bt'; b.setAttribute('role', 'status');
+    b.innerHTML = '<i class="bt-sw"></i><span class="bt-a">' + (ph ? '<img src="' + ph + '" alt="">' : init) + '<span class="bt-bd"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h6l-1 8 9-12h-6z"/></svg></span></span>'
+      + '<span class="bt-tx"><b>' + esc(nm) + '</b><small>побил твой рекорд' + (g ? ' · ' + esc(g.n) : '') + '</small></span>'
+      + '<span class="bt-sc"><em>' + me + '</em><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg><strong>0</strong></span><i class="bt-pr"></i>'
+      + Array.from({length: 8}, (_, k) => { const a = k / 8 * 6.283 + .4, d = 34 + (k % 3) * 9; return '<i class="bt-p" style="--dx:' + Math.round(Math.cos(a) * d) + 'px;--dy:' + Math.round(Math.sin(a) * d) + 'px;animation-delay:' + (.5 + k * .02) + 's"></i>'; }).join('');
+    gm.appendChild(b); try { hap.imp(); } catch (e) {}
+    const sc = b.querySelector('strong'), t0 = performance.now() + 450;
+    (function st(t){ const k = Math.min(1, (t - t0) / 800); sc.textContent = k <= 0 ? 0 : Math.round(r.best * (1 - Math.pow(1 - k, 3))); if (k < 1 && b.isConnected) requestAnimationFrame(st); else sc.textContent = r.best; })(performance.now());
+    let done = false; const bye = () => { if (done) return; done = true; b.classList.add('out'); setTimeout(() => { b.remove(); if (q.length) setTimeout(() => beatShow(q, key, me), 200); }, 380); };
+    b.addEventListener('click', () => { hap.tap(); bye(); }); setTimeout(bye, 5700);
+  }
   function openRank(){
     if (!gm || !G) return; const old = gm.querySelector('.rt-rk'); if (old) { old.remove(); pz = false; return; }
     const g = GAMES[GI], key = g.k; pz = true;
