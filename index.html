@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.958';
+const APP = 'VOOB (by BGASHEV) Mini App v1.959';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -8636,6 +8636,10 @@ const REST = (function(){
     else if (k === 'bloop') { tn(280, 620, .1, 'sine', .17); }
     else if (k === 'land') { tn(210, 120, .07, 'sine', .08); nz(.05, 1800, 600, .035); }
     else if (k === 'spark') { const f = PENTA[Math.min(PENTA.length - 1, n % PENTA.length)] * 1.5; tn(f, f * 1.01, .18, 'sine', .13); tn(f * 1.5, f * 1.5, .1, 'triangle', .05, .04); }
+    else if (k === 'heli') { tn(110, 300, .55, 'sawtooth', .05); for (let i = 0; i < 7; i++) { nz(.05, 320, 180, .11, i * .06, 1.6); tn(75, 55, .05, 'triangle', .07, i * .06); } }
+    else if (k === 'rocket') { nz(.7, 500, 90, .2, 0, .6); tn(70, 190, .6, 'sawtooth', .09); tn(150, 50, .25, 'sine', .2); nz(.35, 2600, 500, .08, .05, .8); }
+    else if (k === 'chop') { nz(.05, 300, 170, .08, 0, 1.6); tn(78, 56, .05, 'triangle', .06); }
+    else if (k === 'burn') { nz(.09, 800, 300, .06, 0, .7); tn(62, 48, .09, 'sawtooth', .035); }
     else if (k === 'die') { tn(330, 70, .45, 'sawtooth', .09); tn(120, 40, .35, 'sine', .22); nz(.18, 900, 120, .1); }
     else if (k === 'record') { [0, 2, 4, 5, 7].forEach((st, i) => tn(PENTA[st], PENTA[st], .22, 'triangle', .13, .5 + i * .09)); }
   } catch (e) {} }
@@ -9111,10 +9115,10 @@ const REST = (function(){
         if (Math.random() < .5) g.pt.push({x: px - g.face * 15 + rnd(-8, 8), y: g.y + 28, vx: rnd(-30, 30), vy: rnd(80, 170), l: .85, m: .85, s: rnd(4, 7), sh: 0, c: '#8e8ea8'});
         if (Math.random() < .3) g.pt.push({x: px - g.face * 15, y: g.y + 22, vx: rnd(-230, 230), vy: rnd(80, 320), l: .55, m: .55, s: 1.7, c: '#ffe27a'});
         g.ringT = (g.ringT || 0) - dt; if (g.ringT <= 0) { g.ringT = .16; g.rp = g.rp || []; g.rp.push({x: px, y: g.y + 26, l: .4, c: '#ffb347'}); }
-        if (Math.random() < dt * 14) sfx('hop', 1); if (g.jet <= 0) { g.jet = 0; g.sq = .6; } }
+        g.ct = (g.ct || 0) - dt; if (g.ct <= 0) { g.ct = .06; sfx('burn'); } if (g.jet <= 0) { g.jet = 0; g.sq = .6; } }
       else if (g.hat > 0) { g.hat -= dt; g.vy = g.hat > .45 ? -700 : -700 * (g.hat / .45) - 180; g.y += g.vy * dt; const px = nm(g.x);
         if (Math.random() < .55) g.pt.push({x: px + rnd(-26, 26), y: g.y - 28, vx: rnd(-90, 90), vy: rnd(60, 160), l: .45, m: .45, s: 2, c: '#bfe6ff'});
-        if (Math.random() < dt * 9) sfx('hop', 1); if (g.hat <= 0) { g.hat = 0; g.sq = .5; } }
+        g.ct = (g.ct || 0) - dt; if (g.ct <= 0) { g.ct = .08; sfx('chop'); } if (g.hat <= 0) { g.hat = 0; g.sq = .5; } }
       else { g.vy += GR * (g.zero > 0 ? .6 : 1) * dt; g.y += g.vy * dt; }
       if (g.vy < -560) { g.tr.push({x: nm(g.x), y: g.y}); if (g.tr.length > (g.jet > 0 ? 12 : 7)) g.tr.shift(); } else if (g.tr.length) g.tr.shift();
       g.pl.forEach(p => { if (p.t === 'm') p.x = nm(p.x + p.d * 70 * dt); if (p.br) p.br += dt; p.bt += dt;
@@ -9124,7 +9128,7 @@ const REST = (function(){
           g.vy = p.t === 's' ? -V0 * 1.62 : -V0; g.sq = 1; p.bt = 0; if (p.t === 'i') { g.slide = 1.3; sfx('spark', 2); bstP(g, nm(g.x), p.y, 12, '#bff0ff', 120); popT(g, nm(g.x), p.y - 30, 'СКОЛЬЗКО!', '#bff0ff'); } sfx(p.t === 's' ? 'perfect' : 'hop', 2); const px = nm(g.x); g.rp = g.rp || []; g.rp.push({x: px, y: p.y, l: .4, c: p.t === 's' ? C.rd : C.tx});
           bstP(g, px, p.y, p.t === 's' ? 16 : 6, p.t === 's' ? C.rd : C.tx, 80); if (p.t === 's') popT(g, px, p.y - 34, 'ПРУЖИНА!', C.rd); }
         if (p.coin && ((dx < 30 && Math.abs(g.y - (p.y - 40)) < 32) || (g.mag > 0 && dx < 170 && Math.abs(g.y - (p.y - 40)) < 170))) { p.coin = false; g.coinN++; sfx('spark', g.coinN % 10); bstP(g, p.x, p.y - 40, 10, GD, 120); popT(g, p.x, p.y - 62, '+5', GD); }
-        if (p.item && dx < 34 && Math.abs(g.y - (p.y - 38)) < 40) { const it = p.item; p.item = null; if (it === 'hat') { g.hat = 1.8; g.vy = -700; sfx('spark', 5); bstP(g, nm(g.x), g.y, 14, '#7ad0ff', 150); popT(g, nm(g.x), g.y - 40, 'ВЕРТОЛЁТ!', '#7ad0ff'); } else if (it === 'shield') { g.shield = 1; sfx('spark', 7); bstP(g, nm(g.x), g.y, 18, '#7ad0ff', 160); popT(g, nm(g.x), g.y - 40, 'ЩИТ!', '#7ad0ff'); } else if (it === 'magnet') { g.mag = 8; sfx('spark', 4); bstP(g, nm(g.x), g.y, 18, '#ff5d73', 160); popT(g, nm(g.x), g.y - 40, 'МАГНИТ!', '#ff5d73'); } else if (it === 'time') { g.slowT = 5; sfx('record'); bstP(g, nm(g.x), g.y, 18, '#bfe6ff', 160); popT(g, nm(g.x), g.y - 40, 'ЗАМЕДЛЕНИЕ!', '#bfe6ff'); } else { g.jet = 2.3; g.vy = -980; sfx('record'); bstP(g, nm(g.x), g.y, 26, '#ffb347', 220); popT(g, nm(g.x), g.y - 40, 'ДЖЕТПАК!', '#ffb347'); for (let i = 0; i < 3; i++) g.rp.push({x: nm(g.x), y: g.y + 10 + i * 10, l: .4 - i * .05, c: '#ffb347'}); } } });
+        if (p.item && dx < 34 && Math.abs(g.y - (p.y - 38)) < 40) { const it = p.item; p.item = null; if (it === 'hat') { g.hat = 1.8; g.vy = -700; g.ct = .3; sfx('heli'); bstP(g, nm(g.x), g.y, 14, '#7ad0ff', 150); popT(g, nm(g.x), g.y - 40, 'ВЕРТОЛЁТ!', '#7ad0ff'); } else if (it === 'shield') { g.shield = 1; sfx('spark', 7); bstP(g, nm(g.x), g.y, 18, '#7ad0ff', 160); popT(g, nm(g.x), g.y - 40, 'ЩИТ!', '#7ad0ff'); } else if (it === 'magnet') { g.mag = 8; sfx('spark', 4); bstP(g, nm(g.x), g.y, 18, '#ff5d73', 160); popT(g, nm(g.x), g.y - 40, 'МАГНИТ!', '#ff5d73'); } else if (it === 'time') { g.slowT = 5; sfx('record'); bstP(g, nm(g.x), g.y, 18, '#bfe6ff', 160); popT(g, nm(g.x), g.y - 40, 'ЗАМЕДЛЕНИЕ!', '#bfe6ff'); } else { g.jet = 2.3; g.vy = -980; g.ct = .25; sfx('rocket'); bstP(g, nm(g.x), g.y, 26, '#ffb347', 220); popT(g, nm(g.x), g.y - 40, 'ДЖЕТПАК!', '#ffb347'); for (let i = 0; i < 3; i++) g.rp.push({x: nm(g.x), y: g.y + 10 + i * 10, l: .4 - i * .05, c: '#ffb347'}); } } });
       g.mon = g.mon || []; g.mon.forEach(m => { if (m.dead) { m.dead += dt; m.y += 380 * dt; return; } m.bx = m.bx === undefined ? m.x : m.bx; m.x = nm(m.bx + Math.sin(g.t * m.sp + m.ph) * m.a); const dx = wd(g.x, m.x), dy = g.y - m.y;
         if (dx * dx + dy * dy < 26 * 26) { if (g.jet > 0 || g.hat > 0 || (g.vy > 0 && dy < -4) || g.shield) { if (g.shield && !(g.jet > 0 || g.hat > 0 || (g.vy > 0 && dy < -4))) { g.shield = 0; popT(g, nm(g.x), g.y - 50, 'ЩИТ СПАС!', '#7ad0ff'); g.sh = .6; } m.dead = .01; g.kills = (g.kills || 0) + 1; if (g.jet <= 0 && !(g.hat > 0)) { g.vy = -V0 * .95; g.sq = 1; } sfx('perfect', 3); bstP(g, nm(g.x), m.y, 18, '#ff6b9a', 150); popT(g, nm(g.x), m.y - 30, 'МОНСТР! +10', '#ff6b9a'); } else { g.sh = 1; bstP(g, nm(g.x), g.y, 22, C.rd, 180); sfx('die'); popT(g, nm(g.x), g.y - 30, 'Съели!', C.rd); onDie(g, K); } } });
       g.mon = g.mon.filter(m => m.y < g.cam + H + 120 && m.dead < 1.2);
