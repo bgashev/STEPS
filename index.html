@@ -4188,7 +4188,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.896';
+const APP = 'VOOB (by BGASHEV) Mini App v1.897';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10229,7 +10229,7 @@ const AX = (function(){
   /* ---------- навигация ---------- */
   function go(s, replace){ if (ST.s && !replace) ST.stack.push(ST.s); ST.s = s; S.app = true; hap.tap(); render(); window.scrollTo(0, 0); }
   function leave(){ ST.off = 0; ST.s = ''; ST.stack = []; S.app = false; _rTab = null; }
-  function goBack(){ const p = ST.stack.pop(); hap.tap(); if (!p) { leave(); render(); setTimeout(openSheetApps, 60); return; } ST.s = p; if (p === 'add') ST.pr = null; render(); }
+  function goBack(){ const p = ST.stack.pop(); hap.tap(); if (!p) { leave(); render(); if (S.tab !== 'apps') setTimeout(openSheetApps, 60); return; }   /* v1.897: из полноэкранного раздела «Приложения» окно не открываем */ ST.s = p; if (p === 'add') ST.pr = null; render(); }
   function openSheetApps(){ hap.tap(); openSheet(sheetHTML(), {type:'apps'}); }
 
   /* ---------- сканер ---------- */
@@ -10376,7 +10376,7 @@ const AX = (function(){
     axscanx: () => { hap.tap(); closeScan(); },
     axtor: () => torch(),
     axzoom: el => { try { const tr = SC.stream && SC.stream.getVideoTracks()[0]; if (!tr) return; tr.applyConstraints({advanced:[{zoom:+el.dataset.v}]}); document.querySelectorAll('#axs-z button').forEach(b => b.classList.toggle('on', b === el)); hap.tap(); } catch (e) {} },
-    axbw: () => { addWater(250); hap.imp(); render(); openSheetApps(); },
+    axbw: () => { addWater(250); hap.imp(); render(); if (S.tab !== 'apps') openSheetApps(); },
     axnum: () => { const c = ((document.getElementById('axs-n') || {}).value || '').replace(/\D/g, ''); if (c.length < 8) { toast('Введи номер из 8–13 цифр'); return; } closeScan(); lookup(c); }
   };
   function backToCal(){ ST.pr = null; ST.stack = ['cal']; ST.s = 'cal'; render(); window.scrollTo(0, 0); }
