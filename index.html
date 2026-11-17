@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.957';
+const APP = 'VOOB (by BGASHEV) Mini App v1.958';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9370,11 +9370,11 @@ const REST = (function(){
   /* 15 · Баскет (v1.935): флэт, управление как во Flappy Bird — тап = подпрыгнуть, мяч сам летит от стены к стене */
   function mkHit(){ const g = {}, K = 'hit', BR = 18, GRV = 1450, JUMP = 520, SN = ['Разминка', 'Стадион', 'Неон', 'Ночь', 'Лава', 'Космос'];
     const PBL = [['#16181e','#1e222b','#0f1115'], ['#1b1620','#261e2e','#120e16'], ['#13191a','#1b2627','#0d1112'], ['#1a1812','#27231a','#100e09'], ['#1b1418','#291c23','#110c0f'], ['#12161c','#1b212c','#0c0f13']];
-    const cl = (v, a, b) => Math.max(a, Math.min(b, v)), stg = () => Math.min(5, Math.floor(g.caught / 5)), hb0 = () => (205 + stg() * 38) % 360, rimH = () => [338, 190, 150, 280, 28, 55][stg() % 6], LL = () => 92 - stg() * 4, spd = () => 150 + stg() * 11;
+    const cl = (v, a, b) => Math.max(a, Math.min(b, v)), stg = () => Math.min(5, Math.floor(g.caught / 5)), hb0 = () => (205 + stg() * 38) % 360, rimH = () => [338, 190, 150, 280, 28, 55][stg() % 6], lv = () => Math.min(g.caught, 80), LL = () => 92 - lv() * .28, spd = () => 150 + lv() * 1.4;
     const wallX = h => h.side < 0 ? 0 : W, inw = h => -h.side;
     const newHoop = prev => { const st = stg(), h = {side: prev ? -prev.side : 1, y0: rnd(H * .26, g.fy - 150), y: 0, amp: 0, sp: rnd(.9, 1.5), ph: rnd(0, 6), sw: 0, pu: 0, in: 0};
       for (let k = 0; k < 8 && prev && Math.abs(h.y0 - prev.y0) < 90; k++) h.y0 = rnd(H * .26, g.fy - 150);
-      if (st >= 2 && Math.random() < .6) { h.amp = rnd(22, 52); if (h.y0 - h.amp < H * .16 || h.y0 + h.amp > g.fy - 110) h.amp = 0; } h.y = h.y0;
+      if (g.caught >= 8 && Math.random() < Math.min(.7, (g.caught - 8) * .03)) { h.amp = rnd(16, Math.min(52, 20 + g.caught * .8)); if (h.y0 - h.amp < H * .16 || h.y0 + h.amp > g.fy - 110) h.amp = 0; } h.y = h.y0;
       g.pk = []; if (Math.random() < .55) g.pk.push({k: 's', x: rnd(W * .3, W * .7), y: rnd(H * .3, g.fy - 120), got: 0}); if (st >= 1 && Math.random() < .35) g.pk.push({k: 'c', x: rnd(W * .3, W * .7), y: rnd(H * .3, g.fy - 120), got: 0}); return h; };
     g.init = () => { base0(g); const bm = (() => { try { const d = document.createElement('div'); d.style.cssText = 'position:fixed;left:0;bottom:0;width:0;height:0;padding-bottom:max(env(safe-area-inset-bottom,0px),var(--tg-safe-area-inset-bottom,0px),var(--tg-content-safe-area-inset-bottom,0px))'; document.body.appendChild(d); const v = parseFloat(getComputedStyle(d).paddingBottom) || 0; d.remove(); return v; } catch (e) { return 0; } })();
       g.fy = H - Math.max(bm, 0) - 40; g.caught = 0; g.combo = 0; g.tm = 1; g.rp = []; g.cf = []; g.pk = []; g.tr = []; g.sb = null; g.stv = 0; g.fl = 0; g.sq = 0; g.touched = false; g.dir = 1; g.old = null; g.bar = null;
@@ -9395,7 +9395,7 @@ const REST = (function(){
       if (g.bar) g.bar.x = W / 2 + Math.sin(g.t * g.bar.sp * (1 + (stg() - 3) * .25) + g.bar.ph) * W * .28;
       if (g.dead) return; const b = g.b;
       if (g.state === 'ready') { b.y = H * .42 + Math.sin(g.t * 3) * 8; b.a += dt * 1.5; return; }
-      g.tm -= dt * (.05 + .007 * stg()); if (g.tm <= 0) { g.tm = 0; return die('Время!'); }
+      g.tm -= dt * (.05 + .0011 * lv()); if (g.tm <= 0) { g.tm = 0; return die('Время!'); }
       const n = 2, ds = dt / n;
       for (let k = 0; k < n && !g.dead; k++) { const py = b.y; b.vy += GRV * ds; b.x += b.vx * ds; b.y += b.vy * ds; b.a += b.vx * ds / BR;
         if (b.x < BR) { b.x = BR; if (b.vx < 0) { b.vx = -b.vx; g.dir = 1; sfx('thunk'); bstP(g, b.x, b.y, 4, '#fff', 70); } } else if (b.x > W - BR) { b.x = W - BR; if (b.vx > 0) { b.vx = -b.vx; g.dir = -1; sfx('thunk'); bstP(g, b.x, b.y, 4, '#fff', 70); } }
@@ -9450,7 +9450,7 @@ const REST = (function(){
       if (!g.dead) ballDraw(c); if (g.old) drawNet(c, g.old, Math.max(0, g.old.fade * 2)); drawNet(c, g.h);
       g.cf.forEach(p => { c.save(); c.globalAlpha = Math.min(1, p.l * 2); c.translate(p.x, p.y); c.rotate(p.rot); c.fillStyle = p.c; c.fillRect(-p.r, -p.r * .55, p.r * 2, p.r * 1.1); c.restore(); }); c.globalAlpha = 1;
       drawFx(c, g);
-      { const bx = 16, bw = W - 32, by = 14, v = g.tm, col = v > .5 ? '#5ee7ff' : v > .25 ? '#ffd23f' : '#ff4d6a'; c.fillStyle = 'rgba(255,255,255,.1)'; rr(c, bx, by, bw, 10, 5); c.fill(); if (v > 0) { c.globalAlpha = v < .25 ? .6 + .4 * Math.sin(g.t * 16) : 1; const tg = c.createLinearGradient(bx, 0, bx + bw, 0); tg.addColorStop(0, col); tg.addColorStop(1, '#fff'); c.shadowColor = col; c.shadowBlur = 12; c.fillStyle = col; rr(c, bx, by, Math.max(10, bw * v), 10, 5); c.fill(); c.shadowBlur = 0; c.globalAlpha = 1; } }
+      { const v = g.tm, low = v < .25; c.fillStyle = 'rgba(255,255,255,.07)'; c.fillRect(0, 0, W, 3); if (v > 0) { c.fillStyle = low ? 'rgba(255,77,106,' + (.55 + .35 * Math.sin(g.t * 14)) + ')' : 'rgba(255,255,255,.4)'; c.fillRect(0, 0, W * v, 3); } if (low) { c.fillStyle = 'rgba(255,40,70,' + (.05 + .04 * Math.sin(g.t * 14)) + ')'; c.fillRect(0, 0, W, H); } }
       if (g.sb) { const a = g.sb.a, fa = Math.min(1, (2.4 - a) * 2.5), cy = H * .42, e = Math.min(1, a * 4), hs2 = (hb + 40) % 360; c.save(); c.globalAlpha = fa * .55; c.fillStyle = '#000'; c.fillRect(0, cy - 44, W, 88); c.globalAlpha = fa; c.fillStyle = 'hsl(' + hs2 + ',95%,62%)'; c.fillRect(W / 2 - 80 * e, cy - 45, 160 * e, 3); c.fillStyle = '#fff'; c.font = '700 12px ' + C.ff; c.textAlign = 'center'; c.fillText('Э Т А П  ' + (stg() + 1), W / 2, cy - 22); c.translate(W / 2, cy + 14); c.scale(.8 + .2 * e, .8 + .2 * e); c.font = '900 32px ' + C.ff; c.textBaseline = 'middle'; c.fillStyle = '#fff'; c.fillText(SN[stg()].toUpperCase(), 0, 0); c.restore(); }
       if (g.fl > 0) { c.globalAlpha = g.fl * .22; c.fillStyle = '#fff'; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }
       if (g.state === 'ready' && !g.dead) { c.fillStyle = '#fff'; c.font = '700 15px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — мяч прыгает к кольцу', W / 2, H * .42 + 64); c.fillStyle = '#9aa3b5'; c.font = '600 13px ' + C.ff; c.fillText('Попади в кольцо сверху', W / 2, H * .42 + 86); }
