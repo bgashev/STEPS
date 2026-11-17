@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.953';
+const APP = 'VOOB (by BGASHEV) Mini App v1.954';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9329,7 +9329,7 @@ const REST = (function(){
     const starP = (c, x, y, R, r, rot) => { c.beginPath(); for (let i = 0; i < 10; i++) { const a = rot + i * Math.PI / 5 - Math.PI / 2, d = i % 2 ? r : R; c.lineTo(x + Math.cos(a) * d, y + Math.sin(a) * d); } c.closePath(); };
     const drawStar = (c, x, y, R, rot) => { c.save(); c.lineJoin = 'round'; starP(c, x, y, R, R * .5, rot); c.fillStyle = '#ffd53d'; c.fill(); c.lineWidth = 2.4; c.strokeStyle = '#f2a21c'; c.stroke(); c.restore(); };
     const drawHoopBack = (c, h, past) => { const r = h.hw, ry = r * .3, pl = 1 + .1 * h.pu; c.save(); c.translate(h.x, h.y); c.rotate(h.th); c.scale(pl, pl);
-      c.fillStyle = past ? 'rgba(0,0,0,.25)' : 'rgba(0,0,0,.4)'; c.beginPath(); c.ellipse(0, 0, r - 2, ry - .5, 0, 0, 7); c.fill();
+      c.fillStyle = past ? '#2b2e37' : '#4a3a40'; c.beginPath(); c.ellipse(0, 0, r - 2, ry - .5, 0, 0, 7); c.fill(); c.fillStyle = past ? 'rgba(255,255,255,.04)' : 'rgba(255,255,255,.12)'; c.beginPath(); c.ellipse(0, -ry * .18, r * .72, ry * .55, 0, 0, 7); c.fill();
       c.strokeStyle = past ? '#3f434b' : RIM_D; c.lineWidth = 7; c.beginPath(); c.ellipse(0, 0, r, ry, 0, Math.PI, 2 * Math.PI); c.stroke(); c.restore(); };
     const drawHoopFront = (c, h, past) => { const r = h.hw, ry = r * .3, nh = r * 1.15 + (h.id === g.cid && g.aim ? Math.min(24, g.pull * .12) : 0), br = r * .5, pl = 1 + .1 * h.pu, j = h.sw * Math.sin(g.t * 15); c.save(); c.translate(h.x, h.y); c.rotate(h.th); c.scale(pl, pl); c.globalAlpha = past ? .4 : 1;
       c.beginPath(); c.moveTo(-r, 0); c.quadraticCurveTo(0, ry * 2.2, r, 0); c.bezierCurveTo(r * .92, nh * .5, br * 1.15 + j * .5, nh * .82, br + j * .5, nh); c.quadraticCurveTo(j * .5, nh + ry * .9, -br + j * .5, nh); c.bezierCurveTo(-br * 1.15 + j * .5, nh * .82, -r * .92, nh * .5, -r, 0); c.closePath();
@@ -9344,7 +9344,7 @@ const REST = (function(){
       c.scale(sx, sy); c.rotate(b.a); c.fillStyle = '#ef8c2c'; c.beginPath(); c.arc(0, 0, BR, 0, 7); c.fill(); c.save(); c.beginPath(); c.arc(0, 0, BR, 0, 7); c.clip(); c.strokeStyle = '#2a1608'; c.lineWidth = 2.4; c.beginPath(); c.moveTo(-BR, 0); c.lineTo(BR, 0); c.moveTo(0, -BR); c.lineTo(0, BR); c.stroke(); c.beginPath(); c.arc(-BR * 1.2, 0, BR * .9, -1, 1); c.stroke(); c.beginPath(); c.arc(BR * 1.2, 0, BR * .9, Math.PI - 1, Math.PI + 1); c.stroke(); c.restore();
       c.fillStyle = 'rgba(255,255,255,.28)'; c.beginPath(); c.ellipse(-BR * .35, -BR * .45, BR * .35, BR * .2, -.6, 0, 7); c.fill(); c.restore(); };
     g.draw = c => { c.save(); shk(c, g, 6); const hb = hb0(), cam = g.cam; c.fillStyle = PBD[stg() % 6][0]; c.fillRect(0, 0, W, H);
-      { c.save(); c.strokeStyle = 'rgba(255,255,255,.045)'; c.lineWidth = 1.5; const off = (cam * .25) % 160; for (let k = -1; k < 6; k++) { const y = k * 160 + off, x = (k % 2 ? .25 : .75) * W; c.beginPath(); c.arc(x, y, 46 + (k & 1) * 22, 0, 7); c.stroke(); } c.fillStyle = 'rgba(255,255,255,.07)'; const o2 = (cam * .5) % 80; for (let yy = -1; yy < H / 80 + 1; yy++) for (let xx = 0; xx < 5; xx++) { c.beginPath(); c.arc(xx * 90 + 25 + (yy & 1) * 45, yy * 80 + o2, 1.6, 0, 7); c.fill(); } c.restore(); }
+      { c.save(); c.fillStyle = 'rgba(255,255,255,.05)'; const o2 = (cam * .4) % 120; for (let yy = -1; yy < H / 120 + 1; yy++) for (let xx = 0; xx < 3; xx++) { c.beginPath(); c.arc(xx * 150 + 50 + (yy & 1) * 75, yy * 120 + o2, 1.5, 0, 7); c.fill(); } c.restore(); }
       c.font = '900 150px ' + C.ff; c.textAlign = 'center'; c.fillStyle = 'rgba(255,255,255,.07)'; c.fillText(String(g.score), W / 2, H * .3);
       c.save(); c.translate(0, -cam);
       g.rp.forEach(q => { const k = Math.min(1, q.l / .5); c.globalAlpha = Math.max(0, k) * .85; c.strokeStyle = q.c; c.lineWidth = 3.5; c.beginPath(); c.arc(q.x, q.y, Math.max(0, (1 - k) * 95 + 8), 0, 7); c.stroke(); }); c.globalAlpha = 1;
