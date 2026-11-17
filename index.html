@@ -1698,7 +1698,7 @@ html.web .ib.shim:has(.ibl){width:auto;padding:0 18px 0 14px;gap:8px;display:inl
 .fp3 .fpb.frb{background:var(--surface2)!important;border-color:var(--border)!important;color:var(--text)!important}
 .fpb .stk3{display:flex;align-items:center;justify-content:center;height:34px;font-style:normal}
 .fpb .stk3 .fav{width:28px;height:28px;font-size:12px;box-shadow:0 0 0 2px var(--surface2)}
-.fpb .stk3 .fav+.fav{margin-left:-10px}.fpb .stk3 .fav .lvb{display:none}
+.fpb .stk3 .fav{overflow:hidden;position:relative}.fpb .stk3 .fav+.fav{margin-left:-9px}.fpb .stk3 .fav:nth-child(1){z-index:3}.fpb .stk3 .fav:nth-child(2){z-index:2}.fpb .stk3 .fav:nth-child(3){z-index:1}.fpb .stk3 .fav .fi{width:100%;height:100%}.fpb .stk3 .fav .lvb{display:none}
 .fpb .stk3 .fe{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--text) 8%,transparent);color:var(--muted)}
 .fpb.frb:disabled{opacity:.6}
 
@@ -4188,7 +4188,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.894';
+const APP = 'VOOB (by BGASHEV) Mini App v1.895';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6020,9 +6020,9 @@ function frameOf(f){
   return k;
 }
 function frameCls(k, lv){ const vars = lv ? tierStyle(lv).replace(' tr"', '"') : ''; return (k ? ` fr-${k}` : '') + vars; }   // v1.422: без рамки — без кольца, цвета значка уровня остаются
-function favHTML(f, small){
+function favHTML(f, small, plain){
   const src = FR.ph.get(f.tg_id), lv = f.level && f.level.level;
-  const ts = frameCls(frameOf(f), lv);
+  const ts = plain ? '' : frameCls(frameOf(f), lv);
   return `<div class="fav${small ? ' s' : ''}${ts}" data-fid="${f.tg_id}"><div class="fi">${src ? `<img src="${src}" alt="">` : esc((f.name || '?')[0].toUpperCase())}</div>${lv ? `<span class="lvb${tierOf(lv).idx ? ' tg' : ''}" data-t="${tierOf(lv).idx}">${lv}</span>` : ''}</div>`;
 }
 function putPhoto(id){   // точечно, без перерисовки всей страницы
@@ -6347,7 +6347,7 @@ function friendSheetHTML(f, j, loading, self){
   const pw = +f.poke_wait || 0;
   const nfr = loading ? 0 : (j.friends || []).length;
   const frBtn = loading ? `<button type="button" class="fpb frb" disabled><em class="stk3"><span class="fav skl"></span><span class="fav skl"></span></em><b>Друзья</b></button>`
-    : `<button type="button" class="fpb frb" ${nfr ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}><em class="stk3">${nfr ? j.friends.slice(0, 3).map(x => favHTML(x, false)).join('') : `<span class="fe">${IC('friends', 18)}</span>`}</em><b>Друзья · ${j.friends_count}</b></button>`;
+    : `<button type="button" class="fpb frb" ${nfr ? `data-act="frall" data-id="${f.tg_id}"` : 'disabled'}><em class="stk3">${nfr ? j.friends.slice(0, 3).map(x => favHTML(x, false, true)).join('') : `<span class="fe">${IC('friends', 18)}</span>`}</em><b>Друзья · ${j.friends_count}</b></button>`;
   const acts = self ? '' : `<div class="fp-bar fp3"><button class="fpb poke${pw ? ' off' : ''}" data-act="frpoke" data-id="${f.tg_id}"><span>${IC('bolt', 20)}</span><b>${pw ? `через ${pw} ч` : 'Взбодрить'}</b></button>`
     + frBtn
     + `<button class="fpb gift" data-act="gift" data-id="${f.tg_id}"><span>${IC('gift', 20)}</span><b>Подарок</b></button></div>`;
@@ -7582,7 +7582,7 @@ function viewMeSettings(){
 }
 /* ---- PRO (v1.423) ---- */
 const PROM = {st:null, busy:false, ext:false};
-/* v1.894: у активного PRO вместо цен — состояние «Ты в PRO»; тарифы открываются кнопкой «Продлить» (кроме «навсегда») */
+/* v1.895: у активного PRO вместо цен — состояние «Ты в PRO»; тарифы открываются кнопкой «Продлить» (кроме «навсегда») */
 function proHaveHTML(st){ return `<div class="prox-have"><span class="ph-ok">${IC('check', 18)}</span><div><b>Ты в PRO</b><small>Все возможности открыты</small></div></div>`; }
 const proForever = st => /^\d{4}/.test(String(st.until || '')) && +String(st.until).slice(0, 4) >= 2090;
 function proCardHTML(){
