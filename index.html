@@ -4213,7 +4213,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.902';
+const APP = 'VOOB (by BGASHEV) Mini App v1.903';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9169,7 +9169,7 @@ const REST = (function(){
   setTimeout(() => { try { if (typeof apiAuth === 'function' && Object.keys(s.best).length) apiAuth('/games/top', {bests:Object.assign({}, s.best)}).catch(() => {}); } catch (e) {} }, 6000);
   /* v1.901: плашка «друг побил твой рекорд»: сравниваем с тем, что видели в прошлый раз (хранится у аккаунта) */
   let bti = 0, btb = false;
-  function beatLoop(key){ clearInterval(bti); beatCheck(key); bti = setInterval(() => { if (!gm) { clearInterval(bti); return; } if (!document.hidden) beatCheck(key); }, 5000); }   /* проверка каждые 5 с, пока открыта игра */
+  function beatLoop(key){ clearInterval(bti); beatCheck(key); bti = setInterval(() => { if (!gm) { clearInterval(bti); return; } if (!document.hidden) beatCheck(key); }, 3000); }   /* проверка каждые 3 с, пока открыта игра */
   function beatCheck(key){
     try { if (typeof apiAuth !== 'function' || btb) return; btb = true;
       const bs = {}; if (s.best[key]) bs[key] = s.best[key];
