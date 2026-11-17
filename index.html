@@ -4188,7 +4188,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.895';
+const APP = 'VOOB (by BGASHEV) Mini App v1.896';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -8408,10 +8408,15 @@ function openWorkout(w, preset, hint, act, back){
 }
 /* v1.826: таймер отдыха между подходами (звук, вибрация) и мини-игры «Сыграть до гонга» */
 const REST = (function(){
-  const KEY = 'voob.rest';
+  /* v1.896: хранилище у каждого аккаунта своё — раньше рекорды были общие на устройство и чужие очки попадали в рейтинг под своим именем */
+  const KEY0 = 'voob.rest', KEY = KEY0 + (tgUser && tgUser.id ? '.' + tgUser.id : '');
   const DEF = {snd:1, vib:1, auto:0, game:1, std:90, per:{}, best:{}};
   let s = Object.assign({}, DEF);
-  try { const o = JSON.parse(localStorage.getItem(KEY) || '{}'); s = Object.assign({}, DEF, o); s.per = o.per || {}; s.best = o.best || {}; } catch (e) {}
+  try {
+    let raw = localStorage.getItem(KEY);
+    if (raw === null && KEY !== KEY0) { raw = localStorage.getItem(KEY0); if (raw !== null) { localStorage.setItem(KEY, raw); try { const o0 = JSON.parse(raw); delete o0.best; delete o0.sv; localStorage.setItem(KEY0, JSON.stringify(o0)); } catch (e) {} } }
+    const o = JSON.parse(raw || '{}'); s = Object.assign({}, DEF, o); s.per = o.per || {}; s.best = o.best || {};
+  } catch (e) {}
   const save = () => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} };
   const DUR = {barbell:120, squat:90, pullup:90, pushup:60, dumbbell:60, burpee:45, abs:45, plank:45};
   const R = 2 * Math.PI * 52;
@@ -9134,7 +9139,7 @@ const REST = (function(){
     paint(left());
   }
   /* v1.861: рейтинг друзей в игре */
-  function pushBest(k){ try { if (typeof apiAuth !== 'function') return; const b = {}; if (s.best[k]) b[k] = s.best[k]; apiAuth('/games/top', {bests:b, played:k}).catch(() => {}); } catch (e) {} }
+  function pushBest(k, n){ try { if (typeof apiAuth !== 'function') return; n = n || 0; const b = {}; if (s.best[k]) b[k] = s.best[k]; apiAuth('/games/top', {bests:b, played:n ? undefined : k}).catch(() => { if (n < 3) setTimeout(() => pushBest(k, n + 1), [3000, 10000, 30000][n]); }); } catch (e) {} }
   /* v1.879: старые рекорды (до починки прав в БД) не дошли до сервера — отправляем все локальные один раз за запуск */
   setTimeout(() => { try { if (typeof apiAuth === 'function' && Object.keys(s.best).length) apiAuth('/games/top', {bests:Object.assign({}, s.best)}).catch(() => {}); } catch (e) {} }, 6000);
   function openRank(){
@@ -9142,20 +9147,27 @@ const REST = (function(){
     const g = GAMES[GI], key = g.k; pz = true;
     const bx = document.createElement('div'); bx.className = 'rt-rk';
     bx.innerHTML = '<div class="rk-c"><div class="rk-h"><span class="rk-t"><svg viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0V4zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3M12 14v4M8.5 20h7"/></svg>РЕЙТИНГ</span><b>' + esc(g.n) + '</b><button type="button" class="rk-x" aria-label="Закрыть"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="rk-l">' + [78, 60, 70, 52].map((w, i) => '<div class="rk-r sk" style="animation-delay:' + i * 70 + 'ms"><i class="rk-n"></i><span class="rk-a"></span><span class="rk-nm"><u style="width:' + w + '%"></u></span><b class="rk-s"><u></u></b></div>').join('') + '</div></div>';
-    const shut = () => { bx.remove(); pz = false; lastT = performance.now(); };
+    let sig = '', tm = 0, busy = false;
+    const shut = () => { clearInterval(tm); bx.remove(); pz = false; lastT = performance.now(); };
     bx.addEventListener('click', e => { if (e.target === bx || e.target.closest('.rk-x')) { hap.tap(); shut(); } });
     gm.querySelector('.rt-gm').appendChild(bx);
     const L = bx.querySelector('.rk-l');
+    /* v1.896: таблица обновляется сама каждые 4 с, пока открыта (перерисовка только если что-то изменилось) */
+    const load = first => {
+    if (busy) return; busy = true;
     const mine = Math.max(s.best[key] || 0, G && G.score || 0);
     apiAuth('/games/top', {game:key, bests:Object.assign({}, s.best)}).then(j => {
-      if (!bx.isConnected) return;
+      busy = false; if (!bx.isConnected) { clearInterval(tm); return; }
       const rows = (j.rows || []).slice(); rows.forEach(r => { if (r.me && mine > r.best) r.best = mine; }); rows.sort((x, y) => y.best - x.best || (x.me ? -1 : 0)); const top = Math.max(1, ...rows.map(r => r.best));
+      const sg = rows.map(r => r.tg_id + ':' + r.best + ':' + (r.name || '')).join('|'); if (!first && sg === sig) return; sig = sg;
       if (rows.length <= 1) { L.innerHTML = '<div class="rk-em">Пока ты здесь один<br><small>Добавь друзей — и узнаешь, кто круче</small></div>' + (rows[0] ? row(rows[0], 0, top) : ''); return; }
       /* v1.880: стеклянный подиум для топ-3 (с результатом > 0), остальные друзья — списком с номером места */
       const pn = Math.min(3, rows.filter(r => r.best > 0).length);
       L.innerHTML = (pn ? podium(rows.slice(0, pn)) : '') + rows.slice(pn).map((r, i) => row(r, i + pn, top)).join('');
       L.querySelectorAll('.rk-pb b[data-v]').forEach(e => { const v = +e.dataset.v, t0 = performance.now(); (function st(t){ const k = Math.min(1, (t - t0 - 250) / 800); e.textContent = k <= 0 ? 0 : Math.round(v * (1 - Math.pow(1 - k, 3))); if (k < 1 && e.isConnected) requestAnimationFrame(st); else e.textContent = v; })(t0); });
-    }).catch(() => { if (bx.isConnected) L.innerHTML = '<div class="rk-em">Не получилось загрузить<br><small>Проверь связь и открой снова</small></div>'; });
+    }).catch(() => { busy = false; if (first && bx.isConnected) L.innerHTML = '<div class="rk-em">Не получилось загрузить<br><small>Проверь связь и открой снова</small></div>'; });
+    };
+    load(true); tm = setInterval(() => { if (!bx.isConnected) { clearInterval(tm); return; } if (!document.hidden) load(false); }, 4000);
     function podium(t){
       const ord = t.length === 3 ? [1, 0, 2] : t.length === 2 ? [1, 0] : [0];
       return '<div class="rk-pod">' + ord.map(i => { const r = t[i], ph = (typeof FR !== 'undefined' && FR.ph && FR.ph.get(r.tg_id)) || '', nm = r.name || 'Игрок', init = esc(nm.trim().charAt(0).toUpperCase() || '?');
