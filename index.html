@@ -1523,10 +1523,10 @@ html.web .head{position:relative}
 #cfm.on{opacity:1}
 .cfm-bx{width:min(360px,100%);text-align:center;padding:26px 22px 20px;border-radius:28px;background:color-mix(in srgb,var(--surface) 88%,transparent);border:1px solid var(--border);box-shadow:0 40px 90px -30px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.06);transform:translateY(14px) scale(.94);filter:blur(6px);transition:transform .45s cubic-bezier(.2,1.1,.3,1),filter .35s ease}
 #cfm.on .cfm-bx{transform:none;filter:none}
-.cfm-ic{width:56px;height:56px;margin:0 auto 14px;display:grid;place-items:center;border-radius:20px;background:var(--accent-soft);color:var(--accent)}
+.cfm-ic{width:60px;height:60px;margin:0 auto 16px;display:grid;place-items:center;border-radius:20px;background:var(--accent-soft);color:var(--accent)}
 .cfm-bx.dng .cfm-ic{background:color-mix(in srgb,var(--red,#ef6b73) 16%,transparent);color:var(--red,#ef6b73)}
-.cfm-bx h3{margin:0 0 6px;font-size:18px;letter-spacing:-.2px}
-.cfm-bx p{margin:0 0 20px;color:var(--muted);font-size:14px;line-height:1.45}
+.cfm-bx h3{display:block;margin:0 0 8px;font-size:19px;line-height:1.25;letter-spacing:-.2px;text-align:center;text-wrap:balance}
+.cfm-bx p{margin:0 auto 22px;max-width:270px;color:var(--muted);font-size:14px;line-height:1.45;text-align:center;text-wrap:balance}
 .cfm-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .cfm-btns .btn{min-height:48px;justify-content:center;font-size:15px}
 .cfm-no{background:var(--surface2);color:var(--text)}
@@ -4308,7 +4308,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.913';
+const APP = 'VOOB (by BGASHEV) Mini App v1.914';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
