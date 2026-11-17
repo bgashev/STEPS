@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.966';
+const APP = 'VOOB (by BGASHEV) Mini App v1.967';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9348,10 +9348,10 @@ const REST = (function(){
     const drawHoopBack = (c, h, past) => { const r = h.hw, ry = r * .3, pl = 1 + .1 * h.pu; c.save(); c.translate(h.x, h.y); c.rotate(h.th); c.scale(pl, pl);
       c.fillStyle = past ? 'rgba(20,28,50,.22)' : 'rgba(10,30,70,.3)'; c.beginPath(); c.ellipse(0, 0, r, ry, 0, 0, 7); c.fill();
       c.strokeStyle = past ? RIMP : RIMC; c.lineWidth = 11; c.beginPath(); c.ellipse(0, 0, r, ry, 0, Math.PI, 2 * Math.PI); c.stroke(); c.restore(); };
-    const drawHoopFront = (c, h, past) => { const r = h.hw, ry = r * .3, nh = r * 1.05 + (h.id === g.cid && g.aim ? Math.min(24, g.pull * .12) : 0), br = r * .36, pl = 1 + .1 * h.pu, j = h.sw * Math.sin(g.t * 15); c.save(); c.translate(h.x, h.y); c.rotate(h.th); c.scale(pl, pl); c.globalAlpha = past ? .55 : 1;
-      const P = (u, v) => { const w = r * (1 - v) + br * v; return [u * w + j * v * v, v * nh + ry * 1.7 * v * (1 - u * u * .85)]; };
+    const drawHoopFront = (c, h, past) => { const r = h.hw, ry = r * .3, nh = r * .6 + (h.id === g.cid && g.aim ? Math.min(24, g.pull * .12) : 0), br = r * .52, pl = 1 + .1 * h.pu, j = h.sw * Math.sin(g.t * 15); c.save(); c.translate(h.x, h.y); c.rotate(h.th); c.scale(pl, pl); c.globalAlpha = past ? .55 : 1;
+      const P = (u, v) => { const w = r * (1 - v) + br * v; return [u * w + j * v * v, v * nh + ry * 1.5 * v * (1 - u * u * .8)]; };
       const out = () => { c.beginPath(); for (let i = 0; i <= 14; i++) { const q = P(-1 + i / 7, 1 - 0); } c.moveTo(-r, 0); for (let i = 0; i <= 16; i++) { const v = i / 16, q = P(-1, v); c.lineTo(q[0], q[1]); } for (let i = 0; i <= 16; i++) { const u = -1 + 2 * i / 16, q = P(u, 1); c.lineTo(q[0], q[1]); } for (let i = 16; i >= 0; i--) { const v = i / 16, q = P(1, v); c.lineTo(q[0], q[1]); } c.closePath(); };
-      c.save(); out(); c.clip(); c.strokeStyle = '#fff'; c.lineWidth = 4; c.lineJoin = 'round'; for (let dir = -1; dir <= 1; dir += 2) for (let a0 = -3; a0 <= 3; a0 += .67) { c.beginPath(); for (let i = 0; i <= 12; i++) { const v = i / 12, q = P(a0 + dir * v * 1.0, v); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); } c.stroke(); } c.restore();
+      c.save(); out(); c.clip(); c.strokeStyle = '#fff'; c.lineWidth = 4; c.lineJoin = 'round'; for (let dir = -1; dir <= 1; dir += 2) for (let a0 = -3; a0 <= 3; a0 += .75) { c.beginPath(); for (let i = 0; i <= 12; i++) { const v = i / 12, q = P(a0 + dir * v * 1.0, v); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); } c.stroke(); } c.restore();
       c.strokeStyle = '#fff'; c.lineWidth = 4.6; out(); c.stroke();
       c.strokeStyle = past ? RIMP : RIMC; c.lineWidth = 11; c.lineCap = 'round'; c.beginPath(); c.ellipse(0, 0, r, ry, 0, 0, Math.PI); c.stroke(); c.restore(); };
     const ballDraw = c => { const b = g.b, fire = g.combo >= 3, sq = g.sq, sx = 1 + .2 * Math.sin(sq * 3) * (sq > 0 ? 1 : 0), sy = 1 / sx; c.save(); c.translate(b.x, b.y);
