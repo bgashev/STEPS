@@ -4146,28 +4146,16 @@ html.web .ax-gg{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14
 .ax-bt.bwt::after{background:radial-gradient(circle,rgba(150,255,215,.36),transparent 70%)}
 .bk .h,.bk .big,.bk .ms,.bwt .h,.bwt .big,.bwt .wsm{position:relative;z-index:1}
 .il{position:absolute;pointer-events:none;z-index:0}
-.il-wd{right:12px;top:62px;width:58px;height:92px}
-.il-wd i{position:absolute;border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;background:linear-gradient(160deg,rgba(255,255,255,.55),rgba(150,200,255,.18));border:1px solid rgba(255,255,255,.4);transform:rotate(-8deg);animation:ilFl 5.2s ease-in-out infinite}
-.il-wd i:nth-child(1){right:0;top:0;width:26px;height:32px}
-.il-wd i:nth-child(2){left:2px;top:34px;width:18px;height:22px;animation-delay:-1.7s;animation-duration:6.4s}
-.il-wd i:nth-child(3){right:6px;top:64px;width:12px;height:15px;animation-delay:-3.1s;animation-duration:4.6s}
-@keyframes ilFl{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-7px) rotate(-3deg)}}
-.il-bc{right:12px;top:46px;width:60px;height:42px}
-.il-bc svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.il-bc .ls{position:absolute;left:3px;right:3px;top:6px;height:2px;border-radius:2px;background:#fff;box-shadow:0 0 10px 2px rgba(255,235,200,.85);animation:ilScan 2.6s ease-in-out infinite alternate}
-@keyframes ilScan{from{top:7px}to{top:33px}}
-.il-w{right:12px;top:12px;width:72px;height:32px;overflow:visible}
-.il-w .pp{transform-origin:center;transform-box:fill-box;animation:ilPp 2.4s ease-out infinite}
-@keyframes ilPp{0%{transform:scale(1);opacity:.7}100%{transform:scale(3.2);opacity:0}}
-.il-g{right:6px;top:8px;width:98px;height:82px}
-.il-g .t{position:absolute;width:44px;height:44px;border-radius:13px;overflow:hidden;background:linear-gradient(150deg,#8a78ff,#3a2a9a);box-shadow:0 8px 16px -6px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.28) inset}
+.il-wd{right:14px;top:16px;width:18px;height:22px;opacity:.4}
+.il-wd i{position:absolute;inset:0;border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,255,255,.15));transform:rotate(-8deg)}
+.il-bc{right:14px;top:17px;width:34px;height:22px;opacity:.38}
+.il-bc svg{display:block;width:100%;height:100%}
+.il-w{right:14px;top:16px;width:52px;height:22px;opacity:.55;overflow:visible}
+.il-g{right:12px;top:14px;width:62px;height:28px;opacity:.7}
+.il-g .t{position:absolute;top:0;width:28px;height:28px;border-radius:9px;overflow:hidden;background:rgba(255,255,255,.14);box-shadow:0 0 0 1.5px #2a1f7a}
 .il-g .t img{width:100%;height:100%;object-fit:cover;display:block}
-.il-g .t:nth-child(1){left:2px;top:24px;transform:rotate(-13deg)}
-.il-g .t:nth-child(2){left:30px;top:2px;transform:rotate(7deg);z-index:1}
-.il-g .t:nth-child(3){left:52px;top:34px;transform:rotate(15deg);z-index:2}
-.il-s{right:4px;top:6px;width:84px;height:84px;overflow:visible;animation:ilFl2 6s ease-in-out infinite}
-@keyframes ilFl2{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-4px) rotate(2deg)}}
-@media (prefers-reduced-motion:reduce){.il,.il *{animation:none!important}}
+.il-g .t:nth-child(1){left:0}.il-g .t:nth-child(2){left:17px}.il-g .t:nth-child(3){left:34px}
+.il-s{right:12px;top:12px;width:34px;height:34px;opacity:.6}
 html:not(.web) #tabs .tab .tl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 html:not(.web) #tabs .tab{justify-content:center;gap:0}
 html:not(.web) #tabs .tab .ti,html:not(.web) #tabs .tab .ti svg{width:26px;height:26px}
@@ -4196,7 +4184,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.888';
+const APP = 'VOOB (by BGASHEV) Mini App v1.889';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10031,14 +10019,14 @@ const AX = (function(){
     const sw = (k, on) => `<span class="ax-sw${on ? ' on' : ''}" data-act="axpin" data-k="${k}"></span>`;
     const GL = (() => { try { return REST.list(); } catch (e) { return []; } })();
     const gtiles = (() => { if (!GL.length) return ''; const n = GL.length, di = Math.max(0, GL.findIndex(x => x.day)); return `<div class="il il-g">${[di, (di + 3) % n, (di + 7) % n].map(i => `<span class="t">${GL[i].th}</span>`).join('')}</div>`; })();
-    const bcode = (() => { const w = [2, 1, 3, 1, 2, 1, 1, 3, 1, 2, 3, 1, 2]; let x = 10, r = ''; w.forEach((q, i) => { r += `<rect x="${x}" y="9" width="${q}" height="24" rx=".5"/>`; x += q + 2; }); return `<div class="il il-bc"><svg viewBox="0 0 60 42" fill="rgba(255,255,255,.88)">${r}<g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".9"><path d="M2 12V4Q2 2 4 2H12"/><path d="M48 2H56Q58 2 58 4V12"/><path d="M58 30V38Q58 40 56 40H48"/><path d="M12 40H4Q2 40 2 38V30"/></g></svg><i class="ls"></i></div>`; })();
-    const wspark = (() => { try { let v = weightsSorted().slice(-8).map(e => +e.kg).filter(x => x > 0); if (v.length < 3) v = [91.4, 91.1, 91.2, 90.6, 90.3, 90, 89.8]; const mn = Math.min(...v), mx = Math.max(...v), rg = (mx - mn) || 1, W = 72, H = 32, pt = v.map((x, i) => [i * W / (v.length - 1), 4 + (1 - (x - mn) / rg) * (H - 8)]), d = pt.map((q, i) => (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1)).join(''), e = pt[pt.length - 1]; return `<svg class="il il-w" viewBox="0 0 ${W} ${H}"><defs><linearGradient id="ilwg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".38"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><path d="${d}L${W} ${H}L0 ${H}Z" fill="url(#ilwg)"/><path d="${d}" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/><circle class="pp" cx="${e[0].toFixed(1)}" cy="${e[1].toFixed(1)}" r="3" fill="#fff"/><circle cx="${e[0].toFixed(1)}" cy="${e[1].toFixed(1)}" r="3" fill="#fff"/></svg>`; } catch (er) { return ''; } })();
-    const shopArt = `<svg class="il il-s" viewBox="0 0 84 84"><defs><linearGradient id="ils1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd36b"/><stop offset="1" stop-color="#f0446b"/></linearGradient><linearGradient id="ils2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6c5cf0"/><stop offset="1" stop-color="#2a2468"/></linearGradient><linearGradient id="ils3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a1c4e"/><stop offset="1" stop-color="#1c0e2c"/></linearGradient></defs><g transform="rotate(11 50 40)"><rect x="26" y="6" width="46" height="58" rx="12" fill="url(#ils2)" stroke="rgba(255,255,255,.35)"/><path d="M26 44L72 20M26 58L72 34M36 64L72 46" stroke="rgba(255,255,255,.18)" stroke-width="2"/></g><circle cx="32" cy="48" r="21" fill="none" stroke="url(#ils1)" stroke-width="4.5"/><circle cx="32" cy="48" r="17" fill="url(#ils3)"/><circle cx="32" cy="43" r="6" fill="rgba(255,255,255,.88)"/><path d="M20.5 59Q32 50 43.5 59" fill="rgba(255,255,255,.88)"/><path d="M62 8L64 14L70 16L64 18L62 24L60 18L54 16L60 14Z" fill="#fff" opacity=".95"/><path d="M12 22L13.2 25.4L16.6 26.6L13.2 27.8L12 31.2L10.8 27.8L7.4 26.6L10.8 25.4Z" fill="#ffe9a8" opacity=".9"/><g transform="translate(55 54)"><rect width="26" height="17" rx="8.5" fill="#ffc94d" stroke="rgba(120,60,0,.35)"/><path d="M13 3.2L14.6 6.8L18.4 7.1L15.5 9.6L16.4 13.2L13 11.2L9.6 13.2L10.5 9.6L7.6 7.1L11.4 6.8Z" fill="#8a4a00"/></g></svg>`;
+    const bcode = (() => { const w = [2, 1, 3, 1, 2, 1, 1, 3, 1, 2]; let x = 0, r = ''; w.forEach(q => { r += `<rect x="${x}" y="0" width="${q}" height="22" rx=".5"/>`; x += q + 2; }); return `<div class="il il-bc"><svg viewBox="0 0 ${x - 2} 22" preserveAspectRatio="none" fill="#fff">${r}</svg></div>`; })();
+    const wspark = (() => { try { let v = weightsSorted().slice(-8).map(e => +e.kg).filter(x => x > 0); if (v.length < 3) v = [91.4, 91.1, 91.2, 90.6, 90.3, 90, 89.8]; const mn = Math.min(...v), mx = Math.max(...v), rg = (mx - mn) || 1, W = 52, H = 22, pt = v.map((x, i) => [i * W / (v.length - 1), 3 + (1 - (x - mn) / rg) * (H - 6)]), d = pt.map((q, i) => (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1)).join(''), e = pt[pt.length - 1]; return `<svg class="il il-w" viewBox="0 0 ${W} ${H}"><path d="${d}" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${e[0].toFixed(1)}" cy="${e[1].toFixed(1)}" r="2.6" fill="#fff"/></svg>`; } catch (er) { return ''; } })();
+    const shopArt = `<svg class="il il-s" viewBox="0 0 34 34"><defs><linearGradient id="ils1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd36b"/><stop offset="1" stop-color="#ff7aa0"/></linearGradient></defs><circle cx="15" cy="19" r="12" fill="none" stroke="url(#ils1)" stroke-width="3"/><circle cx="15" cy="16" r="3.6" fill="#fff"/><path d="M8.6 25.4Q15 19.6 21.4 25.4" fill="#fff"/><path d="M27 3L28.4 7L32.4 8.4L28.4 9.8L27 13.8L25.6 9.8L21.6 8.4L25.6 7Z" fill="#fff"/></svg>`;
     const WV = c => `<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M0 7Q12.5 0 25 7T50 7T75 7T100 7T125 7T150 7T175 7T200 7V14H0Z" fill="${c}"/></svg>`;
     const mb = (l, v, m, c) => `<div class="m"><span>${l}</span><em><i style="width:${clamp(v * 100 / Math.max(1, m), 0, 100)}%;background:${c}"></i></em></div>`;
     return `<div class="ax-sh"><div class="ax-st">Приложения</div><div class="ax-ss">всё под рукой — без лишних вкладок</div>
     <div class="ax-bn">
-      <div class="ax-bt bw" data-act="appopen" data-s="water"><div class="liq" style="height:${Math.max(10, wp)}%">${WV('#58a0ff')}${WV('#9ccbff')}</div><div class="il il-wd"><i></i><i></i><i></i></div>
+      <div class="ax-bt bw" data-act="appopen" data-s="water"><div class="liq" style="height:${Math.max(10, wp)}%">${WV('#58a0ff')}${WV('#9ccbff')}</div><div class="il il-wd"><i></i></div>
         <div class="z"><div class="h"><span class="ax-at sm a-w">${AI('drop', 18)}</span>Вода</div><div><div class="big">${P0(w)}<i> мл</i></div><small>из ${P0(wg.goal)} · ${wp}%</small></div><button type="button" class="pl" data-act="axbw">+250 мл</button></div></div>
       <div class="ax-bt bk" data-act="appopen" data-s="cal">${bcode}<div class="h"><span class="ax-at sm a-c">${AI('cal', 18)}</span>Калории</div>
         <div class="big">${P0(Math.abs(d.rem))}<i> ${d.rem < 0 ? 'сверх' : 'осталось'}</i></div>
