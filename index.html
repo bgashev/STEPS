@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.965';
+const APP = 'VOOB (by BGASHEV) Mini App v1.966';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9101,7 +9101,7 @@ const REST = (function(){
       while (g.pl[g.pl.length - 1].y > -H * .3 || g.pl.length < 8) { gen(); if (g.pl.length > 40) break; } };
     g.tap = () => {};
     const revT = m => { g.cm = 'touch'; s.jc = 'touch'; save(); try { toast(m); } catch (e) {} };
-    const gyroOn = () => { if (g.gh) return; g.gh = e => { if (G !== g) { window.removeEventListener('deviceorientation', g.gh); g.gh = null; return; } if (e.gamma == null) return; g.gok = true; g.gr = e.gamma; if (g.g0 == null) g.g0 = e.gamma; }; window.addEventListener('deviceorientation', g.gh); };
+    const gyroOn = () => { if (g.gh) return; g.gh = e => { if (G !== g) { window.removeEventListener('deviceorientation', g.gh); g.gh = null; return; } if (e.gamma == null || e.beta == null) return; g.gok = true; { const B = e.beta * Math.PI / 180, Gm = e.gamma * Math.PI / 180, lat = Math.max(-1, Math.min(1, Math.cos(B) * Math.sin(Gm))), ang = Math.asin(lat) * 180 / Math.PI; g.gr = ang; if (g.g0 == null) g.g0 = ang; } }; window.addEventListener('deviceorientation', g.gh); };
     const setMode = m => { g.cm = m; s.jc = m; save(); g.g0 = null; g.gok = false; g.gw = 1.6; if (m !== 'gyro') return;
       try { if (window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') DeviceOrientationEvent.requestPermission().then(r => { if (r === 'granted') gyroOn(); else revT('Нет доступа к гироскопу — управление пальцем'); }).catch(() => revT('Гироскоп недоступен — управление пальцем')); else gyroOn(); } catch (e) { gyroOn(); } };
     const inPill = (x, y) => x > 2 && x < 132 && y > 2 && y < 46;
@@ -9119,7 +9119,7 @@ const REST = (function(){
       g.met = g.met.filter(m => { if (m.w > 0) { m.w -= dt; m.y = g.cam - 90; if (m.w <= 0) m.vy = 1000; return true; } m.vy += 400 * dt; m.y += m.vy * dt; if (Math.random() < .7) bstP(g, m.x, m.y - 14, 1, Math.random() < .5 ? '#ff9a3d' : '#ffd98a', 40);
         const dx = wd(g.x, m.x), dy = g.y - m.y; if (dx * dx + dy * dy < 30 * 30) { if (g.jet > 0 || g.hat > 0) { bstP(g, m.x, m.y, 16, '#ff9a3d', 200); sfx('perfect', 2); return false; } if (g.shield) { g.shield = 0; g.sh = .6; bstP(g, nm(g.x), g.y, 24, '#7ad0ff', 220); popT(g, nm(g.x), g.y - 34, 'ЩИТ СПАС!', '#7ad0ff'); sfx('thunk'); return false; } g.sh = 1; bstP(g, nm(g.x), g.y, 22, C.rd, 180); sfx('die'); popT(g, nm(g.x), g.y - 30, 'Метеор!', C.rd); onDie(g, K); return false; }
         return m.y < g.cam + H + 100; });
-      if (g.cm === 'gyro') { if (!g.gh) gyroOn(); if (!g.gok) { g.gw = (g.gw === undefined ? 1.6 : g.gw) - dt; if (g.gw <= 0) revT('Гироскоп недоступен — управление пальцем'); } else if (g.g0 != null) { let tl = g.gr - g.g0; tl = Math.abs(tl) < 2.5 ? 0 : tl - Math.sign(tl) * 2.5; g.gs += (tl - g.gs) * Math.min(1, dt * 12); g.tx = g.x + Math.max(-1, Math.min(1, g.gs / 22)) * 51; } }
+      if (g.cm === 'gyro') { if (!g.gh) gyroOn(); if (!g.gok) { g.gw = (g.gw === undefined ? 1.6 : g.gw) - dt; if (g.gw <= 0) revT('Гироскоп недоступен — управление пальцем'); } else if (g.g0 != null) { let tl = g.gr - g.g0; if (Math.abs(tl) < 7) g.g0 += tl * Math.min(1, dt * .25); tl = g.gr - g.g0; tl = Math.abs(tl) < 2 ? 0 : tl - Math.sign(tl) * 2; g.gs += (tl - g.gs) * Math.min(1, dt * 14); const nn = Math.max(-1, Math.min(1, g.gs / 18)); g.tx = g.x + Math.sign(nn) * Math.pow(Math.abs(nn), 1.15) * 64; } }
       g.vx = Math.max(-560, Math.min(560, (g.tx - g.x) * (g.slide > 0 ? 3.6 : 11))); g.x += (g.vx + wx) * dt; if (g.cm !== 'gyro') g.tx += wx * dt; if (Math.abs(g.vx) > 8) g.face = g.vx > 0 ? 1 : -1; const sh = g.x - nm(g.x); if (sh) { g.x -= sh; g.tx -= sh; }
       const py = g.y;
       if (g.jet > 0) { g.jet -= dt; g.vy = g.jet > .5 ? -980 : -980 * (g.jet / .5) - 260; g.y += g.vy * dt; const px = nm(g.x);
