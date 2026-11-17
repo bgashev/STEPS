@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.954';
+const APP = 'VOOB (by BGASHEV) Mini App v1.955';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9400,7 +9400,7 @@ const REST = (function(){
       for (let k = 0; k < n && !g.dead; k++) { const py = b.y; b.vy += GRV * ds; b.x += b.vx * ds; b.y += b.vy * ds; b.a += b.vx * ds / BR;
         if (b.x < BR) { b.x = BR; if (b.vx < 0) { b.vx = -b.vx; g.dir = 1; sfx('thunk'); bstP(g, b.x, b.y, 4, '#fff', 70); } } else if (b.x > W - BR) { b.x = W - BR; if (b.vx > 0) { b.vx = -b.vx; g.dir = -1; sfx('thunk'); bstP(g, b.x, b.y, 4, '#fff', 70); } }
         if (b.y < BR) { b.y = BR; if (b.vy < 0) b.vy = 0; }
-        if (b.y + BR > g.fy - 12) { bstP(g, b.x, g.fy - 12, 16, C.rd, 160); return die('Мимо!'); }
+        if (b.y + BR > g.fy - 12) { b.y = g.fy - 12 - BR; if (b.vy > 0) { b.vy = -Math.max(JUMP * .72, b.vy * .55); g.sq = .5; g.combo = 0; g.touched = true; sfx('thunk'); bstP(g, b.x, g.fy - 12, 8, '#fff', 90); g.rp.push({x: b.x, y: g.fy - 12, l: .3, c: 'rgba(255,255,255,.6)', r: 22}); } }
         if (h.in >= .95) { const w = wallX(h), s = inw(h), L = LL(), tx = w + s * L;
           const bx0 = Math.min(w, w + s * 10), bx1 = Math.max(w, w + s * 10), by0 = h.y - 66, by1 = h.y + 16, qx = cl(b.x, bx0, bx1), qy = cl(b.y, by0, by1), dx = b.x - qx, dy = b.y - qy, d = Math.hypot(dx, dy);
           if (d < BR && d > .001) { b.x = qx + dx / d * BR; b.y = qy + dy / d * BR; if (bump(b, dx / d, dy / d, .6)) { g.touched = true; h.sw = 3; sfx('thunk'); bstP(g, qx, qy, 5, '#fff', 80); } }
@@ -9439,7 +9439,7 @@ const REST = (function(){
       if (fire) { c.globalAlpha = .1 + .05 * Math.sin(g.t * 6); c.fillStyle = '#ff7a1a'; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }
       g.tr.forEach((q, i) => { if (fire) return; c.globalAlpha = i / g.tr.length * .16; c.fillStyle = '#000'; c.beginPath(); c.arc(q[0], q[1], BR * (.5 + .55 * i / g.tr.length), 0, 7); c.fill(); }); c.globalAlpha = 1;
       c.fillStyle = 'rgba(0,0,0,.28)'; c.fillRect(0, 0, 7, H); c.fillRect(W - 7, 0, 7, H);
-      { c.fillStyle = 'rgba(255,60,100,.16)'; c.fillRect(0, fy - 12, W, H - fy + 12); c.strokeStyle = '#ff5d80'; c.lineWidth = 3; c.setLineDash([14, 9]); c.lineDashOffset = -g.t * 30; c.beginPath(); c.moveTo(0, fy - 12); c.lineTo(W, fy - 12); c.stroke(); c.setLineDash([]); c.shadowBlur = 0; }
+      { c.fillStyle = 'rgba(255,255,255,.07)'; c.fillRect(0, fy - 12, W, H - fy + 12); c.strokeStyle = 'rgba(255,255,255,.4)'; c.lineWidth = 3; c.setLineDash([14, 9]); c.lineDashOffset = -g.t * 30; c.beginPath(); c.moveTo(0, fy - 12); c.lineTo(W, fy - 12); c.stroke(); c.setLineDash([]); c.shadowBlur = 0; }
       c.textAlign = 'center'; c.font = '900 170px ' + C.ff; c.fillStyle = 'rgba(255,255,255,.05)'; c.fillText(String(g.score), W / 2, H * .36);
       { const px = W / 2 - 54, py = 44, pw = 108, ph = 46; c.fillStyle = 'rgba(255,255,255,.09)'; rr(c, px, py, pw, ph, 23); c.fill(); c.strokeStyle = fire ? 'rgba(255,170,60,.7)' : 'rgba(255,255,255,.2)'; c.lineWidth = 1.5; c.stroke(); c.font = '900 30px ' + C.ff; c.fillStyle = '#fff'; c.textBaseline = 'middle'; c.fillText(String(g.score), W / 2, py + ph / 2 + 1); c.textBaseline = 'alphabetic';
         if (g.combo >= 1) { const cw = 96; c.fillStyle = fire ? 'rgba(255,150,40,.9)' : 'rgba(255,255,255,.14)'; rr(c, W / 2 - cw / 2, py + ph + 8, cw, 22, 11); c.fill(); c.font = '800 12px ' + C.ff; c.fillStyle = '#fff'; c.fillText((fire ? '🔥 ' : '') + 'ЧИСТО ×' + g.combo, W / 2, py + ph + 23); } }
