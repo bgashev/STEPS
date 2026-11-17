@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.947';
+const APP = 'VOOB (by BGASHEV) Mini App v1.948';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9702,6 +9702,7 @@ const REST = (function(){
 
   const EGGK = {flap:'balloon', stack:'plane', wave:'fish', tile:'tile', slice:'ufo', memo:'tile', aim:'target'};
   let egg = null, eggT = 20;
+  function vbMark(c, t){ c.save(); c.textAlign = 'center'; c.textBaseline = 'middle'; c.font = '900 13px ' + (C.ff || 'sans-serif'); if ('letterSpacing' in c) c.letterSpacing = '7px'; const x = W / 2 + 3, y = H - 16, w = 74, ph = (t * .45) % 1.6 - .3, g = c.createLinearGradient(x - w, 0, x + w, 0); const e = v => Math.max(0, Math.min(1, v)); g.addColorStop(0, 'rgba(255,255,255,.13)'); g.addColorStop(e(ph - .18), 'rgba(255,255,255,.13)'); g.addColorStop(e(ph), 'rgba(255,255,255,.5)'); g.addColorStop(e(ph + .18), 'rgba(255,255,255,.13)'); g.addColorStop(1, 'rgba(255,255,255,.13)'); c.fillStyle = g; c.fillText('VOOB', x, y); c.restore(); }
   function eggStep(dt){ const k = GAMES[GI] && GAMES[GI].k; if (!EGGK[k]) return; if (!egg) { eggT -= dt; if (eggT > 0) return; const d = Math.random() < .5 ? 1 : -1; egg = {x: d > 0 ? -90 : W + 90, y: H * (.1 + Math.random() * .14), d, t: 0, k: EGGK[k]}; return; } egg.t += dt; egg.x += egg.d * (W + 180) / 8 * dt; if (egg.x < -110 || egg.x > W + 110) { egg = null; eggT = 28 + Math.random() * 24; } }
   function eggDraw(c){ if (egg) eggArt(c, egg.k, egg.x, egg.y + Math.sin(egg.t * 2) * 6, egg.d, egg.t, .62); }
   function wrapT(c, t, x, y, mw, lh){ let l = ''; t.split(' ').forEach(w => { const n = l ? l + ' ' + w : w; if (c.measureText(n).width > mw && l) { c.fillText(l, x, y); y += lh; l = w; } else l = n; }); c.fillText(l, x, y); }
@@ -9801,7 +9802,7 @@ const REST = (function(){
   function gtap(){ if (!G || cd > 0) return; if (G.dead) { if (performance.now() - G.deadAt > 500) G.init(); } else G.tap(); }
   function loop(ts){
     if (!G) return; const dt = Math.min(.033, (ts - lastT) / 1000); lastT = ts;
-    if (cd > 0) cd -= dt; else if (!pz) G.update(dt); cx.clearRect(0, 0, W, H); G.draw(cx); if (cd <= 0) eggStep(dt); eggDraw(cx);
+    if (cd > 0) cd -= dt; else if (!pz) G.update(dt); cx.clearRect(0, 0, W, H); G.draw(cx); if (GAMES[GI] && GAMES[GI].beta) vbMark(cx, performance.now() / 1000); if (cd <= 0) eggStep(dt); eggDraw(cx);
     if (cd > 0) { const n = Math.ceil(cd); if (n !== cdN) { cdN = n; hap.tap(); } cx.globalAlpha = .55; cx.fillStyle = C.bg; cx.fillRect(0, 0, W, H); cx.globalAlpha = 1; cx.textAlign = 'center'; cx.fillStyle = C.mu; cx.font = '700 15px ' + C.ff; cx.fillText('Продолжаем · приготовься', W / 2, H * .36); const fr = cd - Math.floor(cd), sc2 = 1 + fr * .35; cx.save(); cx.translate(W / 2, H * .36 + 74); cx.scale(sc2, sc2); cx.globalAlpha = .35 + .65 * (1 - fr); cx.fillStyle = C.ac; cx.font = '800 92px ' + C.ff; cx.fillText(n, 0, 0); cx.restore(); cx.globalAlpha = 1; }
     if (G.dead) { cx.globalAlpha = .8; cx.fillStyle = C.bg; cx.fillRect(0, 0, W, H); cx.globalAlpha = 1; cx.textAlign = 'center';
       cx.fillStyle = C.tx; cx.font = '800 26px ' + C.ff; cx.fillText(G.newBest ? 'Новый рекорд!' : 'Мимо!', W / 2, H * .36);
