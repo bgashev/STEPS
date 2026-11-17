@@ -4311,7 +4311,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.962';
+const APP = 'VOOB (by BGASHEV) Mini App v1.963';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9375,9 +9375,9 @@ const REST = (function(){
     return g; }
 
   /* 15 · Баскет (v1.935): флэт, управление как во Flappy Bird — тап = подпрыгнуть, мяч сам летит от стены к стене */
-  function mkHit(){ const g = {}, K = 'hit', BR = 18, GRV = 1450, JUMP = 520, SN = ['Разминка', 'Стадион', 'Неон', 'Ночь', 'Лава', 'Космос'];
+  function mkHit(){ const g = {}, K = 'hit', BR = 18, GRV = 1450, JUMP = 520, SN = ['Разминка', 'Опасный пол', 'Движение', 'Ветер', 'Узкое кольцо', 'Хаос'];
     const PBL = [['#16181e','#1e222b','#0f1115'], ['#1b1620','#261e2e','#120e16'], ['#13191a','#1b2627','#0d1112'], ['#1a1812','#27231a','#100e09'], ['#1b1418','#291c23','#110c0f'], ['#12161c','#1b212c','#0c0f13']];
-    const cl = (v, a, b) => Math.max(a, Math.min(b, v)), stg = () => Math.min(5, Math.floor(g.caught / 5)), hb0 = () => (205 + stg() * 38) % 360, rimH = () => [338, 190, 150, 280, 28, 55][stg() % 6], lv = () => Math.min(g.caught, 80), LL = () => 92 - lv() * .28 - (g.lvl >= 4 ? 12 : 0), spd = () => 150 + lv() * 1.4;
+    const cl = (v, a, b) => Math.max(a, Math.min(b, v)), stg = () => Math.min(5, g.lvl || 0), hb0 = () => (205 + stg() * 38) % 360, rimH = () => [338, 190, 150, 280, 28, 55][stg() % 6], lv = () => Math.min(g.caught, 80), LL = () => 92 - lv() * .28 - (g.lvl >= 4 ? 12 : 0), spd = () => 150 + lv() * 1.4;
     const wallX = h => h.side < 0 ? 0 : W, inw = h => -h.side;
     const newHoop = prev => { const st = stg(), h = {side: prev ? -prev.side : 1, y0: rnd(H * .26, g.fy - 150), y: 0, amp: 0, sp: rnd(.9, 1.5) * (g.lvl >= 4 ? 1.5 : 1), ph: rnd(0, 6), sw: 0, pu: 0, in: 0};
       for (let k = 0; k < 8 && prev && Math.abs(h.y0 - prev.y0) < 90; k++) h.y0 = rnd(H * .26, g.fy - 150);
@@ -9392,7 +9392,7 @@ const REST = (function(){
     const scored = h => { const per = !g.touched; let add = 1; g.caught++; g.tm = Math.min(1, g.tm + .26 + (per ? Math.min(.1, .025 * (g.combo + 1)) : 0)); g.touched = false; h.sw = 9; h.pu = 1;
       const hx = wallX(h) + inw(h) * LL() * .5;
       if (per) { g.combo++; add = Math.min(6, 1 + g.combo); popT(g, hx, h.y - 70, 'ЧИСТО ×' + g.combo + '  +' + add, GD); sfx('perfect', Math.min(9, g.combo + 2)); bstP(g, hx, h.y, 26, GD, 240); g.fl = .3; conf(hx, h.y, 26, rimH()); } else { g.combo = 0; popT(g, hx, h.y - 55, '+1', '#fff'); sfx('spark', 3); bstP(g, hx, h.y, 12, '#fff', 150); conf(hx, h.y, 10, rimH()); }
-      g.score += add; { const nl = Math.min(5, Math.floor(g.score / 100)); if (nl > (g.lvl || 0)) { g.lvl = nl; popT(g, W / 2, H * .3, ['', 'ОПАСНЫЙ ПОЛ!', 'КОЛЬЦА ДВИЖУТСЯ!', 'ВЕТЕР!', 'УЗКОЕ КОЛЬЦО!', 'ХАОС!'][nl], '#ff6b6b'); sfx('record'); g.fl = .5; g.sh = Math.max(g.sh, .5); } } g.rp.push({x: hx, y: h.y, l: .55, c: per ? '#ffb000' : '#fff', r: 80}); g.rp.push({x: hx, y: h.y, l: .4, c: 'hsl(' + rimH() + ',95%,62%)', r: 55}); g.sh = Math.max(g.sh, .25); hap.tap();
+      g.score += add; { const nl = Math.min(5, Math.floor(g.score / 100)); if (nl > (g.lvl || 0)) { g.lvl = nl; g.fl = .5; g.sh = Math.max(g.sh, .5); } } g.rp.push({x: hx, y: h.y, l: .55, c: per ? '#ffb000' : '#fff', r: 80}); g.rp.push({x: hx, y: h.y, l: .4, c: 'hsl(' + rimH() + ',95%,62%)', r: 55}); g.sh = Math.max(g.sh, .25); hap.tap();
       const st = stg(); if (st > g.stv) { g.stv = st; g.sb = {a: 0}; sfx('perfect', 7); conf(W / 2, H * .35, 30, hb0()); }
       g.old = h; h.fade = .5; g.h = newHoop(h); };
     const bump = (b, nx, ny, e) => { const vn = b.vx * nx + b.vy * ny; if (vn < 0) { b.vx -= (1 + e) * vn * nx; b.vy -= (1 + e) * vn * ny; g.dir = b.vx >= 0 ? 1 : -1; return true; } return false; };
