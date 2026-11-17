@@ -1135,6 +1135,15 @@ html:not(.web) body:has(#sw.open) .rt-pill{bottom:auto}
 .rk-nm{flex:1;min-width:0;font-weight:750;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rk-nm em{font-style:normal;margin-left:7px;font-size:10px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:99px;background:var(--accent);color:#14141a}
 .rk-r.sk{opacity:1}.rk-r.sk::before{display:none}.rk-r.sk .rk-n,.rk-r.sk .rk-a,.rk-r.sk u{background:linear-gradient(100deg,var(--surface2) 30%,color-mix(in srgb,var(--accent) 38%,var(--surface2)) 50%,var(--surface2) 70%);background-size:240% 100%;animation:rkshm 1.25s ease-in-out infinite}.rk-r.sk u{display:block;height:11px;border-radius:6px}.rk-r.sk .rk-nm{display:block}.rk-r.sk .rk-s{width:44px}.rk-r.sk .rk-s u{height:14px;width:100%}.rk-r.sk .rk-a{color:transparent}
 @keyframes rkshm{from{background-position:120% 0}to{background-position:-120% 0}}
+.rt-rk{animation:rkin .38s ease both}
+.rk-c{transform-origin:14% 0;animation:rkcin .62s cubic-bezier(.18,1.15,.3,1) both}
+.rt-rk.out{pointer-events:none;animation:rkout .34s ease both}
+.rt-rk.out .rk-c{animation:rkcout .34s cubic-bezier(.5,0,.85,.45) both}
+@keyframes rkin{from{opacity:0;-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}to{opacity:1;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}}
+@keyframes rkout{from{opacity:1;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}to{opacity:0;-webkit-backdrop-filter:blur(0);backdrop-filter:blur(0)}}
+@keyframes rkcin{0%{opacity:0;transform:translateY(-22px) scale(.82);filter:blur(12px);box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 90px rgba(255,209,102,.5)}45%{opacity:1;filter:blur(0)}100%{opacity:1;transform:none;filter:blur(0);box-shadow:0 18px 50px rgba(0,0,0,.55),0 0 40px rgba(180,167,238,.18)}}
+@keyframes rkcout{0%{opacity:1;transform:none;filter:blur(0)}100%{opacity:0;transform:translateY(-16px) scale(.9);filter:blur(10px)}}
+@media (prefers-reduced-motion:reduce){.rt-rk,.rk-c,.rt-rk.out,.rt-rk.out .rk-c{animation-duration:.01s!important}}
 .rt-rk .rk-t svg{animation:rkbob 1.6s ease-in-out infinite}@keyframes rkbob{50%{transform:translateY(-2.5px) rotate(-6deg)}}
 .rk-s{font-size:19px;font-weight:850;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
 /* v1.880: подиум рейтинга — стеклянные ступени топ-3, металлические кольца, 2.5D-грань, прожектор */
@@ -4213,7 +4222,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.903';
+const APP = 'VOOB (by BGASHEV) Mini App v1.904';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9198,12 +9207,12 @@ const REST = (function(){
     b.addEventListener('click', () => { hap.tap(); bye(); }); setTimeout(bye, 5700);
   }
   function openRank(){
-    if (!gm || !G) return; const old = gm.querySelector('.rt-rk'); if (old) { old.remove(); pz = false; return; }
+    if (!gm || !G) return; const old = gm.querySelector('.rt-rk'); if (old) { if (!old.classList.contains('out')) old.querySelector('.rk-x').click(); return; }
     const g = GAMES[GI], key = g.k; pz = true;
     const bx = document.createElement('div'); bx.className = 'rt-rk';
     bx.innerHTML = '<div class="rk-c"><div class="rk-h"><span class="rk-t"><svg viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0V4zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3M12 14v4M8.5 20h7"/></svg>РЕЙТИНГ</span><b>' + esc(g.n) + '</b><button type="button" class="rk-x" aria-label="Закрыть"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="rk-l">' + [78, 60, 70, 52].map((w, i) => '<div class="rk-r sk" style="animation-delay:' + i * 70 + 'ms"><i class="rk-n"></i><span class="rk-a"></span><span class="rk-nm"><u style="width:' + w + '%"></u></span><b class="rk-s"><u></u></b></div>').join('') + '</div></div>';
     let sig = '', tm = 0, busy = false;
-    const shut = () => { clearInterval(tm); bx.remove(); pz = false; lastT = performance.now(); };
+    const shut = () => { if (bx.classList.contains('out')) return; clearInterval(tm); bx.classList.add('out'); setTimeout(() => { bx.remove(); pz = false; lastT = performance.now(); }, 340); };
     bx.addEventListener('click', e => { if (e.target === bx || e.target.closest('.rk-x')) { hap.tap(); shut(); } });
     gm.querySelector('.rt-gm').appendChild(bx);
     const L = bx.querySelector('.rk-l');
