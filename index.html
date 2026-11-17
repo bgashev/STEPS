@@ -3889,6 +3889,15 @@ html.web #tabs .tbi{top:262px}
 .st-first h2{margin:0 0 6px;font-size:21px;letter-spacing:-.01em}
 .st-first p{margin:0 auto 14px;max-width:290px;color:var(--muted);font-size:13.5px;line-height:1.45}
 .st-first .btn{width:100%;min-height:52px;font-size:16px;border-radius:18px}
+.st-ch{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.st-cb{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:11px;align-items:center;text-align:left;padding:11px 12px;border-radius:18px;border:1px solid var(--border);background:color-mix(in srgb,var(--accent) 7%,var(--surface2));color:var(--text);cursor:pointer;transition:transform .18s cubic-bezier(.2,1.4,.4,1),border-color .2s,background .2s;animation:stcb .5s both}
+.st-cb:nth-child(2){animation-delay:.06s}.st-cb:nth-child(3){animation-delay:.12s}.st-cb:nth-child(4){animation-delay:.18s}
+@keyframes stcb{from{opacity:0;transform:translateY(10px) scale(.94)}to{opacity:1;transform:none}}
+.st-cb:active{transform:scale(.95);border-color:var(--accent);background:color-mix(in srgb,var(--accent) 18%,var(--surface2))}
+.st-ci{grid-row:1/3;width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 20%,transparent);color:var(--accent)}
+.st-ci svg{stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.st-cb b{font-size:14.5px;font-weight:700;line-height:1.15;align-self:end}
+.st-cb small{font-size:12px;color:var(--muted);align-self:start}
 .st-first .st-or{display:block;margin:11px auto 0;background:none;border:0;color:var(--muted);font-size:13px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .st-wk{padding:14px 16px 16px;border-radius:26px}
 .st-wh{display:flex;align-items:center;gap:11px;margin-bottom:12px}
@@ -4222,7 +4231,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.904';
+const APP = 'VOOB (by BGASHEV) Mini App v1.905';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6498,13 +6507,15 @@ function maybeAskNotify(){
     setTimeout(go, 2200);
   } catch (e) {}
 }
+/* v1.905: «первый шаг» — любая активность в одно касание (раньше только прогулка) */
+const QW = {run:{k:'run', n:'Прогулка', m:15, s:4.5}, bike:{k:'bike', n:'Велосипед', m:15, s:12}, yoga:{k:'yoga', n:'Растяжка', m:10, s:0}, swim:{k:'swim', n:'Плавание', m:15, s:0}};
 function startHTML(ws, doneToday, mob, plsug){
   let h = '', P = {};   // P — части для мобильной раскладки
   // №1 — первый шаг в одно касание
   if (!ws.length) {
-    h += P.first = `<div class="card st-first"><div class="st-ring">${IC('steps', 30)}</div><h2>Твой первый шаг</h2>
-      <p>Одно касание — и VOOB засчитает прогулку на 15 минут. Сразу получишь XP, уровень и достижение «Первый шаг».</p>
-      <button type="button" class="btn primary" data-act="qwalk">${IC('check', 18)}Отметить прогулку · 15 мин</button>
+    h += P.first = `<div class="card st-first"><div class="st-ring">${IC('target', 30)}</div><h2>Твой первый шаг</h2>
+      <p>Выбери, чем занялся, — одно касание, и VOOB засчитает. Сразу получишь XP, уровень и достижение «Первый шаг».</p>
+      <div class="st-ch">${Object.entries(QW).map(([k, q]) => `<button type="button" class="st-cb" data-act="qwalk" data-a="${k}"><span class="st-ci">${IC(k, 22)}</span><b>${q.n}</b><small>${q.m} мин</small></button>`).join('')}</div>
       <button type="button" class="st-or" data-act="add">или записать подробно</button></div>`;
   }
   // №5 — цель и готовый план
@@ -9585,13 +9596,14 @@ const ACT = {
     db.settings.goal = {count:GQ.d, days:7, set:true}; touchMeta('settings'); save(); closeSheet(); render(); hap.ok();
     toast(`План готов · ${ps.length} занятий на неделю`);
   },
-  qwalk: () => {
+  qwalk: el => {
     if (valid().length) return;
-    const data = {date:isoOf(todayN()), act:'run', feeling:4, note:'', minutes:15, speed:4.5, incline:0};
+    const q = QW[el && el.dataset && el.dataset.a] || QW.run;
+    const data = {date:isoOf(todayN()), act:q.k, feeling:4, note:'', minutes:q.m, speed:q.s, incline:0};
     const bad = acCheck(data, null); if (bad) { hap.warn(); toast(bad); return; }
     const xp0 = myLevel().xp, w = Object.assign({id:uid(), created:nowSec()}, data);
     db.workouts.push(w); touch('workout', w); ME.at = 0; save(); render(); hap.ok();
-    const dx = myLevel().xp - xp0; toast('Первая прогулка записана' + (dx > 0 ? ` · +${dx} XP` : ''));
+    const dx = myLevel().xp - xp0; toast('Первая тренировка записана' + (dx > 0 ? ` · +${dx} XP` : ''));
     WK.at = 0; setTimeout(() => loadWelcome(true), 1200);
   },
   playday: () => { hap.tap(); try { REST.playDay(); } catch (e) {} },
