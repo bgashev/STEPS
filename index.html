@@ -4146,16 +4146,17 @@ html.web .ax-gg{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14
 .ax-bt.bwt::after{background:radial-gradient(circle,rgba(150,255,215,.36),transparent 70%)}
 .bk .h,.bk .big,.bk .ms,.bwt .h,.bwt .big,.bwt .wsm{position:relative;z-index:1}
 .il{position:absolute;pointer-events:none;z-index:0}
-.il-wd{right:14px;top:16px;width:18px;height:22px;opacity:.4}
-.il-wd i{position:absolute;inset:0;border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;background:linear-gradient(160deg,rgba(255,255,255,.85),rgba(255,255,255,.15));transform:rotate(-8deg)}
-.il-bc{right:14px;top:17px;width:34px;height:22px;opacity:.38}
-.il-bc svg{display:block;width:100%;height:100%}
-.il-w{right:14px;top:16px;width:52px;height:22px;opacity:.55;overflow:visible}
-.il-g{right:12px;top:14px;width:62px;height:28px;opacity:.7}
-.il-g .t{position:absolute;top:0;width:28px;height:28px;border-radius:9px;overflow:hidden;background:rgba(255,255,255,.14);box-shadow:0 0 0 1.5px #2a1f7a}
+.il-wg{right:16px;top:54px;width:40px;height:64px;filter:drop-shadow(0 6px 10px rgba(0,0,10,.35))}
+.il-bc{right:12px;top:50px;width:54px;height:46px}
+.il-wt{right:14px;top:21px;width:62px;height:34px;border-radius:12px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.24);box-shadow:0 6px 14px -6px rgba(0,30,25,.5)}
+.il-wt svg{display:block;width:100%;height:100%}
+.il-g{right:10px;top:14px;width:80px;height:86px}
+.il-g .t{position:absolute;width:40px;height:40px;border-radius:12px;overflow:hidden;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.4);box-shadow:0 8px 16px -6px rgba(0,0,20,.65)}
 .il-g .t img{width:100%;height:100%;object-fit:cover;display:block}
-.il-g .t:nth-child(1){left:0}.il-g .t:nth-child(2){left:17px}.il-g .t:nth-child(3){left:34px}
-.il-s{right:12px;top:12px;width:34px;height:34px;opacity:.6}
+.il-g .t:nth-child(1){left:0;top:42px;transform:rotate(-10deg)}
+.il-g .t:nth-child(2){left:26px;top:4px;transform:rotate(8deg);z-index:1}
+.il-g .t:nth-child(3){left:40px;top:44px;transform:rotate(14deg);z-index:2}
+.il-s{right:12px;top:12px;width:56px;height:80px;overflow:visible}
 html:not(.web) #tabs .tab .tl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 html:not(.web) #tabs .tab{justify-content:center;gap:0}
 html:not(.web) #tabs .tab .ti,html:not(.web) #tabs .tab .ti svg{width:26px;height:26px}
@@ -4184,7 +4185,7 @@ html:not(.web) #tabs .tab[data-tab="home"] .ti{transform:translateY(-2px)}
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.890';
+const APP = 'VOOB (by BGASHEV) Mini App v1.891';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10019,14 +10020,15 @@ const AX = (function(){
     const sw = (k, on) => `<span class="ax-sw${on ? ' on' : ''}" data-act="axpin" data-k="${k}"></span>`;
     const GL = (() => { try { return REST.list(); } catch (e) { return []; } })();
     const gtiles = (() => { if (!GL.length) return ''; const n = GL.length, di = Math.max(0, GL.findIndex(x => x.day)); return `<div class="il il-g">${[di, (di + 3) % n, (di + 7) % n].map(i => `<span class="t">${GL[i].th}</span>`).join('')}</div>`; })();
-    const bcode = (() => { const w = [2, 1, 3, 1, 2, 1, 1, 3, 1, 2]; let x = 0, r = ''; w.forEach(q => { r += `<rect x="${x}" y="0" width="${q}" height="22" rx=".5"/>`; x += q + 2; }); return `<div class="il il-bc"><svg viewBox="0 0 ${x - 2} 22" preserveAspectRatio="none" fill="#fff">${r}</svg></div>`; })();
-    const wspark = (() => { try { let v = weightsSorted().slice(-8).map(e => +e.kg).filter(x => x > 0); if (v.length < 3) v = [91.4, 91.1, 91.2, 90.6, 90.3, 90, 89.8]; const mn = Math.min(...v), mx = Math.max(...v), rg = (mx - mn) || 1, W = 52, H = 22, pt = v.map((x, i) => [i * W / (v.length - 1), 3 + (1 - (x - mn) / rg) * (H - 6)]), d = pt.map((q, i) => (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1)).join(''), e = pt[pt.length - 1]; return `<svg class="il il-w" viewBox="0 0 ${W} ${H}"><path d="${d}" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${e[0].toFixed(1)}" cy="${e[1].toFixed(1)}" r="2.6" fill="#fff"/></svg>`; } catch (er) { return ''; } })();
-    const shopArt = `<svg class="il il-s" viewBox="0 0 34 34"><defs><linearGradient id="ils1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd36b"/><stop offset="1" stop-color="#ff7aa0"/></linearGradient></defs><circle cx="15" cy="19" r="12" fill="none" stroke="url(#ils1)" stroke-width="3"/><circle cx="15" cy="16" r="3.6" fill="#fff"/><path d="M8.6 25.4Q15 19.6 21.4 25.4" fill="#fff"/><path d="M27 3L28.4 7L32.4 8.4L28.4 9.8L27 13.8L25.6 9.8L21.6 8.4L25.6 7Z" fill="#fff"/></svg>`;
+    const wglass = (() => { const y = 61 - Math.max(10, wp) * 0.55; return `<svg class="il il-wg" viewBox="0 0 40 64"><defs><clipPath id="ilgc"><path d="M3 4H37L33 58Q32.6 61 29.6 61H10.4Q7.4 61 7 58Z"/></clipPath><linearGradient id="ilgw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fc2ff"/><stop offset="1" stop-color="#3f78e6"/></linearGradient></defs><path d="M3 4H37L33 58Q32.6 61 29.6 61H10.4Q7.4 61 7 58Z" fill="rgba(255,255,255,.1)"/><g clip-path="url(#ilgc)"><path d="M0 ${y.toFixed(1)}Q5 ${(y - 3).toFixed(1)} 10 ${y.toFixed(1)}T20 ${y.toFixed(1)}T30 ${y.toFixed(1)}T40 ${y.toFixed(1)}V64H0Z" fill="url(#ilgw)"/></g><path d="M3 4H37L33 58Q32.6 61 29.6 61H10.4Q7.4 61 7 58Z" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 10L10.6 50" stroke="rgba(255,255,255,.45)" stroke-width="2" stroke-linecap="round"/></svg>`; })();
+    const bcode = (() => { const w = [2, 1, 3, 1, 2, 1, 1, 3, 1, 2]; let x = 10, r = ''; w.forEach(q => { r += `<rect x="${x}" y="11" width="${q}" height="24" rx=".6"/>`; x += q + 1.8; }); return `<svg class="il il-bc" viewBox="0 0 54 46"><rect x="1" y="1" width="52" height="44" rx="11" fill="rgba(255,255,255,.09)"/><g fill="rgba(255,255,255,.92)">${r}</g><path d="M5 23H49" stroke="#ffe2b0" stroke-width="1.8" stroke-linecap="round"/><g fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity=".9"><path d="M3.5 13V9Q3.5 3.5 9 3.5H13"/><path d="M41 3.5H45Q50.5 3.5 50.5 9V13"/><path d="M50.5 33V37Q50.5 42.5 45 42.5H41"/><path d="M13 42.5H9Q3.5 42.5 3.5 37V33"/></g></svg>`; })();
+    const wspark = (() => { try { let v = weightsSorted().slice(-8).map(e => +e.kg).filter(x => x > 0), real = v.length >= 3; if (!real) v = [91.4, 91.1, 91.2, 90.6, 90.3, 90, 89.8]; const mn = Math.min(...v), mx = Math.max(...v), rg = (mx - mn) || 1, W = 62, H = 34, x0 = 7, x1 = W - 8, y0 = real ? 17 : 7, y1 = H - 7, pt = v.map((x, i) => [x0 + i * (x1 - x0) / (v.length - 1), y0 + (1 - (x - mn) / rg) * (y1 - y0)]), d = pt.map((q, i) => (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1)).join(''), e = pt[pt.length - 1], dl = v[v.length - 1] - v[0], lab = real ? `<text x="7" y="12" font-size="8.5" font-weight="800" fill="#fff" fill-opacity=".92" font-family="inherit">${dl > 0 ? '+' : '−'}${f1(Math.abs(dl))} кг</text>` : ''; return `<div class="il il-wt"><svg viewBox="0 0 ${W} ${H}"><defs><linearGradient id="ilwg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".4"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>${lab}<path d="${d}L${e[0].toFixed(1)} ${H - 3}L${x0} ${H - 3}Z" fill="url(#ilwg)"/><path d="${d}" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${e[0].toFixed(1)}" cy="${e[1].toFixed(1)}" r="4.2" fill="rgba(255,255,255,.28)"/><circle cx="${e[0].toFixed(1)}" cy="${e[1].toFixed(1)}" r="2.4" fill="#fff"/></svg></div>`; } catch (er) { return ''; } })();
+    const shopArt = `<svg class="il il-s" viewBox="0 0 56 80"><defs><linearGradient id="ils1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd36b"/><stop offset="1" stop-color="#ff7aa0"/></linearGradient><linearGradient id="ils2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8a78ff"/><stop offset="1" stop-color="#3a2a9a"/></linearGradient></defs><g transform="rotate(10 34 30)"><rect x="14" y="4" width="38" height="52" rx="10" fill="url(#ils2)" stroke="rgba(255,255,255,.4)" stroke-width="1.2"/><path d="M14 40L52 18M14 52L52 30" stroke="rgba(255,255,255,.2)" stroke-width="2"/></g><circle cx="22" cy="47" r="15" fill="#2a1236" stroke="url(#ils1)" stroke-width="3.6"/><circle cx="22" cy="43" r="4.4" fill="#fff"/><path d="M13.4 55.6Q22 47.4 30.6 55.6" fill="#fff"/><path d="M47 2L48.6 6.4L53 8L48.6 9.6L47 14L45.4 9.6L41 8L45.4 6.4Z" fill="#fff"/><g transform="translate(28 62)"><rect width="28" height="16" rx="8" fill="#ffc94d" stroke="rgba(120,60,0,.3)"/><path d="M9 3.6L10.4 6.8L13.8 7.1L11.2 9.3L12 12.6L9 10.8L6 12.6L6.8 9.3L4.2 7.1L7.6 6.8Z" fill="#8a4a00"/><rect x="15" y="5.4" width="9" height="2.2" rx="1.1" fill="#8a4a00" opacity=".75"/><rect x="15" y="9.4" width="6" height="2.2" rx="1.1" fill="#8a4a00" opacity=".55"/></g></svg>`;
     const WV = c => `<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M0 7Q12.5 0 25 7T50 7T75 7T100 7T125 7T150 7T175 7T200 7V14H0Z" fill="${c}"/></svg>`;
     const mb = (l, v, m, c) => `<div class="m"><span>${l}</span><em><i style="width:${clamp(v * 100 / Math.max(1, m), 0, 100)}%;background:${c}"></i></em></div>`;
     return `<div class="ax-sh"><div class="ax-st">Приложения</div><div class="ax-ss">всё под рукой — без лишних вкладок</div>
     <div class="ax-bn">
-      <div class="ax-bt bw" data-act="appopen" data-s="water"><div class="liq" style="height:${Math.max(10, wp)}%">${WV('#58a0ff')}${WV('#9ccbff')}</div><div class="il il-wd"><i></i></div>
+      <div class="ax-bt bw" data-act="appopen" data-s="water"><div class="liq" style="height:${Math.max(10, wp)}%">${WV('#58a0ff')}${WV('#9ccbff')}</div>${wglass}
         <div class="z"><div class="h"><span class="ax-at sm a-w">${AI('drop', 18)}</span>Вода</div><div><div class="big">${P0(w)}<i> мл</i></div><small>из ${P0(wg.goal)} · ${wp}%</small></div><button type="button" class="pl" data-act="axbw">+250 мл</button></div></div>
       <div class="ax-bt bk" data-act="appopen" data-s="cal">${bcode}<div class="h"><span class="ax-at sm a-c">${AI('cal', 18)}</span>Калории</div>
         <div class="big">${P0(Math.abs(d.rem))}<i> ${d.rem < 0 ? 'сверх' : 'осталось'}</i></div>
