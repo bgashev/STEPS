@@ -1048,7 +1048,15 @@ async function routeGamesTop(body: any) {
     else await db.from("game_scores").insert({ tg_id: me, game: played, best: 0, plays: 1, last_played: now, updated: now });
   }
   const game = String(body?.game ?? "");
-  if (!/^[a-z0-9]{2,12}$/.test(game)) return json({ ok: true });
+  if (!/^[a-z0-9]{2,12}$/.test(game)) {
+    if (bests) {                                   // v1.975: отдаём все свои рекорды, чтобы другое устройство (WEB) их подтянуло
+      const { data: all } = await db.from("game_scores").select("game, best").eq("tg_id", me);
+      const mine: Record<string, number> = {};
+      for (const x of (all ?? []) as any[]) if (x.best > 0) mine[x.game] = x.best;
+      return json({ ok: true, mine });
+    }
+    return json({ ok: true });
+  }
   const dead = await deactivatedSet(await friendIds(me));
   const ids = [me, ...(await friendIds(me)).filter((id) => !dead.has(id))];
   const [sc, users] = await Promise.all([db.from("game_scores").select("tg_id, best").eq("game", game).in("tg_id", ids), usersMap(ids)]);

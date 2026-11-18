@@ -4225,6 +4225,11 @@ html.web .ax-gg{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14
 html:not(.web) #tabs .tab .tl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 html:not(.web) #tabs .tab{justify-content:center;gap:0}
 html:not(.web) #tabs .tab .ti,html:not(.web) #tabs .tab .ti svg{width:26px;height:26px}
+.shp-sub{display:flex;gap:4px;width:fit-content;padding:4px;margin:0 0 14px;border-radius:99px;border:1px solid var(--border);background:var(--surface)}
+.shp-sub button{font:inherit;font-size:12.5px;font-weight:700;border:0;background:transparent;color:var(--muted);border-radius:99px;padding:7px 16px;cursor:pointer;transition:.2s}
+.shp-sub button.on{background:var(--accent);color:var(--bg)}
+.gm-net{display:none;flex-direction:column;align-items:center;gap:6px;padding:46px 16px;text-align:center;border:1px dashed var(--border);border-radius:20px;color:var(--muted)}.gm-net b{color:var(--text);font-size:16px}.gm-net small{font-size:12.5px}
+.s-game[data-g=n] .gm-net{display:flex}.s-game[data-g=n] .shp-grid.gm{display:none}
 .shp-sec.s-game{display:none}.shp-wrap[data-t=all] .s-game,.shp-wrap[data-t=game] .s-game{display:block}
 .shp-wrap[data-t=game] .s-fr,.shp-wrap[data-t=game] .s-bg,.shp-wrap[data-t=game] .s-kit,.shp-wrap[data-t=game] .s-mine{display:none}
 .shp-grid.gm{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
@@ -4311,7 +4316,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.974';
+const APP = 'VOOB (by BGASHEV) Mini App v1.975';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6716,7 +6721,7 @@ function viewHome(web){
       <div class="gm-s">${goalStrip(ws, g.days)}${note}</div></div>`),
     actionsH = `<div class="actions"><button class="btn ghost" data-act="plans">${IC('plan')}План${upPlans(ws).length ? `<span class="pn">${upPlans(ws).length}</span>` : ''}</button>${ws.length ? `<button class="btn ghost" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat')}Повторить</button>` : ''}</div>`;
   h += web ? actionsH + AX.tiles(true) + goalH : goalH + actionsH + (inWeb ? '' : AX.tiles());
-  h += web ? feedShortHTML(6, 4) : feedTickerHTML();
+  h += feedTickerHTML();   /* v1.975: и в WEB — одна новость с плавной сменой, «Вся лента» открывает полный список */
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
   const due = dueWeekSummary(ws);
   const dueM = dueMonthSummary(ws);
@@ -7022,7 +7027,7 @@ function shopGames(){   // v1.883: PRO-игры за ⭐ навсегда
   const L = REST.list().filter(x => x.pro), left = L.filter(x => !gameOwn(x.k)), p1 = SHOP.prices.game || 19, pa = SHOP.prices.games || 99;
   const st = k => isPro() ? '<span class="shp-pr own">В PRO</span>' : gameOwn(k) ? '<span class="shp-pr own">Куплено</span>' : `<span class="shp-pr">⭐ ${p1}</span>`;
   const all = left.length ? (isPro() ? '' : `<button type="button" class="shp-c gmall" data-act="gbuyall"><div class="gm-ic">${IC('crown', 26)}</div><div class="gm-tx"><b>Все PRO-игры · ${left.length}</b><small>одной покупкой${left.length * p1 > pa ? ' · выгода ' + Math.round((1 - pa / (left.length * p1)) * 100) + '%' : ''}</small></div><span class="shp-pr">⭐ ${pa}</span></button>`) : `<div class="shp-c gmall own"><div class="gm-ic">${IC('check', 26)}</div><div class="gm-tx"><b>Все PRO-игры открыты</b><small>играй между подходами и в «Играх»</small></div></div>`;
-  return `<div class="shp-grid gm">${all}${L.map(g => `<button type="button" class="shp-c gm" data-act="shopgame" data-k="${g.k}"><div class="gm-th">${g.th}</div><b>${esc(g.n)}</b><div class="shp-row">${st(g.k)}${SHOP.prices.game ? `<span class="shp-gf" role="button" data-act="ggift" data-kind="game" data-k="${g.k}" data-n="${esc(g.n)}">Подарить</span>` : ''}</div></button>`).join('')}</div>`;
+  return `<div class="shp-sub" role="tablist"><button type="button" class="on" data-act="shopsub" data-g="all">Все</button><button type="button" data-act="shopsub" data-g="s">Одиночные</button><button type="button" data-act="shopsub" data-g="n">По сети</button></div><div class="gm-net"><b>Игры по сети — скоро</b><small>Сыграй с другом в реальном времени. Уже в разработке</small></div><div class="shp-grid gm">${all}${L.map(g => `<button type="button" class="shp-c gm" data-act="shopgame" data-k="${g.k}"><div class="gm-th">${g.th}</div><b>${esc(g.n)}</b><div class="shp-row">${st(g.k)}${SHOP.prices.game ? `<span class="shp-gf" role="button" data-act="ggift" data-kind="game" data-k="${g.k}" data-n="${esc(g.n)}">Подарить</span>` : ''}</div></button>`).join('')}</div>`;
 }
 function viewShop(){   // v1.782: «Магазин» (вариант «Журнал»), широкая сетка, везде твой аватар
   if (!SHOP.ok) loadShop().then(() => { if (SHOP.ok && document.querySelector('.shp-wrap')) render(); });
@@ -9773,7 +9778,7 @@ const REST = (function(){
   /* v1.861: рейтинг друзей в игре */
   function pushBest(k, n){ try { if (typeof apiAuth !== 'function') return; n = n || 0; const b = {}; if (s.best[k]) b[k] = s.best[k]; apiAuth('/games/top', {bests:b, played:n ? undefined : k}).catch(() => { if (n < 3) setTimeout(() => pushBest(k, n + 1), [3000, 10000, 30000][n]); }); } catch (e) {} }
   /* v1.879: старые рекорды (до починки прав в БД) не дошли до сервера — отправляем все локальные один раз за запуск */
-  setTimeout(() => { try { if (typeof apiAuth === 'function' && Object.keys(s.best).length) apiAuth('/games/top', {bests:Object.assign({}, s.best)}).catch(() => {}); } catch (e) {} }, 6000);
+  setTimeout(() => { try { if (typeof apiAuth === 'function') apiAuth('/games/top', {bests:Object.assign({}, s.best)}).then(j => { try { const m = j && j.mine; if (!m) return; let ch = false; for (const k in m) if (+m[k] > (s.best[k] || 0)) { s.best[k] = +m[k]; ch = true; } if (ch) save(); } catch (e) {} }).catch(() => {}); } catch (e) {} }, 6000);
   /* v1.901: плашка «друг побил твой рекорд»: сравниваем с тем, что видели в прошлый раз (хранится у аккаунта) */
   let bti = 0, btb = false;
   function beatLoop(key){ clearInterval(bti); beatCheck(key); bti = setInterval(() => { if (!gm) { clearInterval(bti); return; } if (!document.hidden) beatCheck(key); }, 3000); }   /* проверка каждые 3 с, пока открыта игра */
@@ -10582,6 +10587,7 @@ const ACT = {
     render(); },
   frprev: el => openFramePrev(el.dataset.v || ''),
   shpslide: el => { const c = el.closest('.shp-car'); if (c) shpGo(c, +el.dataset.i); },
+  shopsub: el => { const w = el.closest('.s-game'); if (!w) return; w.dataset.g = el.dataset.g; w.querySelectorAll('.shp-sub button').forEach(x => x.classList.toggle('on', x === el)); },
   shoptab: el => { const w = el.closest('.shp-wrap'); if (!w) return; w.dataset.t = el.dataset.t; w.querySelectorAll('.shp-tabs button').forEach(x => x.classList.toggle('on', x === el)); },
   shopview: el => shopPreview(el.dataset.kind, el.dataset.k),
   cardgift: el => { if (!SHOP.ok) { toast('Покупки скоро откроются'); return; } shopPreview(el.dataset.kind, el.dataset.k); shopGiftPick(); },
