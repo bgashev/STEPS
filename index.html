@@ -4328,7 +4328,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.978';
+const APP = 'VOOB (by BGASHEV) Mini App v1.979';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -8675,7 +8675,7 @@ const REST = (function(){
   }
   /* вернуть к идущей тренировке: окно могли смахнуть, пока шёл отдых */
   function backLive(){ try { if (!sheetCtx) resumeLive(); } catch (e) {} }
-  function close(){ free = false; apps = false; run = false; done = false; clearInterval(iv); clearTimeout(doneT); stopGame(); try { setTimeout(updFab, 60); } catch (e) {} if (el) { el.remove(); el = null; } if (pill) { pill.remove(); pill = null; } }
+  function close(){ const wasApps = apps; free = false; apps = false; run = false; done = false; clearInterval(iv); clearTimeout(doneT); stopGame(); try { setTimeout(updFab, 60); } catch (e) {} if (el) { el.remove(); el = null; } if (pill) { pill.remove(); pill = null; } if (wasApps) setTimeout(() => { try { urlSync(); } catch (e) {} }, 80); }
   function paint(l){
     const p = total ? Math.min(1, Math.max(0, 1 - l / total)) : 0, t = fmtT(l);
     document.querySelectorAll('#rt [data-rt="t"],.rt-pill [data-rt="t"],#rtgm [data-rt="t"]').forEach(e => { e.textContent = t; });
@@ -9883,12 +9883,12 @@ const REST = (function(){
     <div class="tgl${s.game ? ' on' : ''}" data-act="rtog" data-k="game" style="margin-top:12px"><span class="sw2"></span><b>Мини-игры «Сыграть до гонга»</b></div>
     <div class="cap" style="margin-top:8px">Игра идёт только пока длится отдых и закрывается вместе с таймером.</div>
     <div class="pbstd" style="margin-top:14px"><span class="pbsi">${IC('clock', 18)}</span><div class="pbst"><b>Отдых</b><small>для новых подходов</small></div><div class="pbcap"><button type="button" class="pbb" data-act="rtstd" data-d="-1" aria-label="Меньше">${IC('minus', 14)}</button><span class="pbsv" id="rt-std">${fmtRs(s.std || 90)}</span><button type="button" class="pbb" data-act="rtstd" data-d="1" aria-label="Больше">${IC('plus', 14)}</button></div></div></div>`;
-  return {start, card, s, std: () => s.std || 120, setStd(v){ s.std = v; save(); }, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH,
+  return {cur: () => (run && apps && gm && GAMES[GI]) ? GAMES[GI].k : '', quit(){ if (run && apps) close(); }, start, card, s, std: () => s.std || 120, setStd(v){ s.std = v; save(); }, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH,
     dayInfo(){ const i = dayGi(), g = GAMES[i]; return {i, k:g.k, n:g.n, best:s.best[g.k] || 0, th:TH(g.k)}; },
-    playDay(){ if (run) { min = false; view = 'rest'; render(); return; } start(null, 10800); free = true; apps = true; openGame(dayGi()); },   // v1.860: как play(): после выхода из игры окно закрывается, а не показывает таймер отдыха
+    playDay(){ if (run) { min = false; view = 'rest'; render(); return; } start(null, 10800); free = true; apps = true; openGame(dayGi()); try { urlSync(); } catch (e) {} },   // v1.860: как play(): после выхода из игры окно закрывается, а не показывает таймер отдыха
     refresh(){ if (run && view === 'pick') render(); },
     list(){ const d = dayGi(); return GAMES.map((g, i) => ({i, k:g.k, beta:!!g.beta, n:g.n, pro:!!g.pro, own:!g.pro || gameOwn(g.k), day:i === d, best:s.best[g.k] || 0, th:TH(g.k)})); },
-    play(i){ if (!run) { start(null, 10800); free = true; } apps = true; openGame(i); }};
+    play(i){ if (!run) { start(null, 10800); free = true; } apps = true; openGame(i); try { urlSync(); } catch (e) {} }};
 })();
 
 function slBlock(src, same, act, st){
@@ -11105,7 +11105,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target && e.target.id === 'axs-n') acts.axnum(); });
   document.addEventListener('change', e => { if (e.target && e.target.id === 'ax-cu') { const c = CAL(); if (c.custom < 800) { c.custom = 800; e.target.value = 800; } save(); render(); } });
   function hub(){ return `<div class="ax-pg ax-hub">${sheetHTML().replace('<div class="ax-sh"><div class="ax-st">Приложения</div>', '<div class="ax-sh"><div class="ax-h1">Приложения</div>')}</div>`; }
-  return {view, hub, tiles:homeTiles, acts, leave, active:() => !!(S.app && ST.s), btn:() => ''};
+  return {view, hub, tiles:homeTiles, acts, leave, st: () => ST.s, active:() => !!(S.app && ST.s), btn:() => ''};
 })();
 Object.assign(ACT, AX.acts);
 
@@ -11489,14 +11489,16 @@ function showWebLogin(){
 
 /* ============================================================ запуск ==== */
 /* v1.694 WEB: у вкладок свои адреса (app.voob.kz/friends, /settings …). В Telegram адрес не трогаем */
-const ROUTES = {'/':{t:'home', n:''}, '/stats':{t:'stats', n:'Итоги'}, '/weight':{t:'weight', n:'Вес'}, '/friends':{t:'friends', n:'Друзья'}, '/shop':{t:'shop', n:'Магазин'}, '/apps':{t:'apps', n:'Приложения'}, '/settings':{t:'me', set:1, n:'Настройки'}, '/personalization':{t:'me', set:1, pers:1, n:'Персонализация'}};
-let pendHandle = null, PUBH = null;   // v1.762: ссылка на профиль app.voob.kz/@ник
+const ROUTES = {'/':{t:'home', n:''}, '/stats':{t:'stats', n:'Итоги'}, '/weight':{t:'weight', n:'Вес'}, '/friends':{t:'friends', n:'Друзья'}, '/shop':{t:'shop', n:'Магазин'}, '/apps':{t:'apps', n:'Приложения'}, '/games':{t:'apps', games:1, n:'Игры'}, '/settings':{t:'me', set:1, n:'Настройки'}, '/personalization':{t:'me', set:1, pers:1, n:'Персонализация'}};
+let pendHandle = null, PUBH = null, pendGame = null;   // v1.762: ссылка на профиль app.voob.kz/@ник
 const HRX = /^\/@([A-Za-z][A-Za-z0-9_]{2,19})$/;
 const frHandle = f => f && (f.handle || f.username) || '';
 function pathNow(){
   if (pendHandle) return '/@' + pendHandle;
+  if (pendGame) return pendGame === '*' ? '/games' : '/games/' + pendGame;
   if (S.fprof) { const f = FR.data && FR.data.friends.find(x => x.tg_id === S.fprof), h = frHandle(f); if (h) return '/@' + h; }
   if (PUBH && sheetCtx && sheetCtx.type === 'pub') return '/@' + PUBH;
+  try { const gk = REST.cur(); if (gk) return '/games/' + gk; if (S.app && AX.st() === 'games') return '/games'; } catch (e) {}   // v1.979: ссылки на «Игры» и каждую игру
   if (S.tab === 'me' && S.pers) return '/personalization';
   if (S.tab === 'me' && S.meSet) return '/settings';
   if (S.tab === 'stats' || S.tab === 'weight' || S.tab === 'friends' || S.tab === 'shop' || S.tab === 'apps') return '/' + S.tab;
@@ -11507,7 +11509,8 @@ function urlSync(){
   try {
     const p = pathNow(), r = ROUTES[p];
     const hm = HRX.exec(p), hf = hm && FR.data && FR.data.friends.find(x => frHandle(x).toLowerCase() === hm[1].toLowerCase());
-    document.title = hm ? (hf && hf.first_name ? hf.first_name + ' (@' + hm[1] + ') · VOOB' : '@' + hm[1] + ' · VOOB') : r && r.n ? 'VOOB · ' + r.n : 'VOOB';
+    const gmm = /^\/games\/([a-z0-9]+)$/.exec(p), gg = gmm && REST.list().find(x => x.k === gmm[1]);
+    document.title = gg ? 'VOOB · Игра «' + gg.n + '»' : hm ? (hf && hf.first_name ? hf.first_name + ' (@' + hm[1] + ') · VOOB' : '@' + hm[1] + ' · VOOB') : r && r.n ? 'VOOB · ' + r.n : 'VOOB';
     if (location.pathname.replace(/\/+$/, '') !== (p === '/' ? '' : p)) history.pushState(null, '', p + location.search + location.hash);
   } catch (e) {}
 }
@@ -11520,10 +11523,13 @@ function resolvePend(){
 function routeApply(path){
   const hm = HRX.exec((path || '').replace(/\/+$/, ''));
   if (hm) { S.tab = 'friends'; S.meSet = false; S.pers = false; S.fprof = null; pendHandle = hm[1]; return true; }
+  const gm = /^\/games\/([a-z0-9]{2,12})$/i.exec((path || '').replace(/\/+$/, ''));
+  if (gm) { S.tab = 'apps'; S.meSet = false; S.pers = false; S.fprof = null; pendGame = gm[1].toLowerCase(); return true; }
   const r = ROUTES[(path || '/').replace(/\/+$/, '') || '/']; if (!r) return false;
+  if (r.games) pendGame = '*';
   S.tab = r.t; S.meSet = !!r.set; S.pers = !!r.pers; S.fprof = null; return true;
 }
-if (inWeb) window.addEventListener('popstate', () => { if (!routeApply(location.pathname)) return; try { if (sheetCtx) closeSheet(); } catch (e) {} fabMini(false); _rTab = null; render(); window.scrollTo(0, 0); try { resolvePend(); } catch (e) {} });
+if (inWeb) window.addEventListener('popstate', () => { try { REST.quit(); if (S.app) AX.leave(); } catch (e) {} if (!routeApply(location.pathname)) return; try { if (sheetCtx) closeSheet(); } catch (e) {} fabMini(false); _rTab = null; render(); window.scrollTo(0, 0); try { resolvePend(); } catch (e) {} try { if (pendGame) { const k = pendGame; pendGame = null; runGameLink(k); } } catch (e) {} });
 // v1.755: экран «Настраиваем твой профиль» поверх размытого приложения (WEB, первый вход без локальных данных)
 function pflShow(){
   if (document.getElementById('pfl')) return;
@@ -11552,8 +11558,25 @@ function splashShow(){
     setTimeout(() => d.remove(), 2030);
   } catch (e) {}
 }
+/* v1.979: ссылки на раздел «Игры» и на каждую игру. WEB: app.voob.kz/games, /games/<ключ>; Telegram: ?startapp=games, ?startapp=g_<ключ> */
+function runGameLink(k){
+  try {
+    if (sheetCtx) closeSheet();
+    if (S.fprof) S.fprof = null;
+    S.tab = 'apps'; S.meSet = false; S.pers = false;
+    AX.acts.appopen({dataset: {s: 'games'}});
+    if (!k || k === '*') return;
+    gameLoad(); let n = 0;
+    const go = () => { if (!SHOP.ok && ++n < 30) { setTimeout(go, 200); return; }
+      const g = REST.list().find(x => x.k === k); if (!g) return;
+      if (!g.own && !g.day) { gameBuy(g.k); return; }
+      REST.play(g.i); };
+    go();
+  } catch (e) {}
+}
 async function init(){
   try { if (inWeb) routeApply(location.pathname); } catch (e) {}
+  try { if (inWeb && pendGame) { const k = pendGame; pendGame = null; setTimeout(() => runGameLink(k), 900); } } catch (e) {}
   if (tg) {
     try { tg.ready(); tg.expand(); } catch (e) {}
     try { if (ver('7.7')) tg.disableVerticalSwipes(); } catch (e) {}
@@ -11567,7 +11590,7 @@ async function init(){
   scheduleSync(100);
   try { if (inWeb && !inWebApp) showWebLogin(); /* v1.744: WEB только после входа через Telegram */ } catch (e) {}
   if (inTG) setTimeout(() => { loadFriends(); loadFeed(true); }, 900);   // к моменту перехода во вкладку всё уже свежее
-  try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); else { const TM = {stats:'stats', apps:'apps', home:'home', friends:'friends', me:'me', profile:'me'}, tk = TM[String(sp || '').toLowerCase()]; if (tk) setTimeout(() => { try { ACT.tab({dataset: {tab: tk}}); } catch (e) {} }, 600); else if (/^(settings|me_settings)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'me') ACT.tab({dataset: {tab: 'me'}}); ACT.meset(); } catch (e) {} }, 700); } } catch (e) {}
+  try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); else if (/^(games|g_[a-z0-9]{2,12})$/i.test(sp || '')) { const gl = String(sp).toLowerCase(); setTimeout(() => runGameLink(gl === 'games' ? '*' : gl.slice(2)), 700); } else { const TM = {stats:'stats', apps:'apps', home:'home', friends:'friends', me:'me', profile:'me'}, tk = TM[String(sp || '').toLowerCase()]; if (tk) setTimeout(() => { try { ACT.tab({dataset: {tab: tk}}); } catch (e) {} }, 600); else if (/^(settings|me_settings)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'me') ACT.tab({dataset: {tab: 'me'}}); ACT.meset(); } catch (e) {} }, 700); } } catch (e) {}
   if (!hasCloud) return;
   try {
     const c = await cloudLoad();
