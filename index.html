@@ -4225,17 +4225,18 @@ html.web .ax-gg{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14
 html:not(.web) #tabs .tab .tl{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 html:not(.web) #tabs .tab{justify-content:center;gap:0}
 html:not(.web) #tabs .tab .ti,html:not(.web) #tabs .tab .ti svg{width:26px;height:26px}
-html.web .gw{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:26px;align-items:start;margin-top:6px}
-html.web .gw-l{min-width:0;display:flex;flex-direction:column;gap:18px}html.web .gw-r{display:flex;flex-direction:column;gap:14px;position:sticky;top:16px}
-.gw-lab{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:2px 0 10px}.gw-lab.gold{color:#F2C46B}
-.gw-hero{display:flex;gap:26px;padding:24px;border-radius:24px;border:1px solid var(--border);background:linear-gradient(120deg,var(--accent-soft),var(--surface) 62%)}
-.gw-ht{width:210px;height:210px;flex:none;border-radius:20px;overflow:hidden;display:grid;place-items:center}.gw-ht>*{width:100%;height:100%}
-.gw-hx{flex:1;display:flex;flex-direction:column;min-width:0}.gw-hx h3{font-size:34px;letter-spacing:-.02em;margin:2px 0 14px}
-.gw-hs{display:flex;gap:34px;margin-bottom:22px}.gw-hs b{display:block;font-size:30px;font-variant-numeric:tabular-nums}.gw-hs span{font-size:12.5px;color:var(--muted)}.gw-hx .ax-btn{margin-top:auto;align-self:flex-start}
-.gw-c{padding:18px;border-radius:22px;border:1px solid var(--border);background:var(--surface)}.gw-pro{background:linear-gradient(135deg,rgba(242,196,107,.14),var(--surface))}
-.gw-rw{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}.gw-rw:last-of-type{border:0}.gw-rw span{flex:1}.gw-rw i{font-style:normal;font-weight:800;color:var(--muted);width:16px}.gw-rw b{font-variant-numeric:tabular-nums}.gw-rw.me{color:var(--accent)}
-.gw-bar{height:6px;border-radius:9px;background:var(--surface2);margin-top:10px;overflow:hidden}.gw-bar i{display:block;height:100%;background:var(--accent);border-radius:9px}.gw-em{color:var(--muted);font-size:13px}
-html.web .gw .ax-gg{grid-template-columns:repeat(auto-fill,minmax(176px,1fr))}
+html.web .gmx{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:26px;align-items:start;margin-top:6px}
+html.web .gmx-l{min-width:0;display:flex;flex-direction:column;gap:18px}html.web .gmx-r{display:flex;flex-direction:column;gap:14px;position:sticky;top:16px}
+.gmx-lab{font-size:11.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:2px 0 10px}.gmx-lab.gold{color:#F2C46B}
+.gmx-hero{display:flex;gap:26px;padding:24px;border-radius:24px;border:1px solid var(--border);background:linear-gradient(120deg,var(--accent-soft),var(--surface) 62%)}
+.gmx-ht{width:210px;height:210px;flex:none;border-radius:20px;overflow:hidden;display:grid;place-items:center}.gmx-ht>*{width:100%;height:100%}
+.gmx-hx{flex:1;display:flex;flex-direction:column;min-width:0}.gmx-hx h3{font-size:34px;letter-spacing:-.02em;margin:2px 0 14px}
+.gmx-hs{display:flex;gap:34px;margin-bottom:22px}.gmx-hs b{display:block;font-size:30px;font-variant-numeric:tabular-nums}.gmx-hs span{font-size:12.5px;color:var(--muted)}.gmx-hx .ax-btn{margin-top:auto;align-self:flex-start}
+.gmx-c{padding:18px;border-radius:22px;border:1px solid var(--border);background:var(--surface)}.gmx-pro{background:linear-gradient(135deg,rgba(242,196,107,.14),var(--surface))}
+.gmx-rw{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}.gmx-rw:last-of-type{border:0}.gmx-rw span{flex:1}.gmx-rw i{font-style:normal;font-weight:800;color:var(--muted);width:16px}.gmx-rw b{font-variant-numeric:tabular-nums}.gmx-rw.me{color:var(--accent)}
+.gmx-bar{height:6px;border-radius:9px;background:var(--surface2);margin-top:10px;overflow:hidden}.gmx-bar i{display:block;height:100%;background:var(--accent);border-radius:9px}.gmx-em{color:var(--muted);font-size:13px}
+html.web .gmx .ax-gg{grid-template-columns:repeat(auto-fill,minmax(176px,1fr))}
+.gmx-w .ax-mode{max-width:360px}html.web .ax-pg .ax-mode{max-width:360px}
 .shp-sub{display:flex;gap:4px;width:fit-content;padding:4px;margin:0 0 14px;border-radius:99px;border:1px solid var(--border);background:var(--surface)}
 .shp-sub button{font:inherit;font-size:12.5px;font-weight:700;border:0;background:transparent;color:var(--muted);border-radius:99px;padding:7px 16px;cursor:pointer;transition:.2s}
 .shp-sub button.on{background:var(--accent);color:var(--bg)}
@@ -4327,7 +4328,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.976';
+const APP = 'VOOB (by BGASHEV) Mini App v1.977';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -8418,7 +8419,7 @@ function render(){
   const same = _rTab === rkey;
   if (same && inWeb && _navT && performance.now() - _navT < 700) { clearTimeout(_navDef); _navDef = setTimeout(render, Math.max(30, _navT + 720 - performance.now())); return; }   // v1.696: пока страница «въезжает», дозагрузки данных ждут — иначе она перерисовывалась на глазах
   if (same && html === _rHtml) { updFab(); return; }     // ничего не поменялось — DOM не трогаем, анимации не повторяются
-  v.classList.toggle('w2', inWeb && (html.indexOf('class="me-l"') > -1 || html.indexOf('class="mset2"') > -1 || html.indexOf('class="pz2"') > -1 || html.indexOf('class="shp-wrap"') > -1));   // v1.636: ширину столбцов задаём до вставки — иначе страница сначала рисуется узкой и «прыгает»
+  v.classList.toggle('w2', inWeb && (html.indexOf('class="me-l"') > -1 || html.indexOf('class="mset2"') > -1 || html.indexOf('class="pz2"') > -1 || html.indexOf('class="shp-wrap"') > -1 || html.indexOf('class="ax-pg') > -1));   // v1.636: ширину столбцов задаём до вставки — иначе страница сначала рисуется узкой и «прыгает»
   v.classList.toggle('rr', same);                          // та же вкладка: обновляем без повторных «появлений»
   const prevT = _rTab; _rTab = rkey; _rHtml = html;
   if (same) morphSoft(v, html);   // v1.442: та же вкладка — правим только изменившееся, без мерцаний
@@ -10905,25 +10906,25 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   /* v1.976: WEB «Игры» — витрина: игра дня крупно, сетка слева, рейтинг и статистика справа */
   function gamesWebHTML(L, day){
     const recs = L.filter(x => x.best).length, left = L.filter(x => !x.own).length, p1 = SHOP.prices.game || 19, pa = SHOP.prices.games || 99;
-    if (day) setTimeout(() => gwRank(day), 0);
-    const hero = day ? `<div class="gw-hero"><div class="gw-ht">${day.th}</div><div class="gw-hx"><small class="gw-lab gold">★ ИГРА ДНЯ${day.own ? '' : ' · БЕСПЛАТНО ДЛЯ ВСЕХ'}</small><h3>${esc(day.n)}</h3>
-      <div class="gw-hs"><div><b>${day.best ? P0(day.best) : '—'}</b><span>твой рекорд</span></div><div><b id="gwpl">—</b><span>место среди друзей</span></div></div>
+    if (day) setTimeout(() => gmxRank(day), 0);
+    const hero = day ? `<div class="gmx-hero"><div class="gmx-ht">${day.th}</div><div class="gmx-hx"><small class="gmx-lab gold">★ ИГРА ДНЯ${day.own ? '' : ' · БЕСПЛАТНО ДЛЯ ВСЕХ'}</small><h3>${esc(day.n)}</h3>
+      <div class="gmx-hs"><div><b>${day.best ? P0(day.best) : '—'}</b><span>твой рекорд</span></div><div><b id="gmxpl">—</b><span>место среди друзей</span></div></div>
       <button type="button" class="ax-btn" data-act="axgame" data-i="${day.i}">Играть</button></div></div>` : '';
     const tiles = L.map(x => `<div class="ax-gc" data-act="axgame" data-i="${x.i}"><div class="th">${x.th}${!x.own ? '<span class="pro">PRO</span>' : ''}${x.beta ? '<span class="bta">BETA</span>' : ''}</div><b>${esc(x.n)}</b><small>${!x.own && !x.day ? '⭐ ' + p1 : x.best ? 'рекорд ' + P0(x.best) : 'без рекорда'}</small></div>`).join('') + `<div class="ax-gc ax-gs" data-act="appgsug"><div class="th"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><b>Предложить</b><small>свою игру</small></div>`;
     const pct = L.length ? Math.round((L.length - left) / L.length * 100) : 0;
-    return `<div class="gw"><div class="gw-l">${hero}<div class="gw-lab">Все игры · ${L.length}</div><div class="ax-gg">${tiles}</div></div>
-      <div class="gw-r"><div class="gw-c"><div class="gw-lab">Рейтинг друзей${day ? ' · ' + esc(day.n) : ''}</div><div id="gwrk"><div class="gw-em">Загружаю…</div></div></div>
-        <div class="gw-c"><div class="gw-lab">Твоя статистика</div><div class="gw-rw"><span>Рекордов</span><b>${recs}</b></div><div class="gw-rw"><span>Открыто игр</span><b>${L.length - left} / ${L.length}</b></div><div class="gw-bar"><i style="width:${pct}%"></i></div></div>
-        ${left && !isPro() ? `<div class="gw-c gw-pro"><div class="gw-lab gold">PRO-игры навсегда</div><div class="gw-em" style="margin-bottom:12px">Все ${left} оставшихся одной покупкой</div><button type="button" class="ax-btn sm" data-act="gbuyall">⭐ ${pa}</button></div>` : ''}</div></div>`;
+    return `<div class="gmx"><div class="gmx-l">${hero}<div class="gmx-lab">Все игры · ${L.length}</div><div class="ax-gg">${tiles}</div></div>
+      <div class="gmx-r"><div class="gmx-c"><div class="gmx-lab">Рейтинг друзей${day ? ' · ' + esc(day.n) : ''}</div><div id="gmxrk"><div class="gmx-em">Загружаю…</div></div></div>
+        <div class="gmx-c"><div class="gmx-lab">Твоя статистика</div><div class="gmx-rw"><span>Рекордов</span><b>${recs}</b></div><div class="gmx-rw"><span>Открыто игр</span><b>${L.length - left} / ${L.length}</b></div><div class="gmx-bar"><i style="width:${pct}%"></i></div></div>
+        ${left && !isPro() ? `<div class="gmx-c gmx-pro"><div class="gmx-lab gold">PRO-игры навсегда</div><div class="gmx-em" style="margin-bottom:12px">Все ${left} оставшихся одной покупкой</div><button type="button" class="ax-btn sm" data-act="gbuyall">⭐ ${pa}</button></div>` : ''}</div></div>`;
   }
-  function gwRank(day){
+  function gmxRank(day){
     if (typeof apiAuth !== 'function') return;
     apiAuth('/games/top', {game: day.k}).then(j => {
-      const box = document.getElementById('gwrk'); if (!box) return;
+      const box = document.getElementById('gmxrk'); if (!box) return;
       const rows = (j.rows || []).slice(); rows.forEach(r => { if (r.me && day.best > r.best) r.best = day.best; }); rows.sort((a, b) => b.best - a.best || (a.me ? -1 : 0));
-      const mi = rows.findIndex(r => r.me), pl = document.getElementById('gwpl'); if (pl) pl.textContent = rows.length > 1 && mi >= 0 ? (mi + 1) + ' из ' + rows.length : '—';
-      box.innerHTML = rows.length > 1 ? rows.slice(0, 6).map((r, i) => `<div class="gw-rw${r.me ? ' me' : ''}"><i>${i + 1}</i><span>${r.me ? 'Ты' : esc(r.name || 'Игрок')}</span><b>${r.best ? P0(r.best) : '—'}</b></div>`).join('') : '<div class="gw-em">Пока ты здесь один. Добавь друзей, и узнаешь, кто круче</div>';
-    }).catch(() => { const b = document.getElementById('gwrk'); if (b) b.innerHTML = '<div class="gw-em">Не получилось загрузить</div>'; });
+      const mi = rows.findIndex(r => r.me), pl = document.getElementById('gmxpl'); if (pl) pl.textContent = rows.length > 1 && mi >= 0 ? (mi + 1) + ' из ' + rows.length : '—';
+      box.innerHTML = rows.length > 1 ? rows.slice(0, 6).map((r, i) => `<div class="gmx-rw${r.me ? ' me' : ''}"><i>${i + 1}</i><span>${r.me ? 'Ты' : esc(r.name || 'Игрок')}</span><b>${r.best ? P0(r.best) : '—'}</b></div>`).join('') : '<div class="gmx-em">Пока ты здесь один. Добавь друзей, и узнаешь, кто круче</div>';
+    }).catch(() => { const b = document.getElementById('gmxrk'); if (b) b.innerHTML = '<div class="gmx-em">Не получилось загрузить</div>'; });
   }
   function viewGames(){
     gameLoad(); const L = REST.list(); const day = L.find(x => x.day), gp = ST.gprev !== undefined ? ST.gprev : ST.gm;
