@@ -4396,9 +4396,23 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 .nt-pp{display:flex;flex-direction:column;align-items:center;width:112px}.nt-ln{margin-top:14px;font-size:15px;text-align:center;min-height:36px}.nt-ln b{display:block}.nt-ln i{display:block;font-style:normal;color:var(--muted);font-size:11px;margin-top:2px}
 .nt-ls{margin-top:8px;font-size:12px;color:var(--muted);min-height:18px;text-align:center}
 .nt-gl{display:flex;gap:14px;margin:8px -20px 0;width:calc(100% + 40px);overflow-x:auto;padding:38px 20px 52px;scroll-snap-type:x proximity;scroll-padding-inline:20px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%)}.nt-gl .nt-gc{scroll-snap-align:center}.nt-gl::-webkit-scrollbar{display:none}
-.nt-gc{flex:none;width:136px;height:176px;border-radius:26px;background:var(--surface);border:1.5px solid var(--border);padding:14px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;transition:transform .35s cubic-bezier(.3,1.4,.5,1),border-color .2s,box-shadow .3s}
+.nt-gc{flex:none;width:136px;height:196px;border-radius:26px;background:var(--surface);border:1.5px solid var(--border);padding:14px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;transition:transform .35s cubic-bezier(.3,1.4,.5,1),border-color .2s,box-shadow .3s}
 .nt-gc .th{position:absolute;top:10px;left:10px;right:10px;height:96px;border-radius:14px;overflow:hidden}.nt-gc .th svg{width:100%;height:100%;display:block}.nt-gc b{font-size:15px}.nt-gc small{font-size:10.5px;color:var(--muted);margin-top:2px}
 .nt-gc.off{opacity:.45}.nt-gc.sel{transform:translateY(-8px) scale(1.05);border-color:var(--accent);box-shadow:0 14px 36px color-mix(in srgb,var(--accent) 35%,transparent)}
+.nt-ls.nt-wait{font-size:14px;font-weight:600;background:linear-gradient(100deg,var(--muted) 30%,var(--text) 50%,var(--muted) 70%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:ntshim 2.2s linear infinite}
+@keyframes ntshim{from{background-position:100% 0}to{background-position:-100% 0}}
+.nt-dots{display:inline-flex;gap:4px;margin-left:6px;vertical-align:middle}.nt-dots i{width:5px;height:5px;border-radius:50%;background:var(--muted);animation:ntdot 1.2s ease-in-out infinite}.nt-dots i:nth-child(2){animation-delay:.15s}.nt-dots i:nth-child(3){animation-delay:.3s}
+@keyframes ntdot{0%,60%,100%{transform:translateY(0);opacity:.35}30%{transform:translateY(-5px);opacity:1}}
+.nt-ls.nt-hl{font-size:14px;font-weight:700;color:var(--text);animation:nthl 1.5s ease-in-out infinite}
+@keyframes nthl{50%{transform:translateY(3px)}}
+.nt-pp.nt-think .nt-av{animation:ntthink 1.8s ease-in-out infinite}
+@keyframes ntthink{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 transparent)}50%{transform:scale(1.045);filter:drop-shadow(0 0 14px color-mix(in srgb,var(--accent) 55%,transparent))}}
+.nt-gl.nt-scan .nt-gc:not(.off){animation:ntscan 5s ease-in-out infinite}
+@keyframes ntscan{0%,22%,100%{transform:none;border-color:var(--border);box-shadow:none}8%,14%{transform:translateY(-6px) scale(1.03);border-color:var(--accent);box-shadow:0 12px 30px color-mix(in srgb,var(--accent) 30%,transparent)}}
+.nt-btn.nt-nudge{position:relative;overflow:hidden;animation:ntnudge 1.8s ease-out infinite}
+@keyframes ntnudge{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}70%,100%{box-shadow:0 0 0 18px transparent}}
+.nt-btn.nt-nudge::after{content:'';position:absolute;top:0;bottom:0;left:-45%;width:35%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-18deg);animation:ntsweep 2.2s ease-in-out infinite;pointer-events:none}
+@keyframes ntsweep{0%,35%{left:-45%}80%,100%{left:125%}}
 .nt-lb{margin-top:auto;width:100%}.nt-lb .nt-btn{padding:17px 0}
 .nt-lobby>*:not(.nt-peer){animation:ntup .6s var(--dl,.5s) both}
 .nt-peer{position:absolute;top:calc(env(safe-area-inset-top,0px) + 54px);left:20px;right:20px;background:#e0524b;color:#fff;border-radius:14px;padding:9px 12px;font-size:12px;text-align:center}
@@ -4630,7 +4644,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1019';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1020';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12554,7 +12568,17 @@ const NET = (() => {
     N.ov.querySelectorAll('.nt-gc').forEach(c => c.classList.toggle('sel', !!r.game && c.dataset.k === r.game));
     const b = q('#ntlb'); if (!b) return;
     b.textContent = h ? T('Старт') : (r.guest_ready ? T('Не готов') : T('Готов'));
-    b.classList.toggle('dis', h ? !(r.game && r.guest_ready) : !r.game); peerBar();
+    b.classList.toggle('dis', h ? !(r.game && r.guest_ready) : !r.game);
+    /* подсказки: ожидание выбора, зов на кнопку */
+    const ls = q('#ntls'), gl = N.ov.querySelector('.nt-gl'), wait = !h && !r.game, act = h ? !!(r.game && r.guest_ready) : !!(r.game && !r.guest_ready);
+    ls.className = 'nt-ls' + (wait ? ' nt-wait' : '') + ((act || (h && !r.game)) ? ' nt-hl' : '');
+    if (wait) { ls.textContent = ls.textContent.replace(/…$/, ''); ls.insertAdjacentHTML('beforeend', '<span class="nt-dots"><i></i><i></i><i></i></span>'); }
+    else if (act || (h && !r.game)) ls.textContent += ' ↓';
+    if (gl) { const cs = gl.querySelectorAll('.nt-gc:not(.off)'); if (wait && !gl.classList.contains('nt-scan')) { cs.forEach((c, i) => { c.style.animationDelay = (i * 5 / cs.length) + 's'; }); } gl.classList.toggle('nt-scan', wait); if (!wait) gl.querySelectorAll('.nt-gc').forEach(c => { c.style.animationDelay = ''; }); }
+    const hp = N.ov.querySelector('.nt-lh .nt-pp'); if (hp) hp.classList.toggle('nt-think', wait);
+    b.classList.toggle('nt-nudge', act);
+    if (act && N.hg !== r.game + ':' + r.guest_ready) hap.imp();
+    N.hg = act ? r.game + ':' + r.guest_ready : ''; peerBar();
   }
   /* ---------- игры ---------- */
   const outcome = r => { const w = r.state.win; return w === 'd' ? 'd' : (r.game === 'ttt' ? w === mySym() : +w === +UK) ? 'w' : 'l'; };
