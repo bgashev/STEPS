@@ -8435,6 +8435,10 @@ window.addEventListener('scroll', () => {
   fabMini(dy > 0 && y > 60);
   fabY = y;
 }, {passive:true});
+// v1.1006: на главной в WEB кнопка «+ Тренировка» сверху нужна, только когда «Начать тренировку» ушла за экран
+function fabDup(){ if (!document.documentElement.classList.contains('web')) return false; const g = document.querySelector('#view .vc-go'); if (!g) return false; const r = g.getBoundingClientRect(); return r.bottom > 56 && r.top < innerHeight; }
+let fabDupS = null;
+window.addEventListener('scroll', () => { const d = fabDup(); if (d === fabDupS) return; fabDupS = d; updFab(); }, {passive:true});
 function updFab(){
   const box = $('#fab'); if (!box) return;
   if (S.tab !== 'weight') wpClose();
@@ -8445,7 +8449,8 @@ function updFab(){
   const go = !sheetCtx && liveAlive(); box.classList.toggle('has-go', go);
   if (!cfg) { if (go && updFab.ok) { box.classList.remove('hide'); box.classList.add('solo'); } else { box.classList.add('hide'); box.classList.remove('solo'); } return; }
   box.classList.remove('solo');
-  if (!updFab.ok) { b.dataset.act = cfg[0]; fl.textContent = cfg[1]; return; }   // пока приложение не «устоялось» (шрифты, размер окна Telegram, восстановление прокрутки) кнопка скрыта и не двигается
+  if (!updFab.ok) { b.dataset.act = cfg[0]; fl.textContent = cfg[1]; return; }
+  if (cfg[0] === 'add' && fabDup()) { b.dataset.act = cfg[0]; box.classList.add('hide'); return; }   // v1.1006: WEB — пока на экране «Начать тренировку», дубль сверху не нужен   // пока приложение не «устоялось» (шрифты, размер окна Telegram, восстановление прокрутки) кнопка скрыта и не двигается
   const wasHidden = box.classList.contains('hide');
   if (wasHidden && !updFab.shown) {          // самый первый показ: кнопка появляется один раз, мягко, уже с готовыми цветом и текстом
     updFab.shown = true; box.classList.add('first'); b.style.width = ''; box.classList.remove('mini'); fabMiniOn = false;
