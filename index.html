@@ -4565,7 +4565,7 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-res{text-align:center;font-size:22px;font-weight:850;padding:10px;border-radius:16px;background:var(--bg);border:1px solid var(--border);margin-bottom:6px}.hb-res small{display:block;color:var(--muted);font-size:13px;font-weight:600;margin-top:2px}
 .hb-feed div{padding:8px 0;border-bottom:1px solid var(--border)}.hb-feed div:last-child{border:0}.hb-feed b{display:block;font-size:13px}.hb-feed small{color:var(--muted);font-size:11.5px}
 /* ---------- v1.1024: «Привычки» — дизайн «Лента» ---------- */
-.hb-h{margin:2px 2px 4px}.hb-h h1{font-size:34px;letter-spacing:-1px}.hb-h small{text-transform:capitalize;margin:0 0 2px;font-size:13px}
+.hb-h{margin:2px 2px 4px}.hb-h h1{font-size:34px;letter-spacing:-1px}.hb-h small{margin:0 0 2px;font-size:13px}.hb-h small::first-letter{text-transform:uppercase}
 .hb-add{width:46px;height:46px;border-radius:50%;background:var(--text);color:var(--bg);border:0}
 .hb-wk{display:flex;justify-content:space-between;margin:16px 2px 0}.hb-wk div{width:40px;text-align:center;font-size:11px;font-weight:700;color:var(--muted)}
 .hb-wk i{display:block;width:30px;height:30px;margin:7px auto 0;border-radius:50%;border:1.5px solid var(--border);transition:.3s}
@@ -4577,15 +4577,15 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-big.sm{margin:10px 2px 6px}.hb-big.sm .n{font-size:76px;letter-spacing:-5px}.hb-big.sm .n.clk{font-size:34px;letter-spacing:-1.5px;line-height:1.1}
 .hb-gs .hb-g{margin:0}.hb-g>h4{margin:12px 2px 8px}.hb-g>h4:before{display:none}
 .hb-r{position:relative;overflow:hidden;display:block;height:68px;padding:0;border-radius:24px;background:var(--surface);border:1px solid var(--border);margin-bottom:10px;-webkit-clip-path:inset(0 round 24px);clip-path:inset(0 round 24px)}
-.hb-r .hb-f{position:absolute;inset:0;background:color-mix(in srgb,var(--hc) 30%,transparent);-webkit-clip-path:inset(0 calc(100% - var(--p,0%)) 0 0);clip-path:inset(0 calc(100% - var(--p,0%)) 0 0);transition:clip-path .8s cubic-bezier(.2,.9,.25,1)}
-.hb-r.dn .hb-f{background:linear-gradient(100deg,var(--hc),color-mix(in srgb,var(--hc) 68%,#fff))}
-.hb-r.dn{background:var(--surface);border-color:color-mix(in srgb,var(--hc) 50%,transparent)}
-.hb-r .hb-in{position:relative;display:flex;align-items:center;gap:12px;height:100%;padding:0 14px}
+.hb-r .hb-f{position:absolute;inset:0;background:color-mix(in srgb,var(--hc) 30%,transparent);transform:scaleX(var(--s,0));transform-origin:0 50%;transition:transform .8s cubic-bezier(.2,.9,.25,1)}
+.hb-r.dn{background:linear-gradient(100deg,var(--hc),color-mix(in srgb,var(--hc) 68%,#fff));border-color:transparent}.hb-r.dn .hb-f{display:none}
+.hb-r .hb-in{position:relative;display:flex;align-items:center;gap:12px;height:100%;padding:0 14px;z-index:1}
 .hb-r .hb-e{background:color-mix(in srgb,var(--hc) 24%,var(--surface2))}.hb-r.dn .hb-e{background:rgba(255,255,255,.38)}
-.hb-r.dn .hb-t b{color:#0a0a0f;text-decoration:none}.hb-r.dn .hb-t small{color:rgba(10,10,15,.62)}.hb-r.dn .hb-fl{color:#0a0a0f;opacity:.75}
+.hb-r.dn .hb-t b{color:#0a0a0f;text-decoration:none}.hb-r.dn .hb-t small{color:rgba(10,10,15,.62)}.hb-r.dn .hb-fl{color:#0a0a0f}
 .hb-r .hb-ck{width:36px;height:36px;border-width:1.5px}.hb-r.dn .hb-ck{background:#0a0a0f;border-color:#0a0a0f;box-shadow:none;color:#fff}
-.hb-r.fresh .hb-f{animation:hbfill .8s cubic-bezier(.2,.9,.25,1) both}@keyframes hbfill{from{-webkit-clip-path:inset(0 100% 0 0);clip-path:inset(0 100% 0 0)}}
-.hb-r.dn.fresh .hb-t b{animation:hbtx .8s both}.hb-r.dn.fresh .hb-t small{animation:hbts .8s both}@keyframes hbtx{0%,45%{color:var(--text)}100%{color:#0a0a0f}}@keyframes hbts{0%,45%{color:var(--muted)}100%{color:rgba(10,10,15,.62)}}
+.hb-r.fresh:not(.dn) .hb-f{animation:hbfill .8s cubic-bezier(.2,.9,.25,1)}@keyframes hbfill{from{transform:scaleX(0)}}
+.hb-r.dn.fresh::before{content:"";position:absolute;inset:0;z-index:1;background:var(--surface);transform-origin:100% 50%;animation:hbwipe .75s cubic-bezier(.2,.9,.25,1) both}@keyframes hbwipe{to{transform:scaleX(0)}}
+.hb-r.dn.fresh .hb-t b{animation:hbtx .75s both}.hb-r.dn.fresh .hb-t small{animation:hbts .75s both}@keyframes hbtx{0%,40%{color:var(--text)}100%{color:#0a0a0f}}@keyframes hbts{0%,40%{color:var(--muted)}100%{color:rgba(10,10,15,.62)}}
 .hb-r.pv{pointer-events:none;margin:6px 0 14px}
 .hb-pq{width:168px;padding:14px;border-radius:24px;background:linear-gradient(145deg,var(--hc),color-mix(in srgb,var(--hc) 50%,#000));border:0;color:#fff}.hb-pq small{color:rgba(255,255,255,.75)}
 .hb-pq .hb-clk{font-family:Unbounded,system-ui,sans-serif;font-weight:700;font-size:15px;letter-spacing:-.5px;margin-top:6px}
@@ -4685,7 +4685,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1024';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1025';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11441,7 +11441,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   function hbPl(n){ const l = curLang(); if (l === 'en') return n === 1 ? 'day streak' : 'day streak'; if (l === 'kk') return 'күн қатарынан'; const a = n % 10, b = n % 100; return a === 1 && b !== 11 ? 'день подряд' : (a >= 2 && a <= 4 && (b < 12 || b > 14)) ? 'дня подряд' : 'дней подряд'; }
   function hbRow(h){
     const dn = hbDone(h), v = hbVal(h), g = h.g || 1, st = hbStreak(h), pct = dn ? 100 : Math.round(Math.min(1, v / g) * 100);
-    return `<div class="hb-r${dn ? ' dn' : ''}" style="--hc:${HBC[h.c] || HBC.g}" data-act="habopen" data-id="${h.id}"><div class="hb-f" style="--p:${pct}%"></div><div class="hb-in"><span class="hb-e">${h.e}</span><div class="hb-t"><b>${esc(h.t)}</b><small>${g > 1 ? v + ' из ' + g + (h.u ? ' ' + esc(h.u) : '') : esc(h.u || 'раз в день')}</small></div>${st ? `<span class="hb-fl">🔥${st}</span>` : ''}<button type="button" class="hb-ck" data-act="habchk" data-id="${h.id}" aria-label="Отметить">${HCK}</button></div></div>`;
+    return `<div class="hb-r${dn ? ' dn' : ''}" style="--hc:${HBC[h.c] || HBC.g}" data-act="habopen" data-id="${h.id}"><div class="hb-f" style="--s:${pct / 100}"></div><div class="hb-in"><span class="hb-e">${h.e}</span><div class="hb-t"><b>${esc(h.t)}</b><small>${g > 1 ? v + ' из ' + g + (h.u ? ' ' + esc(h.u) : '') : esc(h.u || 'раз в день')}</small></div>${st ? `<span class="hb-fl">🔥${st}</span>` : ''}<button type="button" class="hb-ck" data-act="habchk" data-id="${h.id}" aria-label="Отметить">${HCK}</button></div></div>`;
   }
   function viewHab(){
     const L = hbList(), D = L.filter(h => h.k !== 'quit'), Q = L.filter(h => h.k === 'quit'), nd = D.filter(h => hbDone(h)).length, dt = new Date();
@@ -11475,7 +11475,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     const N = HBN, q = N.k === 'quit', ti = document.getElementById('hb-t'); if (ti && keep) N.t = ti.value;
     const tpl = HBT.filter(x => x[3] === N.k);
     openSheet(`<div class="hb-sh"><h2>Новая привычка</h2><div class="cap">Выбери тип и настрой за полминуты</div>
-    <div class="hb-r dn pv" style="--hc:${HBC[N.c] || HBC.g}"><div class="hb-f" style="--p:100%"></div><div class="hb-in"><span class="hb-e">${N.e}</span><div class="hb-t"><b>${esc(N.t) || (q ? 'Без сладкого' : 'Читать 20 минут')}</b><small>${q ? 'бросаю' : N.g > 1 ? N.g + ' раз в день' : 'раз в день'}</small></div></div></div>
+    <div class="hb-r dn pv" style="--hc:${HBC[N.c] || HBC.g}"><div class="hb-f" style="--s:1"></div><div class="hb-in"><span class="hb-e">${N.e}</span><div class="hb-t"><b>${esc(N.t) || (q ? 'Без сладкого' : 'Читать 20 минут')}</b><small>${q ? 'бросаю' : N.g > 1 ? N.g + ' раз в день' : 'раз в день'}</small></div></div></div>
     <div class="hb-seg"><button type="button" class="${q ? '' : 'on'}" data-act="habty" data-k="do">Делать</button><button type="button" class="${q ? 'on' : ''}" data-act="habty" data-k="quit">Бросить</button></div>
     <div class="hb-lb">Быстрый выбор</div><div class="hb-ch">${tpl.map((x, i) => `<button type="button" data-act="habtpl" data-i="${HBT.indexOf(x)}">${x[1]} <span>${x[0]}</span></button>`).join('')}</div>
     <input class="hb-in" id="hb-t" maxlength="40" placeholder="${q ? 'Например: без сладкого' : 'Например: читать 20 минут'}" value="${esc(N.t)}">
