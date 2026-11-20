@@ -5282,7 +5282,7 @@ window.DKG = DKG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1113';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1114';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10457,9 +10457,9 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     g.draw = c => {
       c.save(); shk(c, g); c.fillStyle = '#06291d'; c.fillRect(0, 0, W, H);
       if (g.ph === 'menu') { c.fillStyle = '#0b3a2a'; c.fillRect(0, 0, W, H); bg2(c, 'rgba(60,200,140,.35)', .3); lvDraw2(c, g, {title: 'Дурак', sub: 'Против бота', lv: DKLV, note: 'Победы копят очки серии. Проигрыш — серия обнуляется'}); c.restore(); return; }
-      const L = lay(); c.fillStyle = C.mu; c.font = '700 13px ' + C.ff; c.textAlign = 'center'; c.fillText(DKLV[g.lvl][0].toUpperCase() + ' · СЕРИЯ ' + g.score, W / 2, 44);
+      const L = lay(); c.fillStyle = C.mu; c.font = '700 13px ' + C.ff; c.textAlign = 'center'; c.fillText(DKLV[g.lvl][0].toUpperCase() + ' · СЕРИЯ ' + g.score, W / 2, 20);
       c.save(); c.translate(L.ox, L.oy); c.scale(L.sc, L.sc); if (g.st) DKG.draw(c, view(), g.A, g.t, Math.min(.05, g.dt || .016)); c.restore();
-      if (g.ph === 'play' && !g.res && g.st && DKG.who(g.st) === 1) thinkDots(c, g, W / 2, 68);
+      if (g.ph === 'play' && !g.res && g.st && DKG.who(g.st) === 1) thinkDots(c, g, W / 2, 54);
       drawFx(c, g);
       if (g.ph === 'over') { const win = g.res && g.res.k === 'win'; c.globalAlpha = .78; c.fillStyle = C.bg; rr(c, W / 2 - 150, H / 2 - 70, 300, 140, 22); c.fill(); c.globalAlpha = 1; c.fillStyle = C.tx; c.font = '800 26px ' + C.ff; c.fillText(win ? 'Победа!' : 'Ничья', W / 2, H / 2 - 12); c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.fillText(win ? '+' + g.pts + ' · серия ' + g.score : 'Серия сохранена', W / 2, H / 2 + 16); c.fillText('Тап — ещё партия', W / 2, H / 2 + 46); }
       c.restore(); };
