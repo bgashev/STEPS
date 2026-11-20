@@ -5280,7 +5280,7 @@ window.DKG = DKG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1106';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1107';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11303,22 +11303,34 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
         g.co.forEach(q => { if (!q.got && Math.abs(nrm(a - q.a)) < .26) { q.got = 1; g.score += 3; sfx('spark', g.lv); bstP(g, PX() + Math.cos(g.rot + q.a) * (R() + 10), PY() + Math.sin(g.rot + q.a) * (R() + 10), 12, GD, 130); popT(g, PX(), PY() + R() + 34, '+3', GD); } });
         g.st.push(a); g.fly = null; g.score++; g.bump = 1; sfx('thunk'); sfx('ding', g.need - g.left); bstP(g, PX(), PY() + R(), 7, C.mu, 90);
         if (g.left <= 0) { g.brk = .8; g.score += 5; sfx('perfect', 2); g.sh = .5; bstP(g, PX(), PY(), 34, C.ac, 260); bstP(g, PX(), PY(), 18, C.tx, 200); popT(g, PX(), PY() - R() - 22, 'Блин сдан! +5', C.gr); } } } };
-    g.draw = c => { c.save(); shk(c, g, 8); drawStars(c, g, g.t * 20); const x = PX(), y = PY(), r = R(), br = g.brk > 0 ? g.brk / .8 : 1;
+    const DC = ['#ff4d6d', '#ffd24a', '#4cd98a', '#5ab0ff', '#c77dff'], hsl = (h, sa, l) => 'hsl(' + ((h % 360 + 360) % 360) + ',' + sa + '%,' + l + '%)';
+    const dartDraw = (c, col, ln) => { /* остриё в (0,0), хвост вниз по +y */
+      c.lineCap = 'round'; c.strokeStyle = '#dfe6f2'; c.lineWidth = 3; c.beginPath(); c.moveTo(0, 6); c.lineTo(0, ln - 12); c.stroke();
+      c.fillStyle = '#f4f7ff'; c.beginPath(); c.moveTo(0, -2); c.lineTo(-2.6, 8); c.lineTo(2.6, 8); c.closePath(); c.fill();
+      c.strokeStyle = col; c.lineWidth = 6.5; c.beginPath(); c.moveTo(0, 12); c.lineTo(0, 24); c.stroke();
+      c.fillStyle = col; c.beginPath(); c.moveTo(0, ln - 18); c.lineTo(-10, ln + 3); c.lineTo(0, ln - 3); c.lineTo(10, ln + 3); c.closePath(); c.fill();
+      c.fillStyle = 'rgba(255,255,255,.35)'; c.beginPath(); c.moveTo(0, ln - 18); c.lineTo(-4, ln - 3); c.lineTo(0, ln - 6); c.closePath(); c.fill(); };
+    g.draw = c => { c.save(); shk(c, g, 8); const hu = (g.lv * 47 + 215) % 360; bg2(c, hsl(hu, 70, 38), .5); drawStars(c, g, g.t * 20); const x = PX(), y = PY(), r = R(), br = g.brk > 0 ? g.brk / .8 : 1, TT = g.t;
       c.save(); c.translate(x, y + g.bump * 4); const sc = (1 + g.bump * .045) * (g.brk > 0 ? 1 + (1 - br) * .5 : 1); c.scale(sc, sc); c.globalAlpha = br;
-      glow(c, 0, 0, r * 1.5, C.ac, .18); c.rotate(g.rot);
-      c.fillStyle = C.s2; c.strokeStyle = C.ac; c.lineWidth = 4; c.beginPath(); c.arc(0, 0, r, 0, 7); c.fill(); c.stroke();
-      c.lineWidth = 1.5; c.globalAlpha = br * .45; [r * .8, r * .55].forEach(q => { c.beginPath(); c.arc(0, 0, q, 0, 7); c.stroke(); }); c.globalAlpha = br;
-      for (let i = 0; i < 24; i++) { const a = i * TW2 / 24; c.strokeStyle = C.bd; c.lineWidth = i % 2 ? 1.5 : 3; c.beginPath(); c.moveTo(Math.cos(a) * (r - 4), Math.sin(a) * (r - 4)); c.lineTo(Math.cos(a) * (r - 13), Math.sin(a) * (r - 13)); c.stroke(); }
-      c.fillStyle = C.bg; c.beginPath(); c.arc(0, 0, r * .2, 0, 7); c.fill(); c.strokeStyle = C.ac; c.lineWidth = 2; c.stroke();
-      c.fillStyle = C.tx; c.font = '800 ' + Math.round(r * .26) + 'px ' + C.ff; c.textAlign = 'center'; c.fillText(5 + g.lv * 5, 0, r * .55);
-      g.st.forEach(a => { c.save(); c.rotate(a); c.strokeStyle = C.tx; c.lineWidth = 4; c.lineCap = 'round'; c.beginPath(); c.moveTo(r - 12, 0); c.lineTo(r + LEN, 0); c.stroke(); c.fillStyle = C.ac; c.beginPath(); c.arc(r + LEN, 0, 7, 0, 7); c.fill(); c.restore(); });
-      g.co.forEach(q => { if (q.got) return; c.save(); c.rotate(q.a); c.translate(r + 10, 0); c.fillStyle = GD; c.globalAlpha = br * .3; c.beginPath(); c.arc(0, 0, 14, 0, 7); c.fill(); c.globalAlpha = br; c.beginPath(); c.arc(0, 0, 8, 0, 7); c.fill(); c.strokeStyle = '#fff'; c.lineWidth = 1.5; c.globalAlpha = br * .7; c.beginPath(); c.arc(0, 0, 4.5, .5, 2.6); c.stroke(); c.restore(); });
+      glow(c, 0, 0, r * 1.8, hsl(hu, 85, 58), .3 + g.bump * .2); c.rotate(g.rot);
+      c.shadowColor = hsl(hu, 90, 60); c.shadowBlur = 22; c.fillStyle = '#1a1530'; c.beginPath(); c.arc(0, 0, r + 8, 0, 7); c.fill(); c.shadowBlur = 0;
+      c.strokeStyle = hsl(hu, 90, 68); c.lineWidth = 3; c.beginPath(); c.arc(0, 0, r + 8, 0, 7); c.stroke();
+      for (let i = 0; i < 20; i++) { const a = i * TW2 / 20, on = .5 + .5 * Math.sin(TT * 5 - i * .6); c.fillStyle = hsl(hu + 40, 100, 62 + on * 22); c.globalAlpha = br * (.45 + on * .55); c.beginPath(); c.arc(Math.cos(a) * (r + 8), Math.sin(a) * (r + 8), 2.2, 0, 7); c.fill(); } c.globalAlpha = br;
+      const c1 = hsl(hu, 78, 56), c2 = hsl(hu + 150, 55, 28), c3 = hsl(hu + 40, 85, 62), c4 = hsl(hu + 190, 60, 36), bands = [[.8, 1], [.55, .8], [.22, .55]];
+      for (let i = 0; i < 20; i++) { const a0 = i * TW2 / 20, a1 = a0 + TW2 / 20; bands.forEach((b, bi) => { const odd = (i + bi) % 2; c.fillStyle = bi === 1 ? (odd ? c3 : c4) : (odd ? c1 : c2); c.beginPath(); c.arc(0, 0, r * b[1], a0, a1); c.arc(0, 0, r * b[0], a1, a0, true); c.closePath(); c.fill(); }); }
+      c.strokeStyle = 'rgba(20,14,40,.55)'; c.lineWidth = 1.4; [1, .8, .55, .22].forEach(q => { c.beginPath(); c.arc(0, 0, r * q, 0, 7); c.stroke(); });
+      for (let i = 0; i < 20; i++) { const a = i * TW2 / 20; c.beginPath(); c.moveTo(Math.cos(a) * r * .22, Math.sin(a) * r * .22); c.lineTo(Math.cos(a) * r, Math.sin(a) * r); c.stroke(); }
+      const bl = c.createRadialGradient(-r * .05, -r * .05, 1, 0, 0, r * .22); bl.addColorStop(0, '#fff6c2'); bl.addColorStop(.5, '#ffd24a'); bl.addColorStop(1, '#ff5468'); c.fillStyle = bl; c.beginPath(); c.arc(0, 0, r * .22, 0, 7); c.fill(); c.strokeStyle = '#fff'; c.lineWidth = 1.6; c.globalAlpha = br * .8; c.stroke(); c.globalAlpha = br;
+      c.save(); c.rotate(-g.rot); c.fillStyle = '#fff'; c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 6; c.font = '900 ' + Math.round(r * .2) + 'px ' + C.ff; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(5 + g.lv * 5, 0, 1); c.restore(); c.textBaseline = 'alphabetic';
+      g.st.forEach((a, i) => { c.save(); c.rotate(a); c.fillStyle = 'rgba(0,0,0,.28)'; c.beginPath(); c.arc(r - 8, 0, 5, 0, 7); c.fill(); c.translate(r - 10, 0); c.rotate(-Math.PI / 2); dartDraw(c, DC[i % 5], LEN + 10); c.restore(); });
+      g.co.forEach(q => { if (q.got) return; const pu = 1 + .12 * Math.sin(TT * 6 + q.a * 3); c.save(); c.rotate(q.a); c.translate(r + 14, 0); c.scale(pu, pu); c.shadowColor = GD; c.shadowBlur = 16; c.fillStyle = GD; c.beginPath(); for (let k = 0; k < 10; k++) { const rad = k % 2 ? 6 : 13, an = k * Math.PI / 5 - Math.PI / 2; c.lineTo(Math.cos(an) * rad, Math.sin(an) * rad); } c.closePath(); c.fill(); c.shadowBlur = 0; c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.arc(-2, -3, 2.4, 0, 7); c.fill(); c.restore(); });
       c.restore();
-      const dart = (dx, dy) => { c.strokeStyle = C.tx; c.lineWidth = 4; c.lineCap = 'round'; c.beginPath(); c.moveTo(dx, dy); c.lineTo(dx, dy + LEN); c.stroke(); c.fillStyle = C.ac; c.beginPath(); c.arc(dx, dy + LEN, 7, 0, 7); c.fill(); };
-      if (g.fly) dart(x, g.fly.y); else if (g.left > 0 && !g.dead && g.brk <= 0) dart(x, SY());
-      g.fall.forEach(f => { c.save(); c.translate(f.x, f.y); c.rotate(f.r); c.strokeStyle = C.rd; c.lineWidth = 4; c.lineCap = 'round'; c.beginPath(); c.moveTo(0, 0); c.lineTo(0, LEN); c.stroke(); c.restore(); });
-      for (let i = 0; i < g.need; i++) { c.globalAlpha = i < g.left ? 1 : .2; c.fillStyle = C.tx; rr(c, 16 + i * 13, H - 50, 5, 26, 2.5); c.fill(); c.fillStyle = C.ac; c.beginPath(); c.arc(18.5 + i * 13, H - 22, 3.6, 0, 7); c.fill(); } c.globalAlpha = 1;
-      c.textAlign = 'right'; c.fillStyle = C.mu; c.font = '700 13px ' + C.ff; c.fillText('Блин ' + (g.lv + 1), W - 16, H - 28);
+      const di = g.need - g.left - (g.fly ? 0 : 0), col = DC[(g.st.length + 1) % 5];
+      if (g.fly) { const fy = g.fly.y, tg = c.createLinearGradient(0, fy + LEN, 0, fy + LEN + 90); tg.addColorStop(0, col); tg.addColorStop(1, 'transparent'); c.globalAlpha = .55; c.fillStyle = tg; c.fillRect(x - 3, fy + LEN, 6, 90); c.globalAlpha = 1; c.save(); c.shadowColor = col; c.shadowBlur = 16; c.translate(x, fy); dartDraw(c, col, LEN); c.restore(); }
+      else if (g.left > 0 && !g.dead && g.brk <= 0) { const by = SY() + Math.sin(TT * 4) * 2.5; c.save(); c.strokeStyle = 'rgba(255,255,255,.18)'; c.setLineDash([3, 9]); c.lineDashOffset = -TT * 40; c.lineWidth = 2; c.beginPath(); c.moveTo(x, by - 10); c.lineTo(x, PY() + R() + 14); c.stroke(); c.restore(); c.save(); c.shadowColor = col; c.shadowBlur = 12; c.translate(x, by); dartDraw(c, col, LEN); c.restore(); }
+      g.fall.forEach(f => { c.save(); c.translate(f.x, f.y); c.rotate(f.r); dartDraw(c, C.rd, LEN); c.restore(); });
+      for (let i = 0; i < g.need; i++) { const on = i < g.left; c.globalAlpha = on ? 1 : .2; c.save(); c.translate(24 + i * 17, H - 50); c.scale(.55, .55); dartDraw(c, DC[i % 5], 38); c.restore(); } c.globalAlpha = 1;
+      c.textAlign = 'right'; c.fillStyle = hsl(hu, 80, 75); c.font = '800 14px ' + C.ff; c.fillText('Блин ' + (g.lv + 1), W - 16, H - 28);
       drawFx(c, g); if (!g.score && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — бросок. Не попади в другой гриф', W / 2, H * .66); } c.restore(); };
     return g; }
 
