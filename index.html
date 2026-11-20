@@ -2372,7 +2372,7 @@ html.web .ib.shim:has(.ibl){width:auto;padding:0 18px 0 14px;gap:8px;display:inl
 .gp.gprem::before{content:'';position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,236,170,.28) 50%,transparent 65%);transform:translateX(-120%);animation:skm 3.8s ease-in-out infinite;pointer-events:none}
 .gp.gprem .gi{filter:drop-shadow(0 4px 8px rgba(233,169,42,.35))}
 .gp u.prot{position:absolute;top:4px;right:4px;text-decoration:none;font-style:normal;font-size:7.5px;font-weight:850;letter-spacing:.06em;padding:2px 4px;border-radius:999px;background:linear-gradient(120deg,#F5B23C,#FFE08A);color:#3a2600}
-.gcf{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:24px;background:color-mix(in srgb,var(--bg) 45%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);animation:gcfBg .3s ease both}
+.gcf{position:fixed;inset:0;z-index:9720;display:grid;place-items:center;padding:24px;background:color-mix(in srgb,var(--bg) 45%,transparent);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);animation:gcfBg .3s ease both}
 .gcf.out{animation:gcfOut .25s ease both}
 .gcf-box{width:min(320px,100%);text-align:center;padding:22px 18px 16px;border-radius:26px;background:var(--surface);border:1px solid var(--border);box-shadow:0 24px 60px rgba(0,0,0,.35);animation:gcfBox .5s cubic-bezier(.22,.61,.36,1) both}
 .gcf-art{width:84px;height:84px;margin:0 auto 8px}.gcf-art svg{width:100%;height:100%;display:block}
@@ -4328,7 +4328,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.979';
+const APP = 'VOOB (by BGASHEV) Mini App v1.980';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9253,7 +9253,7 @@ const REST = (function(){
       g.sn = [{x: cx, y: cy}, {x: cx - 1, y: cy}, {x: cx - 2, y: cy}]; g.prev = g.sn.map(c => ({x: c.x, y: c.y})); g.dir = {x: 1, y: 0}; g.dq = []; g.acc = 0; g.started = false; g.it = []; g.rk = []; g.apples = 0; g.stg = 0; g.grow = 0; g.slow = 0; g.ghost = 0; g.combo = 0; g.lastEat = -9; g.sb = null; g.fl = 0; g.sx = 0; g.sy = 0; g.sgs = 0; sp('a'); };
     const dirOf = k => k === 'ArrowLeft' ? {x: -1, y: 0} : k === 'ArrowRight' ? {x: 1, y: 0} : k === 'ArrowUp' ? {x: 0, y: -1} : {x: 0, y: 1};
     const push = d => { g.started = true; const last = g.dq.length ? g.dq[g.dq.length - 1] : g.dir; if ((d.x === last.x && d.y === last.y) || (d.x === -last.x && d.y === -last.y)) return; if (g.dq.length < 2) g.dq.push(d); };
-    g.tap = () => {}; g.down = (x, y) => { g.sx = x; g.sy = y; }; g.key = k => push(dirOf(k));
+    g.dk = 1; g.tap = () => {}; g.down = (x, y) => { g.sx = x; g.sy = y; }; g.key = k => push(dirOf(k));
     g.move = (x, y) => { const dx = x - g.sx, dy = y - g.sy, ax = Math.abs(dx), ay = Math.abs(dy), last = g.dq.length ? g.dq[g.dq.length - 1] : g.dir;   // v1.931: боковой «дрейф» пальца больше не даёт случайных поворотов
       if (Math.max(ax, ay) < 26 || Math.max(ax, ay) < 1.5 * Math.min(ax, ay)) return;
       const d = ax > ay ? {x: dx > 0 ? 1 : -1, y: 0} : {x: 0, y: dy > 0 ? 1 : -1}; g.sx = x; g.sy = y; if ((d.x === last.x && d.y === last.y) || (d.x === -last.x && d.y === -last.y)) return; push(d); };
@@ -9784,7 +9784,8 @@ const REST = (function(){
     gm.querySelector('[data-r="gback"]').addEventListener('click', () => { hap.tap(); if (apps) { close(); return; } stopGame(); if (el) { el.style.display = ''; render(); } });
     gm.querySelector('[data-r="grk"]').addEventListener('click', () => { hap.tap(); openRank(); });
     gm.querySelector('[data-r="gmin"]').addEventListener('click', () => { hap.tap(); stopGame(); min = true; render(); });
-    keyH = e => { if (G && (e.code === 'Space' || e.code === 'ArrowUp')) { e.preventDefault(); gtap(); } else if (G && G.key && !G.dead && cd <= 0 && /^Arrow/.test(e.code)) { e.preventDefault(); G.key(e.code); } }; document.addEventListener('keydown', keyH);
+    keyH = e => { let c = e.code; if (G && G.dk && !e.ctrlKey && !e.metaKey && !e.altKey) c = ({KeyW: 'ArrowUp', KeyA: 'ArrowLeft', KeyS: 'ArrowDown', KeyD: 'ArrowRight'})[c] || c;   /* v1.980: Змейка — WASD дублирует стрелки, «вверх» больше не уходит в tap */
+      if (G && (c === 'Space' || (c === 'ArrowUp' && !(G.dk && !G.dead)))) { e.preventDefault(); gtap(); } else if (G && G.key && !G.dead && cd <= 0 && /^Arrow/.test(c)) { e.preventDefault(); G.key(c); } }; document.addEventListener('keydown', keyH);
     paint(left()); beatLoop(GAMES[i].k);
   }
   /* v1.861: рейтинг друзей в игре */
