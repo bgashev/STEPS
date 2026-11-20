@@ -4470,6 +4470,23 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .a-h{background:linear-gradient(150deg,#b9a4ff,#6d4fe6)}
 .ax-hint{margin:-4px 4px 12px;color:var(--muted);font-size:12.5px}
 .ax-bt.bh{background:linear-gradient(160deg,#6d4fe6,#1d2f6b 70%,#0e5a55);border-color:rgba(170,150,255,.32);color:#fff}.ax-bt.bh .hbring{position:absolute;right:10px;top:46px;width:64px;height:64px;opacity:.9}.ax-bt.bh .z2{position:absolute;left:14px;right:14px;bottom:13px}.ax-bt.bh .big{font-size:34px}.ax-bt.bh .big i{color:rgba(255,255,255,.75)}.ax-bt.bh small{display:block;margin-top:5px;font-size:11.5px;opacity:.85;font-weight:600}
+.ax-bt.bhw{justify-content:space-between}.ax-bt.bhw .h{position:relative;z-index:1}
+.bhm{position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:6px}.bhm small{margin:0 0 3px;white-space:nowrap}
+.bhf{display:inline-flex;align-items:center;gap:3px;font-weight:800;font-size:13px;background:rgba(0,0,0,.2);border-radius:12px;padding:3px 8px 3px 6px;margin-bottom:3px}.bhf svg{width:14px;height:14px}
+.bhd{position:relative;z-index:1;display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.bhd .d{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:700;line-height:1}.bhd .d span{color:rgba(255,255,255,.55);text-transform:uppercase}.bhd .d.td span{color:#fff}
+.bhd .p{width:100%;height:24px;border-radius:9px;background:rgba(255,255,255,.14);position:relative;overflow:hidden}
+.bhd .p u{position:absolute;left:0;right:0;bottom:0;height:var(--f);background:#fff;border-radius:9px;text-decoration:none;animation:bhgrow .8s cubic-bezier(.2,.9,.25,1) both}
+@keyframes bhgrow{from{height:0}}
+.bhd .d.fu .p{background:rgba(255,255,255,.07)}
+.bhd .d.td .p{overflow:visible;box-shadow:0 0 0 2px #fff}.bhd .d.td .p u{border-radius:9px}
+.bhd .d.td.pu .p{animation:bhpu 2s ease-in-out infinite}
+@keyframes bhpu{50%{box-shadow:0 0 0 4px rgba(255,255,255,.35)}}
+.bhd .d.td.dn .p{box-shadow:0 0 0 2px #fff,0 0 16px rgba(255,255,255,.65)}
+.bhd .d.em .p{background:transparent;border:1.5px dashed rgba(255,255,255,.4)}
+.bhd .d.td.em .p{border:1.5px solid #fff;box-shadow:none;animation:bhpu 2s ease-in-out infinite}
+.bhd .d.td.em .p::after{content:"+";position:absolute;inset:0;display:grid;place-items:center;font-size:15px;font-weight:800}
+@media (prefers-reduced-motion:reduce){.bhd .p,.bhd .p u{animation:none!important}}
 .ax-bn.hx{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
 .ax-bn.hx .ax-bt{grid-row:auto;grid-column:auto;min-height:0;aspect-ratio:1/.92;padding:14px;transition:transform .38s cubic-bezier(.2,.9,.25,1),box-shadow .3s,opacity .3s;will-change:transform;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:pan-y}
 .ax-bn.hx .ax-bt.lift{transition:box-shadow .3s,opacity .3s;z-index:10;box-shadow:0 26px 50px -14px rgba(0,0,0,.65),0 0 0 1.5px rgba(255,255,255,.35);touch-action:none}
@@ -4533,6 +4550,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 @media(max-width:1100px){html.web .gw{grid-template-columns:1fr}html.web .gw-grid{grid-template-columns:repeat(3,1fr)}html.web .gw-soon{grid-template-columns:1fr}html.web .gw-img{width:170px;height:170px}}
 .nt-rings{display:flex;flex:none;position:relative}.nt-rings i{width:30px;height:30px;border-radius:50%;border:4px solid var(--text);display:block;animation:ntorb 3.2s ease-in-out infinite}.nt-rings i+i{margin-left:-10px;border-color:var(--accent);animation-delay:-1.6s;transition:margin-left .55s cubic-bezier(.3,1.5,.5,1)}@keyframes ntorb{0%,100%{transform:translateX(0)}50%{transform:translateX(-4px)}}
 
+/* v1.1014: карточка «Привычки» — «Неделя» (число, серия, 7 дней с прогрессом сегодня) */
 /* v1.1013: «Кого позвать?» — кнопка без имени («Позвать в игру») */
 /* v1.1012: кнопка «Пригласить» — «Орбита» (бегущий свет по рамке, кольца, стрелка), компактная, короткие тексты */
 /* v1.1011: «Кого позвать?» — крупный лист, выбор одного друга, кнопка «Позвать X в игру», плашки 60px */
@@ -4571,7 +4589,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1013';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1014';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11043,7 +11061,18 @@ const AX = (function(){
       wt: `<div data-k="wt" class="ax-bt bwt" data-act="appweight">${wspark}<div class="h"><span class="ax-at sm a-wt">${IC('scale', 18)}</span>Вес</div><div class="big">${wlast ? f1(wlast.kg) : '—'}<i> ${wlast ? 'кг' : 'добавь первый'}</i></div><small class="wsm">${wlast ? 'последнее взвешивание' : 'следи за динамикой'}</small></div>`,
       g: `<div data-k="g" class="ax-bt bg" data-act="appopen" data-s="games">${gtiles}<div class="h"><span class="ax-at sm a-g">${AI('pad', 18)}</span><span class="n">${GL.length || 12} игр</span></div><div class="gt">Игры<small>играть →</small></div></div>`,
       s: `<div data-k="s" class="ax-bt bs" data-act="appopen" data-s="shop">${shopArt}<div class="h"><span class="ax-at sm a-s">${AI('shop', 18)}</span><span class="n">рамки · фоны · комплекты</span></div><div class="gt">Магазин<small>выбрать →</small></div></div>`,
-      h: (() => { let nd = 0, n = 0, bs = 0; try { const D = hbList().filter(x => x.k !== 'quit'); n = D.length; nd = D.filter(x => hbDone(x)).length; bs = hbList().reduce((m, x) => Math.max(m, x.k === 'quit' ? hbDays(x) : hbStreak(x)), 0); } catch (e) {} const C = 2 * Math.PI * 40, off = n ? C * (1 - nd / n) : C; return `<div data-k="h" class="ax-bt bh" data-act="appopen" data-s="hab"><svg class="hbring" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="9"/><circle cx="50" cy="50" r="40" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 50 50)"/><path d="M33 51l12 12 22-26" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="h"><span class="ax-at sm a-h">${AI('hab', 18)}</span>Привычки</div><div class="z2">${n ? `<div class="big">${nd}<i> из ${n}</i></div><small>${bs ? '🔥 ' + bs + ' дн.' : 'сегодня'}</small>` : `<div class="big">—</div><small>заведи первую</small>`}</div></div>`; })()
+      h: (() => { let nd = 0, n = 0, bs = 0, days = ''; try {
+        const D = hbList().filter(x => x.k !== 'quit'); n = D.length; nd = D.filter(x => hbDone(x)).length;
+        bs = hbList().reduce((m, x) => Math.max(m, x.k === 'quit' ? hbDays(x) : hbStreak(x)), 0);
+        const t0 = todayN(), ti = (new Date(t0 * 864e5).getUTCDay() + 6) % 7, loc = ({ru:'ru-RU', en:'en-GB', kk:'kk-KZ'})[curLang()] || 'ru-RU';
+        for (let i = 0; i < 7; i++) {
+          const dn = t0 - ti + i, iso = isoOf(dn), td = i === ti, fu = i > ti;
+          const act = D.filter(x => (x.s || 0) < (dn + 1) * 864e5), f = !fu && act.length ? act.filter(x => hbDone(x, iso)).length / act.length : 0;
+          const lt = new Date(dn * 864e5).toLocaleDateString(loc, {weekday:'narrow', timeZone:'UTC'});
+          const cls = 'd' + (td ? ' td' : '') + (fu ? ' fu' : '') + (!n ? ' em' : td && nd >= n ? ' dn' : td ? ' pu' : '');
+          days += `<div class="${cls}"><div class="p">${f > 0 ? `<u style="--f:${Math.round((td ? (n ? nd / n : 0) : f) * 100)}%"></u>` : ''}</div><span>${lt}</span></div>`;
+        }
+      } catch (e) {} return `<div data-k="h" class="ax-bt bh bhw" data-act="appopen" data-s="hab"><div class="h"><span class="ax-at sm a-h">${AI('hab', 18)}</span>Привычки</div><div class="bhm">${n ? `<div class="big">${nd}<i> из ${n}</i></div>${bs ? `<span class="bhf"><svg viewBox="0 0 24 24"><defs><linearGradient id="bhfg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff7a1a"/><stop offset="1" stop-color="#ffd24a"/></linearGradient></defs><path fill="url(#bhfg)" d="M12 2c1 3.2 4.6 5 4.6 9.6A4.6 4.6 0 0112 16.2a4.6 4.6 0 01-4.6-4.6c0-1.6.6-2.6 1.4-3.6.4 1.1 1 1.6 1.7 1.8C10.2 7 10.6 4 12 2zM12 21.5a6.5 6.5 0 01-6.5-6.5c0-1.4.4-2.5 1-3.4.2 1.8 1.5 3.4 3.4 3.4 1.6 0 2.7-1 3.1-2.4.8.9 2.5 1.8 2.5 3.8a6.5 6.5 0 01-3.5 5.1z" transform="scale(.9) translate(1.3 1)"/></svg>${bs}</span>` : ''}` : `<div class="big">—</div><small>заведи первую</small>`}</div><div class="bhd">${days}</div></div>`; })()
     };
     const hubTiles = () => hubOrder().map(k => hubT[k]).join('');
     return `<div class="ax-sh"><div class="ax-st">Приложения</div><div class="ax-ss">всё под рукой — без лишних вкладок</div>
