@@ -4252,7 +4252,7 @@ html.web .gmx .ax-gg{grid-template-columns:repeat(auto-fill,minmax(176px,1fr))}
 .shp-sub button{font:inherit;font-size:12.5px;font-weight:700;border:0;background:transparent;color:var(--muted);border-radius:99px;padding:7px 16px;cursor:pointer;transition:.2s}
 .shp-sub button.on{background:var(--accent);color:var(--bg)}
 .gm-net{display:none;flex-direction:column;align-items:center;gap:6px;padding:46px 16px;text-align:center;border:1px dashed var(--border);border-radius:20px;color:var(--muted)}.gm-net b{color:var(--text);font-size:16px}.gm-net small{font-size:12.5px}
-.s-game[data-g=n] .gm-net{display:flex}.s-game[data-g=n] .shp-grid.gm{display:none}
+.s-game[data-g=n] .shp-grid.gm.solo{display:none}.s-game[data-g=s] .shp-grid.gm.net{display:none}.s-game[data-g=all] .shp-grid.gm.net{margin-top:12px}
 .shp-sec.s-game{display:none}.shp-wrap[data-t=all] .s-game,.shp-wrap[data-t=game] .s-game{display:block}
 .shp-wrap[data-t=game] .s-fr,.shp-wrap[data-t=game] .s-bg,.shp-wrap[data-t=game] .s-kit,.shp-wrap[data-t=game] .s-mine{display:none}
 .shp-grid.gm{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px}
@@ -4460,7 +4460,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.998';
+const APP = 'VOOB (by BGASHEV) Mini App v1.999';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7190,10 +7190,10 @@ function shpSkySync(){   // v1.807: звёздное небо на ВСЮ стр
   } else if (e) { e.classList.remove('on'); setTimeout(() => { if (!e.classList.contains('on')) e.remove(); }, 550); }
 }
 function shopGames(){   // v1.883: PRO-игры за ⭐ навсегда
-  const L = REST.list().filter(x => x.pro), left = L.filter(x => !gameOwn(x.k)), p1 = SHOP.prices.game || 19, pa = SHOP.prices.games || 99;
+  const AL = REST.list(), NETL = [['ttt','Крестики-нолики'],['chk','Шашки'],['hl','Больше-меньше'],['golf','Гольф'],['sea','Морской бой'],['bil','Бильярд']], L = AL.filter(x => x.pro), left = L.filter(x => !gameOwn(x.k)), p1 = SHOP.prices.game || 19, pa = SHOP.prices.games || 99;
   const st = k => isPro() ? '<span class="shp-pr own">В PRO</span>' : gameOwn(k) ? '<span class="shp-pr own">Куплено</span>' : `<span class="shp-pr">⭐ ${p1}</span>`;
   const all = left.length ? (isPro() ? '' : `<button type="button" class="shp-c gmall" data-act="gbuyall"><div class="gm-ic">${IC('crown', 26)}</div><div class="gm-tx"><b>Все PRO-игры · ${left.length}</b><small>одной покупкой${left.length * p1 > pa ? ' · выгода ' + Math.round((1 - pa / (left.length * p1)) * 100) + '%' : ''}</small></div><span class="shp-pr">⭐ ${pa}</span></button>`) : `<div class="shp-c gmall own"><div class="gm-ic">${IC('check', 26)}</div><div class="gm-tx"><b>Все PRO-игры открыты</b><small>играй между подходами и в «Играх»</small></div></div>`;
-  return `<div class="shp-sub" role="tablist"><button type="button" class="on" data-act="shopsub" data-g="all">Все</button><button type="button" data-act="shopsub" data-g="s">Одиночные</button><button type="button" data-act="shopsub" data-g="n">По сети</button></div><div class="gm-net"><b>Игры по сети — скоро</b><small>Сыграй с другом в реальном времени. Уже в разработке</small></div><div class="shp-grid gm">${all}${L.map(g => `<button type="button" class="shp-c gm" data-act="shopgame" data-k="${g.k}"><div class="gm-th">${g.th}</div><b>${esc(g.n)}</b><div class="shp-row">${st(g.k)}${SHOP.prices.game ? `<span class="shp-gf" role="button" data-act="ggift" data-kind="game" data-k="${g.k}" data-n="${esc(g.n)}">Подарить</span>` : ''}</div></button>`).join('')}</div>`;
+  return `<div class="shp-sub" role="tablist"><button type="button" class="on" data-act="shopsub" data-g="all">Все</button><button type="button" data-act="shopsub" data-g="s">Одиночные</button><button type="button" data-act="shopsub" data-g="n">По сети</button></div><div class="shp-grid gm solo">${all}${AL.map(g => g.pro ? `<button type="button" class="shp-c gm" data-act="shopgame" data-k="${g.k}"><div class="gm-th">${g.th}</div><b>${esc(g.n)}</b><div class="shp-row">${st(g.k)}${SHOP.prices.game ? `<span class="shp-gf" role="button" data-act="ggift" data-kind="game" data-k="${g.k}" data-n="${esc(g.n)}">Подарить</span>` : ''}</div></button>` : `<button type="button" class="shp-c gm" data-act="shopfree"><div class="gm-th">${g.th}</div><b>${esc(g.n)}</b><div class="shp-row"><span class="shp-pr own">Бесплатно</span></div></button>`).join('')}</div><div class="shp-grid gm net">${NETL.map(g => `<button type="button" class="shp-c gm" data-act="shopfree"><div class="gm-th">${(window.NETCV && window.NETCV[g[0]]) || ''}</div><b>${g[1]}</b><div class="shp-row"><span class="shp-pr own">Бесплатно</span></div></button>`).join('')}</div>`;
 }
 function viewShop(){   // v1.782: «Магазин» (вариант «Журнал»), широкая сетка, везде твой аватар
   if (!SHOP.ok) loadShop().then(() => { if (SHOP.ok && document.querySelector('.shp-wrap')) render(); });
@@ -7227,7 +7227,7 @@ function viewShop(){   // v1.782: «Магазин» (вариант «Журн�
   <section class="shp-sec s-kit"><div class="shp-lab"><b>Комплекты</b><span>рамка и фон одного стиля${kp ? ' за ⭐ ' + kp + ' вместо ' + (SHOP.prices.frame + SHOP.prices.bg) : ''}</span></div><div class="shp-grid bg">${kits.map(kc).join('')}</div></section>
   <section class="shp-sec s-fr"><div class="shp-lab"><b>Рамки</b><span>двигаются и светятся, как в профиле</span></div><div class="shp-grid fr">${fr.map(fc).join('')}</div></section>
   <section class="shp-sec s-bg"><div class="shp-lab"><b>Фоны</b><span>карточка профиля целиком</span></div><div class="shp-grid bg">${bgs.map(bc).join('')}</div></section>
-  <section class="shp-sec s-game"><div class="shp-lab"><b>Игры</b><span>PRO-игры навсегда · без подписки</span></div>${shopGames()}</section>
+  <section class="shp-sec s-game"><div class="shp-lab"><b>Игры</b><span>Все игры VOOB · PRO-игры навсегда, без подписки</span></div>${shopGames()}</section>
   <section class="shp-sec s-mine"><div class="shp-lab"><b>Мои покупки</b><span>${isPro() ? 'всё остальное уже открыто в PRO' : 'остаются у тебя навсегда'}</span></div>${mineHTML}</section>
   <div class="shp-pro"><b>В VOOB PRO всё это открыто сразу</b></div></div>`;
 }
@@ -10621,6 +10621,7 @@ const ACT = {
   gwsel: el => gwSel(el.dataset.k),
   gsend: el => { const f = FR.data && FR.data.friends.find(x => x.tg_id === +el.dataset.id); if (!f) return; hap.tap(); giftConfirm(f, el.dataset.k); },
   gno: () => { hap.tap(); closeGc(); },
+  shopfree: () => { toast('Эта игра бесплатная для всех'); },
   shopgame: el => { const k = el.dataset.k; if (gameOwn(k)) { toast('Эта игра уже у тебя'); return; } gameBuy(k); },
   gbuy: el => { shopBuy('game', el.dataset.k, el.dataset.n); },
   ggift: el => { gameGift(el.dataset.kind || 'game', el.dataset.k, el.dataset.n); },
