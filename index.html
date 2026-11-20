@@ -4416,10 +4416,11 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 .nt-wr circle{fill:none;stroke-width:4}.nt-wr circle:first-child{stroke:var(--surface2)}.nt-wc{stroke:var(--accent);stroke-linecap:round;stroke-dasharray:440;animation:ntwc 60s linear both}
 @keyframes ntwc{to{stroke-dashoffset:440}}
 .nt-wt{font-size:19px;font-weight:800}.nt-ws{font-size:12px;color:var(--muted);margin:6px 0 26px}.nt-ct .nt-btn{padding:12px 26px}
-.nt-cap{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px) + 10px);margin:0 0 0 -134px;width:268px;height:56px;z-index:9995;display:flex;align-items:center;gap:10px;background:#0b0b0e;color:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:0 18px 0 8px;text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.28);animation:ntcap .65s cubic-bezier(.3,1.4,.5,1) both}
+.nt-cap{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px) + 10px);margin:0 0 0 -148px;width:296px;height:56px;z-index:9995;display:flex;align-items:center;gap:10px;background:#0b0b0e;color:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:0 18px 0 8px;text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.28);animation:ntcap .65s cubic-bezier(.3,1.4,.5,1) both}
 @keyframes ntcap{from{transform:translateY(-90px) scale(.5);opacity:0}}
 .nt-cap.out{transition:.3s;transform:translateY(-90px) scale(.6);opacity:0}
 .nt-cap .nt-ct2{flex:1;min-width:0}.nt-cap b{display:block;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-capx{flex:none;width:32px;height:32px;margin-right:-8px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.1);color:rgba(255,255,255,.85);font-size:14px;line-height:1;cursor:pointer;transition:background .2s,transform .15s}.nt-capx:active{transform:scale(.88);background:rgba(255,255,255,.2)}
 .nt-capa{position:relative;width:44px;height:44px;flex:none;display:grid;place-items:center}
 .nt-ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.nt-ring circle{fill:none;stroke-width:1.5;stroke-linecap:round}.nt-ring .tr{stroke:rgba(255,255,255,.12)}.nt-ring .pr{stroke:rgba(255,255,255,.88);stroke-dasharray:125.7;animation:ntrg 60s linear both}
 @keyframes ntrg{to{stroke-dashoffset:125.7}}
@@ -4958,7 +4959,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1065';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1066';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -13188,10 +13189,11 @@ const NET = (() => {
   function cancel(){ const o = N.out; N.out = null; N.pref = null; if (!N.room) closeOv(); if (o) apiAuth('/net/cancel', {id:o.id}).catch(() => {}); }
   /* ---------- приглашение: капсула и карточка друга ---------- */
   function hideCap(){ const c = N.cap; N.cap = null; clearTimeout(N.capT); if (c && c.el) { c.el.classList.add('out'); setTimeout(() => c.el.remove(), 320); } }
+  function declineCap(){ const c = N.cap; if (!c) return; hap.tap(); hideCap(); apiAuth('/net/respond', {id:+c.inv.id, accept:false}).catch(() => {}); }
   function showCap(inv){
     hideCap(); const left = Math.max(4, 60 - inv.age);
     const d = document.createElement('div'); d.className = 'nt-cap'; d.dataset.nt = 'cap';
-    d.innerHTML = `<span class="nt-capa">${av(inv.from, 32)}<svg class="nt-ring" viewBox="0 0 44 44"><circle class="tr" cx="22" cy="22" r="20" fill="none"/><circle class="pr" cx="22" cy="22" r="20" style="animation-duration:${left}s"/></svg></span><div class="nt-ct2"><b>${T('{0} зовёт сыграть', nm(inv.from))}</b></div>`;
+    d.innerHTML = `<span class="nt-capa">${av(inv.from, 32)}<svg class="nt-ring" viewBox="0 0 44 44"><circle class="tr" cx="22" cy="22" r="20" fill="none"/><circle class="pr" cx="22" cy="22" r="20" style="animation-duration:${left}s"/></svg></span><div class="nt-ct2"><b>${T('{0} зовёт сыграть', nm(inv.from))}</b></div><span class="nt-capx" data-nt="capx" aria-label="${T('Отклонить')}">✕</span>`;
     document.body.appendChild(d); N.cap = {el:d, inv}; hap.imp(); setTimeout(hap.ok, 140);
     N.capT = setTimeout(hideCap, left * 1000);
   }
@@ -13861,6 +13863,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     else if (a === 'psel') { hap.tap(); const id = +t.dataset.id; N.sel = N.sel === id ? null : id; pkSync(t); }
     else if (a === 'pgo') { if (!N.sel) { hap.warn(); t.classList.remove('ntp-shake'); void t.offsetWidth; t.classList.add('ntp-shake'); } else invite(N.sel); }
     else if (a === 'cancel') cancel();
+    else if (a === 'capx') declineCap();
     else if (a === 'cap') { const c = N.cap; if (c) showCard(c.inv); }
     else if (a === 'acc') respond(t.dataset.id, true);
     else if (a === 'dec') respond(t.dataset.id, false);
