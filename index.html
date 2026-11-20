@@ -4363,12 +4363,13 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 .nt-wr circle{fill:none;stroke-width:4}.nt-wr circle:first-child{stroke:var(--surface2)}.nt-wc{stroke:var(--accent);stroke-linecap:round;stroke-dasharray:440;animation:ntwc 60s linear both}
 @keyframes ntwc{to{stroke-dashoffset:440}}
 .nt-wt{font-size:19px;font-weight:800}.nt-ws{font-size:12px;color:var(--muted);margin:6px 0 26px}.nt-ct .nt-btn{padding:12px 26px}
-.nt-cap{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px) + 8px);margin-left:-140px;width:280px;z-index:9995;display:flex;align-items:center;gap:10px;background:#000;color:#fff;border:1px solid #2c2c3a;border-radius:34px;padding:7px 14px 7px 7px;box-shadow:0 14px 34px rgba(0,0,0,.55),0 0 26px color-mix(in srgb,var(--accent) 35%,transparent);animation:ntcap .65s cubic-bezier(.3,1.4,.5,1) both}
+.nt-cap{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px) + 10px);margin:0 0 0 -134px;width:268px;height:56px;z-index:9995;display:flex;align-items:center;gap:10px;background:#0b0b0e;color:rgba(255,255,255,.94);border:1px solid rgba(255,255,255,.1);border-radius:28px;padding:0 18px 0 8px;text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;box-shadow:0 10px 30px rgba(0,0,0,.28);animation:ntcap .65s cubic-bezier(.3,1.4,.5,1) both}
 @keyframes ntcap{from{transform:translateY(-90px) scale(.5);opacity:0}}
 .nt-cap.out{transition:.3s;transform:translateY(-90px) scale(.6);opacity:0}
-.nt-cap .nt-ct2{flex:1;line-height:1.25}.nt-cap b{font-size:13px;display:block}.nt-cap small{font-size:10.5px;opacity:.6}
-.nt-ring{width:30px;height:30px;transform:rotate(-90deg)}.nt-ring circle{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-dasharray:100.5;animation:ntrg 60s linear both}
-@keyframes ntrg{to{stroke-dashoffset:100.5}}
+.nt-cap .nt-ct2{flex:1;min-width:0}.nt-cap b{display:block;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-capa{position:relative;width:44px;height:44px;flex:none;display:grid;place-items:center}
+.nt-ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.nt-ring circle{fill:none;stroke-width:1.5;stroke-linecap:round}.nt-ring .tr{stroke:rgba(255,255,255,.12)}.nt-ring .pr{stroke:rgba(255,255,255,.88);stroke-dasharray:125.7;animation:ntrg 60s linear both}
+@keyframes ntrg{to{stroke-dashoffset:125.7}}
 .nt-cd{position:absolute;left:22px;right:22px;top:50%;transform:translateY(-55%);background:var(--surface);border:1px solid var(--border);border-radius:34px;padding:34px 20px 20px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.45);animation:ntcd .65s cubic-bezier(.2,1.1,.3,1) both}
 @keyframes ntcd{from{transform:translateY(-230%) scale(.35);opacity:0}}
 .nt-cd .nt-av{margin:0 auto 22px}.nt-cd h3{margin:0;font-size:20px}.nt-cd p{margin:6px 0 22px;font-size:12px;color:var(--muted)}
@@ -4376,10 +4377,10 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 .nt-lobby{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:calc(env(safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px) + 14px) 20px calc(20px + env(safe-area-inset-bottom,0px))}
 .nt-top{width:100%;display:flex;align-items:center;justify-content:center;position:relative;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);height:34px}
 .nt-top .nt-x{position:absolute;left:0;font-style:normal;font-size:16px;padding:8px}
-.nt-lh{display:flex;margin-top:26px}.nt-lh .nt-av+.nt-av{margin-left:-14px}
-.nt-ln{margin-top:12px;font-size:13px}.nt-ln i{font-style:normal;color:var(--muted);font-size:11px}
+.nt-lh{display:flex;justify-content:center;gap:34px;margin-top:22px}.nt-lh .nt-av+.nt-av{margin-left:0}
+.nt-pp{display:flex;flex-direction:column;align-items:center;width:112px}.nt-ln{margin-top:14px;font-size:15px;text-align:center;min-height:36px}.nt-ln b{display:block}.nt-ln i{display:block;font-style:normal;color:var(--muted);font-size:11px;margin-top:2px}
 .nt-ls{margin-top:8px;font-size:12px;color:var(--muted);min-height:18px;text-align:center}
-.nt-gl{display:flex;gap:12px;margin-top:26px;width:100%;overflow-x:auto;padding:16px 4px;scrollbar-width:none}.nt-gl::-webkit-scrollbar{display:none}
+.nt-gl{display:flex;gap:14px;margin:8px -20px 0;width:calc(100% + 40px);overflow-x:auto;padding:38px 20px 52px;scroll-snap-type:x proximity;scroll-padding-inline:20px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%)}.nt-gl .nt-gc{scroll-snap-align:center}.nt-gl::-webkit-scrollbar{display:none}
 .nt-gc{flex:none;width:136px;height:176px;border-radius:26px;background:var(--surface);border:1.5px solid var(--border);padding:14px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;transition:transform .35s cubic-bezier(.3,1.4,.5,1),border-color .2s,box-shadow .3s}
 .nt-gc .th{position:absolute;top:10px;left:10px;right:10px;height:96px;border-radius:14px;overflow:hidden}.nt-gc .th svg{width:100%;height:100%;display:block}.nt-gc b{font-size:15px}.nt-gc small{font-size:10.5px;color:var(--muted);margin-top:2px}
 .nt-gc.off{opacity:.45}.nt-gc.sel{transform:translateY(-8px) scale(1.05);border-color:var(--accent);box-shadow:0 14px 36px color-mix(in srgb,var(--accent) 35%,transparent)}
@@ -4614,7 +4615,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1015';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1017';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12483,7 +12484,7 @@ const NET = (() => {
   function showCap(inv){
     hideCap(); const left = Math.max(4, 60 - inv.age);
     const d = document.createElement('div'); d.className = 'nt-cap'; d.dataset.nt = 'cap';
-    d.innerHTML = `${av(inv.from, 34)}<div class="nt-ct2"><b>${T('{0} зовёт сыграть', nm(inv.from))}</b><small>${T('VOOB · по сети')}</small></div><svg class="nt-ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" style="animation-duration:${left}s"/></svg>`;
+    d.innerHTML = `<span class="nt-capa">${av(inv.from, 32)}<svg class="nt-ring" viewBox="0 0 44 44"><circle class="tr" cx="22" cy="22" r="20" fill="none"/><circle class="pr" cx="22" cy="22" r="20" style="animation-duration:${left}s"/></svg></span><div class="nt-ct2"><b>${T('{0} зовёт сыграть', nm(inv.from))}</b></div>`;
     document.body.appendChild(d); N.cap = {el:d, inv}; hap.imp(); setTimeout(hap.ok, 140);
     N.capT = setTimeout(hideCap, left * 1000);
   }
@@ -12526,7 +12527,7 @@ const NET = (() => {
   /* ---------- лобби ---------- */
   function lobby(){
     const r = N.room;
-    const d = layer('nt-lobby', `<div class="nt-top"><i class="nt-x" data-nt="leave">✕</i><span>${T('Комната · по сети')}</span></div><div class="nt-lh">${av(r.host_id, 56)}${av(r.guest_id, 56)}</div><div class="nt-ln"><b>${nm(r.host_id)}</b> <i>${T('хост')}</i> · <b>${nm(r.guest_id)}</b></div><div class="nt-ls" id="ntls"></div><div class="nt-gl">${GAMES.map(g => `<div class="nt-gc${g.k ? '' : ' off'}" data-nt="game" data-k="${g.k}"><div class="th">${g.ic}</div><b>${g.n}</b><small>${g.d}</small></div>`).join('')}</div><div class="nt-lb"><div class="nt-btn" id="ntlb" data-nt="lbtn"></div></div>`);
+    const d = layer('nt-lobby', `<div class="nt-top"><i class="nt-x" data-nt="leave">✕</i><span>${T('Комната · по сети')}</span></div><div class="nt-lh"><div class="nt-pp">${av(r.host_id, 104)}<div class="nt-ln"><b>${nm(r.host_id)}</b><i>${T('хост')}</i></div></div><div class="nt-pp">${av(r.guest_id, 104)}<div class="nt-ln"><b>${nm(r.guest_id)}</b></div></div></div><div class="nt-ls" id="ntls"></div><div class="nt-gl">${GAMES.map(g => `<div class="nt-gc${g.k ? '' : ' off'}" data-nt="game" data-k="${g.k}"><div class="th">${g.ic}</div><b>${g.n}</b><small>${g.d}</small></div>`).join('')}</div><div class="nt-lb"><div class="nt-btn" id="ntlb" data-nt="lbtn"></div></div>`);
     d.style.setProperty('--dl', '1.3s'); updLobby();
   }
   const isHost = () => +N.room.host_id === +UK;
