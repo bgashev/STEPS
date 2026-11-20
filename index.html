@@ -4993,7 +4993,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1080';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1081';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10156,14 +10156,13 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       c.save(); rr(c, G2.x0, G2.y0, G2.S, G2.S, 10); c.clip();
       const lm = new Set(g.last), tg = new Map(); if (g.sel >= 0 && g.ph === 'play') g.legal.filter(m => m.f === g.sel).forEach(m => tg.set(m.t, g.S.b[m.t] || m.fl === 'ep' ? 2 : 1));
       const kg = g.chk ? chKing(g.S.b, g.S.turn === 'w') : -1;
-      for (let i = 0; i < 64; i++) { const [px, py] = sq(G2, i), dark = ((i >> 3) + (i & 7)) % 2 === 1; c.fillStyle = dark ? 'rgba(110,90,230,.5)' : 'rgba(255,255,255,.08)'; c.fillRect(px, py, t + .5, t + .5);
-        if (dark) { const sh = c.createLinearGradient(0, py, 0, py + t); sh.addColorStop(0, 'rgba(0,0,0,0)'); sh.addColorStop(1, 'rgba(0,0,0,.2)'); c.fillStyle = sh; c.fillRect(px, py, t + .5, t + .5); }
-        if (lm.has(i)) { c.fillStyle = 'rgba(255,210,90,.24)'; c.fillRect(px, py, t + .5, t + .5); }
-        if (g.sel === i) { c.fillStyle = 'rgba(255,255,255,.26)'; c.fillRect(px, py, t + .5, t + .5); }
+      for (let i = 0; i < 64; i++) { const [px, py] = sq(G2, i), dark = ((i >> 3) + (i & 7)) % 2 === 1; c.fillStyle = dark ? '#6a6ea6' : '#e6e1f2'; c.fillRect(px, py, t + .5, t + .5);
+        if (lm.has(i)) { c.globalAlpha = .38; c.fillStyle = C.ac; c.fillRect(px, py, t + .5, t + .5); c.globalAlpha = 1; }
+        if (g.sel === i) { c.globalAlpha = .62; c.fillStyle = C.ac; c.fillRect(px, py, t + .5, t + .5); c.globalAlpha = 1; }
         if (kg === i) { const gl = c.createRadialGradient(px + t / 2, py + t / 2, 2, px + t / 2, py + t / 2, t * .75); gl.addColorStop(0, 'rgba(255,70,90,.85)'); gl.addColorStop(1, 'rgba(255,70,90,0)'); c.fillStyle = gl; c.fillRect(px, py, t + .5, t + .5); }
-        const kind = tg.get(i); if (kind === 1) { c.fillStyle = 'rgba(80,230,150,.85)'; c.beginPath(); c.arc(px + t / 2, py + t / 2, t * .15 + Math.sin(g.t * 6), 0, 7); c.fill(); } else if (kind === 2) { c.strokeStyle = 'rgba(80,230,150,.9)'; c.lineWidth = 3; c.beginPath(); c.arc(px + t / 2, py + t / 2, t * .42, 0, 7); c.stroke(); }
-        if ((i & 7) === 0) { c.fillStyle = 'rgba(255,255,255,.35)'; c.font = '700 9px ' + C.ff; c.textAlign = 'left'; c.fillText(8 - (i >> 3), px + 2, py + 10); c.textAlign = 'center'; }
-        if ((i >> 3) === 7) { c.fillStyle = 'rgba(255,255,255,.35)'; c.font = '700 9px ' + C.ff; c.textAlign = 'right'; c.fillText('abcdefgh'[i & 7], px + t - 2, py + t - 3); c.textAlign = 'center'; } }
+        const kind = tg.get(i); if (kind === 1) { c.fillStyle = 'rgba(20,16,40,.34)'; c.beginPath(); c.arc(px + t / 2, py + t / 2, t * .15, 0, 7); c.fill(); } else if (kind === 2) { c.strokeStyle = 'rgba(20,16,40,.4)'; c.lineWidth = 4; c.beginPath(); c.arc(px + t / 2, py + t / 2, t * .4, 0, 7); c.stroke(); }
+        if ((i & 7) === 0) { c.fillStyle = dark ? '#e6e1f2' : '#6a6ea6'; c.globalAlpha = .75; c.font = '700 9px ' + C.ff; c.textAlign = 'left'; c.fillText(8 - (i >> 3), px + 2, py + 10); c.textAlign = 'center'; c.globalAlpha = 1; }
+        if ((i >> 3) === 7) { c.fillStyle = dark ? '#e6e1f2' : '#6a6ea6'; c.globalAlpha = .75; c.font = '700 9px ' + C.ff; c.textAlign = 'right'; c.fillText('abcdefgh'[i & 7], px + t - 2, py + t - 3); c.textAlign = 'center'; c.globalAlpha = 1; } }
       c.restore();
       const pc = (p, x, y, sc) => { const im = chImg(p); if (!im.complete || !im.naturalWidth) return; const z = t * .98 * (sc || 1); c.save(); c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 6; c.shadowOffsetY = 3; c.drawImage(im, x - z / 2, y - z / 2, z, z); c.restore(); };
       const A = g.anim, hide = new Set(A ? A.list.map(z => z.t) : []);
