@@ -2273,6 +2273,7 @@ async function routeNetAct(body: any) {
   else if (act === "size" && host && room.status === "lobby") next = await netSave(room, { state: { ...(room.state ?? {}), n: tttSize(body?.n) } });
   else if (act === "ready" && !host && room.status === "lobby") next = await netSave(room, { guest_ready: !room.guest_ready });
   else if (act === "start" && host && room.status === "lobby" && room.game && room.guest_ready) next = await netSave(room, { status: "playing", state: netInit(room.game, room.host_id, room.guest_id, room.host_id, tttSize(room.state?.n)) });
+  else if (act === "tolobby" && host && room.status === "done") next = await netSave(room, { status: "lobby", game: null, guest_ready: false, state: {} });
   else if (act === "rematch" && room.status === "done") next = await netSave(room, { status: "playing", state: netInit(room.game, room.host_id, room.guest_id, (room.state?.first ?? room.state?.x) === room.host_id ? room.guest_id : room.host_id, tttSize(room.state?.n)) });
   else if (room.status === "playing" && room.game === "hl" && act === "guess") {
     const st = room.state, dir = String(body?.dir);
