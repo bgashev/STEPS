@@ -4893,7 +4893,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1054';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1055';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12923,16 +12923,19 @@ const NET = (() => {
     if (off && !b) { b = document.createElement('div'); b.className = 'nt-peer'; b.textContent = T('Соперник отключился или потерял связь'); l.appendChild(b); } else if (!off && b) b.remove(); }
   function updLobby(){
     const r = N.room; if (!r || !q('#ntls')) return; const h = isHost(), o = h ? r.guest_id : r.host_id;
-    q('#ntls').textContent = h ? (r.game ? (r.guest_ready ? T('{0} готов ✓', raw(o)) : T('Ждём, пока {0} нажмёт «Готов»', raw(o))) : T('Выбери игру')) : (r.game ? (r.guest_ready ? T('Ты готов ✓ · ждём старт') : T('Игра выбрана. Нажми «Готов»')) : T('{0} выбирает игру…', raw(o)));
+    const lsT = h ? (r.game ? (r.guest_ready ? T('{0} готов ✓', raw(o)) : T('Ждём, пока {0} нажмёт «Готов»', raw(o))) : T('Выбери игру')) : (r.game ? (r.guest_ready ? T('Ты готов ✓ · ждём старт') : T('Игра выбрана. Нажми «Готов»')) : T('{0} выбирает игру…', raw(o)));
     N.ov.querySelectorAll('.nt-gc').forEach(c => c.classList.toggle('sel', !!r.game && c.dataset.k === r.game));
     const b = q('#ntlb'); if (!b) return;
-    b.textContent = h ? T('Старт') : (r.guest_ready ? T('Не готов') : T('Готов'));
+    { const bt = h ? T('Старт') : (r.guest_ready ? T('Не готов') : T('Готов')); if (b.textContent !== bt) b.textContent = bt; }
     b.classList.toggle('dis', h ? !(r.game && r.guest_ready) : !r.game);
     /* подсказки: ожидание выбора, зов на кнопку */
     const ls = q('#ntls'), gl = N.ov.querySelector('.nt-gl'), wait = !h && !r.game, act = h ? !!(r.game && r.guest_ready) : !!(r.game && !r.guest_ready);
-    ls.className = 'nt-ls' + (wait ? ' nt-wait' : '') + ((act || (h && !r.game)) ? ' nt-hl' : '');
-    if (wait) { ls.textContent = ls.textContent.replace(/…$/, ''); ls.insertAdjacentHTML('beforeend', '<span class="nt-dots"><i></i><i></i><i></i></span>'); }
-    else if (act || (h && !r.game)) ls.textContent += ' ↓';
+    const lsC = 'nt-ls' + (wait ? ' nt-wait' : '') + ((act || (h && !r.game)) ? ' nt-hl' : ''), lsK = lsT + '|' + lsC;
+    if (ls.dataset.k !== lsK) {   /* пишем только при реальных изменениях — иначе подсказка мигает и точки перезапускаются */
+      ls.dataset.k = lsK; ls.className = lsC; ls.textContent = lsT;
+      if (wait) { ls.textContent = lsT.replace(/…$/, ''); ls.insertAdjacentHTML('beforeend', '<span class="nt-dots"><i></i><i></i><i></i></span>'); }
+      else if (act || (h && !r.game)) ls.textContent += ' ↓';
+    }
     if (gl) { const cs = gl.querySelectorAll('.nt-gc:not(.off)'); if (wait && !gl.classList.contains('nt-scan')) { cs.forEach((c, i) => { c.style.animationDelay = (i * 5 / cs.length) + 's'; }); } gl.classList.toggle('nt-scan', wait); if (!wait) gl.querySelectorAll('.nt-gc').forEach(c => { c.style.animationDelay = ''; }); }
     const hp = N.ov.querySelector('.nt-lh .nt-pp'); if (hp) hp.classList.toggle('nt-think', wait);
     b.classList.toggle('nt-nudge', act);
@@ -13418,6 +13421,10 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
   function apply(room){
     if (!room || room.gone || room.same) return;
     if (N.room && room.rev < N.room.rev) return;
+    if (room.status === 'lobby' && N.lp) {   /* пока наши быстрые клики не подтверждены сервером — не даём старым ответам откатывать выбор */
+      const o = {}; if (N.lp.n > 0) { o.game = N.lp.game; if (!(N.lp.rn > 0)) o.guest_ready = false; } if (N.lp.rn > 0) o.guest_ready = N.lp.ready;
+      if (Object.keys(o).length) { room = Object.assign({}, room, o); }
+    }
     const prev = N.room; N.room = room;
     if (room.status === 'closed') { const by = prev && prev.status !== 'closed'; N.room = null; closeOv(); if (by) toast(T('Комната закрыта')); return; }
     if (room.status === 'lobby') { if (!q('#ntlb')) { lobby(); q('.nt-lobby').style.setProperty('--dl', '.05s'); } else updLobby(); }
@@ -13425,13 +13432,13 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
   }
   async function act(a, extra){
     if (!N.room) return;
-    const was = N.room;
+    const was = N.room; let lp = '';
     if (was.status === 'lobby' && q('#ntlb')) {   /* мгновенный отклик: показываем выбор сразу, сервер подтвердит следом */
-      if (a === 'game' && extra && extra.game) { N.room = Object.assign({}, was, {game:extra.game, guest_ready:false}); updLobby(); }
-      else if (a === 'ready') { N.room = Object.assign({}, was, {guest_ready:!was.guest_ready}); updLobby(); }
+      if (a === 'game' && extra && extra.game) { (N.lp = N.lp || {n:0, rn:0}); N.lp.n++; N.lp.game = extra.game; N.room = Object.assign({}, was, {game:extra.game, guest_ready:false}); updLobby(); lp = 'g'; }
+      else if (a === 'ready') { (N.lp = N.lp || {n:0, rn:0}); const nr = !(N.lp.rn > 0 ? N.lp.ready : was.guest_ready); N.lp.rn++; N.lp.ready = nr; N.room = Object.assign({}, was, {guest_ready:nr}); updLobby(); lp = 'r'; }
     }
-    try { const j = await apiAuth('/net/act', Object.assign({room:was.id, act:a}, extra || {})); if (j.room) apply(j.room); }
-    catch (e) { if (N.room && N.room !== was && N.room.id === was.id && N.room.status === 'lobby') { N.room = was; if (q('#ntlb')) updLobby(); } toast(e.message || T('Нет связи')); }
+    try { const j = await apiAuth('/net/act', Object.assign({room:was.id, act:a}, extra || {})); if (lp === 'g') N.lp.n--; else if (lp === 'r') N.lp.rn--; lp = ''; if (j.room) apply(j.room); }
+    catch (e) { if (lp === 'g') N.lp.n--; else if (lp === 'r') N.lp.rn--; lp = ''; if (N.room && N.room !== was && N.room.id === was.id && N.room.status === 'lobby') { N.room = was; if (q('#ntlb')) updLobby(); } toast(e.message || T('Нет связи')); }
   }
   function leave(){ const id = N.room && N.room.id; N.room = null; closeOv(); hideCap(); if (id) apiAuth('/net/act', {room:id, act:'leave'}).catch(() => {}); }
   /* ---------- опрос сервера ---------- */
