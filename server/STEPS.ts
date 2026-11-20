@@ -1937,14 +1937,14 @@ async function duelFinish(d: any) {
   if (d.status !== "active" || today <= d.ends_on) return d;
   const { data: lg } = await db.from("habit_duel_logs").select("tg_id, day, v").eq("duel_id", d.id).gte("day", d.starts_on).lte("day", d.ends_on);
   const cnt = (id: number) => (lg ?? []).filter((x: any) => x.tg_id === id && x.v >= d.goal).length;
-  const a = cnt(d.from_id), b = cnt(d.to_id), draw = a === b;
+  const sv = d.kind === "survive", a = sv ? 0 : cnt(d.from_id), b = sv ? 0 : cnt(d.to_id), draw = a === b;
   const { data: upd } = await db.from("habit_duels").update({ status: "done", ended_at: new Date().toISOString(), draw, winner: draw ? null : (a > b ? d.from_id : d.to_id) })
     .eq("id", d.id).eq("status", "active").select("*").maybeSingle();
   if (!upd) return d;
   const st = d.stake ? `\n🎯 Ставка: ${d.stake}` : "";
   for (const [me, mine, theirs] of [[d.from_id, a, b], [d.to_id, b, a]] as [number, number, number][]) {
-    const head = draw ? "🤝 Ничья" : (upd.winner === me ? "🏆 Ты победил" : "Спор окончен — победил соперник");
-    notify(me, `${head} · «${d.title}»\n${mine} : ${theirs}${st}`);
+    const head = draw ? (sv ? "🤝 Оба продержались" : "🤝 Ничья") : (upd.winner === me ? "🏆 Ты победил" : "Спор окончен — победил соперник");
+    notify(me, `${head} · «${d.title}»${sv ? "" : `\n${mine} : ${theirs}`}${st}`);
   }
   return upd;
 }
@@ -1952,7 +1952,7 @@ function duelItem(d: any, me: number, lg: any[], names: Map<number, any>) {
   const peer = d.from_id === me ? d.to_id : d.from_id, today = lday(Date.now());
   const mine = lg.filter((x) => x.duel_id === d.id && x.tg_id === me), theirs = lg.filter((x) => x.duel_id === d.id && x.tg_id === peer);
   const days = (arr: any[]) => arr.filter((x) => x.v >= d.goal).map((x) => x.day);
-  return { id: d.id, mine: d.from_id === me, peer, peer_name: displayName(names.get(peer) ?? { tg_id: peer }), title: d.title, emoji: d.emoji, goal: d.goal, days: d.days, stake: d.stake,
+  return { id: d.id, kind: d.kind ?? "duel", started_at: d.started_at ? new Date(d.started_at).getTime() : null, ended_at: d.ended_at ? new Date(d.ended_at).getTime() : null, mine: d.from_id === me, peer, peer_name: displayName(names.get(peer) ?? { tg_id: peer }), title: d.title, emoji: d.emoji, goal: d.goal, days: d.days, stake: d.stake,
     status: d.status, starts_on: d.starts_on, ends_on: d.ends_on, today, winner: d.winner, draw: d.draw, my_days: days(mine), peer_days: days(theirs),
     my_today: mine.find((x) => x.day === today)?.v ?? 0, peer_today: theirs.find((x) => x.day === today)?.v ?? 0 };
 }
@@ -1983,7 +1983,7 @@ async function routeDuelCreate(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
   const to = Number(body?.to), title = String(body?.title ?? "").trim().slice(0, 40), emoji = String(body?.emoji ?? "✅").slice(0, 8) || "✅";
-  const goal = Math.max(1, Math.min(20, Math.floor(Number(body?.goal) || 1))), days = Number(body?.days), stake = String(body?.stake ?? "").trim().slice(0, 60);
+  const kind = body?.kind === "survive" ? "survive" : "duel", goal = kind === "survive" ? 1 : Math.max(1, Math.min(20, Math.floor(Number(body?.goal) || 1))), days = Number(body?.days), stake = String(body?.stake ?? "").trim().slice(0, 60);
   if (!title) return fail("Назови привычку");
   if (!DUEL_DAYS.includes(days)) return fail("Выбери срок спора");
   if (!to || to === me || !(await areFriends(me, to))) return fail("Вызов можно бросить только другу", 403);
@@ -1993,10 +1993,10 @@ async function routeDuelCreate(body: any) {
   const { data: dup } = await db.from("habit_duels").select("id").eq("title", title).in("status", ["pending", "active"])
     .or(`and(from_id.eq.${me},to_id.eq.${to}),and(from_id.eq.${to},to_id.eq.${me})`).limit(1);
   if (dup?.length) return fail("Такой спор с этим другом уже идёт", 409);
-  const { data: d, error } = await db.from("habit_duels").insert({ from_id: me, to_id: to, title, emoji, goal, days, stake }).select("*").single();
+  const { data: d, error } = await db.from("habit_duels").insert({ from_id: me, to_id: to, title, emoji, goal, days, stake, kind }).select("*").single();
   if (error || !d) return fail("Не получилось создать спор", 500);
   const name = displayName(await userInfo(me));
-  const r = await tg("sendMessage", { chat_id: to, text: `⚔️ ${name} бросает тебе вызов: «${title}» — ${days} дн.${stake ? `\n🎯 Ставка: ${stake}` : ""}`,
+  const r = await tg("sendMessage", { chat_id: to, text: `${kind === "survive" ? "🧗" : "⚔️"} ${name} бросает тебе вызов${kind === "survive" ? " на выживание" : ""}: «${title}» — ${days} дн.${stake ? `\n🎯 Ставка: ${stake}` : ""}`,
     reply_markup: { inline_keyboard: [[{ text: "Открыть спор", url: `https://t.me/${await botName()}/VOOB?startapp=d_${d.id}` }]] } }).catch(() => null);
   if (r?.ok && r.result?.message_id) await db.from("habit_duels").update({ tg_msg_id: r.result.message_id }).eq("id", d.id);
   return json({ status: "ok", id: d.id });
@@ -2010,7 +2010,7 @@ async function routeDuelRespond(body: any) {
   const name = displayName(await userInfo(me));
   if (body?.accept) {
     const s = lday(Date.now()), e = s + d.days - 1;
-    const { data: upd } = await db.from("habit_duels").update({ status: "active", starts_on: s, ends_on: e }).eq("id", d.id).eq("status", "pending").select("*").maybeSingle();
+    const { data: upd } = await db.from("habit_duels").update({ status: "active", starts_on: s, ends_on: e, started_at: new Date().toISOString() }).eq("id", d.id).eq("status", "pending").select("*").maybeSingle();
     if (!upd) return json({ status: "gone" });
     notify(d.from_id, `⚔️ ${name} принял вызов «${d.title}». Спор начался — ${d.days} дн.`);
     return json({ status: "active" });
@@ -2032,12 +2032,29 @@ async function routeDuelLog(body: any) {
   if (!d0 || (d0.from_id !== me && d0.to_id !== me)) return fail("Спор не найден", 404);
   const d = await duelFinish(d0);
   if (d.status !== "active") return json({ status: d.status });
+  if (d.kind === "survive") return json({ status: "na" });
   const today = lday(Date.now()), day = today - (Number(body?.back) === 1 ? 1 : 0), v = Math.max(0, Math.min(99, Math.floor(Number(body?.v) || 0)));
   if (day < d.starts_on || day > d.ends_on) return fail("Этот день вне спора", 400);
   const { data: prev } = await db.from("habit_duel_logs").select("v").eq("duel_id", d.id).eq("tg_id", me).eq("day", day).maybeSingle();
   await db.from("habit_duel_logs").upsert({ duel_id: d.id, tg_id: me, day, v, updated_at: new Date().toISOString() }, { onConflict: "duel_id,tg_id,day" });
   if (v >= d.goal && (prev?.v ?? 0) < d.goal && day === today) await db.from("habit_duel_events").insert({ duel_id: d.id, tg_id: me, kind: "done" });
   return json({ status: "ok" });
+}
+async function routeDuelSlip(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const { data: d0 } = await db.from("habit_duels").select("*").eq("id", Number(body?.id)).maybeSingle();
+  if (!d0 || (d0.from_id !== me && d0.to_id !== me)) return fail("Спор не найден", 404);
+  const d = await duelFinish(d0);
+  if (d.status !== "active" || d.kind !== "survive") return json({ status: d.status });
+  const peer = d.from_id === me ? d.to_id : d.from_id;
+  const { data: upd } = await db.from("habit_duels").update({ status: "done", winner: peer, draw: false, ended_at: new Date().toISOString() }).eq("id", d.id).eq("status", "active").select("id").maybeSingle();
+  if (!upd) return json({ status: "gone" });
+  await db.from("habit_duel_events").insert({ duel_id: d.id, tg_id: me, kind: "slip" });
+  const st = d.stake ? `\n🎯 Ставка: ${d.stake}` : "";
+  notify(peer, `🏆 ${displayName(await userInfo(me))} сорвался — ты победил в споре «${d.title}»${st}`);
+  notify(me, `Срыв засчитан. Спор «${d.title}» окончен${st}`);
+  return json({ status: "done" });
 }
 async function routeDuelNudge(body: any) {
   const me = await sessionUser(body?.token);
@@ -2101,6 +2118,7 @@ Deno.serve(async (req) => {
       case "/duel/cancel": return await routeDuelCancel(body);
       case "/duel/log": return await routeDuelLog(body);
       case "/duel/nudge": return await routeDuelNudge(body);
+      case "/duel/slip": return await routeDuelSlip(body);
       case "/gifts/send": return await routeGiftSend(body);
       case "/gifts/claim": return await routeGiftClaim(body);
       case "/profile/handle": return await routeHandle(body);
