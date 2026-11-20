@@ -1617,7 +1617,7 @@ async function routeLogout(body: any) {
 }
 
 /* ---------- v1.988: игры по сети (приглашение друга, комната, Крестики-нолики) ---------- */
-const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "golf"]);
+const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "golf", "sea", "bil"]);
 const tttLines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 const tttResult = (b: string[]) => { for (const [a, c, d] of tttLines) if (b[a] && b[a] === b[c] && b[a] === b[d]) return b[a]; return b.every((x) => x) ? "d" : ""; };
 const tttInit = (x: number) => ({ board: Array(9).fill(""), turn: "X", x, win: "" });
@@ -1687,6 +1687,31 @@ function chkApply(b: string[], path: number[], col: string) {
   return { nb, took, man: piece === piece.toLowerCase() };
 }
 
+
+const SEA_LENS = [4, 3, 2, 2, 1, 1];
+function seaCells(sh: number[]): number[] { const [r, c, n, h] = sh, o: number[] = []; for (let k = 0; k < n; k++) o.push(h ? r * 8 + c + k : (r + k) * 8 + c); return o; }
+function seaValid(ships: unknown): number[][] | null {
+  if (!Array.isArray(ships) || ships.length !== SEA_LENS.length) return null;
+  const sh = ships.map((x: any) => (Array.isArray(x) ? x.map(Number) : []));
+  if (JSON.stringify(sh.map((x) => x[2]).sort((a, b) => b - a)) !== JSON.stringify(SEA_LENS)) return null;
+  const occ = new Map<number, number>();
+  for (let k = 0; k < sh.length; k++) {
+    const [r, c, n, h] = sh[k];
+    if (![r, c, n].every(Number.isInteger) || (h !== 0 && h !== 1) || r < 0 || c < 0 || (h ? c + n > 8 || r > 7 : r + n > 8 || c > 7)) return null;
+    for (const i of seaCells(sh[k])) { if (occ.has(i)) return null; occ.set(i, k); }
+  }
+  for (const [i, k] of occ) for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+    const r = (i >> 3) + dr, c = (i & 7) + dc; if (r < 0 || r > 7 || c < 0 || c > 7) continue;
+    const j = occ.get(r * 8 + c); if (j !== undefined && j !== k) return null;
+  }
+  return sh;
+}
+const BIL_RACK: [number, number][] = [[150, 380], [150, 110], [158.25, 124.3], [166.5, 138.6], [141.75, 124.3], [133.5, 138.6], [150, 152.9], [150, 138.6]];
+function netView(room: any, me: number) {
+  const f = room?.state?.fleets;
+  if (!f || room.status === "done") return room;
+  return { ...room, state: { ...room.state, fleets: { [me]: f[me] } } };
+}
 function netInit(game: string, host: number, guest: number, first: number): any {
   let st: any;
   if (game === "hl") st = { cur: 1 + Math.floor(Math.random() * 13), turn: first, p: [host, guest], s: [0, 0], goal: 7, last: null, win: "" };
@@ -1695,6 +1720,8 @@ function netInit(game: string, host: number, guest: number, first: number): any 
     for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) if ((r + c) % 2 === 1) { if (r < 3) b[r * 8 + c] = "b"; else if (r > 4) b[r * 8 + c] = "w"; }
     st = { b, turn: "w", white: first, win: "", q: 0, last: null, legal: chkLegal(b, "w") };
   } else if (game === "golf") st = { hole: 0, holes: 3, turn: first, p: [host, guest], ball: {}, str: {}, done: {}, tot: {}, last: null, win: "" };
+  else if (game === "sea") st = { phase: "place", turn: first, p: [host, guest], fleets: {}, ready: {}, shots: { [host]: {}, [guest]: {} }, sunk: { [host]: [], [guest]: [] }, last: null, win: "" };
+  else if (game === "bil") st = { turn: first, p: [host, guest], balls: BIL_RACK.map((b) => [b[0], b[1]]), last: null, win: "", foul: false };
   else st = tttInit(first);
   st.first = first;
   return st;
@@ -1730,7 +1757,7 @@ async function routeNetPoll(body: any) {
       const peer = room.host_id === me ? room.guest_id : room.host_id;
       const { data: pr } = await db.from("net_presence").select("seen").eq("tg_id", peer).maybeSingle();
       out.peer_s = pr?.seen ? Math.floor((Date.now() - new Date(pr.seen).getTime()) / 1000) : 999;
-      out.room = Number(body?.rev) === room.rev ? { id: room.id, same: true } : room;
+      out.room = Number(body?.rev) === room.rev ? { id: room.id, same: true } : netView(room, me);
     }
   }
   return json(out);
@@ -1845,6 +1872,46 @@ async function routeNetAct(body: any) {
       next = await netSave(room, { status, state: { ...st, hole, tot, ball: nball, str: nstr, done: ndone, turn, last, win } });
     }
   }
+  else if (room.status === "playing" && room.game === "sea" && act === "fleet") {
+    const st = room.state, sh = seaValid(body?.ships);
+    if (st.phase === "place" && sh && !st.ready?.[me]) {
+      const fleets = { ...st.fleets, [me]: sh }, ready = { ...st.ready, [me]: true }, both = ready[st.p[0]] && ready[st.p[1]];
+      next = await netSave(room, { state: { ...st, fleets, ready, phase: both ? "war" : "place" } });
+    }
+  }
+  else if (room.status === "playing" && room.game === "sea" && act === "shot") {
+    const st = room.state, i = Number(body?.i), other = me === st.p[0] ? st.p[1] : st.p[0];
+    if (st.phase === "war" && st.turn === me && Number.isInteger(i) && i >= 0 && i < 64 && !st.shots[me]?.[i]) {
+      const fleet: number[][] = st.fleets[other], shots = { ...st.shots, [me]: { ...st.shots[me] } }, mine = shots[me];
+      const ship = fleet.find((x) => seaCells(x).includes(i));
+      mine[i] = ship ? 2 : 1;
+      let res = ship ? "hit" : "miss"; const sunk = { ...st.sunk, [other]: st.sunk[other].slice() };
+      if (ship && seaCells(ship).every((c) => mine[c] === 2)) {
+        res = "sunk"; sunk[other].push(ship);
+        for (const c of seaCells(ship)) for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+          const r = (c >> 3) + dr, cc = (c & 7) + dc; if (r >= 0 && r < 8 && cc >= 0 && cc < 8 && !mine[r * 8 + cc]) mine[r * 8 + cc] = 1;
+        }
+      }
+      const win = sunk[other].length >= SEA_LENS.length ? me : "";
+      next = await netSave(room, { status: win ? "done" : "playing", state: { ...st, shots, sunk, turn: ship ? me : other, last: { by: me, i, res, n: room.rev + 1 }, win } });
+    }
+  }
+  else if (room.status === "playing" && room.game === "bil" && act === "shot") {
+    const st = room.state, other = me === st.p[0] ? st.p[1] : st.p[0], num = (v: unknown, lim: number) => Math.max(-lim, Math.min(lim, Number(v) || 0));
+    const nb: any[] = Array.isArray(body?.b) ? body.b : [], pot: number[] = (Array.isArray(body?.pot) ? body.pot : []).map(Number);
+    const okPot = pot.every((k, j) => Number.isInteger(k) && k >= 0 && k < 8 && st.balls[k] && pot.indexOf(k) === j);
+    const okB = nb.length === 8 && nb.every((x, k) => !!x === !!(st.balls[k] && !pot.includes(k)));
+    if (st.turn === me && !st.win && okPot && okB) {
+      const balls = nb.map((x, k) => (x ? [num(x[0], 300), num(x[1], 480)] : null));
+      const mineIdx = me === st.p[0] ? [1, 2, 3] : [4, 5, 6], foul = pot.includes(0), potMine = pot.some((k) => mineIdx.includes(k));
+      const clearedBefore = mineIdx.every((k) => !st.balls[k]);
+      if (foul) { const spots: [number, number][] = [[150, 380], [150, 330], [110, 380], [190, 380], [150, 430]]; balls[0] = spots.find((sp) => balls.every((b, k) => k === 0 || !b || Math.hypot(b[0] - sp[0], b[1] - sp[1]) > 17)) ?? spots[0]; }
+      let win: any = "";
+      if (pot.includes(7)) win = !foul && clearedBefore ? me : other;
+      const last = { by: me, vx: num(body?.vx, 3000), vy: num(body?.vy, 3000), b0: st.balls, pot, foul, n: room.rev + 1 };
+      next = await netSave(room, { status: win ? "done" : "playing", state: { ...st, balls, turn: !foul && potMine && !win ? me : other, last, win, foul } });
+    }
+  }
   else if (act === "move" && room.status === "playing" && room.game === "ttt") {
     const st = room.state, i = Number(body?.i), mine = st.x === me ? "X" : "O";
     if (Number.isInteger(i) && i >= 0 && i < 9 && st.turn === mine && !st.board[i]) {
@@ -1853,7 +1920,7 @@ async function routeNetAct(body: any) {
       next = await netSave(room, { status: win ? "done" : "playing", state: { ...st, board, win, turn: mine === "X" ? "O" : "X" } });
     }
   }
-  return json({ room: next ?? (await netRoomOf(body?.room, me)) });
+  return json({ room: netView(next ?? (await netRoomOf(body?.room, me)), me) });
 }
 
 Deno.serve(async (req) => {
