@@ -4650,6 +4650,9 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .bhd .d.td.em .p{border:1.5px solid #fff;box-shadow:none;animation:bhpu 2s ease-in-out infinite}
 .bhd .d.td.em .p::after{content:"+";position:absolute;inset:0;display:grid;place-items:center;font-size:15px;font-weight:800}
 @media (prefers-reduced-motion:reduce){.bhd .p,.bhd .p u{animation:none!important}}
+/* v1.1053: дни недели в «Привычках» — круглые */
+.bhd .p{height:auto;aspect-ratio:1;border-radius:50%}.bhd .p u{border-radius:0}
+.bhd .d.td .p{overflow:hidden}
 .ax-bn.hx{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
 .ax-bn.hx .ax-bt{grid-row:auto;grid-column:auto;min-height:0;aspect-ratio:1/.92;padding:14px;transition:transform .38s cubic-bezier(.2,.9,.25,1),box-shadow .3s,opacity .3s;will-change:transform;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:pan-y}
 .ax-bn.hx .ax-bt.lift{transition:box-shadow .3s,opacity .3s;z-index:10;box-shadow:0 26px 50px -14px rgba(0,0,0,.65),0 0 0 1.5px rgba(255,255,255,.35);touch-action:none}
@@ -4860,7 +4863,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 .ax-bt:active .gla{transform:scale(1.07) rotate(5deg)}
 .gla.pk{right:-40px;bottom:-20px;width:128px;height:128px}
 .gla.pw{right:-30px;bottom:-16px;width:128px;height:128px}
-.gla.pv{right:-10px;top:38px;width:116px;height:77px}
+.gla.pv{right:-10px;top:50px;width:116px;height:77px}
 .gla.pt{right:-34px;top:-14px;width:150px;height:150px}
 .ax-bn.hx .ax-bt.bh .gla.pt{top:-22px;width:124px;height:124px}
 @keyframes glfl{50%{transform:translate(-5px,-12px) rotate(4.5deg) scale(1.05)}}
@@ -4883,7 +4886,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1052';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1053';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
