@@ -5002,7 +5002,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1093';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1094';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10210,6 +10210,37 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     c.fillStyle = C.mu; c.font = '500 12.5px ' + C.ff; c.fillText(o.note, W / 2, L.py + L.ph + 28);
   }
   function lvHit(n, x, y){ const L = lvGeo(n); if (x < L.bx || x > L.bx + L.bw) return -1; for (let i = 0; i < n; i++) { const yy = L.y0 + i * (L.rh + L.gap); if (y >= yy && y <= yy + L.rh) return i; } if (y >= L.py && y <= L.py + L.ph) return 'go'; return -1; }
+  /* меню выбора уровня шахмат: карточка выбранного уровня + шкала из 7 сегментов */
+  const lvMix = (a, b, t) => { const f = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)), x = f(a), y = f(b); return '#' + x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+  function lvGeo2(){ const bw = Math.min(W - 40, 340), bx = (W - bw) / 2, y0 = Math.max(104, H * .2), hh = 144, sy = y0 + hh + 22, sh = 46, py = sy + sh + 40; return {bw, bx, y0, hh, sy, sh, sg: 6, sw: (bw - 36 - 36) / 7, py, ph: 54}; }
+  function lvDraw2(c, g, o){
+    const n = o.lv.length, L = lvGeo2(), cols = LVC[1], lp = g.lvp == null ? g.lvl : g.lvp, i0 = Math.max(0, Math.min(n - 1, Math.floor(lp))), i1 = Math.min(n - 1, i0 + 1), col = lvMix(cols[i0], cols[i1], lp - i0), lv = o.lv[g.lvl], bump = g.lvb || 0;
+    c.textAlign = 'center'; c.textBaseline = 'alphabetic';
+    c.fillStyle = C.tx; c.font = '800 28px ' + C.ff; c.fillText(o.title, W / 2, L.y0 - 50); c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.fillText(o.sub, W / 2, L.y0 - 24);
+    glow(c, L.bx + 50, L.y0 + 62, 120, col, .22);
+    rr(c, L.bx, L.y0, L.bw, L.hh, 22); c.fillStyle = C.s2; c.fill(); c.lineWidth = 1.6; c.strokeStyle = col; c.globalAlpha = .6; c.stroke(); c.globalAlpha = 1;
+    const rx = L.bx + 50, ry = L.y0 + 60, rs = 1 + .16 * bump;
+    c.save(); c.translate(rx, ry); c.scale(rs, rs); c.shadowColor = col; c.shadowBlur = 16 + 10 * bump; c.fillStyle = col; c.beginPath(); c.arc(0, 0, 30, 0, 7); c.fill(); c.restore();
+    c.fillStyle = '#10121c'; c.font = '900 26px ' + C.ff; c.textBaseline = 'middle'; c.fillText(g.lvl + 1, rx, ry + 1.5); c.textBaseline = 'alphabetic';
+    c.textAlign = 'left'; const tx = L.bx + 96, tw = L.bw - 96 - 16; let nf = 25; c.font = '800 ' + nf + 'px ' + C.ff; while (c.measureText(lv[0]).width > tw && nf > 16) { nf--; c.font = '800 ' + nf + 'px ' + C.ff; }
+    c.fillStyle = C.tx; c.fillText(lv[0], tx, L.y0 + 52);
+    c.font = '500 13px ' + C.ff; c.fillStyle = C.mu; let l1 = '', l2 = ''; for (const w of lv[1].split(' ')) { if (!l2 && c.measureText(l1 ? l1 + ' ' + w : w).width <= tw) l1 = l1 ? l1 + ' ' + w : w; else l2 = l2 ? l2 + ' ' + w : w; }
+    c.fillText(l1, tx, L.y0 + 76); if (l2) c.fillText(l2, tx, L.y0 + 94);
+    const pt = '+' + lv[2] + ' за победу'; c.font = '800 13px ' + C.ff; const pw = c.measureText(pt).width + 24, px = L.bx + 20, py2 = L.y0 + L.hh - 36;
+    rr(c, px, py2, pw, 26, 13); c.globalAlpha = .18; c.fillStyle = col; c.fill(); c.globalAlpha = 1; c.fillStyle = col; c.textBaseline = 'middle'; c.fillText(pt, px + 12, py2 + 13.5); c.textBaseline = 'alphabetic';
+    c.textAlign = 'center';
+    for (let i = 0; i < n; i++) { const w = Math.max(0, 1 - Math.abs(lp - i)), x = L.bx + 18 + i * (L.sw + L.sg), y = L.sy;
+      rr(c, x - 2 * w, y - 6 * w, L.sw + 4 * w, L.sh + 6 * w, 14); c.fillStyle = C.s2; c.fill(); c.lineWidth = 1; c.strokeStyle = C.bd; c.stroke();
+      if (w > 0) { c.save(); c.globalAlpha = w; c.shadowColor = cols[i]; c.shadowBlur = 14 * w; rr(c, x - 2 * w, y - 6 * w, L.sw + 4 * w, L.sh + 6 * w, 14); c.fillStyle = cols[i]; c.fill(); c.restore(); }
+      c.globalAlpha = 1 - w; c.fillStyle = cols[i]; rr(c, x + L.sw * .28, y + L.sh - 9, L.sw * .44, 3, 1.5); c.fill();
+      c.fillStyle = C.mu; c.font = '800 16px ' + C.ff; c.textBaseline = 'middle'; c.fillText(i + 1, x + L.sw / 2, y + L.sh / 2 - 3);
+      c.globalAlpha = w; c.fillStyle = '#10121c'; c.fillText(i + 1, x + L.sw / 2, y + L.sh / 2 - 3 - 3 * w); c.globalAlpha = 1; c.textBaseline = 'alphabetic'; }
+    c.fillStyle = C.mu; c.globalAlpha = .65; c.font = '500 11.5px ' + C.ff; c.textAlign = 'left'; c.fillText('легче', L.bx + 18, L.sy + L.sh + 20); c.textAlign = 'right'; c.fillText('сложнее', L.bx + L.bw - 18, L.sy + L.sh + 20); c.globalAlpha = 1; c.textAlign = 'center';
+    c.save(); c.shadowColor = C.ac; c.shadowBlur = 18; rr(c, L.bx, L.py, L.bw, L.ph, 18); c.fillStyle = C.ac; c.fill(); c.restore();
+    c.fillStyle = C.bg; c.font = '900 18px ' + C.ff; c.textBaseline = 'middle'; c.fillText('Играть · ' + lv[0] + '  ›', W / 2, L.py + L.ph / 2 + 1); c.textBaseline = 'alphabetic';
+    c.fillStyle = C.mu; c.globalAlpha = .75; c.font = '500 12px ' + C.ff; c.fillText(o.note, W / 2, L.py + L.ph + 26); c.globalAlpha = 1;
+  }
+  function lvHit2(n, x, y){ const L = lvGeo2(); if (y >= L.sy - 8 && y <= L.sy + L.sh + 8) { const i = Math.round((x - (L.bx + 18 + L.sw / 2)) / (L.sw + L.sg)); return i >= 0 && i < n && x >= L.bx + 10 && x <= L.bx + L.bw - 10 ? i : -1; } if (x >= L.bx && x <= L.bx + L.bw && y >= L.py && y <= L.py + L.ph) return 'go'; return -1; }
   const CHLV = [['Новичок', 'Ходит почти наугад', 1], ['Любитель', 'Видит угрозы на ход вперёд', 2], ['Клуб', 'Считает на 2 хода вперёд', 3], ['Сильный', 'Считает на 3 хода вперёд', 5], ['Мастер', 'Думает глубоко, ошибается редко', 8], ['Эксперт', 'Считает на 6+ ходов, не прощает промахов', 13], ['Гроссмейстер', 'Почти не ошибается. Удачи', 21]];
   const CHI = {};
   function chImg(p){
@@ -10221,7 +10252,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     const geo = () => { const S = Math.min(W - 24, H * .6), t = S / 8, x0 = (W - S) / 2, y0 = Math.max(0, (H - S - 170) * .34) + 80; return {S, t, x0, y0}; };
     const sq = (G2, i) => [G2.x0 + (i & 7) * G2.t, G2.y0 + (i >> 3) * G2.t];
     const lv0 = () => { try { const v = +localStorage.getItem('voob_che_lv'); return v >= 0 && v < CHLV.length ? v : 1; } catch (e) { return 1; } };
-    g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.nb = false; g.res = null; g.anim = null; g.S = chNew(); g.hist = []; g.legal = []; g.sel = -1; g.last = []; g.bt = 0; g.ghost = []; g.promo = null; g.chk = false; 'KQRBNP'.split('').forEach(chImg); 'kqrbnp'.split('').forEach(chImg); };
+    g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.lvp = g.lvl; g.lvb = 0; g.nb = false; g.res = null; g.anim = null; g.S = chNew(); g.hist = []; g.legal = []; g.sel = -1; g.last = []; g.bt = 0; g.ghost = []; g.promo = null; g.chk = false; 'KQRBNP'.split('').forEach(chImg); 'kqrbnp'.split('').forEach(chImg); };
     const begin = () => { g.S = chNew(); g.hist = [chKey(g.S)]; g.legal = chLegal(g.S); g.sel = -1; g.last = []; g.res = null; g.anim = null; g.ghost = []; g.promo = null; g.chk = false; g.thk = false; g.pm = null; g.bD = 2.5; g.ph = 'play'; g.bt = 0; g.intro = 0; g.land = null; g.rings = []; g.trN = {}; g.trT = {}; };
     const move = (m, byBot) => {
       const S0 = g.S, w = S0.turn === 'w', n = chMake(S0, m), list = [{p: S0.b[m.f], f: m.f, t: m.t}];
@@ -10235,7 +10266,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     g.tap = () => {};
     g.down = (x, y) => {
       if (g.dead) return;
-      if (g.ph === 'menu') { const h = lvHit(CHLV.length, x, y); if (h === 'go') { try { localStorage.setItem('voob_che_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); begin(); } else if (h >= 0) { g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
+      if (g.ph === 'menu') { const h = lvHit2(CHLV.length, x, y); if (h === 'go') { try { localStorage.setItem('voob_che_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); begin(); } else if (h >= 0) { if (h !== g.lvl) g.lvb = 1; g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
       if (g.ph === 'over') { hap.tap(); begin(); return; }
       if (g.ph !== 'play' || g.S.turn !== 'w' || g.anim || g.res) return;
       const G2 = geo();
@@ -10244,7 +10275,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       if (g.sel >= 0) { const ms = g.legal.filter(m => m.f === g.sel && m.t === i); if (ms.length) { if (ms.length > 1) g.promo = ms; else move(ms[0]); return; } if (i === g.sel) { g.sel = -1; hap.tap(); return; } }
       if (g.legal.some(m => m.f === i)) { g.sel = i; hap.tap(); } else g.sel = -1;
     };
-    g.update = dt => { g.t += dt; stepFx(g, dt); g.ghost = g.ghost.filter(q => (q.l -= dt) > 0); g.intro = (g.intro || 0) + dt; g.selT = (g.selT || 0) + dt; if (g.land) { g.land.t += dt; if (g.land.t > .35) g.land = null; } g.rings = (g.rings || []).filter(q => (q.l -= dt) > 0);
+    g.update = dt => { g.t += dt; if (g.ph === 'menu') { g.lvp += (g.lvl - g.lvp) * Math.min(1, dt * 14); g.lvb = Math.max(0, (g.lvb || 0) - dt * 3.2); } stepFx(g, dt); g.ghost = g.ghost.filter(q => (q.l -= dt) > 0); g.intro = (g.intro || 0) + dt; g.selT = (g.selT || 0) + dt; if (g.land) { g.land.t += dt; if (g.land.t > .35) g.land = null; } g.rings = (g.rings || []).filter(q => (q.l -= dt) > 0);
       if (g.dead || g.ph !== 'play') return;
       if (g.anim) { g.anim.t += dt; if (g.anim.t >= g.anim.d + .02) { const a = g.anim, G2 = geo(); g.anim = null; g.land = {i: a.list[0].t, t: 0}; if (a.cap) { const [px, py] = sq(G2, a.cap.i); bstP(g, px + G2.t / 2, py + G2.t / 2, 12, isW(a.cap.p) ? '#f4efe6' : C.ac, 150); g.sh = .5; g.rings.push({x: px + G2.t / 2, y: py + G2.t / 2, l: .5}); }
           if (g.res) { const k = g.res.k; if (k === 'lose') { g.dieT = 'Тебе мат'; onDie(g, K); g.newBest = g.nb; } else { g.ph = 'over'; if (k === 'win') { for (let q = 0; q < 4; q++) bstP(g, W * (.2 + .2 * q), H * .22, 12, ['#ffd24a', '#4cd98a', '#ff5468', '#6ab8ff'][q], 230); g.pts = CHLV[g.lvl][2]; g.score += g.pts; sfx('perfect', 2); hap.ok(); if (g.score > (s.best[K] || 0)) { s.best[K] = g.score; save(); g.nb = true; pushBest(K); } } } }
@@ -10254,7 +10285,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     };
     g.draw = c => {
       c.save(); shk(c, g); const G2 = geo(), t = G2.t; c.textAlign = 'center';
-      if (g.ph === 'menu') { bg2(c, 'rgba(110,90,230,.5)', .3); drawStars(c, g, g.t * 6); lvDraw(c, g, {title: 'Шахматы', sub: 'Против бота. Выбери уровень', lv: CHLV, note: 'Победы копят очки серии. Проигрыш — серия обнуляется'}); c.restore(); return; }
+      if (g.ph === 'menu') { bg2(c, 'rgba(110,90,230,.5)', .3); drawStars(c, g, g.t * 6); lvDraw2(c, g, {title: 'Шахматы', sub: 'Против бота', lv: CHLV, note: 'Победа копит очки серии, проигрыш обнуляет'}); c.restore(); return; }
       { const ik = Math.min(1, (g.intro || 0) / .45), ez = 1 - Math.pow(1 - ik, 3), zs = .94 + .06 * ez; c.translate(W / 2, H / 2); c.scale(zs, zs); c.translate(-W / 2, -H / 2); c.globalAlpha = ik; }
       if (g.selPrev !== g.sel) { g.selPrev = g.sel; g.selT = 0; }
       glow(c, W / 2, G2.y0 + G2.S / 2, G2.S * .95, C.ac, .16); c.fillStyle = C.tx; c.globalAlpha = .07; for (let yy = 14; yy < H; yy += 26) for (let xx = 14; xx < W; xx += 26) { c.beginPath(); c.arc(xx, yy, 1.2, 0, 7); c.fill(); } c.globalAlpha = 1; c.textAlign = 'center';
