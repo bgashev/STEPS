@@ -4328,7 +4328,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.981';
+const APP = 'VOOB (by BGASHEV) Mini App v1.982';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9323,19 +9323,25 @@ const REST = (function(){
     const cl = (v, a, b) => Math.max(a, Math.min(b, v)), stg = () => Math.min(7, Math.floor(g.caught / 6)), dif = () => 1 - Math.exp(-g.n / 16), hb0 = () => (262 + stg() * 37) % 360, rimH = () => [14, 208, 152, 268, 338, 32, 18, 190][stg() % 8];
     const cur = () => g.hs.find(h => h.id === g.cid) || g.hs[0], U = h => ({x: Math.sin(h.th), y: -Math.cos(h.th)}), T = h => ({x: Math.cos(h.th), y: Math.sin(h.th)});
     const holdPos = () => { const h = cur(), u = U(h), off = 7 + (g.aim ? Math.min(30, g.pull * .22) : 0); return [h.x - u.x * off, h.y - u.y * off]; };
-    const newHoop = () => { const p = g.hs.reduce((m, h) => h.y < m.y ? h : m, g.hs[0]), d = dif(), st = stg(), hw = 42 - 11 * d, gap = 215 + 100 * d + rnd(0, 36); let x = rnd(hw + 30, W - hw - 30);
-      for (let k = 0; k < 12; k++) { x = rnd(hw + 30, W - hw - 30); const dx = Math.abs(x - p.bx); if (dx > 60 && dx < 260) break; }
+    /* v1.982: «режимы раскладки» — корзины идут сериями (зигзаг, дрейф в одну сторону, у стен, тесные), а не случайно друг над другом */
+    const pickLay = st => { const m = [['alt', 3], ['drift', 3], ['edge', st >= 1 ? 2 : 0], ['tight', st >= 2 ? 2 : 0], ['wide', st >= 1 ? 1.5 : 0]].filter(q => q[1] > 0 && q[0] !== (g.lay && g.lay.m)); let r = Math.random() * m.reduce((a, q) => a + q[1], 0), k = m[0][0]; for (const q of m) { r -= q[1]; if (r <= 0) { k = q[0]; break; } } g.lay = {m: k, n: 3 + Math.floor(Math.random() * 3), dir: Math.random() < .5 ? -1 : 1}; };
+    const newHoop = () => { const p = g.hs.reduce((m, h) => h.y < m.y ? h : m, g.hs[0]), d = dif(), st = stg(), hw = 42 - 11 * d; if (!g.lay || --g.lay.n <= 0) pickLay(st); const L = g.lay, lo = hw + 30, hi = W - hw - 30;
+      let gap = 230 + 80 * d + rnd(0, 40) + (L.m === 'tight' ? -22 : L.m === 'wide' ? 28 : 0), x = p.bx;
+      for (let k = 0; k < 14; k++) { if (L.m === 'alt') x = p.bx < W / 2 ? rnd(W * .58, hi) : rnd(lo, W * .42); else if (L.m === 'drift') { x = p.bx + L.dir * rnd(90, 150); if (x < lo || x > hi) { L.dir = -L.dir; x = p.bx + L.dir * rnd(90, 150); } } else if (L.m === 'edge') x = p.bx < W / 2 ? hi - rnd(0, 18) : lo + rnd(0, 18); else if (L.m === 'tight') x = p.bx + (Math.random() < .5 ? -1 : 1) * rnd(70, 130); else x = rnd(lo, hi);
+        x = cl(x, lo, hi); if (Math.abs(x - p.bx) >= 80) break; }
+      if (L.m === 'edge') gap -= 20;
       const h = {id: g.hid++, bx: x, x, y: p.y - gap, amp: 0, sp: rnd(.8, 1.5), ph: rnd(0, 6), hw, th0: 0, th: 0, sw: 0, cd: 0, pu: 0}; g.n++;
-      if (st >= 2 && Math.random() < .55) { h.amp = Math.min(rnd(30, 70), x - hw - 16, W - x - hw - 16); if (h.amp < 12) h.amp = 0; }
+      if ((st >= 1 && Math.random() < .3) || (st >= 2 && Math.random() < .55)) { h.amp = Math.min(rnd(30, 70), x - hw - 16, W - x - hw - 16); if (h.amp < 12) h.amp = 0; }
       if (st >= 4 && Math.random() < .45) { h.th0 = (Math.random() < .5 ? -1 : 1) * rnd(.3, .7); h.th = h.th0; }
       g.hs.push(h); const my = (p.y + h.y) / 2, mx = (p.bx + x) / 2;
-      if (Math.random() < .5) g.st.push({x: cl(mx + rnd(-60, 60), 30, W - 30), y: my + rnd(-30, 30), got: 0});
+      if ((L.m === 'wide' || L.m === 'edge') && Math.random() < .7) { for (let i = 1; i <= 3; i++) g.st.push({x: cl(p.bx + (x - p.bx) * i / 4, 30, W - 30), y: p.y + (h.y - p.y) * i / 4 - Math.sin(i / 4 * Math.PI) * 50, got: 0}); }
+      else if (Math.random() < .5) g.st.push({x: cl(mx + rnd(-60, 60), 30, W - 30), y: my + rnd(-30, 30), got: 0});
       if (st >= 3 && Math.random() < .35) g.mn.push({x: cl(mx + (Math.random() < .5 ? -1 : 1) * rnd(80, 120), 30, W - 30), y: my + rnd(-40, 40), ph: rnd(0, 6)}); };
-    g.init = () => { base0(g); g.hid = 0; g.n = 0; g.caught = 0; g.hs = []; g.st = []; g.mn = []; g.rp = []; g.cf = []; g.sn = 0; g.tr = []; const h0 = {id: g.hid++, bx: W / 2, x: W / 2, y: H * .74, amp: 0, sp: 1, ph: 0, sc: 1, hw: 42, th0: 0, th: 0, sw: 0, cd: 0, pu: 0}; g.hs.push(h0); g.cid = h0.id; for (let i = 0; i < 4; i++) newHoop();
+    g.init = () => { base0(g); g.hid = 0; g.n = 0; g.lay = null; g.caught = 0; g.hs = []; g.st = []; g.mn = []; g.rp = []; g.cf = []; g.sn = 0; g.tr = []; const h0 = {id: g.hid++, bx: W / 2, x: W / 2, y: H * .74, amp: 0, sp: 1, ph: 0, sc: 1, hw: 42, th0: 0, th: 0, sw: 0, cd: 0, pu: 0}; g.hs.push(h0); g.cid = h0.id; for (let i = 0; i < 4; i++) newHoop();
       g.b = {x: 0, y: 0, vx: 0, vy: 0, a: 0}; g.state = 'hold'; g.aim = false; g.pull = 0; g.pvx = 0; g.pvy = -1; g.ax = 0; g.ay = 0; g.combo = 0; g.touched = false; g.sq = 0; g.fl = 0; g.sb = null; g.stv = 0; g.cam = h0.y - H * .66; const hp = holdPos(); g.b.x = hp[0]; g.b.y = hp[1]; };
     g.tap = () => {}; g.down = (x, y) => { if (g.state !== 'hold') return; g.aim = true; g.ax = x; g.ay = y; g.pull = 0; g.pvx = 0; g.pvy = -1; };
     g.move = (x, y) => { if (!g.aim) return; g.pvx = g.ax - x; g.pvy = g.ay - y; g.pull = Math.hypot(g.pvx, g.pvy); };
-    g.up = () => { if (!g.aim) return; g.aim = false; if (g.state !== 'hold' || g.pull < 18) { g.pull = 0; return; } const h = cur(), sp = Math.min(1350, g.pull * 6.6), nx = g.pvx / g.pull, ny = g.pvy / g.pull, hp = holdPos();
+    g.up = () => { if (!g.aim) return; g.aim = false; if (g.state !== 'hold' || g.pull < 18) { g.pull = 0; return; } const h = cur(), sp = Math.min(1180, g.pull * 5.7), nx = g.pvx / g.pull, ny = g.pvy / g.pull, hp = holdPos();
       g.b.x = hp[0]; g.b.y = hp[1]; g.b.vx = nx * sp; g.b.vy = ny * sp; g.state = 'fly'; h.cd = .45; h.sw = -7; g.touched = false; g.sq = .8; sfx('hop', 3); hap.tap(); bstP(g, g.b.x, g.b.y, 10, 'hsl(' + rimH() + ',95%,62%)', 130); g.pull = 0; };
     const die = why => { g.sh = 1; g.fl = 1; bstP(g, g.b.x, g.b.y, 24, C.rd, 200); popT(g, g.b.x, g.b.y - 34, why, C.rd); sfx('die'); onDie(g, K); };
     const caught = h => { g.cid = h.id; g.state = 'hold'; g.b.vx = g.b.vy = 0; h.sw = 9; h.pu = 1; g.sq = 1; if (h.sc) { g.combo = 0; g.touched = false; return; } h.sc = 1; g.caught++; const per = !g.touched; let add = 1;
@@ -9351,10 +9357,10 @@ const REST = (function(){
           if (b.x < BR) { b.x = BR; if (b.vx < 0) { b.vx *= -.8; g.touched = true; g.sq = .5; sfx('thunk'); bstP(g, b.x, b.y, 6, '#fff', 90); } } else if (b.x > W - BR) { b.x = W - BR; if (b.vx > 0) { b.vx *= -.8; g.touched = true; g.sq = .5; sfx('thunk'); bstP(g, b.x, b.y, 6, '#fff', 90); } }
           for (const h of g.hs) { if (Math.abs(h.y - b.y) > 130) continue; const u = U(h), t = T(h);
             [[-1, h.x - h.hw * t.x, h.y - h.hw * t.y], [1, h.x + h.hw * t.x, h.y + h.hw * t.y]].forEach(q => { const dx = b.x - q[1], dy = b.y - q[2], d = Math.hypot(dx, dy), md = BR + 6.5; if (d < md && d > .001) { const nx = dx / d, ny = dy / d; b.x = q[1] + nx * md; b.y = q[2] + ny * md; const vn = b.vx * nx + b.vy * ny; if (vn < 0) { b.vx -= 1.55 * vn * nx; b.vy -= 1.55 * vn * ny; g.touched = true; g.sq = .4; h.sw = 4; sfx('thunk'); bstP(g, q[1], q[2], 8, 'hsl(' + rimH() + ',95%,65%)', 110); } } });
-            if (h.cd <= 0) { const d = (b.x - h.x) * u.x + (b.y - h.y) * u.y, dp = (px - h.x) * u.x + (py - h.y) * u.y, al = (b.x - h.x) * t.x + (b.y - h.y) * t.y; if (dp > 0 && d <= 0 && Math.abs(al) < h.hw - 5 && b.vx * u.x + b.vy * u.y < 0) { caught(h); break; } } } }
+            if (h.cd <= 0) { const d = (b.x - h.x) * u.x + (b.y - h.y) * u.y, dp = (px - h.x) * u.x + (py - h.y) * u.y, al = (b.x - h.x) * t.x + (b.y - h.y) * t.y; if (dp > 0 && d <= 0 && Math.abs(al) < h.hw - 5 && b.vx * u.x + b.vy * u.y < 0 && h.y - g.cam < H - 10) { caught(h); break; } } } }
         if (g.state === 'fly') { const b = g.b; g.st.forEach(q => { if (!q.got && Math.hypot(b.x - q.x, b.y - q.y) < 30) { q.got = 1; g.sn++; g.score += 2; sfx('spark', 6); bstP(g, q.x, q.y, 14, GD, 150); popT(g, q.x, q.y - 22, '+2', GD); g.rp.push({x: q.x, y: q.y, l: .35, c: GD}); } });
           g.mn.forEach(m => { if (Math.hypot(b.x - m.x, b.y - (m.y + Math.sin(g.t * 2 + m.ph) * 6)) < 15 + BR - 4) { bstP(g, m.x, m.y, 26, '#ff9a3d', 240); die('Мина!'); } });
-          if (b.y - g.cam > H + 70) die('Мимо!'); } }
+          if (b.y - g.cam > H + BR) die('Мимо!'); } }
       g.tr.push([g.b.x, g.b.y]); if (g.tr.length > (g.combo >= 3 ? 24 : 9) || g.state === 'hold') g.tr.shift(); if (g.state === 'fly' && g.combo >= 3 && Math.random() < .8) bstP(g, g.b.x, g.b.y, 1, Math.random() < .5 ? '#ffb347' : '#ff6b3d', 70);
       const tgc = Math.min(cur().y - H * .66, g.b.y - H * .3); if (tgc < g.cam) g.cam += (tgc - g.cam) * Math.min(1, dt * 5);
       g.hs = g.hs.filter(h => h.id === g.cid || h.y - g.cam < H + 220); g.st = g.st.filter(q => !q.got && q.y - g.cam < H + 60); g.mn = g.mn.filter(m => m.y - g.cam < H + 60); };
@@ -9365,7 +9371,7 @@ const REST = (function(){
     const drawHoopBack = (c, h, past) => { const r = h.hw, ry = r * .3, pl = 1 + .1 * h.pu; c.save(); c.translate(h.x, h.y); c.rotate(h.th); c.scale(pl, pl);
       c.fillStyle = past ? 'rgba(20,28,50,.22)' : 'rgba(10,30,70,.3)'; c.beginPath(); c.ellipse(0, 0, r, ry, 0, 0, 7); c.fill();
       c.strokeStyle = past ? RIMP : RIMC; c.lineWidth = 11; c.beginPath(); c.ellipse(0, 0, r, ry, 0, Math.PI, 2 * Math.PI); c.stroke(); c.restore(); };
-    const drawHoopFront = (c, h, past) => { const r = h.hw, ry = r * .3, nh = r * .6 + (h.id === g.cid && g.aim ? Math.min(24, g.pull * .12) : 0), br = r * .52, pl = 1 + .1 * h.pu, j = h.sw * Math.sin(g.t * 15); c.save(); c.translate(h.x, h.y); c.rotate(h.th); c.scale(pl, pl); c.globalAlpha = past ? .55 : 1;
+    const drawHoopFront = (c, h, past) => { const r = h.hw, ry = r * .3, nh = r * .4 + (h.id === g.cid && g.aim ? Math.min(24, g.pull * .12) : 0), br = r * .52, pl = 1 + .1 * h.pu, j = h.sw * Math.sin(g.t * 15); c.save(); c.translate(h.x, h.y); c.rotate(h.th); c.scale(pl, pl); c.globalAlpha = past ? .55 : 1;
       const P = (u, v) => { const w = r * (1 - v) + br * v; return [u * w + j * v * v, v * nh + ry * 1.5 * v * (1 - u * u * .8)]; };
       const out = () => { c.beginPath(); for (let i = 0; i <= 14; i++) { const q = P(-1 + i / 7, 1 - 0); } c.moveTo(-r, 0); for (let i = 0; i <= 16; i++) { const v = i / 16, q = P(-1, v); c.lineTo(q[0], q[1]); } for (let i = 0; i <= 16; i++) { const u = -1 + 2 * i / 16, q = P(u, 1); c.lineTo(q[0], q[1]); } for (let i = 16; i >= 0; i--) { const v = i / 16, q = P(1, v); c.lineTo(q[0], q[1]); } c.closePath(); };
       c.save(); out(); c.clip(); c.strokeStyle = '#fff'; c.lineWidth = 4; c.lineJoin = 'round'; for (let dir = -1; dir <= 1; dir += 2) for (let a0 = -3; a0 <= 3; a0 += .75) { c.beginPath(); for (let i = 0; i <= 12; i++) { const v = i / 12, q = P(a0 + dir * v * 1.0, v); i ? c.lineTo(q[0], q[1]) : c.moveTo(q[0], q[1]); } c.stroke(); } c.restore();
@@ -9402,7 +9408,7 @@ const REST = (function(){
       if (!g.dead) ballDraw(c);
       g.hs.forEach(h => drawHoopRim(c, h, isPast(h)));
       g.cf.forEach(p => { c.save(); c.globalAlpha = Math.min(1, p.l * 2); c.translate(p.x, p.y); c.rotate(p.rot); c.fillStyle = p.c; c.fillRect(-p.r, -p.r * .55, p.r * 2, p.r * 1.1); c.restore(); }); c.globalAlpha = 1;
-      if (g.aim && g.pull > 14 && g.state === 'hold') { const sp = Math.min(1350, g.pull * 6.6), nx = g.pvx / g.pull, ny = g.pvy / g.pull; let x = g.b.x, y = g.b.y, vx = nx * sp, vy = ny * sp; for (let i = 0; i < 9; i++) { for (let k = 0; k < 4; k++) { vy += GRV * .0165; x += vx * .0165; y += vy * .0165; if (x < BR) { x = BR; vx = -vx * .8; } else if (x > W - BR) { x = W - BR; vx = -vx * .8; } } c.globalAlpha = 1 - i * .07; c.fillStyle = '#f0a030'; c.beginPath(); c.arc(x, y, 5.2 - i * .38, 0, 7); c.fill(); } c.globalAlpha = 1; }
+      if (g.aim && g.pull > 14 && g.state === 'hold') { const sp = Math.min(1180, g.pull * 5.7), nx = g.pvx / g.pull, ny = g.pvy / g.pull; let x = g.b.x, y = g.b.y, vx = nx * sp, vy = ny * sp; for (let i = 0; i < 9; i++) { for (let k = 0; k < 4; k++) { vy += GRV * .0165; x += vx * .0165; y += vy * .0165; if (x < BR) { x = BR; vx = -vx * .8; } else if (x > W - BR) { x = W - BR; vx = -vx * .8; } } c.globalAlpha = 1 - i * .07; c.fillStyle = '#f0a030'; c.beginPath(); c.arc(x, y, 5.2 - i * .38, 0, 7); c.fill(); } c.globalAlpha = 1; }
       drawFx(c, g); c.restore();
       drawStar(c, W - 66, 34, 13, 0); c.fillStyle = '#9aa0ad'; c.font = '800 20px ' + C.ff; c.textAlign = 'left'; c.fillText(String(g.sn || 0), W - 46, 41);
       if (g.combo >= 1) { c.fillStyle = 'rgba(255,255,255,.12)'; rr(c, 14, 18, 100, 26, 13); c.fill(); c.fillStyle = g.combo >= 3 ? '#ffb347' : '#ffd53d'; c.font = '800 12px ' + C.ff; c.textAlign = 'left'; c.fillText('ЧИСТО ×' + g.combo, 26, 35); }
@@ -9654,14 +9660,31 @@ const REST = (function(){
     const pj = (a, b) => [(a - b) * TX, -(a + b) * TY];
     const sm = p => p.a + p.b;
     const STN = ['Разминка', 'Ступеньки', 'Шпильки', 'Ритм', 'Скорость', 'Безумие'], stgOf = v => Math.min(5, Math.floor(v / 28));
-    const grow = () => { while (sm(g.pts[g.pts.length - 1]) < g.pa + g.pb + 46) { const l = g.pts[g.pts.length - 1], ax = l.ax, st = stgOf(g.score + 14);   // v1.923: дорога строится с запасом и плавно проявляется; короткие «ступеньки» из быстрых поворотов
-      if (!g.ql.length && g.pts.length >= 3 && st > 0 && Math.random() < [0, .3, .4, .5, .55, .6][st]) { const n = 3 + Math.floor(Math.random() * (1 + st)), Lb = 2 - st * .1; for (let i = 0; i < n; i++) g.ql.push(Lb + rnd(0, .25)); }
-      const sh = g.ql.length > 0, L = g.pts.length < 2 ? 5.5 : sh ? g.ql.shift() : rnd(2.4 - st * .08, 5 - st * .2);
+    /* v1.982: дорога из «фигур» вместо случайных ступенек: каждая фигура — набор длин отрезков; набор и сложность растут плавно со счётом, после тяжёлых фигур — передышка */
+    const lerp = (a, b, t) => a + (b - a) * t, ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+    const PATS = [
+      {k: 'breath', d0: 0, w: d => 3 - 1.6 * d, f: d => [rnd(3.4, 5.6 - d * .6)]},
+      {k: 'sway', d0: 0, w: d => 2.4, f: d => [rnd(2.8, 4), rnd(2.8, 4)]},
+      {k: 'widezig', d0: .04, w: d => 1.6, f: d => { const r = []; for (let n = ri(2, 3); n--;) r.push(rnd(3.6, 4.6), rnd(lerp(2.4, 1.9, d), lerp(2.7, 2.2, d))); return r; }},
+      {k: 'stairs', d0: .08, w: d => 2.2 - d, f: d => Array.from({length: ri(3, 4)}, () => rnd(2.1, 2.6))},
+      {k: 'cresc', d0: .18, w: d => 1.6, hard: 1, f: d => { const n = ri(4, 6), e = lerp(2.1, 1.45, d); return Array.from({length: n}, (_, i) => lerp(4.2, e, i / (n - 1)) + rnd(-.1, .1)); }},
+      {k: 'decresc', d0: .18, w: d => 1.2, f: d => { const n = ri(4, 5), e = lerp(2.1, 1.5, d); return Array.from({length: n}, (_, i) => lerp(e, 4, i / (n - 1))); }},
+      {k: 'tight', d0: .3, w: d => 2 * d + .3, hard: 1, f: d => Array.from({length: ri(4, 5 + Math.round(d * 3))}, () => lerp(1.95, 1.4, d) + rnd(0, .15))},
+      {k: 'rhythm', d0: .35, w: d => 1.8, hard: 1, f: d => { const a = rnd(2.8, 3.6), b = lerp(1.9, 1.45, d), r = []; for (let n = 3; n--;) r.push(a, b); return r; }},
+      {k: 'burst', d0: .5, w: d => 1.8, hard: 1, f: d => [lerp(1.8, 1.45, d), lerp(1.8, 1.45, d), lerp(1.8, 1.45, d), rnd(4.2, 5.2)]},
+      {k: 'chaos', d0: .7, w: d => 1.6 * d, hard: 1, f: d => Array.from({length: ri(5, 8)}, () => rnd(1.45, 3.6))}];
+    const nextPat = d => { const av = PATS.filter(p => d >= p.d0 && p.k !== g.lp), tw = av.reduce((a, p) => a + p.w(d), 0); let r = Math.random() * tw, p = av[0]; for (const q of av) { r -= q.w(d); if (r <= 0) { p = q; break; } }
+      g.lp = p.k; const a = p.f(d); if (p.hard && Math.random() < 1 - d * .45) a.push(rnd(3.6, 5)); return a; };   // после тяжёлой фигуры чаще идёт длинный отрезок
+    const grow = () => { while (sm(g.pts[g.pts.length - 1]) < g.pa + g.pb + 46) { const l = g.pts[g.pts.length - 1], ax = l.ax, d = Math.min(1, (g.score + 10) / 150);
+      if (!g.ql.length && g.pts.length >= 3) g.ql = nextPat(d);
+      const L = g.pts.length < 3 ? 5.5 : g.ql.length ? g.ql.shift() : rnd(3.2, 5), sh = L < 2.3;
       const q = {a: l.a + (ax === 0 ? L : 0), b: l.b + (ax === 1 ? L : 0), ax: ax ^ 1, sh}; g.pts.push(q);
-      for (let k = 0, n = Math.random() < (sh ? .3 : .55) ? 1 + (Math.random() < .35 && !sh ? 1 : 0) : 0; k < n; k++) { const f = rnd(.2, .85); g.gm.push({a: l.a + (q.a - l.a) * f, b: l.b + (q.b - l.b) * f, got: 0}); } } };
+      const gp = f => g.gm.push({a: l.a + (q.a - l.a) * f, b: l.b + (q.b - l.b) * f, got: 0});
+      if (L >= 4 && Math.random() < .55) { [.3, .5, .7].forEach(gp); }   // на длинной прямой — цепочка искр
+      else for (let k = 0, n = Math.random() < (sh ? .3 : .55) ? 1 + (Math.random() < .35 && !sh ? 1 : 0) : 0; k < n; k++) gp(rnd(.2, .85)); } };
     const inRoad = (a, b) => { for (let j = Math.max(0, g.si - 1); j < Math.min(g.pts.length - 1, g.si + 4); j++) { const p = g.pts[j], q = g.pts[j + 1];
       if (p.ax === 0 ? (a >= p.a - HW && a <= q.a + HW && Math.abs(b - p.b) <= HW) : (b >= p.b - HW && b <= q.b + HW && Math.abs(a - p.a) <= HW)) return true; } return false; };
-    g.init = () => { base0(g); g.pts = [{a: 0, b: 0, ax: 0}]; g.gm = []; g.pa = 0; g.pb = 0; g.ax = 0; g.si = 0; g.started = false; g.fl = 0; g.fy = 0; g.fvy = 0; g.cx = 0; g.cy = 0; g.gn = 0; g.trl = []; g.ql = []; g.stg = 0; g.sf = 0; grow(); };
+    g.init = () => { base0(g); g.pts = [{a: 0, b: 0, ax: 0}]; g.gm = []; g.pa = 0; g.pb = 0; g.ax = 0; g.si = 0; g.started = false; g.fl = 0; g.fy = 0; g.fvy = 0; g.cx = 0; g.cy = 0; g.gn = 0; g.trl = []; g.ql = []; g.lp = ''; g.stg = 0; g.sf = 0; grow(); };
     g.tap = () => { if (!g.started) { g.started = true; return; } if (g.fl) return; g.ax ^= 1; sfx('bloop'); { const p = pj(g.pa, g.pb); bstP(g, W / 2 + p[0] - g.cx, H * .64 + p[1] - g.cy - 8, 9, hue(200 + g.stg * 40), 120); } };
     g.update = dt => { g.t += dt; stepFx(g, dt); const p = pj(g.pa, g.pb); g.cx += (p[0] - g.cx) * Math.min(1, dt * 9); g.cy += (p[1] - g.cy) * Math.min(1, dt * 9);
       if (g.fl) { g.fvy += 1500 * dt; g.fy += g.fvy * dt; g.pa += (g.ax === 0 ? 1 : 0) * dt * 1.2; g.pb += (g.ax === 1 ? 1 : 0) * dt * 1.2; return; } if (g.dead || !g.started) return;
