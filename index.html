@@ -5317,7 +5317,7 @@ window.DKG = DKG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1118';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1121';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10276,21 +10276,23 @@ const REST = (function(){
     if (col === 'b') { let v = -1e9; for (const m of mv) { v = Math.max(v, ckAB(ckApply(b, m, col).nb, nx, depth - 1, al, be, cx)); al = Math.max(al, v); if (al >= be || cx.out) break; } return v; }
     let v = 1e9; for (const m of mv) { v = Math.min(v, ckAB(ckApply(b, m, col).nb, nx, depth - 1, al, be, cx)); be = Math.min(be, v); if (al >= be || cx.out) break; } return v;
   }
-  /* бот играет чёрными; lvl: 0 новичок, 1 игрок, 2 мастер */
+  /* бот играет чёрными; lvl: 0 новичок, 1 любитель, 2 игрок, 3 опытный, 4 мастер */
+  const CKP5 = [{rd: .55, d: 2, nz: 6}, {rd: .1, d: 3, nz: 4}, {rd: 0, d: 4, nz: 2}, {ms: 240, nz: 1}, {ms: 650, nz: .25}];
   function ckBot(b, lvl){
     const mv = ckLegal(b, 'b'); if (mv.length < 2) return mv[0] || null;
-    if (lvl === 0 && Math.random() < .55) return mv[Math.floor(Math.random() * mv.length)];
-    const rate = (d, dl) => { const cx = {n: 0, out: false, dl}; const sc = mv.map(m => ckAB(ckApply(b, m, 'b').nb, 'w', d - 1, -1e9, 1e9, cx) + Math.random() * (lvl === 2 ? .3 : lvl === 1 ? 2 : 6)); return cx.out ? null : sc; };
+    const P = CKP5[lvl] || CKP5[2];
+    if (P.rd && Math.random() < P.rd) return mv[Math.floor(Math.random() * mv.length)];
+    const rate = (d, dl) => { const cx = {n: 0, out: false, dl}; const sc = mv.map(m => ckAB(ckApply(b, m, 'b').nb, 'w', d - 1, -1e9, 1e9, cx) + Math.random() * P.nz); return cx.out ? null : sc; };
     let sc;
-    if (lvl === 2) { const dl = Date.now() + 450; for (let d = 3; d <= 12; d++) { const r = rate(d, dl); if (!r) break; sc = r; } sc = sc || rate(3, 0); }
-    else sc = rate(lvl === 1 ? 4 : 2, 0);
+    if (P.ms) { const dl = Date.now() + P.ms; for (let d = 3; d <= 14; d++) { const r = rate(d, dl); if (!r) break; sc = r; } sc = sc || rate(3, 0); }
+    else sc = rate(P.d, 0);
     let bi = 0; sc.forEach((v, i) => { if (v > sc[bi]) bi = i; }); return mv[bi];
   }
-  const CKLV = [['Новичок', '+1 очко за победу', 'Ходит почти наугад'], ['Игрок', '+2 очка за победу', 'Считает на 4 хода'], ['Мастер', '+4 очка за победу', 'Думает глубоко, не прощает ошибок']], CKP = [1, 2, 4];
-  const CKLV3 = [['Новичок', 'Ходит почти наугад', 1], ['Игрок', 'Считает на 4 хода вперёд', 2], ['Мастер', 'Думает глубоко, не прощает ошибок', 4]];
+  const CKLV = [['Новичок'], ['Любитель'], ['Игрок'], ['Опытный'], ['Мастер']], CKP = [1, 2, 3, 5, 8];
+  const CKLV3 = [['Новичок', 'Ходит почти наугад', 1], ['Любитель', 'Видит простые угрозы', 2], ['Игрок', 'Считает на 4 хода вперёд', 3], ['Опытный', 'Видит комбинации и размены', 5], ['Мастер', 'Думает глубоко, не прощает ошибок', 8]];
   function mkChk(){ const g = {}, K = 'chk';
     const geo = () => { const S = Math.min(W - 24, H * .6), t = S / 8, x0 = (W - S) / 2, y0 = Math.max(0, (H - S - 110) * .34) + 62; return {S, t, x0, y0}; };
-    const lv0 = () => { try { const v = +localStorage.getItem('voob_chk_lv'); return v >= 0 && v < 3 ? v : 1; } catch (e) { return 1; } };
+    const lv0 = () => { try { const v = +localStorage.getItem('voob_chk_lv'); return v >= 0 && v < 5 ? v : 2; } catch (e) { return 2; } };
     const sq = (G2, i) => [G2.x0 + (i & 7) * G2.t, G2.y0 + (i >> 3) * G2.t];
     g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.lvp = g.lvl; g.lvb = 0; g.nb = false; g.res = null; g.anim = null; g.b = ckNew(); g.pre = []; g.legal = []; g.last = []; g.turn = 'w'; g.q = 0; g.bt = 0; g.ghost = []; };
     const begin = () => { g.b = ckNew(); g.turn = 'w'; g.q = 0; g.pre = []; g.last = []; g.res = null; g.anim = null; g.ghost = []; g.legal = ckLegal(g.b, 'w'); g.ph = 'play'; g.bt = 0; };
@@ -10303,7 +10305,7 @@ const REST = (function(){
     g.tap = () => {};
     g.down = (x, y) => {
       if (g.dead) return;
-      if (g.ph === 'menu') { const h = lvHit2(3, x, y); if (h === 'go') { try { localStorage.setItem('voob_chk_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); begin(); } else if (h >= 0) { if (h !== g.lvl) g.lvb = 1; g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
+      if (g.ph === 'menu') { const h = lvHit2(5, x, y); if (h === 'go') { try { localStorage.setItem('voob_chk_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); begin(); } else if (h >= 0) { if (h !== g.lvl) g.lvb = 1; g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
       if (g.ph === 'over') { hap.tap(); begin(); return; }
       if (g.ph !== 'play' || g.turn !== 'w' || g.anim || g.res) return;
       const G2 = geo(), cc = Math.floor((x - G2.x0) / G2.t), rr_ = Math.floor((y - G2.y0) / G2.t); if (cc < 0 || cc > 7 || rr_ < 0 || rr_ > 7) return; const i = rr_ * 8 + cc, pre = g.pre, legal = g.legal.filter(m => pre.every((s, k) => m[k] === s));
@@ -10511,14 +10513,14 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
   const SOLVL = {
     golf: [['Новичок', 'Бьёт неточно, часто мажет', 1], ['Игрок', 'Целится, но иногда ошибается', 2], ['Мастер', 'Почти всегда бьёт прямо в лунку', 4]],
     sea: [['Новичок', 'Стреляет наугад', 1], ['Игрок', 'Добивает раненые корабли', 2], ['Мастер', 'Считает вероятности и ловит флот', 4]],
-    bil: [['Новичок', 'Бьёт почти наугад', 1], ['Игрок', 'Выбирает удобный шар и лузу', 2], ['Мастер', 'Просчитывает удар наперёд', 4]]
+    bil: [['Новичок', 'Бьёт почти наугад', 1], ['Любитель', 'Иногда попадает в лузу', 2], ['Игрок', 'Выбирает удобный шар и лузу', 3], ['Опытный', 'Бьёт точно, думает о позиции', 5], ['Мастер', 'Почти не промахивается', 8]]
   };
-  const soloLv0 = K => { try { const v = +localStorage.getItem('voob_' + K + '_lv'); return v >= 0 && v < 3 ? v : 1; } catch (e) { return 1; } };
-  const soloMenuDown = (g, K, x, y) => { const h = lvHit2(3, x, y); if (h === 'go') { try { localStorage.setItem('voob_' + K + '_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); return true; } if (h >= 0) { if (h !== g.lvl) g.lvb = 1; g.lvl = h; hap.tap(); sfx('spark', h + 1); } return false; };
+  const soloLv0 = K => { const n = SOLVL[K].length; try { const v = +localStorage.getItem('voob_' + K + '_lv'); return v >= 0 && v < n ? v : n > 3 ? 2 : 1; } catch (e) { return n > 3 ? 2 : 1; } };
+  const soloMenuDown = (g, K, x, y) => { const h = lvHit2(SOLVL[K].length, x, y); if (h === 'go') { try { localStorage.setItem('voob_' + K + '_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); return true; } if (h >= 0) { if (h !== g.lvl) g.lvb = 1; g.lvl = h; hap.tap(); sfx('spark', h + 1); } return false; };
   const soloMenuUpd = (g, dt) => { g.lvp += (g.lvl - g.lvp) * Math.min(1, dt * 14); g.lvb = Math.max(0, (g.lvb || 0) - dt * 3.2); };
   const soloFin = (g, K, dt, dieT) => { if (!g.res) return false; g.rt -= dt; if (g.rt <= 0 && !g.fin) { g.fin = true; const k = g.res.k;
     if (k === 'lose') { g.dieT = dieT; onDie(g, K); g.newBest = g.nb; }
-    else { g.ph = 'over'; if (k === 'win') { g.pts = [1, 2, 4][g.lvl]; g.score += g.pts; sfx('perfect', 2); hap.ok(); for (let q = 0; q < 4; q++) bstP(g, W * (.2 + .2 * q), 120, 12, ['#ffd24a', '#4cd98a', '#ff5468', '#7fb5ff'][q], 120); if (g.score > (s.best[K] || 0)) { s.best[K] = g.score; save(); g.nb = true; pushBest(K); } } } } return true; };
+    else { g.ph = 'over'; if (k === 'win') { g.pts = SOLVL[K][g.lvl][2]; g.score += g.pts; sfx('perfect', 2); hap.ok(); for (let q = 0; q < 4; q++) bstP(g, W * (.2 + .2 * q), 120, 12, ['#ffd24a', '#4cd98a', '#ff5468', '#7fb5ff'][q], 120); if (g.score > (s.best[K] || 0)) { s.best[K] = g.score; save(); g.nb = true; pushBest(K); } } } } return true; };
   const soloOver = (c, g) => { const win = g.res && g.res.k === 'win'; c.globalAlpha = .82; c.fillStyle = C.bg; rr(c, W / 2 - 150, H / 2 - 70, 300, 140, 22); c.fill(); c.globalAlpha = 1; c.textAlign = 'center'; c.fillStyle = C.tx; c.font = '800 26px ' + C.ff; c.fillText(win ? 'Победа!' : 'Ничья', W / 2, H / 2 - 12); c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.fillText(win ? '+' + g.pts + ' · серия ' + g.score : 'Серия сохранена', W / 2, H / 2 + 16); c.fillText('Тап — ещё партия', W / 2, H / 2 + 46); };
   const soloBtn = (c, x, y, w, h, label, col, tc) => { rr(c, x, y, w, h, 16); c.fillStyle = col; c.fill(); c.fillStyle = tc; c.font = '800 16px ' + C.ff; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(label, x + w / 2, y + h / 2 + 1); c.textBaseline = 'alphabetic'; };
   const inRect = (x, y, r) => r && x >= r[0] && x <= r[0] + r[2] && y >= r[1] && y <= r[1] + r[3];
@@ -10696,12 +10698,13 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     const who = 'b', own = BIL_G.b, tg = own.filter(i => B[i].a); if (!tg.length) tg.push(8); const cue = B[0], R = BIL_R, cands = [];
     tg.forEach(id => { const t = B[id]; BIL_PK.forEach(p => { const ux = p[0] - t.x, uy = p[1] - t.y, L = Math.hypot(ux, uy); if (L < 1) return; const nx = ux / L, ny = uy / L, gx = t.x - nx * 2 * R, gy = t.y - ny * 2 * R, dx = gx - cue.x, dy = gy - cue.y, D = Math.hypot(dx, dy); if (D < 2) return; if ((dx * nx + dy * ny) / D < .12) return;
       const ang = Math.atan2(dy, dx), v0 = Math.max(260, Math.min(900, 240 + 1.25 * (D + L))); cands.push({ang, v: v0}); cands.push({ang, v: Math.min(900, v0 * 1.3)}); }); });
-    for (let i = 0; i < (lvl === 0 ? 10 : lvl === 1 ? 5 : 3); i++) cands.push({ang: Math.random() * 6.283, v: 350 + Math.random() * 450});
+    if (lvl >= 3) { const n0 = cands.length; for (let i = 0; i < n0; i += 2) { cands.push({ang: cands[i].ang, v: cands[i].v * .7}); if (lvl === 4) cands.push({ang: cands[i].ang, v: Math.min(900, cands[i].v * 1.6)}); } }
+    for (let i = 0; i < [10, 6, 4, 3, 2][lvl]; i++) cands.push({ang: Math.random() * 6.283, v: 350 + Math.random() * 450});
     let best = null; const all = [];
     cands.forEach(cd => { const S = bilClone(B), pots = []; S[0].vx = Math.cos(cd.ang) * cd.v; S[0].vy = Math.sin(cd.ang) * cd.v; for (let k = 0; k < 2200 && bilMoving(S); k++) bilStep(S, 1 / 240, pots);
       const j = bilJudge(B, S, who, pots); let val = j.ownPot * 100 - j.oppPot * 70 - (j.scratch ? 320 : 0) + (pots.hit != null ? 6 : 0); if (j.win) val += j.win === who ? 3000 : -3000; if (j.keep) val += 20; cd.val = val; all.push(cd); if (!best || val > best.val) best = cd; });
-    let pick = best; if (lvl === 0 && Math.random() < .55) pick = all[rndI(all.length)];
-    const sa = [.06, .02, .004][lvl]; return {ang: pick.ang + gauss() * sa, v: Math.max(200, Math.min(900, pick.v * (1 + gauss() * [.1, .04, .01][lvl])))};
+    let pick = best; if (Math.random() < [.55, .15, 0, 0, 0][lvl]) pick = all[rndI(all.length)];
+    const sa = [.06, .035, .018, .007, .0015][lvl]; return {ang: pick.ang + gauss() * sa, v: Math.max(200, Math.min(900, pick.v * (1 + gauss() * [.1, .06, .035, .014, .004][lvl])))};
   }
   function bilBall(c, b, r, a) { const cols = {0: '#f7f7f2', 8: '#15151d'}; [1, 2, 3].forEach(i => cols[i] = '#3d8bff'); [4, 5, 6].forEach(i => cols[i] = '#ff5468'); const col = cols[b.id];
     c.save(); c.globalAlpha = a == null ? 1 : a; c.fillStyle = 'rgba(0,0,0,.35)'; c.beginPath(); c.ellipse(b.x + 2.5, b.y + 3.5, r, r * .85, 0, 0, 7); c.fill();
@@ -11500,7 +11503,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
           const bx0 = Math.min(w, w + s * 10), bx1 = Math.max(w, w + s * 10), by0 = h.y - 66, by1 = h.y + 16, qx = cl(b.x, bx0, bx1), qy = cl(b.y, by0, by1), dx = b.x - qx, dy = b.y - qy, d = Math.hypot(dx, dy);
           if (d < BR && d > .001) { b.x = qx + dx / d * BR; b.y = qy + dy / d * BR; if (bump(b, dx / d, dy / d, .6)) { g.touched = true; h.sw = 3; sfx('thunk'); bstP(g, qx, qy, 5, '#fff', 80); } }
           { const dx2 = b.x - tx, dy2 = b.y - h.y, d2 = Math.hypot(dx2, dy2), md = BR + 6; if (d2 < md && d2 > .001) { b.x = tx + dx2 / d2 * md; b.y = h.y + dy2 / d2 * md; if (bump(b, dx2 / d2, dy2 / d2, .55)) { g.touched = true; h.sw = 4; sfx('thunk'); bstP(g, tx, h.y, 6, 'hsl(' + rimH() + ',95%,65%)', 100); } } }
-          const dist = Math.abs(b.x - w); if (py > h.y && b.y <= h.y && b.vy < 0 && dist > 6 && dist < L + 2) { b.y = h.y + 1; b.vy = Math.abs(b.vy) * .3; b.vx += inw(h) * 50; g.touched = true; h.sw = 3; sfx('thunk'); bstP(g, b.x, h.y, 5, '#fff', 80); } { const r0 = py - hy0, r1 = b.y - h.y, tt = r1 !== r0 ? Math.max(0, Math.min(1, -r0 / (r1 - r0))) : 1, d2 = Math.abs(px0 + (b.x - px0) * tt - w); if (r0 < 0 && r1 >= 0 && ((dist > 10 && dist < L - 2) || (d2 > 10 && d2 < L - 2))) scored(h); } }   /* v1.981: пересечение считаем относительно кольца, а не экрана — движущееся кольцо больше не «проглатывает» попадание */
+          const dist = Math.abs(b.x - w); if (py > h.y && b.y <= h.y && b.vy < 0 && dist > 10 && dist < L - 2) { h.sw = Math.max(h.sw, 2.5); bstP(g, b.x, h.y, 3, '#fff', 60); } { const r0 = py - hy0, r1 = b.y - h.y, tt = r1 !== r0 ? Math.max(0, Math.min(1, -r0 / (r1 - r0))) : 1, d2 = Math.abs(px0 + (b.x - px0) * tt - w); if (r0 < 0 && r1 >= 0 && ((dist > 10 && dist < L - 2) || (d2 > 10 && d2 < L - 2))) scored(h); } }   /* v1.981: пересечение считаем относительно кольца, а не экрана — движущееся кольцо больше не «проглатывает» попадание */
         if (g.bar) { const x0 = g.bar.x - g.bar.len, x1 = g.bar.x + g.bar.len, qx = cl(b.x, x0, x1), dx = b.x - qx, dy = b.y - g.bar.y, d = Math.hypot(dx, dy), md = BR + 6; if (d < md && d > .001) { b.x = qx + dx / d * md; b.y = g.bar.y + dy / d * md; if (bump(b, dx / d, dy / d, .75)) { g.touched = true; sfx('thunk'); bstP(g, qx, g.bar.y, 6, '#8fe3ff', 90); } } } }
       g.pk.forEach(q => { if (!q.got && Math.hypot(b.x - q.x, b.y - q.y) < 30) { q.got = 1; if (q.k === 's') { g.score += 2; popT(g, q.x, q.y - 24, '+2', GD); sfx('spark', 6); bstP(g, q.x, q.y, 14, GD, 150); } else { g.tm = Math.min(1, g.tm + .3); popT(g, q.x, q.y - 24, '+ВРЕМЯ', '#8fe3ff'); sfx('record'); bstP(g, q.x, q.y, 14, '#8fe3ff', 150); } g.rp.push({x: q.x, y: q.y, l: .35, c: q.k === 's' ? GD : '#8fe3ff', r: 50}); } });
       g.tr.push([b.x, b.y]); if (g.tr.length > (g.combo >= 3 ? 14 : 8)) g.tr.shift(); if (g.combo >= 3 && Math.random() < .8) bstP(g, b.x, b.y, 1, Math.random() < .5 ? '#ffb347' : '#ff6b3d', 70); };
