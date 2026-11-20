@@ -4414,6 +4414,22 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 .nt-sc.hi{background:linear-gradient(160deg,#ff6a3d,#a0153a)}.nt-sc.hi::after{content:"✕";font-size:12px;font-weight:900;color:#fff}.nt-sc.sk{background:linear-gradient(160deg,#7a1f35,#3b0a1c)}
 .nt-sbt{display:flex;gap:10px;margin-top:14px}.nt-sbt .nt-btn{padding:13px 20px}
 .nt-bcv{aspect-ratio:300/480;width:min(86vw,calc((100vh - 290px)*.625),320px)}
+/* v1.996: WEB · правая часть «Герой» — главная карточка цели + чипы */
+html.web .hm .vc{position:relative;overflow:hidden;border-radius:30px;padding:26px 26px 14px;margin-bottom:12px;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 14%,var(--surface)),var(--surface) 62%);border:1px solid var(--border)}
+html.web .vc-glow{position:absolute;right:-90px;top:-110px;width:440px;height:440px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 15%,transparent),transparent 65%);pointer-events:none}
+html.web .vc-top{position:relative;display:flex;align-items:center;gap:28px}html.web .vc-ring{zoom:1.05;flex:none}html.web .vc-tx{min-width:0;flex:1}
+html.web .vc-k{display:inline-flex;align-items:center;gap:7px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+html.web .vc-tx .gt{font-size:28px;line-height:1.12;margin:10px 0 6px;letter-spacing:-.4px;font-weight:800}html.web .vc-tx .gt.ok{color:var(--text)}html.web .vc-tx .gs{color:var(--muted);font-size:14px}
+html.web .vc-cta{display:flex;align-items:center;gap:12px;margin-top:18px;flex-wrap:wrap}
+html.web .vc-go{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;border:0;background:var(--accent);color:var(--on-accent,#fff);font:700 14px inherit;cursor:pointer;box-shadow:0 10px 30px -12px var(--accent);transition:transform .15s}html.web .vc-go:hover{transform:translateY(-2px)}html.web .vc-go:active{transform:scale(.97)}
+html.web .vc-seg{display:flex;background:color-mix(in srgb,var(--text) 6%,transparent);border:1px solid var(--border);border-radius:999px;padding:3px}
+html.web .vc-seg button{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:999px;border:0;background:transparent;color:var(--text);font:600 13px inherit;cursor:pointer}html.web .vc-seg button:hover{background:color-mix(in srgb,var(--text) 9%,transparent)}html.web .vc-seg button.ic{padding:0 11px}html.web .vc-seg .pn{font-size:10px;min-width:16px;height:16px;line-height:16px;border-radius:99px;background:var(--accent);color:var(--on-accent,#fff);text-align:center}
+html.web .vc-strip{position:relative;zoom:.82;margin-top:14px}
+html.web .vc-chips{display:grid;grid-template-columns:1fr 1.7fr 1.3fr;gap:10px;margin-bottom:12px}html.web .vc-ch{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:16px;background:var(--surface);border:1px solid var(--border);min-width:0}
+html.web .vc-ch i{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:var(--surface2);color:var(--muted);flex:none}html.web .vc-ch:not(.off) i{color:#ff9d5c}html.web .vc-ch.w i{color:var(--muted)}
+html.web .vc-ch b{font-size:15px}html.web .vc-ch b.wr{color:#ff9d5c}html.web .vc-ch em{font-style:normal;font-weight:500;color:var(--muted);font-size:12px;margin-left:6px}html.web .vc-ch small{display:block;color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}html.web .vc-ch.w>div{flex:1}
+html.web .vc-ch u{display:block;height:6px;border-radius:99px;background:var(--surface2);margin-top:6px;overflow:hidden;text-decoration:none}html.web .vc-ch u s{display:block;height:100%;border-radius:99px;background:var(--accent)}
+@media(max-width:1180px){html.web .vc-top{flex-direction:column;align-items:flex-start}html.web .vc-chips{grid-template-columns:1fr}}
 .nt-rings{display:flex;flex:none}.nt-rings i{width:26px;height:26px;border-radius:50%;border:4px solid var(--text);display:block}.nt-rings i+i{margin-left:-9px;border-color:var(--accent)}
 </style>
 </head>
@@ -4429,7 +4445,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.995';
+const APP = 'VOOB (by BGASHEV) Mini App v1.996';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6788,7 +6804,8 @@ function startHTML(ws, doneToday, mob, plsug){
   // №4 — серия и «что дальше»
   if (ws.length) {
     const [cur] = dayStreaks(ws), L = myLevel(), nx = achievements().filter(a => !a.done && a.prog > 0 && a.icon !== 'crown').sort((a, b) => b.prog - a.prog)[0];
-    h += P.sr = `<div class="card st-sr"><div class="st-fl${cur ? '' : ' off'}"><span class="st-fi">${IC('flame', 22)}</span><div><b>${cur}</b><small>${cur ? 'дн. подряд' : 'серия'}</small>${cur && !doneToday ? '<small class="wr">сегодня ещё нет</small>' : ''}</div></div>
+    if (document.documentElement.classList.contains('web')) HC = {cur, L, nx, today: doneToday};
+    else h += P.sr = `<div class="card st-sr"><div class="st-fl${cur ? '' : ' off'}"><span class="st-fi">${IC('flame', 22)}</span><div><b>${cur}</b><small>${cur ? 'дн. подряд' : 'серия'}</small>${cur && !doneToday ? '<small class="wr">сегодня ещё нет</small>' : ''}</div></div>
       <div class="st-lv"><div class="st-lt"><span>Уровень ${L.level} → ${L.level + 1}</span><b>ещё ${num(L.need - L.into, 0)} XP</b></div><div class="st-bar"><i style="width:${Math.round(L.into * 100 / Math.max(1, L.need))}%"></i></div></div>
       ${nx ? `<div class="st-nx">${IC(nx.icon, 14)}<span>Ближайшая медаль · ${esc(nx.title)}</span><b>${nx.text}</b></div>` : ''}</div>`;
     P.chips = `<div class="stc"><div class="stc-i${cur ? '' : ' off'}"><span class="stc-ic fl">${IC('flame', 16)}</span><span class="stc-t"><b${cur && !doneToday ? ' class="wr"' : ''}>${cur}${cur ? ' дн.' : ''}</b><small>серия</small></span></div>
@@ -6809,7 +6826,9 @@ function startHTML(ws, doneToday, mob, plsug){
   return hero + (queue ? `<div class="stq"><div class="stq-h">Ещё для тебя<em>${items.length}</em></div>${queue}</div>` : '');   // v1.857: плашки «серия / уровень / медаль» убраны, на их месте — цель недели
 }
 
+let HC = null;
 function viewHome(web){
+  HC = null;
   const ws = valid(), g = G(), t = todayN(), info = goalInfo(ws), rest = restDays(ws), [cur] = dayStreaks(ws);
   const tMin = sum(ws.filter(w => dn(w.date) === t), w => w.minutes);
   const bits = [tMin ? `сегодня уже ${fmtMin(tMin)} в движении` : (rest.has(t) ? 'сегодня день отдыха' : 'сегодня ещё без тренировки')];
@@ -6845,7 +6864,14 @@ function viewHome(web){
       <button type="button" class="gx2-ed" data-act="goaled" aria-label="Изменить цель">${IC('edit', 15)}</button></div>${gtxt}<div class="gx2-bar"><i style="width:${Math.min(100, pct)}%"></i></div>${gsBtn}</div>
       <div class="gm-s">${goalStrip(ws, g.days)}${note}</div></div>`),
     actionsH = `<div class="actions"><button class="btn ghost" data-act="plans">${IC('plan')}План${upPlans(ws).length ? `<span class="pn">${upPlans(ws).length}</span>` : ''}</button>${ws.length ? `<button class="btn ghost" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat')}Повторить</button>` : ''}</div>`;
-  h += web ? actionsH + AX.tiles(true) + goalH : goalH + actionsH + (inWeb ? '' : AX.tiles());
+  const heroH = () => {
+    const pl = upPlans(ws).length, c = HC;
+    const chips = c ? `<div class="vc-chips"><div class="vc-ch${c.cur ? '' : ' off'}"><i>${IC('flame', 17)}</i><div><b${c.cur && !c.today ? ' class="wr"' : ''}>${c.cur}${c.cur ? ' дн.' : ''}</b><small>серия</small></div></div><div class="vc-ch w"><i>${IC('bolt', 17)}</i><div><b>Уровень ${c.L.level}<em>ещё ${num(c.L.need - c.L.into, 0)} XP</em></b><u><s style="width:${Math.round(c.L.into * 100 / Math.max(1, c.L.need))}%"></s></u></div></div>${c.nx ? `<div class="vc-ch" title="${esc(c.nx.title)}"><i>${IC(c.nx.icon, 17)}</i><div><b>${c.nx.text}</b><small>${esc(c.nx.title)}</small></div></div>` : ''}</div>` : '';
+    return `<div class="vc${done ? ' done' : ''}"><div class="vc-glow"></div><div class="vc-top"><div class="vc-ring">${segRing(info.shown, g.count, done, pct)}</div><div class="vc-tx"><span class="vc-k">${IC('target', 14)}Цель недели · ${Math.min(info.shown, g.count)} из ${g.count}</span>${gtxt}
+      <div class="vc-cta"><button type="button" class="vc-go" data-act="add">${IC('plus', 17)}Начать тренировку</button><div class="vc-seg"><button type="button" data-act="plans">${IC('plan', 15)}План${pl ? `<span class="pn">${pl}</span>` : ''}</button>${ws.length ? `<button type="button" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat', 15)}Повторить</button>` : ''}${canSum ? `<button type="button" data-act="gsum">${IC(S.gsum ? 'close' : 'sparkle', 15)}${S.gsum ? 'Скрыть итоги' : 'Итоги'}</button>` : ''}<button type="button" class="ic" data-act="goaled" aria-label="Изменить цель">${IC('edit', 15)}</button></div></div></div></div>
+      <div class="vc-strip">${goalStrip(ws, g.days)}${note}</div></div>${chips}`;
+  };
+  h += web ? (noGoal ? actionsH + AX.tiles(true) + goalH : heroH() + AX.tiles(true)) : goalH + actionsH + (inWeb ? '' : AX.tiles());
   h += feedTickerHTML();   /* v1.975: и в WEB — одна новость с плавной сменой, «Вся лента» открывает полный список */
   if (S.gsum && canSum) h += festHTML(info.lastStart, info.lastStart + g.days - 1, 'g' + isoOf(info.lastStart), 'НЕДЕЛЯ ВЫПОЛНЕНА', 'gsum');
   const due = dueWeekSummary(ws);
