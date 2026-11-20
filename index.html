@@ -4263,7 +4263,7 @@ html.web .ax-hub .ax-st,html.web .ax-hub .ax-ss,html.web .ax-hub .ax-bn{grid-col
 html.web .ax-hub .ax-bn{grid-template-columns:1.25fr 1fr 1fr 1fr;gap:16px;margin-bottom:10px}html.web .ax-hub .ax-bn .ax-bt.bg{grid-column:auto;min-height:230px}
 html.web .ax-hub .ax-bt,html.web .ax-hub .ax-bt.bw{min-height:230px;padding:18px;grid-row:auto}
 html.web .ax-hub .ax-lab,html.web .ax-hub .ax-grp{grid-column:1}
-html.web .ax-hub .ax-sg{grid-column:2;grid-row:4/6;align-self:start;margin-top:0;min-height:96px}
+html.web .ax-hub .ax-sg{grid-column:2;grid-row:auto;align-self:start;margin-top:0;min-height:0;height:auto}
 html.web .ax-gg{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px}
 }
 /* v1.883: «Вес» в «Приложениях»; в мобильном доке — только иконки */
@@ -5001,7 +5001,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1088';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1089';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
