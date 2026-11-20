@@ -2527,8 +2527,8 @@ html.web #view.nav-in,html.web #view.nav-out{animation:navFade .4s ease-out back
 .prec .rrow{display:flex;align-items:center;gap:12px;padding:11px 0}
 .prec .rrow+.rrow{border-top:1px solid var(--border)}
 .prec .ri{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;flex:none;color:var(--accent);background:color-mix(in srgb,var(--accent) 13%,transparent)}
-.prec .rt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.prec .rt b{font-size:14px;font-weight:650}.prec .rt span{font-size:11.5px;color:var(--muted)}
+.prec .rrt{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.prec .rrt b{font-size:14px;font-weight:650}.prec .rrt span{font-size:11.5px;color:var(--muted)}
 .prec .rrow em{font-style:normal;font-weight:800;font-size:15.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .prec .rsub{margin:12px 0 2px;font-size:10.5px;font-weight:750;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .pmon .bfill{background:color-mix(in srgb,var(--text) 22%,transparent)}
@@ -4339,7 +4339,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.984';
+const APP = 'VOOB (by BGASHEV) Mini App v1.985';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6575,12 +6575,12 @@ function friendSheetHTML(f, j, loading, self){
   if (fvc) { h += fvc; PI++; }
   const hasKm = (+t.km || 0) > 0.05;
   h += `<div class="card pfin pstat" style="--pi:${PI++}"><h3>${IC('trophy')}Всего</h3><div class="pst3"><div><b>${t.workouts}</b><span>тренировок</span></div><div><b>${fmtMin(t.minutes)}</b><span>в движении</span></div><div><b>${t.days}</b><span>активных дней</span></div></div>${hasKm ? `<div class="pst-ft">${IC('walk', 15)}<span>Пройдено и пробежано</span><b>${kmF(t.km)}</b></div>` : ''}</div>`;
-  const rrow = (ico, cap, x, v) => x ? `<div class="rrow"><span class="ri">${IC(ico, 17)}</span><div class="rt"><b>${cap}</b><span>${fmtDate(dn(x.date))}</span></div><em>${v}</em></div>` : '';
+  const rrow = (ico, cap, x, v) => x ? `<div class="rrow"><span class="ri">${IC(ico, 17)}</span><div class="rrt"><b>${cap}</b><span>${fmtDate(dn(x.date))}</span></div><em>${v}</em></div>` : '';
   const recMain = rrow('clock', 'Самая долгая тренировка', r.longest, r.longest && r.longest.value + ' мин');
   const recWalk = rrow('walk', 'Самая дальняя дистанция', r.farthest && r.farthest.value > 0 ? r.farthest : null, r.farthest && kmF(r.farthest.value))
     + rrow('bolt', 'Самая высокая скорость', r.fastest && r.fastest.value > 0 ? r.fastest : null, r.fastest && num(r.fastest.value) + ' км/ч')
     + rrow('stats', 'Самый крутой уклон', r.steepest && r.steepest.value > 0 ? r.steepest : null, r.steepest && num(r.steepest.value) + ' %');
-  h += `<div class="card pfin prec${d.recent.length ? '' : ' pfull'}" style="--pi:${PI++}"><h3>${IC('medal')}Личные рекорды</h3>${recMain}<div class="rrow"><span class="ri">${IC('flame', 17)}</span><div class="rt"><b>Дней подряд</b><span>лучшая серия</span></div><em>${npw(r.best_days_row, W_DAY)}</em></div>${recWalk ? `<div class="rsub">Бег и ходьба</div>${recWalk}` : ''}</div>`;
+  h += `<div class="card pfin prec${d.recent.length ? '' : ' pfull'}" style="--pi:${PI++}"><h3>${IC('medal')}Личные рекорды</h3>${recMain}<div class="rrow"><span class="ri">${IC('flame', 17)}</span><div class="rrt"><b>Дней подряд</b><span>лучшая серия</span></div><em>${npw(r.best_days_row, W_DAY)}</em></div>${recWalk ? `<div class="rsub">Бег и ходьба</div>${recWalk}` : ''}</div>`;
   if (d.months.some(m => m.minutes)) h += `<div class="card pfin pmon" style="--pi:${PI++}"><h3>${IC('stats')}Время тренировок по месяцам</h3>${bars(d.months.map(m => [MON[+m.m.slice(5, 7) - 1], m.minutes, fmtMin(m.minutes)]), v => String(v), 'fpm', 130)}</div>`;
   const rline = w => { const a = w.act || 'run';
     if (STR[a]) return strText(w);
