@@ -4564,6 +4564,47 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-cells{display:grid;grid-template-columns:repeat(auto-fill,minmax(13px,1fr));gap:3px;margin-bottom:10px}.hb-cells i{aspect-ratio:1;border-radius:4px;background:var(--surface2)}.hb-cells i.f{background:var(--green,#5FC98A)}.hb-cells i.m{background:color-mix(in srgb,var(--red,#EF6B73) 35%,var(--surface2))}.hb-cells i.t{outline:2px solid var(--accent);outline-offset:-2px}
 .hb-res{text-align:center;font-size:22px;font-weight:850;padding:10px;border-radius:16px;background:var(--bg);border:1px solid var(--border);margin-bottom:6px}.hb-res small{display:block;color:var(--muted);font-size:13px;font-weight:600;margin-top:2px}
 .hb-feed div{padding:8px 0;border-bottom:1px solid var(--border)}.hb-feed div:last-child{border:0}.hb-feed b{display:block;font-size:13px}.hb-feed small{color:var(--muted);font-size:11.5px}
+/* ---------- v1.1024: «Привычки» — дизайн «Лента» ---------- */
+.hb-h{margin:2px 2px 4px}.hb-h h1{font-size:34px;letter-spacing:-1px}.hb-h small{text-transform:capitalize;margin:0 0 2px;font-size:13px}
+.hb-add{width:46px;height:46px;border-radius:50%;background:var(--text);color:var(--bg);border:0}
+.hb-wk{display:flex;justify-content:space-between;margin:16px 2px 0}.hb-wk div{width:40px;text-align:center;font-size:11px;font-weight:700;color:var(--muted)}
+.hb-wk i{display:block;width:30px;height:30px;margin:7px auto 0;border-radius:50%;border:1.5px solid var(--border);transition:.3s}
+.hb-wk i.d{background:center/14px no-repeat url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'><path d='M5 12.5l4.5 4.5L19 7.5'/></svg>"),linear-gradient(135deg,#8b6cff,#ff5d8f);border-color:transparent}
+.hb-wk i.t{border-color:var(--text)}.hb-wk i.d.t{border-color:transparent;box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px #8b6cff}.hb-wk i.x{opacity:.4;border-style:dashed}
+.hb-big{margin:18px 2px 8px}
+.hb-big .n{font-family:Unbounded,system-ui,sans-serif;font-weight:800;font-size:112px;letter-spacing:-7px;line-height:.92;display:inline-block;background:linear-gradient(160deg,#c9b6ff 8%,#8b6cff 45%,#ff5d8f 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;padding-right:6px}
+.hb-big span{display:block;margin-top:8px;font-size:14px;color:var(--muted)}.hb-big span b{color:var(--text);font-weight:700}
+.hb-big.sm{margin:10px 2px 6px}.hb-big.sm .n{font-size:76px;letter-spacing:-5px}.hb-big.sm .n.clk{font-size:34px;letter-spacing:-1.5px;line-height:1.1}
+.hb-gs .hb-g{margin:0}.hb-g>h4{margin:12px 2px 8px}.hb-g>h4:before{display:none}
+.hb-r{position:relative;overflow:hidden;display:block;height:68px;padding:0;border-radius:24px;background:var(--surface);border:1px solid var(--border);margin-bottom:10px;-webkit-clip-path:inset(0 round 24px);clip-path:inset(0 round 24px)}
+.hb-r .hb-f{position:absolute;inset:0;background:color-mix(in srgb,var(--hc) 30%,transparent);-webkit-clip-path:inset(0 calc(100% - var(--p,0%)) 0 0);clip-path:inset(0 calc(100% - var(--p,0%)) 0 0);transition:clip-path .8s cubic-bezier(.2,.9,.25,1)}
+.hb-r.dn .hb-f{background:linear-gradient(100deg,var(--hc),color-mix(in srgb,var(--hc) 68%,#fff))}
+.hb-r.dn{background:var(--surface);border-color:color-mix(in srgb,var(--hc) 50%,transparent)}
+.hb-r .hb-in{position:relative;display:flex;align-items:center;gap:12px;height:100%;padding:0 14px}
+.hb-r .hb-e{background:color-mix(in srgb,var(--hc) 24%,var(--surface2))}.hb-r.dn .hb-e{background:rgba(255,255,255,.38)}
+.hb-r.dn .hb-t b{color:#0a0a0f;text-decoration:none}.hb-r.dn .hb-t small{color:rgba(10,10,15,.62)}.hb-r.dn .hb-fl{color:#0a0a0f;opacity:.75}
+.hb-r .hb-ck{width:36px;height:36px;border-width:1.5px}.hb-r.dn .hb-ck{background:#0a0a0f;border-color:#0a0a0f;box-shadow:none;color:#fff}
+.hb-r.fresh .hb-f{animation:hbfill .8s cubic-bezier(.2,.9,.25,1) both}@keyframes hbfill{from{-webkit-clip-path:inset(0 100% 0 0);clip-path:inset(0 100% 0 0)}}
+.hb-r.dn.fresh .hb-t b{animation:hbtx .8s both}.hb-r.dn.fresh .hb-t small{animation:hbts .8s both}@keyframes hbtx{0%,45%{color:var(--text)}100%{color:#0a0a0f}}@keyframes hbts{0%,45%{color:var(--muted)}100%{color:rgba(10,10,15,.62)}}
+.hb-r.pv{pointer-events:none;margin:6px 0 14px}
+.hb-pq{width:168px;padding:14px;border-radius:24px;background:linear-gradient(145deg,var(--hc),color-mix(in srgb,var(--hc) 50%,#000));border:0;color:#fff}.hb-pq small{color:rgba(255,255,255,.75)}
+.hb-pq .hb-clk{font-family:Unbounded,system-ui,sans-serif;font-weight:700;font-size:15px;letter-spacing:-.5px;margin-top:6px}
+.hb-du{border-radius:24px;padding:14px 16px}
+.hb-du.vs{background:linear-gradient(135deg,color-mix(in srgb,#8b6cff 18%,var(--surface)),color-mix(in srgb,#ff5d8f 10%,var(--surface)));border-color:color-mix(in srgb,#8b6cff 30%,var(--border))}
+.hb-du.vs .n{font-family:Unbounded,system-ui,sans-serif;font-weight:800;font-size:24px;letter-spacing:-1px}
+.hb-vs em{font-family:Unbounded,system-ui,sans-serif;font-weight:800;font-size:34px;letter-spacing:-1.5px}
+.hb-res{border-radius:22px}
+.hb-cells{gap:4px}.hb-cells i{border-radius:6px}.hb-cells i.f{background:linear-gradient(135deg,#8b6cff,#ff5d8f)}
+.hb-btn{height:56px;border-radius:28px;background:var(--text);color:var(--bg);font-weight:700}.hb-btn.g{background:var(--surface2);color:var(--text)}.hb-btn.l{background:transparent;color:var(--muted)}
+.hb-sh h2{font-size:24px;letter-spacing:-.5px}
+.hb-seg{border-radius:22px;padding:4px}.hb-seg button{height:42px;border-radius:18px}.hb-seg button.on{background:var(--text);color:var(--bg)}
+.hb-in{height:54px;border-radius:20px;padding:0 18px}
+.hb-ig{gap:8px}.hb-ig button{border-radius:18px}.hb-ig button.on{border-color:var(--text)}
+.hb-ch button{height:38px;border-radius:99px}.hb-ch button.on{background:var(--text);color:var(--bg)}
+.hb-3 div{border-radius:20px;padding:12px 6px}.hb-3 b{font-family:Unbounded,system-ui,sans-serif;font-weight:700;font-size:15px;letter-spacing:-.5px}
+.hb-hm{gap:6px}.hb-hm i{border-radius:10px}.hb-hm i.f{background:linear-gradient(135deg,var(--hc),color-mix(in srgb,var(--hc) 65%,#fff))}
+.hb-mini.on{background:var(--text);color:var(--bg)}
+
 html.web .hb-r:hover,html.web .hb-pq:hover{filter:brightness(1.07)}
 @media(min-width:900px){html.web .ax-pg:has(.hb-h){max-width:980px}html.web .hb-pin{flex-wrap:wrap;margin:0;padding:2px 0 8px;overflow:visible}html.web .hb-pq{width:calc(25% - 6px);min-width:150px}html.web .hb-tl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 14px;padding-left:0;align-items:start}html.web .hb-tl:before{display:none}html.web .hb-g>h4:before{display:none}html.web .hb-g>h4{margin-top:4px}}
 /* v1.997: WEB · «Игры → По сети» — витрина */
@@ -4644,7 +4685,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1023';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1024';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11394,19 +11435,27 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   const HDU = () => ({ru:'д', en:'d', kk:'к'})[curLang()] || 'д';
   function hbBurst(el){ if (!el) return; const r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2, cols = ['#34d98b', '#ff9d5c', '#9b7bff', '#5aa8ff', '#ff6fa8', '#f4d35e']; for (let i = 0; i < 16; i++) { const e = document.createElement('i'), a = Math.random() * 6.283, d = 40 + Math.random() * 60; e.style.cssText = 'position:fixed;z-index:9999;pointer-events:none;width:7px;height:11px;border-radius:2px;left:' + cx + 'px;top:' + cy + 'px;background:' + cols[i % 6] + ';transition:transform .8s cubic-bezier(.2,.7,.3,1),opacity .8s;opacity:1'; document.body.appendChild(e); requestAnimationFrame(() => { e.style.transform = 'translate(' + Math.cos(a) * d + 'px,' + (Math.sin(a) * d + 30) + 'px) rotate(' + Math.random() * 540 + 'deg)'; e.style.opacity = '0'; }); setTimeout(() => e.remove(), 900); } }
   const HCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const HWK = () => ({ru:['П','В','С','Ч','П','С','В'], en:['M','T','W','T','F','S','S'], kk:['Д','С','С','Б','Ж','С','Ж']})[curLang()] || ['П','В','С','Ч','П','С','В'];
+  function hbDayOk(n, D){ const a = D.filter(h => Math.floor((h.cr || 0) / 864e5) <= n); if (!a.length) return null; return a.every(h => hbDone(h, isoOf(n))); }
+  function hbAllStreak(D){ let n = todayN(), c = 0; if (hbDayOk(n, D) !== true) n--; for (let i = 0; i < 400 && hbDayOk(n, D) === true; i++) { c++; n--; } return c; }
+  function hbPl(n){ const l = curLang(); if (l === 'en') return n === 1 ? 'day streak' : 'day streak'; if (l === 'kk') return 'күн қатарынан'; const a = n % 10, b = n % 100; return a === 1 && b !== 11 ? 'день подряд' : (a >= 2 && a <= 4 && (b < 12 || b > 14)) ? 'дня подряд' : 'дней подряд'; }
   function hbRow(h){
-    const dn = hbDone(h), v = hbVal(h), g = h.g || 1, st = hbStreak(h);
-    return `<div class="hb-r${dn ? ' dn' : ''}" style="--hc:${HBC[h.c] || HBC.g}" data-act="habopen" data-id="${h.id}"><span class="hb-e">${h.e}</span><div class="hb-t"><b>${esc(h.t)}</b><small>${g > 1 ? v + ' из ' + g + (h.u ? ' ' + esc(h.u) : '') : esc(h.u || 'раз в день')}</small>${g > 1 ? `<div class="hb-bar"><i style="width:${Math.min(100, v / g * 100)}%"></i></div>` : ''}</div>${st ? `<span class="hb-fl">🔥${st}</span>` : ''}<button type="button" class="hb-ck" data-act="habchk" data-id="${h.id}" aria-label="Отметить">${HCK}</button></div>`;
+    const dn = hbDone(h), v = hbVal(h), g = h.g || 1, st = hbStreak(h), pct = dn ? 100 : Math.round(Math.min(1, v / g) * 100);
+    return `<div class="hb-r${dn ? ' dn' : ''}" style="--hc:${HBC[h.c] || HBC.g}" data-act="habopen" data-id="${h.id}"><div class="hb-f" style="--p:${pct}%"></div><div class="hb-in"><span class="hb-e">${h.e}</span><div class="hb-t"><b>${esc(h.t)}</b><small>${g > 1 ? v + ' из ' + g + (h.u ? ' ' + esc(h.u) : '') : esc(h.u || 'раз в день')}</small></div>${st ? `<span class="hb-fl">🔥${st}</span>` : ''}<button type="button" class="hb-ck" data-act="habchk" data-id="${h.id}" aria-label="Отметить">${HCK}</button></div></div>`;
   }
   function viewHab(){
     const L = hbList(), D = L.filter(h => h.k !== 'quit'), Q = L.filter(h => h.k === 'quit'), nd = D.filter(h => hbDone(h)).length, dt = new Date();
-        const sub = D.length ? (nd === D.length ? 'Всё готово — отличный день' : nd + ' из ' + D.length + ' на сегодня') : (() => { try { return dt.toLocaleDateString(({ru:'ru-RU', en:'en-GB', kk:'kk-KZ'})[curLang()] || 'ru-RU', {weekday:'long', day:'numeric', month:'long'}); } catch (e) { return ''; } })();
-    let h = back() + `<div class="hb-h"><div><h1>Привычки</h1><small>${sub}</small></div><button type="button" class="hb-add" data-act="habnew" aria-label="Новая привычка">${I('plus', 20)}</button></div>`;
+    const dtxt = (() => { try { return dt.toLocaleDateString(({ru:'ru-RU', en:'en-GB', kk:'kk-KZ'})[curLang()] || 'ru-RU', {weekday:'long', day:'numeric', month:'long'}); } catch (e) { return ''; } })();
+    let h = back() + `<div class="hb-h"><div><small>${dtxt}</small><h1>Привычки</h1></div><button type="button" class="hb-add" data-act="habnew" aria-label="Новая привычка">${I('plus', 20)}</button></div>`;
     duPoll(); if (!window.__hrs) { window.__hrs = 1; hbRemSync(); }
     if (!L.length) return h + duHTML() + `<div class="hb-empty"><b>Пока пусто</b>Заведи первую привычку — полезную или от которой хочешь избавиться.</div><button type="button" class="hb-btn" data-act="habnew">${I('plus', 18)}Новая привычка</button>`;
+    if (D.length) {
+      const wd = (dt.getDay() + 6) % 7, t0 = todayN(), lb = HWK(), sk = hbAllStreak(D), all = nd === D.length;
+      h += `<div class="hb-wk">${lb.map((d, i) => { const n = t0 - wd + i, ok = n <= t0 && hbDayOk(n, D) === true; return `<div>${d}<i class="${ok ? 'd' : ''}${n === t0 ? ' t' : ''}${n > t0 ? ' x' : ''}"></i></div>`; }).join('')}</div><div class="hb-big"><div class="n"${sk >= 100 ? ' style="font-size:84px;letter-spacing:-5px"' : ''}>${sk}</div><span><b>${hbPl(sk)}</b> · ${all ? 'день закрыт ✓' : 'сегодня <b>' + nd + ' из ' + D.length + '</b>'}</span></div>`;
+    }
     h += duHTML();
     if (Q.length) h += `<div class="hb-sec" style="margin-top:14px">Держусь<em>${Q.length}</em></div><div class="hb-pin">${Q.map(q => `<div class="hb-pq" style="--hc:${HBC[q.c] || HBC.r}" data-act="habopen" data-id="${q.id}"><span class="e">${q.e}</span><b>${esc(q.t)}</b><small>чист уже</small><div class="hb-clk" data-hclock="${q.id}">${hbClock(q)}</div></div>`).join('')}</div>`;
-    if (D.length) h += `<div class="hb-sec">Сегодня<em>${nd}/${D.length}</em></div><div class="hb-tl">${['m', 'd', 'e'].map(p => { const g = D.filter(x => (x.p || 'd') === p); return g.length ? `<div class="hb-g${g.every(x => hbDone(x)) ? ' ok' : ''}"><h4>${HBP[p]}</h4>${g.map(hbRow).join('')}</div>` : ''; }).join('')}</div>`;
+    if (D.length) h += `<div class="hb-sec">Сегодня<em>${nd}/${D.length}</em></div><div class="hb-gs">${['m', 'd', 'e'].map(p => { const g = D.filter(x => (x.p || 'd') === p); return g.length ? `<div class="hb-g${g.every(x => hbDone(x)) ? ' ok' : ''}"><h4>${HBP[p]}</h4>${g.map(hbRow).join('')}</div>` : ''; }).join('')}</div>`;
     return h;
   }
   function hbDetail(h){
@@ -11414,9 +11463,10 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     for (let i = 27; i >= 0; i--) { const iso = isoOf(n0 - i), v = hbVal(h, iso); cells.push(`<i class="${hbDone(h, iso) ? 'f' : v ? 'p' : ''}${i === 0 ? ' t' : ''}"></i>`); }
     let tot = 0, ok = 0; for (let i = 0; i < 30; i++) { if (n0 - i < Math.floor((h.cr || Date.now()) / 864e5)) break; tot++; if (hbDone(h, isoOf(n0 - i))) ok++; }
     openSheet(`<div class="hb-sh" style="--hc:${HBC[h.c] || HBC.g}"><div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><span class="hb-e" style="width:54px;height:54px;font-size:27px">${h.e}</span><div><h2 style="margin:0">${esc(h.t)}</h2><div class="cap" style="margin:0">${q ? 'бросаю' : 'делаю'}${!q && (h.g || 1) > 1 ? ' · ' + h.g + ' ' + esc(h.u || '') + ' в день' : ''}</div></div></div>
-    <div class="hb-3">${q ? `<div><b data-hclock="${h.id}" style="font-size:14px">${hbClock(h)}</b><small>чист уже</small></div><div><b>${best} ${HDU()}</b><small>рекорд</small></div><div><b>${(h.rl || []).length}</b><small>срывов</small></div>` : `<div><b>🔥 ${st}</b><small>серия</small></div><div><b>${tot ? Math.round(ok / tot * 100) : 0}%</b><small>за 30 дней</small></div><div><b>${best}</b><small>рекорд</small></div>`}</div>
+    ${q ? `<div class="hb-big sm"><div class="n clk" data-hclock="${h.id}">${hbClock(h)}</div><span><b>чист уже</b> · рекорд <b>${best} ${HDU()}</b></span></div>` : `<div class="hb-big sm"><div class="n">${st}</div><span><b>${hbPl(st)}</b> · рекорд <b>${best}</b></span></div>`}
+    <div class="hb-3">${q ? `<div><b>${best} ${HDU()}</b><small>рекорд</small></div><div><b>${(h.rl || []).length}</b><small>срывов</small></div><div><b>${hbDays(h)} ${HDU()}</b><small>вместе</small></div>` : `<div><b>${tot ? Math.round(ok / tot * 100) : 0}%</b><small>за 30 дней</small></div><div><b>${best}</b><small>рекорд</small></div><div><b>${ok}</b><small>выполнено</small></div>`}</div>
     ${q || !inTG ? '' : `<div class="hb-lb">Напоминание</div><div class="hb-rm"><input type="time" id="hb-rm" value="${hm2(h.rm != null ? h.rm : 20 * 60)}"><button type="button" class="hb-mini on" data-act="habrm" data-on="1" data-id="${h.id}">${h.rm != null ? 'Обновить' : 'Включить'}</button>${h.rm != null ? `<button type="button" class="hb-mini" data-act="habrm" data-on="0" data-id="${h.id}">Выключить</button>` : ''}</div>`}
-    ${q ? '' : `<div class="hb-lb">Последние 4 недели</div><div class="hb-hm" style="grid-template-columns:repeat(14,1fr)">${cells.join('')}</div>`}
+    ${q ? '' : `<div class="hb-lb">Последние 4 недели</div><div class="hb-hm" style="grid-template-columns:repeat(7,1fr)">${cells.join('')}</div>`}
     ${q ? `<button type="button" class="hb-btn g" data-act="habrel" data-id="${h.id}">Срыв — начать заново</button>${h.du ? '' : `<button type="button" class="hb-btn g" data-act="dunew" data-id="${h.id}" style="margin-top:8px">🧗 Вызвать на выживание</button>`}` : (h.du ? '' : `<button type="button" class="hb-btn g" data-act="dunew" data-id="${h.id}">⚔️ Бросить вызов другу</button>`)}
     <button type="button" class="hb-btn g" data-act="habdel" data-id="${h.id}" style="margin-top:8px">${h.ar ? 'Вернуть' : 'В архив'}</button><button type="button" class="hb-btn l" data-act="habx">Закрыть</button></div>`, {type:'hab'});
   }
@@ -11425,6 +11475,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     const N = HBN, q = N.k === 'quit', ti = document.getElementById('hb-t'); if (ti && keep) N.t = ti.value;
     const tpl = HBT.filter(x => x[3] === N.k);
     openSheet(`<div class="hb-sh"><h2>Новая привычка</h2><div class="cap">Выбери тип и настрой за полминуты</div>
+    <div class="hb-r dn pv" style="--hc:${HBC[N.c] || HBC.g}"><div class="hb-f" style="--p:100%"></div><div class="hb-in"><span class="hb-e">${N.e}</span><div class="hb-t"><b>${esc(N.t) || (q ? 'Без сладкого' : 'Читать 20 минут')}</b><small>${q ? 'бросаю' : N.g > 1 ? N.g + ' раз в день' : 'раз в день'}</small></div></div></div>
     <div class="hb-seg"><button type="button" class="${q ? '' : 'on'}" data-act="habty" data-k="do">Делать</button><button type="button" class="${q ? 'on' : ''}" data-act="habty" data-k="quit">Бросить</button></div>
     <div class="hb-lb">Быстрый выбор</div><div class="hb-ch">${tpl.map((x, i) => `<button type="button" data-act="habtpl" data-i="${HBT.indexOf(x)}">${x[1]} <span>${x[0]}</span></button>`).join('')}</div>
     <input class="hb-in" id="hb-t" maxlength="40" placeholder="${q ? 'Например: без сладкого' : 'Например: читать 20 минут'}" value="${esc(N.t)}">
@@ -11657,7 +11708,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   const acts = {
     appsheet: () => openSheetApps(),
     habopen: el => { const h = hbGet(el.dataset.id); if (h) { hap.tap(); hbDetail(h); } },
-    habchk: el => { const h = hbGet(el.dataset.id); if (!h) return; const iso = isoT(), g = h.g || 1, was = hbDone(h); h.log = h.log || {}; let v = hbVal(h, iso); v = g > 1 ? (v >= g ? 0 : v + 1) : (v ? 0 : 1); if (v) h.log[iso] = v; else delete h.log[iso]; hbSave(); const now = hbDone(h); now && !was ? hap.ok() : hap.imp(); if (h.du) duSync(); if (h.rm != null) hbRemSync(); render(); if (now && !was) { const b = document.querySelector('.hb-ck[data-id="' + h.id + '"]'); if (b) { b.classList.add('pop'); hbBurst(b); } const D = hbList().filter(x => x.k !== 'quit'); if (D.length > 1 && D.every(x => hbDone(x))) toast(HT('День закрыт — все привычки выполнены')); } },
+    habchk: el => { const h = hbGet(el.dataset.id); if (!h) return; const iso = isoT(), g = h.g || 1, was = hbDone(h); h.log = h.log || {}; let v = hbVal(h, iso); v = g > 1 ? (v >= g ? 0 : v + 1) : (v ? 0 : 1); if (v) h.log[iso] = v; else delete h.log[iso]; hbSave(); const now = hbDone(h); now && !was ? hap.ok() : hap.imp(); if (h.du) duSync(); if (h.rm != null) hbRemSync(); render(); { const rb = document.querySelector('.hb-ck[data-id="' + h.id + '"]'), rr = rb && rb.closest('.hb-r'); if (rr && v) rr.classList.add('fresh'); } if (now && !was) { const b = document.querySelector('.hb-ck[data-id="' + h.id + '"]'); if (b) { b.classList.add('pop'); hbBurst(b); } const D = hbList().filter(x => x.k !== 'quit'); if (D.length > 1 && D.every(x => hbDone(x))) toast(HT('День закрыт — все привычки выполнены')); } },
     habnew: () => { hap.tap(); HBN = null; hbNewSheet(); },
     habty: el => { hap.tap(); HBN = HBN || {k:'do', t:'', e:HBE.do[0], p:'d', g:1, c:'g'}; const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.k = el.dataset.k; HBN.e = HBE[HBN.k][0]; HBN.c = HBN.k === 'quit' ? 'r' : 'g'; hbNewSheet(); },
     habtpl: el => { hap.tap(); const x = HBT[+el.dataset.i]; HBN = {k:x[3], t:x[0], e:x[1], c:x[2], p:x[4] || 'd', g:x[5] || 1, u:x[6] || ''}; hbNewSheet(); },
