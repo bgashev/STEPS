@@ -5737,9 +5737,9 @@ function draw(c, V, A, t, dt){
   if (oc === 1) { const pu = 1 + .08 * Math.sin(T * 8); c.save(); c.translate(300, 46); c.rotate(-.12); c.scale(pu, pu); rrp(c, -30, -14, 60, 28, 14); c.fillStyle = '#ee3b45'; c.shadowColor = 'rgba(255,60,70,.8)'; c.shadowBlur = 14; c.fill(); c.shadowBlur = 0; c.lineWidth = 2; c.strokeStyle = '#ffd24a'; c.stroke(); c.fillStyle = '#ffd24a'; c.font = '900 15px ' + FF; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('ONE!', 0, 1); c.restore(); }
   c.restore();
   /* моя планка */
-  c.save(); c.textAlign = 'left'; c.fillStyle = 'rgba(255,255,255,.7)'; c.font = '700 11px ' + FF; c.fillText('ТЫ · ' + cntW(st.h[me].length).toUpperCase(), 22, 543);
-  if (st.h[me].length === 1) { const pu = 1 + .08 * Math.sin(T * 8); c.save(); c.translate(318, 538); c.rotate(-.1); c.scale(pu, pu); rrp(c, -30, -13, 60, 26, 13); c.fillStyle = '#ee3b45'; c.shadowColor = 'rgba(255,60,70,.8)'; c.shadowBlur = 12; c.fill(); c.shadowBlur = 0; c.lineWidth = 2; c.strokeStyle = '#ffd24a'; c.stroke(); c.fillStyle = '#ffd24a'; c.font = '900 14px ' + FF; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('ONE!', 0, 1); c.restore(); }
-  else if (V.mine) { c.textAlign = 'right'; c.fillStyle = cc; c.font = '800 11px ' + FF; c.globalAlpha = .6 + .4 * Math.sin(T * 5); c.fillText('ТВОЙ ХОД', 338, 543); c.globalAlpha = 1; }
+  c.save(); c.textAlign = 'left'; c.fillStyle = 'rgba(255,255,255,.7)'; c.font = '700 11px ' + FF; c.fillText('ТЫ · ' + cntW(st.h[me].length).toUpperCase(), 20, 395);
+  if (st.h[me].length === 1) { const pu = 1 + .08 * Math.sin(T * 8); c.save(); c.translate(298, 391); c.rotate(-.1); c.scale(pu, pu); rrp(c, -30, -13, 60, 26, 13); c.fillStyle = '#ee3b45'; c.shadowColor = 'rgba(255,60,70,.8)'; c.shadowBlur = 12; c.fill(); c.shadowBlur = 0; c.lineWidth = 2; c.strokeStyle = '#ffd24a'; c.stroke(); c.fillStyle = '#ffd24a'; c.font = '900 14px ' + FF; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('ONE!', 0, 1); c.restore(); }
+  else if (V.mine) { c.textAlign = 'right'; c.fillStyle = '#fff'; c.font = '800 11px ' + FF; c.globalAlpha = .6 + .4 * Math.sin(T * 5); c.fillText('ТВОЙ ХОД', 340, 395); c.globalAlpha = 1; }
   c.restore();
   /* сообщение */
   const m = V.msg != null ? V.msg : msg(st, me);
@@ -5802,7 +5802,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1143';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1144';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
