@@ -4620,6 +4620,20 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-sc b{display:block;margin-top:6px;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hb-sc small{color:var(--muted);font-size:11px}
 .hb-sc .dots{position:absolute;right:12px;top:18px;display:flex;gap:3px}.hb-sc .dots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.18)}.hb-sc .dots i.f{background:var(--hc)}
 .hb-sc.all{background:linear-gradient(160deg,#8b6cff,#ff5d8f);border:0;cursor:default}.hb-sc.all .n{background:none;-webkit-text-fill-color:#fff}.hb-sc.all small,.hb-sc.all b{color:#fff}.hb-sc.all .e{background:rgba(255,255,255,.25)}
+/* v1.1028: «Новая привычка» — по шагам */
+.hb-wz{display:flex;flex-direction:column;min-height:min(560px,74vh)}
+.hb-dash{display:flex;gap:6px;margin:4px 0 16px}.hb-dash i{flex:1;height:4px;border-radius:9px;background:rgba(255,255,255,.12);position:relative;overflow:hidden}.hb-dash i::after{content:"";position:absolute;inset:0;background:var(--hc);transform:scaleX(0);transform-origin:0 50%;transition:transform .5s cubic-bezier(.2,.9,.25,1)}.hb-dash i.f::after{transform:none}
+.hb-q{font:800 30px/1.1 Unbounded,system-ui,sans-serif;letter-spacing:-1.5px;margin:4px 0 18px}
+.hb-pane.go{animation:hbin .4s cubic-bezier(.2,.9,.25,1)}@keyframes hbin{from{opacity:0;transform:translateX(22px)}}
+.hb-hero{width:128px;height:128px;border-radius:42px;margin:4px auto 18px;display:grid;place-items:center;font-size:64px;background:linear-gradient(150deg,color-mix(in srgb,var(--hc) 55%,#fff),var(--hc));box-shadow:0 20px 50px -14px var(--hc)}
+.hb-bi{display:block;width:100%;border:0;border-bottom:2px solid var(--border);border-radius:0;background:none;color:var(--text);font:800 24px Unbounded,system-ui,sans-serif;letter-spacing:-1px;padding:8px 0 12px;margin:0 0 16px;outline:none;text-align:center;height:auto}.hb-bi:focus{border-color:var(--hc)}
+.hb-em{display:flex;gap:8px;overflow-x:auto;margin:0 -18px;padding:6px 18px;scrollbar-width:none}.hb-em::-webkit-scrollbar{display:none}
+.hb-em button{flex:none;width:54px;height:54px;border-radius:19px;border:1.5px solid var(--border);background:var(--surface);font-size:25px;cursor:pointer;padding:0;transition:.2s}.hb-em button.on{border-color:var(--hc);background:color-mix(in srgb,var(--hc) 22%,var(--surface));transform:translateY(-3px)}
+.hb-sw{display:flex;gap:10px}.hb-sw i{flex:1;aspect-ratio:1;max-width:44px;border-radius:50%;background:var(--c);cursor:pointer;transition:.2s}.hb-sw i.on{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--c);transform:scale(.88)}
+.hb-lv{height:72px;border-radius:26px;display:flex;align-items:center;gap:12px;padding:0 14px;background:linear-gradient(100deg,var(--hc),color-mix(in srgb,var(--hc) 62%,#fff));color:#0a0a0f}.hb-lv .e{width:44px;height:44px;border-radius:15px;background:rgba(255,255,255,.4);display:grid;place-items:center;font-size:23px;flex:none}.hb-lv b{display:block;font-size:16px}.hb-lv small{font-size:12.5px;color:rgba(10,10,15,.6)}.hb-lv .ck{margin-left:auto;width:36px;height:36px;border-radius:50%;background:#0a0a0f;color:#fff;display:grid;place-items:center;flex:none}
+.hb-wh{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.hb-wh button{height:74px;border-radius:22px;border:1.5px solid var(--border);background:var(--surface);color:var(--muted);font:700 13px inherit;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;transition:.2s;padding:0}.hb-wh button span{font-size:22px}.hb-wh button.on{border-color:var(--hc);color:var(--text);background:color-mix(in srgb,var(--hc) 20%,var(--surface))}
+.hb-stp{display:flex;align-items:center;justify-content:space-between;border-radius:24px;background:var(--surface);border:1px solid var(--border);padding:8px}.hb-stp button{width:52px;height:52px;border-radius:50%;border:0;background:var(--surface2);color:var(--text);font-size:24px;cursor:pointer;padding:0}.hb-stp div{text-align:center}.hb-stp b{font:800 30px Unbounded,system-ui,sans-serif;letter-spacing:-1px}.hb-stp small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.hb-nav{display:flex;gap:10px;margin-top:auto;padding-top:18px}.hb-nav .hb-btn{margin-top:0}.hb-nav .hb-bk{width:64px;flex:none}
 html.web .hb-r:hover,html.web .hb-pq:hover{filter:brightness(1.07)}
 @media(min-width:900px){html.web .ax-pg:has(.hb-h){max-width:980px}html.web .hb-pin{flex-wrap:wrap;margin:0;padding:2px 0 8px;overflow:visible}html.web .hb-pq{width:calc(25% - 6px);min-width:150px}html.web .hb-tl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 14px;padding-left:0;align-items:start}html.web .hb-tl:before{display:none}html.web .hb-g>h4:before{display:none}html.web .hb-g>h4{margin-top:4px}}
 /* v1.997: WEB · «Игры → По сети» — витрина */
@@ -4700,7 +4714,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1028';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1029';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11488,17 +11502,22 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     <button type="button" class="hb-btn g" data-act="habdel" data-id="${h.id}" style="margin-top:8px">${h.ar ? 'Вернуть' : 'В архив'}</button><button type="button" class="hb-btn l" data-act="habx">Закрыть</button></div>`, {type:'hab'});
   }
   function hbNewSheet(keep){
-    if (!HBN) HBN = {k:'do', t:'', e:HBE.do[0], p:'d', g:1, c:'g'};
+    if (!HBN) HBN = {k:'do', t:'', e:HBE.do[0], p:'d', g:1, c:'g', s:0};
     const N = HBN, q = N.k === 'quit', ti = document.getElementById('hb-t'); if (ti && keep) N.t = ti.value;
-    const tpl = HBT.filter(x => x[3] === N.k);
-    openSheet(`<div class="hb-sh"><h2>Новая привычка</h2><div class="cap">Выбери тип и настрой за полминуты</div>
-    <div class="hb-r dn pv" style="--hc:${HBC[N.c] || HBC.g}"><div class="hb-f" style="--s:1"></div><div class="hb-in"><span class="hb-e">${N.e}</span><div class="hb-t"><b>${esc(N.t) || (q ? 'Без сладкого' : 'Читать 20 минут')}</b><small>${q ? 'бросаю' : N.g > 1 ? N.g + ' раз в день' : 'раз в день'}</small></div></div></div>
-    <div class="hb-seg"><button type="button" class="${q ? '' : 'on'}" data-act="habty" data-k="do">Делать</button><button type="button" class="${q ? 'on' : ''}" data-act="habty" data-k="quit">Бросить</button></div>
-    <div class="hb-lb">Быстрый выбор</div><div class="hb-ch">${tpl.map((x, i) => `<button type="button" data-act="habtpl" data-i="${HBT.indexOf(x)}">${x[1]} <span>${x[0]}</span></button>`).join('')}</div>
-    <input class="hb-in" id="hb-t" maxlength="40" placeholder="${q ? 'Например: без сладкого' : 'Например: читать 20 минут'}" value="${esc(N.t)}">
-    <div class="hb-ig">${HBE[N.k].map(e => `<button type="button" class="${e === N.e ? 'on' : ''}" data-act="habico" data-e="${e}">${e}</button>`).join('')}</div>
-    ${q ? '' : `<div class="hb-lb">Когда</div><div class="hb-ch">${['m', 'd', 'e'].map(p => `<button type="button" class="${N.p === p ? 'on' : ''}" data-act="habpart" data-p="${p}">${HBP[p]}</button>`).join('')}</div><div class="hb-lb">Сколько раз в день</div><div class="hb-ch">${[1, 2, 3, 5, 8].map(n => `<button type="button" class="${N.g === n ? 'on' : ''}" data-act="habgoal" data-n="${n}">${n === 1 ? 'Один раз' : n}</button>`).join('')}</div>`}
-    <button type="button" class="hb-btn" data-act="habsave">Создать</button><button type="button" class="hb-btn l" data-act="habx">Отмена</button></div>`, {type:'habnew'});
+    const last = q ? 1 : 2, st = Math.min(N.s || 0, last), hc = HBC[N.c] || HBC.g, tpl = HBT.filter(x => x[3] === N.k);
+    const Q = [HT('Что будем<br>делать?'), HT('Как<br>выглядит?'), HT('Когда<br>и сколько?')];
+    const hero = `<div class="hb-hero" style="--hc:${hc}">${N.e}</div>`;
+    const ico = `<div class="hb-lb">Иконка</div><div class="hb-em">${HBE[N.k].map(e => `<button type="button" class="${e === N.e ? 'on' : ''}" data-act="habico" data-e="${e}">${e}</button>`).join('')}</div>`;
+    const col = `<div class="hb-lb">Цвет</div><div class="hb-sw">${Object.keys(HBC).map(k => `<i style="--c:${HBC[k]}" class="${N.c === k ? 'on' : ''}" data-act="habcol" data-c="${k}"></i>`).join('')}</div>`;
+    let b = '';
+    if (st === 0) b = `${hero}<input class="hb-bi" id="hb-t" maxlength="40" placeholder="${q ? 'Без сладкого' : 'Читать 20 минут'}" value="${esc(N.t)}" style="--hc:${hc}"><div class="hb-lb" style="text-align:center">Быстрый выбор</div><div class="hb-ch" style="justify-content:center">${tpl.map(x => `<button type="button" data-act="habtpl" data-i="${HBT.indexOf(x)}">${x[1]} <span>${x[0]}</span></button>`).join('')}</div><div class="hb-seg" style="margin-top:14px"><button type="button" class="${q ? '' : 'on'}" data-act="habty" data-k="do">Делать</button><button type="button" class="${q ? 'on' : ''}" data-act="habty" data-k="quit">Бросить</button></div>`;
+    else if (st === 1) b = `${hero}${ico}${col}`;
+    else b = `<div class="hb-lv" style="--hc:${hc}"><span class="e">${N.e}</span><div><b>${esc(N.t) || 'Читать 20 минут'}</b><small>${N.g > 1 ? N.g + ' раз в день' : 'раз в день'} · ${HBP[N.p].toLowerCase()}</small></div><span class="ck">✓</span></div>
+      <div class="hb-lb">Когда</div><div class="hb-wh">${[['m', '🌅'], ['d', '☀️'], ['e', '🌙']].map(x => `<button type="button" class="${N.p === x[0] ? 'on' : ''}" data-act="habpart" data-p="${x[0]}"><span>${x[1]}</span>${HBP[x[0]]}</button>`).join('')}</div>
+      <div class="hb-lb">Сколько раз в день</div><div class="hb-stp"><button type="button" data-act="habgoal" data-d="-1">−</button><div><b>${N.g}</b><small>${N.g === 1 ? 'раз в день' : 'раз(а) в день'}</small></div><button type="button" data-act="habgoal" data-d="1">+</button></div>`;
+    openSheet(`<div class="hb-sh hb-wz" style="--hc:${hc}"><div class="hb-dash">${[0, 1, 2].slice(0, last + 1).map(i => `<i class="${i <= st ? 'f' : ''}"></i>`).join('')}</div><div class="hb-q">${Q[st]}</div><div class="hb-pane${N.an ? ' go' : ''}">${b}</div>
+    <div class="hb-nav">${st ? `<button type="button" class="hb-btn g hb-bk" data-act="habnx" data-d="-1">←</button>` : `<button type="button" class="hb-btn g hb-bk" data-act="habx">✕</button>`}<button type="button" class="hb-btn" data-act="${st === last ? 'habsave' : 'habnx'}" data-d="1">${st === last ? 'Создать' : 'Дальше'}</button></div></div>`, {type:'habnew'});
+    N.an = 0;
   }
   /* ---------- v1.1005: споры по привычкам (режим «Дуэль») ---------- */
   let DU = {list:[], at:0}, DN = null;
@@ -11727,11 +11746,13 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     habopen: el => { const h = hbGet(el.dataset.id); if (h) { hap.tap(); hbDetail(h); } },
     habchk: el => { const h = hbGet(el.dataset.id); if (!h) return; const iso = isoT(), g = h.g || 1, was = hbDone(h); h.log = h.log || {}; let v = hbVal(h, iso); v = g > 1 ? (v >= g ? 0 : v + 1) : (v ? 0 : 1); if (v) h.log[iso] = v; else delete h.log[iso]; hbSave(); const now = hbDone(h); now && !was ? hap.ok() : hap.imp(); if (h.du) duSync(); if (h.rm != null) hbRemSync(); render(); { const rb = document.querySelector('.hb-ck[data-id="' + h.id + '"]'), rr = rb && rb.closest('.hb-r'); if (rr && v) rr.classList.add('fresh'); } if (now && !was) { const b = document.querySelector('.hb-ck[data-id="' + h.id + '"]'); if (b) { b.classList.add('pop'); hbBurst(b); } const D = hbList().filter(x => x.k !== 'quit'); if (D.length > 1 && D.every(x => hbDone(x))) toast(HT('День закрыт — все привычки выполнены')); } },
     habnew: () => { hap.tap(); HBN = null; hbNewSheet(); },
-    habty: el => { hap.tap(); HBN = HBN || {k:'do', t:'', e:HBE.do[0], p:'d', g:1, c:'g'}; const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.k = el.dataset.k; HBN.e = HBE[HBN.k][0]; HBN.c = HBN.k === 'quit' ? 'r' : 'g'; hbNewSheet(); },
-    habtpl: el => { hap.tap(); const x = HBT[+el.dataset.i]; HBN = {k:x[3], t:x[0], e:x[1], c:x[2], p:x[4] || 'd', g:x[5] || 1, u:x[6] || ''}; hbNewSheet(); },
+    habty: el => { hap.tap(); HBN = HBN || {k:'do', t:'', e:HBE.do[0], p:'d', g:1, c:'g', s:0}; const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.k = el.dataset.k; HBN.e = HBE[HBN.k][0]; HBN.c = HBN.k === 'quit' ? 'r' : 'g'; hbNewSheet(); },
+    habtpl: el => { hap.tap(); const x = HBT[+el.dataset.i]; HBN = {k:x[3], t:x[0], e:x[1], c:x[2], p:x[4] || 'd', g:x[5] || 1, u:x[6] || '', s:0}; hbNewSheet(); },
     habico: el => { hap.tap(); const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.e = el.dataset.e; hbNewSheet(); },
     habpart: el => { hap.tap(); const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.p = el.dataset.p; hbNewSheet(); },
-    habgoal: el => { hap.tap(); const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.g = +el.dataset.n; hbNewSheet(); },
+    habgoal: el => { hap.tap(); const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.g = Math.max(1, Math.min(12, (HBN.g || 1) + +el.dataset.d)); hbNewSheet(); },
+    habcol: el => { hap.tap(); HBN.c = el.dataset.c; hbNewSheet(); },
+    habnx: el => { const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; const d = +el.dataset.d; if (d > 0 && !(HBN.s || 0) && !(HBN.t || '').trim()) { toast(HT('Назови привычку')); return; } hap.tap(); HBN.s = Math.max(0, (HBN.s || 0) + d); HBN.an = 1; hbNewSheet(); },
     habsave: () => { const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; const nm = (HBN.t || '').trim(); if (!nm) { toast(HT('Назови привычку')); return; } const q = HBN.k === 'quit'; hbLoad().list.push({id:'h' + Date.now().toString(36) + Math.floor(Math.random() * 99), t:nm.slice(0, 40), e:HBN.e, c:q ? 'r' : (HBN.c || 'g'), k:HBN.k, p:q ? 'd' : HBN.p, g:q ? 1 : (HBN.g || 1), u:HBN.u || '', s:q ? Date.now() : 0, b:0, log:{}, rl:[], cr:Date.now()}); hbSave(); HBN = null; hap.ok(); closeSheet(); render(); },
     habrel: el => { const h = hbGet(el.dataset.id); if (!h) return; hap.tap(); const sd = h.du && duItem(h.du); const risk = sd && sd.kind === 'survive' && sd.status === 'active'; openSheet(`<div class="hb-sh"><h2 style="text-align:center">${risk ? 'Срыв закончит спор' : 'Бывает. Что дальше?'}</h2><div class="cap" style="text-align:center">${risk ? esc(HT('Тебе засчитают поражение, победит соперник.')) : esc(HT('Срыв — не конец. Рекорд {0} д останется, а счётчик начнёт заново.', Math.max(h.b || 0, hbDays(h))))}</div><button type="button" class="hb-btn" data-act="habrelok" data-id="${h.id}">Начать заново</button><button type="button" class="hb-btn l" data-act="habx">Это случайное нажатие</button></div>`, {type:'habrel'}); },
     habrelok: el => { const h = hbGet(el.dataset.id); if (!h) return; if (h.du) { const sd = duItem(h.du); if (sd && sd.kind === 'survive' && sd.status === 'active') apiAuth('/duel/slip', {id:h.du}).then(() => duPoll(true)).catch(() => {}); } h.b = Math.max(h.b || 0, hbDays(h)); h.rl = (h.rl || []).concat(Date.now()).slice(-200); h.s = Date.now(); hbSave(); hap.ok(); closeSheet(); render(); },
