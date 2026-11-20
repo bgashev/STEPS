@@ -5002,7 +5002,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1092';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1093';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12248,7 +12248,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     }).catch(() => { const b = document.getElementById('gmxrk'); if (b) b.innerHTML = '<div class="gmx-em">Не получилось загрузить</div>'; });
   }
   /* v1.997: WEB · «Игры → По сети» — витрина: рекомендуемая игра + панель друзей */
-  const NETLIVE = [['ttt', 'Крестики-нолики', 'Быстрая дуэль', '≈ 2 мин'], ['chk', 'Шашки', 'Классика один на один', '≈ 10 мин'], ['golf', 'Гольф', 'Точный удар · 3 лунки', '≈ 5 мин'], ['sea', 'Морской бой', 'Флот против флота', '≈ 8 мин'], ['bil', 'Бильярд', 'Партия на столе', '≈ 6 мин'], ['arc', 'Лучники', 'Ветер · 6 стрел', '≈ 3 мин'], ['stk', 'Стопка', 'Не урони башню', '≈ 4 мин']];
+  const NETLIVE = [['ttt', 'Крестики-нолики', 'Быстрая дуэль', '≈ 2 мин'], ['chk', 'Шашки', 'Классика один на один', '≈ 10 мин'], ['che', 'Шахматы', 'Партия с другом', '≈ 15 мин'], ['golf', 'Гольф', 'Точный удар · 3 лунки', '≈ 5 мин'], ['sea', 'Морской бой', 'Флот против флота', '≈ 8 мин'], ['bil', 'Бильярд', 'Партия на столе', '≈ 6 мин'], ['arc', 'Лучники', 'Ветер · 6 стрел', '≈ 3 мин'], ['stk', 'Стопка', 'Не урони башню', '≈ 4 мин']];
   function gamesNetWebHTML(){
     const cvr = k => (window.NETCV && window.NETCV[k]) || '', fr = (inTG && FR.data && FR.data.friends) || [], bt = '<span class="bta">БЕТА</span>';
     const frs = !inTG ? `<div class="gw-lg"><p>Войди по QR-коду, чтобы звать друзей на игру</p><button type="button" class="gw-go" data-act="axinv">Войти</button></div>`
