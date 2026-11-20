@@ -262,6 +262,17 @@ input[type=date].inp{display:block}
 .feel button:active{transform:scale(1.25)}
 .feel-l{font-weight:650;font-size:14px;margin-left:4px}
 .hint{font-size:12.5px;color:var(--muted);margin:-6px 0 14px}
+.fbd .who{display:flex;align-items:center;gap:11px;margin:2px 0 14px}.fbd .av{width:44px;height:44px;border-radius:50%;padding:2.5px;background:conic-gradient(from 200deg,#B4A7EE,#7FB5FF,#5FC98A,#B4A7EE);flex:none}.fbd .av i{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--surface2);font-style:normal;font-weight:800;font-size:15px}
+.fbd .who b{display:block;font-size:15px}.fbd .who small{color:var(--green);font-size:11.5px}
+.fbd .bub{max-width:90%;background:var(--surface2);border-radius:20px 20px 20px 6px;padding:11px 14px;font-size:14.5px;margin-bottom:8px;animation:fbdIn .4s both}
+.fbd .bub.t{display:inline-flex;gap:4px;padding:14px 16px}.fbd .bub.t i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:fbdDot 1s infinite}.fbd .bub.t i:nth-child(2){animation-delay:.15s}.fbd .bub.t i:nth-child(3){animation-delay:.3s}
+@keyframes fbdDot{50%{transform:translateY(-4px);opacity:.4}}@keyframes fbdIn{from{opacity:0;transform:translateY(8px) scale(.96)}}
+.fbd .chips{display:flex;gap:6px;margin:12px 0}.fbd .chips button{padding:7px 13px;border-radius:999px;font-size:13px;font-weight:650;border:1px solid var(--border);color:var(--muted);display:flex;gap:6px;align-items:center;transition:.2s}.fbd .chips button.on{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.fbd .me{margin-left:auto;width:94%;background:color-mix(in srgb,var(--accent) 14%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);border-radius:22px 22px 6px 22px;padding:12px 14px;position:relative}
+.fbd .me textarea{width:100%;min-height:108px;padding:0 46px 0 0;background:none;border:0;outline:0;resize:none;color:var(--text);font:inherit;font-size:16px;line-height:1.45}
+.fbd .go{position:absolute;right:10px;bottom:10px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);transition:.2s;padding:0}.fbd .go.dis{background:var(--off);color:var(--muted);pointer-events:none}.fbd .go svg{transition:transform .25s}.fbd .go:active svg{transform:translate(3px,-3px)}
+.fbd .ring{position:absolute;right:6px;bottom:6px;width:50px;height:50px;transform:rotate(-90deg);pointer-events:none}.fbd .ring circle{fill:none;stroke-width:2.5}
+.fbd .meta{display:flex;justify-content:flex-end;margin-top:7px;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .preview{font-size:14px;color:var(--muted);font-weight:650;margin:2px 0 16px}
 .sheet-btns{display:flex;gap:8px}
 .sheet-btns .primary{flex:1}
@@ -4328,7 +4339,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.982';
+const APP = 'VOOB (by BGASHEV) Mini App v1.983';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5859,14 +5870,26 @@ function payBad(charge){
 }
 const PAY_MSG = {late: 'Срок возврата вышел. Если оплата не сработала, выбери первую причину.', limit: 'PRO уже возвращали недавно: повторный возврат возможен не чаще раза в 90 дней.', applied: 'Друг уже применил этот подарок, вернуть его нельзя.', pending: 'Заявка уже на рассмотрении.', done: 'Этот платёж уже возвращён.'};
 const FB_TYPES = [['idea','Идея'],['bug','Ошибка'],['complaint','Жалоба']];
+const FB_ICO = {idea:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.4 1.1 2.2h5c0-.8.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/>', bug:'<path d="M8 8a4 4 0 0 1 8 0v7a4 4 0 0 1-8 0zM12 8v13M4 10l4 2M20 10l-4 2M4 18l4-2M20 18l-4-2M9 4 7 2M15 4l2-2"/>', complaint:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>'};
+const FB_Q = {idea:'Что добавить или улучшить?', bug:'Что пошло не так? Где и когда?', complaint:'Расскажи, что случилось.'};
+const FB_PH = {idea:'Например: хочу тёмную тему ещё темнее', bug:'Например: в Змейке не работает кнопка «вверх»', complaint:'Опиши, что случилось. Увидит только разработчик'};
+const fbIc = (k, n) => `<svg class="ic" width="${n}" height="${n}" viewBox="0 0 24 24">${FB_ICO[k]}</svg>`;
+/* v1.983: окно «Идеи и жалобы» — диалог с разработчиком (вариант B): «печатает» вопрос под тип, ответ в пузыре, кнопка-стрелка с кольцом-счётчиком */
+function fbAsk(q, anim){ const b = $('#fb-q'), t = $('#fb-t'); if (!b) return; if (!anim) { b.textContent = q; return; } clearTimeout(fbAsk.tm); b.style.display = 'none'; t.style.display = 'inline-flex'; fbAsk.tm = setTimeout(() => { t.style.display = 'none'; b.textContent = q; b.style.display = 'block'; b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; }, 800); }
 function openFeedback(type, target, sug){
   const f = target && FR.data && FR.data.friends.find(x => x.tg_id === target);
   S.fbType = sug ? 'idea' : (type || 'idea'); S.fbGame = sug === 'game';
-  openSheet(`<h2>${target ? 'Пожаловаться на ' + esc(f ? f.name : 'пользователя') : sug === 'game' ? 'Предложить игру' : sug ? 'Предложить в VOOB' : 'Идеи и жалобы'}</h2>
-    <div class="hint">${target ? 'Опиши, что случилось. Жалобу увидит только разработчик.' : sug === 'game' ? 'Какую игру добавить в VOOB? Опиши механику или назови игру-образец — читаю всё сам, лучшие идеи делаю.' : sug ? 'Что добавить, что улучшить, чего не хватает? Опиши своими словами — читаю всё сам, лучшие идеи попадают в следующие версии.' : 'Пиши как есть — читаю всё сам. Лучшие идеи попадут в следующие версии.'}</div>
-    ${target || sug ? '' : `<div class="seg fill" style="margin-bottom:12px" id="fb-type">${FB_TYPES.map(([v, l]) => `<button type="button" class="${S.fbType === v ? 'on' : ''}" data-act="fbtype" data-v="${v}">${l}</button>`).join('')}</div>`}
-    <textarea class="inp" id="fb-text" maxlength="1000" rows="5" placeholder="${target ? 'Что не так?' : sug === 'game' ? 'Например: бильярд, где шары — гантели, или онлайн-дуэль на выносливость' : sug ? 'Например: хочу трекер сна, или чтобы в играх была таблица лидеров' : 'Например: хочу тёмную тему ещё темнее'}" style="resize:vertical;min-height:120px"></textarea>
-    <button class="btn primary" style="width:100%;margin-top:12px" data-act="fbsend"${target ? ` data-target="${target}"` : ''}>Отправить</button>`, {type:'feedback'});
+  const q0 = target ? 'Что случилось' + (f ? ' с ' + esc(f.name) : '') + '? Жалобу увидит только разработчик.' : sug === 'game' ? 'Какую игру добавить в VOOB? Опиши механику или назови игру-образец.' : sug ? 'Что добавить, что улучшить, чего не хватает? Лучшие идеи попадают в следующие версии.' : FB_Q[S.fbType],
+    ph = target ? 'Что не так?' : sug === 'game' ? 'Например: бильярд, где шары — гантели, или онлайн-дуэль на выносливость' : sug ? 'Например: хочу трекер сна, или чтобы в играх была таблица лидеров' : FB_PH[S.fbType];
+  openSheet(`<div class="fbd"><div class="who"><div class="av"><i>В</i></div><div><b>${target ? 'Пожаловаться' + (f ? ': ' + esc(f.name) : '') : sug === 'game' ? 'Предложить игру' : sug ? 'Предложить в VOOB' : 'Влад · разработчик VOOB'}</b><small>● читает сам</small></div></div>
+    <div class="bub" id="fb-q" style="display:${target || sug ? 'block' : 'none'}">${q0}</div><div class="bub t" id="fb-t" style="display:${target || sug ? 'none' : 'inline-flex'}"><i></i><i></i><i></i></div>
+    ${target || sug ? '' : `<div class="chips" id="fb-type">${FB_TYPES.map(([v, l]) => `<button type="button" class="${S.fbType === v ? 'on' : ''}" data-act="fbtype" data-v="${v}">${fbIc(v, 15)}${l}</button>`).join('')}</div>`}
+    <div class="me"><textarea id="fb-text" maxlength="1000" placeholder="${ph}"></textarea>
+      <svg class="ring" viewBox="0 0 50 50"><circle cx="25" cy="25" r="22" stroke="var(--off)"/><circle id="fb-arc" cx="25" cy="25" r="22" stroke="var(--accent)" stroke-dasharray="138.2" stroke-dashoffset="138.2" stroke-linecap="round" style="transition:stroke-dashoffset .2s"/></svg>
+      <button type="button" class="go dis" id="fb-go" data-act="fbsend"${target ? ` data-target="${target}"` : ''} aria-label="Отправить"><svg class="ic" width="20" height="20" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
+    <div class="meta"><span id="fb-cnt">0 / 1000</span></div></div>`, {type:'feedback'});
+  if (!target && !sug) fbAsk(q0, true);
+  const ta = $('#fb-text'); if (ta) ta.addEventListener('input', () => { const l = ta.value.length; $('#fb-cnt').textContent = l + ' / 1000'; $('#fb-arc').style.strokeDashoffset = 138.2 * (1 - l / 1000); $('#fb-go').classList.toggle('dis', ta.value.trim().length < 3); });
 }
 function pubHTML(j){
     const lv = j.level, btn = j.state === 'me' ? `<div class="cap" style="text-align:center">Это твой профиль 🙂</div>`
@@ -10506,7 +10529,7 @@ const ACT = {
   },
   fbopen: () => { hap.tap(); openFeedback('idea'); },
   frrep: el => { hap.tap(); openFeedback('user', +el.dataset.id); },
-  fbtype: el => { S.fbType = el.dataset.v; document.querySelectorAll('#fb-type button').forEach(b => b.classList.toggle('on', b === el)); hap.tap(); },
+  fbtype: el => { S.fbType = el.dataset.v; document.querySelectorAll('#fb-type button').forEach(b => b.classList.toggle('on', b === el)); hap.tap(); fbAsk(FB_Q[S.fbType], true); const ta = $('#fb-text'); if (ta) ta.placeholder = FB_PH[S.fbType]; },
   fbsend: async el => {
     let text = ($('#fb-text').value || '').trim(); const target = +el.dataset.target || null;
     if (text.length < 3) { toast('Напиши хоть пару слов'); return; }
