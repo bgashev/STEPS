@@ -4511,7 +4511,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1008';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1009';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5250,6 +5250,11 @@ const hap = {
   // v1.455: «рисунок» из нескольких касаний; запускается после перерисовки (сразу после тяжёлой анимации телефон мог пропустить одиночный отклик)
   seq(list){ try { if (!ver('6.1')) return; const H = tg.HapticFeedback; let t = 0;
     list.forEach(([kind, v, gap]) => { t += gap || 0; setTimeout(() => { try { kind === 'n' ? H.notificationOccurred(v) : kind === 's' ? H.selectionChanged() : H.impactOccurred(v); } catch (e) {} }, t); }); } catch (e) {} },
+  /* v1.1009: перестановка карточек в «Приложениях» — заметная отдача: захват, щелчок на каждой смене места, «посадка» при отпускании; вне Telegram (Android-браузер) — обычная вибрация */
+  vib(p){ try { if (!ver('6.1') && navigator.vibrate) navigator.vibrate(p); } catch (e) {} },
+  lift(){ this.seq([['i', 'medium', 0], ['i', 'soft', 85]]); this.vib(18); },
+  swap(){ try { if (ver('6.1')) tg.HapticFeedback.impactOccurred('rigid'); } catch (e) {} this.vib(9); },
+  drop(){ this.seq([['i', 'heavy', 0], ['n', 'success', 95]]); this.vib([14, 45, 10]); },
   pinOn(){ this.seq([['i', 'heavy', 40], ['n', 'success', 110]]); },        // закрепили: сильный удар и «успех»
   pinOff(){ this.seq([['i', 'soft', 40], ['i', 'light', 90]]); }              // открепили: два мягких касания
 };
@@ -11337,7 +11342,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     if (!HD) return; const g = HD.el.parentNode, r = g.getBoundingClientRect(), tr = HD.el.getBoundingClientRect(), gap = parseFloat(getComputedStyle(g).columnGap) || 10;
     HD.on = true; HD.g = g; HD.gap = gap; HD.W = tr.width; HD.H = tr.height; HD.gx = r.left; HD.gy = r.top;
     const i = Array.prototype.indexOf.call(g.children, HD.el); HD.ox = tr.left - r.left; HD.oy = tr.top - r.top; HD.idx = i;
-    HD.el.classList.add('lift'); g.classList.add('drag'); hap.imp();
+    HD.el.classList.add('lift'); g.classList.add('drag'); hap.lift();
     HD.el.style.transform = 'translate(0,0) scale(1.06)';
     try { HD.el.setPointerCapture(HD.id); } catch (e) {}
   }
@@ -11350,7 +11355,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     if (to !== D.idx) {
       const kids = Array.prototype.slice.call(g.children).filter(c => c !== el), first = kids.map(c => c.getBoundingClientRect());
       kids.forEach(c => { c.style.transition = 'none'; c.style.transform = 'none'; });
-      g.removeChild(el); g.insertBefore(el, g.children[to] || null); D.idx = to; hap.tap();
+      g.removeChild(el); g.insertBefore(el, g.children[to] || null); D.idx = to; hap.swap();
       kids.forEach((c, j) => { const l = c.getBoundingClientRect(); c.style.transform = 'translate(' + (first[j].left - l.left) + 'px,' + (first[j].top - l.top) + 'px)'; });
       g.offsetWidth;
       kids.forEach(c => { c.style.transition = ''; c.style.transform = ''; });
@@ -11362,7 +11367,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     if (!HD || (e && e.pointerId !== HD.id)) return; clearTimeout(HD.tm); const D = HD; HD = null; if (!D.on) return;
     HSUP = Date.now(); D.el.classList.remove('lift'); D.g.classList.remove('drag'); D.el.style.transform = '';
     try { localStorage.setItem(HUBK, JSON.stringify(Array.prototype.map.call(D.g.children, c => c.dataset.k))); localStorage.setItem('voob_hubhint', '1'); } catch (er) {}
-    const h = document.querySelector('.ax-hint'); if (h) h.remove(); hap.ok();
+    const h = document.querySelector('.ax-hint'); if (h) h.remove(); hap.drop();
   }
   document.addEventListener('pointerdown', hubDown);
   document.addEventListener('pointermove', hubMove, {passive:false});
