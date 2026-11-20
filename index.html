@@ -4491,7 +4491,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1002';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1003';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12772,6 +12772,16 @@ delete _lc.en; delete _lc.kk;
   }
   function hide(){ const el = document.getElementById('upd'); if (!el) return; el.classList.remove('on'); setTimeout(() => { if (!el.classList.contains('on')) el.remove(); }, 700); }
   function dismiss(){ dismissed = shown; hap.tap(); hide(); }
+  function navFresh(){   // v1.1003: переход по уникальному адресу — CDN не отдаёт закэшированную копию
+    const ts = Date.now(); let to;
+    if (inWeb) to = location.origin + '/?p=' + encodeURIComponent(location.pathname + location.search) + '&_v=' + ts + location.hash;
+    else { const u = new URL(location.href); u.searchParams.set('_v', ts); to = u.href; }
+    try { location.replace(to); } catch (e) { location.reload(); }
+  }
+  try {   // после «Обновить» пришла старая копия (узлы CDN обновляются не сразу) — тихо пробуем ещё, до 4 раз
+    const w = JSON.parse(sessionStorage.getItem('voob_want') || 'null');
+    if (w) { if (CUR >= w.v || w.n >= 4) sessionStorage.removeItem('voob_want'); else { busy = true; sessionStorage.setItem('voob_want', JSON.stringify({v: w.v, n: w.n + 1})); setTimeout(navFresh, 2500 * (w.n + 1)); } }
+  } catch (e) {}
   async function go(){
     if (busy) return; busy = true;
     const el = document.getElementById('upd'); if (!el) { busy = false; return; }
@@ -12787,12 +12797,8 @@ delete _lc.en; delete _lc.kk;
     await sleep(520);
     const rs = document.documentElement.style; rs.transition = 'opacity .34s ease,filter .34s ease'; rs.opacity = '0'; rs.filter = 'blur(8px)';
     await sleep(360);
-    {   // v1.1001: перезапуск по уникальному адресу — иначе CDN GitHub Pages мог отдать старую копию (проверка видела новую, а после «Обновить» оставалась прежняя)
-      const ts = Date.now(); let to;
-      if (inWeb) to = location.origin + '/?p=' + encodeURIComponent(location.pathname + location.search) + '&_v=' + ts + location.hash;
-      else { const u = new URL(location.href); u.searchParams.set('_v', ts); to = u.href; }
-      try { location.replace(to); } catch (e) { location.reload(); }
-    }
+    try { const mm = /v(\d+)\.(\d+)/.exec(shown); if (mm) sessionStorage.setItem('voob_want', JSON.stringify({v: +mm[1] * 1e6 + +mm[2], n: 0})); } catch (e) {}
+    navFresh();
     setTimeout(() => { rs.opacity = ''; rs.filter = ''; rs.transition = ''; busy = false; c.classList.remove('busy', 'done'); sub.innerHTML = subH; ar.innerHTML = arH; }, 5000);   // если перезапуск не сработал — возвращаем всё как было
   }
   function show(label){
