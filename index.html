@@ -4828,6 +4828,7 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-gb{font:800 26px/1.1 Unbounded,system-ui,sans-serif;letter-spacing:-1.2px;margin:0 2px 8px}.hb-gs2{color:var(--muted);font-size:14px;line-height:1.45;margin:0 2px 20px}
 .hb-gcta{position:relative;overflow:hidden}.hb-gcta::after{content:"";position:absolute;top:0;bottom:0;width:60px;left:-80px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:hbsh 3.2s ease-in-out infinite}@keyframes hbsh{0%,55%{left:-80px}100%{left:120%}}
 html.web .hb-r:hover,html.web .hb-pq:hover{filter:brightness(1.07)}
+@media(min-width:900px){html.web .hb-emp{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);grid-template-areas:"b g" "s g" "c g";column-gap:64px;align-content:center;min-height:400px}html.web .hb-emp .hb-gh{grid-area:g;margin:0;align-self:center}html.web .hb-emp .hb-gb{grid-area:b;align-self:end;font-size:42px;line-height:1.08;margin:0 0 14px}html.web .hb-emp .hb-gs2{grid-area:s;max-width:440px;font-size:15px;margin:0 0 26px}html.web .hb-emp .hb-gcta{grid-area:c;align-self:start;justify-self:start;width:auto;min-width:240px;padding-left:32px;padding-right:32px}}
 @media(min-width:900px){html.web .ax-pg:has(.hb-h){max-width:980px}html.web .hb-pin{flex-wrap:wrap;margin:0;padding:2px 0 8px;overflow:visible}html.web .hb-pq{width:calc(25% - 6px);min-width:150px}html.web .hb-tl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 14px;padding-left:0;align-items:start}html.web .hb-tl:before{display:none}html.web .hb-g>h4:before{display:none}html.web .hb-g>h4{margin-top:4px}}
 /* v1.997: WEB · «Игры → По сети» — витрина */
 html.web .gw{display:grid;grid-template-columns:1fr 330px;gap:14px;margin-top:6px}html.web .gw-feat{display:flex;gap:26px;align-items:center;padding:20px;border-radius:28px;background:linear-gradient(135deg,color-mix(in srgb,#7a5cff 30%,var(--surface)),var(--surface) 70%);border:1px solid var(--border);overflow:hidden}
@@ -5001,7 +5002,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1089';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1090';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12201,7 +12202,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     const dtxt = (() => { try { return dt.toLocaleDateString(({ru:'ru-RU', en:'en-GB', kk:'kk-KZ'})[curLang()] || 'ru-RU', {weekday:'long', day:'numeric', month:'long'}); } catch (e) { return ''; } })();
     let h = back() + `<div class="hb-h"><div><small>${dtxt}</small><h1>Привычки</h1></div><button type="button" class="hb-add" data-act="habnew" aria-label="Новая привычка">${I('plus', 20)}</button></div>`;
     duPoll(); if (!window.__hrs) { window.__hrs = 1; hbRemSync(); }
-    if (!L.length) return h + duHTML() + `<div class="hb-gh">${[['📖', '#a78bfa'], ['💧', '#34d98b'], ['🏃', '#ffb454']].map(x => `<div class="hb-gr" style="--c:${x[1]}"><span class="e">${x[0]}</span><div class="t"><i></i><i></i></div><span class="ck"></span></div>`).join('')}</div><div class="hb-gb">Отмечай день —<br>лента загорится</div><div class="hb-gs2">Создай первую привычку, и каждая галочка будет заливать её цветом. Серия растёт — ты видишь прогресс.</div><button type="button" class="hb-btn hb-gcta" data-act="habnew">${I('plus', 18)}Создать первую</button>`;
+    if (!L.length) return h + duHTML() + `<div class="hb-emp"><div class="hb-gh">${[['📖', '#a78bfa'], ['💧', '#34d98b'], ['🏃', '#ffb454']].map(x => `<div class="hb-gr" style="--c:${x[1]}"><span class="e">${x[0]}</span><div class="t"><i></i><i></i></div><span class="ck"></span></div>`).join('')}</div><div class="hb-gb">Отмечай день —<br>лента загорится</div><div class="hb-gs2">Создай первую привычку, и каждая галочка будет заливать её цветом. Серия растёт — ты видишь прогресс.</div><button type="button" class="hb-btn hb-gcta" data-act="habnew">${I('plus', 18)}Создать первую</button></div>`;
     if (D.length) {
       const wd = (dt.getDay() + 6) % 7, t0 = todayN(), lb = HWK(), sk = hbAllStreak(D), all = nd === D.length;
       const fr = n => { const a = D.filter(x => Math.floor((x.cr || 0) / 864e5) <= n); return a.length ? Math.round(a.filter(x => hbDone(x, isoOf(n))).length / a.length * 100) : null; };
