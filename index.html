@@ -4523,10 +4523,10 @@ html[data-mode=dark] .nt-vl.hb,html[data-mode=dark] .nt-vr.hb{background:#0b0b12
 html[data-mode=dark] .nt-wray{background:repeating-conic-gradient(color-mix(in srgb,var(--accent) 38%,transparent) 0 7deg,transparent 7deg 22deg)}
 .nt-win .nt-wn .nt-vp{z-index:3}
 .nt-crown{position:absolute;left:50%;top:-52px;width:62px;height:43px;filter:drop-shadow(0 4px 10px rgba(0,0,0,.4));z-index:3}
-.nt-wtt{position:absolute;left:0;right:0;text-align:center;font-weight:900;font-style:italic;font-size:60px;letter-spacing:-.03em;color:#fff;z-index:6;white-space:nowrap;text-shadow:4px 0 0 #ff3d6e,-4px 0 0 #2ee6ff,0 8px 40px rgba(0,0,0,.55);pointer-events:none}
-.nt-wtt span{display:inline-block;opacity:0;animation:ntwlt .55s cubic-bezier(.2,1.5,.4,1) both}
+.nt-vtt{position:absolute;left:0;right:0;text-align:center;font-weight:900;font-style:italic;font-size:60px;letter-spacing:-.03em;color:#fff;z-index:6;white-space:nowrap;text-shadow:4px 0 0 #ff3d6e,-4px 0 0 #2ee6ff,0 8px 40px rgba(0,0,0,.55);pointer-events:none}
+.nt-vtt span{display:inline-block;opacity:0;animation:ntwlt .55s cubic-bezier(.2,1.5,.4,1) both}
 @keyframes ntwlt{from{opacity:0;transform:translateY(.6em) scale(.4) rotate(-10deg);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
-html[data-mode=dark] .nt-wtt{color:#f2f2f8;text-shadow:3px 0 0 rgba(255,61,110,.65),-3px 0 0 rgba(46,230,255,.55),0 8px 40px rgba(0,0,0,.7)}
+html[data-mode=dark] .nt-vtt{color:#f2f2f8;text-shadow:3px 0 0 rgba(255,61,110,.65),-3px 0 0 rgba(46,230,255,.55),0 8px 40px rgba(0,0,0,.7)}
 .nt-wsb{position:absolute;left:0;right:0;text-align:center;font-size:15px;font-weight:700;letter-spacing:.04em;color:rgba(255,255,255,.85);z-index:6;pointer-events:none;animation:ntwfi .6s .5s both}
 @keyframes ntwfi{from{opacity:0;transform:translateY(8px)}}
 .nt-wcf{position:absolute;z-index:7;border-radius:2px;pointer-events:none;margin:-4px}
@@ -4883,7 +4883,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1049';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1050';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12852,7 +12852,7 @@ const NET = (() => {
       const wt = ms => new Promise(res => { let n = 0; const iv = setInterval(() => { n += 50; if (skip || n >= ms) { clearInterval(iv); res(); } }, 50); });
       await sleep(950); if (!d.isConnected) return;
       const Wd = d.clientWidth, H = d.clientHeight, cy = dr0 ? H * .66 : H * .45, dr = d.getBoundingClientRect();
-      const title = (txt, top) => { d.insertAdjacentHTML('beforeend', `<div class="nt-wtt" style="top:${top}px;font-size:${Math.round(Math.min(60, Wd * .92 / (txt.length * .66)))}px">${[...txt].map((c, i) => `<span style="animation-delay:${i * .045}s">${esc(c)}</span>`).join('')}</div>`); };
+      const title = (txt, top) => { d.insertAdjacentHTML('beforeend', `<div class="nt-vtt" style="top:${top}px;font-size:${Math.round(Math.min(60, Wd * .92 / (txt.length * .66)))}px">${[...txt].map((c, i) => `<span style="animation-delay:${i * .045}s">${esc(c)}</span>`).join('')}</div>`); };
       hap.med();
       if (dr0) {
         d.animate([{transform:'translate(0,0)'}, {transform:'translate(-4px,3px)'}, {transform:'translate(4px,-3px)'}, {transform:'none'}], {duration:260});
