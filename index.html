@@ -4654,6 +4654,9 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .nt-gm .nt-gcv{width:min(calc(100vw - 24px),calc((100dvh - 240px)*.682),440px)}
 .nt-gm .nt-bcv{width:min(calc(100vw - 24px),calc((100dvh - 240px)*.625),420px)}
 .nt-gm .nt-sg.big{width:min(calc(100vw - 24px),calc(100dvh - 360px),440px)}
+.hb-nf{display:flex;align-items:center;gap:10px;height:56px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);padding:0 16px;margin-bottom:6px;transition:border-color .25s;box-sizing:border-box}.hb-nf:focus-within{border-color:var(--hc)}.hb-nf span{color:var(--muted);font-size:18px}.hb-nf input{flex:1;min-width:0;border:0;outline:0;background:none;color:var(--text);font:700 17px inherit;font-family:inherit;padding:0;height:auto;margin:0}.hb-nf input::placeholder{color:var(--muted);font-weight:500}
+.hb-wz .hb-hero{width:96px;height:96px;border-radius:32px;font-size:48px;margin:2px auto 14px;transition:background .4s,box-shadow .4s}
+.hb-wz .hb-seg{position:relative}.hb-wz .hb-seg::before{content:'';position:absolute;left:4px;top:4px;bottom:4px;width:calc(50% - 4px);border-radius:18px;background:var(--text);transition:transform .45s cubic-bezier(.3,1.25,.4,1);z-index:0}.hb-wz .hb-seg.q::before{transform:translateX(100%)}.hb-wz .hb-seg button{position:relative;z-index:1;background:transparent!important;transition:color .3s}.hb-wz .hb-seg button.on{color:var(--bg)}
 html.web .hb-r:hover,html.web .hb-pq:hover{filter:brightness(1.07)}
 @media(min-width:900px){html.web .ax-pg:has(.hb-h){max-width:980px}html.web .hb-pin{flex-wrap:wrap;margin:0;padding:2px 0 8px;overflow:visible}html.web .hb-pq{width:calc(25% - 6px);min-width:150px}html.web .hb-tl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 14px;padding-left:0;align-items:start}html.web .hb-tl:before{display:none}html.web .hb-g>h4:before{display:none}html.web .hb-g>h4{margin-top:4px}}
 /* v1.997: WEB · «Игры → По сети» — витрина */
@@ -4734,7 +4737,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1036';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1038';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11521,21 +11524,23 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     ${q ? `<button type="button" class="hb-btn g" data-act="habrel" data-id="${h.id}">Срыв — начать заново</button>${h.du ? '' : `<button type="button" class="hb-btn g" data-act="dunew" data-id="${h.id}" style="margin-top:8px">🧗 Вызвать на выживание</button>`}` : (h.du ? '' : `<button type="button" class="hb-btn g" data-act="dunew" data-id="${h.id}">⚔️ Бросить вызов другу</button>`)}
     <button type="button" class="hb-btn g" data-act="habdel" data-id="${h.id}" style="margin-top:8px">${h.ar ? 'Вернуть' : 'В архив'}</button><button type="button" class="hb-btn l" data-act="habx">Закрыть</button></div>`, {type:'hab'});
   }
-  const hbSteps = N => { const a = ['mode', 'name', 'look']; if (N.k !== 'quit') a.push('when'); if (N.m && N.m !== 'solo') a.push('who'); return a; };
+  const hbSteps = N => { const a = ['mode', 'name']; if (N.k !== 'quit') a.push('when'); if (N.m && N.m !== 'solo') a.push('who'); return a; };
   const HBAC = ['#ffb454', '#ff9bc0', '#7fd6ff', '#9bf0c4', '#c9b6ff', '#ffd27f'];
   function hbNewSheet(keep){
     if (!HBN) HBN = {k:'do', t:'', e:HBE.do[0], p:'d', g:1, c:'g', s:0, m:'solo', days:14, stake:'', to:0};
     const N = HBN, q = N.k === 'quit', ti = document.getElementById('hb-t'); if (ti && keep) N.t = ti.value;
     const stp = hbSteps(N), last = stp.length - 1; N.s = Math.min(N.s || 0, last); const key = stp[N.s], duo = N.m && N.m !== 'solo';
     const hc = HBC[N.c] || HBC.g, tpl = HBT.filter(x => x[3] === N.k);
-    const Q = {mode:HT('Как будем<br>держаться?'), name:HT('Что будем<br>делать?'), look:HT('Как<br>выглядит?'), when:HT('Когда<br>и сколько?'), who:N.m === 'team' ? HT('С кем<br>вместе?') : HT('С кем<br>спорим?')};
+    const Q = {mode:HT('Как будем<br>держаться?'), name:HT('Что будем<br>делать?'), when:HT('Когда<br>и сколько?'), who:N.m === 'team' ? HT('С кем<br>вместе?') : HT('С кем<br>спорим?')};
     const hero = `<div class="hb-hero" style="--hc:${hc}">${N.e}</div>`;
     const ico = `<div class="hb-lb">Иконка</div><div class="hb-em">${HBE[N.k].map(e => `<button type="button" class="${e === N.e ? 'on' : ''}" data-act="habico" data-e="${e}">${e}</button>`).join('')}</div>`;
     const col = `<div class="hb-lb">Цвет</div><div class="hb-sw">${Object.keys(HBC).map(k => `<i style="--c:${HBC[k]}" class="${N.c === k ? 'on' : ''}" data-act="habcol" data-c="${k}"></i>`).join('')}</div>`;
     let b = '', cap = '';
     if (key === 'mode') { cap = 'Можно в одиночку, а можно сразу с другом: цель на двоих мотивирует сильнее.'; b = `<div class="hb-md">${[['solo', '🧍', 'Для себя', 'Тихо и без свидетелей'], ['duel', '⚔️', q ? 'Кто дольше' : 'Дуэль', q ? 'Кто дольше продержится без срыва' : 'Кто больше дней выполнит, тот и победил'], ['team', '🤝', 'Вместе', 'Общая цель: нужно 70% дней у каждого']].filter(m => !(q && m[0] === 'team')).map(m => `<div class="hb-mc${N.m === m[0] ? ' on' : ''}" data-act="habmode" data-m="${m[0]}"><span class="ic"><i style="font-style:normal">${m[1]}</i></span><div><b>${m[2]}</b><small>${m[3]}</small></div></div>`).join('')}</div>`; }
-    else if (key === 'name') b = `${hero}<input class="hb-bi" id="hb-t" maxlength="40" placeholder="${q ? 'Без сладкого' : 'Читать 20 минут'}" value="${esc(N.t)}" style="--hc:${hc}"><div class="hb-lb" style="text-align:center">Быстрый выбор</div><div class="hb-ch" style="justify-content:center">${tpl.map(x => `<button type="button" data-act="habtpl" data-i="${HBT.indexOf(x)}">${x[1]} <span>${x[0]}</span></button>`).join('')}</div><div class="hb-seg" style="margin-top:14px"><button type="button" class="${q ? '' : 'on'}" data-act="habty" data-k="do">Делать</button><button type="button" class="${q ? 'on' : ''}" data-act="habty" data-k="quit">Бросить</button></div>`;
-    else if (key === 'look') b = `${hero}${ico}${col}`;
+    else if (key === 'name') b = `<div class="hb-seg${q ? ' q' : ''}" style="margin-bottom:14px"><button type="button" class="${q ? '' : 'on'}" data-act="habty" data-k="do">Делать</button><button type="button" class="${q ? 'on' : ''}" data-act="habty" data-k="quit">Бросить</button></div>${hero}
+      <div class="hb-lb">Название</div><label class="hb-nf" style="--hc:${hc}"><span>✎</span><input id="hb-t" maxlength="40" placeholder="${q ? 'Например: без сладкого' : 'Например: читать 20 минут'}" value="${esc(N.t)}"></label>
+      ${ico}${col}
+      <div class="hb-lb">Или возьми готовое</div><div class="hb-ch">${tpl.map(x => `<button type="button" data-act="habtpl" data-i="${HBT.indexOf(x)}">${x[1]} <span>${x[0]}</span></button>`).join('')}</div>`;
     else if (key === 'when') b = `<div class="hb-lv" style="--hc:${hc}"><span class="e">${N.e}</span><div><b>${esc(N.t) || 'Читать 20 минут'}</b><small>${N.g > 1 ? N.g + ' раз в день' : 'раз в день'} · ${HBP[N.p].toLowerCase()}</small></div><span class="ck">✓</span></div>
       <div class="hb-lb">Когда</div><div class="hb-wh">${[['m', '🌅'], ['d', '☀️'], ['e', '🌙']].map(x => `<button type="button" class="${N.p === x[0] ? 'on' : ''}" data-act="habpart" data-p="${x[0]}"><span>${x[1]}</span>${HBP[x[0]]}</button>`).join('')}</div>
       <div class="hb-lb">Сколько раз в день</div><div class="hb-stp"><button type="button" data-act="habgoal" data-d="-1">−</button><div><b>${N.g}</b><small>${N.g === 1 ? 'раз в день' : 'раз(а) в день'}</small></div><button type="button" data-act="habgoal" data-d="1">+</button></div>`;
@@ -11775,12 +11780,20 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     habopen: el => { const h = hbGet(el.dataset.id); if (h) { hap.tap(); hbDetail(h); } },
     habchk: el => { const h = hbGet(el.dataset.id); if (!h) return; const iso = isoT(), g = h.g || 1, was = hbDone(h); h.log = h.log || {}; let v = hbVal(h, iso); v = g > 1 ? (v >= g ? 0 : v + 1) : (v ? 0 : 1); if (v) h.log[iso] = v; else delete h.log[iso]; hbSave(); const now = hbDone(h); now && !was ? hap.ok() : hap.imp(); if (h.du) duSync(); if (h.rm != null) hbRemSync(); render(); { const rb = document.querySelector('.hb-ck[data-id="' + h.id + '"]'), rr = rb && rb.closest('.hb-r'); if (rr && v) rr.classList.add('fresh'); } if (now && !was) { const b = document.querySelector('.hb-ck[data-id="' + h.id + '"]'); if (b) { b.classList.add('pop'); hbBurst(b); } const D = hbList().filter(x => x.k !== 'quit'); if (D.length > 1 && D.every(x => hbDone(x))) toast(HT('День закрыт — все привычки выполнены')); } },
     habnew: () => { hap.tap(); HBN = null; hbNewSheet(); },
-    habty: el => { hap.tap(); HBN = HBN || {k:'do', t:'', e:HBE.do[0], p:'d', g:1, c:'g', s:0, m:'solo', days:14, stake:'', to:0}; const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.k = el.dataset.k; HBN.e = HBE[HBN.k][0]; HBN.c = HBN.k === 'quit' ? 'r' : 'g'; if (HBN.k === 'quit' && HBN.m === 'team') HBN.m = 'duel'; hbNewSheet(); },
+    habty: el => { hap.tap(); HBN = HBN || {k:'do', t:'', e:HBE.do[0], p:'d', g:1, c:'g', s:0, m:'solo', days:14, stake:'', to:0}; const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; const k = el.dataset.k; if (k === HBN.k) return; HBN.k = k; HBN.e = HBE[k][0]; HBN.c = k === 'quit' ? 'r' : 'g'; if (k === 'quit' && HBN.m === 'team') HBN.m = 'duel';
+      const wz = document.querySelector('.hb-wz'), sg = el.closest('.hb-seg'); if (!wz || !sg) { hbNewSheet(); return; }
+      const hc = HBC[HBN.c], q = k === 'quit'; sg.classList.toggle('q', q); sg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === el));
+      wz.style.setProperty('--hc', hc); document.querySelectorAll('.hb-hero,.hb-nf').forEach(x => x.style.setProperty('--hc', hc)); const hr = document.querySelector('.hb-hero'); if (hr) { hr.textContent = HBN.e; hr.animate([{transform:'scale(.88) rotate(-6deg)'}, {transform:'none'}], {duration:380, easing:'cubic-bezier(.3,1.5,.5,1)'}); }
+      const em = document.querySelector('.hb-em'); if (em) { em.innerHTML = HBE[k].map(e => `<button type="button" class="${e === HBN.e ? 'on' : ''}" data-act="habico" data-e="${e}">${e}</button>`).join(''); em.animate([{opacity:0, transform:'translateY(6px)'}, {opacity:1, transform:'none'}], {duration:260}); em.scrollLeft = 0; }
+      document.querySelectorAll('.hb-sw i').forEach((x, i) => x.classList.toggle('on', Object.keys(HBC)[i] === HBN.c));
+      const chs = document.querySelectorAll('.hb-wz .hb-ch'); const tc = chs[chs.length - 1]; if (tc) { tc.innerHTML = HBT.filter(x => x[3] === k).map(x => `<button type="button" data-act="habtpl" data-i="${HBT.indexOf(x)}">${x[1]} <span>${x[0]}</span></button>`).join(''); tc.animate([{opacity:0}, {opacity:1}], {duration:260}); }
+      if (t) t.placeholder = q ? 'Например: без сладкого' : 'Например: читать 20 минут';
+      const dh = document.querySelector('.hb-dash'); if (dh) { const n = hbSteps(HBN).length; while (dh.children.length > n) dh.lastElementChild.remove(); while (dh.children.length < n) dh.appendChild(document.createElement('i')); } },
     habtpl: el => { hap.tap(); const x = HBT[+el.dataset.i]; HBN = Object.assign({}, HBN, {k:x[3], t:x[0], e:x[1], c:x[2], p:x[4] || 'd', g:x[5] || 1, u:x[6] || ''}); if (x[3] === 'quit' && HBN.m === 'team') HBN.m = 'duel'; hbNewSheet(); },
-    habico: el => { hap.tap(); const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.e = el.dataset.e; hbNewSheet(); },
+    habico: el => { hap.tap(); const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.e = el.dataset.e; const hr = document.querySelector('.hb-hero'); if (hr) { hr.textContent = HBN.e; hr.animate([{transform:'scale(.9)'}, {transform:'scale(1)'}], {duration:300, easing:'cubic-bezier(.3,1.5,.5,1)'}); } document.querySelectorAll('.hb-em button').forEach(x => x.classList.toggle('on', x === el)); },
     habpart: el => { hap.tap(); const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.p = el.dataset.p; hbNewSheet(); },
     habgoal: el => { hap.tap(); const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.g = Math.max(1, Math.min(12, (HBN.g || 1) + +el.dataset.d)); hbNewSheet(); },
-    habcol: el => { hap.tap(); HBN.c = el.dataset.c; hbNewSheet(); },
+    habcol: el => { hap.tap(); HBN.c = el.dataset.c; const wz = document.querySelector('.hb-wz'); if (wz) wz.style.setProperty('--hc', HBC[HBN.c] || HBC.g); document.querySelectorAll('.hb-hero,.hb-nf').forEach(x => x.style.setProperty('--hc', HBC[HBN.c] || HBC.g)); document.querySelectorAll('.hb-sw i').forEach(x => x.classList.toggle('on', x === el)); },
     habnx: el => { const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; const d = +el.dataset.d, st = document.getElementById('hb-st'); if (st) HBN.stake = st.value; if (d > 0 && hbSteps(HBN)[HBN.s || 0] === 'name' && !(HBN.t || '').trim()) { toast(HT('Назови привычку')); return; } hap.tap(); HBN.s = Math.max(0, (HBN.s || 0) + d); HBN.an = 1; hbNewSheet(); },
     habmode: el => { if (el.dataset.m !== 'solo' && !inTG) { toast(HT('Споры доступны в Telegram')); return; } hap.tap(); HBN.m = el.dataset.m; document.querySelectorAll('.hb-mc').forEach(x => x.classList.toggle('on', x === el)); const dh = document.querySelector('.hb-dash'); if (dh) { const n = hbSteps(HBN).length; while (dh.children.length > n) dh.lastElementChild.remove(); while (dh.children.length < n) dh.appendChild(document.createElement('i')); } },
     habfr: el => { hap.tap(); HBN.to = +el.dataset.id; const st = document.getElementById('hb-st'); if (st) HBN.stake = st.value; hbNewSheet(); },
