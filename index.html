@@ -25,6 +25,7 @@
 <meta property="og:site_name" content="VOOB"><meta property="og:type" content="website"><meta property="og:title" content="Профиль в VOOB"><meta property="og:description" content="VOOB — Super-App: тренировки, питание, вода, игры и друзья в одном месте. Открой профиль и добавься в друзья."><meta property="og:image" content="https://app.voob.kz/og.jpg?v=2"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://app.voob.kz/og.jpg?v=2"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
 <title>VOOB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700&display=swap">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png">
@@ -4497,6 +4498,28 @@ html.web .gw-ci .bta{position:absolute;top:8px;left:8px;z-index:2;font-size:9px;
 html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html.web .gw-s{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:16px;border:1px dashed var(--border);opacity:.75}html.web .gw-s[data-act]{cursor:pointer}html.web .gw-s i{width:36px;height:36px;border-radius:11px;flex:none;display:grid;place-items:center}html.web .gw-s i.plus{background:var(--surface2);color:var(--muted)}html.web .gw-s b{font-size:13.5px;display:block}html.web .gw-s small{color:var(--muted);font-size:12px}
 @media(max-width:1100px){html.web .gw{grid-template-columns:1fr}html.web .gw-grid{grid-template-columns:repeat(3,1fr)}html.web .gw-soon{grid-template-columns:1fr}html.web .gw-img{width:170px;height:170px}}
 .nt-rings{display:flex;flex:none}.nt-rings i{width:26px;height:26px;border-radius:50%;border:4px solid var(--text);display:block}.nt-rings i+i{margin-left:-9px;border-color:var(--accent)}
+
+/* v1.1010: «Приложения» — вариант C1 «Poster»: зерно и пробегающий блик на карточках, калории в одну строку (без полосок-сканера), график веса не лезет на текст, у «Игр» веер из настоящих обложек */
+.ax-bn.hx .ax-bt::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;mix-blend-mode:overlay;background:linear-gradient(105deg,transparent 42%,rgba(255,255,255,.38) 50%,transparent 58%) 160% 0/260% 100% no-repeat,url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");animation:c1sw 7s ease-in-out infinite}
+.ax-bn.hx .ax-bt:nth-child(2)::before{animation-delay:-2s}.ax-bn.hx .ax-bt:nth-child(3)::before{animation-delay:-4s}.ax-bn.hx .ax-bt:nth-child(4)::before{animation-delay:-1s}.ax-bn.hx .ax-bt:nth-child(5)::before{animation-delay:-3s}.ax-bn.hx .ax-bt:nth-child(6)::before{animation-delay:-5s}
+@keyframes c1sw{0%,55%{background-position:160% 0,0 0}100%{background-position:-60% 0,0 0}}
+.ax-bn.hx .ax-bt.bk::after,.ax-bn.hx .ax-bt.bwt::after{animation:c1dr 11s ease-in-out infinite}
+@keyframes c1dr{50%{transform:translate(-22px,18px) scale(1.2)}}
+.ax-bn.hx .ax-bt .big{font-family:Unbounded,system-ui,sans-serif;font-weight:700;font-size:25px;letter-spacing:-1px;white-space:nowrap}
+.ax-bn.hx .ax-bt.bw .big{font-size:25px}
+.ax-bn.hx .ax-bt .big i{font-family:system-ui,-apple-system,sans-serif;letter-spacing:0}
+.ax-bn.hx .il-bc{display:none}
+.ax-bn.hx .ax-bt.bk .big{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+.ax-bn.hx .ax-bt.bk .big i{font-size:12.5px;color:rgba(255,255,255,.8)}
+.ax-bn.hx .il-wt{right:12px;top:16px;bottom:auto;width:56px;height:30px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 35%);mask-image:linear-gradient(90deg,transparent,#000 35%)}
+.ax-bn.hx .il-wt path:last-child{stroke-dasharray:140;stroke-dashoffset:140;animation:c1ln 6s ease-in-out infinite}
+@keyframes c1ln{0%{stroke-dashoffset:140}45%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:-140}}
+.ax-bn.hx .il-g .t{border:1.5px solid rgba(255,255,255,.6);border-radius:15px;box-shadow:0 12px 22px -6px rgba(0,0,0,.7);animation:c1fan 6s ease-in-out infinite;bottom:auto;left:auto}
+.ax-bn.hx .il-g .t:nth-child(1){width:50px;height:50px;right:64px;top:14px;--r:-14deg;transform:rotate(-14deg);animation-delay:-1s}
+.ax-bn.hx .il-g .t:nth-child(2){width:58px;height:58px;right:30px;top:4px;z-index:2;--r:3deg;transform:rotate(3deg);animation-delay:-3s}
+.ax-bn.hx .il-g .t.bk{z-index:1;width:50px;height:50px;right:4px;top:16px;--r:15deg;transform:rotate(15deg);filter:none;opacity:1;animation-delay:-5s}
+@keyframes c1fan{0%,100%{transform:rotate(var(--r)) translateY(0)}50%{transform:rotate(calc(var(--r) + 3deg)) translateY(-5px)}}
+@media (prefers-reduced-motion:reduce){.ax-bn.hx .ax-bt::before,.ax-bn.hx .ax-bt::after,.ax-bn.hx .il-wt path,.ax-bn.hx .il-g .t{animation:none!important}}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -4511,7 +4534,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1009';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1010';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
