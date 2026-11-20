@@ -4111,6 +4111,32 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 .ax-wc{display:flex;gap:8px;margin-top:10px}.ax-wc input{flex:1;min-width:0;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:16px;padding:13px 14px;font:inherit;font-size:15px;outline:0}.ax-wc button{border:0;border-radius:16px;padding:0 18px;font:inherit;font-weight:800;font-size:14px;background:var(--text);color:var(--bg)}
 .ax-cnt{font-style:normal;text-transform:none;letter-spacing:0;font-size:12px;font-weight:700}
 .ax-hist{background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden}.ax-hi{display:flex;align-items:center;gap:12px;padding:11px 8px 11px 14px}.ax-hi+.ax-hi{border-top:1px solid var(--border)}.ax-hi .ic{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:rgba(58,167,255,.14);color:#3a9bf0;flex:none}.ax-hi .t{flex:1;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}.ax-hi b{font-size:16px;font-weight:850;font-variant-numeric:tabular-nums}.ax-hi b em{font-style:normal;font-size:12px;color:var(--muted);font-weight:650}.ax-hi.old{opacity:.75}.ax-hi.old .ax-x{display:none}.ax-hi.old b{padding-right:10px}
+
+/* v1.1042: «Вода» — вариант «Стихия» */
+.ax-wt{height:300px;border-radius:36px;padding:22px;background:var(--surface)}
+.ax-wt .wave{background:linear-gradient(180deg,#4cc9f0 0%,#2f8bff 100%);opacity:.92}
+.ax-wt .wave::before,.ax-wt .wave::after{filter:saturate(1.5) brightness(1.15)}
+.ax-wt .bb{position:absolute;bottom:-10px;left:var(--l);width:var(--s,5px);height:var(--s,5px);border-radius:50%;background:rgba(255,255,255,.4);animation:axbb 5s ease-in infinite;animation-delay:var(--d,0s)}
+@keyframes axbb{to{transform:translateY(-240px);opacity:0}}
+.ax-wt .pc{background:rgba(0,0,0,.35);border-color:transparent;color:#fff}
+.ax-wt .n{font-family:'Unbounded',sans-serif;font-size:66px;letter-spacing:-4px;background:linear-gradient(160deg,#fff 20%,#d6f1ff 70%,#9fd8ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;padding-right:6px;align-self:flex-start;text-shadow:none;filter:drop-shadow(0 2px 10px rgba(0,30,90,.35))}
+.ax-wt .n i{font-family:-apple-system,system-ui,sans-serif;-webkit-text-fill-color:#e6f6ff;letter-spacing:0;font-size:20px;margin-left:6px}
+.ax-wt small{color:#e6f6ff;text-shadow:0 1px 8px rgba(0,30,90,.45)}
+.ax-wb button{height:72px;border-radius:24px;border:1px solid var(--border);background:var(--surface);box-shadow:none;color:#6cc4ff;justify-content:center;padding:0}
+.ax-wb button b{font-family:'Unbounded',sans-serif;font-size:15px;letter-spacing:-.5px}
+.ax-wl{background:none;border:0;border-radius:0;overflow:visible}
+.ax-wl .ax-hi{position:relative;height:62px;padding:0 6px 0 14px;margin-bottom:8px;border:1px solid var(--border);border-radius:22px;background:var(--surface);overflow:hidden;-webkit-clip-path:inset(0 round 22px);clip-path:inset(0 round 22px);touch-action:pan-y;transition:transform .25s cubic-bezier(.2,.9,.25,1),opacity .25s,height .3s .1s,margin .3s .1s}
+.ax-wl .ax-hi+.ax-hi{border-top:1px solid var(--border)}
+.ax-wl .ax-hi::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,rgba(76,201,240,.34),rgba(47,139,255,.1));transform-origin:0 50%;transform:scaleX(var(--p,.5));pointer-events:none}
+.ax-wl .ax-hi>*{position:relative}
+.ax-wl .ax-hi .ic{background:rgba(127,214,255,.2);width:36px;height:36px;border-radius:13px}
+.ax-wl .ax-hi b{font-family:'Unbounded',sans-serif;font-size:15px;letter-spacing:-.5px}
+.ax-wl .ax-hi .ax-x{width:46px;height:46px;border-radius:16px;background:rgba(255,69,58,.16);color:#ff6b61;flex:none}
+.ax-wl .ax-hi .ax-x:active{transform:scale(.9);background:rgba(255,69,58,.32)}
+.ax-wl .ax-hi.gone{transform:translateX(-110%);opacity:0;height:0;margin:0;border-width:0}
+.ax-wl .ax-hi.fresh{animation:axhin .5s cubic-bezier(.2,.9,.25,1)}@keyframes axhin{from{opacity:0;transform:translateX(-22px) scale(.96)}}
+.ax-wl .ax-hi.old{--p:.25}
+.ax-hint2{margin:-2px 4px 10px;color:var(--muted);font-size:12px}
 .ax-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:4px;margin-bottom:10px}.ax-seg button{border:0;background:none;color:var(--muted);font:inherit;font-weight:800;font-size:13px;padding:9px 0;border-radius:12px;cursor:pointer}.ax-seg button.on{background:var(--text);color:var(--bg)}
 .ax-sum{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}.ax-sum>div{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:12px 14px}.ax-sum small{display:block;color:var(--muted);font-size:11.5px}.ax-sum b{display:block;font-size:21px;font-weight:850;letter-spacing:-.6px;font-variant-numeric:tabular-nums;margin-top:2px}.ax-sum em,.ax-wd em,.ax-dr em{font-style:normal;font-size:12px;color:var(--muted);font-weight:650;letter-spacing:0}
 .ax-clr{display:block;width:100%;margin:6px 0 12px;padding:12px;border-radius:999px;border:1px solid var(--border);background:none;color:var(--muted);font:inherit;font-weight:650;font-size:13.5px;cursor:pointer}.ax-clr.arm{color:#fff;background:#e0405f;border-color:transparent}
@@ -4661,6 +4687,14 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-gr{position:absolute;left:0;right:0;height:68px;border-radius:24px;overflow:hidden;display:flex;align-items:center;gap:12px;padding:0 14px;background:var(--surface);border:1px solid var(--border);-webkit-clip-path:inset(0 round 24px);clip-path:inset(0 round 24px)}
 .hb-gr .e{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.08);flex:none}.hb-gr .t{flex:1}.hb-gr .t i{display:block;height:11px;border-radius:6px;background:rgba(255,255,255,.12);width:60%;margin-bottom:8px}.hb-gr .t i+i{width:36%;height:8px;margin:0;background:rgba(255,255,255,.07)}.hb-gr .ck{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);flex:none}
 .hb-gr::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,var(--c),color-mix(in srgb,var(--c) 65%,#fff));transform:scaleX(0);transform-origin:0 50%;opacity:0;animation:hbgf 7s cubic-bezier(.5,0,.2,1) infinite;animation-delay:var(--d,0s)}
+.hb-gr .e{display:grid;place-items:center;font-size:23px;line-height:1;animation:hbge 7s cubic-bezier(.5,0,.2,1) infinite;animation-delay:var(--d,0s)}
+.hb-gr .t i{animation:hbgt 7s cubic-bezier(.5,0,.2,1) infinite;animation-delay:var(--d,0s)}
+.hb-gr .ck{position:relative;display:grid;place-items:center;animation:hbgc 7s cubic-bezier(.5,0,.2,1) infinite;animation-delay:var(--d,0s)}
+.hb-gr .ck::after{content:"";width:9px;height:5px;border-left:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(-45deg) translate(1px,-1px);opacity:0;animation:hbgk 7s ease infinite;animation-delay:var(--d,0s)}
+@keyframes hbge{0%,14%{background:rgba(255,255,255,.08)}30%,70%{background:rgba(0,0,0,.2)}86%,100%{background:rgba(255,255,255,.08)}}
+@keyframes hbgt{0%,14%{background-color:rgba(255,255,255,.12)}30%,70%{background-color:rgba(10,10,15,.55)}86%,100%{background-color:rgba(255,255,255,.12)}}
+@keyframes hbgc{0%,14%{background:transparent;border-color:rgba(255,255,255,.09)}30%,70%{background:#0b0b10;border-color:#0b0b10}86%,100%{background:transparent;border-color:rgba(255,255,255,.09)}}
+@keyframes hbgk{0%,26%{opacity:0}34%,68%{opacity:1}80%,100%{opacity:0}}
 .hb-gr>*{position:relative}.hb-gr:nth-child(1){top:0;--d:0s;transform:rotate(-2deg) scale(.96)}.hb-gr:nth-child(2){top:84px;--d:.9s;transform:rotate(1.5deg)}.hb-gr:nth-child(3){top:168px;--d:1.8s;transform:rotate(-1deg) scale(.97)}
 @keyframes hbgf{0%,6%{transform:scaleX(0);opacity:1}30%,70%{transform:scaleX(1);opacity:1}86%,100%{transform:scaleX(1);opacity:0}}
 .hb-gb{font:800 26px/1.1 Unbounded,system-ui,sans-serif;letter-spacing:-1.2px;margin:0 2px 8px}.hb-gs2{color:var(--muted);font-size:14px;line-height:1.45;margin:0 2px 20px}
@@ -4745,7 +4779,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1040';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1042';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11409,6 +11443,11 @@ const AX = (function(){
     <div class="ax-sech"><span>По дням</span></div><div class="ax-hist">${rows}</div>${st.D > ST.wmore ? `<button type="button" class="ax-more" data-act="axwmore">Показать ещё</button>` : ''}`;
   }
   function viewWater(){
+  if (!window.__wsw) { window.__wsw = 1; let r = null, x0 = 0, y0 = 0, dx = 0, lock = 0;
+    document.addEventListener('touchstart', e => { const t = e.target.closest && e.target.closest('.ax-wl .ax-hi[data-id]'); if (!t || e.touches.length !== 1) { r = null; return; } r = t; x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; dx = 0; lock = 0; t.style.transition = 'none'; }, {passive: true});
+    document.addEventListener('touchmove', e => { if (!r) return; const mx = e.touches[0].clientX - x0, my = e.touches[0].clientY - y0; if (!lock) { if (Math.abs(mx) > 8 && Math.abs(mx) > Math.abs(my)) lock = 1; else if (Math.abs(my) > 8) { r.style.transition = ''; r = null; return; } else return; } dx = Math.min(0, mx); r.style.transform = 'translateX(' + dx + 'px)'; r.style.opacity = String(1 - Math.min(.6, -dx / 300)); }, {passive: true});
+    document.addEventListener('touchend', () => { if (!r) return; const t = r; r = null; t.style.transition = ''; if (lock && dx < -90) { const b = t.querySelector('.ax-x'); t.style.transform = ''; t.style.opacity = ''; if (b) b.click(); } else { t.style.transform = ''; t.style.opacity = ''; } }, {passive: true});
+  }
     const w = wd(), wg = waterGoal(), pct = Math.round(clamp(w / wg.goal, 0, 1) * 100), log = (wlog()[isoT()] || []).slice().reverse(), logSum = log.reduce((a, e) => a + e.v, 0), prior = Math.max(0, w - logSum), done = w >= wg.goal, prevPct = ST.wp == null ? pct : ST.wp; ST.wp = pct; if (prevPct !== pct) requestAnimationFrame(() => requestAnimationFrame(() => { const e = document.querySelector('.ax-wt .wave'); if (e) e.style.setProperty('--w', pct + '%'); }));
     return back() + `<div class="ax-h1">Вода</div><div class="ax-sub">Цель на сегодня — ${P0(wg.goal)} мл${wg.tr ? ' · с тренировкой +500' : ''}</div>
     <div class="ax-cols"><div class="ax-c1"><div class="ax-wt"><div class="wave" style="--w:${prevPct}%;--ph:${-(Date.now() % 9000)}ms;--ph2:${-(Date.now() % 14000)}ms"><i class="bb" style="--l:16%;--d:0s"></i><i class="bb" style="--l:40%;--s:4px;--d:1.8s"></i><i class="bb" style="--l:66%;--s:7px;--d:3.1s"></i><i class="bb" style="--l:86%;--s:5px;--d:.9s"></i></div>
@@ -11416,7 +11455,7 @@ const AX = (function(){
     <div class="ax-wb">${[150, 250, 330, 500].map(v => `<button type="button" data-act="axwater" data-v="${v}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${WIC[v]}</svg><b>+${v}</b><small>мл</small></button>`).join('')}</div>
     <div class="ax-wc"><input id="ax-wc" type="number" inputmode="numeric" placeholder="Свой объём, мл" min="10" max="2000"><button type="button" data-act="axwcust">Добавить</button></div>
     </div><div class="ax-c2"><div class="ax-sech"><span>Сегодня выпито</span><em class="ax-cnt">${log.length ? log.length + ' ' + (log.length === 1 ? 'раз' : log.length < 5 ? 'раза' : 'раз') : ''}</em></div>
-    <div class="ax-hist">${log.length ? log.map(e => `<div class="ax-hi"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">${hhmm(e.t)}</span><b>+${P0(e.v)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdel" data-id="${e.id}" aria-label="Удалить">${I('x', 14)}</button></div>`).join('') : ''}${prior ? `<div class="ax-hi old"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">раньше</span><b>${P0(prior)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdelold" aria-label="Удалить">${I('x', 14)}</button></div>` : ''}${!log.length && !prior ? '<div class="ax-em" style="padding:14px">Пока ничего не выпито — нажми на стакан выше</div>' : ''}</div>
+    ${log.length ? '<div class="ax-hint2">Смахни порцию влево или нажми корзину, чтобы удалить</div>' : ''}<div class="ax-hist ax-wl">${log.length ? log.map(e => `<div class="ax-hi" data-id="${e.id}" style="--p:${Math.min(1, e.v / 500).toFixed(2)}"><span class="ic">${SV(WIC[e.v <= 200 ? 150 : e.v <= 290 ? 250 : e.v <= 400 ? 330 : 500], 18)}</span><span class="t">${hhmm(e.t)}</span><b>+${P0(e.v)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdel" data-id="${e.id}" aria-label="Удалить порцию">${I('trash', 18)}</button></div>`).join('') : ''}${prior ? `<div class="ax-hi old"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">раньше</span><b>${P0(prior)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdelold" aria-label="Удалить">${I('x', 14)}</button></div>` : ''}${!log.length && !prior ? '<div class="ax-em" style="padding:14px">Пока ничего не выпито — нажми на стакан выше</div>' : ''}</div>
     ${waterStats()}
     <button type="button" class="ax-clr${ST.wclr ? ' arm' : ''}" data-act="axwclear">${ST.wclr ? 'Нажми ещё раз — сотру всю историю воды' : 'Очистить всю историю воды'}</button><div class="ax-note">Цель считается от веса (≈30 мл на кг) и сдвигается в дни с тренировкой.</div></div></div><div style="height:130px"></div>`;
   }
@@ -11845,7 +11884,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     axwsel: el => { ST.wsel = el.dataset.k; hap.tap(); render(); },
     axwmore: () => { ST.wmore += 20; hap.tap(); render(); },
     axwdelold: () => { const k = isoT(), L = wlog(), sum = (L[k] || []).reduce((a, e) => a + e.v, 0), old = Math.max(0, wd(k) - sum); if (!old) return; db.water[k] = sum; save(); hap.tap(); render(); toast('Удалено −' + old + ' мл', 'Вернуть', () => { db.water[k] = sum + old; save(); render(); }); },
-    axwdel: el => { const e = delWater(el.dataset.id); if (!e) return; hap.tap(); render(); toast('Удалено −' + e.v + ' мл', 'Вернуть', () => { addWater(e.v); render(); }); },
+    axwdel: el => { const row = el.closest('.ax-hi'), go = () => { const e = delWater(el.dataset.id); if (!e) return; hap.tap(); render(); toast('Удалено −' + e.v + ' мл', 'Вернуть', () => { const k = isoT(); db.water[k] = Math.min(9000, wd(k) + e.v); (wlog()[k] = wlog()[k] || []).push(e); wlog()[k].sort((a, b) => a.t - b.t); save(); render(); }); }; if (row) { row.classList.add('gone'); setTimeout(go, 260); } else go(); },
     axadd: el => { ST.meal = el.dataset.m || mealOf(); ST.q = ''; ST.quick = false; ST.pr = null; if (!S.app) { ST.stack = ['cal']; ST.s = 'add'; S.app = true; hap.tap(); render(); window.scrollTo(0, 0); } else go('add'); },
     axaddscan: el => { acts.axadd(el); setTimeout(() => openScan(), 50); },
     axquick: () => { ST.quick = !ST.quick; hap.tap(); render(); },
