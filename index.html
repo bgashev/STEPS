@@ -4942,6 +4942,27 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 .act.pin .ed{left:auto;right:52px;top:calc(50% - 15px)}
 #sheet.aw .act .ed{left:auto;right:6px;top:6px}
 #sheet.aw .act.pin .ed{right:52px;top:calc(50% - 15px)}
+/* v1.1070: заморозка серии — экран «Серия спасена» и ледяной чип */
+html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:color-mix(in srgb,#9fd8ff 45%,var(--border))}
+.sfzov{position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;background:rgba(10,12,18,.72);backdrop-filter:blur(0);-webkit-backdrop-filter:blur(0)}
+.sfzov.show{animation:sfzin .9s ease forwards}@keyframes sfzin{to{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}}
+.sfzov.out{animation:sfzout .6s ease forwards}@keyframes sfzout{from{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}to{opacity:0}}
+.sfzov .crys{position:relative;width:190px;height:190px;margin-bottom:18px}
+.sfzov .crys>svg{position:absolute;inset:0;width:100%;height:100%}
+.sfzov .fl2{position:absolute;inset:0;display:grid;place-items:center;color:#ff9d5c}
+.sfzov .fl2 svg{width:78px;height:78px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.sfzov.show .fl2{animation:sfzfz 2s ease .5s forwards}@keyframes sfzfz{60%{color:#ffd9c2}100%{color:#9fd8ff;transform:scale(1.06)}}
+.sfzov .sp{transform-origin:95px 95px;transform:scale(0);opacity:0;fill:url(#sfzg);stroke:rgba(200,236,255,.8);stroke-width:1}
+.sfzov.show .sp{animation:sfzgrow .9s cubic-bezier(.2,.9,.25,1) forwards}
+.sfzov.show .sp:nth-child(2){animation-delay:.1s}.sfzov.show .sp:nth-child(3){animation-delay:.18s}.sfzov.show .sp:nth-child(4){animation-delay:.26s}.sfzov.show .sp:nth-child(5){animation-delay:.34s}.sfzov.show .sp:nth-child(6){animation-delay:.42s}.sfzov.show .sp:nth-child(7){animation-delay:.5s}.sfzov.show .sp:nth-child(8){animation-delay:.58s}
+@keyframes sfzgrow{60%{opacity:.95}100%{transform:scale(1);opacity:.55}}
+.sfzov .num{font-size:54px;font-weight:900;letter-spacing:-.03em;line-height:1;color:var(--text)}
+.sfzov .num small{font-size:18px;font-weight:700;color:var(--muted);margin-left:6px}
+.sfzov h3{font-size:19px;margin-top:10px;color:var(--text)}
+.sfzov p{color:var(--muted);font-size:13px;margin-top:6px;max-width:250px}
+.sfzov p.lf b{color:#9fd8ff}
+.sfzov button{margin-top:20px;border:0;border-radius:14px;padding:12px 30px;background:#9fd8ff;color:#0e2433;font:inherit;font-weight:800;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.sfzov .sp,.sfzov .fl2{animation-duration:.01s!important}}
 .cx-wrap h2{margin:0 0 4px}
 .cx-foot .btn{border:0;border-radius:999px;padding:12px 16px;font-weight:650;display:inline-flex;align-items:center;justify-content:center}
 .cx-foot .btn.primary{background:var(--accent);color:var(--on-accent)}.cx-foot .btn.ghost{background:var(--surface2);color:var(--text)}
@@ -4962,7 +4983,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1067';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1070';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5187,12 +5208,21 @@ function goalInfo(ws){
 }
 function perDay(ws){ const m = new Map(); for (const w of ws) { const d = dn(w.date); m.set(d, (m.get(d) || 0) + 1); } return m; }
 function goalHistory(ws){ const c = goalCycles(ws); return [c.done, c.best, c.run]; }
+/* v1.1070: заморозка серии. SFZ.days — дни, закрытые заморозкой (сервер решает сам, клиент только показывает). */
+const SFZ = {days:new Set(), left:0, allow:1, fresh:[], at:0, busy:false, shown:false, ok:false,
+  recent(){ const t = todayN(); return SFZ.days.has(t - 1) || SFZ.days.has(t); }};
+/* Серия = подряд идущие дни с тренировкой. Дни отдыха (после 5 подряд) и дни под заморозкой — «мост»: серию не рвут, но в счёт не идут. */
 function dayStreaks(ws){
   const t = todayN(), s = new Set(ws.map(w => dn(w.date)).filter(n => n <= t));
+  const br = new Set(restDays(ws)); SFZ.days.forEach(d => br.add(d));
   let best = 0, run = 0, prev = null;
-  for (const d of [...s].sort((a,b) => a - b)) { run = (prev !== null && d - prev === 1) ? run + 1 : 1; best = Math.max(best, run); prev = d; }
+  for (const d of [...s].sort((a,b) => a - b)) {
+    if (prev === null) run = 1;
+    else { let ok = true; for (let k = prev + 1; k < d; k++) if (!br.has(k)) { ok = false; break; } run = ok ? run + 1 : 1; }
+    best = Math.max(best, run); prev = d;
+  }
   let d = s.has(t) ? t : t - 1, cur = 0;
-  while (s.has(d)) { cur++; d--; }
+  for (let i = 0; i < 4000; i++) { if (s.has(d)) { cur++; d--; } else if (br.has(d)) d--; else break; }
   return [cur, best];
 }
 function restDays(ws){   // после 5 дней подряд — 2 дня отдыха
@@ -7286,6 +7316,38 @@ function loadWelcome(force){
   apiAuth('/welcome/status', {}).then(j => { WK.st = j && !j.error ? j : null; }).catch(() => {}).finally(() => {
     WK.busy = false; if (S.tab === 'home' && !S.fprof && !sheetCtx) render(); maybeAskNotify(); });
 }
+/* v1.1070: заморозка серии — состояние с сервера и экран «Серия спасена» */
+function loadSfz(force){
+  if ((!inTG && !inWebApp) || SFZ.busy || (!force && SFZ.at && Date.now() - SFZ.at < 120000)) return;
+  SFZ.busy = true; SFZ.at = Date.now();
+  apiAuth('/sfz/status', {}).then(j => {
+    if (!j || j.error) return;
+    SFZ.days = new Set((j.days || []).map(Number)); SFZ.left = j.left | 0; SFZ.allow = j.allow | 0; SFZ.fresh = j.fresh || []; SFZ.ok = true;
+  }).catch(() => {}).finally(() => {
+    SFZ.busy = false;
+    if (S.tab === 'home' && !S.fprof && !sheetCtx) render();
+    if (SFZ.fresh.length && !SFZ.shown) setTimeout(showSfzMoment, 700);
+  });
+}
+function showSfzMoment(){
+  if (SFZ.shown || $('#sfzov') || sheetCtx || $('#gprd')) { if (!SFZ.shown && SFZ.fresh.length) setTimeout(showSfzMoment, 2500); return; }
+  SFZ.shown = true;
+  const cur = dayStreaks(valid())[0], sp = [0, 1, 2, 3, 4, 5, 6, 7].map(i => `<polygon class="sp" points="${[
+    '95,95 80,10 95,0 110,10', '95,95 180,80 190,95 180,110', '95,95 110,180 95,190 80,180', '95,95 10,110 0,95 10,80',
+    '95,95 140,25 156,34 150,52', '95,95 165,140 156,156 138,150', '95,95 50,165 34,156 40,138', '95,95 25,50 34,34 52,40'][i]}"/>`).join('');
+  const o = document.createElement('div'); o.id = 'sfzov'; o.className = 'sfzov';
+  o.innerHTML = `<div class="crys"><svg viewBox="0 0 190 190"><defs><linearGradient id="sfzg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9f2ff"/><stop offset="1" stop-color="#6fb8ee"/></linearGradient></defs>${sp}</svg>
+    <div class="fl2">${IC('flame', 78)}</div></div>
+    <div class="num">${cur}<small>дн.</small></div><h3>Серия спасена</h3><p>Вчера без тренировки — заморозка закрыла этот день.</p>
+    <p class="lf"><span>Заморозок в этом месяце:</span> <b>${SFZ.left}</b>/${SFZ.allow}</p>
+    <button type="button" data-act="sfzok">Понятно</button>`;
+  document.body.appendChild(o); void o.offsetWidth; o.classList.add('show'); hap.ok();
+}
+function closeSfzMoment(){
+  const o = $('#sfzov'); if (!o) return; hap.tap(); SFZ.fresh = [];
+  apiAuth('/sfz/seen', {}).catch(() => {});
+  o.classList.add('out'); setTimeout(() => { o.remove(); if (S.tab === 'home' && !S.fprof && !sheetCtx) render(); }, 600);
+}
 /* разрешение на сообщения от бота: спрашиваем один раз после первой тренировки, повтор — не раньше чем через неделю */
 function maybeAskNotify(){
   try {
@@ -7356,7 +7418,7 @@ function viewHome(web){
   const ws = valid(), g = G(), t = todayN(), info = goalInfo(ws), rest = restDays(ws), [cur] = dayStreaks(ws);
   const tMin = sum(ws.filter(w => dn(w.date) === t), w => w.minutes);
   const bits = [tMin ? `сегодня уже ${fmtMin(tMin)} в движении` : (rest.has(t) ? 'сегодня день отдыха' : 'сегодня ещё без тренировки')];
-  if (cur >= 2) bits.push(`серия ${npw(cur, W_DAY)} подряд`);
+  if (cur >= 2) bits.push(`серия ${npw(cur, W_DAY)} подряд` + (SFZ.recent() ? ' · ❄ заморожена' : ''));
   bits.push(info.doneToday ? 'норма недели закрыта' : info.start == null ? 'новая неделя — с первой тренировки' : `до нормы ${info.remaining}`);
   const done = info.shown >= g.count, pct = Math.round(info.shown * 100 / g.count);
   let gtxt;
@@ -7374,7 +7436,7 @@ function viewHome(web){
   else if (rest.has(t + 1)) note = `<div class="note">${IC('rest', 15)}5 дней подряд — завтра и послезавтра отдых</div>`;
 
   const noGoal = !(db.settings.goal || {}).set;
-  loadWelcome(); loadReferral();
+  loadWelcome(); loadReferral(); loadSfz();
   let h = `<div class="head"><div><h1>${esc(greet())}</h1><div class="sub">${bits.join(' · ')}</div></div>${web || inWeb ? '' : AX.btn()}</div>
   ${web ? planSuggestHTML(ws) + startHTML(ws, tMin > 0) : startHTML(ws, tMin > 0, true, planSuggestHTML(ws))}
 `;
@@ -7390,7 +7452,7 @@ function viewHome(web){
     actionsH = `<div class="actions"><button class="btn ghost" data-act="plans">${IC('plan')}План${upPlans(ws).length ? `<span class="pn">${upPlans(ws).length}</span>` : ''}</button>${ws.length ? `<button class="btn ghost" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat')}Повторить</button>` : ''}</div>`;
   const heroH = () => {
     const pl = upPlans(ws).length, c = HC;
-    const chips = c ? `<div class="vc-chips"><div class="vc-ch${c.cur ? '' : ' off'}"><i>${IC('flame', 17)}</i><div><b${c.cur && !c.today ? ' class="wr"' : ''}>${c.cur}${c.cur ? ' дн.' : ''}</b><small>серия</small></div></div><div class="vc-ch w"><i>${IC('bolt', 17)}</i><div><b>Уровень ${c.L.level}<em>ещё ${num(c.L.need - c.L.into, 0)} XP</em></b><u><s style="width:${Math.round(c.L.into * 100 / Math.max(1, c.L.need))}%"></s></u></div></div>${c.nx ? `<div class="vc-ch" title="${esc(c.nx.title)}"><i>${IC(c.nx.icon, 17)}</i><div><b>${c.nx.text}</b><small>${esc(c.nx.title)}</small></div></div>` : ''}</div>` : '';
+    const chips = c ? `<div class="vc-chips"><div class="vc-ch${c.cur ? '' : ' off'}${c.cur && SFZ.recent() ? ' ice' : ''}"><i>${IC(c.cur && SFZ.recent() ? 'snow' : 'flame', 17)}</i><div><b${c.cur && !c.today ? ' class="wr"' : ''}>${c.cur}${c.cur ? ' дн.' : ''}</b><small>серия${SFZ.ok && SFZ.allow ? `<span> · ❄ ${SFZ.left}</span>` : ''}</small></div></div><div class="vc-ch w"><i>${IC('bolt', 17)}</i><div><b>Уровень ${c.L.level}<em>ещё ${num(c.L.need - c.L.into, 0)} XP</em></b><u><s style="width:${Math.round(c.L.into * 100 / Math.max(1, c.L.need))}%"></s></u></div></div>${c.nx ? `<div class="vc-ch" title="${esc(c.nx.title)}"><i>${IC(c.nx.icon, 17)}</i><div><b>${c.nx.text}</b><small>${esc(c.nx.title)}</small></div></div>` : ''}</div>` : '';
     return `<div class="vc${done ? ' done' : ''}"><div class="vc-glow"></div><div class="vc-top"><div class="vc-ring">${segRing(info.shown, g.count, done, pct)}</div><div class="vc-tx"><span class="vc-k">${IC('target', 14)}Цель недели · ${Math.min(info.shown, g.count)} из ${g.count}</span>${gtxt}
       <div class="vc-cta"><button type="button" class="vc-go" data-act="add">${IC('plus', 17)}Начать тренировку</button><div class="vc-seg"><button type="button" data-act="plans">${IC('plan', 15)}План${pl ? `<span class="pn">${pl}</span>` : ''}</button>${ws.length ? `<button type="button" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat', 15)}Повторить</button>` : ''}${canSum ? `<button type="button" data-act="gsum">${IC(S.gsum ? 'close' : 'sparkle', 15)}${S.gsum ? 'Скрыть итоги' : 'Итоги'}</button>` : ''}<button type="button" class="ic" data-act="goaled" aria-label="Изменить цель">${IC('edit', 15)}</button></div></div></div></div>
       <div class="vc-strip">${goalStrip(ws, g.days)}${note}</div></div>${chips}`;
@@ -11101,6 +11163,7 @@ const ACT = {
   gpbuy: el => buyGiftPro(+el.dataset.id, GP.plan, el),
   gpplan: el => { GP.plan = el.dataset.v; gpRefresh(); hap.tap(); },
   gprdx: () => { hap.tap(); closeProOverlay(); },
+  sfzok: () => closeSfzMoment(),
   socno: () => { hap.tap(); const r = $('#soc-res'), i = $('#soc-in'); if (r) r.innerHTML = ''; if (i) { i.focus(); i.select(); } },
   socsave: el => socSave(el.dataset.net, el.dataset.h),
   socdel: el => {                       // удаление — в два касания: сначала «Точно убрать?», через 3 с кнопка возвращается
@@ -14000,6 +14063,8 @@ Object.assign(I18N.en, {"Вышла новая версия": "A new version is 
 Object.assign(I18N.kk, {"Вышла новая версия": "Жаңа нұсқа шықты", "уже ждёт тебя": "сені күтіп тұр", "Обновить": "Жаңарту", "Обновляю…": "Жаңартылуда…", "Готово": "Дайын", "Позже": "Кейін"});
 Object.assign(I18N.en, {"Игры": "Games", "ОСТОРОЖНО · БОМБЫ": "WATCH OUT · BOMBS", "ЗАМОРОЗКА": "FREEZE", "уже есть PRO": "already has PRO", "Подписка активна": "Subscription is active", "Дарить PRO сейчас не нужно: подписка уже работает. Загляни, когда она закончится, — или выбери для друга обычный подарок.": "No need to gift PRO right now: the subscription is active. Come back when it ends — or pick a regular gift.", "Понятно": "Got it", "У друга уже есть PRO": "Your friend already has PRO"});
 Object.assign(I18N.kk, {"Игры": "Ойындар", "ОСТОРОЖНО · БОМБЫ": "ЕСКЕР · БОМБАЛАР", "ЗАМОРОЗКА": "МҰЗДАТУ", "уже есть PRO": "PRO бар", "Подписка активна": "Жазылым белсенді", "Дарить PRO сейчас не нужно: подписка уже работает. Загляни, когда она закончится, — или выбери для друга обычный подарок.": "Қазір PRO сыйлаудың қажеті жоқ: жазылым жұмыс істеп тұр. Аяқталғанда қайта кір — немесе қарапайым сыйлық таңда.", "Понятно": "Түсінікті", "У друга уже есть PRO": "Досыңда PRO бар"});
+Object.assign(I18N.en, {"Серия спасена": "Streak saved", "Вчера без тренировки — заморозка закрыла этот день.": "No workout yesterday — a freeze covered that day.", "Заморозок в этом месяце:": "Freezes this month:"});
+Object.assign(I18N.kk, {"Серия спасена": "Серия сақталды", "Вчера без тренировки — заморозка закрыла этот день.": "Кеше жаттығу болмады — мұздату сол күнді жауып тұр.", "Заморозок в этом месяце:": "Осы айдағы мұздатулар:"});
 delete _lc.en; delete _lc.kk;
 (function(){
   try { const u = new URL(location.href); if (u.searchParams.has('_v')) { u.searchParams.delete('_v'); history.replaceState(null, '', u.pathname + u.search + u.hash); } } catch (e) {}   // метка запасного обновления — убираем из адреса

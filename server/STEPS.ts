@@ -1492,6 +1492,51 @@ async function routeReferral(body: any) {
   }
   return json({ status: "ok", days: REF_DAYS, max: REF_MAX, earned: got.size + rewarded.length, pending, rewarded, until });
 }
+/* ---------- v1.1070: заморозка серии ----------
+   Один пропущенный день (вчера) закрывается заморозкой: серия не рвётся, XP и тренировки не начисляются.
+   Лимит в месяц: 1 у всех, 3 у PRO. Нужна серия минимум 2 дня до пропуска. Решает только сервер. */
+const SFZ_FREE = 1, SFZ_PRO = 3;
+const sfzMonth = (day: number) => { const d = new Date(day * DAY); return Math.floor(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1) / DAY); };
+async function sfzProOn(me: number) {
+  const { data: s } = await db.from("pro_subs").select("until, frozen_at").eq("tg_id", me).maybeSingle();
+  return !!s && !s.frozen_at && !!s.until && new Date(s.until).getTime() > Date.now();
+}
+async function sfzWorkDays(me: number) {
+  const { data: ws } = await db.from("records").select("data").eq("tg_id", me).eq("kind", "workout").eq("deleted", false).limit(2000);
+  return new Set((ws ?? []).map((r: any) => dnum(r.data?.date)).filter((x: any) => x != null)) as Set<number>;
+}
+// Подтягивает состояние и, если вчера пропущен, а условия выполнены, ставит заморозку. applied/run — только если поставили сейчас.
+async function sfzSync(me: number, workDays?: Set<number>) {
+  const today = lday(Date.now()), y = today - 1;
+  const days = workDays ?? await sfzWorkDays(me);
+  const { data: rows } = await db.from("streak_freezes").select("day, seen").eq("tg_id", me).order("day", { ascending: false }).limit(400);
+  const frozen = new Set<number>((rows ?? []).map((r: any) => Number(r.day)));
+  const allow = (await sfzProOn(me)) ? SFZ_PRO : SFZ_FREE;
+  const usedIn = (m: number) => [...frozen].filter((d) => sfzMonth(d) === m).length;
+  let applied: number | null = null, run = 0;
+  if (!days.has(y) && !frozen.has(y) && days.size && usedIn(sfzMonth(y)) < allow) {
+    for (let d = y - 1; days.has(d) || frozen.has(d); d--) if (days.has(d)) run++;
+    if (run >= 2) {
+      const { error } = await db.from("streak_freezes").insert({ tg_id: me, day: y });
+      if (!error) { applied = y; frozen.add(y); }
+    }
+  }
+  const fresh = (rows ?? []).filter((r: any) => !r.seen).map((r: any) => Number(r.day));
+  if (applied != null) fresh.push(applied);
+  return { days: [...frozen].filter((d) => d >= today - 120), left: Math.max(0, allow - usedIn(sfzMonth(today))), allow, fresh, applied, run };
+}
+async function routeSfzStatus(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const r = await sfzSync(me);
+  return json({ status: "ok", days: r.days, left: r.left, allow: r.allow, fresh: r.fresh, run: r.run });
+}
+async function routeSfzSeen(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  await db.from("streak_freezes").update({ seen: true }).eq("tg_id", me).eq("seen", false);
+  return json({ status: "ok" });
+}
 async function routeNotifyAllow(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
@@ -1515,6 +1560,14 @@ async function routeCronRemind(req: Request) {
     const { data: ws } = await db.from("records").select("data").eq("tg_id", u.tg_id).eq("kind", "workout").eq("deleted", false).limit(400);
     const days = new Set((ws ?? []).map((r: any) => dnum(r.data?.date)).filter((x: any) => x != null));
     const today = lday(Date.now());
+    if (hour >= 11 && !days.has(today - 1) && days.has(today - 2) && days.has(today - 3)) {   // вчера пропуск при живой серии — пробуем заморозку
+      const sf = await sfzSync(u.tg_id, days);
+      if (sf.applied != null) {
+        const r2 = await tg("sendMessage", { chat_id: u.tg_id, text: `❄ ${u.first_name || "Привет"}, заморозка спасла твою серию: вчера без тренировки, но серия ${sf.run} дн. жива. Сегодня отметь тренировку.`, reply_markup: openBtnMk() });
+        if (r2?.ok) sent++; else await db.from("users").update({ notify_ok: false }).eq("tg_id", u.tg_id);
+        continue;
+      }
+    }
     let text = "";
     if (days.size === 0) {
       const need = [20 * 3600e3, 3 * DAY, 7 * DAY][u.remind_n];
@@ -2357,6 +2410,8 @@ Deno.serve(async (req) => {
       case "/welcome/claim": return await routeWelcomeClaim(body);
       case "/notify/allow": return await routeNotifyAllow(body);
       case "/referral": return await routeReferral(body);
+      case "/sfz/status": return await routeSfzStatus(body);
+      case "/sfz/seen": return await routeSfzSeen(body);
       case "/cron/remind": return await routeCronRemind(req);
       case "/cron/habits": return await routeCronHabits(req);
       case "/habits/remind": return await routeHabitsRemind(body);
