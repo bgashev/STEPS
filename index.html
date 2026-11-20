@@ -4657,6 +4657,14 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-nf{display:flex;align-items:center;gap:10px;height:56px;border-radius:20px;border:1.5px solid var(--border);background:var(--surface);padding:0 16px;margin-bottom:6px;transition:border-color .25s;box-sizing:border-box}.hb-nf:focus-within{border-color:var(--hc)}.hb-nf span{color:var(--muted);font-size:18px}.hb-nf input{flex:1;min-width:0;border:0;outline:0;background:none;color:var(--text);font:700 17px inherit;font-family:inherit;padding:0;height:auto;margin:0}.hb-nf input::placeholder{color:var(--muted);font-weight:500}
 .hb-wz .hb-hero{width:96px;height:96px;border-radius:32px;font-size:48px;margin:2px auto 14px;transition:background .4s,box-shadow .4s}
 .hb-wz .hb-seg{position:relative}.hb-wz .hb-seg::before{content:'';position:absolute;left:4px;top:4px;bottom:4px;width:calc(50% - 4px);border-radius:18px;background:var(--text);transition:transform .45s cubic-bezier(.3,1.25,.4,1);z-index:0}.hb-wz .hb-seg.q::before{transform:translateX(100%)}.hb-wz .hb-seg button{position:relative;z-index:1;background:transparent!important;transition:color .3s}.hb-wz .hb-seg button.on{color:var(--bg)}
+.hb-gh{position:relative;margin:22px 0 24px;height:236px}
+.hb-gr{position:absolute;left:0;right:0;height:68px;border-radius:24px;overflow:hidden;display:flex;align-items:center;gap:12px;padding:0 14px;background:var(--surface);border:1px solid var(--border);-webkit-clip-path:inset(0 round 24px);clip-path:inset(0 round 24px)}
+.hb-gr .e{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,.08);flex:none}.hb-gr .t{flex:1}.hb-gr .t i{display:block;height:11px;border-radius:6px;background:rgba(255,255,255,.12);width:60%;margin-bottom:8px}.hb-gr .t i+i{width:36%;height:8px;margin:0;background:rgba(255,255,255,.07)}.hb-gr .ck{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--border);flex:none}
+.hb-gr::before{content:"";position:absolute;inset:0;background:linear-gradient(100deg,var(--c),color-mix(in srgb,var(--c) 65%,#fff));transform:scaleX(0);transform-origin:0 50%;opacity:0;animation:hbgf 7s cubic-bezier(.5,0,.2,1) infinite;animation-delay:var(--d,0s)}
+.hb-gr>*{position:relative}.hb-gr:nth-child(1){top:0;--d:0s;transform:rotate(-2deg) scale(.96)}.hb-gr:nth-child(2){top:84px;--d:.9s;transform:rotate(1.5deg)}.hb-gr:nth-child(3){top:168px;--d:1.8s;transform:rotate(-1deg) scale(.97)}
+@keyframes hbgf{0%,6%{transform:scaleX(0);opacity:1}30%,70%{transform:scaleX(1);opacity:1}86%,100%{transform:scaleX(1);opacity:0}}
+.hb-gb{font:800 26px/1.1 Unbounded,system-ui,sans-serif;letter-spacing:-1.2px;margin:0 2px 8px}.hb-gs2{color:var(--muted);font-size:14px;line-height:1.45;margin:0 2px 20px}
+.hb-gcta{position:relative;overflow:hidden}.hb-gcta::after{content:"";position:absolute;top:0;bottom:0;width:60px;left:-80px;background:linear-gradient(100deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-20deg);animation:hbsh 3.2s ease-in-out infinite}@keyframes hbsh{0%,55%{left:-80px}100%{left:120%}}
 html.web .hb-r:hover,html.web .hb-pq:hover{filter:brightness(1.07)}
 @media(min-width:900px){html.web .ax-pg:has(.hb-h){max-width:980px}html.web .hb-pin{flex-wrap:wrap;margin:0;padding:2px 0 8px;overflow:visible}html.web .hb-pq{width:calc(25% - 6px);min-width:150px}html.web .hb-tl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 14px;padding-left:0;align-items:start}html.web .hb-tl:before{display:none}html.web .hb-g>h4:before{display:none}html.web .hb-g>h4{margin-top:4px}}
 /* v1.997: WEB · «Игры → По сети» — витрина */
@@ -4737,7 +4745,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1038';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1039';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11500,7 +11508,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     const dtxt = (() => { try { return dt.toLocaleDateString(({ru:'ru-RU', en:'en-GB', kk:'kk-KZ'})[curLang()] || 'ru-RU', {weekday:'long', day:'numeric', month:'long'}); } catch (e) { return ''; } })();
     let h = back() + `<div class="hb-h"><div><small>${dtxt}</small><h1>Привычки</h1></div><button type="button" class="hb-add" data-act="habnew" aria-label="Новая привычка">${I('plus', 20)}</button></div>`;
     duPoll(); if (!window.__hrs) { window.__hrs = 1; hbRemSync(); }
-    if (!L.length) return h + duHTML() + `<div class="hb-empty"><b>Пока пусто</b>Заведи первую привычку — полезную или от которой хочешь избавиться.</div><button type="button" class="hb-btn" data-act="habnew">${I('plus', 18)}Новая привычка</button>`;
+    if (!L.length) return h + duHTML() + `<div class="hb-gh">${[['📖', '#a78bfa'], ['💧', '#34d98b'], ['🏃', '#ffb454']].map(x => `<div class="hb-gr" style="--c:${x[1]}"><span class="e">${x[0]}</span><div class="t"><i></i><i></i></div><span class="ck"></span></div>`).join('')}</div><div class="hb-gb">Отмечай день —<br>лента загорится</div><div class="hb-gs2">Создай первую привычку, и каждая галочка будет заливать её цветом. Серия растёт — ты видишь прогресс.</div><button type="button" class="hb-btn hb-gcta" data-act="habnew">${I('plus', 18)}Создать первую</button>`;
     if (D.length) {
       const wd = (dt.getDay() + 6) % 7, t0 = todayN(), lb = HWK(), sk = hbAllStreak(D), all = nd === D.length;
       const fr = n => { const a = D.filter(x => Math.floor((x.cr || 0) / 864e5) <= n); return a.length ? Math.round(a.filter(x => hbDone(x, isoOf(n))).length / a.length * 100) : null; };
