@@ -1923,6 +1923,48 @@ async function routeNetAct(body: any) {
   return json({ room: netView(next ?? (await netRoomOf(body?.room, me)), me) });
 }
 
+/* ---------- Привычки: напоминания от бота ---------- */
+async function routeHabitsRemind(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const today = lday(Date.now()), seen = new Set<string>(), rows: any[] = [];
+  for (const it of (Array.isArray(body?.items) ? body.items : []).slice(0, 40)) {
+    const hid = String(it?.id ?? "").slice(0, 40), mins = Math.floor(Number(it?.m));
+    if (!hid || seen.has(hid) || !(mins >= 0 && mins < 1440)) continue;
+    seen.add(hid); rows.push({ hid, title: String(it?.t ?? "").trim().slice(0, 40) || "Привычка", emoji: String(it?.e ?? "✅").slice(0, 8) || "✅", mins, done: !!it?.d });
+  }
+  const { data: old } = await db.from("habit_reminders").select("hid, mins, sent_day").eq("tg_id", me);
+  const om = new Map<string, any>((old ?? []).map((o: any) => [o.hid, o]));
+  if (rows.length) {
+    const up = rows.map((r) => { const o = om.get(r.hid); return { tg_id: me, hid: r.hid, title: r.title, emoji: r.emoji, mins: r.mins, done_day: r.done ? today : null,
+      sent_day: o && o.mins === r.mins ? o.sent_day : null, updated_at: new Date().toISOString() }; });
+    const { error } = await db.from("habit_reminders").upsert(up, { onConflict: "tg_id,hid" });
+    if (error) return fail("Не получилось сохранить напоминания", 500);
+  }
+  const drop = (old ?? []).map((o: any) => o.hid).filter((h: string) => !seen.has(h));
+  if (drop.length) await db.from("habit_reminders").delete().eq("tg_id", me).in("hid", drop);
+  return json({ status: "ok", n: rows.length });
+}
+async function routeCronHabits(req: Request) {
+  if (!CRON_SECRET || !safeEqual(req.headers.get("x-cron-secret") ?? "", CRON_SECRET)) return fail("Нет доступа", 403);
+  const now = Date.now(), today = lday(now), nowMin = Math.floor(((now + TZ_MS) % DAY) / 60000);
+  const { data } = await db.from("habit_reminders").select("tg_id, hid, title, emoji, done_day, sent_day").lte("mins", nowMin).gte("mins", Math.max(0, nowMin - 90)).limit(600);
+  const due = (data ?? []).filter((r: any) => r.sent_day !== today && r.done_day !== today);
+  const by = new Map<number, any[]>(); for (const r of due) { if (!by.has(r.tg_id)) by.set(r.tg_id, []); by.get(r.tg_id)!.push(r); }
+  if (!by.size) return json({ status: "none" });
+  const { data: us } = await db.from("users").select("tg_id").in("tg_id", [...by.keys()]).eq("notify_ok", true).or("blocked.is.null,blocked.eq.false").is("delete_at", null);
+  const ok = new Set((us ?? []).map((u: any) => u.tg_id));
+  let sent = 0;
+  for (const [id, list] of by) {
+    if (!ok.has(id)) { await db.from("habit_reminders").update({ sent_day: today }).eq("tg_id", id).in("hid", list.map((x: any) => x.hid)); continue; }
+    const text = list.length === 1 ? `⏰ ${list[0].emoji} «${list[0].title}» — пора отметить. Серия ждёт` : `⏰ Пора отметить привычки:\n${list.slice(0, 6).map((x: any) => `${x.emoji} ${x.title}`).join("\n")}`;
+    const r = await tg("sendMessage", { chat_id: id, text, reply_markup: openBtnMk() }).catch(() => null);
+    if (r?.ok) { sent++; await db.from("habit_reminders").update({ sent_day: today }).eq("tg_id", id).in("hid", list.map((x: any) => x.hid)); }
+    else await db.from("users").update({ notify_ok: false }).eq("tg_id", id);
+  }
+  return json({ status: "ok", sent });
+}
+
 /* ---------- Привычки: споры (режим «Дуэль») ---------- */
 const DUEL_DAYS = [7, 14, 30, 66];
 async function duelNames(ids: number[]) {
@@ -2092,6 +2134,8 @@ Deno.serve(async (req) => {
       case "/notify/allow": return await routeNotifyAllow(body);
       case "/referral": return await routeReferral(body);
       case "/cron/remind": return await routeCronRemind(req);
+      case "/cron/habits": return await routeCronHabits(req);
+      case "/habits/remind": return await routeHabitsRemind(body);
       case "/sync": return await routeSync(body);
       case "/logout": return await routeLogout(body);
       case "/avatar": return await routeAvatar(body);
