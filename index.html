@@ -4430,6 +4430,36 @@ html.web .vc-ch i{display:grid;place-items:center;width:30px;height:30px;border-
 html.web .vc-ch b{font-size:15px}html.web .vc-ch b.wr{color:#ff9d5c}html.web .vc-ch em{font-style:normal;font-weight:500;color:var(--muted);font-size:12px;margin-left:6px}html.web .vc-ch small{display:block;color:var(--muted);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}html.web .vc-ch.w>div{flex:1}
 html.web .vc-ch u{display:block;height:6px;border-radius:99px;background:var(--surface2);margin-top:6px;overflow:hidden;text-decoration:none}html.web .vc-ch u s{display:block;height:100%;border-radius:99px;background:var(--accent)}
 @media(max-width:1180px){html.web .vc-top{flex-direction:column;align-items:flex-start}html.web .vc-chips{grid-template-columns:1fr}}
+/* v1.998: Привычки (этап 1) — таймлайн дня */
+.hb-h{display:flex;align-items:flex-end;justify-content:space-between;margin:2px 2px 6px}.hb-h h1{margin:0;font-size:30px;letter-spacing:-.8px;line-height:1.05}.hb-h small{display:block;color:var(--muted);font-size:13.5px;margin-top:3px}
+.hb-add{width:44px;height:44px;border-radius:15px;border:1px solid var(--border);background:var(--surface);color:var(--text);display:grid;place-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent}.hb-add:active{transform:scale(.94)}.hb-add svg{width:20px;height:20px}
+.hb-sec{display:flex;align-items:center;gap:8px;margin:18px 4px 10px;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}.hb-sec em{font-style:normal;background:var(--surface2);border-radius:99px;padding:1px 8px}
+.hb-pin{display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:2px 16px 8px;scrollbar-width:none}.hb-pin::-webkit-scrollbar{display:none}
+.hb-pq{flex:none;width:156px;padding:12px;border-radius:18px;background:linear-gradient(135deg,color-mix(in srgb,var(--hc) 14%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,var(--hc) 26%,var(--border));cursor:pointer;-webkit-tap-highlight-color:transparent}.hb-pq:active{transform:scale(.97)}
+.hb-pq .e{font-size:22px;line-height:1}.hb-pq b{display:block;font-size:13px;margin:7px 0 1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hb-pq small{display:block;color:var(--muted);font-size:11.5px}
+.hb-clk{font-variant-numeric:tabular-nums;font-weight:800;font-size:16px;letter-spacing:-.2px;margin-top:2px}
+.hb-tl{position:relative;padding-left:30px}.hb-tl:before{content:"";position:absolute;left:11px;top:8px;bottom:8px;width:2px;background:var(--border);border-radius:2px}
+.hb-g{position:relative;margin-bottom:4px}.hb-g>h4{margin:14px 0 8px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}.hb-g>h4:before{content:"";position:absolute;left:-26px;top:16px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--muted)}
+.hb-g.ok>h4:before{background:var(--accent);border-color:var(--accent)}
+.hb-r{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:20px;background:var(--surface);border:1px solid var(--border);margin-bottom:8px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s}.hb-r:active{transform:scale(.985)}
+.hb-e{display:grid;place-items:center;width:40px;height:40px;border-radius:13px;flex:none;font-size:20px;background:color-mix(in srgb,var(--hc) 18%,var(--surface2))}
+.hb-t{flex:1;min-width:0}.hb-t b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hb-t small{color:var(--muted);font-size:12px}
+.hb-bar{height:6px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-top:7px}.hb-bar i{display:block;height:100%;border-radius:99px;background:var(--hc);transition:width .4s}
+.hb-fl{color:#ff9d5c;font-weight:700;font-size:12px;white-space:nowrap}
+.hb-ck{position:relative;width:42px;height:42px;border-radius:50%;border:2px solid var(--border);background:transparent;display:grid;place-items:center;flex:none;padding:0;color:var(--on-accent);cursor:pointer;transition:background .25s,border-color .25s,box-shadow .25s}.hb-ck svg{width:20px;height:20px;opacity:0;transform:scale(.4);transition:.25s}
+.hb-r.dn{background:linear-gradient(135deg,color-mix(in srgb,var(--hc) 9%,var(--surface)),var(--surface));border-color:color-mix(in srgb,var(--hc) 22%,var(--border))}.hb-r.dn .hb-t b{color:var(--muted);text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--text) 25%,transparent)}.hb-r.dn .hb-ck{background:var(--hc);border-color:var(--hc);box-shadow:0 0 0 6px color-mix(in srgb,var(--hc) 22%,transparent)}.hb-r.dn .hb-ck svg{opacity:1;transform:none}
+.hb-ck.pop{animation:hbpop .45s cubic-bezier(.3,1.6,.5,1)}@keyframes hbpop{0%{transform:scale(.7)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+.hb-empty{padding:30px 18px;text-align:center;border-radius:22px;border:1px dashed var(--border);color:var(--muted);line-height:1.5;margin-top:10px}.hb-empty b{display:block;color:var(--text);font-size:17px;margin-bottom:4px}
+.hb-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:52px;border-radius:16px;border:0;background:var(--accent);color:var(--on-accent);font:inherit;font-weight:800;font-size:15px;cursor:pointer;margin-top:6px}.hb-btn:active{transform:scale(.98)}.hb-btn.g{background:var(--surface2);color:var(--text)}.hb-btn.l{background:transparent;color:var(--muted)}
+.hb-sh h2{margin:0 0 4px;font-size:22px}.hb-sh .cap{color:var(--muted);margin-bottom:14px}
+.hb-seg{display:flex;padding:4px;border-radius:16px;background:var(--bg);border:1px solid var(--border);margin-bottom:14px}.hb-seg button{flex:1;border:0;background:none;height:38px;border-radius:12px;color:var(--muted);font:inherit;font-weight:700;cursor:pointer}.hb-seg button.on{background:var(--surface2);color:var(--text)}
+.hb-in{width:100%;height:48px;border-radius:14px;border:1px solid var(--border);background:var(--bg);color:var(--text);padding:0 14px;font:inherit;margin-bottom:12px;box-sizing:border-box}
+.hb-ig{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px}.hb-ig button{aspect-ratio:1;border-radius:14px;border:1.5px solid var(--border);background:var(--bg);font-size:20px;cursor:pointer;padding:0}.hb-ig button.on{border-color:var(--accent);background:var(--surface2)}
+.hb-ch{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}.hb-ch button{height:34px;padding:0 13px;border-radius:99px;border:1px solid var(--border);background:var(--bg);color:var(--muted);font:inherit;font-weight:600;font-size:13px;cursor:pointer}.hb-ch button.on{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.hb-lb{margin:2px 2px 8px;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.hb-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.hb-3 div{padding:10px 6px;border-radius:14px;background:var(--bg);border:1px solid var(--border);text-align:center}.hb-3 b{display:block;font-size:17px;font-variant-numeric:tabular-nums}.hb-3 small{color:var(--muted);font-size:11px}
+.hb-hm{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin:8px 0 14px}.hb-hm i{aspect-ratio:1;border-radius:6px;background:var(--surface2)}.hb-hm i.p{background:color-mix(in srgb,var(--hc) 38%,var(--surface2))}.hb-hm i.f{background:var(--hc)}.hb-hm i.t{outline:2px solid var(--accent);outline-offset:-2px}
+html.web .hb-r:hover,html.web .hb-pq:hover{filter:brightness(1.07)}
 /* v1.997: WEB · «Игры → По сети» — витрина */
 html.web .gw{display:grid;grid-template-columns:1fr 330px;gap:14px;margin-top:6px}html.web .gw-feat{display:flex;gap:26px;align-items:center;padding:20px;border-radius:28px;background:linear-gradient(135deg,color-mix(in srgb,#7a5cff 30%,var(--surface)),var(--surface) 70%);border:1px solid var(--border);overflow:hidden}
 html.web .gw-img{width:230px;height:230px;border-radius:22px;overflow:hidden;flex:none;box-shadow:0 24px 50px -20px #000;transform:rotate(-2deg)}html.web .gw-img svg,html.web .gw-ci svg{width:100%;height:100%;display:block}
@@ -10924,6 +10954,7 @@ const AX = (function(){
       <div class="ax-bt bg" data-act="appopen" data-s="games">${gtiles}<div class="h"><span class="ax-at sm a-g">${AI('pad', 18)}</span><span class="n">${GL.length || 12} игр</span></div><div class="gt">Игры<small>играть →</small></div></div>
       ${inWeb ? '' : `<div class="ax-bt bs" data-act="appopen" data-s="shop">${shopArt}<div class="h"><span class="ax-at sm a-s">${AI('shop', 18)}</span><span class="n">рамки · фоны · комплекты</span></div><div class="gt">Магазин<small>выбрать →</small></div></div>`}
     </div>
+    <div class="ax-lab" style="margin:16px 6px 8px">Ещё</div><div class="ax-grp"><button type="button" class="ax-li" data-act="appopen" data-s="hab" style="width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;cursor:pointer"><span class="ax-mi a-g">${AI('hab', 21)}</span><span class="tx"><b>Привычки</b><small>делать и бросать · серии и «чист уже»</small></span><i>›</i></button></div>
     <div class="ax-lab" style="margin:20px 6px 8px">На главной</div><div class="ax-grp"><div class="ax-li"><span class="ax-mi a-w">${AI('drop', 21)}</span><span class="tx"><b>Вода</b><small>быстрый +250 с главной</small></span>${sw('w', a.pw !== 0)}</div><div class="ax-li"><span class="ax-mi a-c">${AI('cal', 21)}</span><span class="tx"><b>Калории</b><small>сколько осталось на день</small></span>${sw('c', a.pc !== 0)}</div><div class="ax-li"><span class="ax-mi a-g">${AI('pad', 21)}</span><span class="tx"><b>Игры</b><small>игра дня и быстрый старт</small></span>${sw('g', a.pg !== 0)}</div>${inWeb ? '' : `<div class="ax-li"><span class="ax-mi a-s">${AI('shop', 21)}</span><span class="tx"><b>Магазин</b><small>рамки и фоны под рукой</small></span>${sw('m', a.pm === 1)}</div>`}</div>
     <button type="button" class="ax-sg" data-act="appsug"><span class="ax-mi a-g">${AI('bulb', 21)}</span><span class="tx"><b>Предложить</b><small>что добавить или улучшить в VOOB</small></span><i>›</i></button></div>`;
   }
@@ -11134,7 +11165,62 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     ${ST.gm === 'n' || inWeb ? '' : day && !day.own ? `<div class="ax-gd" data-act="axgame" data-i="${day.i}"><span class="im">${day.th}</span><span class="tx"><small>★ ИГРА ДНЯ · БЕСПЛАТНО</small><b>${esc(day.n)}</b><small>твой рекорд ${day.best ? P0(day.best) : '—'}</small></span><button type="button" class="ax-btn sm">Играть</button></div>` : ''}
     ${ST.gm === 'n' || inWeb ? '' : `<div class="ax-gg">${L.map(x => `<div class="ax-gc" data-act="axgame" data-i="${x.i}"><div class="th">${x.th}${!x.own ? '<span class="pro">PRO</span>' : ''}${x.beta ? '<span class="bta">BETA</span>' : ''}</div><b>${esc(x.n)}</b><small>${!x.own && !x.day ? '⭐ ' + (SHOP.prices.game || 19) : x.best ? 'рекорд ' + P0(x.best) : 'без рекорда'}</small></div>`).join('')}<div class="ax-gc ax-gs" data-act="appgsug"><div class="th"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><b>Предложить</b><small>свою игру</small></div></div>`}</div><div style="height:56px"></div>`;
   }
-  function view(){ const s = ST.s; return `<div class="ax-pg">${s === 'cal' ? viewCal() : s === 'water' ? viewWater() : s === 'games' ? viewGames() : s === 'shop' ? back() + viewShop() : s === 'add' ? viewAdd() : s === 'found' ? viewFound() : s === 'new' ? viewNew() : s === 'goal' ? viewGoal() : ''}</div>`; }
+  /* ---------- v1.998: Привычки (этап 1) — данные на устройстве ---------- */
+  const HBK = 'voob_hab_' + UK, HBC = {g:'#34d98b', o:'#ff9d5c', v:'#9b7bff', b:'#5aa8ff', p:'#ff6fa8', r:'#ff5a6e'};
+  const HBP = {m:'Утро', d:'День', e:'Вечер'};
+  const HBE = {do:['💧','📖','🏃','🧘','🌙','🥗','🎸','💊','🧠','📝','🛏️','🚶'], quit:['🍬','🚭','📵','🍺','🍔','☕','🎮','💸','🍟','🥤','💬','🛍️']};
+  const HBT = [['Вода','💧','b','do','d',8,'стаканов'],['Чтение','📖','v','do','e',1,'20 минут'],['Зарядка','🤸','g','do','m',1,'10 минут'],['Медитация','🧘','o','do','m',1,'5 минут'],['Лечь до 23:00','🌙','p','do','e',1,'режим сна'],['Без сахара','🍬','r','quit'],['Без курения','🚭','r','quit'],['Без соцсетей перед сном','📵','r','quit']];
+  let HB = null, HBN = null, HBTM = 0;
+  function hbLoad(){ if (HB) return HB; try { const o = JSON.parse(localStorage.getItem(HBK) || 'null'); HB = o && Array.isArray(o.list) ? o : {v:1, list:[]}; } catch (e) { HB = {v:1, list:[]}; } return HB; }
+  function hbSave(){ try { localStorage.setItem(HBK, JSON.stringify(HB)); } catch (e) {} }
+  const hbList = () => hbLoad().list.filter(h => !h.ar);
+  const hbGet = id => hbLoad().list.find(h => h.id === id);
+  const hbVal = (h, iso) => +((h.log || {})[iso || isoT()]) || 0;
+  const hbDone = (h, iso) => hbVal(h, iso) >= (h.g || 1);
+  function hbStreak(h){ let n = todayN(), c = 0; if (!hbDone(h, isoOf(n))) n--; while (hbDone(h, isoOf(n)) && c < 3650) { c++; n--; } return c; }
+  function hbBest(h){ const ks = Object.keys(h.log || {}).filter(k => hbDone(h, k)).sort(); let b = 0, c = 0, pv = null; ks.forEach(k => { const n = Math.round(Date.parse(k) / 864e5); c = pv !== null && n === pv + 1 ? c + 1 : 1; pv = n; if (c > b) b = c; }); return b; }
+  function hbDays(h){ return Math.floor((Date.now() - (h.s || Date.now())) / 864e5); }
+  function hbClock(h){ const ms = Math.max(0, Date.now() - (h.s || Date.now())), d = Math.floor(ms / 864e5), p = n => String(n).padStart(2, '0'); return d + 'д ' + p(Math.floor(ms % 864e5 / 36e5)) + ':' + p(Math.floor(ms % 36e5 / 6e4)) + ':' + p(Math.floor(ms % 6e4 / 1e3)); }
+  const HCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  function hbRow(h){
+    const dn = hbDone(h), v = hbVal(h), g = h.g || 1, st = hbStreak(h);
+    return `<div class="hb-r${dn ? ' dn' : ''}" style="--hc:${HBC[h.c] || HBC.g}" data-act="habopen" data-id="${h.id}"><span class="hb-e">${h.e}</span><div class="hb-t"><b>${esc(h.t)}</b><small>${g > 1 ? v + ' из ' + g + (h.u ? ' ' + esc(h.u) : '') : esc(h.u || 'раз в день')}</small>${g > 1 ? `<div class="hb-bar"><i style="width:${Math.min(100, v / g * 100)}%"></i></div>` : ''}</div>${st ? `<span class="hb-fl">🔥${st}</span>` : ''}<button type="button" class="hb-ck" data-act="habchk" data-id="${h.id}" aria-label="Отметить">${HCK}</button></div>`;
+  }
+  function viewHab(){
+    const L = hbList(), D = L.filter(h => h.k !== 'quit'), Q = L.filter(h => h.k === 'quit'), nd = D.filter(h => hbDone(h)).length, dt = new Date();
+    const DN = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'], MN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+    const sub = D.length ? (nd === D.length ? 'Всё готово — отличный день' : nd + ' из ' + D.length + ' на сегодня') : DN[dt.getDay()] + ', ' + dt.getDate() + ' ' + MN[dt.getMonth()];
+    let h = back() + `<div class="hb-h"><div><h1>Привычки</h1><small>${sub}</small></div><button type="button" class="hb-add" data-act="habnew" aria-label="Новая привычка">${I('plus', 20)}</button></div>`;
+    if (!L.length) return h + `<div class="hb-empty"><b>Пока пусто</b>Заведи первую привычку — полезную или от которой хочешь избавиться.</div><button type="button" class="hb-btn" data-act="habnew">${I('plus', 18)}Новая привычка</button>`;
+    if (Q.length) h += `<div class="hb-sec" style="margin-top:14px">Держусь<em>${Q.length}</em></div><div class="hb-pin">${Q.map(q => `<div class="hb-pq" style="--hc:${HBC[q.c] || HBC.r}" data-act="habopen" data-id="${q.id}"><span class="e">${q.e}</span><b>${esc(q.t)}</b><small>чист уже</small><div class="hb-clk" data-hclock="${q.id}">${hbClock(q)}</div></div>`).join('')}</div>`;
+    if (D.length) h += `<div class="hb-sec">Сегодня<em>${nd}/${D.length}</em></div><div class="hb-tl">${['m', 'd', 'e'].map(p => { const g = D.filter(x => (x.p || 'd') === p); return g.length ? `<div class="hb-g${g.every(x => hbDone(x)) ? ' ok' : ''}"><h4>${HBP[p]}</h4>${g.map(hbRow).join('')}</div>` : ''; }).join('')}</div>`;
+    return h;
+  }
+  function hbDetail(h){
+    const q = h.k === 'quit', st = hbStreak(h), best = q ? Math.max(h.b || 0, hbDays(h)) : hbBest(h), cells = [], n0 = todayN();
+    for (let i = 27; i >= 0; i--) { const iso = isoOf(n0 - i), v = hbVal(h, iso); cells.push(`<i class="${hbDone(h, iso) ? 'f' : v ? 'p' : ''}${i === 0 ? ' t' : ''}"></i>`); }
+    let tot = 0, ok = 0; for (let i = 0; i < 30; i++) { if (n0 - i < Math.floor((h.cr || Date.now()) / 864e5)) break; tot++; if (hbDone(h, isoOf(n0 - i))) ok++; }
+    openSheet(`<div class="hb-sh" style="--hc:${HBC[h.c] || HBC.g}"><div style="display:flex;align-items:center;gap:12px;margin-bottom:6px"><span class="hb-e" style="width:54px;height:54px;font-size:27px">${h.e}</span><div><h2 style="margin:0">${esc(h.t)}</h2><div class="cap" style="margin:0">${q ? 'бросаю' : 'делаю'}${!q && (h.g || 1) > 1 ? ' · ' + h.g + ' ' + esc(h.u || '') + ' в день' : ''}</div></div></div>
+    <div class="hb-3">${q ? `<div><b data-hclock="${h.id}" style="font-size:14px">${hbClock(h)}</b><small>чист уже</small></div><div><b>${best} д</b><small>рекорд</small></div><div><b>${(h.rl || []).length}</b><small>срывов</small></div>` : `<div><b>🔥 ${st}</b><small>серия</small></div><div><b>${tot ? Math.round(ok / tot * 100) : 0}%</b><small>за 30 дней</small></div><div><b>${best}</b><small>рекорд</small></div>`}</div>
+    ${q ? '' : `<div class="hb-lb">Последние 4 недели</div><div class="hb-hm" style="grid-template-columns:repeat(14,1fr)">${cells.join('')}</div>`}
+    ${q ? `<button type="button" class="hb-btn g" data-act="habrel" data-id="${h.id}">Срыв — начать заново</button>` : ''}
+    <button type="button" class="hb-btn g" data-act="habdel" data-id="${h.id}" style="margin-top:8px">${h.ar ? 'Вернуть' : 'В архив'}</button><button type="button" class="hb-btn l" data-act="habx">Закрыть</button></div>`, {type:'hab'});
+  }
+  function hbNewSheet(keep){
+    if (!HBN) HBN = {k:'do', t:'', e:HBE.do[0], p:'d', g:1, c:'g'};
+    const N = HBN, q = N.k === 'quit', ti = document.getElementById('hb-t'); if (ti && keep) N.t = ti.value;
+    const tpl = HBT.filter(x => x[3] === N.k);
+    openSheet(`<div class="hb-sh"><h2>Новая привычка</h2><div class="cap">Выбери тип и настрой за полминуты</div>
+    <div class="hb-seg"><button type="button" class="${q ? '' : 'on'}" data-act="habty" data-k="do">Делать</button><button type="button" class="${q ? 'on' : ''}" data-act="habty" data-k="quit">Бросить</button></div>
+    <div class="hb-lb">Быстрый выбор</div><div class="hb-ch">${tpl.map((x, i) => `<button type="button" data-act="habtpl" data-i="${HBT.indexOf(x)}">${x[1]} ${x[0]}</button>`).join('')}</div>
+    <input class="hb-in" id="hb-t" maxlength="40" placeholder="${q ? 'Например: без сладкого' : 'Например: читать 20 минут'}" value="${esc(N.t)}">
+    <div class="hb-ig">${HBE[N.k].map(e => `<button type="button" class="${e === N.e ? 'on' : ''}" data-act="habico" data-e="${e}">${e}</button>`).join('')}</div>
+    ${q ? '' : `<div class="hb-lb">Когда</div><div class="hb-ch">${['m', 'd', 'e'].map(p => `<button type="button" class="${N.p === p ? 'on' : ''}" data-act="habpart" data-p="${p}">${HBP[p]}</button>`).join('')}</div><div class="hb-lb">Сколько раз в день</div><div class="hb-ch">${[1, 2, 3, 5, 8].map(n => `<button type="button" class="${N.g === n ? 'on' : ''}" data-act="habgoal" data-n="${n}">${n === 1 ? 'Один раз' : n}</button>`).join('')}</div>`}
+    <button type="button" class="hb-btn" data-act="habsave">Создать</button><button type="button" class="hb-btn l" data-act="habx">Отмена</button></div>`, {type:'habnew'});
+  }
+  function hbTick(){ if (HBTM) return; HBTM = setInterval(() => { const els = document.querySelectorAll('[data-hclock]'); if (!els.length) return; els.forEach(el => { const h = hbGet(el.dataset.hclock); if (h) el.textContent = hbClock(h); }); }, 1000); }
+
+  function view(){ const s = ST.s; return `<div class="ax-pg">${s === 'hab' ? (hbTick(), viewHab()) : s === 'cal' ? viewCal() : s === 'water' ? viewWater() : s === 'games' ? viewGames() : s === 'shop' ? back() + viewShop() : s === 'add' ? viewAdd() : s === 'found' ? viewFound() : s === 'new' ? viewNew() : s === 'goal' ? viewGoal() : ''}</div>`; }
 
   /* ---------- навигация ---------- */
   function go(s, replace){ if (ST.s && !replace) ST.stack.push(ST.s); ST.s = s; S.app = true; hap.tap(); render(); window.scrollTo(0, 0); }
@@ -11243,6 +11329,19 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   function recalc(){ const pr = ST.pr; if (!pr) return; const m = macro(pr, ST.g), set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; }; set('ax-fk', Math.round(m.k)); set('ax-fp', f1(m.p)); set('ax-ff', f1(m.f)); set('ax-fc', f1(m.c)); document.querySelectorAll('.ax-chips button').forEach(b => b.classList.toggle('on', Math.round(+b.dataset.v) === Math.round(ST.g))); }
   const acts = {
     appsheet: () => openSheetApps(),
+    habopen: el => { const h = hbGet(el.dataset.id); if (h) { hap.tap(); hbDetail(h); } },
+    habchk: el => { const h = hbGet(el.dataset.id); if (!h) return; const iso = isoT(), g = h.g || 1, was = hbDone(h); h.log = h.log || {}; let v = hbVal(h, iso); v = g > 1 ? (v >= g ? 0 : v + 1) : (v ? 0 : 1); if (v) h.log[iso] = v; else delete h.log[iso]; hbSave(); const now = hbDone(h); now && !was ? hap.ok() : hap.imp(); render(); if (now && !was) { const b = document.querySelector('.hb-ck[data-id="' + h.id + '"]'); if (b) b.classList.add('pop'); const D = hbList().filter(x => x.k !== 'quit'); if (D.length > 1 && D.every(x => hbDone(x))) toast('День закрыт — все привычки выполнены'); } },
+    habnew: () => { hap.tap(); HBN = null; hbNewSheet(); },
+    habty: el => { hap.tap(); HBN = HBN || {k:'do', t:'', e:HBE.do[0], p:'d', g:1, c:'g'}; const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.k = el.dataset.k; HBN.e = HBE[HBN.k][0]; HBN.c = HBN.k === 'quit' ? 'r' : 'g'; hbNewSheet(); },
+    habtpl: el => { hap.tap(); const x = HBT[+el.dataset.i]; HBN = {k:x[3], t:x[0], e:x[1], c:x[2], p:x[4] || 'd', g:x[5] || 1, u:x[6] || ''}; hbNewSheet(); },
+    habico: el => { hap.tap(); const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.e = el.dataset.e; hbNewSheet(); },
+    habpart: el => { hap.tap(); const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.p = el.dataset.p; hbNewSheet(); },
+    habgoal: el => { hap.tap(); const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; HBN.g = +el.dataset.n; hbNewSheet(); },
+    habsave: () => { const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; const nm = (HBN.t || '').trim(); if (!nm) { toast('Назови привычку'); return; } const q = HBN.k === 'quit'; hbLoad().list.push({id:'h' + Date.now().toString(36) + Math.floor(Math.random() * 99), t:nm.slice(0, 40), e:HBN.e, c:q ? 'r' : (HBN.c || 'g'), k:HBN.k, p:q ? 'd' : HBN.p, g:q ? 1 : (HBN.g || 1), u:HBN.u || '', s:q ? Date.now() : 0, b:0, log:{}, rl:[], cr:Date.now()}); hbSave(); HBN = null; hap.ok(); closeSheet(); render(); },
+    habrel: el => { const h = hbGet(el.dataset.id); if (!h) return; hap.tap(); openSheet(`<div class="hb-sh"><h2 style="text-align:center">Бывает. Что дальше?</h2><div class="cap" style="text-align:center">Срыв — не конец. Рекорд ${Math.max(h.b || 0, hbDays(h))} д останется, а счётчик начнёт заново.</div><button type="button" class="hb-btn" data-act="habrelok" data-id="${h.id}">Начать заново</button><button type="button" class="hb-btn l" data-act="habx">Это случайное нажатие</button></div>`, {type:'habrel'}); },
+    habrelok: el => { const h = hbGet(el.dataset.id); if (!h) return; h.b = Math.max(h.b || 0, hbDays(h)); h.rl = (h.rl || []).concat(Date.now()).slice(-200); h.s = Date.now(); hbSave(); hap.ok(); closeSheet(); render(); },
+    habdel: el => { const h = hbGet(el.dataset.id); if (!h) return; h.ar = h.ar ? 0 : 1; hbSave(); hap.tap(); closeSheet(); render(); toast(h.ar ? 'Привычка в архиве' : 'Привычка возвращена'); },
+    habx: () => { hap.tap(); closeSheet(); },
     appgsug: () => { hap.tap(); openFeedback('idea', null, 'game'); },
     appsug: () => { hap.tap(); if (sheetCtx && sheetCtx.type === 'apps') closeSheet(); setTimeout(() => openFeedback('idea', null, true), 60); },
     weightback: () => { hap.tap(); ACT.tab({dataset: {tab: 'apps'}}); },   // v1.908: «Приложения» из раздела «Вес»
