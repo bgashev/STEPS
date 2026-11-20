@@ -1788,9 +1788,21 @@ async function routeLogout(body: any) {
 const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "che", "golf", "sea", "bil", "arc", "stk"]);
 const STK_KINDS = 8;
 const arcWind = () => ({ v: +(0.2 + Math.random() * 2.8).toFixed(1), d: Math.random() < 0.5 ? -1 : 1 });
-const tttLines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-const tttResult = (b: string[]) => { for (const [a, c, d] of tttLines) if (b[a] && b[a] === b[c] && b[a] === b[d]) return b[a]; return b.every((x) => x) ? "d" : ""; };
-const tttInit = (x: number) => ({ board: Array(9).fill(""), turn: "X", x, win: "" });
+/* v1.1101: поле 3×3 (3 в ряд), 4×4 (4 в ряд), 5×5 (4 в ряд) */
+const tttSize = (n: unknown) => { const v = Number(n); return v === 4 || v === 5 ? v : 3; };
+const tttWL = (n: number) => (n === 3 ? 3 : 4);
+const tttLinesCache: Record<number, number[][]> = {};
+const tttLinesOf = (n: number) => tttLinesCache[n] ??= (() => {
+  const w = tttWL(n), L: number[][] = [];
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) for (const [dr, dc] of [[0, 1], [1, 0], [1, 1], [1, -1]]) {
+    const er = r + dr * (w - 1), ec = c + dc * (w - 1);
+    if (er < 0 || er >= n || ec < 0 || ec >= n) continue;
+    L.push(Array.from({ length: w }, (_, k) => (r + dr * k) * n + c + dc * k));
+  }
+  return L;
+})();
+const tttResult = (b: string[], n = 3) => { for (const l of tttLinesOf(n)) { const v = b[l[0]]; if (v && l.every((i) => b[i] === v)) return v; } return b.every((x) => x) ? "d" : ""; };
+const tttInit = (x: number, n = 3) => ({ board: Array(n * n).fill(""), turn: "X", x, win: "", n });
 const netIso = (agoS: number) => new Date(Date.now() - agoS * 1000).toISOString();
 /* ---- шахматы: сервер считает все ходы, шах, мат, пат, ничьи ---- */
 const CH_KN = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]], CH_KG = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
@@ -1990,7 +2002,7 @@ function netView(room: any, me: number) {
   if (!f || room.status === "done") return room;
   return { ...room, state: { ...room.state, fleets: { [me]: f[me] } } };
 }
-function netInit(game: string, host: number, guest: number, first: number): any {
+function netInit(game: string, host: number, guest: number, first: number, size = 3): any {
   let st: any;
   if (game === "hl") st = { cur: 1 + Math.floor(Math.random() * 13), turn: first, p: [host, guest], s: [0, 0], goal: 7, last: null, win: "" };
   else if (game === "chk") {
@@ -2003,7 +2015,7 @@ function netInit(game: string, host: number, guest: number, first: number): any 
   else if (game === "arc") st = { p: [host, guest], turn: first, tc: 0, rounds: 2, per: 3, shot: 0, s: { [host]: 0, [guest]: 0 }, arrows: [], wind: arcWind(), log: [], last: null, win: "" };
   else if (game === "stk") st = { p: [host, guest], turn: first, k: Math.floor(Math.random() * STK_KINDS), objs: [], tc: 0, last: null, win: "", loser: 0 };
   else if (game === "bil") st = { turn: first, p: [host, guest], balls: BIL_RACK.map((b) => [b[0], b[1]]), last: null, win: "", foul: false };
-  else st = tttInit(first);
+  else st = tttInit(first, tttSize(size));
   st.first = first;
   return st;
 }
@@ -2128,9 +2140,10 @@ async function routeNetAct(body: any) {
   let next: any = null;
   if (act === "leave") next = await netSave(room, { status: "closed" });
   else if (act === "game" && host && room.status === "lobby" && NET_GAMES.has(String(body?.game))) next = await netSave(room, { game: String(body.game), guest_ready: false });
+  else if (act === "size" && host && room.status === "lobby") next = await netSave(room, { state: { ...(room.state ?? {}), n: tttSize(body?.n) } });
   else if (act === "ready" && !host && room.status === "lobby") next = await netSave(room, { guest_ready: !room.guest_ready });
-  else if (act === "start" && host && room.status === "lobby" && room.game && room.guest_ready) next = await netSave(room, { status: "playing", state: netInit(room.game, room.host_id, room.guest_id, room.host_id) });
-  else if (act === "rematch" && room.status === "done") next = await netSave(room, { status: "playing", state: netInit(room.game, room.host_id, room.guest_id, (room.state?.first ?? room.state?.x) === room.host_id ? room.guest_id : room.host_id) });
+  else if (act === "start" && host && room.status === "lobby" && room.game && room.guest_ready) next = await netSave(room, { status: "playing", state: netInit(room.game, room.host_id, room.guest_id, room.host_id, tttSize(room.state?.n)) });
+  else if (act === "rematch" && room.status === "done") next = await netSave(room, { status: "playing", state: netInit(room.game, room.host_id, room.guest_id, (room.state?.first ?? room.state?.x) === room.host_id ? room.guest_id : room.host_id, tttSize(room.state?.n)) });
   else if (room.status === "playing" && room.game === "hl" && act === "guess") {
     const st = room.state, dir = String(body?.dir);
     if (st.turn === me && (dir === "hi" || dir === "lo")) {
@@ -2249,9 +2262,10 @@ async function routeNetAct(body: any) {
   }
   else if (act === "move" && room.status === "playing" && room.game === "ttt") {
     const st = room.state, i = Number(body?.i), mine = st.x === me ? "X" : "O";
-    if (Number.isInteger(i) && i >= 0 && i < 9 && st.turn === mine && !st.board[i]) {
+    const n = tttSize(st.n);
+    if (Number.isInteger(i) && i >= 0 && i < n * n && st.turn === mine && !st.board[i]) {
       const board = st.board.slice(); board[i] = mine;
-      const win = tttResult(board);
+      const win = tttResult(board, n);
       next = await netSave(room, { status: win ? "done" : "playing", state: { ...st, board, win, turn: mine === "X" ? "O" : "X" } });
     }
   }
