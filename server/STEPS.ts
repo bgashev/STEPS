@@ -1785,7 +1785,8 @@ async function routeLogout(body: any) {
 }
 
 /* ---------- v1.988: игры по сети (приглашение друга, комната, Крестики-нолики) ---------- */
-const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "che", "golf", "sea", "bil", "arc"]);
+const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "che", "golf", "sea", "bil", "arc", "stk"]);
+const STK_KINDS = 8;
 const arcWind = () => ({ v: +(0.2 + Math.random() * 2.8).toFixed(1), d: Math.random() < 0.5 ? -1 : 1 });
 const tttLines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 const tttResult = (b: string[]) => { for (const [a, c, d] of tttLines) if (b[a] && b[a] === b[c] && b[a] === b[d]) return b[a]; return b.every((x) => x) ? "d" : ""; };
@@ -2000,6 +2001,7 @@ function netInit(game: string, host: number, guest: number, first: number): any 
   else if (game === "golf") st = { hole: 0, holes: 3, turn: first, p: [host, guest], ball: {}, str: {}, done: {}, tot: {}, last: null, win: "" };
   else if (game === "sea") st = { phase: "place", turn: first, p: [host, guest], fleets: {}, ready: {}, shots: { [host]: {}, [guest]: {} }, sunk: { [host]: [], [guest]: [] }, last: null, win: "" };
   else if (game === "arc") st = { p: [host, guest], turn: first, tc: 0, rounds: 2, per: 3, shot: 0, s: { [host]: 0, [guest]: 0 }, arrows: [], wind: arcWind(), log: [], last: null, win: "" };
+  else if (game === "stk") st = { p: [host, guest], turn: first, k: Math.floor(Math.random() * STK_KINDS), objs: [], tc: 0, last: null, win: "", loser: 0 };
   else if (game === "bil") st = { turn: first, p: [host, guest], balls: BIL_RACK.map((b) => [b[0], b[1]]), last: null, win: "", foul: false };
   else st = tttInit(first);
   st.first = first;
@@ -2188,6 +2190,19 @@ async function routeNetAct(body: any) {
         if (tc >= st.rounds * 2) { status = "done"; turn = me; win = s[st.p[0]] === s[st.p[1]] ? "d" : s[st.p[0]] > s[st.p[1]] ? st.p[0] : st.p[1]; }
       }
       next = await netSave(room, { status, state: { ...st, s, arrows, shot: nshot, tc, turn, wind: arcWind(), log, last: entry, win } });
+    }
+  }
+  else if (room.status === "playing" && room.game === "stk" && act === "drop") {
+    const st = room.state, other = me === st.p[0] ? st.p[1] : st.p[0], n = (st.objs ?? []).length, P: any[] = Array.isArray(body?.poses) ? body.poses : [];
+    const cl = (v: unknown, lo: number, hi: number) => Math.max(lo, Math.min(hi, Number(v) || 0));
+    if (st.turn === me && !st.win && P.length === n + 1 && n < 24) {
+      const poses = P.map((o: any, i: number) => ({ k: i < n ? st.objs[i].k : st.k, x: +cl(o?.x, -300, 660).toFixed(1), y: +cl(o?.y, -300, 1000).toFixed(1), a: +cl(o?.a, -60, 60).toFixed(3) }));
+      const fell = poses.some((o: any) => o.y > 500 || o.x < 20 || o.x > 340);
+      const fr: any[] = Array.isArray(body?.tr?.f) ? body.tr.f.slice(0, 60) : [];
+      const f2 = fr.map((a: any) => (Array.isArray(a) ? a.slice(0, (n + 1) * 3).map((v: unknown) => Math.round(cl(v, -30000, 100000))) : []));
+      let status = "playing", win: any = "", loser = 0;
+      if (fell) { status = "done"; win = other; loser = me; } else if (n + 1 >= 24) { status = "done"; win = "d"; }
+      next = await netSave(room, { status, state: { ...st, objs: poses, turn: other, k: Math.floor(Math.random() * STK_KINDS), tc: st.tc + 1, last: { by: me, n: room.rev + 1, k: st.k, tr: { f: f2 } }, win, loser } });
     }
   }
   else if (room.status === "playing" && room.game === "sea" && act === "fleet") {
