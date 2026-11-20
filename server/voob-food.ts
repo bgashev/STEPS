@@ -1,4 +1,4 @@
-// VOOB — общая база продуктов для сканера штрихкодов (Supabase Edge Function voob-food) · v3
+// VOOB — общая база продуктов для сканера штрихкодов (Supabase Edge Function voob-food) · v6
 // Таблица: food_products(code pk, name, brand, k,p,f,c на 100 г/мл, u, src, conf, added_by).
 // act: lookup {codes[]} · search {q} (без входа; отдаются только проверенные) · contribute {token, ...} (нужна сессия) · seed {key, country, from, to} (разовый импорт OFF).
 // Правила доверия: значения из Open Food Facts сервер берёт сам и они главнее любых пользовательских; продукт, которого нет в OFF, остаётся pending, пока его независимо не подтвердят 2 разных человека.
@@ -24,7 +24,7 @@ async function sessionUser(token: unknown): Promise<number | null> {
   const { data } = await db.from("sessions").select("tg_id").eq("token_hash", await sha256(token)).maybeSingle();
   return data ? (data.tg_id as number) : null;
 }
-let lastOffSearch = 0;
+let lastOffSearch = 0, offDownUntil = 0;   // v4: если OFF-поиск упал (503/401/таймаут) — 10 минут его не спрашиваем, поиск не тормозит
 const DAY_LIMIT = 80;
 const UA = "VOOB-app/1.0 (Telegram Mini App, voob.kz)";
 const pub = (r: any) => ({ code: r.code, name: r.name, brand: r.brand, k: +r.k, p: +r.p, f: +r.f, c: +r.c, u: r.u, src: r.src, conf: r.conf });
@@ -92,9 +92,10 @@ Deno.serve(async (req) => {
     if (error) return fail("db", 500);
     let items = (data ?? []).map(pub);
     // v3: в нашей базе мало — спрашиваем поиск Open Food Facts и запоминаем ответ для всех (не чаще раза в 7 с на экземпляр: у OFF жёсткий лимит поиска)
-    if (items.length < 4 && q.length >= 3 && Date.now() - lastOffSearch > 7000) {
+    if (items.length < 4 && q.length >= 3 && Date.now() - lastOffSearch > 7000 && Date.now() > offDownUntil) {
       lastOffSearch = Date.now();
-      const j = await offFetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=20&fields=${FIELDS}&sort_by=unique_scans_n`, 5500);
+      const j = await offFetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=20&fields=${FIELDS}&sort_by=unique_scans_n`, 2500);
+      if (!j) offDownUntil = Date.now() + 600000;
       const rows = ((j?.products ?? []) as any[]).map((p) => offRow(p)).filter(Boolean) as any[];
       if (rows.length) {
         await db.from("food_products").upsert(rows, { onConflict: "code" });
