@@ -1785,7 +1785,8 @@ async function routeLogout(body: any) {
 }
 
 /* ---------- v1.988: игры по сети (приглашение друга, комната, Крестики-нолики) ---------- */
-const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "che", "golf", "sea", "bil"]);
+const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "che", "golf", "sea", "bil", "arc"]);
+const arcWind = () => ({ v: +(0.2 + Math.random() * 2.8).toFixed(1), d: Math.random() < 0.5 ? -1 : 1 });
 const tttLines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 const tttResult = (b: string[]) => { for (const [a, c, d] of tttLines) if (b[a] && b[a] === b[c] && b[a] === b[d]) return b[a]; return b.every((x) => x) ? "d" : ""; };
 const tttInit = (x: number) => ({ board: Array(9).fill(""), turn: "X", x, win: "" });
@@ -1998,6 +1999,7 @@ function netInit(game: string, host: number, guest: number, first: number): any 
   } else if (game === "che") st = chInit(first);
   else if (game === "golf") st = { hole: 0, holes: 3, turn: first, p: [host, guest], ball: {}, str: {}, done: {}, tot: {}, last: null, win: "" };
   else if (game === "sea") st = { phase: "place", turn: first, p: [host, guest], fleets: {}, ready: {}, shots: { [host]: {}, [guest]: {} }, sunk: { [host]: [], [guest]: [] }, last: null, win: "" };
+  else if (game === "arc") st = { p: [host, guest], turn: first, tc: 0, rounds: 2, per: 3, shot: 0, s: { [host]: 0, [guest]: 0 }, arrows: [], wind: arcWind(), log: [], last: null, win: "" };
   else if (game === "bil") st = { turn: first, p: [host, guest], balls: BIL_RACK.map((b) => [b[0], b[1]]), last: null, win: "", foul: false };
   else st = tttInit(first);
   st.first = first;
@@ -2169,6 +2171,23 @@ async function routeNetAct(body: any) {
         else { hole++; nball = {}; nstr = {}; ndone = {}; turn = st.p[hole % 2]; }
       }
       next = await netSave(room, { status, state: { ...st, hole, tot, ball: nball, str: nstr, done: ndone, turn, last, win } });
+    }
+  }
+  else if (room.status === "playing" && room.game === "arc" && act === "shot") {
+    const st = room.state, other = me === st.p[0] ? st.p[1] : st.p[0];
+    if (st.turn === me && !st.win) {
+      const cl = (v: unknown) => Math.max(-1.8, Math.min(1.8, Number(v) || 0));
+      const x = +cl(body?.x).toFixed(3), y = +cl(body?.y).toFixed(3), d = Math.hypot(x, y);
+      const sc = d >= 1 ? 0 : Math.max(1, 10 - Math.floor(d * 10));
+      const shot = st.shot + 1, s = { ...st.s, [me]: (st.s?.[me] ?? 0) + sc };
+      const entry = { by: me, x, y, sc, w: st.wind, t: st.tc, n: room.rev + 1 };
+      const log = [...(st.log ?? []), entry].slice(-16);
+      let arrows: any[] = [...(st.arrows ?? []), { by: me, x, y, sc }], turn: number = me, nshot = shot, tc = st.tc, status = "playing", win: any = "";
+      if (shot >= st.per) {
+        tc++; nshot = 0; arrows = []; turn = other;
+        if (tc >= st.rounds * 2) { status = "done"; turn = me; win = s[st.p[0]] === s[st.p[1]] ? "d" : s[st.p[0]] > s[st.p[1]] ? st.p[0] : st.p[1]; }
+      }
+      next = await netSave(room, { status, state: { ...st, s, arrows, shot: nshot, tc, turn, wind: arcWind(), log, last: entry, win } });
     }
   }
   else if (room.status === "playing" && room.game === "sea" && act === "fleet") {
