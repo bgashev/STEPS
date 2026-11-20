@@ -5001,7 +5001,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1087';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1088';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11947,7 +11947,7 @@ const AX = (function(){
     };
     const hubTiles = () => hubOrder().map(k => hubT[k]).join('');
     return `<div class="ax-sh"><div class="ax-st">Приложения</div><div class="ax-ss">всё под рукой — без лишних вкладок</div>
-    ${inWeb || hubHintSeen() ? '' : `<div class="ax-hint">Зажми карточку и перетащи, чтобы поменять порядок</div>`}
+    ${hubHintSeen() ? '' : `<div class="ax-hint">Зажми карточку и перетащи, чтобы поменять порядок</div>`}
     ${GLX.defs}
     <div class="ax-bn hx" id="ax-bn">
     ${hubTiles()}
@@ -12320,21 +12320,21 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   /* ---------- v1.1002: «Приложения» — 6 равных карточек, перестановка зажатием ---------- */
   const HUBK = 'voob_hubord_' + UK, HUBD = ['w', 'k', 'wt', 'h', 'g', 's'];
   function hubOrder(){
-    if (inWeb) return ['w', 'k', 'wt', 'h', 'g'];
     let o = null; try { o = JSON.parse(localStorage.getItem(HUBK) || 'null'); } catch (e) {}
     o = Array.isArray(o) ? o.filter(k => HUBD.includes(k)) : [];
     HUBD.forEach(k => { if (!o.includes(k)) o.push(k); });
+    if (inWeb) o = o.filter(k => k !== 's');
     return o;
   }
   const hubHintSeen = () => { try { return localStorage.getItem('voob_hubhint') === '1'; } catch (e) { return false; } };
   let HD = null, HSUP = 0;
   function hubDown(e){
-    const t = e.target.closest && e.target.closest('.ax-bn.hx .ax-bt'); if (inWeb || !t || HD || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    const t = e.target.closest && e.target.closest('.ax-bn.hx .ax-bt'); if (!t || HD || (e.pointerType === 'mouse' && e.button !== 0)) return;
     HD = {el:t, id:e.pointerId, sx:e.clientX, sy:e.clientY, on:false, tm:setTimeout(hubArm, 360)};
   }
   function hubArm(){
     if (!HD) return; const g = HD.el.parentNode, r = g.getBoundingClientRect(), tr = HD.el.getBoundingClientRect(), gap = parseFloat(getComputedStyle(g).columnGap) || 10;
-    HD.on = true; HD.g = g; HD.gap = gap; HD.W = tr.width; HD.H = tr.height; HD.gx = r.left; HD.gy = r.top;
+    HD.on = true; HD.g = g; HD.gap = gap; HD.cols = Math.max(1, getComputedStyle(g).gridTemplateColumns.split(' ').length); HD.W = tr.width; HD.H = tr.height; HD.gx = r.left; HD.gy = r.top;
     const i = Array.prototype.indexOf.call(g.children, HD.el); HD.ox = tr.left - r.left; HD.oy = tr.top - r.top; HD.idx = i;
     HD.el.classList.add('lift'); g.classList.add('drag'); hap.lift();
     HD.el.style.transform = 'translate(0,0) scale(1.06)';
@@ -12345,7 +12345,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     if (!HD.on) { if (Math.hypot(dx, dy) > 8) { clearTimeout(HD.tm); HD = null; } return; }
     e.preventDefault(); const D = HD, el = D.el, g = D.g, n = g.children.length;
     const x = D.ox + dx, y = D.oy + dy, cx = x + D.W / 2, cy = y + D.H / 2;
-    const col = Math.max(0, Math.min(1, Math.floor(cx / (D.W + D.gap / 2)))), row = Math.max(0, Math.min(Math.ceil(n / 2) - 1, Math.floor(cy / (D.H + D.gap / 2)))), to = Math.min(n - 1, row * 2 + col);
+    const C = D.cols || 2, col = Math.max(0, Math.min(C - 1, Math.floor(cx / (D.W + D.gap)))), row = Math.max(0, Math.min(Math.ceil(n / C) - 1, Math.floor(cy / (D.H + D.gap)))), to = Math.min(n - 1, row * C + col);
     if (to !== D.idx) {
       const kids = Array.prototype.slice.call(g.children).filter(c => c !== el), first = kids.map(c => c.getBoundingClientRect());
       kids.forEach(c => { c.style.transition = 'none'; c.style.transform = 'none'; });
@@ -12354,7 +12354,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
       g.offsetWidth;
       kids.forEach(c => { c.style.transition = ''; c.style.transform = ''; });
     }
-    const lx = (D.idx % 2) * (D.W + D.gap), ly = Math.floor(D.idx / 2) * (D.H + D.gap);
+    const lx = (D.idx % C) * (D.W + D.gap), ly = Math.floor(D.idx / C) * (D.H + D.gap);
     el.style.transform = 'translate(' + (x - lx) + 'px,' + (y - ly) + 'px) scale(1.06)';
   }
   function hubUp(e){
