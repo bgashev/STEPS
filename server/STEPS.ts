@@ -2299,7 +2299,7 @@ async function routeCronHabits(req: Request) {
 }
 
 /* ---------- Привычки: споры (режим «Дуэль») ---------- */
-const DUEL_DAYS = [7, 14, 30, 66];
+const duelDaysOk = (n: number) => Number.isInteger(n) && n >= 3 && n <= 365;   // v1.1095: срок спора свободный (7 / 14 / 30 или свой)
 async function duelNames(ids: number[]) {
   const { data } = ids.length ? await db.from("users").select("tg_id, first_name, username, handle").in("tg_id", ids) : { data: [] };
   const m = new Map<number, any>(); for (const u of data ?? []) m.set(u.tg_id, u); return m;
@@ -2360,7 +2360,7 @@ async function routeDuelCreate(body: any) {
   const to = Number(body?.to), title = String(body?.title ?? "").trim().slice(0, 40), emoji = String(body?.emoji ?? "✅").slice(0, 8) || "✅";
   const kind = body?.kind === "survive" ? "survive" : body?.kind === "team" ? "team" : "duel", goal = kind === "survive" ? 1 : Math.max(1, Math.min(20, Math.floor(Number(body?.goal) || 1))), days = Number(body?.days), stake = String(body?.stake ?? "").trim().slice(0, 60);
   if (!title) return fail("Назови привычку");
-  if (!DUEL_DAYS.includes(days)) return fail("Выбери срок спора");
+  if (!duelDaysOk(days)) return fail("Выбери срок спора");
   if (!to || to === me || !(await areFriends(me, to))) return fail("Вызов можно бросить только другу", 403);
   if ((await deactivatedSet([to])).size) return fail("Пользователь недоступен", 404);
   const { count } = await db.from("habit_duels").select("id", { count: "exact", head: true }).or(`from_id.eq.${me},to_id.eq.${me}`).in("status", ["pending", "active"]);
