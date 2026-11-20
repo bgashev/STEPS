@@ -5326,15 +5326,16 @@ const K5G = (() => {
 const {card, rrp, spark, ring, FF, CONF, SUITS, RK} = DKG.X;
 const kS = (c) => Math.floor(c / 9), kR = (c) => c % 9, KP = [6, 7, 8, 9, 10, 2, 3, 4, 11];
 function kShuf(a, rnd) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
-function kNew(first, rnd, sc, rd) {
+function kNew(first, rnd, sc, rd, alt) {
   const deck = kShuf(Array.from({ length: 36 }, (_, i) => i), rnd), h = [[], []];
   for (let k = 0; k < 5; k++) { h[0].push(deck.pop()); h[1].push(deck.pop()); }
   let i = deck.length - 1; while (i >= 0 && (kR(deck[i]) === 0 || kR(deck[i]) === 1 || kR(deck[i]) === 6 || kR(deck[i]) === 8)) i--;
   const top = i >= 0 ? deck.splice(i, 1)[0] : deck.pop();
-  return { deck, disc: [top], h, at: first, suit: kS(top), pen: 0, drew: false, sc: sc || [0, 0], rd: rd || 1, rr: null, win: "", lm: null, n: 0 };
+  return { deck, disc: [top], h, at: first, suit: kS(top), pen: 0, drew: false, sc: sc || [0, 0], rd: rd || 1, rr: null, win: "", lm: null, n: 0, alt: !!alt, cov: false };
 }
 const kTop = (st) => st.disc[st.disc.length - 1];
 function kOk(st, c) {
+  if (st.alt && kR(c) === 0 && st.h[st.at] && st.h[st.at].length === 1) return false;
   if (st.pen > 0) return kR(c) === 1;
   if (kR(c) === 6) return true;
   return kS(c) === st.suit || kR(c) === kR(kTop(st));
@@ -5345,11 +5346,11 @@ function kDraw(st, seat, rnd) {
   const c = st.deck.pop(); st.h[seat].push(c); return c;
 }
 function kEnd(st, w, rnd) {
-  const o = 1 - w, pts = st.h[o].reduce((s, c) => s + KP[kR(c)], 0), sc = st.sc.slice();
+  const o = 1 - w, pts = st.h[o].reduce((s, c) => s + (st.alt && kR(c) === 3 ? 0 : KP[kR(c)]), 0), sc = st.sc.slice();
   sc[o] += pts; let reset = false; if (sc[o] === 105) { sc[o] = 0; reset = true; }
   st.rr = { n: st.rd, w, pts, h: [st.h[0].slice(), st.h[1].slice()], sc: sc.slice(), reset }; st.sc = sc;
   if (sc[o] > 105) { st.win = String(w); return; }
-  const nw = kNew(o, rnd, sc, st.rd + 1);
+  const nw = kNew(o, rnd, sc, st.rd + 1, st.alt); st.cov = false;
   st.deck = nw.deck; st.disc = nw.disc; st.h = nw.h; st.at = o; st.suit = nw.suit; st.pen = 0; st.drew = false; st.rd = nw.rd;
 }
 function kMove(st, seat, m, c, s, rnd) {
@@ -5360,25 +5361,26 @@ function kMove(st, seat, m, c, s, rnd) {
     h.splice(h.indexOf(c), 1); st.disc.push(c); const r = kR(c); lm.c = c;
     st.suit = r === 6 && s >= 0 && s <= 3 ? s : kS(c); lm.q = st.suit; st.drew = false;
     if (!h.length) { st.n++; lm.n = st.n; st.lm = lm; kEnd(st, seat, rnd); return true; }
-    if (r === 0) { kDraw(st, o, rnd); lm.d = 1; }
+    st.cov = false;
+    if (r === 0) { kDraw(st, o, rnd); lm.d = 1; if (st.alt) st.cov = true; }
     else if (r !== 8) { if (r === 1) st.pen += 2; st.at = o; }
   } else if (m === "draw") {
     if (st.drew) return false;
     if (st.pen > 0) { let d = 0; for (let i = 0; i < st.pen; i++) if (kDraw(st, seat, rnd) >= 0) d++; lm.d = d; st.pen = 0; st.at = o; }
-    else { const x = kDraw(st, seat, rnd); lm.d = x >= 0 ? 1 : 0; if (x >= 0 && kOk(st, x)) st.drew = true; else st.at = o; }
+    else { const x = kDraw(st, seat, rnd); lm.d = x >= 0 ? 1 : 0; if (x >= 0 && kOk(st, x)) st.drew = true; else if (st.cov && x >= 0) { /* покрытие шестёрки: берём дальше */ } else { st.cov = false; st.at = o; } }
   } else if (m === "pass") {
-    if (!st.drew) return false; st.drew = false; st.at = o;
+    if (!st.drew || st.cov) return false; st.drew = false; st.at = o;
   } else return false;
   st.n++; lm.n = st.n; st.lm = lm; return true;
 }
 
 const pick = a => a[Math.floor(Math.random() * a.length)];
-function kClone(st){ return {deck: st.deck.slice(), disc: st.disc.slice(), h: [st.h[0].slice(), st.h[1].slice()], at: st.at, suit: st.suit, pen: st.pen, drew: st.drew, sc: st.sc.slice(), rd: st.rd, rr: null, win: st.win, lm: null, n: st.n}; }
+function kClone(st){ return {deck: st.deck.slice(), disc: st.disc.slice(), h: [st.h[0].slice(), st.h[1].slice()], at: st.at, suit: st.suit, pen: st.pen, drew: st.drew, sc: st.sc.slice(), rd: st.rd, rr: null, win: st.win, lm: null, n: st.n, alt: st.alt, cov: st.cov}; }
 function kBestSuit(h, ex){ const n = [0, 0, 0, 0]; h.forEach(x => { if (x !== ex) n[kS(x)]++; }); let b = 0; for (let i = 1; i < 4; i++) if (n[i] > n[b]) b = i; return b; }
 function kLegal(st, seat){
   const mv = [], h = st.h[seat];
   h.forEach(c => { if (kOk(st, c)) { if (kR(c) === 6) { const n = [0, 0, 0, 0]; h.forEach(x => { if (x !== c) n[kS(x)]++; }); const ss = [0, 1, 2, 3].sort((a, b) => n[b] - n[a]).slice(0, 2); ss.forEach(s => mv.push({m: 'play', c, s})); } else mv.push({m: 'play', c}); } });
-  mv.push(st.drew ? {m: 'pass'} : {m: 'draw'});
+  if (st.drew) { if (!st.cov) mv.push({m: 'pass'}); } else mv.push({m: 'draw'});
   return mv;
 }
 const KW0 = [1.8, 2.2, 11.8, 5.4, 9, 9.1, 4, 5, -12.9, 0.7];
@@ -5394,6 +5396,7 @@ function kPol(st, seat, lvl){
     if (r === 0 || r === 8) v += o <= 3 ? W[2] : W[3];
     if (r === 1) v += st.pen > 0 ? W[4] : (o <= 3 ? W[5] : W[6]);
     if (r === 6) v += (rest.length <= 2 || o <= 1) ? W[7] : W[8];
+    if (st.alt && r === 0 && !rest.some(y => kS(y) === kS(x.c) || kR(y) === 0 || kR(y) === 6)) v -= 14;
     if (x.s != null) v += rest.filter(y => kS(y) === ns).length * W[9];
     if (lvl >= 3) { const known = new Set(h); st.disc.forEach(y => known.add(y)); let un = 0, mt = 0; for (let i = 0; i < 36; i++) if (!known.has(i)) { un++; if (kS(i) === ns || kR(i) === r || kR(i) === 6) mt++; }
       let pn = 1; for (let i = 0; i < o && un - i > 0; i++) pn *= Math.max(0, (un - mt - i) / (un - i)); v += pn * (lvl === 3 ? 12 : 24) * (st.pen > 0 && r !== 1 ? 0 : 1); if (lvl === 4 && o <= 2 && (r === 0 || r === 8 || r === 1)) v += 6; }
@@ -5438,14 +5441,14 @@ function handLay(V){
 function btns(st, me){
   if (st.win || st.at !== me) return [];
   if (st.pen > 0) return [{k: 'draw', label: 'Беру ' + st.pen, col: 'r'}];
-  if (st.drew) return [{k: 'pass', label: 'Пас', col: 'r'}];
+  if (st.drew) return st.cov ? [] : [{k: 'pass', label: 'Пас', col: 'r'}];
   return [{k: 'draw', label: 'Взять', col: 'g'}];
 }
 const btnPos = (n, i) => ({x: 180 + (i - (n - 1) / 2) * 118, y: 386, w: 106, h: 40, r: 20});
 const sPos = i => ({x: 63 + i * 78, y: 318, r: 30});
 function msg(st, me){
   if (st.win) return '';
-  if (st.at === me) return st.pen > 0 ? 'Бей семёркой или бери ' + st.pen : st.drew ? 'Сыграй взятую карту или «Пас»' : 'Твой ход — сыграй карту или возьми';
+  if (st.at === me) return st.cov ? (st.drew ? 'Покрой шестёрку взятой картой' : 'Покрой шестёрку или бери карты') : st.pen > 0 ? 'Бей семёркой или бери ' + st.pen : st.drew ? 'Сыграй взятую карту или «Пас»' : 'Твой ход — сыграй карту или возьми';
   return 'Соперник ходит…';
 }
 function glyph(c, s, x, y, sz, col){ c.fillStyle = col || SCOL[s]; c.font = '400 ' + sz + 'px ' + FF; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(SUITS[s], x, y); }
@@ -5560,7 +5563,7 @@ function hit(V, x, y){
 const drop = (x, y, dy) => y < 395 || dy > 70;
 const handAt = (V, x, y) => { if (y < 410 || V.pq != null || V.rrOn) return null; const hl = handLay(V); let b = null, bd = 1e9; hl.forEach(h => { const d = Math.abs(x - h.x); if (d < bd) { bd = d; b = h; } }); return b && bd < 60 ? {id: b.id, ok: b.ok} : null; };
 
-return {new: (f, r) => kNew(f, r || Math.random, [0, 0], 1), move: (st, seat, m, c, s) => kMove(st, seat, m, c, s, Math.random), ok: kOk, bot: kBot, draw, hit, drop, handAt, S: kS, R: kR, W: VW, H: VH};
+return {new: (f, r, alt) => kNew(f, r || Math.random, [0, 0], 1, alt), move: (st, seat, m, c, s) => kMove(st, seat, m, c, s, Math.random), ok: kOk, bot: kBot, draw, hit, drop, handAt, S: kS, R: kR, W: VW, H: VH};
 })();
 window.K5G = K5G;
 const UNG = (() => {
@@ -5799,7 +5802,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1132';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1133';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11051,9 +11054,12 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
   const K5LV = [['Новичок', 'Ходит почти наугад', 1], ['Любитель', 'Сбрасывает самые тяжёлые карты', 2], ['Игрок', 'Умело играет 6, 7, туза и даму', 3], ['Опытный', 'Считает карты и давит семёрками', 5], ['Мастер', 'Знает, каких карт нет у вас', 8]];
   function mkK5(){ const g = {}, K = 'k5';
     const lv0 = () => { try { const v = +localStorage.getItem('voob_k5_lv'); return v >= 0 && v < 5 ? v : 2; } catch (e) { return 2; } };
+    const md0 = () => { try { return +localStorage.getItem('voob_k5_md') === 1 ? 1 : 0; } catch (e) { return 0; } };
+    const K5RU = [['Классика', ['Шестёрка: соперник берёт карту, ты ходишь снова. Покрывать её не нужно — можно закончить ход на ней.', 'Девятки в руке при проигрыше раунда считаются как обычно: 9 очков каждая.', 'Остальное: семёрка — +2 карты, дама — любая масть, туз — ходишь ещё раз.']], ['Альтернатива', ['Шестёрка: соперник берёт карту, а ты обязан сразу покрыть её своей картой (масть или значение). Нет подходящей — берёшь карты, пока не появится. Закончить партию шестёркой нельзя.', 'Девятки при проигрыше раунда не дают штрафа — 0 очков.', 'Остальное: как в классике.']]];
+    const mdGeo = () => { lvXtra = 58; const SL = lvGeo2(5); lvXtra = 0; const y = SL.sy + SL.sh + 24, bw = (SL.bw - 8) / 2; return {y, h: 46, bw, x0: SL.bx, x1: SL.bx + bw + 8}; };
     const lay = () => { const top = 74, sc = Math.min(W / 360, (H - top - 8) / 560); return {sc, ox: (W - 360 * sc) / 2, oy: top + (H - top - 8 - 560 * sc) / 2}; };
-    g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.lvp = g.lvl; g.lvb = 0; g.nb = false; g.res = null; g.st = null; g.bt = 0; g.rt = 0; g.first = 0; g.fin = false; g.A = {P: {}}; g.dt = .016; g.rrOn = false; g.rrT = 0; g.pq = null; g.rrSeen = 0; };
-    const begin = () => { g.st = K5G.new(g.first, Math.random); g.first = 1 - g.first; g.res = null; g.fin = false; g.rt = 0; g.ph = 'play'; g.A = {P: {}}; g.bt = 1.1; g.rrOn = false; g.pq = null; g.rrSeen = 0; g.drag = null; g.sc = null; };
+    g.init = () => { base0(g); g.ph = 'menu'; g.md = md0(); g.info = -1; g.lvl = lv0(); g.lvp = g.lvl; g.lvb = 0; g.nb = false; g.res = null; g.st = null; g.bt = 0; g.rt = 0; g.first = 0; g.fin = false; g.A = {P: {}}; g.dt = .016; g.rrOn = false; g.rrT = 0; g.pq = null; g.rrSeen = 0; };
+    const begin = () => { g.st = K5G.new(g.first, Math.random, g.md === 1); g.first = 1 - g.first; g.res = null; g.fin = false; g.rt = 0; g.ph = 'play'; g.A = {P: {}}; g.bt = 1.1; g.rrOn = false; g.pq = null; g.rrSeen = 0; g.drag = null; g.sc = null; };
     const after = () => { const st = g.st; g.bt = .8 + Math.random() * .6;
       if (st.rr && st.rr.n !== g.rrSeen) { g.rrSeen = st.rr.n; g.rrOn = true; g.rrT = 3.8; if (st.rr.w === 0) { sfx('perfect', 3); hap.ok(); } else { sfx('die'); hap.warn(); } }
       if (st.win) { g.res = {k: st.win === '0' ? 'win' : 'lose'}; g.rt = 1.1; } };
@@ -11062,7 +11068,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     g.tap = () => {};
     g.down = (x, y) => {
       if (g.dead) return;
-      if (g.ph === 'menu') { const h = lvHit2(5, x, y); if (h === 'go') { try { localStorage.setItem('voob_k5_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); begin(); } else if (h >= 0) { if (h !== g.lvl) g.lvb = 1; g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
+      if (g.ph === 'menu') { if (g.info >= 0) { g.info = -1; hap.tap(); return; } const M = mdGeo(); if (y >= M.y && y <= M.y + M.h && x >= M.x0 && x <= M.x1 + M.bw) { const k = x >= M.x1 ? 1 : 0, bx = k ? M.x1 : M.x0; if (x >= bx + M.bw - 40) { g.info = k; hap.tap(); sfx('spark', 2); } else if (g.md !== k) { g.md = k; hap.tap(); sfx('spark', k + 2); try { localStorage.setItem('voob_k5_md', k); } catch (e) {} } return; } lvXtra = 58; const h = lvHit2(5, x, y); lvXtra = 0; if (h === 'go') { try { localStorage.setItem('voob_k5_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); begin(); } else if (h >= 0) { if (h !== g.lvl) g.lvb = 1; g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
       if (g.ph === 'over') { hap.tap(); begin(); return; }
       if (g.ph !== 'play' || !g.st) return;
       if (g.rrOn) { g.rrOn = false; g.bt = .5; hap.tap(); return; }
@@ -11090,8 +11096,16 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     };
     g.draw = c => {
       c.save(); shk(c, g); c.fillStyle = '#051a30'; c.fillRect(0, 0, W, H);
-      if (g.ph === 'menu') { c.fillStyle = '#0a2a4a'; c.fillRect(0, 0, W, H); bg2(c, 'rgba(80,170,255,.35)', .3); lvDraw2(c, g, {title: '105', sub: 'Против бота · до 105 очков', lv: K5LV, note: 'Кто наберёт больше 105 штрафных очков — проиграл. Ровно 105 — счёт обнуляется'}); c.restore(); return; }
-      const L = lay(); c.fillStyle = C.mu; c.font = '700 13px ' + C.ff; c.textAlign = 'center'; c.fillText(K5LV[g.lvl][0].toUpperCase() + ' · СЕРИЯ ' + g.score, W / 2, 20);
+      if (g.ph === 'menu') { c.fillStyle = '#0a2a4a'; c.fillRect(0, 0, W, H); bg2(c, 'rgba(80,170,255,.35)', .3); lvXtra = 58; lvDraw2(c, g, {title: '105', sub: 'Против бота · до 105 очков', lv: K5LV, note: 'Кто наберёт больше 105 штрафных очков — проиграл. Ровно 105 — счёт обнуляется'}); lvXtra = 0;
+        const M = mdGeo(); c.textAlign = 'left'; [0, 1].forEach(k => { const bx = k ? M.x1 : M.x0, on = g.md === k; rr(c, bx, M.y, M.bw, M.h, 16); c.fillStyle = on ? '#7fb5ff' : C.s2; c.fill(); c.lineWidth = 1; c.strokeStyle = on ? '#7fb5ff' : C.bd; c.stroke();
+          c.fillStyle = on ? '#10121c' : C.tx; c.font = '800 14px ' + C.ff; c.textBaseline = 'middle'; c.fillText(K5RU[k][0], bx + 14, M.y + M.h / 2 + .5);
+          const ix = bx + M.bw - 22, iy = M.y + M.h / 2; c.beginPath(); c.arc(ix, iy, 11, 0, 7); c.lineWidth = 1.6; c.strokeStyle = on ? '#10121c' : C.mu; c.stroke(); c.fillStyle = on ? '#10121c' : C.mu; c.font = '800 13px ' + C.ff; c.textAlign = 'center'; c.fillText('i', ix, iy + .5); c.textAlign = 'left'; c.textBaseline = 'alphabetic'; });
+        c.textAlign = 'center'; c.fillStyle = C.mu; c.font = '600 11px ' + C.ff; c.fillText('Режим правил · «i» — чем отличаются', W / 2, M.y + M.h + 16);
+        if (g.info >= 0) { c.fillStyle = 'rgba(3,10,22,.86)'; c.fillRect(0, 0, W, H); const bw = Math.min(W - 40, 340), bx = (W - bw) / 2, lines = []; c.font = '500 14px ' + C.ff; K5RU[g.info][1].forEach(t => { let l = ''; for (const w of t.split(' ')) { if (c.measureText(l ? l + ' ' + w : w).width <= bw - 40) l = l ? l + ' ' + w : w; else { lines.push(l); l = w; } } lines.push(l); lines.push(''); });
+          const bh = 90 + lines.length * 20, by = Math.max(60, (H - bh) / 2); rr(c, bx, by, bw, bh, 22); c.fillStyle = C.s2; c.fill(); c.lineWidth = 1.6; c.strokeStyle = '#7fb5ff'; c.stroke();
+          c.textAlign = 'left'; c.fillStyle = '#7fb5ff'; c.font = '800 20px ' + C.ff; c.fillText(K5RU[g.info][0], bx + 20, by + 38); c.fillStyle = C.tx; c.font = '500 14px ' + C.ff; lines.forEach((l, i) => c.fillText(l, bx + 20, by + 68 + i * 20)); c.fillStyle = C.mu; c.font = '600 12px ' + C.ff; c.fillText('Тап — закрыть', bx + 20, by + bh - 14); }
+        c.restore(); return; }
+      const L = lay(); c.fillStyle = C.mu; c.font = '700 13px ' + C.ff; c.textAlign = 'center'; c.fillText(K5LV[g.lvl][0].toUpperCase() + (g.md === 1 ? ' · АЛЬТЕРНАТИВА' : '') + ' · СЕРИЯ ' + g.score, W / 2, 20);
       c.save(); c.translate(L.ox, L.oy); c.scale(L.sc, L.sc); if (g.st) K5G.draw(c, view(), g.A, g.t, Math.min(.05, g.dt || .016)); c.restore();
       if (g.ph === 'play' && !g.res && !g.rrOn && g.st && g.st.at === 1) thinkDots(c, g, W / 2, 54);
       drawFx(c, g);
