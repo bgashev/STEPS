@@ -12787,7 +12787,12 @@ delete _lc.en; delete _lc.kk;
     await sleep(520);
     const rs = document.documentElement.style; rs.transition = 'opacity .34s ease,filter .34s ease'; rs.opacity = '0'; rs.filter = 'blur(8px)';
     await sleep(360);
-    if (ok) location.reload(); else { const u = new URL(location.href); u.searchParams.set('_v', shown.replace(/\D/g, '')); location.replace(u.href); }
+    {   // v1.1001: перезапуск по уникальному адресу — иначе CDN GitHub Pages мог отдать старую копию (проверка видела новую, а после «Обновить» оставалась прежняя)
+      const ts = Date.now(); let to;
+      if (inWeb) to = location.origin + '/?p=' + encodeURIComponent(location.pathname + location.search) + '&_v=' + ts + location.hash;
+      else { const u = new URL(location.href); u.searchParams.set('_v', ts); to = u.href; }
+      try { location.replace(to); } catch (e) { location.reload(); }
+    }
     setTimeout(() => { rs.opacity = ''; rs.filter = ''; rs.transition = ''; busy = false; c.classList.remove('busy', 'done'); sub.innerHTML = subH; ar.innerHTML = arH; }, 5000);   // если перезапуск не сработал — возвращаем всё как было
   }
   function show(label){
