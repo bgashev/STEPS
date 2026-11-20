@@ -1944,16 +1944,30 @@ async function netSave(room: any, patch: Record<string, unknown>) {
 async function routeNetPoll(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
-  await db.from("net_presence").upsert({ tg_id: me, seen: new Date().toISOString() }, { onConflict: "tg_id" });
+  const seen = () => db.from("net_presence").upsert({ tg_id: me, seen: new Date().toISOString() }, { onConflict: "tg_id" });
   const out: any = {};
-  const { data: inc } = await db.from("net_invites").select("id, from_id, created_at").eq("to_id", me).eq("status", "pending")
-    .gt("created_at", netIso(NET_TTL_S)).order("id", { ascending: false }).limit(3);
-  out.invites = (inc ?? []).map((i: any) => ({ id: i.id, from: i.from_id, age: Math.floor((Date.now() - new Date(i.created_at).getTime()) / 1000) }));
-  const { data: og } = await db.from("net_invites").select("id, to_id, status, room_id, created_at").eq("from_id", me)
-    .gt("created_at", netIso(NET_TTL_S)).order("id", { ascending: false }).limit(1);
-  out.out = og?.[0] ?? null;
+  /* все запросы к базе — параллельно (раньше шли по очереди) */
+  let [, inc, og, room]: any[] = await Promise.all([
+    seen(),
+    db.from("net_invites").select("id, from_id, created_at").eq("to_id", me).eq("status", "pending")
+      .gt("created_at", netIso(NET_TTL_S)).order("id", { ascending: false }).limit(3),
+    db.from("net_invites").select("id, to_id, status, room_id, created_at").eq("from_id", me)
+      .gt("created_at", netIso(NET_TTL_S)).order("id", { ascending: false }).limit(1),
+    body?.room ? netRoomOf(body.room, me) : Promise.resolve(null),
+  ]);
+  out.invites = (inc?.data ?? []).map((i: any) => ({ id: i.id, from: i.from_id, age: Math.floor((Date.now() - new Date(i.created_at).getTime()) / 1000) }));
+  out.out = og?.data?.[0] ?? null;
   if (body?.room) {
-    const room = await netRoomOf(body.room, me);
+    /* long-poll: клиент в комнате шлёт lp=1 — держим запрос до смены хода (до ~12 с), проверяя комнату каждые 250 мс */
+    if (body?.lp && room && Number(body?.rev) === room.rev && room.status !== "closed") {
+      const t0 = Date.now(); let n = 0;
+      while (Number(body?.rev) === room.rev && Date.now() - t0 < 12000) {
+        await new Promise((r) => setTimeout(r, 250));
+        if (++n % 16 === 0) await seen();   /* раз в ~4 с продлеваем своё присутствие */
+        room = await netRoomOf(body.room, me);
+        if (!room) break;
+      }
+    }
     if (!room) out.room = { gone: true };
     else {
       const peer = room.host_id === me ? room.guest_id : room.host_id;
