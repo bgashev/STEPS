@@ -4578,6 +4578,12 @@ html[data-mode=dark] .nt-vfl{background:var(--accent);animation-name:ntvfld}
 .nt-pc svg{width:52%;height:52%}.nt-pc.og{animation:ntog 1.2s ease-in-out infinite}@keyframes ntog{50%{transform:scale(1.08);filter:brightness(1.15)}}
 .nt-gw{position:relative;margin-top:18px}.nt-gcv{width:min(88vw,calc((100vh - 290px)*.682),330px);aspect-ratio:300/440;border-radius:22px;touch-action:none;display:block;box-shadow:0 18px 40px rgba(0,0,0,.3)}
 .nt-gbn{position:absolute;inset:0;display:grid;place-items:center;font-size:30px;font-weight:900;color:#fff;text-shadow:0 4px 24px rgba(0,0,0,.5);pointer-events:none;opacity:0}
+.nt-aw{position:relative;width:min(88vw,calc((100vh - 290px)*.643),340px);margin:18px auto 0}.nt-acv{display:block;width:100%;aspect-ratio:360/560;border-radius:24px;touch-action:none;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.nt-awd{position:absolute;left:50%;top:6%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;background:rgba(0,0,0,.42);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff;border-radius:99px;padding:5px 12px 5px 8px;pointer-events:none}.nt-awd span{width:22px;height:22px;border-radius:50%;background:#ffc83d;color:#222;display:grid;place-items:center;font-weight:900;font-size:14px;line-height:1}.nt-awd small{display:block;font-size:8px;font-weight:800;letter-spacing:.12em;opacity:.75;line-height:1}.nt-awd b{font-size:15px;font-weight:900}
+.nt-api{position:absolute;left:50%;top:calc(6% + 46px);transform:translateX(-50%);display:flex;gap:7px;pointer-events:none}.nt-api i{width:9px;height:9px;border-radius:50%;border:1.5px solid #fff;background:rgba(255,255,255,.3)}.nt-api i.u{background:var(--c,#fff)}
+.nt-ahint{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);width:max-content;max-width:90%;text-align:center;font-size:12.5px;font-weight:700;line-height:1.4;color:#fff;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:14px;padding:8px 13px;pointer-events:none;transition:opacity .4s}
+.nt-gm.nt-arcopp::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 38px 10px rgba(51,184,255,.7);animation:ntarcp 1.4s ease-in-out infinite;z-index:1}@keyframes ntarcp{50%{box-shadow:inset 0 0 52px 16px rgba(51,184,255,.4)}}
+.nt-beta{font-style:normal;font-size:9px;font-weight:850;letter-spacing:.1em;margin-left:7px;padding:3px 6px 2px;border-radius:99px;background:linear-gradient(135deg,#ff8a2a,#ff4d6a);color:#fff;vertical-align:middle}.nt-gc .th .bta{position:absolute;top:8px;left:8px;z-index:2;font-size:9px;font-weight:800;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:3px 6px 2px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .nt-btn,.nt-fr,.nt-gc,.nt-sq,.nt-cell,.nt-x{cursor:pointer}.nt-gcv{cursor:crosshair}
 @media(min-width:700px){html.web .nt-lobby{padding-left:calc(50% - 230px);padding-right:calc(50% - 230px)}html.web .nt-sh,html.web .nt-res{left:calc(50% - 230px);right:calc(50% - 230px);border-radius:28px 28px 0 0}html.web .nt-cd{left:calc(50% - 190px);right:calc(50% - 190px)}html.web .nt-ck{width:min(440px,calc(100vh - 300px))}html.web .nt-gcv{width:min(360px,calc((100vh - 270px)*.682))}html.web .nt-fr:hover,html.web .nt-gc:hover{filter:brightness(1.08)}}
 .nt-sw{width:100%;display:flex;flex-direction:column;align-items:center;margin-top:12px}.nt-sl{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:8px 0 6px}
@@ -4986,7 +4992,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1073';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1074';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7788,7 +7794,7 @@ function shpSkySync(){   // v1.807: звёздное небо на ВСЮ стр
   } else if (e) { e.classList.remove('on'); setTimeout(() => { if (!e.classList.contains('on')) e.remove(); }, 550); }
 }
 function shopGames(){   // v1.883: PRO-игры за ⭐ навсегда
-  const AL = REST.list(), NETL = [['ttt','Крестики-нолики'],['chk','Шашки'],['golf','Гольф'],['sea','Морской бой'],['bil','Бильярд']], L = AL.filter(x => x.pro), left = L.filter(x => !gameOwn(x.k)), p1 = SHOP.prices.game || 19, pa = SHOP.prices.games || 99;
+  const AL = REST.list(), NETL = [['ttt','Крестики-нолики'],['chk','Шашки'],['golf','Гольф'],['sea','Морской бой'],['bil','Бильярд'],['arc','Лучники']], L = AL.filter(x => x.pro), left = L.filter(x => !gameOwn(x.k)), p1 = SHOP.prices.game || 19, pa = SHOP.prices.games || 99;
   const st = k => isPro() ? '<span class="shp-pr own">В PRO</span>' : gameOwn(k) ? '<span class="shp-pr own">Куплено</span>' : `<span class="shp-pr">⭐ ${p1}</span>`;
   const all = left.length ? (isPro() ? '' : `<button type="button" class="shp-c gmall" data-act="gbuyall"><div class="gm-ic">${IC('crown', 26)}</div><div class="gm-tx"><b>Все PRO-игры · ${left.length}</b><small>одной покупкой${left.length * p1 > pa ? ' · выгода ' + Math.round((1 - pa / (left.length * p1)) * 100) + '%' : ''}</small></div><span class="shp-pr">⭐ ${pa}</span></button>`) : `<div class="shp-c gmall own"><div class="gm-ic">${IC('check', 26)}</div><div class="gm-tx"><b>Все PRO-игры открыты</b><small>играй между подходами и в «Играх»</small></div></div>`;
   return `<div class="shp-sub" role="tablist"><button type="button" class="on" data-act="shopsub" data-g="all">Все</button><button type="button" data-act="shopsub" data-g="s">Одиночные</button><button type="button" data-act="shopsub" data-g="n">По сети</button></div><div class="shp-grid gm solo">${all}${AL.map(g => g.pro ? `<button type="button" class="shp-c gm" data-act="shopgame" data-k="${g.k}"><div class="gm-th">${g.th}</div><b>${esc(g.n)}</b><div class="shp-row">${st(g.k)}${SHOP.prices.game ? `<span class="shp-gf" role="button" data-act="ggift" data-kind="game" data-k="${g.k}" data-n="${esc(g.n)}">Подарить</span>` : ''}</div></button>` : `<button type="button" class="shp-c gm" data-act="shopfree"><div class="gm-th">${g.th}</div><b>${esc(g.n)}</b><div class="shp-row"><span class="shp-pr own">Бесплатно</span></div></button>`).join('')}</div><div class="shp-grid gm net">${NETL.map(g => `<button type="button" class="shp-c gm" data-act="shopfree"><div class="gm-th">${(window.NETCV && window.NETCV[g[0]]) || ''}</div><b>${g[1]}</b><div class="shp-row"><span class="shp-pr own">Бесплатно</span></div></button>`).join('')}</div>`;
@@ -11778,7 +11784,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     }).catch(() => { const b = document.getElementById('gmxrk'); if (b) b.innerHTML = '<div class="gmx-em">Не получилось загрузить</div>'; });
   }
   /* v1.997: WEB · «Игры → По сети» — витрина: рекомендуемая игра + панель друзей */
-  const NETLIVE = [['ttt', 'Крестики-нолики', 'Быстрая дуэль', '≈ 2 мин'], ['chk', 'Шашки', 'Классика один на один', '≈ 10 мин'], ['golf', 'Гольф', 'Точный удар · 3 лунки', '≈ 5 мин'], ['sea', 'Морской бой', 'Флот против флота', '≈ 8 мин'], ['bil', 'Бильярд', 'Партия на столе', '≈ 6 мин']];
+  const NETLIVE = [['ttt', 'Крестики-нолики', 'Быстрая дуэль', '≈ 2 мин'], ['chk', 'Шашки', 'Классика один на один', '≈ 10 мин'], ['golf', 'Гольф', 'Точный удар · 3 лунки', '≈ 5 мин'], ['sea', 'Морской бой', 'Флот против флота', '≈ 8 мин'], ['bil', 'Бильярд', 'Партия на столе', '≈ 6 мин'], ['arc', 'Лучники', 'Ветер · 6 стрел', '≈ 3 мин']];
   function gamesNetWebHTML(){
     const cvr = k => (window.NETCV && window.NETCV[k]) || '', fr = (inTG && FR.data && FR.data.friends) || [], bt = '<span class="bta">БЕТА</span>';
     const frs = !inTG ? `<div class="gw-lg"><p>Войди по QR-коду, чтобы звать друзей на игру</p><button type="button" class="gw-go" data-act="axinv">Войти</button></div>`
@@ -13234,7 +13240,7 @@ Object.assign(ACT, {
 });
 /* ===== v1.988: игры по сети: приглашение друга, комната, Крестики-нолики ===== */
 const NET = (() => {
-  const TT = {"en": {"Игрок": "Player", "Я": "Me", "Кого позвать?": "Who to invite?", "Выбери друга": "Pick a friend", "Позвать в игру": "Invite to play", "Приглашение придёт другу в Telegram": "Your friend gets the invite in Telegram", "придёт в Telegram": "will get it in Telegram", "сейчас в VOOB": "online in VOOB", "Сначала добавь друзей": "Add friends first", "Ждём {0}…": "Waiting for {0}…", "Приглашение ушло в VOOB и в Telegram": "Invite sent in VOOB and Telegram", "Отменить": "Cancel", "Приглашение уже отправлено, подожди немного": "Invite already sent, wait a bit", "Друг не ответил": "No answer from your friend", "Не получилось пригласить": "Could not send the invite", "нет ответа": "no response", "{0} зовёт сыграть": "{0} invites you to play", "VOOB · по сети": "VOOB · online", "VOOB · игра по сети": "VOOB · online game", "Отклонить": "Decline", "Принять": "Accept", "Приглашение уже недействительно": "Invite is no longer valid", "Нет связи": "No connection", "Комната · по сети": "Room · online", "хост": "host", "Соперник отключился или потерял связь": "Opponent disconnected or lost connection", "{0} готов ✓": "{0} is ready ✓", "Ждём, пока {0} нажмёт «Готов»": "Waiting for {0} to press “Ready”", "Выбери игру": "Pick a game", "Ты готов ✓ · ждём старт": "You’re ready ✓ · waiting for start", "Игра выбрана. Нажми «Готов»": "Game picked. Press “Ready”", "{0} выбирает игру…": "{0} is picking a game…", "Старт": "Start", "Не готов": "Not ready", "Готов": "Ready", "Крестики-нолики": "Tic-Tac-Toe", "2 игрока · по ходам": "2 players · turn-based", "Шашки": "Checkers", "Классика один на один": "Classic one-on-one", "Больше-меньше": "Higher or Lower", "Угадай, что выше": "Guess what’s higher", "Гольф": "Golf", "Точный удар · 3 лунки": "Precise shot · 3 holes", "Бильярд": "Billiards", "скоро": "soon", "Скоро": "Soon", "крестики": "crosses", "нолики": "noughts", "Твой ход": "Your turn", "Ходит {0}": "{0} is moving", "{0} из {1}": "{0} of {1}", "Ты": "You", "{0}: было {1}, вышло {2}": "{0}: was {1}, got {2}", " · верно": " · correct", " · мимо": " · miss", "Твой ход: что выйдет дальше?": "Your turn: what comes next?", "▲ Больше": "▲ Higher", "▼ Меньше": "▼ Lower", "белые": "white", "чёрные": "black", "Лунка {0}": "Hole {0}", "лунка {0}/{1} · удары {2} · всего {3}": "hole {0}/{1} · strokes {2} · total {3}", "Ты в лунке ✓ · ждём соперника": "You holed out ✓ · waiting for opponent", "Твой удар: оттяни назад и отпусти": "Your shot: pull back and release", "Бьёт {0}": "{0} is shooting", "Ничья": "Draw", "Бывает. Реванш?": "It happens. Rematch?", "Победа!": "Victory!", "Красиво сыграно": "Nicely played", "Поражение": "Defeat", "Реванш?": "Rematch?", "Выйти": "Leave", "Реванш": "Rematch", "Удары: ты {0} · соперник {1}": "Strokes: you {0} · opponent {1}", "Комната закрыта": "Room closed", "{0} отклонил приглашение": "{0} declined the invite", "Приглашение закрыто": "Invite closed", "Расставь флот": "Place your fleet", "Перемешать": "Shuffle", "Флот готов": "Fleet ready", "Ждём, пока {0} расставит флот…": "Waiting for {0} to place the fleet…", "Твой выстрел": "Your shot", "Вражеские воды": "Enemy waters", "Твой флот": "Your fleet", "осталось {0}": "{0} left", "синие": "blue", "красные": "red", "Фол": "Foul", "Морской бой": "Battleship", "Флот против флота": "Fleet vs fleet", "Партия на столе": "A game on the table"}, "kk": {"Игрок": "Ойыншы", "Я": "Мен", "Кого позвать?": "Кімді шақырамыз?", "Выбери друга": "Досыңды таңда", "Позвать в игру": "Ойынға шақыру", "Приглашение придёт другу в Telegram": "Шақыру досыңа Telegram-ға келеді", "придёт в Telegram": "Telegram-ға келеді", "сейчас в VOOB": "қазір VOOB-та", "Сначала добавь друзей": "Алдымен дос қос", "Ждём {0}…": "{0} күтудеміз…", "Приглашение ушло в VOOB и в Telegram": "Шақыру VOOB пен Telegram-ға жіберілді", "Отменить": "Бас тарту", "Приглашение уже отправлено, подожди немного": "Шақыру жіберілген, сәл күте тұр", "Друг не ответил": "Дос жауап бермеді", "Не получилось пригласить": "Шақыру жіберілмеді", "нет ответа": "жауап жоқ", "{0} зовёт сыграть": "{0} ойнауға шақырады", "VOOB · по сети": "VOOB · желі арқылы", "VOOB · игра по сети": "VOOB · желідегі ойын", "Отклонить": "Қабылдамау", "Принять": "Қабылдау", "Приглашение уже недействительно": "Шақыру енді жарамсыз", "Нет связи": "Байланыс жоқ", "Комната · по сети": "Бөлме · желі арқылы", "хост": "хост", "Соперник отключился или потерял связь": "Қарсылас ажырады немесе байланыс үзілді", "{0} готов ✓": "{0} дайын ✓", "Ждём, пока {0} нажмёт «Готов»": "{0} «Дайын» басқанша күтеміз", "Выбери игру": "Ойынды таңда", "Ты готов ✓ · ждём старт": "Сен дайынсың ✓ · старт күтеміз", "Игра выбрана. Нажми «Готов»": "Ойын таңдалды. «Дайын» бас", "{0} выбирает игру…": "{0} ойын таңдап жатыр…", "Старт": "Бастау", "Не готов": "Дайын емес", "Готов": "Дайын", "Крестики-нолики": "Ноль мен крест", "2 игрока · по ходам": "2 ойыншы · кезекпен", "Шашки": "Дойбы", "Классика один на один": "Классика, бірге бір", "Больше-меньше": "Көп-аз", "Угадай, что выше": "Қайсысы үлкен екенін тап", "Гольф": "Гольф", "Точный удар · 3 лунки": "Дәл соққы · 3 ұя", "Бильярд": "Бильярд", "скоро": "жақында", "Скоро": "Жақында", "крестики": "крестиктер", "нолики": "ноликтер", "Твой ход": "Сенің кезегің", "Ходит {0}": "{0} жүріп жатыр", "{0} из {1}": "{0} / {1}", "Ты": "Сен", "{0}: было {1}, вышло {2}": "{0}: {1} болды, {2} шықты", " · верно": " · дұрыс", " · мимо": " · қате", "Твой ход: что выйдет дальше?": "Сенің кезегің: келесі не шығады?", "▲ Больше": "▲ Көп", "▼ Меньше": "▼ Аз", "белые": "ақтар", "чёрные": "қаралар", "Лунка {0}": "{0}-ұя", "лунка {0}/{1} · удары {2} · всего {3}": "ұя {0}/{1} · соққы {2} · барлығы {3}", "Ты в лунке ✓ · ждём соперника": "Сен ұяға түстің ✓ · қарсыласты күтеміз", "Твой удар: оттяни назад и отпусти": "Сенің соққың: артқа тартып жібер", "Бьёт {0}": "{0} соғып жатыр", "Ничья": "Тең ойын", "Бывает. Реванш?": "Болады. Реванс?", "Победа!": "Жеңіс!", "Красиво сыграно": "Әдемі ойнадың", "Поражение": "Жеңіліс", "Реванш?": "Реванс?", "Выйти": "Шығу", "Реванш": "Реванс", "Удары: ты {0} · соперник {1}": "Соққы: сен {0} · қарсылас {1}", "Комната закрыта": "Бөлме жабылды", "{0} отклонил приглашение": "{0} шақыруды қабылдамады", "Приглашение закрыто": "Шақыру жабылды", "Расставь флот": "Флотыңды орналастыр", "Перемешать": "Араластыру", "Флот готов": "Флот дайын", "Ждём, пока {0} расставит флот…": "{0} флотын орналастырғанша күтеміз…", "Твой выстрел": "Сенің атысың", "Вражеские воды": "Жау сулары", "Твой флот": "Сенің флотың", "осталось {0}": "{0} қалды", "синие": "көктер", "красные": "қызылдар", "Фол": "Фол", "Морской бой": "Теңіз шайқасы", "Флот против флота": "Флот флотқа қарсы", "Партия на столе": "Үстелдегі партия"}};
+  const TT = {"en": {"Лучники": "Archery", "ВЕТЕР": "WIND", "Зажми и веди пальцем: двигаешь прицел.": "Hold and drag: move the crosshair.", "Отпусти: выстрел": "Release to shoot", "Ход {0}": "{0}'s turn", "Раунд {0} из {1}": "Round {0} of {1}", "{0} очк.": "{0} pts", "твой ход": "your turn", "бьёт {0}": "{0} is shooting", "Очки: ты {0} · соперник {1}": "Points: you {0} · opponent {1}", "Ветер · 6 стрел": "Wind · 6 arrows", "Мимо": "Miss", "Игрок": "Player", "Я": "Me", "Кого позвать?": "Who to invite?", "Выбери друга": "Pick a friend", "Позвать в игру": "Invite to play", "Приглашение придёт другу в Telegram": "Your friend gets the invite in Telegram", "придёт в Telegram": "will get it in Telegram", "сейчас в VOOB": "online in VOOB", "Сначала добавь друзей": "Add friends first", "Ждём {0}…": "Waiting for {0}…", "Приглашение ушло в VOOB и в Telegram": "Invite sent in VOOB and Telegram", "Отменить": "Cancel", "Приглашение уже отправлено, подожди немного": "Invite already sent, wait a bit", "Друг не ответил": "No answer from your friend", "Не получилось пригласить": "Could not send the invite", "нет ответа": "no response", "{0} зовёт сыграть": "{0} invites you to play", "VOOB · по сети": "VOOB · online", "VOOB · игра по сети": "VOOB · online game", "Отклонить": "Decline", "Принять": "Accept", "Приглашение уже недействительно": "Invite is no longer valid", "Нет связи": "No connection", "Комната · по сети": "Room · online", "хост": "host", "Соперник отключился или потерял связь": "Opponent disconnected or lost connection", "{0} готов ✓": "{0} is ready ✓", "Ждём, пока {0} нажмёт «Готов»": "Waiting for {0} to press “Ready”", "Выбери игру": "Pick a game", "Ты готов ✓ · ждём старт": "You’re ready ✓ · waiting for start", "Игра выбрана. Нажми «Готов»": "Game picked. Press “Ready”", "{0} выбирает игру…": "{0} is picking a game…", "Старт": "Start", "Не готов": "Not ready", "Готов": "Ready", "Крестики-нолики": "Tic-Tac-Toe", "2 игрока · по ходам": "2 players · turn-based", "Шашки": "Checkers", "Классика один на один": "Classic one-on-one", "Больше-меньше": "Higher or Lower", "Угадай, что выше": "Guess what’s higher", "Гольф": "Golf", "Точный удар · 3 лунки": "Precise shot · 3 holes", "Бильярд": "Billiards", "скоро": "soon", "Скоро": "Soon", "крестики": "crosses", "нолики": "noughts", "Твой ход": "Your turn", "Ходит {0}": "{0} is moving", "{0} из {1}": "{0} of {1}", "Ты": "You", "{0}: было {1}, вышло {2}": "{0}: was {1}, got {2}", " · верно": " · correct", " · мимо": " · miss", "Твой ход: что выйдет дальше?": "Your turn: what comes next?", "▲ Больше": "▲ Higher", "▼ Меньше": "▼ Lower", "белые": "white", "чёрные": "black", "Лунка {0}": "Hole {0}", "лунка {0}/{1} · удары {2} · всего {3}": "hole {0}/{1} · strokes {2} · total {3}", "Ты в лунке ✓ · ждём соперника": "You holed out ✓ · waiting for opponent", "Твой удар: оттяни назад и отпусти": "Your shot: pull back and release", "Бьёт {0}": "{0} is shooting", "Ничья": "Draw", "Бывает. Реванш?": "It happens. Rematch?", "Победа!": "Victory!", "Красиво сыграно": "Nicely played", "Поражение": "Defeat", "Реванш?": "Rematch?", "Выйти": "Leave", "Реванш": "Rematch", "Удары: ты {0} · соперник {1}": "Strokes: you {0} · opponent {1}", "Комната закрыта": "Room closed", "{0} отклонил приглашение": "{0} declined the invite", "Приглашение закрыто": "Invite closed", "Расставь флот": "Place your fleet", "Перемешать": "Shuffle", "Флот готов": "Fleet ready", "Ждём, пока {0} расставит флот…": "Waiting for {0} to place the fleet…", "Твой выстрел": "Your shot", "Вражеские воды": "Enemy waters", "Твой флот": "Your fleet", "осталось {0}": "{0} left", "синие": "blue", "красные": "red", "Фол": "Foul", "Морской бой": "Battleship", "Флот против флота": "Fleet vs fleet", "Партия на столе": "A game on the table"}, "kk": {"Лучники": "Жаушылар", "ВЕТЕР": "ЖЕЛ", "Зажми и веди пальцем: двигаешь прицел.": "Басып, саусақпен жылжыт: нысананы басқарасың.", "Отпусти: выстрел": "Жібер: оқ атылады", "Ход {0}": "{0} жүрісі", "Раунд {0} из {1}": "{0}-раунд / {1}", "{0} очк.": "{0} ұпай", "твой ход": "сенің жүрісің", "бьёт {0}": "{0} соғып жатыр", "Очки: ты {0} · соперник {1}": "Ұпай: сен {0} · қарсылас {1}", "Ветер · 6 стрел": "Жел · 6 оқ", "Мимо": "Өтіп кетті", "Игрок": "Ойыншы", "Я": "Мен", "Кого позвать?": "Кімді шақырамыз?", "Выбери друга": "Досыңды таңда", "Позвать в игру": "Ойынға шақыру", "Приглашение придёт другу в Telegram": "Шақыру досыңа Telegram-ға келеді", "придёт в Telegram": "Telegram-ға келеді", "сейчас в VOOB": "қазір VOOB-та", "Сначала добавь друзей": "Алдымен дос қос", "Ждём {0}…": "{0} күтудеміз…", "Приглашение ушло в VOOB и в Telegram": "Шақыру VOOB пен Telegram-ға жіберілді", "Отменить": "Бас тарту", "Приглашение уже отправлено, подожди немного": "Шақыру жіберілген, сәл күте тұр", "Друг не ответил": "Дос жауап бермеді", "Не получилось пригласить": "Шақыру жіберілмеді", "нет ответа": "жауап жоқ", "{0} зовёт сыграть": "{0} ойнауға шақырады", "VOOB · по сети": "VOOB · желі арқылы", "VOOB · игра по сети": "VOOB · желідегі ойын", "Отклонить": "Қабылдамау", "Принять": "Қабылдау", "Приглашение уже недействительно": "Шақыру енді жарамсыз", "Нет связи": "Байланыс жоқ", "Комната · по сети": "Бөлме · желі арқылы", "хост": "хост", "Соперник отключился или потерял связь": "Қарсылас ажырады немесе байланыс үзілді", "{0} готов ✓": "{0} дайын ✓", "Ждём, пока {0} нажмёт «Готов»": "{0} «Дайын» басқанша күтеміз", "Выбери игру": "Ойынды таңда", "Ты готов ✓ · ждём старт": "Сен дайынсың ✓ · старт күтеміз", "Игра выбрана. Нажми «Готов»": "Ойын таңдалды. «Дайын» бас", "{0} выбирает игру…": "{0} ойын таңдап жатыр…", "Старт": "Бастау", "Не готов": "Дайын емес", "Готов": "Дайын", "Крестики-нолики": "Ноль мен крест", "2 игрока · по ходам": "2 ойыншы · кезекпен", "Шашки": "Дойбы", "Классика один на один": "Классика, бірге бір", "Больше-меньше": "Көп-аз", "Угадай, что выше": "Қайсысы үлкен екенін тап", "Гольф": "Гольф", "Точный удар · 3 лунки": "Дәл соққы · 3 ұя", "Бильярд": "Бильярд", "скоро": "жақында", "Скоро": "Жақында", "крестики": "крестиктер", "нолики": "ноликтер", "Твой ход": "Сенің кезегің", "Ходит {0}": "{0} жүріп жатыр", "{0} из {1}": "{0} / {1}", "Ты": "Сен", "{0}: было {1}, вышло {2}": "{0}: {1} болды, {2} шықты", " · верно": " · дұрыс", " · мимо": " · қате", "Твой ход: что выйдет дальше?": "Сенің кезегің: келесі не шығады?", "▲ Больше": "▲ Көп", "▼ Меньше": "▼ Аз", "белые": "ақтар", "чёрные": "қаралар", "Лунка {0}": "{0}-ұя", "лунка {0}/{1} · удары {2} · всего {3}": "ұя {0}/{1} · соққы {2} · барлығы {3}", "Ты в лунке ✓ · ждём соперника": "Сен ұяға түстің ✓ · қарсыласты күтеміз", "Твой удар: оттяни назад и отпусти": "Сенің соққың: артқа тартып жібер", "Бьёт {0}": "{0} соғып жатыр", "Ничья": "Тең ойын", "Бывает. Реванш?": "Болады. Реванс?", "Победа!": "Жеңіс!", "Красиво сыграно": "Әдемі ойнадың", "Поражение": "Жеңіліс", "Реванш?": "Реванс?", "Выйти": "Шығу", "Реванш": "Реванс", "Удары: ты {0} · соперник {1}": "Соққы: сен {0} · қарсылас {1}", "Комната закрыта": "Бөлме жабылды", "{0} отклонил приглашение": "{0} шақыруды қабылдамады", "Приглашение закрыто": "Шақыру жабылды", "Расставь флот": "Флотыңды орналастыр", "Перемешать": "Араластыру", "Флот готов": "Флот дайын", "Ждём, пока {0} расставит флот…": "{0} флотын орналастырғанша күтеміз…", "Твой выстрел": "Сенің атысың", "Вражеские воды": "Жау сулары", "Твой флот": "Сенің флотың", "осталось {0}": "{0} қалды", "синие": "көктер", "красные": "қызылдар", "Фол": "Фол", "Морской бой": "Теңіз шайқасы", "Флот против флота": "Флот флотқа қарсы", "Партия на столе": "Үстелдегі партия"}};
   const T = (k, ...a) => { const L = curLang(), v = (L !== 'ru' && TT[L] && TT[L][k]) || k; return v.replace(/\{(\d)\}/g, (m, i) => a[+i]); };
   const N = {room:null, out:null, seen:new Set(), ov:null, t:0, busy:false, cap:null, capT:0, peer:0, pend:false, nb:0, started:false};
   const LN = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
@@ -13252,12 +13258,14 @@ const NET = (() => {
   const closeOv = () => { if (N.ov) { N.ov.remove(); N.ov = null; } };
   const layer = (cls, html) => { const r = root(); r.querySelectorAll('.nt-l,.nt-fx').forEach(x => x.remove()); const d = document.createElement('div'); d.className = 'nt-l ' + cls; d.innerHTML = html; r.appendChild(d); return d; };
   const CV = {sea:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="sebg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0b3a63"/><stop offset=".55" stop-color="#08203f"/><stop offset="1" stop-color="#050a1f"/></linearGradient><radialGradient id="seg1" cx=".5" cy=".5" r=".6"><stop offset="0" stop-color="#3be3ff" stop-opacity=".42"/><stop offset="1" stop-color="#3be3ff" stop-opacity="0"/></radialGradient><radialGradient id="seg2" cx=".1" cy=".95" r=".7"><stop offset="0" stop-color="#7a5cff" stop-opacity=".5"/><stop offset="1" stop-color="#7a5cff" stop-opacity="0"/></radialGradient><radialGradient id="seex" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff6c8"/><stop offset=".35" stop-color="#ffb23d"/><stop offset=".75" stop-color="#ff3d5a" stop-opacity=".9"/><stop offset="1" stop-color="#ff3d5a" stop-opacity="0"/></radialGradient><linearGradient id="seh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e7f3ff"/><stop offset="1" stop-color="#7e98bd"/></linearGradient><linearGradient id="sesw" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#58f0ff" stop-opacity="0"/><stop offset="1" stop-color="#58f0ff" stop-opacity=".55"/></linearGradient><pattern id="segr" width="12.5" height="12.5" patternUnits="userSpaceOnUse"><path d="M12.5 0V12.5H0" fill="none" stroke="#9fe9ff" stroke-opacity=".13" stroke-width=".5"/></pattern><filter id="seb" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2"/></filter></defs><rect width="100" height="100" fill="url(#sebg)"/><rect width="100" height="100" fill="url(#seg1)"/><rect width="100" height="100" fill="url(#seg2)"/><rect width="100" height="100" fill="url(#segr)"/><g fill="none" stroke="#58f0ff" stroke-opacity=".35" stroke-width=".7"><circle cx="50" cy="50" r="14"/><circle cx="50" cy="50" r="28"/><circle cx="50" cy="50" r="42"/></g><path d="M50 50L50 6A44 44 0 0 1 86 25Z" fill="url(#sesw)" opacity=".55"/><path d="M50 50L50 6" stroke="#9ff6ff" stroke-width=".9" stroke-linecap="round" opacity=".8"/><g transform="translate(18 66)"><path d="M0 8L4 0H26L32 8Z" fill="url(#seh)" stroke="#fff" stroke-opacity=".5" stroke-width=".6"/><rect x="9" y="-5" width="10" height="5" rx="1" fill="#c8d9ef"/><rect x="21" y="-3" width="3" height="3" fill="#ff5a6e"/></g><g transform="translate(58 72)"><path d="M0 7L3 0H20L25 7Z" fill="url(#seh)" stroke="#fff" stroke-opacity=".5" stroke-width=".6"/><rect x="7" y="-4" width="8" height="4" rx="1" fill="#c8d9ef"/></g><circle cx="66" cy="34" r="11" fill="#ff7a3d" opacity=".55" filter="url(#seb)"/><circle cx="66" cy="34" r="8" fill="url(#seex)"/><path d="M66 24v-4M66 48v4M56 34h-4M76 34h4" stroke="#ffd7a0" stroke-width="1" stroke-linecap="round" opacity=".0"/><g fill="none" stroke="#ffe3a8" stroke-width=".9" stroke-linecap="round"><circle cx="66" cy="34" r="12.5" stroke-opacity=".8"/><path d="M66 18v7M66 43v7M50 34h7M75 34h7"/></g><g fill="none" stroke="#58f0ff" stroke-width=".9"><circle cx="30" cy="30" r="3" stroke-opacity=".9"/><circle cx="30" cy="30" r="6.5" stroke-opacity=".45"/><circle cx="30" cy="30" r="10" stroke-opacity=".2"/></g><g fill="#fff"><path d="M88 9l1 2.6 2.6 1-2.6 1-1 2.6-1-2.6-2.6-1 2.6-1z" opacity=".85"/><circle cx="9" cy="90" r=".8" opacity=".6"/></g><rect x=".4" y=".4" width="99.2" height="99.2" fill="none" stroke="#fff" stroke-opacity=".1" stroke-width=".8"/></svg>`, bil:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="bibg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a1458"/><stop offset=".55" stop-color="#150a33"/><stop offset="1" stop-color="#05040f"/></linearGradient><radialGradient id="big1" cx=".2" cy=".1" r=".8"><stop offset="0" stop-color="#ff5de0" stop-opacity=".35"/><stop offset="1" stop-color="#ff5de0" stop-opacity="0"/></radialGradient><radialGradient id="bifl" cx=".5" cy=".4" r=".8"><stop offset="0" stop-color="#14a98a"/><stop offset="1" stop-color="#075a55"/></radialGradient><radialGradient id="bib1" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#ffb0b0"/><stop offset=".5" stop-color="#ff3d5a"/><stop offset="1" stop-color="#8a0f2c"/></radialGradient><radialGradient id="bib2" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#a9d4ff"/><stop offset=".5" stop-color="#2f7dff"/><stop offset="1" stop-color="#0c2f8a"/></radialGradient><radialGradient id="bib3" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#6b6b86"/><stop offset=".5" stop-color="#1c1c2e"/><stop offset="1" stop-color="#000"/></radialGradient><radialGradient id="bicu" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".6" stop-color="#e6ecf5"/><stop offset="1" stop-color="#9fb0c8"/></radialGradient><linearGradient id="bist" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffd9a0"/><stop offset=".7" stop-color="#c98a4a"/><stop offset="1" stop-color="#5a3216"/></linearGradient><filter id="bibl" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2"/></filter></defs><rect width="100" height="100" fill="url(#bibg)"/><rect width="100" height="100" fill="url(#big1)"/><rect x="10" y="12" width="80" height="76" rx="12" fill="#3a1f6e" stroke="#b79cff" stroke-opacity=".5" stroke-width="1"/><rect x="15" y="17" width="70" height="66" rx="7" fill="url(#bifl)"/><rect x="15" y="17" width="70" height="66" rx="7" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="1.2"/><g fill="#02060a" stroke="#c8ffe2" stroke-opacity=".5" stroke-width=".6"><circle cx="16.5" cy="18.5" r="4.4"/><circle cx="83.5" cy="18.5" r="4.4"/><circle cx="16.5" cy="81.5" r="4.4"/><circle cx="83.5" cy="81.5" r="4.4"/></g><path d="M18 78Q36 60 54 56" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".25" filter="url(#bibl)"/><path d="M26 71Q40 62 52 57" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="1 3.2" opacity=".9"/><g transform="rotate(-32 40 66)"><rect x="-8" y="64" width="52" height="3.2" rx="1.6" fill="url(#bist)"/><rect x="43" y="64" width="2.2" height="3.2" fill="#6fc7ff"/></g><ellipse cx="57" cy="59.6" rx="6.2" ry="2" fill="#000" opacity=".35"/><circle cx="57" cy="56" r="5.8" fill="url(#bicu)"/><circle cx="55.3" cy="54" r="1.5" fill="#fff" opacity=".9"/><g><circle cx="66.5" cy="41.5" r="12" fill="#ff3d5a" opacity=".35" filter="url(#bibl)"/><ellipse cx="68" cy="45" rx="6" ry="2" fill="#000" opacity=".35"/><circle cx="66.5" cy="40.5" r="5.8" fill="url(#bib1)"/><circle cx="64.8" cy="38.5" r="1.5" fill="#fff" opacity=".8"/><circle cx="76" cy="33" r="5.8" fill="url(#bib2)"/><circle cx="74.3" cy="31" r="1.5" fill="#fff" opacity=".8"/><circle cx="60" cy="30" r="5.8" fill="url(#bib3)"/><circle cx="58.3" cy="28" r="1.5" fill="#fff" opacity=".6"/><circle cx="60" cy="30" r="2.4" fill="#fff"/><text x="60" y="31.1" text-anchor="middle" font-size="3.2" font-weight="800" font-family="Arial,sans-serif" fill="#111">8</text></g><g fill="#fff"><path d="M88 7l1 2.6 2.6 1-2.6 1-1 2.6-1-2.6-2.6-1 2.6-1z" opacity=".85"/><circle cx="8" cy="92" r=".8" opacity=".6"/></g><rect x=".4" y=".4" width="99.2" height="99.2" fill="none" stroke="#fff" stroke-opacity=".1" stroke-width=".8"/></svg>`, ttt:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="tgbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a1856"/><stop offset=".55" stop-color="#120c2c"/><stop offset="1" stop-color="#06050e"/></linearGradient><radialGradient id="tgg1" cx=".9" cy=".05" r=".75"><stop offset="0" stop-color="#ff4fa3" stop-opacity=".55"/><stop offset="1" stop-color="#ff4fa3" stop-opacity="0"/></radialGradient><radialGradient id="tgg2" cx=".05" cy=".98" r=".8"><stop offset="0" stop-color="#27e0d0" stop-opacity=".5"/><stop offset="1" stop-color="#27e0d0" stop-opacity="0"/></radialGradient><linearGradient id="tgx" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe27a"/><stop offset="1" stop-color="#ff5a7a"/></linearGradient><linearGradient id="tgo" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7cf5ff"/><stop offset="1" stop-color="#8a6bff"/></linearGradient><filter id="tgb" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.4"/></filter></defs><rect width="100" height="100" fill="url(#tgbg)"/><rect width="100" height="100" fill="url(#tgg1)"/><rect width="100" height="100" fill="url(#tgg2)"/><g fill="#fff" fill-opacity=".05" stroke="#fff" stroke-opacity=".16" stroke-width=".7"><rect x="14" y="14" width="21" height="21" rx="5.5"/><rect x="39" y="14" width="21" height="21" rx="5.5"/><rect x="64" y="14" width="21" height="21" rx="5.5"/><rect x="14" y="39" width="21" height="21" rx="5.5"/><rect x="39" y="39" width="21" height="21" rx="5.5"/><rect x="64" y="39" width="21" height="21" rx="5.5"/><rect x="14" y="64" width="21" height="21" rx="5.5"/><rect x="39" y="64" width="21" height="21" rx="5.5"/><rect x="64" y="64" width="21" height="21" rx="5.5"/></g><g fill="#ffb04a" fill-opacity=".16" stroke="#ffd06a" stroke-opacity=".5" stroke-width=".8"><rect x="14" y="14" width="21" height="21" rx="5.5"/><rect x="39" y="39" width="21" height="21" rx="5.5"/><rect x="64" y="64" width="21" height="21" rx="5.5"/></g><g fill="none" stroke-linecap="round" stroke-width="5.6"><g filter="url(#tgb)" opacity=".85"><path d="M18.5 18.5L30.5 30.5M30.5 18.5L18.5 30.5M43.5 43.5L55.5 55.5M55.5 43.5L43.5 55.5M68.5 68.5L80.5 80.5M80.5 68.5L68.5 80.5" stroke="#ff7a4a"/><circle cx="49.5" cy="24.5" r="6.6" stroke="#5fe8ff"/><circle cx="74.5" cy="49.5" r="6.6" stroke="#7a62ff"/><circle cx="24.5" cy="74.5" r="6.6" stroke="#5fe8ff"/></g><path d="M18.5 18.5L30.5 30.5M30.5 18.5L18.5 30.5M43.5 43.5L55.5 55.5M55.5 43.5L43.5 55.5M68.5 68.5L80.5 80.5M80.5 68.5L68.5 80.5" stroke="url(#tgx)"/><circle cx="49.5" cy="24.5" r="6.6" stroke="url(#tgo)"/><circle cx="74.5" cy="49.5" r="6.6" stroke="url(#tgo)"/><circle cx="24.5" cy="74.5" r="6.6" stroke="url(#tgo)"/></g><path d="M10 10L90 90" stroke="#ffd6a0" stroke-width="5" stroke-linecap="round" opacity=".55" filter="url(#tgb)"/><path d="M11 11L89 89" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".9"/><g fill="#fff"><path d="M88 9l1.1 2.9L92 13l-2.9 1.1L88 17l-1.1-2.9L84 13l2.9-1.1z" opacity=".9"/><path d="M10 90l.7 1.8 1.8.7-1.8.7L10 95l-.7-1.8L7.5 92.5l1.8-.7z" opacity=".7"/><circle cx="92" cy="40" r=".7" opacity=".6"/><circle cx="8" cy="30" r=".6" opacity=".5"/></g><rect x=".4" y=".4" width="99.2" height="99.2" fill="none" stroke="#fff" stroke-opacity=".1" stroke-width=".8"/></svg>`, chk:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="ckbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2a1a4f"/><stop offset=".55" stop-color="#120d2b"/><stop offset="1" stop-color="#05050e"/></linearGradient><radialGradient id="ckg1" cx=".92" cy=".05" r=".8"><stop offset="0" stop-color="#ffb43d" stop-opacity=".45"/><stop offset="1" stop-color="#ffb43d" stop-opacity="0"/></radialGradient><radialGradient id="ckg2" cx=".05" cy=".98" r=".8"><stop offset="0" stop-color="#29e0e0" stop-opacity=".5"/><stop offset="1" stop-color="#29e0e0" stop-opacity="0"/></radialGradient><radialGradient id="ckgold" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff2b0"/><stop offset=".5" stop-color="#ffc247"/><stop offset="1" stop-color="#d9731f"/></radialGradient><radialGradient id="ckcy" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#c8ffff"/><stop offset=".5" stop-color="#3bd8ee"/><stop offset="1" stop-color="#2a5fd0"/></radialGradient><filter id="ckb" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2"/></filter></defs><rect width="100" height="100" fill="url(#ckbg)"/><rect width="100" height="100" fill="url(#ckg1)"/><rect width="100" height="100" fill="url(#ckg2)"/><g stroke="#fff" stroke-opacity=".16" stroke-width=".7"><rect x="14" y="14" width="18" height="18" rx="3" fill="#fff" fill-opacity=".14"/><rect x="32" y="14" width="18" height="18" rx="3" fill="#fff" fill-opacity=".04"/><rect x="50" y="14" width="18" height="18" rx="3" fill="#fff" fill-opacity=".14"/><rect x="68" y="14" width="18" height="18" rx="3" fill="#fff" fill-opacity=".04"/><rect x="14" y="32" width="18" height="18" rx="3" fill="#fff" fill-opacity=".04"/><rect x="32" y="32" width="18" height="18" rx="3" fill="#fff" fill-opacity=".14"/><rect x="50" y="32" width="18" height="18" rx="3" fill="#fff" fill-opacity=".04"/><rect x="68" y="32" width="18" height="18" rx="3" fill="#fff" fill-opacity=".14"/><rect x="14" y="50" width="18" height="18" rx="3" fill="#fff" fill-opacity=".14"/><rect x="32" y="50" width="18" height="18" rx="3" fill="#fff" fill-opacity=".04"/><rect x="50" y="50" width="18" height="18" rx="3" fill="#fff" fill-opacity=".14"/><rect x="68" y="50" width="18" height="18" rx="3" fill="#fff" fill-opacity=".04"/><rect x="14" y="68" width="18" height="18" rx="3" fill="#fff" fill-opacity=".04"/><rect x="32" y="68" width="18" height="18" rx="3" fill="#fff" fill-opacity=".14"/><rect x="50" y="68" width="18" height="18" rx="3" fill="#fff" fill-opacity=".04"/><rect x="68" y="68" width="18" height="18" rx="3" fill="#fff" fill-opacity=".14"/></g><path d="M23 77Q27 46 59 41" fill="none" stroke="#ffd06a" stroke-width="5" stroke-linecap="round" opacity=".5" filter="url(#ckb)"/><path d="M23 77Q27 46 59 41" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="1 3.2"/><circle cx="23" cy="77" r="7.4" fill="url(#ckgold)" opacity=".28"/><circle cx="41" cy="59" r="7.4" fill="url(#ckcy)" opacity=".35"/><circle cx="59" cy="41" r="9" fill="#ff9a2e" opacity=".55" filter="url(#ckb)"/><circle cx="59" cy="41" r="7.8" fill="url(#ckgold)" stroke="#fff3c4" stroke-opacity=".7" stroke-width=".8"/><circle cx="59" cy="41" r="4.6" fill="none" stroke="#a24a0b" stroke-opacity=".45" stroke-width=".8"/><path d="M54.6 43.6L55.6 37.6L58 40.2L59 36.8L60 40.2L62.4 37.6L63.4 43.6Z" fill="#8a3a06"/><circle cx="77" cy="23" r="7.6" fill="url(#ckcy)" stroke="#d6ffff" stroke-opacity=".6" stroke-width=".8"/><circle cx="77" cy="77" r="7.6" fill="url(#ckcy)" stroke="#d6ffff" stroke-opacity=".6" stroke-width=".8"/><g fill="#fff"><path d="M90 9l1 2.6 2.6 1-2.6 1-1 2.6-1-2.6-2.6-1 2.6-1z" opacity=".85"/><circle cx="8" cy="12" r=".8" opacity=".6"/></g><rect x=".4" y=".4" width="99.2" height="99.2" fill="none" stroke="#fff" stroke-opacity=".1" stroke-width=".8"/></svg>`, golf:`<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="glbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f5a4c"/><stop offset=".55" stop-color="#0a2f33"/><stop offset="1" stop-color="#04121c"/></linearGradient><radialGradient id="glg1" cx=".1" cy=".05" r=".8"><stop offset="0" stop-color="#7dffb0" stop-opacity=".5"/><stop offset="1" stop-color="#7dffb0" stop-opacity="0"/></radialGradient><radialGradient id="glg2" cx=".95" cy=".98" r=".8"><stop offset="0" stop-color="#7a5cff" stop-opacity=".5"/><stop offset="1" stop-color="#7a5cff" stop-opacity="0"/></radialGradient><radialGradient id="glball" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#fff"/><stop offset=".6" stop-color="#e6ecf5"/><stop offset="1" stop-color="#9fb0c8"/></radialGradient><linearGradient id="glwall" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".34"/><stop offset="1" stop-color="#fff" stop-opacity=".1"/></linearGradient><linearGradient id="glflag" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd36b"/><stop offset="1" stop-color="#ff4f6e"/></linearGradient><pattern id="glst" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(35)"><rect width="5" height="10" fill="#fff" fill-opacity=".05"/></pattern><filter id="glb" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2"/></filter></defs><rect width="100" height="100" fill="url(#glbg)"/><rect width="100" height="100" fill="url(#glg1)"/><rect width="100" height="100" fill="url(#glg2)"/><rect x="13" y="13" width="74" height="74" rx="13" fill="#1fbf86" fill-opacity=".2" stroke="#9dffd2" stroke-opacity=".35" stroke-width=".9"/><rect x="13" y="13" width="74" height="74" rx="13" fill="url(#glst)"/><rect x="46" y="40" width="30" height="9" rx="3" fill="url(#glwall)" stroke="#fff" stroke-opacity=".5" stroke-width=".8"/><path d="M72 79Q66 56 50 45Q36 38 31 26" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".3" filter="url(#glb)"/><path d="M72 79Q66 56 50 45Q36 38 31 26" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-dasharray="1 3.4"/><circle cx="29" cy="27" r="9" fill="#7dffb0" opacity=".45" filter="url(#glb)"/><circle cx="29" cy="27" r="6.2" fill="#03120f" stroke="#c8ffe2" stroke-opacity=".7" stroke-width=".9"/><path d="M29 27V10" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/><path d="M29.7 10.6L42 15L29.7 19.4Z" fill="url(#glflag)"/><ellipse cx="73.5" cy="82.6" rx="7" ry="2.2" fill="#000" opacity=".35"/><circle cx="73" cy="79" r="6.6" fill="url(#glball)"/><circle cx="71.2" cy="76.8" r="1.7" fill="#fff" opacity=".9"/><g fill="#fff"><path d="M88 9l1 2.6 2.6 1-2.6 1-1 2.6-1-2.6-2.6-1 2.6-1z" opacity=".85"/><circle cx="9" cy="90" r=".8" opacity=".6"/></g><rect x=".4" y=".4" width="99.2" height="99.2" fill="none" stroke="#fff" stroke-opacity=".1" stroke-width=".8"/></svg>`};
+  CV.arc = `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="arbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fb8f5"/><stop offset=".6" stop-color="#d4f0ff"/><stop offset=".6" stop-color="#5fcf4a"/><stop offset="1" stop-color="#2f9a3a"/></linearGradient><radialGradient id="argl" cx=".35" cy=".3" r=".9"><stop offset="0" stop-color="#fff" stop-opacity=".5"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></radialGradient></defs><rect width="100" height="100" fill="url(#arbg)"/><ellipse cx="52" cy="82" rx="30" ry="5" fill="#000" opacity=".25"/><rect x="28" y="24" width="48" height="48" rx="6" fill="#8f4f2c" stroke="#2a1409" stroke-width="2"/><circle cx="52" cy="48" r="22" fill="#f4efe4"/><circle cx="52" cy="48" r="17.6" fill="#232c40"/><circle cx="52" cy="48" r="13.2" fill="#19a9db"/><circle cx="52" cy="48" r="8.8" fill="#ea4639"/><circle cx="52" cy="48" r="4.4" fill="#f8c33a"/><circle cx="52" cy="48" r="22" fill="url(#argl)"/><path d="M54 47 L84 22" stroke="#efdcb0" stroke-width="2.6" stroke-linecap="round"/><path d="M84 22 l-9 .6 M84 22 l-.6 9" stroke="#ff5468" stroke-width="3.2" stroke-linecap="round"/></svg>`;
   const GAMES = [
     {k:'ttt', n:T('Крестики-нолики'), d:T('2 игрока · по ходам'), ic:CV.ttt},
     {k:'chk', n:T('Шашки'), d:T('Классика один на один'), ic:CV.chk},
     {k:'golf', n:T('Гольф'), d:T('Точный удар · 3 лунки'), ic:CV.golf},
     {k:'sea', n:T('Морской бой'), d:T('Флот против флота'), ic:CV.sea},
-    {k:'bil', n:T('Бильярд'), d:T('Партия на столе'), ic:CV.bil}
+    {k:'bil', n:T('Бильярд'), d:T('Партия на столе'), ic:CV.bil},
+    {k:'arc', n:T('Лучники'), d:T('Ветер · 6 стрел'), ic:CV.arc, beta:true}
   ];
   /* ---------- выбор друга ---------- */
   function pkSync(from){ const sh = from.closest('.nt-sh'); if (!sh) return; sh.querySelectorAll('.nt-fr').forEach(r => r.classList.toggle('sel', N.sel === +r.dataset.id)); const g = sh.querySelector('.ntp-go'); if (!g) return; g.classList.toggle('ghost', !N.sel); g.textContent = N.sel ? T('Позвать в игру') : T('Выбери друга'); }
@@ -13375,7 +13383,7 @@ const NET = (() => {
   /* ---------- лобби ---------- */
   function lobby(){
     const r = N.room;
-    const d = layer('nt-lobby', `<div class="nt-top"><i class="nt-x" data-nt="leave">✕</i><span>${T('Комната · по сети')}</span></div><div class="nt-lh"><div class="nt-pp">${av(r.host_id, 104)}<div class="nt-ln"><b>${nm(r.host_id)}</b><i>${T('хост')}</i></div></div><div class="nt-pp">${av(r.guest_id, 104)}<div class="nt-ln"><b>${nm(r.guest_id)}</b></div></div></div><div class="nt-ls" id="ntls"></div><div class="nt-gl">${GAMES.map(g => `<div class="nt-gc${g.k ? '' : ' off'}" data-nt="game" data-k="${g.k}"><div class="th">${g.ic}</div><b>${g.n}</b><small>${g.d}</small></div>`).join('')}</div><div class="nt-lb"><div class="nt-btn" id="ntlb" data-nt="lbtn"></div></div>`);
+    const d = layer('nt-lobby', `<div class="nt-top"><i class="nt-x" data-nt="leave">✕</i><span>${T('Комната · по сети')}</span></div><div class="nt-lh"><div class="nt-pp">${av(r.host_id, 104)}<div class="nt-ln"><b>${nm(r.host_id)}</b><i>${T('хост')}</i></div></div><div class="nt-pp">${av(r.guest_id, 104)}<div class="nt-ln"><b>${nm(r.guest_id)}</b></div></div></div><div class="nt-ls" id="ntls"></div><div class="nt-gl">${GAMES.map(g => `<div class="nt-gc${g.k ? '' : ' off'}" data-nt="game" data-k="${g.k}"><div class="th">${g.ic}${g.beta ? '<span class="bta">BETA</span>' : ''}</div><b>${g.n}</b><small>${g.d}</small></div>`).join('')}</div><div class="nt-lb"><div class="nt-btn" id="ntlb" data-nt="lbtn"></div></div>`);
     d.style.setProperty('--dl', '1.3s'); updLobby();
   }
   const isHost = () => +N.room.host_id === +UK;
@@ -13877,29 +13885,279 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     if (st.last && st.last.foul && g.ban !== st.last.n) { g.ban = st.last.n; const b = q('#ntgb'); if (b) { b.textContent = T('Фол'); b.animate([{opacity:0, transform:'scale(.8)'}, {opacity:1, transform:'scale(1)', offset:.2}, {opacity:1, offset:.7}, {opacity:0}], {duration:1300}); } }
     q('#ntst').textContent = r.status !== 'playing' ? '' : +st.turn === +UK ? T('Твой удар: оттяни назад и отпусти') : T('Бьёт {0}', raw(st.turn));
   }
+  /* ---------- Лучники (BETA, v1.1074) ---------- */
+  const AW = 360, AH = 560, ATX = 180, ATY = 250, AR = 36, AHZ = 288;
+  const ATH = {
+    day:{sky:['#5fb8f5','#a9e0ff','#fff1d2'],glow:['rgba(255,244,205,.95)','rgba(255,244,205,0)'],orb:'#fffbe8',far:['#9fd3e6','#c7ecf3'],near:['#58c28a','#8ad9a0'],g1:'#79dc55',g2:'#4fbf47',stripe:'rgba(255,255,255,.07)',trunk:'#8a5530',trunk2:'#5a3319',tree:'#3fc24a',tree2:'#228a3a',treeHi:'#8ef07a',line:'#ffffff',cloud:'rgba(255,255,255,.9)',stars:0,vig:.28},
+    night:{sky:['#0a0e33','#2f2b74','#b0588f'],glow:['rgba(255,190,230,.35)','rgba(255,190,230,0)'],orb:'#fff2d8',far:['#2a2a6a','#4a3f86'],near:['#1d5a5a','#2f7a6a'],g1:'#237a52',g2:'#0f4a38',stripe:'rgba(255,255,255,.05)',trunk:'#5d3a28',trunk2:'#2c1810',tree:'#1f8a5a',tree2:'#0f5a3c',treeHi:'#4cc88a',line:'#d6e6ff',cloud:'rgba(255,200,240,.18)',stars:1,vig:.5}};
+  const A_STARS = Array.from({length:45}, (_, i) => [(i * 97.3) % AW, (i * 53.9) % (AHZ * .8), .3 + ((i * 37) % 70) / 100]);
+  let A = null, AT = ATH.night, ac = null;
+  const arnd = (a, b) => a + Math.random() * (b - a), aeo = x => 1 - Math.pow(1 - x, 3);
+  const apc = s => s >= 9 ? '#ffc83d' : s >= 7 ? '#ff5468' : s >= 5 ? '#33b8ff' : s >= 3 ? '#b9c2d6' : '#ffffff';
+  function aAmp(){ if (!A.holding) return 7; const c = A.charge; if (c < 1) return 7 - 5 * aeo(c); return 2 + Math.min(1, (c - 1) / .8) * 9; }
+  function aAim(t){
+    if (A.phase === 'rep' && A.repPos) return A.repPos;
+    const m = aAmp();
+    return {x:A.aim.x + A.wind.v * A.wind.d * 5 + m * (Math.sin(1.7 * t + A.ph[0]) + .6 * Math.sin(3.1 * t + A.ph[1])), y:A.aim.y + .8 * m * (Math.cos(1.3 * t + A.ph[2]) + .6 * Math.sin(2.3 * t + A.ph[3]))};
+  }
+function a_rrp(x,y,w,h,r){ac.beginPath();ac.moveTo(x+r,y);ac.arcTo(x+w,y,x+w,y+h,r);ac.arcTo(x+w,y+h,x,y+h,r);ac.arcTo(x,y+h,x,y,r);ac.arcTo(x,y,x+w,y,r);ac.closePath();}
+function a_rr(x,y,w,h,r){a_rrp(x,y,w,h,r);ac.fill();}
+function a_lg(x0,y0,x1,y1,st){const g=ac.createLinearGradient(x0,y0,x1,y1);for(const s of st)g.addColorStop(s[0],s[1]);return g;}
+function a_tree(x,y,s){
+  ac.fillStyle='rgba(0,0,0,.22)';ac.beginPath();ac.ellipse(x+9*s,y+3*s,28*s,5*s,0,0,7);ac.fill();
+  ac.fillStyle=a_lg(x-5*s,0,x+5*s,0,[[0,AT.trunk],[1,AT.trunk2]]);a_rr(x-5*s,y-40*s,10*s,44*s,3*s);
+  for(const[dx,dy,r]of[[-15,-46,19],[16,-46,19],[0,-62,25]]){
+    const cx=x+dx*s,cy=y+dy*s,rad=r*s;
+    const g=ac.createRadialGradient(cx-rad*.4,cy-rad*.45,rad*.1,cx,cy,rad);
+    g.addColorStop(0,AT.treeHi);g.addColorStop(.5,AT.tree);g.addColorStop(1,AT.tree2);
+    ac.fillStyle=g;ac.beginPath();ac.arc(cx,cy,rad,0,7);ac.fill();
+  }
+}
+function a_cloud(x,y,s){ac.fillStyle=AT.cloud;ac.beginPath();ac.ellipse(x,y,34*s,9*s,0,0,7);ac.ellipse(x-14*s,y-6*s,16*s,11*s,0,0,7);ac.ellipse(x+10*s,y-9*s,18*s,13*s,0,0,7);ac.fill();}
+function a_scene(now){
+  ac.fillStyle=a_lg(0,-100,0,AHZ,[[0,AT.sky[0]],[.55,AT.sky[1]],[1,AT.sky[2]]]);ac.fillRect(-80,-300,AW+160,AHZ+300);
+  const sg=ac.createRadialGradient(262,130,4,262,130,170);sg.addColorStop(0,AT.glow[0]);sg.addColorStop(1,AT.glow[1]);
+  ac.fillStyle=sg;ac.fillRect(-80,-300,AW+160,AHZ+300);
+  ac.fillStyle=AT.orb;ac.beginPath();ac.arc(262,130,AT.stars?17:21,0,7);ac.fill();
+  if(AT.stars){ac.fillStyle='#fff';for(const s of A_STARS){ac.globalAlpha=s[2]*(.6+.4*Math.sin(now/600+s[0]));ac.fillRect(s[0],s[1],1.6,1.6);}ac.globalAlpha=1;}
+  for(const c of[[40,70,1,5],[200,40,.8,3],[300,100,.6,7]]){const cx=((c[0]+now*c[3]/1000)%(AW+200))-100;a_cloud(cx,c[1],c[2]);}
+  // дальние холмы
+  ac.fillStyle=a_lg(0,AHZ-120,0,AHZ,[[0,AT.far[0]],[1,AT.far[1]]]);
+  ac.beginPath();ac.moveTo(-60,AHZ);ac.quadraticCurveTo(40,AHZ-135,150,AHZ-55);ac.quadraticCurveTo(230,AHZ-125,330,AHZ-50);ac.quadraticCurveTo(380,AHZ-90,430,AHZ-30);ac.lineTo(430,AHZ);ac.fill();
+  // ближние холмы
+  ac.fillStyle=a_lg(0,AHZ-50,0,AHZ,[[0,AT.near[0]],[1,AT.near[1]]]);
+  ac.beginPath();ac.moveTo(-60,AHZ);ac.quadraticCurveTo(80,AHZ-55,200,AHZ-12);ac.quadraticCurveTo(300,AHZ-50,430,AHZ-8);ac.lineTo(430,AHZ);ac.fill();
+  // дымка на горизонте
+  ac.fillStyle=a_lg(0,AHZ-40,0,AHZ+4,[[0,'rgba(255,255,255,0)'],[1,AT.stars?'rgba(200,120,190,.35)':'rgba(255,245,220,.55)']]);ac.fillRect(-80,AHZ-40,AW+160,44);
+  a_tree(26,AHZ+10,1.2);a_tree(336,AHZ+8,1.1);a_tree(98,AHZ+3,.6);a_tree(266,AHZ+3,.62);
+  // трава
+  ac.fillStyle=a_lg(0,AHZ,0,AH,[[0,AT.g2],[1,AT.g1]]);ac.fillRect(-80,AHZ,AW+160,AH-AHZ+300);
+  ac.fillStyle=AT.stripe;
+  for(let i=0;i<10;i+=2){const y0=AHZ+(AH-AHZ+80)*Math.pow(i/10,1.7),y1=AHZ+(AH-AHZ+80)*Math.pow((i+1)/10,1.7);ac.fillRect(-80,y0,AW+160,y1-y0);}
+  ac.fillStyle=AT.line;ac.beginPath();ac.moveTo(ATX-1.2,AHZ);ac.lineTo(ATX+1.2,AHZ);ac.lineTo(ATX+20,AH+120);ac.lineTo(ATX-20,AH+120);ac.fill();
+  ac.strokeStyle=AT.line;ac.globalAlpha=.55;ac.lineWidth=1;
+  for(const k of[-1,1]){ac.beginPath();ac.moveTo(ATX+k*8,AHZ+8);ac.lineTo(ATX+k*300,AH+120);ac.stroke();}
+  ac.globalAlpha=1;
+}
+function a_target(){
+  const sh=ac.createRadialGradient(ATX+6,ATY+AR*1.64,2,ATX+6,ATY+AR*1.64,AR*2);sh.addColorStop(0,'rgba(0,0,0,.42)');sh.addColorStop(1,'rgba(0,0,0,0)');
+  ac.fillStyle=sh;ac.beginPath();ac.ellipse(ATX+6,ATY+AR*1.64,AR*2,AR*.4,0,0,7);ac.fill();
+  for(const sx of[-.92,.68]){ac.fillStyle=a_lg(ATX+sx*AR,0,ATX+(sx+.26)*AR,0,[[0,'#9a5a30'],[1,'#4a2712']]);a_rr(ATX+sx*AR,ATY+AR*.8,AR*.26,AR*.86,2);}
+  ac.fillStyle='#3e200f';a_rr(ATX-AR*1.25+AR*.15,ATY-AR*1.25+AR*.17,AR*2.5,AR*2.5,AR*.14);
+  ac.fillStyle='#63351b';a_rr(ATX-AR*1.25+AR*.075,ATY-AR*1.25+AR*.085,AR*2.5,AR*2.5,AR*.14);
+  ac.fillStyle=a_lg(ATX-AR*1.25,ATY-AR*1.25,ATX+AR*1.25,ATY+AR*1.25,[[0,'#c27440'],[.5,'#9d5832'],[1,'#7b4222']]);a_rr(ATX-AR*1.25,ATY-AR*1.25,AR*2.5,AR*2.5,AR*.14);
+  ac.strokeStyle='rgba(0,0,0,.16)';ac.lineWidth=AR*.035;
+  for(let i=-4;i<=4;i++){ac.beginPath();ac.moveTo(ATX+i*AR*.28,ATY-AR*1.2);ac.lineTo(ATX+i*AR*.28,ATY+AR*1.2);ac.stroke();}
+  ac.strokeStyle='rgba(255,255,255,.25)';ac.lineWidth=AR*.04;a_rrp(ATX-AR*1.22,ATY-AR*1.22,AR*2.44,AR*2.44,AR*.12);ac.stroke();
+  ac.strokeStyle='#2a1409';ac.lineWidth=AR*.06;a_rrp(ATX-AR*1.25,ATY-AR*1.25,AR*2.5,AR*2.5,AR*.14);ac.stroke();
+  const rings=[[1,'#f4efe4'],[.8,'#232c40'],[.6,'#19a9db'],[.4,'#ea4639'],[.2,'#f8c33a']];
+  ac.lineWidth=AR*.025;ac.strokeStyle='rgba(0,0,0,.5)';
+  for(const[r,c]of rings){ac.fillStyle=c;ac.beginPath();ac.arc(ATX,ATY,AR*r,0,7);ac.fill();ac.stroke();}
+  ac.save();ac.beginPath();ac.arc(ATX,ATY,AR,0,7);ac.clip();
+  const gl=ac.createRadialGradient(ATX-AR*.45,ATY-AR*.55,AR*.05,ATX-AR*.2,ATY-AR*.3,AR*1.35);
+  gl.addColorStop(0,'rgba(255,255,255,.42)');gl.addColorStop(.45,'rgba(255,255,255,0)');gl.addColorStop(1,'rgba(0,0,30,.35)');
+  ac.fillStyle=gl;ac.fillRect(ATX-AR,ATY-AR,AR*2,AR*2);ac.restore();
+}
+function a_arrowStuck(a){
+  const u=[.8,-.6],n=[.6,.8],x=ATX+a.x,y=ATY+a.y,L=16,ex=x+u[0]*L,ey=y+u[1]*L;
+  const col=a.who==='me'?['#ff6b7d','#b3243a']:['#4cc3ff','#1273b3'];
+  ac.lineCap='round';
+  ac.strokeStyle='rgba(0,0,0,.35)';ac.lineWidth=2.4;ac.beginPath();ac.moveTo(x+1.3,y+1.6);ac.lineTo(ex+2.4,ey+2.6);ac.stroke();
+  ac.strokeStyle=a_lg(x,y,ex,ey,[[0,'#fff3d2'],[1,'#c4a062']]);ac.lineWidth=1.8;ac.beginPath();ac.moveTo(x,y);ac.lineTo(ex,ey);ac.stroke();
+  for(const sd of[1,-1]){ac.fillStyle=col[sd>0?0:1];ac.beginPath();
+    ac.moveTo(ex-u[0]*7,ey-u[1]*7);ac.lineTo(ex-u[0]*2+n[0]*sd*4,ey-u[1]*2+n[1]*sd*4);ac.lineTo(ex+u[0]*1.6+n[0]*sd*4,ey+u[1]*1.6+n[1]*sd*4);ac.lineTo(ex,ey);ac.fill();}
+  ac.fillStyle='rgba(0,0,0,.45)';ac.beginPath();ac.arc(x,y,1.3,0,7);ac.fill();
+  ac.lineCap='butt';
+}
+function a_crossPath(x,y,r){ac.beginPath();ac.arc(x,y,r,0,7);ac.moveTo(x-r-5,y);ac.lineTo(x-r*.5,y);ac.moveTo(x+r*.5,y);ac.lineTo(x+r+5,y);ac.moveTo(x,y-r-5);ac.lineTo(x,y-r*.5);ac.moveTo(x,y+r*.5);ac.lineTo(x,y+r+5);}
+function a_crosshair(now){
+  const col=A.turn==='me'?'#ff5468':'#33b8ff';
+  const p=aAim(A.t),x=ATX+p.x,y=ATY+p.y;
+  const c=Math.min(A.charge,1);
+  ac.lineWidth=3.5;ac.strokeStyle='rgba(255,255,255,.3)';ac.beginPath();ac.arc(ATX,ATY,AR*1.42,0,7);ac.stroke();
+  if(A.holding){
+    const tired=A.charge>1&&Math.floor(now/90)%2;
+    ac.save();ac.shadowColor=col;ac.shadowBlur=10;ac.strokeStyle=tired?'#fff':col;ac.lineCap='round';
+    ac.beginPath();ac.arc(ATX,ATY,AR*1.42,-Math.PI/2,-Math.PI/2+c*Math.PI*2);ac.stroke();ac.restore();
+  }
+  const r=A.holding?6:7+1.5*Math.sin(now/180);
+  ac.strokeStyle='rgba(0,0,0,.5)';ac.lineWidth=3.6;a_crossPath(x,y,r);ac.stroke();
+  ac.save();ac.shadowColor=col;ac.shadowBlur=A.holding?14:7;ac.strokeStyle='#fff';ac.lineWidth=1.7;a_crossPath(x,y,r);ac.stroke();
+  if(A.holding){ac.setLineDash([3,5]);ac.lineDashOffset=-now/50;ac.strokeStyle=col;ac.lineWidth=1.4;ac.beginPath();ac.arc(x,y,r+7,0,7);ac.stroke();}
+  ac.restore();
+  ac.fillStyle=col;ac.beginPath();ac.arc(x,y,1.7,0,7);ac.fill();
+}
+function a_bow(now){
+  const c=A.turn==='me'?['#ff7486','#c4203a']:['#58c8ff','#1775b5'];
+  const pull=A.holding?Math.min(A.charge,1)*34+(A.charge>1?arnd(-1.5,1.5):0):6;
+  const cx=AW+95,cy=480,r=130;
+  ac.save();ac.lineCap='round';
+  ac.shadowColor='rgba(0,0,0,.45)';ac.shadowBlur=14;ac.shadowOffsetX=-6;ac.shadowOffsetY=5;
+  ac.strokeStyle=a_lg(0,410,0,550,[[0,c[0]],[.5,c[1]],[1,c[0]]]);ac.lineWidth=13;
+  ac.beginPath();ac.arc(cx,cy,r,Math.PI*.82,Math.PI*1.18);ac.stroke();
+  ac.restore();ac.lineCap='round';
+  ac.strokeStyle='rgba(255,255,255,.45)';ac.lineWidth=2.5;ac.beginPath();ac.arc(cx,cy,r-3.5,Math.PI*.85,Math.PI*1.15);ac.stroke();
+  ac.fillStyle='#1b1d26';a_rr(319,462,13,36,5);ac.fillStyle='rgba(255,255,255,.2)';a_rr(321,466,3,28,2);
+  ac.fillStyle='#f3f0e8';for(const yy of[410,550]){ac.beginPath();ac.arc(345,yy,4,0,7);ac.fill();}
+  ac.strokeStyle='#f4f1ea';ac.lineWidth=1.6;ac.beginPath();ac.moveTo(345,410);ac.lineTo(345+pull,480);ac.lineTo(345,550);ac.stroke();
+  if(A.phase==='aim'||A.phase==='rep'){
+    const ex=345+pull,ey=480;
+    ac.strokeStyle=a_lg(ex,0,258,0,[[0,'#c9a566'],[1,'#fff3d2']]);ac.lineWidth=3.2;ac.beginPath();ac.moveTo(ex,ey);ac.lineTo(268,470);ac.stroke();
+    ac.fillStyle=A.turn==='me'?'#ff5468':'#33b8ff';ac.beginPath();ac.moveTo(ex,ey);ac.lineTo(ex-14,ey-5);ac.lineTo(ex-14,ey+3);ac.fill();
+    ac.fillStyle='#cfd6e2';ac.beginPath();ac.moveTo(256,467.5);ac.lineTo(271,463);ac.lineTo(271,475);ac.fill();
+    ac.fillStyle='rgba(255,255,255,.6)';ac.beginPath();ac.moveTo(258,467.5);ac.lineTo(268,464.5);ac.lineTo(268,468);ac.fill();
+  }
+  ac.lineCap='butt';
+}
+function a_flightArrow(now){
+  const k=Math.min(1,(now-A.phaseT)/320),sd=A.shotData;
+  const sx=268,sy=470,ex=ATX+sd.x,ey=ATY+sd.y,dx=ex-sx,dy=ey-sy,n=Math.hypot(dx,dy);
+  ac.lineCap='round';
+  for(let i=4;i>=0;i--){
+    const kk=Math.max(0,k-i*.06),e=aeo(kk),x=sx+dx*e,y=sy+dy*e,L=38-29*e;
+    ac.globalAlpha=i?(.18-i*.03):1;ac.strokeStyle=i?'#fff':'#f3dfb0';ac.lineWidth=(3-1.4*e)+(i?1:0);
+    ac.beginPath();ac.moveTo(x,y);ac.lineTo(x-dx/n*L,y-dy/n*L);ac.stroke();
+  }
+  ac.globalAlpha=1;ac.lineCap='butt';
+}
+
+  function a_wait(now){
+    ac.lineWidth = 3.5; ac.strokeStyle = 'rgba(255,255,255,.3)'; ac.beginPath(); ac.arc(ATX, ATY, AR * 1.42, 0, 7); ac.stroke();
+    const k = (now / 1400) % 1; ac.strokeStyle = '#33b8ff'; ac.globalAlpha = 1 - k; ac.beginPath(); ac.arc(ATX, ATY, AR * (1 + .6 * k), 0, 7); ac.stroke(); ac.globalAlpha = 1;
+  }
+  function a_pop(now){
+    const p = A.pop; if (!p) return; const a = (now - p.t0) / 1000; if (a > 1.3) return;
+    const x = ATX + p.x * A.cam, y = ATY + p.y * A.cam - 46, sc = a < .15 ? a / .15 * 1.3 : 1.3 - .3 * Math.min(1, (a - .15) / .15);
+    ac.save(); ac.globalAlpha = a > .9 ? Math.max(0, 1 - (a - .9) / .4) : 1;
+    for (let i = 0; i < 6; i++) { const ang = i * 1.047 + .4, d = 14 + a * 95; ac.fillStyle = p.col; ac.font = 'bold ' + (16 - a * 6) + 'px sans-serif'; ac.textAlign = 'center'; ac.fillText('★', x + Math.cos(ang) * d, y + Math.sin(ang) * d * .8); }
+    ac.translate(x, y); ac.scale(sc, sc); ac.font = '900 46px "Arial Rounded MT Bold","Trebuchet MS",sans-serif'; ac.textAlign = 'center'; ac.lineJoin = 'round';
+    ac.lineWidth = 9; ac.strokeStyle = '#14181f'; ac.strokeText(p.txt, 0, 0); ac.fillStyle = p.col; ac.fillText(p.txt, 0, 0); ac.restore();
+  }
+  function aRelease(){
+    if (!A || !A.holding || A.phase !== 'aim') return;
+    const now = performance.now(), p = aAim(A.t), sx = p.x + arnd(-.8, .8), sy = p.y + arnd(-.8, .8);
+    const x = +(sx / AR).toFixed(3), y = +(sy / AR).toFixed(3), d = Math.hypot(x, y), sc = d >= 1 ? 0 : Math.max(1, 10 - Math.floor(d * 10));
+    A.holding = false; A.charge = 0; hap.imp();
+    A.shotData = {x:x * AR, y:y * AR, sc, who:'me', id:UK}; A.phase = 'flight'; A.phaseT = now; A.pend = true;
+    act('shot', {x, y}).then(() => { A.pend = false; });
+  }
+  function aHud(r){
+    const st = r && r.state, a = A; if (!a || !st || !st.p) return;
+    st.p.forEach((id, i) => { const el = q('#nts' + i); if (el) el.textContent = T('{0} очк.', a.sc[id] || 0); const pl = q('#ntp' + i); if (pl) pl.classList.toggle('on', r.status === 'playing' && +st.turn === +id); });
+    const wv = q('#ntwv'); if (wv) { wv.textContent = a.wind.v.toFixed(1); const wa = q('#ntwa'); if (wa) wa.textContent = a.wind.d < 0 ? '«' : '»'; }
+    const mine = +st.turn === +UK, pp = q('#ntapp');
+    if (pp) [...pp.children].forEach((i, k) => { i.className = k < a.arrows.length ? 'u' : ''; i.style.setProperty('--c', mine ? '#ff5468' : '#33b8ff'); });
+    const tx = q('#ntst'); if (tx) tx.textContent = r.status !== 'playing' ? '' : T('Раунд {0} из {1}', Math.min(st.rounds, Math.floor(st.tc / 2) + 1), st.rounds) + ' · ' + (mine ? T('твой ход') : T('бьёт {0}', raw(st.turn)));
+  }
+  function aNext(now){
+    const a = A, e = a.queue.shift(); if (!e) return;
+    a.turn = 'opp'; a.wind = e.w || a.wind; aHud(N.room);
+    const dr = a.wind.v * a.wind.d * 5;
+    a.rep = {e, t0:now, fx:dr + arnd(-30, 30), fy:arnd(-24, 24)}; a.repPos = {x:a.rep.fx, y:a.rep.fy};
+    a.holding = true; a.charge = 0; a.phase = 'rep'; a.phaseT = now; hap.tap();
+    const gm = q('.nt-gm'); if (gm) gm.classList.add('nt-arcopp');
+  }
+  function aSync(r, now){
+    const a = A, st = r.state; if (!a || a.pend) return;
+    if (a.queue.length) { aNext(now); return; }
+    a.sc = Object.assign({}, st.s || {});
+    a.arrows = (st.arrows || []).map(x => ({x:x.x * AR, y:x.y * AR, who:+x.by === +UK ? 'me' : 'opp'}));
+    a.wind = st.wind || a.wind; aHud(r);
+    if (r.status !== 'playing') return;
+    const mine = +st.turn === +UK, key = st.tc + ':' + st.turn;
+    a.turn = mine ? 'me' : 'opp';
+    if (a.bn !== key) { a.bn = key; gbanner(mine ? T('Твой ход') : T('Ход {0}', raw(st.turn))); a.aimAt = now + 1100; const gm = q('.nt-gm'); if (gm) gm.classList.toggle('nt-arcopp', !mine); }
+    if (mine && now >= (a.aimAt || 0)) { a.aim = {x:arnd(-26, 26), y:arnd(-20, 20)}; a.holding = false; a.charge = 0; a.phase = 'aim'; }
+  }
+  function aStep(a, now, dt){
+    if (a.holding && a.phase === 'aim') { a.charge += dt / 2000; if (a.charge > 1.8) aRelease(); }
+    a.cam += (a.camT - a.cam) * Math.min(1, dt / 1000 * 10); a.shake *= .9;
+    const ph = a.phase;
+    if (ph === 'rep') {
+      const R_ = a.rep, e = R_.e, k = Math.min(1, (now - R_.t0) / 1250), tx = e.x * AR, ty = e.y * AR, f = aeo(k), sw = (1 - k) * 4;
+      a.charge = k * .9;
+      a.repPos = {x:R_.fx + (tx - R_.fx) * f + sw * Math.sin(a.t * 9), y:R_.fy + (ty - R_.fy) * f + sw * Math.cos(a.t * 7)};
+      if (k >= 1) { a.holding = false; a.charge = 0; a.shotData = {x:tx, y:ty, sc:e.sc, who:'opp', id:e.by}; a.phase = 'flight'; a.phaseT = now; hap.imp(); }
+    } else if (ph === 'flight' && now - a.phaseT > 320) {
+      const sd = a.shotData;
+      a.arrows.push({x:sd.x, y:sd.y, who:sd.who}); a.sc[sd.id] = (a.sc[sd.id] || 0) + sd.sc;
+      a.pop = {x:sd.x, y:sd.y, txt:sd.sc ? '+' + sd.sc : T('Мимо'), col:sd.sc ? apc(sd.sc) : '#b9c2d6', t0:now};
+      a.camT = 4.4; a.shake = sd.sc ? 6 : 2; a.phase = 'zoom'; a.phaseT = now; aHud(N.room);
+      if (sd.sc >= 9) hap.ok(); else hap.imp();
+    } else if (ph === 'zoom' && now - a.phaseT > 1000) { a.camT = 1; a.phase = 'unzoom'; a.phaseT = now; }
+    else if (ph === 'unzoom' && now - a.phaseT > 380) { a.phase = 'idle'; a.wait = now + 250; setTimeout(() => { if (N.a === a && N.room) updGame(); }, 0); }
+    else if (ph === 'idle' && N.room && N.room.game === 'arc' && now >= (a.wait || 0)) aSync(N.room, now);
+  }
+  function aloop(){
+    const cv = q('#ntac'), a = A; if (!cv || !a || N.a !== a) return;
+    const now = performance.now(), dt = Math.min(50, now - (a.lt || now)); a.lt = now; a.t = now / 1000;
+    const dpr = Math.min(2, window.devicePixelRatio || 1), w = cv.clientWidth, s = w / AW;
+    if (!w) { a.raf = requestAnimationFrame(aloop); return; }
+    if (cv.width !== Math.round(w * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(AH * s * dpr); }
+    ac = cv.getContext('2d');
+    aStep(a, now, dt);
+    ac.setTransform(dpr * s, 0, 0, dpr * s, 0, 0); ac.save();
+    if (a.shake > .1) ac.translate(arnd(-a.shake, a.shake), arnd(-a.shake, a.shake));
+    ac.translate(ATX, ATY); ac.scale(a.cam, a.cam); ac.translate(-ATX, -ATY);
+    a_scene(now);
+    if (a.cam > 1.2) { ac.fillStyle = 'rgba(0,0,0,' + Math.min(.28, (a.cam - 1) * .09) + ')'; ac.fillRect(-300, -300, AW + 600, AH + 600); }
+    a_target();
+    for (const x of a.arrows) a_arrowStuck(x);
+    if ((a.phase === 'aim' || a.phase === 'rep') && a.cam < 1.3) a_crosshair(now);
+    else if (a.phase === 'idle' && a.turn === 'opp' && N.room && N.room.status === 'playing') a_wait(now);
+    ac.restore();
+    if (a.phase === 'aim' || a.phase === 'rep' || a.phase === 'flight') a_bow(now);
+    if (a.phase === 'flight') a_flightArrow(now);
+    const vg = ac.createRadialGradient(AW / 2, AH * .48, AH * .25, AW / 2, AH * .48, AH * .78); vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(0,0,0,' + AT.vig + ')'); ac.fillStyle = vg; ac.fillRect(0, 0, AW, AH);
+    a_pop(now);
+    a.raf = requestAnimationFrame(aloop);
+  }
+  function bArc(b){
+    const r = N.room; if (A && A.raf) cancelAnimationFrame(A.raf);
+    AT = document.documentElement.getAttribute('data-mode') === 'light' ? ATH.day : ATH.night;
+    const st = r.state;
+    A = N.a = {ph:[0, 1, 2, 3].map(() => Math.random() * 6.28), aim:{x:0, y:0}, drag:null, holding:false, charge:0, phase:'idle', phaseT:0, cam:1, camT:1, shake:0, arrows:[], pop:null, queue:[], seen:Math.max(0, ...(st.log || []).map(e => e.n), 0), pend:false, turn:'me', wind:st.wind || {v:0, d:1}, sc:Object.assign({}, st.s || {}), bn:'', raf:0, t:0, lt:0, shotData:null, aimAt:0, wait:0};
+    b.innerHTML = chips(r, st.p, ['', '']) + `<div class="nt-aw"><canvas class="nt-acv" id="ntac"></canvas><div class="nt-awd"><span id="ntwa">«</span><div><small>${T('ВЕТЕР')}</small><b id="ntwv">0.0</b></div></div><div class="nt-api" id="ntapp"><i></i><i></i><i></i></div><div class="nt-gbn" id="ntgb"></div><div class="nt-ahint" id="ntahint">${T('Зажми и веди пальцем: двигаешь прицел.')}<br>${T('Отпусти: выстрел')}</div></div><div class="nt-st" id="ntst" style="margin-top:12px;font-size:14px"></div>`;
+    const cv = q('#ntac'), a = A;
+    const my = () => { const rr = N.room; return !!(rr && N.a === a && rr.status === 'playing' && +rr.state.turn === +UK && a.phase === 'aim' && !a.queue.length && !a.pend); };
+    cv.addEventListener('pointerdown', e => { if (!my() || a.holding) return; a.holding = true; a.charge = 0; a.turn = 'me'; a.drag = {x:e.clientX, y:e.clientY, ax:a.aim.x, ay:a.aim.y}; hap.tap(); const h = q('#ntahint'); if (h) h.style.opacity = 0; try { cv.setPointerCapture(e.pointerId); } catch (x) {} });
+    cv.addEventListener('pointermove', e => { if (!a.holding || !a.drag || a.phase !== 'aim') return; const k = AW / cv.getBoundingClientRect().width * .45; a.aim.x = Math.max(-70, Math.min(70, a.drag.ax + (e.clientX - a.drag.x) * k)); a.aim.y = Math.max(-70, Math.min(70, a.drag.ay + (e.clientY - a.drag.y) * k)); });
+    const up = () => { a.drag = null; if (a.holding && a.phase === 'aim') aRelease(); };
+    cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+    a.raf = requestAnimationFrame(aloop);
+  }
+  function uArc(r){
+    const a = A, st = r.state; if (!a || !q('#ntac')) return;
+    for (const e of (st.log || [])) if (e.n > a.seen) { a.seen = e.n; if (+e.by !== +UK) a.queue.push(e); }
+    if (a.phase === 'aim' && (a.queue.length || !(r.status === 'playing' && +st.turn === +UK))) { a.phase = 'idle'; a.holding = false; a.charge = 0; }
+    aHud(r);
+    if (a.phase === 'idle') aSync(r, performance.now());
+  }
+  const arcBusy = () => !!(N.room && N.room.game === 'arc' && N.a && (N.a.queue.length || N.a.pend || !['idle', 'aim'].includes(N.a.phase)));
   const GM = {
     ttt:{get title(){ return T('Крестики-нолики'); }, build:bTtt, upd:uTtt},
     chk:{get title(){ return T('Шашки'); }, build:bChk, upd:uChk},
     che:{get title(){ return T('Шахматы'); }, build:bChe, upd:uChe},
     sea:{get title(){ return T('Морской бой'); }, build:bSea, upd:uSea},
     bil:{get title(){ return T('Бильярд'); }, build:bBil, upd:uBil},
-    golf:{get title(){ return T('Гольф'); }, build:bGolf, upd:uGolf}
+    golf:{get title(){ return T('Гольф'); }, build:bGolf, upd:uGolf},
+    arc:{get title(){ return T('Лучники'); }, beta:true, build:bArc, upd:uArc}
   };
   /* подпись «расстановки» игры: кто за кого играет. Меняется при реванше (смена сторон), тогда экран пересобираем */
   const setupSig = r => { const s = r.state || {}; return r.game + ':' + (s.x != null ? 'x' + s.x : '') + (s.white != null ? 'w' + s.white : '') + (s.p ? 'p' + s.p.join(',') : '') + (s.first != null ? 'f' + s.first : ''); };
   function buildGame(){
     const r = N.room, g = GM[r.game] || GM.ttt; N.sg = setupSig(r);
-    const d = layer('nt-lobby nt-gm', `<div class="nt-top"><i class="nt-x" data-nt="leave">✕</i><span>${g.title}</span></div><div class="nt-body"></div>`);
+    const d = layer('nt-lobby nt-gm', `<div class="nt-top"><i class="nt-x" data-nt="leave">✕</i><span>${g.title}${g.beta ? '<em class="nt-beta">BETA</em>' : ''}</span></div><div class="nt-body"></div>`);
     d.style.setProperty('--dl', '.05s'); N.gk = r.game; g.build(d.querySelector('.nt-body')); updGame();
   }
   function updGame(){
     const r = N.room; if (!r || !q('.nt-gm')) return;
     (GM[r.game] || GM.ttt).upd(r);
     let res = q('.nt-res');
-    if (r.status === 'done') {
+    if (r.status === 'done' && !arcBusy()) {
       const o = outcome(r), t = o === 'd' ? [T('Ничья'), T('Бывает. Реванш?')] : o === 'w' ? [T('Победа!'), T('Красиво сыграно')] : [T('Поражение'), T('Реванш?')];
       if (!res) { res = document.createElement('div'); res.className = 'nt-res'; res.innerHTML = `<h3></h3><p></p><div class="nt-bts"><div class="nt-btn ghost" data-nt="leave">${T('Выйти')}</div><div class="nt-btn" data-nt="rematch">${T('Реванш')}</div></div>`; q('.nt-gm').appendChild(res); victory(r, o, t); }
-      res.querySelector('h3').textContent = t[0]; res.querySelector('p').textContent = r.game === 'golf' ? T('Удары: ты {0} · соперник {1}', r.state.tot[UK] || 0, r.state.tot[oppOf(r)] || 0) : r.game === 'che' ? (chWhy(r) || t[1]) : t[1];
+      res.querySelector('h3').textContent = t[0]; res.querySelector('p').textContent = r.game === 'golf' ? T('Удары: ты {0} · соперник {1}', r.state.tot[UK] || 0, r.state.tot[oppOf(r)] || 0) : r.game === 'arc' ? T('Очки: ты {0} · соперник {1}', r.state.s[UK] || 0, r.state.s[oppOf(r)] || 0) : r.game === 'che' ? (chWhy(r) || t[1]) : t[1];
     } else if (res) res.remove();
     peerBar();
   }
