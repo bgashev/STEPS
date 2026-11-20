@@ -5805,7 +5805,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1145';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1146';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11060,6 +11060,23 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     const lv0 = () => { try { const v = +localStorage.getItem('voob_k5_lv'); return v >= 0 && v < 5 ? v : 2; } catch (e) { return 2; } };
     const md0 = () => { try { return +localStorage.getItem('voob_k5_md') === 1 ? 1 : 0; } catch (e) { return 0; } };
     const K5RU = [['Классика', ['Шестёрка: соперник берёт карту, ты ходишь снова. Покрывать её не нужно — можно закончить ход на ней.', 'Семёрка: соперник берёт 2 карты, но может отбить своей семёркой, и штраф копится.', 'Штраф при проигрыше: девятка — 9 очков, дама — 3.', 'Дама — любая масть, туз — ходишь ещё раз.']], ['Альтернатива', ['Шестёрка: соперник берёт карту, а ты обязан сразу покрыть её своей картой (масть или значение). Нет подходящей — берёшь карты, пока не появится. Закончить партию шестёркой нельзя.', 'Семёрка: соперник берёт 2 карты (за пиковую — 3) и пропускает ход, ты ходишь снова. Отбивать и копить семёрки нельзя.', 'Штраф при проигрыше: девятки — 0 очков, дамы — 20, пиковая дама — 40.', 'Закончил партию дамой — минус 20 очков тебе, пиковой — минус 40.']]];
+    const K5CMP = [['6', 'Шестёрка', 'Соперник берёт карту, ты ходишь снова. Покрывать не нужно', 'Соперник берёт карту, а ты сам обязан покрыть её. Закончить партию шестёркой нельзя'], ['7', 'Семёрка', '+2 карты, можно отбить своей семёркой — штраф копится', 'Соперник берёт 2 карты (пиковая — 3) и пропускает ход. Отбивать нельзя'], ['9', 'Девятка в руке', 'Штраф 9 очков', 'Штраф 0 очков'], ['Q', 'Дама в руке', 'Штраф 3 очка', 'Штраф 20 очков, пиковая — 40'], ['Q', 'Выход дамой', 'Без бонуса', 'Минус 20 очков тебе, пиковой — минус 40']];
+    const infoDraw = c => { const e0 = Math.min(1, g.ia == null ? 1 : g.ia), e = 1 - Math.pow(1 - e0, 3), bw = Math.min(W - 28, 350), cw = (bw - 36 - 10) / 2, fs = 12;
+      c.save(); c.font = '500 ' + fs + 'px ' + C.ff; const wrap = t => { const ls = []; let l = ''; for (const w of t.split(' ')) { if (c.measureText(l ? l + ' ' + w : w).width <= cw - 20) l = l ? l + ' ' + w : w; else { ls.push(l); l = w; } } ls.push(l); return ls; };
+      const rows = K5CMP.map(r => { const L = [wrap(r[2]), wrap(r[3])], n = Math.max(L[0].length, L[1].length); return {r, L, h: 22 + n * 16 + 14}; }); const total = 62 + 34 + rows.reduce((q, r) => q + r.h + 8, 0) + 38; c.restore();
+      const sc = Math.min(1, (H - 24) / total), by = Math.max(12, (H - total * sc) / 2);
+      c.save(); c.globalAlpha = e; c.fillStyle = 'rgba(3,10,22,.9)'; c.fillRect(0, 0, W, H);
+      c.translate(W / 2, by + total * sc / 2); c.scale(sc * (.95 + .05 * e), sc * (.95 + .05 * e)); c.translate(-W / 2, -total / 2);
+      const bx = (W - bw) / 2; rr(c, bx, 0, bw, total, 26); const bgp = c.createLinearGradient(0, 0, 0, total); bgp.addColorStop(0, '#1b2750'); bgp.addColorStop(1, '#101a38'); c.fillStyle = bgp; c.fill(); c.lineWidth = 1.5; c.strokeStyle = 'rgba(127,181,255,.55)'; c.stroke();
+      c.textAlign = 'left'; c.fillStyle = C.tx; c.font = '800 19px ' + C.ff; c.fillText('Чем отличаются режимы', bx + 18, 34); c.fillStyle = C.mu; c.font = '500 12px ' + C.ff; c.fillText('Правила партии до 105 очков', bx + 18, 53);
+      const x0 = bx + 18, x1 = x0 + cw + 10; let y = 62;
+      [0, 1].forEach(k => { const xx = k ? x1 : x0, on = g.info === k; rr(c, xx, y, cw, 28, 14); c.fillStyle = on ? '#7fb5ff' : 'rgba(255,255,255,.07)'; c.fill(); c.fillStyle = on ? '#10121c' : C.tx; c.font = '800 13px ' + C.ff; c.textAlign = 'center'; c.fillText(K5RU[k][0], xx + cw / 2, y + 18.5); });
+      y += 34;
+      rows.forEach(rw => { c.textAlign = 'left'; c.beginPath(); c.arc(x0 + 10, y + 11, 10, 0, 7); c.fillStyle = 'rgba(127,181,255,.2)'; c.fill(); c.fillStyle = '#9cc7ff'; c.font = '900 11px ' + C.ff; c.textAlign = 'center'; c.fillText(rw.r[0], x0 + 10, y + 15); c.textAlign = 'left'; c.fillStyle = C.tx; c.font = '800 13px ' + C.ff; c.fillText(rw.r[1], x0 + 26, y + 15);
+        [0, 1].forEach(k => { const xx = k ? x1 : x0, on = g.info === k, cy = y + 22, ch = rw.h - 22; rr(c, xx, cy, cw, ch, 12); c.fillStyle = on ? 'rgba(127,181,255,.16)' : 'rgba(255,255,255,.045)'; c.fill(); if (on) { c.lineWidth = 1; c.strokeStyle = 'rgba(127,181,255,.5)'; c.stroke(); }
+          c.fillStyle = on ? C.tx : C.mu; c.font = '500 12px ' + C.ff; rw.L[k].forEach((l, i) => c.fillText(l, xx + 10, cy + 18 + i * 16)); });
+        y += rw.h + 8; });
+      c.textAlign = 'center'; c.fillStyle = C.mu; c.globalAlpha = e * .8; c.font = '600 12px ' + C.ff; c.fillText('Тап — закрыть', W / 2, total - 16); c.restore(); };
     const K5DS = ['Шестёрку не покрывать · 7 можно отбить · 9 = 9 очков', 'Шестёрку покрыть · 7 без отбоя · 9 = 0 · дамы 20/40'];
     const mdGeo = () => { lvXtra = 96; const SL = lvGeo2(5); lvXtra = 0; const bw = (SL.bw - 12) / 2; return {y: SL.sy + SL.sh + 58, h: 36, bw, x0: SL.bx + 4, x1: SL.bx + 8 + bw, cx: SL.bx, cw: SL.bw, py: SL.py, ph: SL.ph}; };
     const lay = () => { const top = 74, sc = Math.min(W / 360, (H - top - 8) / 560); return {sc, ox: (W - 360 * sc) / 2, oy: top + (H - top - 8 - 560 * sc) / 2}; };
@@ -11090,7 +11107,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       const hc = K5G.handAt(V, vx, Math.max(vy, 430)); if (hc && hc.id !== g.sc.id) { g.sc.id = hc.id; g.sc.ok = hc.ok; g.sc.w = 0; hap.tap(); } };
     g.up = () => { const d = g.drag; g.sc = null; if (!d) return; g.drag = null; if (!g.st || g.res || g.rrOn || g.st.at !== 0) return;
       if (K5G.drop(d.x, d.y, d.sy - d.y)) { if (K5G.R(d.id) === 6) { g.pq = d.id; hap.tap(); } else mv(0, 'play', d.id); } };
-    g.update = dt => { g.t += dt; g.dt = dt; if (g.ph === 'menu') { g.mdp += (g.md - g.mdp) * Math.min(1, dt * 10); g.mdb = Math.max(0, (g.mdb || 0) - dt * 3.5); g.lvp += (g.lvl - g.lvp) * Math.min(1, dt * 14); g.lvb = Math.max(0, (g.lvb || 0) - dt * 3.2); } stepFx(g, dt);
+    g.update = dt => { g.t += dt; g.dt = dt; if (g.ph === 'menu') { g.mdp += (g.md - g.mdp) * Math.min(1, dt * 10); g.mdb = Math.max(0, (g.mdb || 0) - dt * 3.5); g.ia = g.info >= 0 ? Math.min(1, (g.ia || 0) + dt * 6) : 0; g.lvp += (g.lvl - g.lvp) * Math.min(1, dt * 14); g.lvb = Math.max(0, (g.lvb || 0) - dt * 3.2); } stepFx(g, dt);
       if (g.dead || g.ph !== 'play') return;
       if (g.rrOn) { g.rrT -= dt; if (g.rrT <= 0) g.rrOn = false; return; }
       if (g.res) { g.rt -= dt; if (g.rt <= 0 && !g.fin) { g.fin = true; const k = g.res.k;
@@ -11112,9 +11129,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
           c.globalAlpha = 1; c.textAlign = 'left'; c.textBaseline = 'alphabetic'; });
         c.textAlign = 'center'; c.font = '600 12.5px ' + C.ff; [0, 1].forEach(k => { const w = Math.max(0, 1 - Math.abs(mp - k)); if (w <= .01) return; c.globalAlpha = w * .9; c.fillStyle = C.tx; c.fillText(K5DS[k], W / 2, M.y + M.h + 26 - 3 * (1 - w)); }); c.globalAlpha = 1;
         c.fillStyle = C.mu; c.font = '500 12px ' + C.ff; c.globalAlpha = .75; { const ws = 'Кто набирает больше 105 штрафных очков — проигрывает. Ровно 105 — счёт обнуляется'.split(' '); let l = '', ny = M.py + M.ph + 24; ws.forEach(w2 => { if (c.measureText(l ? l + ' ' + w2 : w2).width <= M.cw - 20) l = l ? l + ' ' + w2 : w2; else { c.fillText(l, W / 2, ny); ny += 17; l = w2; } }); c.fillText(l, W / 2, ny); } c.globalAlpha = 1;
-        if (g.info >= 0) { c.fillStyle = 'rgba(3,10,22,.86)'; c.fillRect(0, 0, W, H); const bw = Math.min(W - 40, 340), bx = (W - bw) / 2, lines = []; c.font = '500 14px ' + C.ff; K5RU[g.info][1].forEach(t => { let l = ''; for (const w of t.split(' ')) { if (c.measureText(l ? l + ' ' + w : w).width <= bw - 40) l = l ? l + ' ' + w : w; else { lines.push(l); l = w; } } lines.push(l); lines.push(''); });
-          const bh = 90 + lines.length * 20, by = Math.max(60, (H - bh) / 2); rr(c, bx, by, bw, bh, 22); c.fillStyle = C.s2; c.fill(); c.lineWidth = 1.6; c.strokeStyle = '#7fb5ff'; c.stroke();
-          c.textAlign = 'left'; c.fillStyle = '#7fb5ff'; c.font = '800 20px ' + C.ff; c.fillText(K5RU[g.info][0], bx + 20, by + 38); c.fillStyle = C.tx; c.font = '500 14px ' + C.ff; lines.forEach((l, i) => c.fillText(l, bx + 20, by + 68 + i * 20)); c.fillStyle = C.mu; c.font = '600 12px ' + C.ff; c.fillText('Тап — закрыть', bx + 20, by + bh - 14); }
+        if (g.info >= 0) infoDraw(c);
         drawFx(c, g); c.restore(); return; }
       const L = lay(); c.fillStyle = C.mu; c.font = '700 13px ' + C.ff; c.textAlign = 'center'; c.fillText(K5LV[g.lvl][0].toUpperCase() + (g.md === 1 ? ' · АЛЬТЕРНАТИВА' : '') + ' · СЕРИЯ ' + g.score, W / 2, 20);
       c.save(); c.translate(L.ox, L.oy); c.scale(L.sc, L.sc); if (g.st) K5G.draw(c, view(), g.A, g.t, Math.min(.05, g.dt || .016)); c.restore();
