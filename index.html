@@ -4994,7 +4994,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1085';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1086';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9919,7 +9919,7 @@ const REST = (function(){
   const CKLV = [['Новичок', '+1 очко за победу', 'Ходит почти наугад'], ['Игрок', '+2 очка за победу', 'Считает на 4 хода'], ['Мастер', '+4 очка за победу', 'Думает глубоко, не прощает ошибок']], CKP = [1, 2, 4];
   const CKLV3 = [['Новичок', 'Ходит почти наугад', 1], ['Игрок', 'Считает на 4 хода вперёд', 2], ['Мастер', 'Думает глубоко, не прощает ошибок', 4]];
   function mkChk(){ const g = {}, K = 'chk';
-    const geo = () => { const S = Math.min(W - 24, H * .6), t = S / 8, x0 = (W - S) / 2, y0 = H * .5 - S / 2 + 12; return {S, t, x0, y0}; };
+    const geo = () => { const S = Math.min(W - 24, H * .6), t = S / 8, x0 = (W - S) / 2, y0 = Math.max(0, (H - S - 110) * .34) + 62; return {S, t, x0, y0}; };
     const lv0 = () => { try { const v = +localStorage.getItem('voob_chk_lv'); return v >= 0 && v < 3 ? v : 1; } catch (e) { return 1; } };
     const sq = (G2, i) => [G2.x0 + (i & 7) * G2.t, G2.y0 + (i >> 3) * G2.t];
     g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.nb = false; g.res = null; g.anim = null; g.b = ckNew(); g.pre = []; g.legal = []; g.last = []; g.turn = 'w'; g.q = 0; g.bt = 0; g.ghost = []; };
@@ -10113,7 +10113,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     const im = new Image(); im.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); CHI[p] = im; return im;
   }
   function mkChe(){ const g = {}, K = 'che';
-    const geo = () => { const S = Math.min(W - 24, H * .6), t = S / 8, x0 = (W - S) / 2, y0 = H * .5 - S / 2 + 12; return {S, t, x0, y0}; };
+    const geo = () => { const S = Math.min(W - 24, H * .6), t = S / 8, x0 = (W - S) / 2, y0 = Math.max(0, (H - S - 170) * .34) + 80; return {S, t, x0, y0}; };
     const sq = (G2, i) => [G2.x0 + (i & 7) * G2.t, G2.y0 + (i >> 3) * G2.t];
     const lv0 = () => { try { const v = +localStorage.getItem('voob_che_lv'); return v >= 0 && v < 5 ? v : 1; } catch (e) { return 1; } };
     g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.nb = false; g.res = null; g.anim = null; g.S = chNew(); g.hist = []; g.legal = []; g.sel = -1; g.last = []; g.bt = 0; g.ghost = []; g.promo = null; g.chk = false; 'KQRBNP'.split('').forEach(chImg); 'kqrbnp'.split('').forEach(chImg); };
