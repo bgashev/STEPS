@@ -4690,7 +4690,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 /* v1.1011: «Кого позвать?» — крупный лист, выбор одного друга, кнопка «Позвать X в игру», плашки 60px */
 /* v1.1010: «Приложения» — вариант C1 «Poster»: зерно и пробегающий блик на карточках, калории в одну строку (без полосок-сканера), график веса не лезет на текст, у «Игр» веер из настоящих обложек */
 .ax-bn.hx .ax-bt::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;mix-blend-mode:overlay;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-.ax-bn.hx .ax-bt{-webkit-clip-path:inset(0 round 26px);clip-path:inset(0 round 26px)}.ax-bn.hx .ax-bt.lift{-webkit-clip-path:none;clip-path:none}
+.ax-bn.hx .ax-bt{-webkit-clip-path:inset(0 round 26px);clip-path:inset(0 round 26px)}.ax-bn.hx .ax-bt.lift{-webkit-clip-path:inset(0 round 26px);clip-path:inset(0 round 26px)}
 .ax-bn.hx .ax-bt .big{font-family:Unbounded,system-ui,sans-serif;font-weight:700;font-size:25px;letter-spacing:-1px;white-space:nowrap}
 .ax-bn.hx .ax-bt.bw .big{font-size:25px}
 .ax-bn.hx .ax-bt .big i{font-family:system-ui,-apple-system,sans-serif;letter-spacing:0}
@@ -4715,7 +4715,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 .ax-bn.hx .ax-bt.bh.gold{background:radial-gradient(75% 75% at 82% 40%,#ffd25a88,transparent 72%),radial-gradient(120% 90% at 0 0,#ffffff2a,transparent 55%),radial-gradient(100% 80% at 0 100%,#00000050,transparent 60%),linear-gradient(160deg,#8a6df0,#6a4fc9 45%,#b97a2c);--sh:#e8a63c}
 .ax-bn.hx .ax-bt.bs{background:radial-gradient(75% 75% at 82% 40%,#ff8ae088,transparent 72%),radial-gradient(120% 90% at 0 0,#ffffff2a,transparent 55%),radial-gradient(100% 80% at 0 100%,#00000050,transparent 60%),linear-gradient(160deg,#e05bb0,#a03aa0 55%,#4a2a8c);--sh:#c64fa0}
 .ax-bn.hx .ax-bt.bg{background:radial-gradient(75% 75% at 82% 40%,#9a86ff99,transparent 72%),radial-gradient(120% 90% at 0 0,#ffffff2a,transparent 55%),radial-gradient(100% 80% at 0 100%,#00000050,transparent 60%),linear-gradient(160deg,#6f58ee,#4a38bc 55%,#271f7e);--sh:#5a46e0}
-.ax-bn.hx .ax-bt.lift{box-shadow:0 26px 50px -14px rgba(0,0,0,.65),0 0 0 1.5px rgba(255,255,255,.35)}
+.ax-bn.hx .ax-bt.lift{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.42),inset 0 1.5px 0 #ffffff66,inset 0 -1px 0 #00000040;-webkit-clip-path:inset(0 round 26px);clip-path:inset(0 round 26px)}
 .ax-bn.hx .ax-bt .ax-at.sm{box-shadow:inset 0 1.5px 0 #ffffff80,inset 0 -2px 0 #00000026,0 4px 10px -4px #0008}
 .gla{position:absolute;z-index:-1;pointer-events:none;transition:transform .5s cubic-bezier(.3,1.6,.5,1);-webkit-mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.3) 24%,#000 52%);mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.3) 24%,#000 52%)}
 .gla svg{width:100%;height:100%;overflow:visible;animation:glfl 6s ease-in-out infinite}
@@ -4745,7 +4745,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1039';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1040';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
