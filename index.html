@@ -4897,6 +4897,13 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 .glwv{animation:glwv 3.2s linear infinite}
 .gltw{animation:gltw 2.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 @media (prefers-reduced-motion:reduce){.gla svg,.glwv,.gltw{animation:none!important}}
+/* v1.1087 WEB: карточки «Приложений» как на телефоне (стеклянные 3D-иллюстрации, 5 в ряд) */
+html.web .ax-hub .ax-bn.hx{grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-bottom:10px}
+html.web .ax-hub .ax-bn.hx .ax-bt{min-height:0;padding:16px;aspect-ratio:1/.95;grid-column:auto;cursor:pointer}
+html.web .ax-hub .ax-bn.hx .ax-bt.bg .n,html.web .ax-hub .ax-bn.hx .ax-bt.bs .n{display:none}
+html.web .ax-hub .ax-bn.hx .ax-bt.bg .gt{font-size:19px}
+@media (max-width:1100px){html.web .ax-hub .ax-bn.hx{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){html.web .ax-hub .ax-bn.hx{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .act em{font-style:normal;font-weight:600;font-size:10.5px;color:var(--muted);margin-top:-3px}
 .act.custom{border-color:color-mix(in srgb,var(--tc) 38%,var(--border))}
 .act .ed{position:absolute;top:6px;right:6px;width:30px;height:30px;border-radius:50%;border:0;background:none;color:var(--muted);display:grid;place-items:center;opacity:.6;transition:opacity .2s,color .2s}.act .ed:hover{opacity:1;color:var(--text)}
@@ -4994,7 +5001,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1086';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1087';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11915,7 +11922,7 @@ const AX = (function(){
     const shopArt = `<svg class="il il-s" viewBox="0 0 80 100"><defs><linearGradient id="ils1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd98a"/><stop offset="1" stop-color="#ff86a8"/></linearGradient></defs><circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="1.4"/><circle cx="50" cy="50" r="33" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.4"/><circle cx="50" cy="50" r="22" fill="#2a1236" stroke="url(#ils1)" stroke-width="4.5"/><circle cx="50" cy="45" r="6.6" fill="#fff" fill-opacity=".92"/><path d="M37 61Q50 50 63 61" fill="#fff" fill-opacity=".92"/><path d="M26 18L27.6 22.4L32 24L27.6 25.6L26 30L24.4 25.6L20 24L24.4 22.4Z" fill="#fff" fill-opacity=".9"/></svg>`;
     const WV = c => `<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M0 7Q12.5 0 25 7T50 7T75 7T100 7T125 7T150 7T175 7T200 7V14H0Z" fill="${c}"/></svg>`;
     const mb = (l, v, m, c) => `<div class="m"><span>${l}</span><em><i style="width:${clamp(v * 100 / Math.max(1, m), 0, 100)}%;background:${c}"></i></em></div>`;
-    const GA = (old, pos, svg) => inWeb ? old : `<div class="gla ${pos}">${svg()}</div>`;
+    const GA = (old, pos, svg) => `<div class="gla ${pos}">${svg()}</div>`;
     const hubT = {
       w: `<div data-k="w" class="ax-bt bw" data-act="appopen" data-s="water">${GA(`<div class="liq" style="height:${Math.max(10, wp)}%">${WV('#58a0ff')}${WV('#9ccbff')}</div>${wglass}`, 'pw', () => GLX.drop(wp / 100))}
         <div class="z"><div class="h"><span class="ax-at sm a-w">${AI('drop', 18)}</span>Вода</div><div><div class="big">${P0(w)}<i> мл</i></div><small>из ${P0(wg.goal)} · ${wp}%</small></div><button type="button" class="pl" data-act="axbw">+250 мл</button></div></div>`,
@@ -11941,11 +11948,11 @@ const AX = (function(){
     const hubTiles = () => hubOrder().map(k => hubT[k]).join('');
     return `<div class="ax-sh"><div class="ax-st">Приложения</div><div class="ax-ss">всё под рукой — без лишних вкладок</div>
     ${inWeb || hubHintSeen() ? '' : `<div class="ax-hint">Зажми карточку и перетащи, чтобы поменять порядок</div>`}
-    ${inWeb ? '' : GLX.defs}
-    <div class="ax-bn${inWeb ? '' : ' hx'}" id="ax-bn">
+    ${GLX.defs}
+    <div class="ax-bn hx" id="ax-bn">
     ${hubTiles()}
     </div>
-    ${!inWeb ? '' : `<div class="ax-lab" style="margin:16px 6px 8px">Ещё</div><div class="ax-grp"><button type="button" class="ax-li" data-act="appopen" data-s="hab" style="width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;cursor:pointer"><span class="ax-mi a-g">${AI('hab', 21)}</span><span class="tx"><b>Привычки</b><small>делать и бросать · серии и «чист уже»</small></span><i>›</i></button></div>`}
+    
     <div class="ax-lab" style="margin:20px 6px 8px">На главной</div><div class="ax-grp"><div class="ax-li"><span class="ax-mi a-w">${AI('drop', 21)}</span><span class="tx"><b>Вода</b><small>быстрый +250 с главной</small></span>${sw('w', a.pw !== 0)}</div><div class="ax-li"><span class="ax-mi a-c">${AI('cal', 21)}</span><span class="tx"><b>Калории</b><small>сколько осталось на день</small></span>${sw('c', a.pc !== 0)}</div><div class="ax-li"><span class="ax-mi a-wt">${IC('scale', 21)}</span><span class="tx"><b>Вес</b><small>последнее взвешивание</small></span>${sw('wt', a.pwt === 1)}</div><div class="ax-li"><span class="ax-mi a-h">${AI('hab', 21)}</span><span class="tx"><b>Привычки</b><small>сколько сделано сегодня</small></span>${sw('h', a.ph === 1)}</div><div class="ax-li"><span class="ax-mi a-g">${AI('pad', 21)}</span><span class="tx"><b>Игры</b><small>игра дня и быстрый старт</small></span>${sw('g', a.pg !== 0)}</div>${inWeb ? '' : `<div class="ax-li"><span class="ax-mi a-s">${AI('shop', 21)}</span><span class="tx"><b>Магазин</b><small>рамки и фоны под рукой</small></span>${sw('m', a.pm === 1)}</div>`}</div>
     <button type="button" class="ax-sg" data-act="appsug"><span class="ax-mi a-g">${AI('bulb', 21)}</span><span class="tx"><b>Предложить</b><small>что добавить или улучшить в VOOB</small></span><i>›</i></button></div>`;
   }
@@ -12313,7 +12320,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   /* ---------- v1.1002: «Приложения» — 6 равных карточек, перестановка зажатием ---------- */
   const HUBK = 'voob_hubord_' + UK, HUBD = ['w', 'k', 'wt', 'h', 'g', 's'];
   function hubOrder(){
-    if (inWeb) return ['w', 'k', 'wt', 'g'];
+    if (inWeb) return ['w', 'k', 'wt', 'h', 'g'];
     let o = null; try { o = JSON.parse(localStorage.getItem(HUBK) || 'null'); } catch (e) {}
     o = Array.isArray(o) ? o.filter(k => HUBD.includes(k)) : [];
     HUBD.forEach(k => { if (!o.includes(k)) o.push(k); });
@@ -12322,7 +12329,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   const hubHintSeen = () => { try { return localStorage.getItem('voob_hubhint') === '1'; } catch (e) { return false; } };
   let HD = null, HSUP = 0;
   function hubDown(e){
-    const t = e.target.closest && e.target.closest('.ax-bn.hx .ax-bt'); if (!t || HD || (e.pointerType === 'mouse' && e.button !== 0)) return;
+    const t = e.target.closest && e.target.closest('.ax-bn.hx .ax-bt'); if (inWeb || !t || HD || (e.pointerType === 'mouse' && e.button !== 0)) return;
     HD = {el:t, id:e.pointerId, sx:e.clientX, sy:e.clientY, on:false, tm:setTimeout(hubArm, 360)};
   }
   function hubArm(){
