@@ -3590,6 +3590,10 @@ html.web .stv .st-lg span{font-size:15px;margin-top:3px}
 .stv .st-lg span i{font-style:normal;font-weight:800;font-size:12.5px;padding:2px 9px;border-radius:99px;color:var(--c);background:color-mix(in srgb,var(--c) 16%,transparent)}
 .stv .st-lg>div:only-child b{font-size:22px}.stv .st-lg>div:only-child span em{font-size:17px}.stv .st-lg>div:only-child span i{font-size:13.5px;padding:3px 11px}
 html.web .stv .st-lg>div{padding:18px 22px}html.web .stv .st-lg b{font-size:19px}
+/* v1.1058: смена акцента — круговое «растекание» нового цвета вместе с волной */
+:root.accvt{transition:none!important}
+:root.accvt::view-transition-old(root),:root.accvt::view-transition-new(root){animation:none;mix-blend-mode:normal}
+:root.accvt::view-transition-old(root){z-index:1}:root.accvt::view-transition-new(root){z-index:2}
 /* v1.723: плавная смена акцентного цвета (зарегистрированные цветовые свойства анимируются) */
 @property --accent{syntax:'<color>';inherits:true;initial-value:#B4A7EE}
 @property --accent2{syntax:'<color>';inherits:true;initial-value:#B4A7EE}
@@ -4894,7 +4898,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1057';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1058';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11247,7 +11251,17 @@ const ACT = {
     if (k !== 'mono' && !isPro()) { hap.warn(); S.accPrev = k; applyTheme(); clearTimeout(S.accT);
       S.accT = setTimeout(() => { S.accPrev = null; applyTheme(); }, 3500);
       proToast('Этот цвет — в PRO. Сейчас это предпросмотр'); return; }
-    accRipple(el, k); db.settings.accent = k; touchMeta('settings'); save(); applyTheme(); render(); hap.tap(); },
+    const go = () => { db.settings.accent = k; touchMeta('settings'); save(); applyTheme(); render(); };
+    accRipple(el, k); hap.tap();
+    try {   /* новый цвет «растекается» по интерфейсу вместе с волной от кружка */
+      if (!document.startViewTransition || matchMedia('(prefers-reduced-motion:reduce)').matches) { go(); return; }
+      const r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2, R = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) * 1.05 * .94, root_ = document.documentElement;
+      root_.classList.add('accvt');
+      const vt = document.startViewTransition(go);
+      vt.ready.then(() => { root_.animate({clipPath:[`circle(${R * .02}px at ${x}px ${y}px)`, `circle(${R}px at ${x}px ${y}px)`]}, {duration:950, easing:'cubic-bezier(.2,.7,.2,1)', pseudoElement:'::view-transition-new(root)'}); }).catch(() => {});
+      vt.finished.finally(() => root_.classList.remove('accvt'));
+    } catch (e) { document.documentElement.classList.remove('accvt'); go(); }
+  },
   import: () => $('#file').click(),
   copy: copyBackup,
   close: closeSheet,
