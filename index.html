@@ -5184,7 +5184,7 @@ function btns(st, me){
   if (st.ph === 'a' && st.at === me && st.tb.length) return [{k: 'end', label: st.tk ? 'Готово' : 'Бито', col: '#c52d38'}];
   return [];
 }
-const btnPos = (n, i) => ({x: 180 + (i - (n - 1) / 2) * 90, y: 414, r: 30});
+const btnPos = (n, i) => ({x: 180 + (i - (n - 1) / 2) * 90, y: 414, r: 34});
 function msg(st, me){
   if (st.win) return '';
   const mine = st.at === me;
@@ -5247,9 +5247,9 @@ function draw(c, V, A, t, dt){
   c.textAlign = 'left'; c.fillStyle = '#fff'; c.font = '800 13px ' + FF; c.fillText(V.names[1] || 'Соперник', 64, 40); c.fillStyle = 'rgba(255,255,255,.65)'; c.font = '600 11px ' + FF; c.fillText(oc + ' ' + (oc % 10 === 1 && oc !== 11 ? 'карта' : (oc % 10 >= 2 && oc % 10 <= 4 && (oc < 10 || oc > 20)) ? 'карты' : 'карт'), 64, 56);
   const m = V.msg != null ? V.msg : msg(st, me);
   if (m !== A.msg) { A.msg = m; A.mt = 0; } A.mt = Math.min(1, A.mt + dt * 4); const mp = 1 + .12 * Math.pow(1 - A.mt, 2), ma = .3 + .7 * A.mt;
-  c.save(); c.translate(180, 358); c.scale(mp, mp); c.globalAlpha = ma; c.textAlign = 'center'; c.fillStyle = '#e8f6ee'; c.font = '800 14px ' + FF; c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 6; c.fillText(m, 0, 0); c.restore();
+  c.save(); c.translate(180, 358); c.scale(mp, mp); c.globalAlpha = ma; c.textAlign = 'center'; c.fillStyle = '#e8f6ee'; let mz = 14; c.font = '800 ' + mz + 'px ' + FF; while (c.measureText(m).width > 300 && mz > 10) { mz -= .5; c.font = '800 ' + mz + 'px ' + FF; } c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 6; c.fillText(m, 0, 0); c.restore();
   if (V.mine) { const b = btns(st, me); b.forEach((x, i) => { const q = btnPos(b.length, i), bp = 1 + Math.sin(T * 4) * .03, ph = (T * .9) % 1; c.save(); c.globalAlpha = (1 - ph) * .4; c.beginPath(); c.arc(q.x, q.y, q.r + ph * 20, 0, 7); c.strokeStyle = x.k === 'end' ? '#ff6a74' : '#ffffff'; c.lineWidth = 2; c.stroke(); c.restore();
-    c.save(); c.translate(q.x, q.y); c.scale(bp, bp); c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 12; c.shadowOffsetY = 5; c.beginPath(); c.arc(0, 0, q.r, 0, 7); c.fillStyle = x.col; c.fill(); c.shadowColor = 'transparent'; c.save(); c.rotate(T * .5); c.setLineDash([7, 5]); c.lineWidth = 4; c.strokeStyle = 'rgba(255,255,255,.8)'; c.beginPath(); c.arc(0, 0, q.r - 6, 0, 7); c.stroke(); c.restore(); c.fillStyle = '#fff'; c.font = '900 14px ' + FF; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(x.label, 0, 1); c.restore(); }); }
+    c.save(); c.translate(q.x, q.y); c.scale(bp, bp); c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 12; c.shadowOffsetY = 5; c.beginPath(); c.arc(0, 0, q.r, 0, 7); c.fillStyle = x.col; c.fill(); c.shadowColor = 'transparent'; c.save(); c.rotate(T * .5); c.setLineDash([7, 5]); c.lineWidth = 4; c.strokeStyle = 'rgba(255,255,255,.8)'; c.beginPath(); c.arc(0, 0, q.r - 6, 0, 7); c.stroke(); c.restore(); c.fillStyle = '#fff'; let fz = 14; c.font = '900 ' + fz + 'px ' + FF; while (c.measureText(x.label).width > q.r * 1.4 && fz > 8) { fz -= .5; c.font = '900 ' + fz + 'px ' + FF; } c.textAlign = 'center'; c.textBaseline = 'middle'; c.shadowColor = 'rgba(0,0,0,.35)'; c.shadowBlur = 3; c.fillText(x.label, 0, 1); c.restore(); }); }
   /* итог партии: конфетти / затемнение */
   const end = V.end || '';
   if (end && end !== A.lastEnd) { A.cf = end === 'win' ? 2.6 : 0; if (end === 'win') ring(A, 180, 280, '#ffd24a', 200, 5); A.sh = .5; }
@@ -5280,7 +5280,7 @@ window.DKG = DKG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1111';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1112';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
