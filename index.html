@@ -5802,7 +5802,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1142';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1143';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11803,7 +11803,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     g.revDown = (x, y) => { const rv = g.rv; if (!rv) { g.ph = 'menu'; return; } const B = rvBt(), G2 = rvG();
       if (inB(B.exit, x, y)) { hap.tap(); if (g.rvDead) g.init(); else begin(); return; }
       if (!rv.ready) return;
-      const go = k => { rv.nav = true; rv.cur = Math.max(0, Math.min(rv.n, k)); rv.tc = g.t; hap.tap(); sfx('hop'); };
+      const go = k => { rv.nav = true; const a0 = rv.cur; rv.cur = Math.max(0, Math.min(rv.n, k)); rv.an = Math.abs(rv.cur - a0) === 1 ? {a: a0, b: rv.cur, t: g.t} : null; rv.tc = g.t; hap.tap(); sfx('hop'); };
       if (inB(B.prev, x, y)) go(rv.cur - 1); else if (inB(B.next, x, y)) go(rv.cur + 1);
       else if (inB(B.err, x, y)) { if (rv.bad.length) { const nx = rv.bad.find(i => i + 1 > rv.cur); go((nx != null ? nx : rv.bad[0]) + 1); sfx('spark', 4); } else hap.warn(); }
       else if (y >= 112 && y <= 182 && x >= 16 && x <= W - 16) go(Math.round((x - 24) / (W - 48) * rv.n)); };
@@ -11834,7 +11834,16 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       for (let i = 0; i < 64; i++) { const px = G2.x0 + (i & 7) * t, py = G2.y0 + (i >> 3) * t, dark = ((i >> 3) + (i & 7)) % 2 === 1; c.fillStyle = dark ? '#8d92cc' : '#e6e1f2'; c.fillRect(px, py, t + .5, t + .5);
         if (m && (i === m.f || i === m.t)) { c.globalAlpha = .55; c.fillStyle = lc; c.fillRect(px, py, t + .5, t + .5); c.globalAlpha = 1; } }
       c.restore();
-      for (let i = 0; i < 64; i++) { const p = S.b[i]; if (!p) continue; const im = chImg(p); if (!im.complete || !im.naturalWidth) continue; const z = t * .98; c.save(); c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = 5; c.shadowOffsetY = 2; c.drawImage(im, G2.x0 + (i & 7) * t + t / 2 - z / 2, G2.y0 + (i >> 3) * t + t / 2 - z / 2, z, z); c.restore(); }
+      { const an = rv.an && (T - rv.an.t) < .3 ? rv.an : null, k = an ? Math.min(1, (T - an.t) / .26) : 1, e = 1 - Math.pow(1 - k, 3);
+        const dp = (pc, sx, sy, al, lift) => { const im = chImg(pc); if (!im.complete || !im.naturalWidth) return; const z = t * .98 * (1 + (lift || 0)); c.save(); c.globalAlpha = al; c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = 5 + 8 * (lift || 0) * 5; c.shadowOffsetY = 2 + 5 * (lift || 0) * 5; c.drawImage(im, sx + t / 2 - z / 2, sy + t / 2 - z / 2 - (lift || 0) * t * .6, z, z); c.restore(); };
+        const pos = i => [G2.x0 + (i & 7) * t, G2.y0 + (i >> 3) * t];
+        let pairs = null, idx = 0, fwd = true;
+        if (an) { idx = Math.min(an.a, an.b); fwd = an.b > an.a; const mm = g.M[idx], bf = rv.P[idx].b[mm.f]; pairs = [{f: mm.f, t: mm.t}]; if (bf && (bf === 'K' || bf === 'k') && Math.abs((mm.t & 7) - (mm.f & 7)) === 2) { const r0 = mm.f >> 3, kc = (mm.t & 7) === 6; pairs.push({f: r0 * 8 + (kc ? 7 : 0), t: r0 * 8 + (kc ? 5 : 3)}); } }
+        for (let i = 0; i < 64; i++) { const pc = S.b[i]; if (!pc) continue; let done = false;
+          if (an) { const q = pairs.find(z => (fwd ? z.t : z.f) === i); if (q) { const s0 = pos(fwd ? q.f : q.t), s1 = pos(i), lf = .35 * Math.sin(Math.PI * k); dp(pc, s0[0] + (s1[0] - s0[0]) * e, s0[1] + (s1[1] - s0[1]) * e, 1, lf); done = true; }
+            else if (rv.P[an.a].b[i] !== rv.P[an.b].b[i] && !fwd) { const s1 = pos(i); dp(pc, s1[0], s1[1], e, 0); done = true; } }
+          if (!done) { const s1 = pos(i); dp(pc, s1[0], s1[1], 1, 0); } }
+        if (an && fwd) for (let i = 0; i < 64; i++) { const pc = rv.P[an.a].b[i]; if (pc && rv.P[an.b].b[i] !== pc && !pairs.some(z => z.f === i)) { const s1 = pos(i); dp(pc, s1[0], s1[1], 1 - e, 0); } } }
       if (bm) { const k = Math.min(1, (T - rv.tc) * 4), ax = G2.x0 + (bm.f & 7) * t + t / 2, ay = G2.y0 + (bm.f >> 3) * t + t / 2, bx = G2.x0 + (bm.t & 7) * t + t / 2, by = G2.y0 + (bm.t >> 3) * t + t / 2, ex2 = ax + (bx - ax) * k, ey = ay + (by - ay) * k, a = Math.atan2(by - ay, bx - ax);
         c.save(); c.globalAlpha = .88; c.strokeStyle = '#2fe07a'; c.fillStyle = '#2fe07a'; c.lineWidth = t * .16; c.lineCap = 'round'; c.shadowColor = '#2fe07a'; c.shadowBlur = 10; c.beginPath(); c.moveTo(ax, ay); c.lineTo(ex2 - Math.cos(a) * t * .22, ey - Math.sin(a) * t * .22); c.stroke(); c.translate(ex2, ey); c.rotate(a); c.beginPath(); c.moveTo(t * .1, 0); c.lineTo(-t * .3, -t * .22); c.lineTo(-t * .3, t * .22); c.closePath(); c.fill(); c.restore(); }
       /* подпись хода */
