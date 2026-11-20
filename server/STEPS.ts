@@ -1785,7 +1785,7 @@ async function routeLogout(body: any) {
 }
 
 /* ---------- v1.988: игры по сети (приглашение друга, комната, Крестики-нолики) ---------- */
-const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "che", "golf", "sea", "bil", "arc", "stk", "dk"]);
+const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "che", "golf", "sea", "bil", "arc", "stk", "dk", "k5"]);
 const STK_KINDS = 8;
 const arcWind = () => ({ v: +(0.2 + Math.random() * 2.8).toFixed(1), d: Math.random() < 0.5 ? -1 : 1 });
 /* v1.1101: поле 3×3 (3 в ряд), 4×4 (4 в ряд), 5×5 (4 в ряд) */
@@ -2069,8 +2069,63 @@ function dkMask(room: any, me: number) {
   const done = room.status === "done";
   return { ...room, state: { ...st, dk: { ...dk, deck: dk.deck.map(() => null), bt: dk.bt.map(() => null), h: dk.h.map((hh: any, i: number) => (i === seat || done ? hh : hh.map(() => null))) } } };
 }
+/* ---------- 105 («Сто одно» с порогом 105): колоду и руки хранит сервер ---------- */
+const kS = (c: any) => Math.floor(c / 9), kR = (c: any) => c % 9, KP = [6, 7, 8, 9, 10, 2, 3, 4, 11];
+function kShuf(a: any, rnd: any): any { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)), t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function kNew(first: any, rnd: any, sc: any, rd: any) {
+  const deck: any = kShuf(Array.from({ length: 36 }, (_: any, i: any) => i), rnd), h: any = [[], []];
+  for (let k = 0; k < 5; k++) { h[0].push(deck.pop()); h[1].push(deck.pop()); }
+  let i = deck.length - 1; while (i >= 0 && (kR(deck[i]) === 0 || kR(deck[i]) === 1 || kR(deck[i]) === 6 || kR(deck[i]) === 8)) i--;
+  const top = i >= 0 ? deck.splice(i, 1)[0] : deck.pop();
+  return { deck, disc: [top], h, at: first, suit: kS(top), pen: 0, drew: false, sc: sc || [0, 0], rd: rd || 1, rr: null, win: "", lm: null, n: 0 };
+}
+const kTop = (st: any) => st.disc[st.disc.length - 1];
+function kOk(st: any, c: any) {
+  if (st.pen > 0) return kR(c) === 1;
+  if (kR(c) === 6) return true;
+  return kS(c) === st.suit || kR(c) === kR(kTop(st));
+}
+function kDraw(st: any, seat: any, rnd: any) {
+  if (!st.deck.length && st.disc.length > 1) { const top = st.disc.pop(); st.deck = kShuf(st.disc.splice(0), rnd); st.disc.push(top); }
+  if (!st.deck.length) return -1;
+  const c = st.deck.pop(); st.h[seat].push(c); return c;
+}
+function kEnd(st: any, w: any, rnd: any) {
+  const o = 1 - w, pts = st.h[o].reduce((s: any, c: any) => s + KP[kR(c)], 0), sc = st.sc.slice();
+  sc[o] += pts; let reset = false; if (sc[o] === 105) { sc[o] = 0; reset = true; }
+  st.rr = { n: st.rd, w, pts, h: [st.h[0].slice(), st.h[1].slice()], sc: sc.slice(), reset }; st.sc = sc;
+  if (sc[o] > 105) { st.win = String(w); return; }
+  const nw = kNew(o, rnd, sc, st.rd + 1);
+  st.deck = nw.deck; st.disc = nw.disc; st.h = nw.h; st.at = o; st.suit = nw.suit; st.pen = 0; st.drew = false; st.rd = nw.rd;
+}
+function kMove(st: any, seat: any, m: any, c: any, s: any, rnd: any) {
+  if (st.win || st.at !== seat || (seat !== 0 && seat !== 1)) return false;
+  const o = 1 - seat, h = st.h[seat], lm: any = { s: seat, k: m, c: -1, q: -1, d: 0, n: 0 };
+  if (m === "play") {
+    if (!h.includes(c) || !kOk(st, c)) return false;
+    h.splice(h.indexOf(c), 1); st.disc.push(c); const r = kR(c); lm.c = c;
+    st.suit = r === 6 && s >= 0 && s <= 3 ? s : kS(c); lm.q = st.suit; st.drew = false;
+    if (!h.length) { st.n++; lm.n = st.n; st.lm = lm; kEnd(st, seat, rnd); return true; }
+    if (r === 0) { kDraw(st, o, rnd); lm.d = 1; }
+    else if (r !== 8) { if (r === 1) st.pen += 2; st.at = o; }
+  } else if (m === "draw") {
+    if (st.drew) return false;
+    if (st.pen > 0) { let d = 0; for (let i = 0; i < st.pen; i++) if (kDraw(st, seat, rnd) >= 0) d++; lm.d = d; st.pen = 0; st.at = o; }
+    else { const x = kDraw(st, seat, rnd); lm.d = x >= 0 ? 1 : 0; if (x >= 0 && kOk(st, x)) st.drew = true; else st.at = o; }
+  } else if (m === "pass") {
+    if (!st.drew) return false; st.drew = false; st.at = o;
+  } else return false;
+  st.n++; lm.n = st.n; st.lm = lm; return true;
+}
+
+function k5Mask(room: any, me: number) {
+  const st = room.state, k5 = st?.k5, seat = Array.isArray(st?.p) ? st.p.indexOf(me) : -1;
+  if (!k5 || seat < 0) return room;
+  return { ...room, state: { ...st, k5: { ...k5, deck: k5.deck.map(() => null), h: k5.h.map((hh: any, i: number) => (i === seat ? hh : hh.map(() => null))) } } };
+}
 function netView(room: any, me: number) {
   if (room?.game === "dk") return dkMask(room, me);
+  if (room?.game === "k5") return k5Mask(room, me);
   const f = room?.state?.fleets;
   if (!f || room.status === "done") return room;
   return { ...room, state: { ...room.state, fleets: { [me]: f[me] } } };
@@ -2087,6 +2142,7 @@ function netInit(game: string, host: number, guest: number, first: number, size 
   else if (game === "sea") st = { phase: "place", turn: first, p: [host, guest], fleets: {}, ready: {}, shots: { [host]: {}, [guest]: {} }, sunk: { [host]: [], [guest]: [] }, last: null, win: "" };
   else if (game === "arc") st = { p: [host, guest], turn: first, tc: 0, rounds: 2, per: 3, shot: 0, s: { [host]: 0, [guest]: 0 }, arrows: [], wind: arcWind(), log: [], last: null, win: "" };
   else if (game === "dk") { const dk = dkNew(first === host ? 0 : 1, Math.random); st = { p: [host, guest], dk, turn: [host, guest][dkWho(dk)], win: "" }; }
+  else if (game === "k5") { const k5 = kNew(first === host ? 0 : 1, Math.random, [0, 0], 1); st = { p: [host, guest], k5, turn: [host, guest][k5.at], win: "" }; }
   else if (game === "stk") st = { p: [host, guest], turn: first, k: Math.floor(Math.random() * STK_KINDS), objs: [], tc: 0, last: null, win: "", loser: 0 };
   else if (game === "bil") st = { turn: first, p: [host, guest], balls: BIL_RACK.map((b) => [b[0], b[1]]), last: null, win: "", foul: false };
   else st = tttInit(first, tttSize(size));
@@ -2299,6 +2355,13 @@ async function routeNetAct(body: any) {
     if (seat >= 0 && st.dk && dkWho(st.dk) === seat && dkMove(st.dk, seat, m, c)) {
       const w = st.dk.win, win = w === "" ? "" : w === "d" ? "d" : st.p[Number(w)];
       next = await netSave(room, { status: win ? "done" : "playing", state: { ...st, turn: win ? 0 : st.p[dkWho(st.dk)], win } });
+    }
+  }
+  else if (room.status === "playing" && room.game === "k5" && act === "k5") {
+    const st = room.state, seat = st.p.indexOf(me), m = String(body?.m ?? ""), c = Number(body?.c), su = Number(body?.s);
+    if (seat >= 0 && st.k5 && st.k5.at === seat && kMove(st.k5, seat, m, Number.isFinite(c) ? c : -1, Number.isFinite(su) ? su : -1, Math.random)) {
+      const w = st.k5.win, win = w === "" ? "" : st.p[Number(w)];
+      next = await netSave(room, { status: win ? "done" : "playing", state: { ...st, turn: win ? 0 : st.p[st.k5.at], win } });
     }
   }
   else if (room.status === "playing" && room.game === "sea" && act === "fleet") {
