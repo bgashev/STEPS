@@ -4605,6 +4605,21 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-hm{gap:6px}.hb-hm i{border-radius:10px;min-width:0;width:100%;align-self:start}.hb-hm i.f{background:linear-gradient(135deg,var(--hc),color-mix(in srgb,var(--hc) 65%,#fff))}
 .hb-mini.on{background:var(--text);color:var(--bg)}
 
+/* v1.1028: «Привычки» — кольца недели и карусель серий */
+.hb-wk{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin:18px 0 0}.hb-wk>div{width:auto;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11px;font-weight:700;color:var(--muted)}.hb-wk>div.tl{color:var(--text)}
+.hb-wk .r{--p:0;position:relative;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font:700 14px Unbounded,system-ui,sans-serif;color:var(--text);background:conic-gradient(#a78bfa calc(var(--p)*1%),rgba(255,255,255,.12) 0);margin:0;border:0}
+.hb-wk .r::before{content:"";position:absolute;inset:3.5px;border-radius:50%;background:var(--bg)}.hb-wk .r>span{position:relative}
+.hb-wk .r.ok{background:linear-gradient(135deg,#8b6cff,#ff5d8f);color:#fff}.hb-wk .r.ok::before{display:none}
+.hb-wk .r.ms{background:rgba(255,93,93,.4);color:#ffb4b4}
+.hb-wk .r.t{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--text)}
+.hb-wk .r.x{background:none;border:1.5px dashed rgba(255,255,255,.22);color:rgba(255,255,255,.4)}.hb-wk .r.x::before{display:none}
+.hb-car{display:flex;gap:10px;overflow-x:auto;margin:0 -18px;padding:2px 18px 6px;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch}.hb-car::-webkit-scrollbar{display:none}
+.hb-sc{--hc:#a78bfa;flex:none;width:148px;height:176px;border-radius:26px;padding:14px;position:relative;overflow:hidden;scroll-snap-align:start;background:linear-gradient(160deg,color-mix(in srgb,var(--hc) 30%,var(--surface)),var(--surface) 70%);border:1px solid color-mix(in srgb,var(--hc) 30%,var(--border));display:flex;flex-direction:column;cursor:pointer}
+.hb-sc .e{width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,.12);display:grid;place-items:center;font-size:19px}
+.hb-sc .n{margin-top:auto;font:800 56px/.9 Unbounded,system-ui,sans-serif;letter-spacing:-3px;background:linear-gradient(160deg,#fff 10%,var(--hc));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;padding-right:4px}
+.hb-sc b{display:block;margin-top:6px;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hb-sc small{color:var(--muted);font-size:11px}
+.hb-sc .dots{position:absolute;right:12px;top:18px;display:flex;gap:3px}.hb-sc .dots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.18)}.hb-sc .dots i.f{background:var(--hc)}
+.hb-sc.all{background:linear-gradient(160deg,#8b6cff,#ff5d8f);border:0;cursor:default}.hb-sc.all .n{background:none;-webkit-text-fill-color:#fff}.hb-sc.all small,.hb-sc.all b{color:#fff}.hb-sc.all .e{background:rgba(255,255,255,.25)}
 html.web .hb-r:hover,html.web .hb-pq:hover{filter:brightness(1.07)}
 @media(min-width:900px){html.web .ax-pg:has(.hb-h){max-width:980px}html.web .hb-pin{flex-wrap:wrap;margin:0;padding:2px 0 8px;overflow:visible}html.web .hb-pq{width:calc(25% - 6px);min-width:150px}html.web .hb-tl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 14px;padding-left:0;align-items:start}html.web .hb-tl:before{display:none}html.web .hb-g>h4:before{display:none}html.web .hb-g>h4{margin-top:4px}}
 /* v1.997: WEB · «Игры → По сети» — витрина */
@@ -4685,7 +4700,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1027';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1028';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11451,7 +11466,9 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     if (!L.length) return h + duHTML() + `<div class="hb-empty"><b>Пока пусто</b>Заведи первую привычку — полезную или от которой хочешь избавиться.</div><button type="button" class="hb-btn" data-act="habnew">${I('plus', 18)}Новая привычка</button>`;
     if (D.length) {
       const wd = (dt.getDay() + 6) % 7, t0 = todayN(), lb = HWK(), sk = hbAllStreak(D), all = nd === D.length;
-      h += `<div class="hb-wk">${lb.map((d, i) => { const n = t0 - wd + i, ok = n <= t0 && hbDayOk(n, D) === true; return `<div>${d}<i class="${ok ? 'd' : ''}${n === t0 ? ' t' : ''}${n > t0 ? ' x' : ''}"></i></div>`; }).join('')}</div><div class="hb-big"><div class="n"${sk >= 100 ? ' style="font-size:84px;letter-spacing:-5px"' : ''}>${sk}</div><span><b>${hbPl(sk)}</b> · ${all ? 'день закрыт ✓' : 'сегодня <b>' + nd + ' из ' + D.length + '</b>'}</span></div>`;
+      const fr = n => { const a = D.filter(x => Math.floor((x.cr || 0) / 864e5) <= n); return a.length ? Math.round(a.filter(x => hbDone(x, isoOf(n))).length / a.length * 100) : null; };
+      h += `<div class="hb-wk">${lb.map((d, i) => { const n = t0 - wd + i, p = n > t0 ? null : fr(n), c = p === 100 ? ' ok' : n > t0 || p === null ? ' x' : (p === 0 && n < t0 ? ' ms' : ''); return `<div${n === t0 ? ' class="tl"' : ''}>${d}<span class="r${c}${n === t0 ? ' t' : ''}" style="--p:${p || 0}"><span>${new Date((n * 864e5) + 432e5).getUTCDate()}</span></span></div>`; }).join('')}</div>`;
+      h += `<div class="hb-sec">Серии<em>${D.length}</em></div><div class="hb-car"><div class="hb-sc all"><div class="e">🔥</div><div class="n">${sk}</div><b>Все вместе</b><small>${hbPl(sk)}</small></div>${D.map(x => { const s2 = hbStreak(x), wk = []; for (let k = 6; k >= 0; k--) wk.push(hbDone(x, isoOf(t0 - k))); return `<div class="hb-sc" style="--hc:${HBC[x.c] || HBC.g}" data-act="habopen" data-id="${x.id}"><div class="dots">${wk.map(v => `<i${v ? ' class="f"' : ''}></i>`).join('')}</div><div class="e">${x.e}</div><div class="n">${s2}</div><b>${esc(x.t)}</b><small>${hbPl(s2)}</small></div>`; }).join('')}</div>`;
     }
     h += duHTML();
     if (Q.length) h += `<div class="hb-sec" style="margin-top:14px">Держусь<em>${Q.length}</em></div><div class="hb-pin">${Q.map(q => `<div class="hb-pq" style="--hc:${HBC[q.c] || HBC.r}" data-act="habopen" data-id="${q.id}"><span class="e">${q.e}</span><b>${esc(q.t)}</b><small>чист уже</small><div class="hb-clk" data-hclock="${q.id}">${hbClock(q)}</div></div>`).join('')}</div>`;
