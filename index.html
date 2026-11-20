@@ -4112,6 +4112,28 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 .ax-cnt{font-style:normal;text-transform:none;letter-spacing:0;font-size:12px;font-weight:700}
 .ax-hist{background:var(--surface);border:1px solid var(--border);border-radius:22px;overflow:hidden}.ax-hi{display:flex;align-items:center;gap:12px;padding:11px 8px 11px 14px}.ax-hi+.ax-hi{border-top:1px solid var(--border)}.ax-hi .ic{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:rgba(58,167,255,.14);color:#3a9bf0;flex:none}.ax-hi .t{flex:1;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}.ax-hi b{font-size:16px;font-weight:850;font-variant-numeric:tabular-nums}.ax-hi b em{font-style:normal;font-size:12px;color:var(--muted);font-weight:650}.ax-hi.old{opacity:.75}.ax-hi.old .ax-x{display:none}.ax-hi.old b{padding-right:10px}
 
+/* v1.1043: шахматы по сети */
+.ch-bd{display:grid;grid-template:repeat(8,1fr)/repeat(8,1fr);width:min(calc(100vw - 24px),calc(100dvh - 300px),520px);aspect-ratio:1;margin-top:auto;border-radius:18px;overflow:hidden;position:relative;box-shadow:0 22px 48px rgba(0,0,0,.35),0 0 0 1.5px var(--border);-webkit-clip-path:inset(0 round 18px);clip-path:inset(0 round 18px);touch-action:manipulation;user-select:none;-webkit-user-select:none}
+.ch-sq{position:relative;display:grid;place-items:center;background:#e6e1f2;cursor:pointer;-webkit-tap-highlight-color:transparent;min-width:0;min-height:0}.ch-sq.d{background:#6a6ea6}
+.ch-sq.lm::before{content:"";position:absolute;inset:0;background:color-mix(in srgb,var(--accent) 38%,transparent)}
+.ch-sq.sl::before{content:"";position:absolute;inset:0;background:color-mix(in srgb,var(--accent) 62%,transparent)}
+.ch-sq.ck::before{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(255,60,60,.95) 0,rgba(255,60,60,.55) 45%,transparent 74%)}
+.ch-sq.tg::after{content:"";position:absolute;width:30%;height:30%;border-radius:50%;background:rgba(20,16,40,.32);animation:ntpop .22s both}
+.ch-sq.tg.cp::after{width:88%;height:88%;background:transparent;box-shadow:inset 0 0 0 4px rgba(20,16,40,.38)}
+.ch-sq i{position:absolute;font:700 9px/1 -apple-system,system-ui,sans-serif;font-style:normal;opacity:.75;pointer-events:none;color:#6a6ea6}.ch-sq.d i{color:#e6e1f2}.ch-sq i.f{right:3px;bottom:2px}.ch-sq i.r{left:3px;top:3px}
+.ch-p{width:92%;height:92%;position:relative;z-index:2;pointer-events:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.38));transition:transform .15s}
+.ch-sq.sl .ch-p{transform:translateY(-6%) scale(1.08)}
+.ch-p .p{stroke-width:1.5;stroke-linejoin:round}.ch-p.w .p{fill:#fbf4e4;stroke:#2a2438}.ch-p.b .p{fill:#262849;stroke:#07070f}
+.ch-p .p .e{fill:none;stroke:#2a2438;stroke-width:1.4;stroke-linecap:round}.ch-p.b .p .e{stroke:#c9cbe8}.ch-p .p circle.e{fill:#2a2438;stroke:none}.ch-p.b .p circle.e{fill:#c9cbe8}
+.ch-p.mine{filter:drop-shadow(0 2px 2px rgba(0,0,0,.38)) drop-shadow(0 0 0 transparent)}
+.ch-mat{display:flex;justify-content:space-between;align-items:center;width:min(calc(100vw - 24px),520px);margin-top:12px;min-height:26px;gap:10px}
+.ch-mat>div{display:flex;align-items:center;min-width:0;flex:1;height:24px;overflow:hidden;white-space:nowrap}.ch-mat>div:last-child{justify-content:flex-end}.ch-mat svg{width:17px;height:17px;margin-right:-8px;flex:none}.ch-mat svg .p{stroke-width:1.8}.ch-mat svg.w .p{fill:#fbf4e4;stroke:#2a2438}.ch-mat svg.b .p{fill:#262849;stroke:#07070f}.ch-mat svg .e{display:none}
+.ch-mat b{margin-left:14px;font:800 12px Unbounded,system-ui,sans-serif;color:var(--muted)}
+.ch-rs{flex:none;border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:99px;height:34px;padding:0 16px;font:700 13px inherit;font-family:inherit;display:flex;align-items:center;gap:6px;cursor:pointer;transition:.2s}.ch-rs.arm{background:rgba(255,69,58,.18);color:#ff6b61;border-color:rgba(255,69,58,.5)}.ch-rs:active{transform:scale(.95)}
+.ch-pm{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:rgba(10,10,18,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:ntpop .2s both}
+.ch-pm div{display:flex;gap:8px;padding:12px;border-radius:26px;background:var(--surface);border:1px solid var(--border)}.ch-pm button{width:min(17vw,70px);aspect-ratio:1;border-radius:20px;border:0;background:#e6e1f2;display:grid;place-items:center;padding:6px}.ch-pm button:active{transform:scale(.92)}.ch-pm svg{width:100%;height:100%}.ch-pm svg.w .p{fill:#fbf4e4;stroke:#2a2438;stroke-width:1.5}.ch-pm svg.b .p{fill:#262849;stroke:#07070f;stroke-width:1.5}
+.nt-st.chk{color:#ff6b61}
+@media(min-width:700px){html.web .ch-bd{width:min(520px,calc(100vh - 300px))}}
 /* v1.1042: «Вода» — вариант «Стихия» */
 .ax-wt{height:300px;border-radius:36px;padding:22px;background:var(--surface)}
 .ax-wt .wave{background:linear-gradient(180deg,#4cc9f0 0%,#2f8bff 100%);opacity:.92}
@@ -4133,7 +4155,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 .ax-wl .ax-hi b{font-family:'Unbounded',sans-serif;font-size:15px;letter-spacing:-.5px}
 .ax-wl .ax-hi .ax-x{width:46px;height:46px;border-radius:16px;background:rgba(255,69,58,.16);color:#ff6b61;flex:none}
 .ax-wl .ax-hi .ax-x:active{transform:scale(.9);background:rgba(255,69,58,.32)}
-.ax-wl .ax-hi.gone{transform:translateX(-110%);opacity:0;height:0;margin:0;border-width:0}
+.ax-wl .ax-hi.gone{transform:translateX(-112%);opacity:0;height:0!important;margin-bottom:0;pointer-events:none;transition:transform .32s cubic-bezier(.5,0,.9,.5),opacity .26s ease-in,height .3s cubic-bezier(.3,.7,.3,1) .2s,margin .3s cubic-bezier(.3,.7,.3,1) .2s}
 .ax-wl .ax-hi.fresh{animation:axhin .5s cubic-bezier(.2,.9,.25,1)}@keyframes axhin{from{opacity:0;transform:translateX(-22px) scale(.96)}}
 .ax-wl .ax-hi.old{--p:.25}
 .ax-hint2{margin:-2px 4px 10px;color:var(--muted);font-size:12px}
@@ -4779,7 +4801,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1042';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1043';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11446,7 +11468,7 @@ const AX = (function(){
   if (!window.__wsw) { window.__wsw = 1; let r = null, x0 = 0, y0 = 0, dx = 0, lock = 0;
     document.addEventListener('touchstart', e => { const t = e.target.closest && e.target.closest('.ax-wl .ax-hi[data-id]'); if (!t || e.touches.length !== 1) { r = null; return; } r = t; x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; dx = 0; lock = 0; t.style.transition = 'none'; }, {passive: true});
     document.addEventListener('touchmove', e => { if (!r) return; const mx = e.touches[0].clientX - x0, my = e.touches[0].clientY - y0; if (!lock) { if (Math.abs(mx) > 8 && Math.abs(mx) > Math.abs(my)) lock = 1; else if (Math.abs(my) > 8) { r.style.transition = ''; r = null; return; } else return; } dx = Math.min(0, mx); r.style.transform = 'translateX(' + dx + 'px)'; r.style.opacity = String(1 - Math.min(.6, -dx / 300)); }, {passive: true});
-    document.addEventListener('touchend', () => { if (!r) return; const t = r; r = null; t.style.transition = ''; if (lock && dx < -90) { const b = t.querySelector('.ax-x'); t.style.transform = ''; t.style.opacity = ''; if (b) b.click(); } else { t.style.transform = ''; t.style.opacity = ''; } }, {passive: true});
+    document.addEventListener('touchend', () => { if (!r) return; const t = r; r = null; t.style.transition = ''; if (lock && dx < -90) { const b = t.querySelector('.ax-x'); if (b) b.click(); else { t.style.transform = ''; t.style.opacity = ''; } } else { t.style.transform = ''; t.style.opacity = ''; } }, {passive: true});
   }
     const w = wd(), wg = waterGoal(), pct = Math.round(clamp(w / wg.goal, 0, 1) * 100), log = (wlog()[isoT()] || []).slice().reverse(), logSum = log.reduce((a, e) => a + e.v, 0), prior = Math.max(0, w - logSum), done = w >= wg.goal, prevPct = ST.wp == null ? pct : ST.wp; ST.wp = pct; if (prevPct !== pct) requestAnimationFrame(() => requestAnimationFrame(() => { const e = document.querySelector('.ax-wt .wave'); if (e) e.style.setProperty('--w', pct + '%'); }));
     return back() + `<div class="ax-h1">Вода</div><div class="ax-sub">Цель на сегодня — ${P0(wg.goal)} мл${wg.tr ? ' · с тренировкой +500' : ''}</div>
@@ -11455,7 +11477,7 @@ const AX = (function(){
     <div class="ax-wb">${[150, 250, 330, 500].map(v => `<button type="button" data-act="axwater" data-v="${v}"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${WIC[v]}</svg><b>+${v}</b><small>мл</small></button>`).join('')}</div>
     <div class="ax-wc"><input id="ax-wc" type="number" inputmode="numeric" placeholder="Свой объём, мл" min="10" max="2000"><button type="button" data-act="axwcust">Добавить</button></div>
     </div><div class="ax-c2"><div class="ax-sech"><span>Сегодня выпито</span><em class="ax-cnt">${log.length ? log.length + ' ' + (log.length === 1 ? 'раз' : log.length < 5 ? 'раза' : 'раз') : ''}</em></div>
-    ${log.length ? '<div class="ax-hint2">Смахни порцию влево или нажми корзину, чтобы удалить</div>' : ''}<div class="ax-hist ax-wl">${log.length ? log.map(e => `<div class="ax-hi" data-id="${e.id}" style="--p:${Math.min(1, e.v / 500).toFixed(2)}"><span class="ic">${SV(WIC[e.v <= 200 ? 150 : e.v <= 290 ? 250 : e.v <= 400 ? 330 : 500], 18)}</span><span class="t">${hhmm(e.t)}</span><b>+${P0(e.v)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdel" data-id="${e.id}" aria-label="Удалить порцию">${I('trash', 18)}</button></div>`).join('') : ''}${prior ? `<div class="ax-hi old"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">раньше</span><b>${P0(prior)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdelold" aria-label="Удалить">${I('x', 14)}</button></div>` : ''}${!log.length && !prior ? '<div class="ax-em" style="padding:14px">Пока ничего не выпито — нажми на стакан выше</div>' : ''}</div>
+    ${log.length ? '<div class="ax-hint2">Смахни порцию влево или нажми корзину, чтобы удалить</div>' : ''}<div class="ax-hist ax-wl">${log.length ? log.map(e => `<div class="ax-hi${ST.wnew === e.id ? ' fresh' : ''}" data-id="${e.id}" style="--p:${Math.min(1, e.v / 500).toFixed(2)}"><span class="ic">${SV(WIC[e.v <= 200 ? 150 : e.v <= 290 ? 250 : e.v <= 400 ? 330 : 500], 18)}</span><span class="t">${hhmm(e.t)}</span><b>+${P0(e.v)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdel" data-id="${e.id}" aria-label="Удалить порцию">${I('trash', 18)}</button></div>`).join('') : ''}${prior ? `<div class="ax-hi old"><span class="ic">${SV(WIC[250], 18)}</span><span class="t">раньше</span><b>${P0(prior)} <em>мл</em></b><button type="button" class="ax-x" data-act="axwdelold" aria-label="Удалить">${I('x', 14)}</button></div>` : ''}${!log.length && !prior ? '<div class="ax-em" style="padding:14px">Пока ничего не выпито — нажми на стакан выше</div>' : ''}</div>
     ${waterStats()}
     <button type="button" class="ax-clr${ST.wclr ? ' arm' : ''}" data-act="axwclear">${ST.wclr ? 'Нажми ещё раз — сотру всю историю воды' : 'Очистить всю историю воды'}</button><div class="ax-note">Цель считается от веса (≈30 мл на кг) и сдвигается в дни с тренировкой.</div></div></div><div style="height:130px"></div>`;
   }
@@ -11884,7 +11906,16 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     axwsel: el => { ST.wsel = el.dataset.k; hap.tap(); render(); },
     axwmore: () => { ST.wmore += 20; hap.tap(); render(); },
     axwdelold: () => { const k = isoT(), L = wlog(), sum = (L[k] || []).reduce((a, e) => a + e.v, 0), old = Math.max(0, wd(k) - sum); if (!old) return; db.water[k] = sum; save(); hap.tap(); render(); toast('Удалено −' + old + ' мл', 'Вернуть', () => { db.water[k] = sum + old; save(); render(); }); },
-    axwdel: el => { const row = el.closest('.ax-hi'), go = () => { const e = delWater(el.dataset.id); if (!e) return; hap.tap(); render(); toast('Удалено −' + e.v + ' мл', 'Вернуть', () => { const k = isoT(); db.water[k] = Math.min(9000, wd(k) + e.v); (wlog()[k] = wlog()[k] || []).push(e); wlog()[k].sort((a, b) => a.t - b.t); save(); render(); }); }; if (row) { row.classList.add('gone'); setTimeout(go, 260); } else go(); },
+    axwdel: el => {
+      const row = el.closest('.ax-hi'), e = delWater(el.dataset.id); if (!e) return; hap.tap();
+      const wg = waterGoal(), w = wd(), pct = Math.round(clamp(w / wg.goal, 0, 1) * 100); ST.wp = pct;
+      const T0 = document.querySelector('.ax-wt');
+      if (T0) { const pc = T0.querySelector('.pc'), n = T0.querySelector('.n'), sm = T0.querySelector('small'), wv = T0.querySelector('.wave'); if (pc) pc.textContent = pct + '%'; if (n) n.innerHTML = P0(w) + '<i> мл</i>'; if (sm) sm.textContent = w >= wg.goal ? 'норма выполнена — отлично' : 'ещё ' + P0(wg.goal - w) + ' мл до нормы'; if (wv) wv.style.setProperty('--w', pct + '%'); }
+      const left = document.querySelectorAll('.ax-wl .ax-hi[data-id]').length - 1, cnt = document.querySelector('.ax-cnt'); if (cnt) cnt.textContent = left > 0 ? left + ' ' + (left === 1 ? 'раз' : left < 5 ? 'раза' : 'раз') : '';
+      if (row) { row.style.height = row.offsetHeight + 'px'; void row.offsetHeight; row.classList.add('gone'); row.style.transform = ''; row.style.opacity = ''; }
+      setTimeout(() => { if (ST.s === 'water') render(); }, row ? 560 : 0);
+      toast('Удалено −' + e.v + ' мл', 'Вернуть', () => { const k = isoT(); db.water[k] = Math.min(9000, wd(k) + e.v); (wlog()[k] = wlog()[k] || []).push(e); wlog()[k].sort((a, b) => a.t - b.t); ST.wnew = e.id; save(); render(); setTimeout(() => { ST.wnew = null; }, 700); });
+    },
     axadd: el => { ST.meal = el.dataset.m || mealOf(); ST.q = ''; ST.quick = false; ST.pr = null; if (!S.app) { ST.stack = ['cal']; ST.s = 'add'; S.app = true; hap.tap(); render(); window.scrollTo(0, 0); } else go('add'); },
     axaddscan: el => { acts.axadd(el); setTimeout(() => openScan(), 50); },
     axquick: () => { ST.quick = !ST.quick; hap.tap(); render(); },
@@ -12824,6 +12855,80 @@ const NET = (() => {
     }
     if (pre.length === 1 && all.some(m => m[0] === i)) { N.cs.pre = [i]; hap.tap(); drawChk(); }
   }
+  /* шахматы */
+  const CHP = {
+p:'<circle cx="22.5" cy="13.5" r="5.3"/><path d="M16.8 21.5c1.9 1.5 3.5 2 5.7 2s3.800-.5 5.700-2c.9 4 .4 7.500 3.300 11H13.500c2.900-3.500 2.400-7 3.300-11z"/><path d="M11.500 38.500h22l-1.800-6h-18.400z"/>',
+r:'<path d="M11.500 38.500h22v-4h-22z"/><path d="M14 34.500l1.400-14h14.200l1.400 14z"/><path d="M14.400 20.500l-.7-5h17.600l-.7 5z"/><path d="M12.800 15.500v-7h4.200v2.800h3.400V8.500h4.200v2.800H28V8.500h4.200v7z"/>',
+n:'<path d="M12 38.500c0-9.500 1.200-14 5.500-17.500-2.200.2-4.200 1.600-6 4.200l-2.500-1.400c1.200-4.200 4.400-8 8-10.200l.8-4.200 3.200 2.400c9 .6 14.500 7.200 14.500 20 0 2.300-.4 4.600-.8 6.700z"/><circle cx="19.600" cy="14.800" r="1.300" class="e"/><path d="M11 23.800l3.200-1.800" class="e"/>',
+b:'<path d="M11.500 38.500h22v-3.500h-22z"/><path d="M15.200 35c0-6 1.800-8.500 3.200-10.600-3-2-4.400-4.800-4.400-7.900 0-4.200 4-7.600 8.500-9.500 4.500 1.900 8.500 5.300 8.500 9.500 0 3.100-1.400 5.900-4.400 7.900 1.400 2.100 3.200 4.600 3.200 10.600z"/><circle cx="22.500" cy="8" r="2.900"/><path d="M19.500 17h6M22.500 14v6" class="e"/>',
+q:'<path d="M11 38.500h23v-3.500H11z"/><path d="M13 35l-3.500-17.500 7.200 7 2.800-11.500 3 11 3-11 2.800 11.500 7.200-7L32 35z"/><circle cx="9.500" cy="16.500" r="2.300"/><circle cx="35.500" cy="16.500" r="2.300"/><circle cx="17" cy="9.500" r="2.300"/><circle cx="28" cy="9.500" r="2.300"/><circle cx="22.500" cy="7.500" r="2.300"/>',
+k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h22v-3.500h-22z"/><path d="M13 35c-1.500-7 3-9.500 4-12.500-2-2.500-4.500-4-4.500-7 0-3 3-5 6.500-3l3.500 2 3.500-2c3.500-2 6.500 0 6.500 3 0 3-2.500 4.500-4.500 7 1 3 5.500 5.500 4 12.500z"/>'};
+  const chSvg = (p, cls) => `<svg class="${cls || 'ch-p'} ${p === p.toUpperCase() ? 'w' : 'b'}" viewBox="0 0 45 45"><g class="p">${CHP[p.toLowerCase()]}</g></svg>`;
+  const CHV = {p:1, n:3, b:3, r:5, q:9, k:0};
+  function bChe(b){ const r = N.room, st = r.state, bl = +st.white === +r.host_id ? r.guest_id : r.host_id; N.ch = {sel:null, seen:r.rev, prom:null, rs:0, opt:null};
+    b.innerHTML = chips(r, [st.white, bl], [T('белые'), T('чёрные')]) + `<div class="ch-bd" id="chbd"></div><div class="ch-mat"><div id="chm0"></div><button type="button" class="ch-rs" id="chrs" data-nt="resign">${T('Сдаться')}</button><div id="chm1"></div></div><div class="nt-st" id="ntst"></div>`; }
+  function chMatHTML(b, col) {   /* что съел игрок цвета col: фигуры соперника, которых нет на доске */
+    const full = {p:8, n:2, b:2, r:2, q:1}, opp = col === 'w' ? 'b' : 'w', have = {}; b.forEach(x => { if (x && (x === x.toUpperCase() ? 'w' : 'b') === opp) have[x.toLowerCase()] = (have[x.toLowerCase()] || 0) + 1; });
+    let h = ''; ['q', 'r', 'b', 'n', 'p'].forEach(t => { for (let k = 0; k < full[t] - (have[t] || 0); k++) h += chSvg(opp === 'w' ? t.toUpperCase() : t, 'ch-mi'); }); return h;
+  }
+  function chScore(b, col) { let v = 0; b.forEach(x => { if (x && x.toLowerCase() !== 'k') v += (x === x.toUpperCase() ? 'w' : 'b') === col ? CHV[x.toLowerCase()] : 0; }); return v; }
+  function drawChe(board){
+    const r = N.room, st = r.state, el = q('#chbd'); if (!el) return;
+    const white = +st.white === +UK, myc = white ? 'w' : 'b', my = r.status === 'playing' && st.turn === myc && !N.pend, b = board || st.b, sel = N.ch.sel;
+    const lg = st.legal || {}, tg = new Set(sel != null && my ? (lg[sel] || []) : []), lm = new Set(st.last ? [st.last.from, st.last.to] : []), kg = st.check ? b.indexOf(st.turn === 'w' ? 'K' : 'k') : -1;
+    let h = '';
+    for (let rr = 0; rr < 8; rr++) for (let cc = 0; cc < 8; cc++) {
+      const gr = white ? rr : 7 - rr, gc = white ? cc : 7 - cc, i = rr * 8 + cc, p = b[i], dark = (rr + cc) % 2 === 1;
+      h += `<div class="ch-sq${dark ? ' d' : ''}${lm.has(i) ? ' lm' : ''}${sel === i ? ' sl' : ''}${tg.has(i) ? ' tg' + (p || (st.ep === i && b[sel] && b[sel].toLowerCase() === 'p') ? ' cp' : '') : ''}${kg === i ? ' ck' : ''}" data-nt="chsq" data-i="${i}" style="grid-row:${gr + 1};grid-column:${gc + 1}">${gc === 0 ? `<i class="r">${8 - rr}</i>` : ''}${gr === 7 ? `<i class="f">${'abcdefgh'[cc]}</i>` : ''}${p ? chSvg(p, 'ch-p') : ''}</div>`;
+    }
+    el.innerHTML = h + (N.ch.prom ? `<div class="ch-pm" data-nt="chpx"><div>${[1, 2, 3, 4].map(k => `<button type="button" data-nt="chpm" data-k="${k}">${chSvg(white ? 'QRBN'[k - 1] : 'qrbn'[k - 1], 'x')}</button>`).join('')}</div></div>` : '');
+  }
+  function uChe(r){
+    const st = r.state; if (!q('#chbd')) return;
+    const white = +st.white === +UK, myc = white ? 'w' : 'b', opp = +st.white === +r.host_id ? r.guest_id : r.host_id;
+    q('#nts0').textContent = T('белые'); q('#nts1').textContent = T('чёрные');
+    q('#ntp0').classList.toggle('on', r.status === 'playing' && st.turn === 'w'); q('#ntp1').classList.toggle('on', r.status === 'playing' && st.turn === 'b');
+    const fresh = st.last && N.ch.seen !== r.rev; N.ch.seen = r.rev; N.ch.sel = null; N.ch.prom = null; N.ch.opt = null;
+    drawChe();
+    const mine = (c) => chMatHTML(st.b, c), sc = chScore(st.b, myc) - chScore(st.b, myc === 'w' ? 'b' : 'w');
+    q('#chm0').innerHTML = mine(myc) + (sc > 0 ? `<b>+${sc}</b>` : ''); q('#chm1').innerHTML = mine(myc === 'w' ? 'b' : 'w') + (sc < 0 ? `<b>+${-sc}</b>` : '');
+    if (fresh && +st.last.by !== +UK) {
+      const a = q('.ch-sq[data-i="' + st.last.from + '"]'), z = q('.ch-sq[data-i="' + st.last.to + '"]'), pc = z && z.querySelector('.ch-p');
+      if (a && z && pc) { const ra = a.getBoundingClientRect(), rz = z.getBoundingClientRect(); pc.style.zIndex = 4; pc.animate([{transform:`translate(${ra.left - rz.left}px,${ra.top - rz.top}px)`}, {transform:'none'}], {duration:280, easing:'cubic-bezier(.3,1.15,.4,1)'}); }
+      (st.check ? hap.warn : st.last.cap ? hap.med : hap.imp)();
+    }
+    const my = r.status === 'playing' && st.turn === myc, el = q('#ntst'), rs = q('#chrs');
+    el.classList.toggle('chk', r.status === 'playing' && !!st.check);
+    el.textContent = r.status !== 'playing' ? '' : st.check ? (my ? T('Тебе шах!') : T('Шах!')) : my ? T('Твой ход') : T('Ходит {0}', raw(opp === +UK ? st.white : (st.turn === 'w' ? st.white : (+st.white === +r.host_id ? r.guest_id : r.host_id))));
+    if (rs) { rs.style.visibility = r.status === 'playing' ? 'visible' : 'hidden'; rs.classList.remove('arm'); rs.textContent = T('Сдаться'); N.ch.rs = 0; }
+  }
+  function chWhy(r) {
+    const st = r.state, w = st.why, o = outcome(r);
+    return w === 'mate' ? (o === 'w' ? T('Мат. Красивая партия') : T('Мат. Реванш?')) : w === 'stalemate' ? T('Пат: ходов нет, но шаха нет') : w === 'material' ? T('Ничья: не хватает фигур для мата') : w === 'repeat' ? T('Ничья: трёхкратное повторение') : w === 'fifty' ? T('Ничья: правило 50 ходов') : w === 'resign' ? (o === 'w' ? T('Соперник сдался') : T('Ты сдался. Реванш?')) : '';
+  }
+  function chTap(i) {
+    const r = N.room, st = r && r.state; if (!r || r.game !== 'che' || r.status !== 'playing' || N.pend || N.ch.prom) return;
+    const white = +st.white === +UK, myc = white ? 'w' : 'b'; if (st.turn !== myc) return;
+    const p = st.b[i], lg = st.legal || {}, sel = N.ch.sel, own = p && (p === p.toUpperCase() ? 'w' : 'b') === myc;
+    if (sel != null && (lg[sel] || []).includes(i)) {
+      const pc = st.b[sel], last = white ? 0 : 7;
+      if (pc.toLowerCase() === 'p' && (i >> 3) === last) { N.ch.prom = {from:sel, to:i}; hap.tap(); drawChe(); return; }
+      chMove(sel, i, 0); return;
+    }
+    if (own && lg[i]) { N.ch.sel = sel === i ? null : i; hap.tap(); drawChe(); return; }
+    if (sel != null) { N.ch.sel = null; drawChe(); }
+  }
+  function chMove(from, to, prom) {
+    const r = N.room, st = r.state, b = st.b.slice(), pc = b[from], white = +st.white === +UK;
+    const a = q('.ch-sq[data-i="' + from + '"]'), ra = a && a.querySelector('.ch-p') && a.getBoundingClientRect();
+    if (pc.toLowerCase() === 'p' && !b[to] && (from & 7) !== (to & 7)) b[to + (white ? 8 : -8)] = '';
+    if (pc.toLowerCase() === 'k' && Math.abs((to & 7) - (from & 7)) === 2) { if (to > from) { b[to - 1] = b[to + 1]; b[to + 1] = ''; } else { b[to + 1] = b[to - 2]; b[to - 2] = ''; } }
+    b[to] = prom ? (white ? 'QRBN' : 'qrbn')[prom - 1] : pc; b[from] = '';
+    N.ch.sel = null; N.ch.prom = null; N.pend = true; hap.tap(); drawChe(b);
+    const z = q('.ch-sq[data-i="' + to + '"]'), el = z && z.querySelector('.ch-p');
+    if (ra && el) { const rz = z.getBoundingClientRect(); el.style.zIndex = 4; el.animate([{transform:`translate(${ra.left - rz.left}px,${ra.top - rz.top}px)`}, {transform:'none'}], {duration:220, easing:'cubic-bezier(.3,1.1,.4,1)'}); }
+    act('move', {from, to, prom}).then(() => { N.pend = false; if (N.room && N.room.game === 'che' && q('#chbd') && N.room.rev === r.rev) drawChe(); }, () => { N.pend = false; drawChe(); });
+  }
   /* гольф */
   const HOLES = [
     {tee:[150, 392], cup:[150, 64], w:[[70, 215, 62, 14], [168, 215, 62, 14]], sand:[], water:[], bump:[], ramp:[]},
@@ -13096,6 +13201,7 @@ const NET = (() => {
   const GM = {
     ttt:{get title(){ return T('Крестики-нолики'); }, build:bTtt, upd:uTtt},
     chk:{get title(){ return T('Шашки'); }, build:bChk, upd:uChk},
+    che:{get title(){ return T('Шахматы'); }, build:bChe, upd:uChe},
     sea:{get title(){ return T('Морской бой'); }, build:bSea, upd:uSea},
     bil:{get title(){ return T('Бильярд'); }, build:bBil, upd:uBil},
     golf:{get title(){ return T('Гольф'); }, build:bGolf, upd:uGolf}
@@ -13112,7 +13218,7 @@ const NET = (() => {
     if (r.status === 'done') {
       const o = outcome(r), t = o === 'd' ? [T('Ничья'), T('Бывает. Реванш?')] : o === 'w' ? [T('Победа!'), T('Красиво сыграно')] : [T('Поражение'), T('Реванш?')];
       if (!res) { res = document.createElement('div'); res.className = 'nt-res'; res.innerHTML = `<h3></h3><p></p><div class="nt-bts"><div class="nt-btn ghost" data-nt="leave">${T('Выйти')}</div><div class="nt-btn" data-nt="rematch">${T('Реванш')}</div></div>`; q('.nt-gm').appendChild(res); o === 'd' ? hap.imp() : o === 'w' ? hap.ok() : hap.warn(); }
-      res.querySelector('h3').textContent = t[0]; res.querySelector('p').textContent = r.game === 'golf' ? T('Удары: ты {0} · соперник {1}', r.state.tot[UK] || 0, r.state.tot[oppOf(r)] || 0) : t[1];
+      res.querySelector('h3').textContent = t[0]; res.querySelector('p').textContent = r.game === 'golf' ? T('Удары: ты {0} · соперник {1}', r.state.tot[UK] || 0, r.state.tot[oppOf(r)] || 0) : r.game === 'che' ? (chWhy(r) || t[1]) : t[1];
     } else if (res) res.remove();
     peerBar();
   }
@@ -13181,6 +13287,10 @@ const NET = (() => {
     else if (a === 'rematch') { hap.tap(); act('rematch'); }
     else if (a === 'hi' || a === 'lo') { if (!t.classList.contains('dis') && !N.pend) { hap.tap(); N.pend = true; act('guess', {dir:a}).then(() => { N.pend = false; }); } }
     else if (a === 'sq') chkTap(+t.dataset.i);
+    else if (a === 'chsq') chTap(+t.dataset.i);
+    else if (a === 'chpm') { const pr = N.ch && N.ch.prom; if (pr) chMove(pr.from, pr.to, +t.dataset.k); }
+    else if (a === 'chpx') { if (e.target === t && N.ch) { N.ch.prom = null; drawChe(); } }
+    else if (a === 'resign') { const b = q('#chrs'); if (!b || !N.room || N.room.status !== 'playing') return; if (!N.ch.rs) { N.ch.rs = 1; b.classList.add('arm'); b.textContent = T('Точно сдаться?'); hap.warn(); setTimeout(() => { if (b.isConnected && N.ch && N.ch.rs) { N.ch.rs = 0; b.classList.remove('arm'); b.textContent = T('Сдаться'); } }, 3000); } else { N.ch.rs = 0; act('resign'); } }
     else if (a === 'shuf') { hap.tap(); N.sea.mine = seaRand(); updGame(); }
     else if (a === 'sgo') { if (!N.pend) { hap.tap(); N.pend = true; act('fleet', {ships:N.sea.mine}).then(() => { N.pend = false; }); } }
     else if (a === 'sc') { const r = N.room, st = r && r.state; if (r && r.game === 'sea' && st.phase === 'war' && +st.turn === +UK && r.status === 'playing' && !N.pend && t.closest('#ntso') && !(st.shots[UK] || {})[t.dataset.i]) { hap.tap(); N.pend = true; act('shot', {i:+t.dataset.i}).then(() => { N.pend = false; }); } }

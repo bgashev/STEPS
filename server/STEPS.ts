@@ -1617,11 +1617,119 @@ async function routeLogout(body: any) {
 }
 
 /* ---------- v1.988: игры по сети (приглашение друга, комната, Крестики-нолики) ---------- */
-const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "golf", "sea", "bil"]);
+const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "che", "golf", "sea", "bil"]);
 const tttLines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 const tttResult = (b: string[]) => { for (const [a, c, d] of tttLines) if (b[a] && b[a] === b[c] && b[a] === b[d]) return b[a]; return b.every((x) => x) ? "d" : ""; };
 const tttInit = (x: number) => ({ board: Array(9).fill(""), turn: "X", x, win: "" });
 const netIso = (agoS: number) => new Date(Date.now() - agoS * 1000).toISOString();
+/* ---- шахматы: сервер считает все ходы, шах, мат, пат, ничьи ---- */
+const CH_KN = [[-2, -1], [-2, 1], [-1, -2], [-1, 2], [1, -2], [1, 2], [2, -1], [2, 1]], CH_KG = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
+const CH_DG = [[-1, -1], [-1, 1], [1, -1], [1, 1]], CH_ST = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+const chCol = (p: string) => (p === "" ? "" : p === p.toUpperCase() ? "w" : "b");
+function chAttacked(b: string[], sq: number, by: string): boolean {
+  const r = sq >> 3, c = sq & 7, P = (x: string) => (by === "w" ? x.toUpperCase() : x.toLowerCase());
+  const pr = by === "w" ? r + 1 : r - 1;
+  if (pr >= 0 && pr < 8) for (const dc of [-1, 1]) { const cc = c + dc; if (cc >= 0 && cc < 8 && b[pr * 8 + cc] === P("p")) return true; }
+  for (const [dr, dc] of CH_KN) { const rr = r + dr, cc = c + dc; if (rr >= 0 && rr < 8 && cc >= 0 && cc < 8 && b[rr * 8 + cc] === P("n")) return true; }
+  for (const [dr, dc] of CH_KG) { const rr = r + dr, cc = c + dc; if (rr >= 0 && rr < 8 && cc >= 0 && cc < 8 && b[rr * 8 + cc] === P("k")) return true; }
+  for (const [dirs, a, z] of [[CH_DG, "b", "q"], [CH_ST, "r", "q"]] as [number[][], string, string][]) for (const [dr, dc] of dirs) {
+    let rr = r + dr, cc = c + dc;
+    while (rr >= 0 && rr < 8 && cc >= 0 && cc < 8) { const x = b[rr * 8 + cc]; if (x) { if (x === P(a) || x === P(z)) return true; break; } rr += dr; cc += dc; }
+  }
+  return false;
+}
+const chKing = (b: string[], col: string) => b.indexOf(col === "w" ? "K" : "k");
+/* псевдо-легальные ходы: [from, to, prom, flag]  flag: 1=длинный ход пешки, 2=взятие на проходе, 3=рокировка короткая, 4=длинная */
+function chPseudo(st: any): number[][] {
+  const b: string[] = st.b, col: string = st.turn, out: number[][] = [], opp = col === "w" ? "b" : "w";
+  for (let i = 0; i < 64; i++) {
+    const p = b[i]; if (!p || chCol(p) !== col) continue;
+    const t = p.toLowerCase(), r = i >> 3, c = i & 7;
+    if (t === "p") {
+      const d = col === "w" ? -1 : 1, start = col === "w" ? 6 : 1, last = col === "w" ? 0 : 7, r1 = r + d;
+      if (r1 < 0 || r1 > 7) continue;
+      const add = (to: number, fl: number) => { if ((to >> 3) === last) for (const q of [1, 2, 3, 4]) out.push([i, to, q, fl]); else out.push([i, to, 0, fl]); };
+      if (!b[r1 * 8 + c]) { add(r1 * 8 + c, 0); if (r === start && !b[(r + 2 * d) * 8 + c]) out.push([i, (r + 2 * d) * 8 + c, 0, 1]); }
+      for (const dc of [-1, 1]) {
+        const cc = c + dc; if (cc < 0 || cc > 7) continue; const to = r1 * 8 + cc;
+        if (b[to] && chCol(b[to]) === opp) add(to, 0); else if (to === st.ep && !b[to]) out.push([i, to, 0, 2]);
+      }
+    } else if (t === "n" || t === "k") {
+      for (const [dr, dc] of t === "n" ? CH_KN : CH_KG) { const rr = r + dr, cc = c + dc; if (rr < 0 || rr > 7 || cc < 0 || cc > 7) continue; const to = rr * 8 + cc; if (chCol(b[to]) !== col) out.push([i, to, 0, 0]); }
+      if (t === "k") {
+        const home = col === "w" ? 60 : 4, rk = String(st.castle || "");
+        if (i === home && !chAttacked(b, i, opp)) {
+          const ks = col === "w" ? "K" : "k", qs = col === "w" ? "Q" : "q", R = col === "w" ? "R" : "r";
+          if (rk.includes(ks) && b[home + 3] === R && !b[home + 1] && !b[home + 2] && !chAttacked(b, home + 1, opp) && !chAttacked(b, home + 2, opp)) out.push([i, home + 2, 0, 3]);
+          if (rk.includes(qs) && b[home - 4] === R && !b[home - 1] && !b[home - 2] && !b[home - 3] && !chAttacked(b, home - 1, opp) && !chAttacked(b, home - 2, opp)) out.push([i, home - 2, 0, 4]);
+        }
+      }
+    } else {
+      const dirs = t === "b" ? CH_DG : t === "r" ? CH_ST : CH_DG.concat(CH_ST);
+      for (const [dr, dc] of dirs) { let rr = r + dr, cc = c + dc; while (rr >= 0 && rr < 8 && cc >= 0 && cc < 8) { const to = rr * 8 + cc, x = b[to]; if (x) { if (chCol(x) !== col) out.push([i, to, 0, 0]); break; } out.push([i, to, 0, 0]); rr += dr; cc += dc; } }
+    }
+  }
+  return out;
+}
+/* ход на доске; возвращает новую позицию (без истории) */
+function chMake(st: any, m: number[]): any {
+  const b: string[] = st.b.slice(), [f, t, pr, fl] = m, p = b[f], col = chCol(p), tt = p.toLowerCase(), cap = fl === 2 ? b[t + (col === "w" ? 8 : -8)] : b[t];
+  b[t] = p; b[f] = "";
+  if (fl === 2) b[t + (col === "w" ? 8 : -8)] = "";
+  if (pr) b[t] = (col === "w" ? "QRBN" : "qrbn")[pr - 1];
+  if (fl === 3) { b[t - 1] = b[t + 1]; b[t + 1] = ""; } else if (fl === 4) { b[t + 1] = b[t - 2]; b[t - 2] = ""; }
+  let cs = String(st.castle || "");
+  const strip = (s: string) => { for (const ch of s) cs = cs.replace(ch, ""); };
+  if (tt === "k") strip(col === "w" ? "KQ" : "kq");
+  for (const sq of [f, t]) { if (sq === 63) strip("K"); else if (sq === 56) strip("Q"); else if (sq === 7) strip("k"); else if (sq === 0) strip("q"); }
+  return { b, turn: col === "w" ? "b" : "w", castle: cs, ep: fl === 1 ? (f + t) >> 1 : -1, half: tt === "p" || cap ? 0 : (st.half ?? 0) + 1, cap: cap || "" };
+}
+function chLegalList(st: any): number[][] {
+  const col: string = st.turn, opp = col === "w" ? "b" : "w", out: number[][] = [];
+  for (const m of chPseudo(st)) { const n = chMake(st, m), k = chKing(n.b, col); if (k >= 0 && !chAttacked(n.b, k, opp)) out.push(m); }
+  return out;
+}
+function chLegalMap(list: number[][]): Record<string, number[]> {
+  const o: Record<string, number[]> = {};
+  for (const m of list) { const a = o[m[0]] ?? (o[m[0]] = []); if (!a.includes(m[1])) a.push(m[1]); }
+  return o;
+}
+const chKey = (s: any) => s.b.map((x: string) => x || ".").join("") + s.turn + s.castle + (s.ep >= 0 ? s.ep : "-");
+function chInsufficient(b: string[]): boolean {
+  const ps = b.filter((x) => x && x.toLowerCase() !== "k");
+  if (!ps.length) return true;
+  if (ps.some((x) => "pqrPQR".includes(x))) return false;
+  if (ps.length === 1) return true;
+  if (ps.every((x) => x.toLowerCase() === "b")) { const sq = b.map((x, i) => (x && x.toLowerCase() === "b" ? ((i >> 3) + (i & 7)) & 1 : -1)).filter((x) => x >= 0); return sq.every((x) => x === sq[0]); }
+  return false;
+}
+function chInit(first: number): any {
+  const back = "rnbqkbnr", b: string[] = Array(64).fill("");
+  for (let c = 0; c < 8; c++) { b[c] = back[c]; b[8 + c] = "p"; b[48 + c] = "P"; b[56 + c] = back[c].toUpperCase(); }
+  const st: any = { b, turn: "w", white: first, castle: "KQkq", ep: -1, half: 0, n: 0, win: "", last: null, check: false };
+  st.rep = { [chKey(st)]: 1 }; st.legal = chLegalMap(chLegalList(st));
+  return st;
+}
+/* применяет ход игрока; null — ход нелегален */
+function chPlay(st: any, from: number, to: number, prom: number, me: number): any {
+  const col = st.white === me ? "w" : "b";
+  if (st.turn !== col || st.win) return null;
+  const list = chLegalList(st), want = prom >= 1 && prom <= 4 ? prom : 1;
+  const m = list.find((x) => x[0] === from && x[1] === to && (x[2] === 0 || x[2] === want));
+  if (!m) return null;
+  const n = chMake(st, m), opp = n.turn, ln = chLegalList(n), k = chKing(n.b, opp), check = k >= 0 && chAttacked(n.b, k, col);
+  const ns: any = { ...st, b: n.b, turn: opp, castle: n.castle, ep: n.ep, half: n.half, n: (st.n ?? 0) + 1, check };
+  const rep: Record<string, number> = n.half === 0 ? {} : { ...(st.rep ?? {}) }, key = chKey(ns); rep[key] = (rep[key] ?? 0) + 1; ns.rep = rep;
+  let win = "", why = "";
+  if (!ln.length) { if (check) { win = me as any; why = "mate"; } else { win = "d"; why = "stalemate"; } }
+  else if (chInsufficient(n.b)) { win = "d"; why = "material"; }
+  else if (rep[key] >= 3) { win = "d"; why = "repeat"; }
+  else if (n.half >= 100) { win = "d"; why = "fifty"; }
+  ns.win = win; ns.why = why; ns.legal = win ? {} : chLegalMap(ln);
+  ns.last = { from, to, by: me, cap: n.cap, prom: m[2] ? "QRBN"[m[2] - 1] : "", fl: m[3] };
+  return ns;
+}
+
 /* ---- шашки (русские): сервер считает все допустимые ходы ---- */
 function chkLegal(b: string[], col: string): number[][] {
   const opp = col === "w" ? "b" : "w", D = [[-1, -1], [-1, 1], [1, -1], [1, 1]], promo = col === "w" ? 0 : 7;
@@ -1719,7 +1827,8 @@ function netInit(game: string, host: number, guest: number, first: number): any 
     const b: string[] = Array(64).fill("");
     for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) if ((r + c) % 2 === 1) { if (r < 3) b[r * 8 + c] = "b"; else if (r > 4) b[r * 8 + c] = "w"; }
     st = { b, turn: "w", white: first, win: "", q: 0, last: null, legal: chkLegal(b, "w") };
-  } else if (game === "golf") st = { hole: 0, holes: 3, turn: first, p: [host, guest], ball: {}, str: {}, done: {}, tot: {}, last: null, win: "" };
+  } else if (game === "che") st = chInit(first);
+  else if (game === "golf") st = { hole: 0, holes: 3, turn: first, p: [host, guest], ball: {}, str: {}, done: {}, tot: {}, last: null, win: "" };
   else if (game === "sea") st = { phase: "place", turn: first, p: [host, guest], fleets: {}, ready: {}, shots: { [host]: {}, [guest]: {} }, sunk: { [host]: [], [guest]: [] }, last: null, win: "" };
   else if (game === "bil") st = { turn: first, p: [host, guest], balls: BIL_RACK.map((b) => [b[0], b[1]]), last: null, win: "", foul: false };
   else st = tttInit(first);
@@ -1854,6 +1963,14 @@ async function routeNetAct(body: any) {
       const win = !legal.length ? me : q >= 60 ? "d" : "";
       next = await netSave(room, { status: win ? "done" : "playing", state: { ...st, b: nb, turn: nxt, legal: win ? [] : legal, q, last: { path, took, by: me }, win } });
     }
+  }
+  else if (room.status === "playing" && room.game === "che" && act === "move") {
+    const ns = chPlay(room.state, Number(body?.from), Number(body?.to), Number(body?.prom) || 0, me);
+    if (ns) next = await netSave(room, { status: ns.win ? "done" : "playing", state: ns });
+  }
+  else if (room.status === "playing" && room.game === "che" && act === "resign") {
+    const st = room.state, other = me === room.host_id ? room.guest_id : room.host_id;
+    if (!st.win) next = await netSave(room, { status: "done", state: { ...st, win: other, why: "resign", legal: {} } });
   }
   else if (room.status === "playing" && room.game === "golf" && act === "shot") {
     const st = room.state, num = (v: unknown, lim: number) => Math.max(-lim, Math.min(lim, Number(v) || 0));
