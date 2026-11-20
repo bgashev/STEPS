@@ -4370,9 +4370,24 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 .nt-capa{position:relative;width:44px;height:44px;flex:none;display:grid;place-items:center}
 .nt-ring{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}.nt-ring circle{fill:none;stroke-width:1.5;stroke-linecap:round}.nt-ring .tr{stroke:rgba(255,255,255,.12)}.nt-ring .pr{stroke:rgba(255,255,255,.88);stroke-dasharray:125.7;animation:ntrg 60s linear both}
 @keyframes ntrg{to{stroke-dashoffset:125.7}}
-.nt-cd{position:absolute;left:22px;right:22px;top:50%;transform:translateY(-55%);background:var(--surface);border:1px solid var(--border);border-radius:34px;padding:34px 20px 20px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.45);animation:ntcd .65s cubic-bezier(.2,1.1,.3,1) both}
+.nt-cd{position:absolute;left:22px;right:22px;top:50%;transform:translateY(-55%);background:linear-gradient(165deg,#18181f,#0b0b0e 70%);color:#fff;border:1px solid rgba(255,255,255,.08);border-radius:38px;padding:30px 20px 20px;text-align:center;overflow:hidden;box-shadow:0 34px 80px rgba(0,0,0,.55);animation:ntcd .65s cubic-bezier(.2,1.1,.3,1) both}
 @keyframes ntcd{from{transform:translateY(-230%) scale(.35);opacity:0}}
-.nt-cd .nt-av{margin:0 auto 22px}.nt-cd h3{margin:0;font-size:20px}.nt-cd p{margin:6px 0 22px;font-size:12px;color:var(--muted)}
+.nt-cd .nt-bl{position:absolute;left:-60px;top:-70px;width:220px;height:220px;border-radius:50%;background:#ff6a2b;filter:blur(60px);opacity:.34;pointer-events:none}
+.nt-cd>*:not(.nt-bl){position:relative;animation:ntup .6s cubic-bezier(.2,.9,.25,1) both;animation-delay:calc(var(--i,0)*70ms + 240ms)}
+.nt-dp{display:flex;align-items:flex-start;justify-content:center;margin-top:6px}
+.nt-dw{display:flex;flex-direction:column;align-items:center;gap:10px;width:100px}
+.nt-dw small{font-size:12px;color:rgba(255,255,255,.5);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nt-dw .nt-av{margin:0}
+.nt-me{position:relative;opacity:.6}.nt-me::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.4);pointer-events:none}
+.nt-lk{width:30px;height:78px;position:relative;display:flex;align-items:center;justify-content:center;flex:none}
+.nt-lk::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,rgba(255,106,43,.9),rgba(185,155,255,.9));opacity:.6}
+.nt-lk i{width:7px;height:7px;border-radius:50%;background:#fff;position:relative;animation:ntrun 2.2s ease-in-out infinite}
+@keyframes ntrun{0%{transform:translateX(-11px);opacity:0}30%,70%{opacity:1}100%{transform:translateX(11px);opacity:0}}
+.nt-cd h3{margin:22px 0 0;font-size:22px;font-weight:600;letter-spacing:-.4px}
+.nt-dr{display:flex;gap:10px;margin-top:22px}
+.nt-dno{width:56px;height:56px;flex:none;border-radius:50%;background:rgba(255,255,255,.08);color:rgba(255,255,255,.8);font-size:20px;display:grid;place-items:center;cursor:pointer;transition:transform .15s}
+.nt-dok{flex:1;height:56px;border-radius:28px;background:#f4f4f7;color:#0b0b0e;font-size:16px;font-weight:650;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;transition:transform .15s}
+.nt-dno:active,.nt-dok:active{transform:scale(.95)}
 .nt-bts{display:flex;gap:10px}.nt-bts .nt-btn{flex:1}
 .nt-lobby{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:calc(env(safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px) + 14px) 20px calc(20px + env(safe-area-inset-bottom,0px))}
 .nt-top{width:100%;display:flex;align-items:center;justify-content:center;position:relative;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);height:34px}
@@ -4615,7 +4630,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1017';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1018';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12490,7 +12505,7 @@ const NET = (() => {
   }
   function showCard(inv){
     hideCap(); hap.imp();
-    layer('nt-cdl', `<div class="nt-dim"></div><div class="nt-cd">${av(inv.from, 96)}<h3>${T('{0} зовёт сыграть', nm(inv.from))}</h3><p>${T('VOOB · игра по сети')}</p><div class="nt-bts"><div class="nt-btn ghost" data-nt="dec" data-id="${inv.id}">${T('Отклонить')}</div><div class="nt-btn" data-nt="acc" data-id="${inv.id}">${T('Принять')}</div></div></div>`);
+    layer('nt-cdl', `<div class="nt-dim"></div><div class="nt-cd"><div class="nt-bl"></div><div class="nt-dp" style="--i:0"><div class="nt-dw">${av(inv.from, 78)}<small>${nm(inv.from)}</small></div><div class="nt-lk"><i></i></div><div class="nt-dw"><div class="nt-me">${av(UK, 78)}</div><small>${T('Ты')}</small></div></div><h3 style="--i:1">${T('{0} зовёт сыграть', nm(inv.from))}</h3><div class="nt-dr" style="--i:2"><div class="nt-dno" data-nt="dec" data-id="${inv.id}">✕</div><div class="nt-dok" data-nt="acc" data-id="${inv.id}"><span>${T('Принять')}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0b0b0e" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div></div></div>`);
   }
   async function respond(id, ok){
     hap.tap();
