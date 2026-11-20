@@ -4938,7 +4938,10 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 #cxdim.on{opacity:1;pointer-events:auto}
 .act.custom .ai{color:#1D1D24}
 .act.custom.pin{--accent:var(--tc);border-color:transparent}
-.act .ed{z-index:2}
+.act .ed{z-index:2;left:6px;right:auto}
+.act.pin .ed{left:auto;right:52px;top:calc(50% - 15px)}
+#sheet.aw .act .ed{left:auto;right:6px;top:6px}
+#sheet.aw .act.pin .ed{right:52px;top:calc(50% - 15px)}
 .cx-wrap h2{margin:0 0 4px}
 .cx-foot .btn{border:0;border-radius:999px;padding:12px 16px;font-weight:650;display:inline-flex;align-items:center;justify-content:center}
 .cx-foot .btn.primary{background:var(--accent);color:var(--on-accent)}.cx-foot .btn.ghost{background:var(--surface2);color:var(--text)}
@@ -4959,7 +4962,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1066';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1067';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
