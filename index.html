@@ -118,7 +118,7 @@ h3 .ic{color:var(--accent)}
 .sd{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;min-width:0}
 .sc{width:var(--cs,32px);height:var(--cs,32px);border-radius:50%;border:2px solid var(--off);display:grid;place-items:center;font-size:13px;font-weight:750;animation:pop .45s backwards}
 .sc.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
-.sc.rest{background:var(--accent-soft);border-color:transparent;color:var(--accent)}
+.sc.rest{background:var(--accent-soft);border-color:transparent;color:var(--accent)}.sc.fz,.gx-c.fz{background:color-mix(in srgb,#9fd8ff 16%,var(--surface2));border-color:color-mix(in srgb,#9fd8ff 55%,transparent);color:#9fd8ff}
 .sd.today .sc{box-shadow:0 0 0 2px var(--surface),0 0 0 3.5px var(--accent)}
 .sw{font-size:11px;color:var(--muted)}
 .sd.today .sw{color:var(--text);font-weight:700}
@@ -4983,7 +4983,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1071';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1072';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5853,8 +5853,8 @@ function goalStrip(ws, days){
   const t = todayN(), per = perDay(ws), rest = restDays(ws);
   let h = '<div class="gx-strip">';
   for (let i = days - 1; i >= 0; i--) {
-    const d = t - i, c = per.get(d) || 0, r = !c && rest.has(d), nx = i > 0 && (per.get(d + 1) || 0);
-    h += `<div class="gx-d${i === 0 ? ' today' : ''}${c ? ' has' : ''}${c && nx ? ' link' : ''}"><div class="gx-c${c ? ' on' : r ? ' rest' : ''}" style="animation-delay:${(days - 1 - i) * 45}ms">${c > 1 ? c : c ? IC('check', 17) : r ? IC('rest', 16) : ''}</div>
+    const d = t - i, c = per.get(d) || 0, r = !c && rest.has(d), z = !c && !r && SFZ.days.has(d), nx = i > 0 && (per.get(d + 1) || 0);
+    h += `<div class="gx-d${i === 0 ? ' today' : ''}${c ? ' has' : ''}${c && nx ? ' link' : ''}"><div class="gx-c${c ? ' on' : r ? ' rest' : z ? ' fz' : ''}" style="animation-delay:${(days - 1 - i) * 45}ms">${c > 1 ? c : c ? IC('check', 17) : r ? IC('rest', 16) : z ? IC('snow', 16) : ''}</div>
       <div class="gx-w">${WD[wdOf(d)]}</div><div class="gx-n">${ymd(d)[2]}</div></div>`;
   }
   return h + '</div>';
@@ -5863,8 +5863,8 @@ function strip(ws, days){
   const t = todayN(), per = perDay(ws), rest = restDays(ws), cs = Math.min(34, Math.floor(300 / days));
   let h = `<div class="strip" style="--cs:${cs}px">`;
   for (let i = days - 1; i >= 0; i--) {
-    const d = t - i, c = per.get(d) || 0, r = !c && rest.has(d);
-    h += `<div class="sd${i === 0 ? ' today' : ''}"><div class="sc${c ? ' on' : r ? ' rest' : ''}" style="animation-delay:${(days - 1 - i) * 40}ms">${c > 1 ? c : c ? IC('check', Math.round(cs*.5)) : r ? IC('rest', Math.round(cs*.5)) : ''}</div><div class="sw">${days > 9 ? ymd(d)[2] : WD[wdOf(d)]}</div></div>`;
+    const d = t - i, c = per.get(d) || 0, r = !c && rest.has(d), z = !c && !r && SFZ.days.has(d);
+    h += `<div class="sd${i === 0 ? ' today' : ''}"><div class="sc${c ? ' on' : r ? ' rest' : z ? ' fz' : ''}" style="animation-delay:${(days - 1 - i) * 40}ms">${c > 1 ? c : c ? IC('check', Math.round(cs*.5)) : r ? IC('rest', Math.round(cs*.5)) : z ? IC('snow', Math.round(cs*.5)) : ''}</div><div class="sw">${days > 9 ? ymd(d)[2] : WD[wdOf(d)]}</div></div>`;
   }
   return h + '</div>';
 }
@@ -7418,7 +7418,7 @@ function viewHome(web){
   const ws = valid(), g = G(), t = todayN(), info = goalInfo(ws), rest = restDays(ws), [cur] = dayStreaks(ws);
   const tMin = sum(ws.filter(w => dn(w.date) === t), w => w.minutes);
   const bits = [tMin ? `сегодня уже ${fmtMin(tMin)} в движении` : (rest.has(t) ? 'сегодня день отдыха' : 'сегодня ещё без тренировки')];
-  if (cur >= 2) bits.push(`серия ${npw(cur, W_DAY)} подряд` + (SFZ.recent() ? ' · ❄ заморожена' : ''));
+  if (cur >= 2) bits.push(`серия ${npw(cur, W_DAY)} подряд`); if (SFZ.recent()) bits.push('❄ заморожена');
   bits.push(info.doneToday ? 'норма недели закрыта' : info.start == null ? 'новая неделя — с первой тренировки' : `до нормы ${info.remaining}`);
   const done = info.shown >= g.count, pct = Math.round(info.shown * 100 / g.count);
   let gtxt;
@@ -14072,6 +14072,8 @@ Object.assign(I18N.en, {"Игры": "Games", "ОСТОРОЖНО · БОМБЫ":
 Object.assign(I18N.kk, {"Игры": "Ойындар", "ОСТОРОЖНО · БОМБЫ": "ЕСКЕР · БОМБАЛАР", "ЗАМОРОЗКА": "МҰЗДАТУ", "уже есть PRO": "PRO бар", "Подписка активна": "Жазылым белсенді", "Дарить PRO сейчас не нужно: подписка уже работает. Загляни, когда она закончится, — или выбери для друга обычный подарок.": "Қазір PRO сыйлаудың қажеті жоқ: жазылым жұмыс істеп тұр. Аяқталғанда қайта кір — немесе қарапайым сыйлық таңда.", "Понятно": "Түсінікті", "У друга уже есть PRO": "Досыңда PRO бар"});
 Object.assign(I18N.en, {"Серия спасена": "Streak saved", "Вчера без тренировки — заморозка закрыла этот день.": "No workout yesterday — a freeze covered that day.", "Заморозок в этом месяце:": "Freezes this month:"});
 Object.assign(I18N.kk, {"Серия спасена": "Серия сақталды", "Вчера без тренировки — заморозка закрыла этот день.": "Кеше жаттығу болмады — мұздату сол күнді жауып тұр.", "Заморозок в этом месяце:": "Осы айдағы мұздатулар:"});
+Object.assign(I18N.en, {"❄ заморожена": "❄ frozen"});
+Object.assign(I18N.kk, {"❄ заморожена": "❄ мұздатылған"});
 delete _lc.en; delete _lc.kk;
 (function(){
   try { const u = new URL(location.href); if (u.searchParams.has('_v')) { u.searchParams.delete('_v'); history.replaceState(null, '', u.pathname + u.search + u.hash); } } catch (e) {}   // метка запасного обновления — убираем из адреса
