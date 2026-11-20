@@ -5345,10 +5345,10 @@ function kDraw(st, seat, rnd) {
   if (!st.deck.length) return -1;
   const c = st.deck.pop(); st.h[seat].push(c); return c;
 }
-function kEnd(st, w, rnd) {
-  const o = 1 - w, pts = st.h[o].reduce((s, c) => s + (st.alt && kR(c) === 3 ? 0 : KP[kR(c)]), 0), sc = st.sc.slice();
-  sc[o] += pts; let reset = false; if (sc[o] === 105) { sc[o] = 0; reset = true; }
-  st.rr = { n: st.rd, w, pts, h: [st.h[0].slice(), st.h[1].slice()], sc: sc.slice(), reset }; st.sc = sc;
+function kEnd(st, w, rnd, lc) {
+  const o = 1 - w, kv = (c) => st.alt ? (kR(c) === 3 ? 0 : kR(c) === 6 ? (kS(c) === 0 ? 40 : 20) : KP[kR(c)]) : KP[kR(c)], pts = st.h[o].reduce((s, c) => s + kv(c), 0), bw = st.alt && lc != null && kR(lc) === 6 ? (kS(lc) === 0 ? 40 : 20) : 0, sc = st.sc.slice();
+  sc[o] += pts; sc[w] = Math.max(0, sc[w] - bw); let reset = false; if (sc[o] === 105) { sc[o] = 0; reset = true; }
+  st.rr = { n: st.rd, w, pts, bw, h: [st.h[0].slice(), st.h[1].slice()], sc: sc.slice(), reset }; st.sc = sc;
   if (sc[o] > 105) { st.win = String(w); return; }
   const nw = kNew(o, rnd, sc, st.rd + 1, st.alt); st.cov = false;
   st.deck = nw.deck; st.disc = nw.disc; st.h = nw.h; st.at = o; st.suit = nw.suit; st.pen = 0; st.drew = false; st.rd = nw.rd;
@@ -5360,9 +5360,10 @@ function kMove(st, seat, m, c, s, rnd) {
     if (!h.includes(c) || !kOk(st, c)) return false;
     h.splice(h.indexOf(c), 1); st.disc.push(c); const r = kR(c); lm.c = c;
     st.suit = r === 6 && s >= 0 && s <= 3 ? s : kS(c); lm.q = st.suit; st.drew = false;
-    if (!h.length) { st.n++; lm.n = st.n; st.lm = lm; kEnd(st, seat, rnd); return true; }
+    if (!h.length) { st.n++; lm.n = st.n; st.lm = lm; kEnd(st, seat, rnd, c); return true; }
     st.cov = false;
     if (r === 0) { kDraw(st, o, rnd); lm.d = 1; if (st.alt) st.cov = true; }
+    else if (st.alt && r === 1) { const n = kS(c) === 0 ? 3 : 2; let d = 0; for (let i = 0; i < n; i++) if (kDraw(st, o, rnd) >= 0) d++; lm.d = d; }
     else if (r !== 8) { if (r === 1) st.pen += 2; st.at = o; }
   } else if (m === "draw") {
     if (st.drew) return false;
@@ -5396,6 +5397,7 @@ function kPol(st, seat, lvl){
     if (r === 0 || r === 8) v += o <= 3 ? W[2] : W[3];
     if (r === 1) v += st.pen > 0 ? W[4] : (o <= 3 ? W[5] : W[6]);
     if (r === 6) v += (rest.length <= 2 || o <= 1) ? W[7] : W[8];
+    if (st.alt && r === 6) v += kS(x.c) === 0 ? 7 : 3.5;
     if (st.alt && r === 0 && !rest.some(y => kS(y) === kS(x.c) || kR(y) === 0 || kR(y) === 6)) v -= 14;
     if (x.s != null) v += rest.filter(y => kS(y) === ns).length * W[9];
     if (lvl >= 3) { const known = new Set(h); st.disc.forEach(y => known.add(y)); let un = 0, mt = 0; for (let i = 0; i < 36; i++) if (!known.has(i)) { un++; if (kS(i) === ns || kR(i) === r || kR(i) === 6) mt++; }
@@ -5542,6 +5544,7 @@ function draw(c, V, A, t, dt){
     c.fillStyle = 'rgba(255,255,255,.7)'; c.font = '600 12px ' + FF; c.fillText('Раунд ' + rr.n + ' · карты проигравшего', 0, -64);
     const hh = rr.h[o], n = hh.length; hh.forEach((id, i) => { const tt = i - (n - 1) / 2, sp = Math.min(34, 250 / Math.max(1, n - 1)); card(c, id, tt * sp, -10 + Math.abs(tt) * .8, 38, 56, tt * .03, {}); });
     c.font = '900 20px ' + FF; c.fillStyle = rr.reset ? '#7dffb0' : (youWin ? '#ffd24a' : '#ff7a84'); c.fillText(rr.reset ? 'Ровно 105 — счёт обнулён!' : (youWin ? 'Соперник +' : 'Ты +') + rr.pts + ' очков', 0, 52);
+    if (rr.bw) { c.fillStyle = '#7dffb0'; c.font = '700 12px ' + FF; c.fillText((youWin ? 'Ты закончил дамой: −' : 'Соперник закончил дамой: −') + rr.bw, 0, 34); }
     c.fillStyle = '#fff'; c.font = '700 13px ' + FF; c.fillText('Ты ' + rr.sc[me] + ' · Соперник ' + rr.sc[opp] + ' (до 105)', 0, 76); c.fillStyle = 'rgba(255,255,255,.5)'; c.font = '600 11px ' + FF; c.fillText('Тап — дальше', 0, 100); c.restore(); }
   const end = V.end || '';
   if (end && end !== A.lastEnd) { A.cf = end === 'win' ? 2.6 : 0; if (end === 'win') ring(A, 180, 280, '#ffd24a', 200, 5); A.sh = .5; } A.lastEnd = end;
@@ -5802,7 +5805,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1144';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1145';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11056,8 +11059,8 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
   function mkK5(){ const g = {}, K = 'k5';
     const lv0 = () => { try { const v = +localStorage.getItem('voob_k5_lv'); return v >= 0 && v < 5 ? v : 2; } catch (e) { return 2; } };
     const md0 = () => { try { return +localStorage.getItem('voob_k5_md') === 1 ? 1 : 0; } catch (e) { return 0; } };
-    const K5RU = [['Классика', ['Шестёрка: соперник берёт карту, ты ходишь снова. Покрывать её не нужно — можно закончить ход на ней.', 'Девятки в руке при проигрыше раунда считаются как обычно: 9 очков каждая.', 'Остальное: семёрка — +2 карты, дама — любая масть, туз — ходишь ещё раз.']], ['Альтернатива', ['Шестёрка: соперник берёт карту, а ты обязан сразу покрыть её своей картой (масть или значение). Нет подходящей — берёшь карты, пока не появится. Закончить партию шестёркой нельзя.', 'Девятки при проигрыше раунда не дают штрафа — 0 очков.', 'Остальное: как в классике.']]];
-    const K5DS = ['Шестёрку не нужно покрывать · девятка = 9 очков', 'Шестёрку нужно покрыть · девятка = 0 очков'];
+    const K5RU = [['Классика', ['Шестёрка: соперник берёт карту, ты ходишь снова. Покрывать её не нужно — можно закончить ход на ней.', 'Семёрка: соперник берёт 2 карты, но может отбить своей семёркой, и штраф копится.', 'Штраф при проигрыше: девятка — 9 очков, дама — 3.', 'Дама — любая масть, туз — ходишь ещё раз.']], ['Альтернатива', ['Шестёрка: соперник берёт карту, а ты обязан сразу покрыть её своей картой (масть или значение). Нет подходящей — берёшь карты, пока не появится. Закончить партию шестёркой нельзя.', 'Семёрка: соперник берёт 2 карты (за пиковую — 3) и пропускает ход, ты ходишь снова. Отбивать и копить семёрки нельзя.', 'Штраф при проигрыше: девятки — 0 очков, дамы — 20, пиковая дама — 40.', 'Закончил партию дамой — минус 20 очков тебе, пиковой — минус 40.']]];
+    const K5DS = ['Шестёрку не покрывать · 7 можно отбить · 9 = 9 очков', 'Шестёрку покрыть · 7 без отбоя · 9 = 0 · дамы 20/40'];
     const mdGeo = () => { lvXtra = 96; const SL = lvGeo2(5); lvXtra = 0; const bw = (SL.bw - 12) / 2; return {y: SL.sy + SL.sh + 58, h: 36, bw, x0: SL.bx + 4, x1: SL.bx + 8 + bw, cx: SL.bx, cw: SL.bw, py: SL.py, ph: SL.ph}; };
     const lay = () => { const top = 74, sc = Math.min(W / 360, (H - top - 8) / 560); return {sc, ox: (W - 360 * sc) / 2, oy: top + (H - top - 8 - 560 * sc) / 2}; };
     g.init = () => { base0(g); g.ph = 'menu'; g.md = md0(); g.mdp = g.md; g.mdb = 0; g.info = -1; g.lvl = lv0(); g.lvp = g.lvl; g.lvb = 0; g.nb = false; g.res = null; g.st = null; g.bt = 0; g.rt = 0; g.first = 0; g.fin = false; g.A = {P: {}}; g.dt = .016; g.rrOn = false; g.rrT = 0; g.pq = null; g.rrSeen = 0; };
