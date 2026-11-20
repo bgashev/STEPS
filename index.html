@@ -4325,6 +4325,69 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 .upd-go,.upd-x{cursor:pointer}html.web .upd-c{cursor:grab}html.web #upd{top:16px}html.web .upd-go:hover{filter:brightness(1.08)}html.web .upd-x:hover{color:var(--text)}
 .upd-c.busy .upd-b{opacity:1}.upd-c.busy .upd-b i{transform:scaleX(.82)}.upd-c.done .upd-b i{transform:scaleX(1);transition-duration:.35s}
 @media (prefers-reduced-motion:reduce){.upd-c{transition:opacity .25s!important;transform:none!important;filter:none!important}.upd-c::before,.upd-m::after,.upd-go::after,.upd-gl,.upd-gr{animation:none!important}.upd-t,.upd-go,.upd-x{transition:opacity .25s!important;transform:none!important}}
+/* v1.988: игры по сети */
+.nt{position:fixed;inset:0;z-index:9990;overflow:hidden;color:var(--text)}
+.nt-dim{position:absolute;inset:0;background:rgba(8,8,12,.5);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);animation:ntin .3s both}
+.nt-dim.solid{background:var(--bg);-webkit-backdrop-filter:none;backdrop-filter:none}
+@keyframes ntin{from{opacity:0}}@keyframes ntup{from{opacity:0;transform:translateY(16px)}}@keyframes ntpop{from{opacity:0;transform:scale(.6)}}
+.nt-av{width:var(--s);height:var(--s);flex:none;position:relative}.nt-av .fav{width:var(--s);height:var(--s);font-size:calc(var(--s)*.38)}
+.nt-btn{padding:15px 0;border-radius:18px;background:var(--accent);color:var(--on-accent);font-weight:800;font-size:15px;text-align:center;transition:transform .15s,filter .15s,opacity .2s}
+.nt-btn:active{transform:scale(.95)}.nt-btn.ghost{background:var(--surface2);color:var(--text)}.nt-btn.dis{opacity:.4;pointer-events:none}
+.nt-sh{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:28px 28px 0 0;padding:12px 16px calc(24px + env(safe-area-inset-bottom,0px));animation:ntsh .5s cubic-bezier(.2,.9,.25,1) both;max-height:78vh;overflow:auto}
+@keyframes ntsh{from{transform:translateY(100%)}}
+.nt-grip{display:block;width:36px;height:4px;border-radius:4px;background:var(--off);margin:0 auto 12px}.nt-t{font-size:18px;font-weight:800;margin:0 4px 8px}
+.nt-fr{display:flex;align-items:center;gap:12px;padding:9px 8px;border-radius:16px;transition:background .2s}.nt-fr:active{background:var(--surface2)}
+.nt-fr b{font-size:14px;display:block}.nt-fr small{color:var(--muted);font-size:11.5px}.nt-dot{margin-left:auto;width:9px;height:9px;border-radius:50%;background:var(--off)}.nt-fr.on .nt-dot{background:#46e08a;box-shadow:0 0 10px #46e08a}
+.nt-ct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px}
+.nt-wr{position:relative;width:160px;height:160px;display:grid;place-items:center;margin-bottom:24px}.nt-wr svg{position:absolute;inset:0;transform:rotate(-90deg)}
+.nt-wr circle{fill:none;stroke-width:4}.nt-wr circle:first-child{stroke:var(--surface2)}.nt-wc{stroke:var(--accent);stroke-linecap:round;stroke-dasharray:440;animation:ntwc 60s linear both}
+@keyframes ntwc{to{stroke-dashoffset:440}}
+.nt-wt{font-size:19px;font-weight:800}.nt-ws{font-size:12px;color:var(--muted);margin:6px 0 26px}.nt-ct .nt-btn{padding:12px 26px}
+.nt-cap{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px) + 8px);margin-left:-140px;width:280px;z-index:9995;display:flex;align-items:center;gap:10px;background:#000;color:#fff;border:1px solid #2c2c3a;border-radius:34px;padding:7px 14px 7px 7px;box-shadow:0 14px 34px rgba(0,0,0,.55),0 0 26px color-mix(in srgb,var(--accent) 35%,transparent);animation:ntcap .65s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes ntcap{from{transform:translateY(-90px) scale(.5);opacity:0}}
+.nt-cap.out{transition:.3s;transform:translateY(-90px) scale(.6);opacity:0}
+.nt-cap .nt-ct2{flex:1;line-height:1.25}.nt-cap b{font-size:13px;display:block}.nt-cap small{font-size:10.5px;opacity:.6}
+.nt-ring{width:30px;height:30px;transform:rotate(-90deg)}.nt-ring circle{fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-dasharray:100.5;animation:ntrg 60s linear both}
+@keyframes ntrg{to{stroke-dashoffset:100.5}}
+.nt-cd{position:absolute;left:22px;right:22px;top:50%;transform:translateY(-55%);background:var(--surface);border:1px solid var(--border);border-radius:34px;padding:34px 20px 20px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.45);animation:ntcd .65s cubic-bezier(.2,1.1,.3,1) both}
+@keyframes ntcd{from{transform:translateY(-230%) scale(.35);opacity:0}}
+.nt-cd .nt-av{margin:0 auto 22px}.nt-cd h3{margin:0;font-size:20px}.nt-cd p{margin:6px 0 22px;font-size:12px;color:var(--muted)}
+.nt-bts{display:flex;gap:10px}.nt-bts .nt-btn{flex:1}
+.nt-lobby{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;padding:calc(env(safe-area-inset-top,0px) + var(--tg-content-safe-area-inset-top,0px) + 14px) 20px calc(20px + env(safe-area-inset-bottom,0px))}
+.nt-top{width:100%;display:flex;align-items:center;justify-content:center;position:relative;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);height:34px}
+.nt-top .nt-x{position:absolute;left:0;font-style:normal;font-size:16px;padding:8px}
+.nt-lh{display:flex;margin-top:26px}.nt-lh .nt-av+.nt-av{margin-left:-14px}
+.nt-ln{margin-top:12px;font-size:13px}.nt-ln i{font-style:normal;color:var(--muted);font-size:11px}
+.nt-ls{margin-top:8px;font-size:12px;color:var(--muted);min-height:18px;text-align:center}
+.nt-gl{display:flex;gap:12px;margin-top:26px;width:100%;overflow-x:auto;padding:16px 4px;scrollbar-width:none}.nt-gl::-webkit-scrollbar{display:none}
+.nt-gc{flex:none;width:136px;height:176px;border-radius:26px;background:var(--surface);border:1.5px solid var(--border);padding:14px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;transition:transform .35s cubic-bezier(.3,1.4,.5,1),border-color .2s,box-shadow .3s}
+.nt-gc .th{position:absolute;top:18px;left:0;right:0;display:grid;place-items:center}.nt-gc b{font-size:15px}.nt-gc small{font-size:10.5px;color:var(--muted);margin-top:2px}
+.nt-gc.off{opacity:.45}.nt-gc.sel{transform:translateY(-8px) scale(1.05);border-color:var(--accent);box-shadow:0 14px 36px color-mix(in srgb,var(--accent) 35%,transparent)}
+.nt-lb{margin-top:auto;width:100%}.nt-lb .nt-btn{padding:17px 0}
+.nt-lobby>*:not(.nt-peer){animation:ntup .6s var(--dl,.5s) both}
+.nt-peer{position:absolute;top:calc(env(safe-area-inset-top,0px) + 54px);left:20px;right:20px;background:#e0524b;color:#fff;border-radius:14px;padding:9px 12px;font-size:12px;text-align:center}
+.nt-pls{display:flex;gap:10px;width:100%;margin-top:22px}
+.nt-pl{flex:1;display:flex;align-items:center;gap:10px;padding:10px;border-radius:20px;background:var(--surface);border:1.5px solid var(--border);transition:.3s}
+.nt-pl.on{border-color:var(--accent);box-shadow:0 0 24px color-mix(in srgb,var(--accent) 30%,transparent)}
+.nt-pl b{font-size:13px;display:block}.nt-pl small{font-size:11px;color:var(--muted)}
+.nt-bd{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:min(86vw,340px);margin-top:30px}
+.nt-cell{aspect-ratio:1;border-radius:22px;background:var(--surface);border:1.5px solid var(--border);display:grid;place-items:center;transition:background .2s,transform .15s}
+.nt-cell:active{transform:scale(.93)}.nt-cell.w{background:color-mix(in srgb,var(--accent) 22%,var(--surface));border-color:var(--accent)}
+.nt-cell svg{width:58%;height:58%;fill:none;stroke-width:4.5;stroke-linecap:round}.nt-cell .x{stroke:var(--text)}.nt-cell .o{stroke:var(--accent)}
+.nt-cell path,.nt-cell circle{stroke-dasharray:80;animation:ntdr .38s ease-out both}@keyframes ntdr{from{stroke-dashoffset:80}}
+.nt-st{margin-top:22px;font-size:17px;font-weight:800;min-height:26px}
+.nt-res{position:absolute;left:0;right:0;bottom:0;padding:22px 20px calc(24px + env(safe-area-inset-bottom,0px));background:var(--surface);border-radius:28px 28px 0 0;text-align:center;animation:ntsh .5s cubic-bezier(.2,.9,.25,1) both}
+.nt-res h3{margin:0 0 4px;font-size:24px}.nt-res p{margin:0 0 16px;font-size:12px;color:var(--muted)}
+.nt-fx{position:absolute;inset:0;overflow:hidden;pointer-events:none}.nt-vb{position:absolute;inset:0;background:#07070b}
+.nt-vl,.nt-vr{position:absolute;inset:0}
+.nt-vl{background:linear-gradient(160deg,#fff,#cfd0e6);clip-path:polygon(0 0,64% 0,36% 100%,0 100%);color:#0b0b12}
+.nt-vr{background:linear-gradient(145deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#4de0d0));clip-path:polygon(64% 0,100% 0,100% 100%,36% 100%);color:var(--on-accent)}
+.nt-vp{position:absolute;top:36%;display:flex;flex-direction:column;align-items:center;gap:18px;font-weight:900;font-size:19px;letter-spacing:1px;max-width:38%}
+.nt-vl .nt-vp{left:5%}.nt-vr .nt-vp{right:5%}
+.nt-vsx{position:absolute;left:50%;top:50%;margin:-44px 0 0 -52px;width:104px;text-align:center;font-size:60px;font-weight:900;font-style:italic;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.55);opacity:0}
+.nt-inv{display:flex;align-items:center;gap:14px;margin:6px 0 14px;padding:18px 18px;border-radius:24px;border:1.5px solid transparent;background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 50%,#4de0d0)) border-box;transition:transform .15s}
+.nt-inv:active{transform:scale(.97)}.nt-inv b{font-size:17px;display:block}.nt-inv small{font-size:12px;color:var(--muted)}
+.nt-rings{display:flex;flex:none}.nt-rings i{width:26px;height:26px;border-radius:50%;border:4px solid var(--text);display:block}.nt-rings i+i{margin-left:-9px;border-color:var(--accent)}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -4339,7 +4402,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.987';
+const APP = 'VOOB (by BGASHEV) Mini App v1.988';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11198,7 +11261,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     gameLoad(); const L = REST.list(); const day = L.find(x => x.day), gp = ST.gprev !== undefined ? ST.gprev : ST.gm;
     return back() + `<div class="ax-h1">Игры</div><div class="ax-sub">Играй когда угодно, не только между подходами</div>
     <div class="ax-mode${gp === 'n' ? ' net' : ''}" role="tablist"><i class="mt"></i><button type="button" class="${gp === 'n' ? '' : 'on'}" role="tab" data-act="axgm" data-m="s">Одиночные</button><button type="button" class="${gp === 'n' ? 'on' : ''}" role="tab" data-act="axgm" data-m="n">По сети</button></div><div class="ax-gx${ST.gdir ? ' gin-' + ST.gdir : ''}">
-    ${ST.gm === 'n' ? `<div class="ax-nh">Игры на двоих и с друзьями. Уже в разработке — сообщим, когда запустим.</div><div class="ax-gg">${NETG.map(x => `<div class="ax-gc ax-nt" data-act="axnt"><div class="th">${NETA[x.a]}${NETP}<span class="pro">В РАЗРАБОТКЕ</span></div><b>${x.n}</b><small>${x.d}</small></div>`).join('')}<div class="ax-gc ax-gs" data-act="appgsug"><div class="th"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><b>Предложить</b><small>свою игру по сети</small></div></div><div style="height:56px"></div>` : ''}
+    ${ST.gm === 'n' ? `${inTG ? `<div class="nt-inv" data-act="axinv"><span class="nt-rings"><i></i><i></i></span><div><b>Пригласить</b><small>позови друга сыграть вдвоём</small></div></div>` : ''}<div class="ax-nh">Играй с другом: пригласи его, выберите игру, и вы в одной комнате. Остальные игры в разработке.</div><div class="ax-gg">${NETG.map(x => `<div class="ax-gc ax-nt" data-act="axnt"><div class="th">${NETA[x.a]}${NETP}<span class="pro">В РАЗРАБОТКЕ</span></div><b>${x.n}</b><small>${x.d}</small></div>`).join('')}<div class="ax-gc ax-gs" data-act="appgsug"><div class="th"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><b>Предложить</b><small>свою игру по сети</small></div></div><div style="height:56px"></div>` : ''}
     ${ST.gm === 'n' || !inWeb ? '' : gamesWebHTML(L, day)}
     ${ST.gm === 'n' || inWeb ? '' : day && !day.own ? `<div class="ax-gd" data-act="axgame" data-i="${day.i}"><span class="im">${day.th}</span><span class="tx"><small>★ ИГРА ДНЯ · БЕСПЛАТНО</small><b>${esc(day.n)}</b><small>твой рекорд ${day.best ? P0(day.best) : '—'}</small></span><button type="button" class="ax-btn sm">Играть</button></div>` : ''}
     ${ST.gm === 'n' || inWeb ? '' : `<div class="ax-gg">${L.map(x => `<div class="ax-gc" data-act="axgame" data-i="${x.i}"><div class="th">${x.th}${!x.own ? '<span class="pro">PRO</span>' : ''}${x.beta ? '<span class="bta">BETA</span>' : ''}</div><b>${esc(x.n)}</b><small>${!x.own && !x.day ? '⭐ ' + (SHOP.prices.game || 19) : x.best ? 'рекорд ' + P0(x.best) : 'без рекорда'}</small></div>`).join('')}<div class="ax-gc ax-gs" data-act="appgsug"><div class="th"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><b>Предложить</b><small>свою игру</small></div></div>`}</div><div style="height:56px"></div>`;
@@ -11352,6 +11415,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     axtog: el => { const c = CAL(), k = el.dataset.k; c[k] = !c[k]; if (k === 'on' && c.on && !(+c.custom >= 800)) c.custom = goalInfo().auto; save(); hap.tap(); render(); },
     axgm: el => { const v = el.dataset.m === 'n' ? 'n' : ''; if ((ST.gm === 'n') === (v === 'n') || ST.gbusy) return; hap.tap(); ST.gbusy = 1; const dir = v === 'n' ? 'l' : 'r', gx = document.querySelector('.ax-gx'); if (gx) gx.classList.add('gout-' + dir);
       setTimeout(() => { ST.gprev = ST.gm; ST.gm = v; ST.gdir = dir; render(); requestAnimationFrame(() => requestAnimationFrame(() => { const m = document.querySelector('.ax-mode'); if (m) { m.classList.toggle('net', v === 'n'); const bs = m.querySelectorAll('button'); bs[0].classList.toggle('on', v !== 'n'); bs[1].classList.toggle('on', v === 'n'); } ST.gprev = undefined; ST.gdir = ''; setTimeout(() => { ST.gbusy = 0; }, 420); })); }, 170); },
+    axinv: () => { hap.tap(); window.NET && window.NET.pick(); },
     axnt: el => { hap.tap(); const c = el.closest('.ax-nt') || el; if (c.classList.contains('rv')) { c.classList.remove('rv'); return; } c.classList.add('rv'); clearTimeout(c._t); c._t = setTimeout(() => c.classList.remove('rv'), 2600); },
     axnet: el => { hap.tap(); const m = el.closest('.ax-mode'); if (!m || m.classList.contains('pk')) return; m.classList.add('pk'); setTimeout(() => m.classList.remove('pk'), 740); toast('Игры по сети — скоро'); },
     axgame: el => { const i = +el.dataset.i; const L = REST.list().find(x => x.i === i); if (L && !L.own && !L.day) { hap.tap(); gameBuy(L.k); return; } REST.play(i); },
@@ -11858,7 +11922,7 @@ async function init(){
   scheduleSync(100);
   try { if (inWeb && !inWebApp) showWebLogin(); /* v1.744: WEB только после входа через Telegram */ } catch (e) {}
   if (inTG) setTimeout(() => { loadFriends(); loadFeed(true); }, 900);   // к моменту перехода во вкладку всё уже свежее
-  try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); else if (/^(games|g_[a-z0-9]{2,12})$/i.test(sp || '')) { const gl = String(sp).toLowerCase(); setTimeout(() => runGameLink(gl === 'games' ? '*' : gl.slice(2)), 700); } else { const TM = {stats:'stats', apps:'apps', home:'home', friends:'friends', me:'me', profile:'me'}, tk = TM[String(sp || '').toLowerCase()]; if (tk) setTimeout(() => { try { ACT.tab({dataset: {tab: tk}}); } catch (e) {} }, 600); else if (/^(settings|me_settings)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'me') ACT.tab({dataset: {tab: 'me'}}); ACT.meset(); } catch (e) {} }, 700); } } catch (e) {}
+  try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); else if (/^n_\d{1,12}$/.test(sp || '')) { window.NETLINK = +String(sp).slice(2); } else if (/^(games|g_[a-z0-9]{2,12})$/i.test(sp || '')) { const gl = String(sp).toLowerCase(); setTimeout(() => runGameLink(gl === 'games' ? '*' : gl.slice(2)), 700); } else { const TM = {stats:'stats', apps:'apps', home:'home', friends:'friends', me:'me', profile:'me'}, tk = TM[String(sp || '').toLowerCase()]; if (tk) setTimeout(() => { try { ACT.tab({dataset: {tab: tk}}); } catch (e) {} }, 600); else if (/^(settings|me_settings)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'me') ACT.tab({dataset: {tab: 'me'}}); ACT.meset(); } catch (e) {} }, 700); } } catch (e) {}
   if (!hasCloud) return;
   try {
     const c = await cloudLoad();
@@ -12075,6 +12139,205 @@ Object.assign(ACT, {
   bgset: el => { const k = el.dataset.v || ''; if (k && !bgOwned(k)) { hap.warn(); proToast('Фоны профиля — для подписчиков PRO'); return; }
     db.settings.bg = k; touchMeta('settings'); save(); render(); hap.tap(); },
 });
+/* ===== v1.988: игры по сети: приглашение друга, комната, Крестики-нолики ===== */
+const NET = (() => {
+  const N = {room:null, out:null, seen:new Set(), ov:null, t:0, busy:false, cap:null, capT:0, peer:0, pend:false, nb:0, started:false};
+  const LN = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  const frs = () => (FR.data && FR.data.friends) || [];
+  const meCard = () => (FR.data && FR.data.me) || {tg_id:UK, name:(tgUser && tgUser.first_name) || 'Я'};
+  const card = id => +id === +UK ? meCard() : (frs().find(f => f.tg_id === +id) || {tg_id:+id, name:'Игрок'});
+  const raw = id => card(id).name || 'Игрок';
+  const nm = id => esc(raw(id));
+  const av = (id, s) => `<div class="nt-av" style="--s:${s}px">${favHTML(card(id))}</div>`;
+  const avp = (id, s) => `<div class="nt-av" style="--s:${s}px">${favHTML(card(id), false, true)}</div>`;
+  const q = s => N.ov && N.ov.querySelector(s);
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const W = (el, kf, o) => el.animate(kf, Object.assign({fill:'forwards'}, o)).finished;
+  const root = () => { if (!N.ov) { N.ov = document.createElement('div'); N.ov.className = 'nt'; document.body.appendChild(N.ov); } return N.ov; };
+  const closeOv = () => { if (N.ov) { N.ov.remove(); N.ov = null; } };
+  const layer = (cls, html) => { const r = root(); r.querySelectorAll('.nt-l,.nt-fx').forEach(x => x.remove()); const d = document.createElement('div'); d.className = 'nt-l ' + cls; d.innerHTML = html; r.appendChild(d); return d; };
+  const GAMES = [
+    {k:'ttt', n:'Крестики-нолики', d:'2 игрока · по ходам', ic:'<svg viewBox="0 0 64 64" width="60" height="60" fill="none" stroke-width="5" stroke-linecap="round"><path d="M10 10L30 30M30 10L10 30" stroke="currentColor"/><circle cx="46" cy="46" r="11" stroke="var(--accent)"/><path d="M34 50h0" stroke="none"/></svg>'},
+    {k:'', n:'Гольф', d:'скоро', ic:'<svg viewBox="0 0 64 64" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"><path d="M20 56V8l26 10-26 10"/></svg>'},
+    {k:'', n:'Бильярд', d:'скоро', ic:'<svg viewBox="0 0 64 64" width="60" height="60"><circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-width="3.5"/><text x="32" y="41" text-anchor="middle" font-size="26" font-weight="800" fill="currentColor">8</text></svg>'}
+  ];
+  /* ---------- выбор друга ---------- */
+  async function pick(){
+    if (!FR.data) { try { await loadFriends(); } catch (e) {} }
+    const L = frs();
+    if (!L.length) { toast('Сначала добавь друзей'); return; }
+    hap.tap();
+    const d = layer('nt-pk', `<div class="nt-dim" data-nt="x"></div><div class="nt-sh"><i class="nt-grip"></i><div class="nt-t">Кого позвать?</div><div id="ntfl">${L.map(f => `<div class="nt-fr" data-nt="inv" data-id="${f.tg_id}">${av(f.tg_id, 40)}<div><b>${esc(f.name)}</b><small>придёт в Telegram</small></div><span class="nt-dot"></span></div>`).join('')}</div></div>`);
+    try {
+      const j = await apiAuth('/net/online', {ids:L.map(f => f.tg_id)}); const on = new Set(j.online || []), box = d.querySelector('#ntfl'); if (!box) return;
+      [...box.children].forEach(r => { if (on.has(+r.dataset.id)) { r.classList.add('on'); r.querySelector('small').textContent = 'сейчас в VOOB'; } });
+      [...box.children].filter(r => r.classList.contains('on')).reverse().forEach(r => box.prepend(r));
+    } catch (e) {}
+  }
+  /* ---------- приглашение: ожидание хоста ---------- */
+  async function invite(id){
+    hap.tap(); id = +id;
+    layer('nt-wt', `<div class="nt-dim solid"></div><div class="nt-ct"><div class="nt-wr"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="75"/><circle class="nt-wc" cx="80" cy="80" r="75"/></svg>${av(id, 100)}</div><div class="nt-wtt" style="font-size:19px;font-weight:800">Ждём ${nm(id)}…</div><div class="nt-ws">Приглашение ушло в VOOB и в Telegram</div><div class="nt-btn ghost" data-nt="cancel">Отменить</div></div>`);
+    try {
+      const j = await apiAuth('/net/invite', {tg_id:id});
+      if (j.status === 'soon') { closeOv(); toast('Приглашение уже отправлено, подожди немного'); return; }
+      if (!j.id) throw new Error('нет ответа');
+      N.out = {id:j.id, to:id}; hap.imp(); sched(0);
+      setTimeout(() => { if (N.out && N.out.id === j.id && !N.room) { cancel(); toast('Друг не ответил'); } }, ((j.popup_s || 60) + 1) * 1000);
+    } catch (e) { closeOv(); toast(e.message || 'Не получилось пригласить'); }
+  }
+  function cancel(){ const o = N.out; N.out = null; if (!N.room) closeOv(); if (o) apiAuth('/net/cancel', {id:o.id}).catch(() => {}); }
+  /* ---------- приглашение: капсула и карточка друга ---------- */
+  function hideCap(){ const c = N.cap; N.cap = null; clearTimeout(N.capT); if (c && c.el) { c.el.classList.add('out'); setTimeout(() => c.el.remove(), 320); } }
+  function showCap(inv){
+    hideCap(); const left = Math.max(4, 60 - inv.age);
+    const d = document.createElement('div'); d.className = 'nt-cap'; d.dataset.nt = 'cap';
+    d.innerHTML = `${av(inv.from, 34)}<div class="nt-ct2"><b>${nm(inv.from)} зовёт сыграть</b><small>VOOB · по сети</small></div><svg class="nt-ring" viewBox="0 0 36 36"><circle cx="18" cy="18" r="16" style="animation-duration:${left}s"/></svg>`;
+    document.body.appendChild(d); N.cap = {el:d, inv}; hap.imp(); setTimeout(hap.ok, 140);
+    N.capT = setTimeout(hideCap, left * 1000);
+  }
+  function showCard(inv){
+    hideCap(); hap.imp();
+    layer('nt-cdl', `<div class="nt-dim"></div><div class="nt-cd">${av(inv.from, 96)}<h3>${nm(inv.from)} зовёт сыграть</h3><p>VOOB · игра по сети</p><div class="nt-bts"><div class="nt-btn ghost" data-nt="dec" data-id="${inv.id}">Отклонить</div><div class="nt-btn" data-nt="acc" data-id="${inv.id}">Принять</div></div></div>`);
+  }
+  async function respond(id, ok){
+    hap.tap();
+    try {
+      const j = await apiAuth('/net/respond', {id:+id, accept:!!ok});
+      if (!ok) { closeOv(); return; }
+      if (j.status !== 'ok' || !j.room) { closeOv(); toast('Приглашение уже недействительно'); return; }
+      N.room = j.room; N.nb = 0; enter();
+    } catch (e) { closeOv(); toast(e.message || 'Нет связи'); }
+  }
+  /* ---------- VS-анимация и вход в комнату ---------- */
+  async function enter(){
+    const r = N.room; lobby(); const root_ = root();
+    const d = document.createElement('div'); d.className = 'nt-fx';
+    d.innerHTML = `<div class="nt-vb"></div><div class="nt-vl"><div class="nt-vp">${avp(r.host_id, 78)}<span>${nm(r.host_id).toUpperCase()}</span></div></div><div class="nt-vr"><div class="nt-vp">${avp(r.guest_id, 78)}<span>${nm(r.guest_id).toUpperCase()}</span></div></div><div class="nt-vsx">VS</div>`;
+    root_.appendChild(d); d.style.pointerEvents = 'auto';
+    const l = d.querySelector('.nt-vl'), rr = d.querySelector('.nt-vr'), vs = d.querySelector('.nt-vsx'), bg = d.querySelector('.nt-vb');
+    try {
+      W(l, [{transform:'translateX(-110%)'}, {transform:'none'}], {duration:520, easing:'cubic-bezier(.2,1.2,.3,1)'});
+      W(rr, [{transform:'translateX(110%)'}, {transform:'none'}], {duration:520, easing:'cubic-bezier(.2,1.2,.3,1)'});
+      await sleep(500); hap.med();
+      W(vs, [{opacity:0, transform:'scale(3) rotate(-8deg)'}, {opacity:1, transform:'scale(1) rotate(0)'}], {duration:350, easing:'cubic-bezier(.3,1.6,.5,1)'});
+      d.animate([{transform:'translate(0,0)'}, {transform:'translate(-4px,3px)'}, {transform:'translate(4px,-3px)'}, {transform:'none'}], {duration:260, delay:250});
+      setTimeout(() => hap.imp(), 300); await sleep(1300);
+      W(bg, [{opacity:1}, {opacity:0}], {duration:500});
+      W(l, [{transform:'none'}, {transform:'translateX(-115%)'}], {duration:550, easing:'cubic-bezier(.6,0,.9,.4)'});
+      W(rr, [{transform:'none'}, {transform:'translateX(115%)'}], {duration:550, easing:'cubic-bezier(.6,0,.9,.4)'});
+      W(vs, [{opacity:1, transform:'scale(1)'}, {opacity:0, transform:'scale(2)'}], {duration:350});
+      await sleep(600);
+    } catch (e) {}
+    d.remove(); sched(0);
+  }
+  /* ---------- лобби ---------- */
+  function lobby(){
+    const r = N.room;
+    const d = layer('nt-lobby', `<div class="nt-top"><i class="nt-x" data-nt="leave">✕</i><span>Комната · по сети</span></div><div class="nt-lh">${av(r.host_id, 56)}${av(r.guest_id, 56)}</div><div class="nt-ln"><b>${nm(r.host_id)}</b> <i>хост</i> · <b>${nm(r.guest_id)}</b></div><div class="nt-ls" id="ntls"></div><div class="nt-gl">${GAMES.map(g => `<div class="nt-gc${g.k ? '' : ' off'}" data-nt="game" data-k="${g.k}"><div class="th">${g.ic}</div><b>${g.n}</b><small>${g.d}</small></div>`).join('')}</div><div class="nt-lb"><div class="nt-btn" id="ntlb" data-nt="lbtn"></div></div>`);
+    d.style.setProperty('--dl', '1.3s'); updLobby();
+  }
+  const isHost = () => +N.room.host_id === +UK;
+  function peerBar(){ const l = q('.nt-lobby'); if (!l) return; let b = l.querySelector('.nt-peer'); const off = N.peer > 25 && N.room && N.room.status !== 'closed';
+    if (off && !b) { b = document.createElement('div'); b.className = 'nt-peer'; b.textContent = 'Соперник отключился или потерял связь'; l.appendChild(b); } else if (!off && b) b.remove(); }
+  function updLobby(){
+    const r = N.room; if (!r || !q('#ntls')) return; const h = isHost(), o = h ? r.guest_id : r.host_id;
+    q('#ntls').textContent = h ? (r.game ? (r.guest_ready ? raw(o) + ' готов ✓' : 'Ждём, пока ' + raw(o) + ' нажмёт «Готов»') : 'Выбери игру') : (r.game ? (r.guest_ready ? 'Ты готов ✓ · ждём старт' : 'Игра выбрана. Нажми «Готов»') : raw(o) + ' выбирает игру…');
+    N.ov.querySelectorAll('.nt-gc').forEach(c => c.classList.toggle('sel', !!r.game && c.dataset.k === r.game));
+    const b = q('#ntlb'); if (!b) return;
+    b.textContent = h ? 'Старт' : (r.guest_ready ? 'Не готов' : 'Готов');
+    b.classList.toggle('dis', h ? !(r.game && r.guest_ready) : !r.game); peerBar();
+  }
+  /* ---------- игра: крестики-нолики ---------- */
+  const mark = s => s === 'X' ? '<svg viewBox="0 0 40 40"><path class="x" d="M8 8L32 32M32 8L8 32"/></svg>' : '<svg viewBox="0 0 40 40"><circle class="o" cx="20" cy="20" r="12"/></svg>';
+  const mySym = () => N.room.state.x === +UK ? 'X' : 'O';
+  function buildGame(){
+    const r = N.room, st = r.state, x = st.x, o = +x === +r.host_id ? r.guest_id : r.host_id;
+    const d = layer('nt-lobby nt-gm', `<div class="nt-top"><i class="nt-x" data-nt="leave">✕</i><span>Крестики-нолики</span></div><div class="nt-pls"><div class="nt-pl" id="ntpx">${av(x, 40)}<div><b>${nm(x)}</b><small>крестики</small></div></div><div class="nt-pl" id="ntpo">${av(o, 40)}<div><b>${nm(o)}</b><small>нолики</small></div></div></div><div class="nt-bd">${Array.from({length:9}, (_, i) => `<div class="nt-cell" data-nt="cell" data-i="${i}"></div>`).join('')}</div><div class="nt-st" id="ntst"></div>`);
+    d.style.setProperty('--dl', '.05s'); N.nb = 0; updGame();
+  }
+  function updGame(){
+    const r = N.room, st = r.state; if (!q('#ntst')) return;
+    const cells = N.ov.querySelectorAll('.nt-cell'); let n = 0;
+    cells.forEach((c, i) => { const v = st.board[i] || ''; if (v) n++; if ((c.dataset.v || '') !== v) { c.dataset.v = v; c.innerHTML = v ? mark(v) : ''; } c.classList.remove('w'); });
+    if (n > N.nb && N.nb >= 0 && st.board.some(Boolean)) { const last = n % 2 ? 'X' : 'O'; if (last !== mySym()) hap.imp(); }
+    N.nb = n;
+    const win = st.win; if (win && win !== 'd') LN.forEach(L => { if (L.every(i => st.board[i] === win)) L.forEach(i => cells[i].classList.add('w')); });
+    q('#ntpx').classList.toggle('on', r.status === 'playing' && st.turn === 'X'); q('#ntpo').classList.toggle('on', r.status === 'playing' && st.turn === 'O');
+    const me = mySym();
+    q('#ntst').textContent = r.status === 'playing' ? (st.turn === me ? 'Твой ход' : 'Ходит ' + raw(+st.x === +UK ? (isHost() ? r.guest_id : r.host_id) : st.x)) : '';
+    let res = q('.nt-res');
+    if (r.status === 'done') {
+      const t = win === 'd' ? ['Ничья', 'Бывает. Реванш?'] : win === me ? ['Победа!', 'Красиво сыграно'] : ['Поражение', 'Реванш?'];
+      if (!res) { res = document.createElement('div'); res.className = 'nt-res'; res.innerHTML = `<h3></h3><p></p><div class="nt-bts"><div class="nt-btn ghost" data-nt="leave">Выйти</div><div class="nt-btn" data-nt="rematch">Реванш</div></div>`; q('.nt-gm').appendChild(res); win === 'd' ? hap.imp() : win === me ? hap.ok() : hap.warn(); }
+      res.querySelector('h3').textContent = t[0]; res.querySelector('p').textContent = t[1];
+    } else if (res) res.remove();
+    peerBar();
+  }
+  /* ---------- действия и синхронизация ---------- */
+  function apply(room){
+    if (!room || room.gone || room.same) return;
+    if (N.room && room.rev < N.room.rev) return;
+    const prev = N.room; N.room = room;
+    if (room.status === 'closed') { const by = prev && prev.status !== 'closed'; N.room = null; closeOv(); if (by) toast('Комната закрыта'); return; }
+    if (room.status === 'lobby') { if (!q('#ntlb')) { lobby(); q('.nt-lobby').style.setProperty('--dl', '.05s'); } else updLobby(); }
+    else { if (!q('.nt-gm')) buildGame(); else updGame(); }
+  }
+  async function act(a, extra){
+    if (!N.room) return;
+    try { const j = await apiAuth('/net/act', Object.assign({room:N.room.id, act:a}, extra || {})); if (j.room) apply(j.room); } catch (e) { toast(e.message || 'Нет связи'); }
+  }
+  function leave(){ const id = N.room && N.room.id; N.room = null; closeOv(); hideCap(); if (id) apiAuth('/net/act', {room:id, act:'leave'}).catch(() => {}); }
+  /* ---------- опрос сервера ---------- */
+  function handle(j){
+    if (!N.room) {
+      (j.invites || []).forEach(inv => {
+        const link = +window.NETLINK === inv.id;
+        if (!N.seen.has(inv.id) || link) { N.seen.add(inv.id); if (link) { window.NETLINK = 0; showCard(inv); } else if (inv.age < 60 && !N.out) showCap(inv); }
+      });
+      if (window.NETLINK && !(j.invites || []).some(i => i.id === +window.NETLINK)) { window.NETLINK = 0; toast('Приглашение уже недействительно'); }
+      if (N.cap && !(j.invites || []).some(i => i.id === N.cap.inv.id)) hideCap();
+      const o = j.out;
+      if (N.out && o && o.id === N.out.id && o.status !== 'pending') {
+        const to = N.out.to; N.out = null;
+        if (o.status === 'accepted' && o.room_id) { hap.ok(); apiAuth('/net/poll', {room:o.room_id, rev:-1}).then(r => { if (r.room && r.room.id) { N.room = r.room; N.nb = 0; enter(); } }).catch(() => closeOv()); }
+        else { closeOv(); toast(o.status === 'declined' ? raw(to) + ' отклонил приглашение' : 'Приглашение закрыто'); }
+      }
+    } else { N.peer = j.peer_s || 0; if (j.room && j.room.gone) { N.room = null; closeOv(); toast('Комната закрыта'); } else if (j.room) apply(j.room); }
+  }
+  async function poll(){
+    if (N.busy || !inTG) return; N.busy = true;
+    try { handle(await apiAuth('/net/poll', N.room ? {room:N.room.id, rev:N.room.rev} : {})); } catch (e) {}
+    N.busy = false;
+  }
+  function sched(d){
+    clearTimeout(N.t);
+    const fast = N.room || N.out, none = FR.data && !frs().length;
+    N.t = setTimeout(async () => { if (!document.hidden) await poll(); sched(); }, d != null ? d : fast ? 1000 : none ? 45000 : 6000);
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && N.started) { clearTimeout(N.t); sched(0); } });
+  document.addEventListener('click', e => {
+    const t = e.target.closest('[data-nt]'); if (!t || !t.closest('.nt, .nt-cap')) return; const a = t.dataset.nt;
+    if (a === 'x') { closeOv(); }
+    else if (a === 'inv') invite(t.dataset.id);
+    else if (a === 'cancel') cancel();
+    else if (a === 'cap') { const c = N.cap; if (c) showCard(c.inv); }
+    else if (a === 'acc') respond(t.dataset.id, true);
+    else if (a === 'dec') respond(t.dataset.id, false);
+    else if (a === 'leave') leave();
+    else if (a === 'game') { if (t.dataset.k && N.room && isHost()) { hap.tap(); act('game', {game:t.dataset.k}); } else if (!t.dataset.k) { hap.warn(); toast('Скоро'); } }
+    else if (a === 'lbtn') { hap.tap(); if (isHost()) act('start'); else act('ready'); }
+    else if (a === 'cell') { const r = N.room; if (!r || r.status !== 'playing' || N.pend || r.state.turn !== mySym() || t.dataset.v) return; N.pend = true; hap.tap(); t.dataset.v = mySym(); t.innerHTML = mark(mySym()); act('move', {i:+t.dataset.i}).then(() => { N.pend = false; }); }
+    else if (a === 'rematch') { hap.tap(); act('rematch'); }
+  });
+  return {
+    pick, start(){ if (N.started || !inTG) return; N.started = true; sched(1200); },
+    get link(){ return window.NETLINK; }, _test:{N, handle, apply, lobby, enter, buildGame, showCap, showCard}
+  };
+})();
+window.NET = NET;
+
+if (inTG) setTimeout(NET.start, 3500);
 if (inTG) { setTimeout(checkInbox, 2500); setInterval(checkInbox, 10 * 60000);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) checkInbox(); }); }
 fitFrames();

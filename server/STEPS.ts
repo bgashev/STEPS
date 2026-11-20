@@ -1616,6 +1616,131 @@ async function routeLogout(body: any) {
   return json({ ok: true });
 }
 
+/* ---------- v1.988: игры по сети (приглашение друга, комната, Крестики-нолики) ---------- */
+const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt"]);
+const tttLines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+const tttResult = (b: string[]) => { for (const [a, c, d] of tttLines) if (b[a] && b[a] === b[c] && b[a] === b[d]) return b[a]; return b.every((x) => x) ? "d" : ""; };
+const tttInit = (x: number) => ({ board: Array(9).fill(""), turn: "X", x, win: "" });
+const netIso = (agoS: number) => new Date(Date.now() - agoS * 1000).toISOString();
+async function netEdit(inv: any, text: string) {
+  if (inv?.tg_msg_id) await tg("editMessageText", { chat_id: inv.to_id, message_id: inv.tg_msg_id, text, reply_markup: { inline_keyboard: [] } }).catch(() => {});
+}
+async function netRoomOf(id: unknown, me: number) {
+  if (typeof id !== "string" || !/^[0-9a-f-]{36}$/.test(id)) return null;
+  const { data } = await db.from("net_rooms").select("*").eq("id", id).maybeSingle();
+  return data && (data.host_id === me || data.guest_id === me) ? data : null;
+}
+async function netSave(room: any, patch: Record<string, unknown>) {
+  const { data } = await db.from("net_rooms").update({ ...patch, rev: room.rev + 1, updated_at: new Date().toISOString() })
+    .eq("id", room.id).eq("rev", room.rev).select("*").maybeSingle();
+  return data;
+}
+async function routeNetPoll(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  await db.from("net_presence").upsert({ tg_id: me, seen: new Date().toISOString() }, { onConflict: "tg_id" });
+  const out: any = {};
+  const { data: inc } = await db.from("net_invites").select("id, from_id, created_at").eq("to_id", me).eq("status", "pending")
+    .gt("created_at", netIso(NET_TTL_S)).order("id", { ascending: false }).limit(3);
+  out.invites = (inc ?? []).map((i: any) => ({ id: i.id, from: i.from_id, age: Math.floor((Date.now() - new Date(i.created_at).getTime()) / 1000) }));
+  const { data: og } = await db.from("net_invites").select("id, to_id, status, room_id, created_at").eq("from_id", me)
+    .gt("created_at", netIso(NET_TTL_S)).order("id", { ascending: false }).limit(1);
+  out.out = og?.[0] ?? null;
+  if (body?.room) {
+    const room = await netRoomOf(body.room, me);
+    if (!room) out.room = { gone: true };
+    else {
+      const peer = room.host_id === me ? room.guest_id : room.host_id;
+      const { data: pr } = await db.from("net_presence").select("seen").eq("tg_id", peer).maybeSingle();
+      out.peer_s = pr?.seen ? Math.floor((Date.now() - new Date(pr.seen).getTime()) / 1000) : 999;
+      out.room = Number(body?.rev) === room.rev ? { id: room.id, same: true } : room;
+    }
+  }
+  return json(out);
+}
+async function routeNetOnline(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const ids = (Array.isArray(body?.ids) ? body.ids : []).map(Number).filter((x: number) => x > 0).slice(0, 200);
+  if (!ids.length) return json({ online: [] });
+  const { data: fr } = await db.from("friends").select("b").eq("a", me).in("b", ids);
+  const ok = (fr ?? []).map((x: any) => x.b);
+  const { data } = ok.length ? await db.from("net_presence").select("tg_id").in("tg_id", ok).gt("seen", netIso(NET_ONLINE_S)) : { data: [] };
+  return json({ online: (data ?? []).map((x: any) => x.tg_id) });
+}
+async function routeNetInvite(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const other = Number(body?.tg_id);
+  if (!other || other === me || !(await areFriends(me, other))) return fail("Звать можно только друзей", 403);
+  if ((await deactivatedSet([other])).size) return fail("Пользователь недоступен", 404);
+  const { data: last } = await db.from("net_invites").select("created_at").eq("from_id", me).eq("to_id", other).order("id", { ascending: false }).limit(1);
+  if (last?.[0] && Date.now() - new Date(last[0].created_at).getTime() < 30000) return json({ status: "soon" });
+  const { data: old } = await db.from("net_invites").select("*").eq("from_id", me).eq("status", "pending");
+  for (const o of old ?? []) { await db.from("net_invites").update({ status: "cancelled" }).eq("id", o.id); await netEdit(o, "Приглашение отменено"); }
+  const { data: inv, error } = await db.from("net_invites").insert({ from_id: me, to_id: other }).select("id").single();
+  if (error || !inv) return fail("Не получилось пригласить", 500);
+  const { data: pr } = await db.from("net_presence").select("seen").eq("tg_id", other).maybeSingle();
+  const online = !!pr?.seen && Date.now() - new Date(pr.seen).getTime() < NET_ONLINE_S * 1000;
+  const name = displayName(await userInfo(me));
+  const r = await tg("sendMessage", { chat_id: other, text: `🎮 ${name} зовёт тебя сыграть в VOOB по сети`, disable_notification: online,
+    reply_markup: { inline_keyboard: [[{ text: "Принять", url: `https://t.me/${await botName()}/VOOB?startapp=n_${inv.id}` }]] } }).catch(() => null);
+  if (r?.ok && r.result?.message_id) await db.from("net_invites").update({ tg_msg_id: r.result.message_id }).eq("id", inv.id);
+  return json({ status: "ok", id: inv.id, online, popup_s: NET_POP_S });
+}
+async function routeNetRespond(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const { data: inv } = await db.from("net_invites").select("*").eq("id", Number(body?.id)).eq("to_id", me).maybeSingle();
+  if (!inv) return fail("Приглашение не найдено", 404);
+  if (inv.status !== "pending") return json({ status: inv.status });
+  if (Date.now() - new Date(inv.created_at).getTime() > NET_TTL_S * 1000) {
+    await db.from("net_invites").update({ status: "expired" }).eq("id", inv.id);
+    await netEdit(inv, "Приглашение истекло");
+    return json({ status: "expired" });
+  }
+  if (!body?.accept) {
+    await db.from("net_invites").update({ status: "declined" }).eq("id", inv.id);
+    await netEdit(inv, "Ты отклонил приглашение");
+    return json({ status: "declined" });
+  }
+  const { data: room, error } = await db.from("net_rooms").insert({ host_id: inv.from_id, guest_id: me }).select("*").single();
+  if (error || !room) return fail("Не получилось создать комнату", 500);
+  await db.from("net_invites").update({ status: "accepted", room_id: room.id }).eq("id", inv.id);
+  await netEdit(inv, "Принято ✅ Вы в одной комнате");
+  return json({ status: "ok", room });
+}
+async function routeNetCancel(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const { data: inv } = await db.from("net_invites").select("*").eq("id", Number(body?.id)).eq("from_id", me).eq("status", "pending").maybeSingle();
+  if (inv) { await db.from("net_invites").update({ status: "cancelled" }).eq("id", inv.id); await netEdit(inv, "Приглашение отменено"); }
+  return json({ ok: true });
+}
+async function routeNetAct(body: any) {
+  const me = await sessionUser(body?.token);
+  if (!me) return noSession();
+  const room = await netRoomOf(body?.room, me);
+  if (!room) return fail("Комната закрыта", 404);
+  const host = room.host_id === me, act = String(body?.act ?? "");
+  if (room.status === "closed") return json({ room });
+  let next: any = null;
+  if (act === "leave") next = await netSave(room, { status: "closed" });
+  else if (act === "game" && host && room.status === "lobby" && NET_GAMES.has(String(body?.game))) next = await netSave(room, { game: String(body.game), guest_ready: false });
+  else if (act === "ready" && !host && room.status === "lobby") next = await netSave(room, { guest_ready: !room.guest_ready });
+  else if (act === "start" && host && room.status === "lobby" && room.game && room.guest_ready) next = await netSave(room, { status: "playing", state: tttInit(room.host_id) });
+  else if (act === "rematch" && room.status === "done") next = await netSave(room, { status: "playing", state: tttInit(room.state?.x === room.host_id ? room.guest_id : room.host_id) });
+  else if (act === "move" && room.status === "playing") {
+    const st = room.state, i = Number(body?.i), mine = st.x === me ? "X" : "O";
+    if (Number.isInteger(i) && i >= 0 && i < 9 && st.turn === mine && !st.board[i]) {
+      const board = st.board.slice(); board[i] = mine;
+      const win = tttResult(board);
+      next = await netSave(room, { status: win ? "done" : "playing", state: { ...st, board, win, turn: mine === "X" ? "O" : "X" } });
+    }
+  }
+  return json({ room: next ?? (await netRoomOf(body?.room, me)) });
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: CORS });
   const path = new URL(req.url).pathname.replace(/\/+$/, "");
@@ -1652,6 +1777,12 @@ Deno.serve(async (req) => {
       case "/friends/privacy": return await routeFriendPrivacy(body);
       case "/friends/poke": return await routeFriendPoke(body);
       case "/games/top": return await routeGamesTop(body);
+      case "/net/poll": return await routeNetPoll(body);
+      case "/net/online": return await routeNetOnline(body);
+      case "/net/invite": return await routeNetInvite(body);
+      case "/net/respond": return await routeNetRespond(body);
+      case "/net/cancel": return await routeNetCancel(body);
+      case "/net/act": return await routeNetAct(body);
       case "/gifts/send": return await routeGiftSend(body);
       case "/gifts/claim": return await routeGiftClaim(body);
       case "/profile/handle": return await routeHandle(body);
