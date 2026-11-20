@@ -808,6 +808,12 @@ html.web .tbf{display:none}
 #tabs.drag .tab.near{color:var(--accent)}
 #tabs.drag .tab.near .ti{transform:scale(1.12)}
 #toast{bottom:calc(98px + env(safe-area-inset-bottom))}
+#frpop{position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));z-index:9990;width:max-content;max-width:min(360px,calc(100vw - 24px));display:flex;align-items:center;gap:11px;padding:8px 16px 8px 8px;border-radius:99px;background:color-mix(in srgb,var(--surface) 88%,transparent);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--border);box-shadow:0 14px 34px -12px rgba(0,0,0,.55);transform:translate(-50%,-90px) scale(.92);opacity:0;filter:blur(6px);transition:transform .5s cubic-bezier(.2,1.2,.3,1),opacity .3s,filter .4s;pointer-events:none}
+#frpop.show{transform:translate(-50%,0) scale(1);opacity:1;filter:blur(0);pointer-events:auto}
+#frpop .fav{flex:none;position:relative}#frpop .fav:after{content:"";position:absolute;right:-1px;bottom:-1px;width:11px;height:11px;border-radius:50%;background:#3DDC84;border:2px solid var(--surface);animation:frpd 1.6s ease-in-out infinite}
+@keyframes frpd{50%{box-shadow:0 0 0 5px rgba(61,220,132,.0);transform:scale(1.15)}0%{box-shadow:0 0 0 0 rgba(61,220,132,.5)}}
+#frpop .t{min-width:0;line-height:1.25}#frpop b{display:block;font-size:13.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#frpop small{display:block;font-size:11.5px;color:var(--muted);font-weight:600}
+
 /* иконка активности в истории */
 .wa{width:38px;height:38px;border-radius:50%;flex:none;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
 .hflt{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:10px -18px 2px;padding:0 18px 2px}
@@ -950,6 +956,18 @@ html.web ::-webkit-scrollbar-corner{background:transparent}
 .pbpick{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s cubic-bezier(.22,1,.36,1),margin .35s}.pbpick>.pbpg{overflow:hidden;min-height:0}.pbpick.open{grid-template-rows:1fr;margin-top:10px}
 .pbpg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.pbp{display:grid;justify-items:center;gap:6px;padding:12px 6px 10px;border-radius:16px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font:inherit;font-size:12px;font-weight:700;text-align:center;line-height:1.2;cursor:pointer}.pbp span{width:38px;height:38px;border-radius:12px;background:var(--surface);display:grid;place-items:center;color:var(--accent)}.pbp:active{transform:scale(.95);border-color:var(--accent)}
 .pbbar{position:sticky;bottom:calc(-22px - env(safe-area-inset-bottom));margin:14px -18px calc(-22px - env(safe-area-inset-bottom));padding:12px 18px calc(12px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--border);display:flex;align-items:center;gap:12px;z-index:5}.pbtot{flex:1;min-width:0}.pbtot small{display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:800}.pbtot b{display:block;font-size:13.5px;line-height:1.3}.pbbar .btn{min-width:130px;min-height:50px;justify-content:center}.pbbar .btn:disabled{opacity:.4}
+.pbbt{display:flex;align-items:center;gap:12px;flex:1;min-width:0}.pbdock{display:none;flex:1;min-width:0}.pbbar.ed{align-items:stretch;padding-top:12px;box-shadow:0 -14px 30px rgba(0,0,0,.45);background:var(--surface);border-radius:26px 26px 0 0}.pbbar.ed .pbbt{display:none}.pbbar.ed .pbdock{display:block}
+.pbdl{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--muted)}.pbdl span{flex:1;min-width:0}.pbdl button{height:30px;padding:0 12px;border-radius:99px;border:0;background:var(--surface2);color:var(--text);font-size:12px;font-weight:700}.pbdl button.ok{background:var(--text);color:var(--bg)}
+.pbds{display:flex;align-items:center;gap:10px}.pbds button{width:68px;height:56px;border-radius:18px;border:0;background:var(--surface2);color:var(--text);font-size:26px}.pbds button:active{transform:scale(.92)}.pbds .v{flex:1;text-align:center;font:700 30px Unbounded,system-ui,sans-serif;letter-spacing:-1.5px}.pbds .v em{font:600 13px -apple-system,sans-serif;color:var(--muted);font-style:normal;margin-left:4px;letter-spacing:0}
+.pbpr{display:flex;gap:6px;margin-top:10px;overflow-x:auto;scrollbar-width:none}.pbpr::-webkit-scrollbar{display:none}.pbpr button{flex:none;height:38px;min-width:48px;padding:0 13px;border-radius:99px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-weight:700;font-size:13px}.pbpr button.on{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.pbx2{position:relative;margin:0 0 10px;padding:13px 12px 12px 16px;border-radius:24px;border:1px solid var(--border);background:var(--surface);overflow:hidden}.pbx2:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}.pbx2.open{border-color:color-mix(in srgb,var(--c) 55%,var(--border))}
+.pbx2 .pbxh{cursor:pointer;margin-bottom:10px}.pbchev{color:var(--muted);flex:none;display:grid;place-items:center;width:30px}
+.pbm{display:grid;gap:4px;cursor:pointer}.pbmr{display:grid;grid-template-columns:20px 1fr 1fr 1fr;gap:5px;align-items:center;font-size:12.5px;font-weight:700}.pbmr span{color:var(--muted);text-align:center}.pbmr i{font-style:normal;background:var(--surface2);border-radius:9px;padding:4px 0;text-align:center}.pbmr i.z{color:var(--muted)}
+.pbsr{display:flex;align-items:center;gap:6px;margin-bottom:8px}.pbsr .n{width:30px;height:30px;border-radius:50%;background:var(--surface2);display:grid;place-items:center;font:700 12px Unbounded,system-ui,sans-serif;flex:none}
+.pbcell{flex:1;min-width:0;height:58px;border-radius:17px;background:var(--surface2);border:1.5px solid transparent;display:grid;place-items:center;align-content:center;gap:1px;color:var(--text);padding:0;transition:border-color .15s,background .15s}.pbcell b{font:700 19px Unbounded,system-ui,sans-serif;letter-spacing:-1px;line-height:1}.pbcell small{font-size:10px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.pbcell.on{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,var(--surface2));box-shadow:0 8px 20px -12px var(--accent)}
+.pbsr .x{width:30px;height:44px;border:0;background:none;color:var(--muted);display:grid;place-items:center;flex:none;padding:0}.pbsr .x.off{opacity:.2;pointer-events:none}
+.pbaddset{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:54px;border-radius:19px;border:0;background:linear-gradient(100deg,#8b6cff,#ff5d8f);color:#fff;font:inherit;font-weight:800;font-size:16px;margin-top:4px;box-shadow:0 14px 28px -16px #8b6cff}.pbaddset small{font-weight:600;opacity:.8;font-size:12.5px}.pbaddset:active{transform:scale(.98)}
 .adc .adk{display:inline-flex;align-items:center;gap:6px;width:max-content;margin-top:4px;padding:3px 9px 3px 8px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.02em;color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,transparent)}
 .adc .adk i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:adp 1.6s ease-in-out infinite}
 @keyframes adp{50%{opacity:.25;transform:scale(.7)}}
@@ -5007,7 +5025,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1095';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1096';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -7661,7 +7679,7 @@ function pbEst(it){
   return Math.max(1, Math.round((work + rest) / 60));
 }
 function pbNum(ei, i, f, val, label){ return `<div class="pbn"><button type="button" class="pbb" data-act="pbs" data-ei="${ei}" data-i="${i}" data-f="${f}" data-d="-1" aria-label="Меньше">${IC('minus', 15)}</button><input class="pbi" inputmode="${f === 'k' || f === 'v' ? 'decimal' : 'numeric'}" data-ei="${ei}" data-i="${i}" data-f="${f}" value="${val}" aria-label="${label}"><button type="button" class="pbb" data-act="pbs" data-ei="${ei}" data-i="${i}" data-f="${f}" data-d="1" aria-label="Больше">${IC('plus', 15)}</button></div>`; }
-function pbCardH(it, ei){
+function pbCardOld(it, ei){
   const a = ACTS.find(x => x[0] === it.act) || ACTS[0], st = STR[it.act], kg = KG_ACT[it.act], n = PB.items.length;
   const head = `<div class="pbxh"><span class="wa">${IC(it.act, 20)}</span><div class="pbxt"><b>${a[1]}</b><small data-pbs="${ei}">${pbSumItem(it)}</small></div>
     <div class="pbxa"><button type="button" class="pbq" data-act="pbmv" data-ei="${ei}" data-d="-1" aria-label="Выше"${ei ? '' : ' disabled'}><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L9 6.5l5 5"/></svg></button>
@@ -7686,6 +7704,31 @@ function pbCardH(it, ei){
   }
   return `<div class="pbx" data-ei="${ei}">${head}${body}</div>`;
 }
+const PB_C = ['#B4A7EE', '#5FC98A', '#FFB454', '#7FB5FF'];
+const pbUn = it => STR[it.act][0] === 'secs' ? 'сек' : 'повт';
+const pbRs = v => v ? fmtRs(v) : 'без';
+/* v1.1095: редактор плана «A+» — подходы строками, значение правится степпером в нижней панели */
+function pbCardH(it, ei){
+  const st = STR[it.act]; if (!st) return pbCardOld(it, ei);
+  const a = ACTS.find(x => x[0] === it.act) || ACTS[0], kg = KG_ACT[it.act], n = PB.items.length, open = PB.ed === ei, un = pbUn(it), ss = PB.ss || {i:0, f:'r'};
+  const acts = open ? `<div class="pbxa"><button type="button" class="pbq" data-act="pbmv" data-ei="${ei}" data-d="-1" aria-label="Выше"${ei ? '' : ' disabled'}><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.5L9 6.5l5 5"/></svg></button><button type="button" class="pbq" data-act="pbmv" data-ei="${ei}" data-d="1" aria-label="Ниже"${ei < n - 1 ? '' : ' disabled'}><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5l5 5 5-5"/></svg></button><button type="button" class="pbq" data-act="pbdup" data-ei="${ei}" aria-label="Дублировать"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="6" width="8.5" height="8.5" rx="2"/><path d="M11.5 3.8V3.5A1.5 1.5 0 0 0 10 2H4.5A1.5 1.5 0 0 0 3 3.5V10a1.5 1.5 0 0 0 1.5 1.5h.3"/></svg></button><button type="button" class="pbq" data-act="pbdel" data-ei="${ei}" aria-label="Убрать упражнение">${IC('close', 15)}</button></div>` : `<span class="pbchev">${IC('chev', 16)}</span>`;
+  const head = `<div class="pbxh" data-act="pbopen" data-ei="${ei}"><span class="wa">${IC(it.act, 20)}</span><div class="pbxt"><b>${a[1]}</b><small data-pbs="${ei}">${pbSumItem(it)}</small></div>${acts}</div>`;
+  let body;
+  if (!open) body = `<div class="pbm" data-act="pbopen" data-ei="${ei}">${it.sl.map((v, i) => `<div class="pbmr"><span>${i + 1}</span><i>${v} ${un}</i>${kg ? `<i class="${it.sk[i] ? '' : 'z'}">${it.sk[i] ? fmtKg(it.sk[i]) + ' кг' : 'без веса'}</i>` : ''}<i class="z">⏱ ${pbRs(it.rs[i])}</i></div>`).join('')}</div>`;
+  else body = it.sl.map((v, i) => { const cell = (f, val, lb) => `<button type="button" class="pbcell${ss.i === i && ss.f === f ? ' on' : ''}" data-act="pbcell" data-ei="${ei}" data-i="${i}" data-f="${f}"><b>${val}</b><small>${lb}</small></button>`;
+      return `<div class="pbsr"><span class="n">${i + 1}</span>${cell('r', v, un)}${kg ? cell('k', fmtKg(it.sk[i] || 0), 'кг') : ''}${cell('s', pbRs(it.rs[i]), 'отдых')}<button type="button" class="x${it.sl.length < 2 ? ' off' : ''}" data-act="pbsdel" data-ei="${ei}" data-i="${i}" aria-label="Убрать подход">${IC('close', 15)}</button></div>`; }).join('')
+    + `<button type="button" class="pbaddset" data-act="pbsadd" data-ei="${ei}">${IC('plus', 18)}Подход<small>копия №${it.sl.length}</small></button>`;
+  return `<div class="pbx2${open ? ' open' : ''}" data-ei="${ei}" style="--c:${PB_C[ei % 4]}">${head}${body}</div>`;
+}
+function pbDockH(){
+  const ei = PB.ed, it = ei != null && ei >= 0 ? PB.items[ei] : null; if (!it || !STR[it.act]) return '';
+  const st = STR[it.act], kg = KG_ACT[it.act]; let ss = PB.ss || {i:0, f:'r'}; if (ss.i >= it.sl.length) ss = PB.ss = {i:it.sl.length - 1, f:ss.f}; if (ss.f === 'k' && !kg) ss = PB.ss = {i:ss.i, f:'r'};
+  const f = ss.f, i = ss.i, un = pbUn(it), lbl = f === 'r' ? (st[0] === 'secs' ? 'Секунды' : 'Повторы') : f === 'k' ? 'Вес' : 'Отдых';
+  const val = f === 'r' ? it.sl[i] : f === 'k' ? fmtKg(it.sk[i] || 0) : pbRs(it.rs[i]), uv = f === 'r' ? un : f === 'k' ? 'кг' : '';
+  const pre = f === 'r' ? (st[0] === 'secs' ? [20, 30, 45, 60, 90, 120] : [6, 8, 10, 12, 15, 20]).map(v => [v, v]) : f === 's' ? [0, 30, 60, 90, 120, 180].map(v => [v, pbRs(v)]) : [];
+  const cur = f === 'r' ? it.sl[i] : it.rs[i];
+  return `<div class="pbdl"><span>Подход ${i + 1} · ${lbl}</span><button type="button" data-act="pball">Применить ко всем</button><button type="button" class="ok" data-act="pbclose">Готово</button></div><div class="pbds"><button type="button" data-act="pbds" data-d="-1" aria-label="Меньше">−</button><div class="v">${val}<em>${uv}</em></div><button type="button" data-act="pbds" data-d="1" aria-label="Больше">+</button></div>${pre.length ? `<div class="pbpr">${pre.map(([v, l]) => `<button type="button" class="${cur === v ? 'on' : ''}" data-act="pbset" data-v="${v}">${l}</button>`).join('')}</div>` : ''}`;
+}
 function pbSumItem(it){ const st = STR[it.act]; if (!st) return fmtMin(+it.minutes || 0) + (it.speed ? ` · ${fmtKg(it.speed)} км/ч` : ''); const same = it.sl.every(x => x === it.sl[0]); return (same ? `${it.sl.length}×${it.sl[0]}` : `${it.sl.length} ${plural(it.sl.length, ['подход', 'подхода', 'подходов'])}`) + (it.sk && it.sk.some(x => x > 0) ? ` · ${fmtKg(kgAvg(it.sl, it.sk))} кг` : '') + ` · ≈${pbEst(it)} мин`; }
 function pbTotals(){ const its = PB.items, sets = its.reduce((a, it) => a + (STR[it.act] ? it.sl.length : 0), 0), min = its.reduce((a, it) => a + pbEst(it), 0); return `${its.length} ${plural(its.length, ['упражнение', 'упражнения', 'упражнений'])}${sets ? ` · ${sets} ${plural(sets, ['подход', 'подхода', 'подходов'])}` : ''} · ≈${min} мин`; }
 function pbRender(){
@@ -7694,6 +7737,7 @@ function pbRender(){
   pbFoot();
   const pk = $('#pb-pick'); if (pk) pk.classList.toggle('open', !!PB.pick);
   const ab = $('#pb-addb'); if (ab) ab.classList.toggle('on', !!PB.pick);
+  const bar = $('#pb-bar'), dk = $('#pb-dock'); if (bar && dk) { const h = pbDockH(); dk.innerHTML = h; bar.classList.toggle('ed', !!h); }
 }
 function pbFoot(){ const t = $('#pb-tot'); if (t) t.textContent = PB.items.length ? pbTotals() : 'Добавь упражнения'; const sb = $('#pb-save'); if (sb) sb.disabled = !PB.items.length; PB.items.forEach((it, ei) => { const s = document.querySelector(`[data-pbs="${ei}"]`); if (s) s.textContent = pbSumItem(it); }); }
 function openPlanB(p){
@@ -7710,7 +7754,7 @@ function openPlanB(p){
     <button type="button" class="pbadd" id="pb-addb" data-act="pbadd">${IC('plus', 18)}Добавить упражнение</button>
     <div class="pbpick" id="pb-pick"><div class="pbpg">${list.map(([k, l]) => `<button type="button" class="pbp" data-act="pbpick" data-v="${k}"><span>${IC(k, 22)}</span>${l}</button>`).join('')}</div></div>
     </div></div>
-    <div class="pbbar"><div class="pbtot"><small>Итого</small><b id="pb-tot"></b></div><button class="btn primary" id="pb-save" data-act="pbsave">Сохранить</button></div></div>`, {type:'planb', item:p || null});
+    <div class="pbbar" id="pb-bar"><div class="pbbt"><div class="pbtot"><small>Итого</small><b id="pb-tot"></b></div><button class="btn primary" id="pb-save" data-act="pbsave">Сохранить</button></div><div class="pbdock" id="pb-dock"></div></div></div>`, {type:'planb', item:p || null});
   pbRender();
 }
 function pbSave(){
@@ -11708,13 +11752,19 @@ const ACT = {
   pbs: el => { if (PB) pbStep(el); },
   pbrc: el => { if (!PB) return; const it = PB.items[+el.dataset.ei], i = +el.dataset.i, nx = PB_RS.find(x => x > (it.rs[i] || 0)); it.rs[i] = nx === undefined ? 0 : nx; hap.tap(); pbSync(it, +el.dataset.ei, 's', i); },
   pbrall: el => { if (!PB) return; const it = PB.items[+el.dataset.ei]; it.rs = it.rs.map(() => it.rs[0]); hap.tap(); pbRender(); },
-  pbsadd: el => { if (!PB) return; const it = PB.items[+el.dataset.ei], n = it.sl.length; if (n >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } it.sl.push(it.sl[n - 1]); if (it.sk) it.sk.push(it.sk[n - 1]); it.rs.push(it.rs[n - 1]); hap.tap(); pbRender(); },
-  pbsdel: el => { if (!PB) return; const it = PB.items[+el.dataset.ei], i = +el.dataset.i; if (it.sl.length < 2) return; it.sl.splice(i, 1); if (it.sk) it.sk.splice(i, 1); it.rs.splice(i, 1); hap.tap(); pbRender(); },
+  pbsadd: el => { if (!PB) return; const it = PB.items[+el.dataset.ei], n = it.sl.length; if (n >= 20) { hap.warn(); toast('Максимум 20 подходов'); return; } it.sl.push(it.sl[n - 1]); if (it.sk) it.sk.push(it.sk[n - 1]); it.rs.push(it.rs[n - 1]); PB.ed = +el.dataset.ei; PB.ss = {i:n, f:'r'}; hap.tap(); pbRender(); setTimeout(() => { const b = document.querySelector('.pbx2.open .pbaddset'); if (b) b.scrollIntoView({block:'center', behavior:'smooth'}); }, 60); },
+  pbsdel: el => { if (!PB) return; const it = PB.items[+el.dataset.ei], i = +el.dataset.i; if (it.sl.length < 2) return; it.sl.splice(i, 1); if (it.sk) it.sk.splice(i, 1); it.rs.splice(i, 1); if (PB.ss) PB.ss.i = Math.min(PB.ss.i, it.sl.length - 1); hap.tap(); pbRender(); },
   pbadd: () => { if (!PB) return; PB.pick = !PB.pick; hap.tap(); pbRender(); if (PB.pick) setTimeout(() => { const pk = $('#pb-pick'); if (pk) pk.scrollIntoView({block:'nearest', behavior:'smooth'}); }, 80); },
-  pbpick: el => { if (!PB) return; PB.items.push(pbNewItem(el.dataset.v)); PB.pick = false; hap.imp(); pbRender(); setTimeout(() => { const c = document.querySelector(`.pbx[data-ei="${PB.items.length - 1}"]`); if (c) c.scrollIntoView({block:'center', behavior:'smooth'}); }, 80); },
-  pbdel: el => { if (!PB) return; const ei = +el.dataset.ei, it = PB.items[ei]; PB.items.splice(ei, 1); hap.warn(); pbRender(); toast('Упражнение убрано', 'Отменить', () => { if (!PB) return; PB.items.splice(Math.min(ei, PB.items.length), 0, it); pbRender(); }); },
-  pbdup: el => { if (!PB) return; const ei = +el.dataset.ei, c = JSON.parse(JSON.stringify(PB.items[ei])); c.k = uid(); delete c.id; PB.items.splice(ei + 1, 0, c); hap.tap(); pbRender(); },
-  pbmv: el => { if (!PB) return; const ei = +el.dataset.ei, j = ei + (+el.dataset.d); if (j < 0 || j >= PB.items.length) return; [PB.items[ei], PB.items[j]] = [PB.items[j], PB.items[ei]]; hap.tap(); pbRender(); },
+  pbpick: el => { if (!PB) return; PB.items.push(pbNewItem(el.dataset.v)); PB.pick = false; PB.ed = PB.items.length - 1; PB.ss = {i:0, f:'r'}; hap.imp(); pbRender(); setTimeout(() => { const c = document.querySelector(`.pbx[data-ei="${PB.items.length - 1}"], .pbx2[data-ei="${PB.items.length - 1}"]`); if (c) c.scrollIntoView({block:'center', behavior:'smooth'}); }, 80); },
+  pbdel: el => { if (!PB) return; const ei = +el.dataset.ei, it = PB.items[ei]; PB.items.splice(ei, 1); PB.ed = -1; hap.warn(); pbRender(); toast('Упражнение убрано', 'Отменить', () => { if (!PB) return; PB.items.splice(Math.min(ei, PB.items.length), 0, it); pbRender(); }); },
+  pbdup: el => { if (!PB) return; const ei = +el.dataset.ei, c = JSON.parse(JSON.stringify(PB.items[ei])); c.k = uid(); delete c.id; PB.items.splice(ei + 1, 0, c); PB.ed = ei + 1; hap.tap(); pbRender(); },
+  pbmv: el => { if (!PB) return; const ei = +el.dataset.ei, j = ei + (+el.dataset.d); if (j < 0 || j >= PB.items.length) return; [PB.items[ei], PB.items[j]] = [PB.items[j], PB.items[ei]]; if (PB.ed === ei) PB.ed = j; hap.tap(); pbRender(); },
+  pbopen: el => { if (!PB) return; const ei = +el.dataset.ei, it = PB.items[ei]; if (!it || !STR[it.act]) return; PB.ed = PB.ed === ei ? -1 : ei; if (PB.ed >= 0) PB.ss = {i:it.sl.length - 1, f:'r'}; hap.tap(); pbRender(); if (PB.ed >= 0) setTimeout(() => { const c = document.querySelector(`.pbx2[data-ei="${ei}"]`); if (c) c.scrollIntoView({block:'nearest', behavior:'smooth'}); }, 60); },
+  pbcell: el => { if (!PB) return; PB.ed = +el.dataset.ei; PB.ss = {i:+el.dataset.i, f:el.dataset.f}; hap.tap(); pbRender(); },
+  pbds: el => { if (!PB || PB.ed < 0 || !PB.ss) return; pbStep({dataset:{ei:PB.ed, f:PB.ss.f, i:PB.ss.i, d:el.dataset.d}}); pbRender(); },
+  pbset: el => { if (!PB || PB.ed < 0 || !PB.ss) return; const it = PB.items[PB.ed], st = STR[it.act], v = +el.dataset.v, i = PB.ss.i; if (PB.ss.f === 'r') it.sl[i] = clamp(v, 1, st[1]); else if (PB.ss.f === 's') it.rs[i] = clamp(v, 0, 600); hap.tap(); pbRender(); },
+  pball: () => { if (!PB || PB.ed < 0 || !PB.ss) return; const it = PB.items[PB.ed], i = PB.ss.i, f = PB.ss.f; if (f === 'r') it.sl = it.sl.map(() => it.sl[i]); else if (f === 'k' && it.sk) it.sk = it.sk.map(() => it.sk[i]); else it.rs = it.rs.map(() => it.rs[i]); hap.ok(); pbRender(); toast('Применено ко всем подходам'); },
+  pbclose: () => { if (!PB) return; PB.ed = -1; hap.tap(); pbRender(); },
   pbsave: pbSave,
   rtstd: el => { const nv = clamp(REST.std() + (+el.dataset.d) * 15, 15, 600); REST.setStd(nv); const e = $('#rt-std'); if (e) e.textContent = fmtRs(nv); hap.tap(); },
   frload: () => { FR.err = ''; hap.tap(); const b = document.querySelector('[data-act=frload]'); if (b) b.classList.add('spin'); loadFriends(true); },
@@ -13618,6 +13668,25 @@ async function init(){
   if (REALTG) splashShow();
   scheduleSync(100);
   try { if (inWeb && !inWebApp) showWebLogin(); /* v1.744: WEB только после входа через Telegram */ } catch (e) {}
+
+/* v1.1096: плашка «друг зашёл в VOOB» — опрос раз в 40 с, пока приложение открыто */
+const FPOP = {on:null, shown:new Map(), t:0, hide:0};
+function frPop(f){
+  let el = document.getElementById('frpop'); if (!el) { el = document.createElement('div'); el.id = 'frpop'; document.body.appendChild(el); el.onclick = () => { el.classList.remove('show'); if (el.dataset.id) { hap.tap(); openFriendProfile(+el.dataset.id); } }; }
+  el.dataset.id = f.tg_id; el.innerHTML = `${favHTML(f, true, true)}<div class="t"><b>${esc(f.name || 'Друг')}</b><small>зашёл в VOOB</small></div>`;
+  requestAnimationFrame(() => el.classList.add('show')); hap.imp && hap.imp();
+  clearTimeout(FPOP.hide); FPOP.hide = setTimeout(() => el.classList.remove('show'), 4200);
+}
+async function frBeat(){
+  if (!inTG || document.hidden) return;
+  const fr = (FR.data && FR.data.friends) || []; if (!fr.length) return;
+  try {
+    const j = await apiAuth('/net/online', {ids: fr.map(f => f.tg_id), beat: 1}), on = new Set(j.online || []);
+    if (FPOP.on) for (const id of on) { if (FPOP.on.has(id) || Date.now() - (FPOP.shown.get(id) || 0) < 1800000) continue; const f = fr.find(x => x.tg_id === id); if (f && !sheetCtx) { FPOP.shown.set(id, Date.now()); frPop(f); break; } }
+    FPOP.on = on;
+  } catch (e) {}
+}
+if (inTG) { setTimeout(frBeat, 3500); setInterval(frBeat, 40000); document.addEventListener('visibilitychange', () => { if (document.hidden) FPOP.on = null; else setTimeout(frBeat, 1500); }); }
   if (inTG) setTimeout(() => { loadFriends(); loadFeed(true); }, 900);   // к моменту перехода во вкладку всё уже свежее
   try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); else if (/^n_\d{1,12}$/.test(sp || '')) { window.NETLINK = +String(sp).slice(2); } else if (/^d_\d{1,12}$/.test(sp || '')) { setTimeout(() => { try { AX.acts.appopen({dataset: {s: 'hab'}}); } catch (e) {} }, 800); } else if (/^(games|g_[a-z0-9]{2,12})$/i.test(sp || '')) { const gl = String(sp).toLowerCase(); setTimeout(() => runGameLink(gl === 'games' ? '*' : gl.slice(2)), 700); } else { const TM = {stats:'stats', apps:'apps', home:'home', friends:'friends', me:'me', profile:'me'}, tk = TM[String(sp || '').toLowerCase()]; if (tk) setTimeout(() => { try { ACT.tab({dataset: {tab: tk}}); } catch (e) {} }, 600); else if (/^(add|new)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'home') ACT.tab({dataset: {tab: 'home'}}); ACT.add(); } catch (e) {} }, 800); else if (/^(settings|me_settings)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'me') ACT.tab({dataset: {tab: 'me'}}); ACT.meset(); } catch (e) {} }, 700); } } catch (e) {}
   if (!hasCloud) return;

@@ -2061,6 +2061,8 @@ async function routeNetOnline(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
   const ids = (Array.isArray(body?.ids) ? body.ids : []).map(Number).filter((x: number) => x > 0).slice(0, 200);
+  /* v1.1096: сам факт опроса = «я в VOOB» (друзья видят это и показывают плашку) */
+  if (body?.beat) await db.from("net_presence").upsert({ tg_id: me, seen: new Date().toISOString() }, { onConflict: "tg_id" });
   if (!ids.length) return json({ online: [] });
   const { data: fr } = await db.from("friends").select("b").eq("a", me).in("b", ids);
   const ok = (fr ?? []).map((x: any) => x.b);
