@@ -4396,8 +4396,8 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 .nt-pp{display:flex;flex-direction:column;align-items:center;width:112px}.nt-ln{margin-top:14px;font-size:15px;text-align:center;min-height:36px}.nt-ln b{display:block}.nt-ln i{display:block;font-style:normal;color:var(--muted);font-size:11px;margin-top:2px}
 .nt-ls{margin-top:8px;font-size:12px;color:var(--muted);min-height:18px;text-align:center}
 .nt-gl{display:flex;gap:14px;margin:8px -20px 0;width:calc(100% + 40px);overflow-x:auto;padding:38px 20px 52px;scroll-snap-type:x proximity;scroll-padding-inline:20px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 18px,#000 calc(100% - 18px),transparent 100%)}.nt-gl .nt-gc{scroll-snap-align:center}.nt-gl::-webkit-scrollbar{display:none}
-.nt-gc{flex:none;width:136px;height:196px;border-radius:26px;background:var(--surface);border:1.5px solid var(--border);padding:14px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;transition:transform .35s cubic-bezier(.3,1.4,.5,1),border-color .2s,box-shadow .3s}
-.nt-gc .th{position:absolute;top:10px;left:10px;right:10px;height:96px;border-radius:14px;overflow:hidden}.nt-gc .th svg{width:100%;height:100%;display:block}.nt-gc b{font-size:15px}.nt-gc small{font-size:10.5px;color:var(--muted);margin-top:2px}
+.nt-gc{flex:none;width:136px;height:auto;min-height:196px;border-radius:26px;background:var(--surface);border:1.5px solid var(--border);padding:12px 12px 14px;display:flex;flex-direction:column;justify-content:flex-start;position:relative;transition:transform .35s cubic-bezier(.3,1.4,.5,1),border-color .2s,box-shadow .3s}
+.nt-gc .th{position:relative;width:100%;aspect-ratio:1/1;border-radius:20px;overflow:hidden;margin-bottom:10px;flex:none;-webkit-mask-image:-webkit-radial-gradient(white,black)}.nt-gc .th svg{width:100%;height:100%;display:block;border-radius:20px}.nt-gc b{font-size:15px;line-height:1.15}.nt-gc small{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.25}
 .nt-gc.off{opacity:.45}.nt-gc.sel{transform:translateY(-8px) scale(1.05);border-color:var(--accent);box-shadow:0 14px 36px color-mix(in srgb,var(--accent) 35%,transparent)}
 .nt-lobby .nt-ls.nt-wait{font-size:14px;font-weight:600;background:linear-gradient(100deg,var(--muted) 30%,var(--text) 50%,var(--muted) 70%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:ntshim 2.2s linear infinite}
 @keyframes ntshim{from{background-position:100% 0}to{background-position:-100% 0}}
@@ -4644,7 +4644,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1020';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1021';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
