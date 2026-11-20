@@ -4133,7 +4133,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 .ch-p .p .e{fill:none;stroke:#2a2438;stroke-width:1.4;stroke-linecap:round}.ch-p.b .p .e{stroke:#c9cbe8}.ch-p .p circle.e{fill:#2a2438;stroke:none}.ch-p.b .p circle.e{fill:#c9cbe8}
 .ch-p.mine{filter:drop-shadow(0 2px 2px rgba(0,0,0,.38)) drop-shadow(0 0 0 transparent)}
 .ch-mat{display:flex;justify-content:space-between;align-items:center;width:min(calc(100vw - 24px),520px);margin-top:12px;min-height:26px;gap:10px}
-.ch-mat>div{display:flex;align-items:center;min-width:0;flex:1;height:24px;overflow:hidden;white-space:nowrap}.ch-mat>div:last-child{justify-content:flex-end}.ch-mat svg{width:17px;height:17px;margin-right:-8px;flex:none}.ch-mat svg .p{stroke-width:1.8}.ch-mat svg.w .p{fill:#fbf4e4;stroke:#2a2438}.ch-mat svg.b .p{fill:#262849;stroke:#07070f}.ch-mat svg .e{display:none}
+.ch-mat>div{display:flex;align-items:center;min-width:0;flex:1;height:34px;padding:0 12px;border-radius:99px;background:var(--surface);border:1px solid var(--border);overflow:hidden;white-space:nowrap}.ch-mat>div:empty::before{content:'ничего не съедено';font:500 11px system-ui,sans-serif;color:var(--muted);opacity:.7}.ch-mat>div b{margin-left:auto!important;padding:3px 8px;border-radius:99px;background:var(--accent);color:var(--bg)!important;font-size:11px!important}.ch-mat>div:last-child{justify-content:flex-end}.ch-mat svg{width:25px;height:25px;margin-right:-10px;flex:none;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}.ch-mat svg .p{stroke-width:1.8}.ch-mat svg.w .p{fill:#fbf4e4;stroke:#2a2438}.ch-mat svg.b .p{fill:#262849;stroke:#07070f}.ch-mat svg .e{display:none}
 .ch-mat b{margin-left:14px;font:800 12px Unbounded,system-ui,sans-serif;color:var(--muted)}
 .ch-rs{flex:none;border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:99px;height:34px;padding:0 16px;font:700 13px inherit;font-family:inherit;display:flex;align-items:center;gap:6px;cursor:pointer;transition:.2s}.ch-rs.arm{background:rgba(255,69,58,.18);color:#ff6b61;border-color:rgba(255,69,58,.5)}.ch-rs:active{transform:scale(.95)}
 .ch-pm{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:rgba(10,10,18,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:ntpop .2s both}
@@ -4994,7 +4994,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1083';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1084';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10151,9 +10151,9 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       c.save(); shk(c, g); const G2 = geo(), t = G2.t; c.textAlign = 'center';
       if (g.ph === 'menu') { bg2(c, 'rgba(110,90,230,.5)', .3); drawStars(c, g, g.t * 6); lvDraw(c, g, {title: 'Шахматы', sub: 'Против бота. Выбери уровень', lv: CHLV, note: 'Победы копят очки серии. Проигрыш — серия обнуляется'}); c.restore(); return; }
       glow(c, W / 2, G2.y0 + G2.S / 2, G2.S * .95, C.ac, .16); c.fillStyle = C.tx; c.globalAlpha = .07; for (let yy = 14; yy < H; yy += 26) for (let xx = 14; xx < W; xx += 26) { c.beginPath(); c.arc(xx, yy, 1.2, 0, 7); c.fill(); } c.globalAlpha = 1; c.textAlign = 'center';
-      c.fillStyle = C.mu; c.font = '700 13px ' + C.ff; c.fillText(CHLV[g.lvl][0].toUpperCase() + ' · СЕРИЯ ' + g.score, W / 2, G2.y0 - 40);
+      c.fillStyle = C.mu; c.font = '700 13px ' + C.ff; c.fillText(CHLV[g.lvl][0].toUpperCase() + ' · СЕРИЯ ' + g.score, W / 2, G2.y0 - 74);
       const my = g.S.turn === 'w' && !g.res && !g.anim && g.ph === 'play'; c.fillStyle = g.chk && my ? C.rd : C.tx; c.font = '800 19px ' + C.ff;
-      c.fillText(g.ph === 'over' ? (g.res.k === 'win' ? 'Мат боту!' : 'Ничья') : my ? (g.chk ? 'Шах! Твой ход' : 'Твой ход') : 'Бот думает' + '.'.repeat(1 + Math.floor(g.t * 3) % 3), W / 2, G2.y0 - 16);
+      c.fillText(g.ph === 'over' ? (g.res.k === 'win' ? 'Мат боту!' : 'Ничья') : my ? (g.chk ? 'Шах! Твой ход' : 'Твой ход') : 'Бот думает' + '.'.repeat(1 + Math.floor(g.t * 3) % 3), W / 2, G2.y0 - 52);
       rr(c, G2.x0 - 8, G2.y0 - 8, G2.S + 16, G2.S + 16, 18); const fg = c.createLinearGradient(0, G2.y0, 0, G2.y0 + G2.S); fg.addColorStop(0, C.s2); fg.addColorStop(1, C.bg); c.fillStyle = fg; c.fill(); c.strokeStyle = C.bd; c.lineWidth = 1.5; c.stroke();
       c.save(); rr(c, G2.x0, G2.y0, G2.S, G2.S, 10); c.clip();
       const lm = new Set(g.last), tg = new Map(); if (g.sel >= 0 && g.ph === 'play') g.legal.filter(m => m.f === g.sel).forEach(m => tg.set(m.t, g.S.b[m.t] || m.fl === 'ep' ? 2 : 1));
@@ -10173,9 +10173,17 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       if (A) { const u = Math.min(1, A.t / A.d), e = u * u * (3 - 2 * u); if (A.cap && u < .6) { const [px, py] = sq(G2, A.cap.i); c.globalAlpha = 1 - u / .6; pc(A.cap.p, px + t / 2, py + t / 2); c.globalAlpha = 1; }
         A.list.forEach((z, k) => { const [ax, ay] = sq(G2, z.f), [bx, by] = sq(G2, z.t); pc(k === 0 && A.pr && u > .9 ? A.pr : z.p, ax + (bx - ax) * e + t / 2, ay + (by - ay) * e + t / 2 - Math.sin(e * Math.PI) * t * .12, 1.06); }); }
       drawFx(c, g);
+      { const full = {p: 8, n: 2, b: 2, r: 2, q: 1}, VAL = {p: 1, n: 3, b: 3, r: 5, q: 9}, have = {w: {}, b: {}}; g.S.b.forEach(x => { if (x) { const k = x.toLowerCase(), col = isW(x) ? 'w' : 'b'; have[col][k] = (have[col][k] || 0) + 1; } });
+        const miss = col => { const o = []; 'qrbnp'.split('').forEach(k => { for (let n = 0; n < full[k] - (have[col][k] || 0); n++) o.push(col === 'w' ? k.toUpperCase() : k); }); return o; };
+        const mw = miss('w'), mb = miss('b'), sum = a => a.reduce((z, x) => z + VAL[x.toLowerCase()], 0), adv = sum(mb) - sum(mw);
+        const tray = (y, list, plus) => { rr(c, G2.x0, y, G2.S, 30, 15); c.fillStyle = C.s2; c.fill(); c.strokeStyle = C.bd; c.lineWidth = 1; c.stroke();
+          if (!list.length) { c.fillStyle = C.mu; c.globalAlpha = .7; c.font = '500 11.5px ' + C.ff; c.textAlign = 'left'; c.fillText('пока ничего не съедено', G2.x0 + 14, y + 19); c.textAlign = 'center'; c.globalAlpha = 1; }
+          list.forEach((p, k) => pc(p, G2.x0 + 22 + k * 15, y + 15, 26 / (t * .98)));
+          if (plus > 0) { const tx = '+' + plus; c.font = '900 13px ' + C.ff; const w2 = c.measureText(tx).width + 16; rr(c, G2.x0 + G2.S - w2 - 5, y + 5, w2, 20, 10); c.fillStyle = C.ac; c.fill(); c.fillStyle = C.bg; c.textAlign = 'center'; c.fillText(tx, G2.x0 + G2.S - w2 / 2 - 5, y + 19.5); } };
+        tray(G2.y0 - 42, mw, -adv); tray(G2.y0 + G2.S + 14, mb, adv); }
       if (g.promo) { const bx = G2.x0 + G2.S / 2 - 2 * t * .9, by = G2.y0 + G2.S / 2 - t * .6; c.globalAlpha = .82; c.fillStyle = C.bg; rr(c, bx - 12, by - 12, t * 3.6 + 24, t * 1.2 + 24, 18); c.fill(); c.globalAlpha = 1; for (let k = 0; k < 4; k++) { const px = bx + k * t * .9; rr(c, px + 2, by, t * .9 - 4, t * 1.2, 12); c.fillStyle = C.s2; c.fill(); c.strokeStyle = C.ac; c.lineWidth = 1.4; c.stroke(); pc('QRBN'[k], px + t * .45, by + t * .6, .95); } }
       if (g.ph === 'over') { c.globalAlpha = .75; c.fillStyle = C.bg; rr(c, G2.x0, G2.y0 + G2.S / 2 - 70, G2.S, 140, 22); c.fill(); c.globalAlpha = 1; const win = g.res.k === 'win'; c.fillStyle = C.tx; c.font = '800 26px ' + C.ff; c.fillText(win ? 'Мат боту!' : g.res.why === 'pat' ? 'Пат — ничья' : 'Ничья', W / 2, G2.y0 + G2.S / 2 - 22); c.fillStyle = win ? C.gr : C.mu; c.font = '800 18px ' + C.ff; c.fillText(win ? '+' + g.pts + ' · серия ' + g.score : 'Очки не меняются', W / 2, G2.y0 + G2.S / 2 + 8); c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.fillText('Тап — следующая партия', W / 2, G2.y0 + G2.S / 2 + 44); }
-      c.fillStyle = C.mu; c.font = '500 12.5px ' + C.ff; c.fillText('Ты играешь белыми · пешка дойдёт до края — станет фигурой', W / 2, G2.y0 + G2.S + 34);
+      c.fillStyle = C.mu; c.font = '500 12.5px ' + C.ff; c.fillText('Ты играешь белыми · пешка дойдёт до края — станет фигурой', W / 2, G2.y0 + G2.S + 66);
       c.restore(); };
     return g; }
   /* 5 · Прицел */
