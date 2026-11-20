@@ -4481,12 +4481,44 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 .nt-res{position:absolute;left:0;right:0;bottom:0;padding:22px 20px calc(24px + env(safe-area-inset-bottom,0px));background:var(--surface);border-radius:28px 28px 0 0;text-align:center;animation:ntsh .5s cubic-bezier(.2,.9,.25,1) both}
 .nt-res h3{margin:0 0 4px;font-size:24px}.nt-res p{margin:0 0 16px;font-size:12px;color:var(--muted)}
 .nt-fx{position:absolute;inset:0;overflow:hidden;pointer-events:none}.nt-vb{position:absolute;inset:0;background:#07070b}
-.nt-vl,.nt-vr{position:absolute;inset:0}
-.nt-vl{background:linear-gradient(160deg,#fff,#cfd0e6);clip-path:polygon(0 0,64% 0,36% 100%,0 100%);color:#0b0b12}
-.nt-vr{background:linear-gradient(145deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#4de0d0));clip-path:polygon(64% 0,100% 0,100% 100%,36% 100%);color:var(--on-accent)}
-.nt-vp{position:absolute;top:36%;display:flex;flex-direction:column;align-items:center;gap:18px;font-weight:900;font-size:19px;letter-spacing:1px;max-width:38%}
-.nt-vl .nt-vp{left:5%}.nt-vr .nt-vp{right:5%}
-.nt-vsx{position:absolute;left:50%;top:50%;margin:-44px 0 0 -52px;width:104px;text-align:center;font-size:60px;font-weight:900;font-style:italic;color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.55);opacity:0}
+.nt-fx.vs .nt-vb{animation:ntvbf .5s 3.25s both}@keyframes ntvbf{to{opacity:0}}
+.nt-vl,.nt-vr{position:absolute;inset:0;animation-duration:.6s,.6s;animation-delay:0s,3.2s;animation-fill-mode:both;animation-timing-function:cubic-bezier(.2,1.15,.3,1),cubic-bezier(.6,0,.9,.4)}
+.nt-vl{background:linear-gradient(160deg,#fff,#cfd0e6);clip-path:polygon(0 0,64% 0,36% 100%,0 100%);color:#0b0b12;animation-name:ntvi1,ntvo1}
+.nt-vr{background:linear-gradient(145deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#4de0d0));clip-path:polygon(64% 0,100% 0,100% 100%,36% 100%);color:var(--on-accent);animation-name:ntvi2,ntvo2}
+@keyframes ntvi1{from{transform:translateX(-110%)}}@keyframes ntvi2{from{transform:translateX(110%)}}@keyframes ntvo1{to{transform:translateX(-115%)}}@keyframes ntvo2{to{transform:translateX(115%)}}
+.nt-vl::after,.nt-vr::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(98deg,transparent 0 22px,rgba(255,255,255,.35) 22px 24px,transparent 24px 60px);opacity:.5;animation:ntvsl .5s linear infinite}
+@keyframes ntvsl{to{background-position:0 120px}}
+.nt-vp{position:absolute;top:36%;display:flex;flex-direction:column;align-items:center;gap:20px;z-index:2;max-width:40%}
+.nt-vl .nt-vp{left:6%}.nt-vr .nt-vp{right:6%}
+.nt-vp .nt-va{position:relative;width:112px;height:112px;border-radius:50%;background:linear-gradient(140deg,#4a4a5e,#16161d);display:grid;place-items:center;color:#fff;font-size:46px;font-weight:900;box-shadow:0 8px 30px rgba(0,0,0,.4),inset 0 0 0 2px rgba(255,255,255,.18);animation:ntvpop .6s cubic-bezier(.3,1.6,.5,1) .55s both}
+.nt-vp .nt-va img{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover}
+.nt-vp .nt-va b{position:absolute;right:-4px;bottom:-2px;min-width:28px;height:28px;padding:0 6px;border-radius:10px;background:#15151b;color:#fff;font-size:14px;font-weight:900;display:grid;place-items:center;border:2px solid #fff}
+@keyframes ntvpop{from{transform:scale(0) rotate(-40deg)}}
+.nt-vp .nt-vn{font-weight:900;font-size:20px;letter-spacing:.08em;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.nt-vp .nt-vn span{display:inline-block;opacity:0;animation:ntvlt .5s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(.8s + var(--i)*.05s)}
+@keyframes ntvlt{from{opacity:0;transform:translateY(.7em) scale(.6);filter:blur(5px)}to{opacity:1;transform:none;filter:none}}
+.nt-vsm{position:absolute;left:50%;top:-20%;height:140%;width:6px;margin-left:-3px;background:#fff;transform:rotate(8.2deg) scaleY(0);box-shadow:0 0 18px 6px #fff,0 0 70px 24px var(--accent);animation:ntvseam 3.5s .5s both;z-index:3}
+@keyframes ntvseam{0%{transform:rotate(8.2deg) scaleY(0)}12%{transform:rotate(8.2deg) scaleY(1);opacity:1}30%{opacity:.35;width:3px}85%{opacity:.35}100%{opacity:0;transform:rotate(8.2deg) scaleY(1)}}
+.nt-vsx{position:absolute;left:50%;top:50%;width:200px;margin:-60px 0 0 -100px;text-align:center;font-size:104px;font-weight:900;font-style:italic;letter-spacing:-.04em;color:#fff;z-index:4;opacity:0;animation:ntvvs .5s cubic-bezier(.3,1.6,.5,1) .9s both,ntvex .45s ease-in 3.15s forwards;text-shadow:5px 0 0 #ff3d6e,-5px 0 0 #2ee6ff,0 8px 50px rgba(0,0,0,.6)}
+@keyframes ntvvs{from{opacity:0;transform:scale(4) rotate(-12deg);filter:blur(10px)}60%{filter:none}to{opacity:1;transform:none}}
+@keyframes ntvex{to{opacity:0;transform:scale(2.4);filter:blur(8px)}}
+.nt-vwv{position:absolute;left:50%;top:50%;width:80px;height:80px;margin:-40px;border-radius:50%;border:4px solid #fff;z-index:3;opacity:0;animation:ntvwv .8s ease-out 1s both}
+.nt-vwv.b{animation-delay:1.15s;border-color:var(--accent)}
+@keyframes ntvwv{from{opacity:1;transform:scale(.2)}to{opacity:0;transform:scale(9)}}
+.nt-vfl{position:absolute;inset:0;background:#fff;opacity:0;z-index:5;pointer-events:none;animation:ntvfl .45s ease-out .92s both}
+@keyframes ntvfl{from{opacity:.85}to{opacity:0}}
+.nt-fx.vs{animation:ntvsh .3s .95s both}
+@keyframes ntvsh{0%,100%{transform:none}25%{transform:translate(-5px,4px)}50%{transform:translate(5px,-4px)}75%{transform:translate(-3px,2px)}}
+/* тёмная тема: приглушаем, чтобы не слепило ночью */
+html[data-mode=dark] .nt-vl{background:linear-gradient(160deg,#2c2c3a,#15151d);color:#ececf4}
+html[data-mode=dark] .nt-vr{background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 38%,#0c0c12),color-mix(in srgb,#2a9d92 45%,#0c0c12));color:#ececf4}
+html[data-mode=dark] .nt-vl::after,html[data-mode=dark] .nt-vr::after{opacity:.12}
+html[data-mode=dark] .nt-vsm{background:var(--accent);box-shadow:0 0 14px 3px var(--accent),0 0 50px 14px color-mix(in srgb,var(--accent) 45%,transparent)}
+html[data-mode=dark] .nt-vsx{text-shadow:4px 0 0 rgba(255,61,110,.7),-4px 0 0 rgba(46,230,255,.6),0 8px 40px rgba(0,0,0,.7);color:#f2f2f8}
+html[data-mode=dark] .nt-vwv{border-color:rgba(255,255,255,.55)}
+html[data-mode=dark] .nt-vfl{background:var(--accent);animation-name:ntvfld}
+@keyframes ntvfld{from{opacity:.22}to{opacity:0}}
+html[data-mode=dark] .nt-vp .nt-va{box-shadow:0 8px 30px rgba(0,0,0,.5),inset 0 0 0 2px rgba(255,255,255,.14)}
 .nt-inv{position:relative;margin:6px 0 12px;padding:2px;border-radius:26px;overflow:hidden;isolation:isolate;background:var(--surface);cursor:pointer;transition:transform .18s cubic-bezier(.3,1.5,.5,1)}
 .nt-inv:active{transform:scale(.965)}
 .nt-inv::before{content:"";position:absolute;left:-50%;top:-120%;width:200%;padding-bottom:200%;background:conic-gradient(from 0deg,transparent 0 55%,var(--accent) 78%,#fff 88%,transparent 92%);animation:ntispin 5s linear infinite;z-index:-2}
@@ -4831,7 +4863,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1045';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1046';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12779,23 +12811,11 @@ const NET = (() => {
   async function enter(){
     const r = N.room; lobby(); const root_ = root();
     if (N.pref && isHost()) { const pg = N.pref; N.pref = null; setTimeout(() => act('game', {game:pg}), 900); }
-    const d = document.createElement('div'); d.className = 'nt-fx';
-    d.innerHTML = `<div class="nt-vb"></div><div class="nt-vl"><div class="nt-vp">${avp(r.host_id, 78)}<span>${nm(r.host_id).toUpperCase()}</span></div></div><div class="nt-vr"><div class="nt-vp">${avp(r.guest_id, 78)}<span>${nm(r.guest_id).toUpperCase()}</span></div></div><div class="nt-vsx">VS</div>`;
+    const d = document.createElement('div'); d.className = 'nt-fx vs';
+    const vp = id => { const c = card(id), src = FR.ph.get(c.tg_id), lv = c.level && c.level.level, n = nm(id).toUpperCase(); return `<div class="nt-vp"><div class="nt-va">${src ? `<img src="${src}" alt="">` : esc((n || '?')[0])}${lv ? `<b>${lv}</b>` : ''}</div><div class="nt-vn">${[...n].map((ch, i) => `<span style="--i:${i}">${esc(ch)}</span>`).join('')}</div></div>`; };
+    d.innerHTML = `<div class="nt-vb"></div><div class="nt-vl">${vp(r.host_id)}</div><div class="nt-vr">${vp(r.guest_id)}</div><div class="nt-vsm"></div><div class="nt-vwv"></div><div class="nt-vwv b"></div><div class="nt-vfl"></div><div class="nt-vsx">VS</div>`;
     root_.appendChild(d); d.style.pointerEvents = 'auto';
-    const l = d.querySelector('.nt-vl'), rr = d.querySelector('.nt-vr'), vs = d.querySelector('.nt-vsx'), bg = d.querySelector('.nt-vb');
-    try {
-      W(l, [{transform:'translateX(-110%)'}, {transform:'none'}], {duration:520, easing:'cubic-bezier(.2,1.2,.3,1)'});
-      W(rr, [{transform:'translateX(110%)'}, {transform:'none'}], {duration:520, easing:'cubic-bezier(.2,1.2,.3,1)'});
-      await sleep(500); hap.med();
-      W(vs, [{opacity:0, transform:'scale(3) rotate(-8deg)'}, {opacity:1, transform:'scale(1) rotate(0)'}], {duration:350, easing:'cubic-bezier(.3,1.6,.5,1)'});
-      d.animate([{transform:'translate(0,0)'}, {transform:'translate(-4px,3px)'}, {transform:'translate(4px,-3px)'}, {transform:'none'}], {duration:260, delay:250});
-      setTimeout(() => hap.imp(), 300); await sleep(1300);
-      W(bg, [{opacity:1}, {opacity:0}], {duration:500});
-      W(l, [{transform:'none'}, {transform:'translateX(-115%)'}], {duration:550, easing:'cubic-bezier(.6,0,.9,.4)'});
-      W(rr, [{transform:'none'}, {transform:'translateX(115%)'}], {duration:550, easing:'cubic-bezier(.6,0,.9,.4)'});
-      W(vs, [{opacity:1, transform:'scale(1)'}, {opacity:0, transform:'scale(2)'}], {duration:350});
-      await sleep(600);
-    } catch (e) {}
+    try { setTimeout(() => hap.med(), 900); setTimeout(() => hap.imp(), 1000); await sleep(3800); } catch (e) {}
     d.remove(); sched(0);
   }
   /* ---------- лобби ---------- */
