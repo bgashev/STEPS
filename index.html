@@ -5117,7 +5117,36 @@ function dkMove(st, seat, m, c) {
 const SUITS = ['♠', '♣', '♦', '♥'], RK = ['6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'], FF = '-apple-system,system-ui,"Segoe UI Symbol","Segoe UI",sans-serif';
 const cost = (st, c) => (dkS(c) === st.tr ? 20 : 0) + dkR(c);
 const pick = a => a[Math.floor(Math.random() * a.length)];
+
+/* ---------- сильные уровни бота: перебор ходов по «угаданным» рукам соперника (честно, без подглядывания) ---------- */
+function dkLegal(st, seat){
+  const hand = st.h[seat], mv = [];
+  if (st.ph === 'd' && 1 - st.at === seat) { const i = dkUn(st); if (i < 0) return mv; hand.forEach(c => { if (dkBeats(st.tb[i][0], c, st.tr)) mv.push({m: 'def', c}); }); mv.push({m: 'take'}); }
+  else if (st.ph === 'a' && st.at === seat) { hand.forEach(c => { if (dkAtkOK(st, c)) mv.push({m: 'atk', c}); }); if (st.tb.length) mv.push({m: 'end'}); }
+  return mv;
+}
+function dkGuess(st, seat){
+  const S = JSON.parse(JSON.stringify(st)), dn = st.deck.length, known = new Set(st.h[seat]); st.bt.forEach(x => known.add(x)); st.tb.forEach(p => { known.add(p[0]); if (p[1] >= 0) known.add(p[1]); }); if (dn > 0) known.add(st.tc);
+  const un = []; for (let i = 0; i < 36; i++) if (!known.has(i)) un.push(i);
+  for (let i = un.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)), t = un[i]; un[i] = un[j]; un[j] = t; }
+  const oh = st.h[1 - seat].length; S.h[1 - seat] = un.splice(0, oh); S.deck = dn > 0 ? [st.tc].concat(un.slice(0, dn - 1)) : [];
+  return S;
+}
+function dkRoll(S, seat){
+  for (let k = 0; k < 140 && !S.win; k++) { const w = dkWho(S); if (w < 0) break; const a = bot(S, w, 2); if (!a || !dkMove(S, w, a.m, a.c)) { const lg = dkLegal(S, w); if (!lg.length || !dkMove(S, w, lg[0].m, lg[0].c)) break; } }
+  return S.win === '' ? .5 : S.win === 'd' ? .5 : (+S.win === seat ? 1 : 0);
+}
+function botMC(st, seat, K){
+  const lg = dkLegal(st, seat); if (!lg.length) return null; if (lg.length === 1) return lg[0];
+  const samples = []; for (let k = 0; k < K; k++) samples.push(dkGuess(st, seat));
+  let best = null, bs = -1;
+  for (const mv of lg) { let sc = 0; for (const sm of samples) { const S = JSON.parse(JSON.stringify(sm)); if (!dkMove(S, seat, mv.m, mv.c)) continue; sc += dkRoll(S, seat); } sc = sc / K - (mv.c != null ? cost(st, mv.c) * 1e-4 : 0); if (sc > bs) { bs = sc; best = mv; } }
+  return best;
+}
 function bot(st, seat, lvl){
+  if (lvl === 1 && Math.random() < .18) lvl = 0;
+  if (lvl === 3 && Math.random() < .3) lvl = 2;
+  if (lvl >= 3) { const r = botMC(st, seat, lvl === 3 ? 5 : 80); if (r) return r; lvl = 2; }
   const hand = st.h[seat], tr = st.tr, late = st.deck.length === 0, opp = st.h[1 - seat].length;
   if (st.ph === 'd' && 1 - st.at === seat) {
     const i = dkUn(st); if (i < 0) return null; const tgt = st.tb[i][0];
@@ -5184,7 +5213,7 @@ function btns(st, me){
   if (st.ph === 'a' && st.at === me && st.tb.length) return [{k: 'end', label: st.tk ? 'Готово' : 'Бито', col: '#c52d38'}];
   return [];
 }
-const btnPos = (n, i) => ({x: 180 + (i - (n - 1) / 2) * 90, y: 414, r: 34});
+const btnPos = (n, i) => ({x: 180 + (i - (n - 1) / 2) * 118, y: 386, w: 106, h: 40, r: 20});
 function msg(st, me){
   if (st.win) return '';
   const mine = st.at === me;
@@ -5217,7 +5246,7 @@ function draw(c, V, A, t, dt){
     items.push({key: 'dk', back: true, x: DECK.x, y: DECK.y + Math.sin(T * 1.6) * 1.2, r: -.06, w: 50, h: 72, z: -1});
   }
   st.tb.forEach((p, i) => { const f = fieldPos(i); items.push({key: 'c' + p[0], id: p[0], x: f.x, y: f.y, r: -.05 + i * .02, w: 50, h: 72, z: 10 + i * 2, tb: 1}); if (p[1] >= 0) items.push({key: 'c' + p[1], id: p[1], x: f.x + 15, y: f.y + 17, r: .1 + i * .015, w: 50, h: 72, z: 11 + i * 2, tb: 1, def: 1}); });
-  const hl = handLay(V), dg = V.drag; hl.forEach((h, i) => { if (dg && dg.id === h.id) { const tl = Math.max(-.35, Math.min(.35, (dg.x - dg.sx) / 260)); items.push({key: 'c' + h.id, id: h.id, x: dg.x, y: dg.y - 34, r: tl, w: 68, h: 98, z: 200, glow: dg.y < 395 ? .9 : .45, hand: 1, drag: 1}); } else items.push({key: 'c' + h.id, id: h.id, x: h.x, y: h.y + (h.ok && V.mine ? Math.sin(T * 3.2 + i) * 2 : 0), r: h.r, w: h.w, h: h.h, z: 40 + i, dim: !h.ok && V.mine && !st.win ? 1 : 0, glow: h.ok && V.mine && !st.win ? .35 + .25 * Math.sin(T * 4 + i) : 0, hand: 1}); });
+  const hl = handLay(V), dg = V.drag; hl.forEach((h, i) => { if (V.hov === h.id && !dg) items.push({key: 'c' + h.id, id: h.id, x: h.x, y: h.y - 30, r: h.r * .6, w: h.w * 1.12, h: h.h * 1.12, z: 150, glow: .95, hand: 1}); else if (dg && dg.id === h.id) { const tl = Math.max(-.35, Math.min(.35, (dg.x - dg.sx) / 260)); items.push({key: 'c' + h.id, id: h.id, x: dg.x, y: dg.y - 34, r: tl, w: 68, h: 98, z: 200, glow: dg.y < 395 ? .9 : .45, hand: 1, drag: 1}); } else items.push({key: 'c' + h.id, id: h.id, x: h.x, y: h.y + (h.ok && V.mine ? Math.sin(T * 3.2 + i) * 2 : 0), r: h.r, w: h.w, h: h.h, z: 40 + i, dim: !h.ok && V.mine && !st.win ? 1 : 0, glow: h.ok && V.mine && !st.win ? .35 + .25 * Math.sin(T * 4 + i) : 0, hand: 1}); });
   const prev = A.pv; let nsp = 0;
   for (const it of items) { cur[it.key] = 1; let p = P[it.key];
     if (!p) { const fromMe = !it.back && st.h[me].includes(it.id), fromDeck = fromMe || it.back, sp0 = it.key === 'tc' ? {x: it.x, y: it.y} : fromDeck ? {x: DECK.x, y: DECK.y} : {x: OPP.x, y: OPP.y + 10};
@@ -5248,9 +5277,13 @@ function draw(c, V, A, t, dt){
   c.textAlign = 'left'; c.fillStyle = '#fff'; c.font = '800 13px ' + FF; c.fillText(V.names[1] || 'Соперник', 64, 40); c.fillStyle = 'rgba(255,255,255,.65)'; c.font = '600 11px ' + FF; c.fillText(oc + ' ' + (oc % 10 === 1 && oc !== 11 ? 'карта' : (oc % 10 >= 2 && oc % 10 <= 4 && (oc < 10 || oc > 20)) ? 'карты' : 'карт'), 64, 56);
   const m = V.msg != null ? V.msg : msg(st, me);
   if (m !== A.msg) { A.msg = m; A.mt = 0; } A.mt = Math.min(1, A.mt + dt * 4); const mp = 1 + .12 * Math.pow(1 - A.mt, 2), ma = .3 + .7 * A.mt;
-  c.save(); c.translate(180, 358); c.scale(mp, mp); c.globalAlpha = ma; c.textAlign = 'center'; c.fillStyle = '#e8f6ee'; let mz = 14; c.font = '800 ' + mz + 'px ' + FF; while (c.measureText(m).width > 300 && mz > 10) { mz -= .5; c.font = '800 ' + mz + 'px ' + FF; } c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 6; c.fillText(m, 0, 0); c.restore();
-  if (V.mine) { const b = btns(st, me); b.forEach((x, i) => { const q = btnPos(b.length, i), bp = 1 + Math.sin(T * 4) * .03, ph = (T * .9) % 1; c.save(); c.globalAlpha = (1 - ph) * .4; c.beginPath(); c.arc(q.x, q.y, q.r + ph * 20, 0, 7); c.strokeStyle = x.k === 'end' ? '#ff6a74' : '#ffffff'; c.lineWidth = 2; c.stroke(); c.restore();
-    c.save(); c.translate(q.x, q.y); c.scale(bp, bp); c.shadowColor = 'rgba(0,0,0,.5)'; c.shadowBlur = 12; c.shadowOffsetY = 5; c.beginPath(); c.arc(0, 0, q.r, 0, 7); c.fillStyle = x.col; c.fill(); c.shadowColor = 'transparent'; c.save(); c.rotate(T * .5); c.setLineDash([7, 5]); c.lineWidth = 4; c.strokeStyle = 'rgba(255,255,255,.8)'; c.beginPath(); c.arc(0, 0, q.r - 6, 0, 7); c.stroke(); c.restore(); c.fillStyle = '#fff'; let fz = 14; c.font = '900 ' + fz + 'px ' + FF; while (c.measureText(x.label).width > q.r * 1.4 && fz > 8) { fz -= .5; c.font = '900 ' + fz + 'px ' + FF; } c.textAlign = 'center'; c.textBaseline = 'middle'; c.shadowColor = 'rgba(0,0,0,.35)'; c.shadowBlur = 3; c.fillText(x.label, 0, 1); c.restore(); }); }
+  c.save(); c.translate(180, 334); c.scale(mp, mp); c.globalAlpha = ma; c.textAlign = 'center'; c.fillStyle = '#e8f6ee'; let mz = 14; c.font = '800 ' + mz + 'px ' + FF; while (c.measureText(m).width > 300 && mz > 10) { mz -= .5; c.font = '800 ' + mz + 'px ' + FF; } c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 6; c.fillText(m, 0, 0); c.restore();
+  if (V.mine) { const b = btns(st, me); b.forEach((x, i) => { const q = btnPos(b.length, i), bp = 1 + Math.sin(T * 3.2 + i) * .02, sw = ((T * .55 + i * .3) % 1.6) - .3, end = x.k === 'end';
+    c.save(); c.translate(q.x, q.y); c.scale(bp, bp); c.shadowColor = end ? 'rgba(255,90,100,.55)' : 'rgba(255,255,255,.18)'; c.shadowBlur = 16; c.shadowOffsetY = 4; rrp(c, -q.w / 2, -q.h / 2, q.w, q.h, q.h / 2);
+    const bg = c.createLinearGradient(0, -q.h / 2, 0, q.h / 2); bg.addColorStop(0, end ? '#ff7a84' : '#3b4a45'); bg.addColorStop(1, end ? '#c9303c' : '#1f2a27'); c.fillStyle = bg; c.fill(); c.shadowColor = 'transparent';
+    c.save(); rrp(c, -q.w / 2, -q.h / 2, q.w, q.h, q.h / 2); c.clip(); c.fillStyle = 'rgba(255,255,255,.22)'; c.save(); c.translate(-q.w / 2 + q.w * sw, 0); c.rotate(.5); c.fillRect(-7, -q.h, 14, q.h * 2); c.restore(); c.fillStyle = 'rgba(255,255,255,.12)'; c.fillRect(-q.w / 2, -q.h / 2, q.w, q.h * .45); c.restore();
+    rrp(c, -q.w / 2 + .8, -q.h / 2 + .8, q.w - 1.6, q.h - 1.6, q.h / 2); c.lineWidth = 1.6; c.strokeStyle = end ? 'rgba(255,225,225,.85)' : 'rgba(255,255,255,.45)'; c.stroke();
+    c.fillStyle = '#fff'; let fz = 15; c.font = '800 ' + fz + 'px ' + FF; while (c.measureText(x.label).width > q.w - 26 && fz > 9) { fz -= .5; c.font = '800 ' + fz + 'px ' + FF; } c.textAlign = 'center'; c.textBaseline = 'middle'; c.shadowColor = 'rgba(0,0,0,.4)'; c.shadowBlur = 3; c.fillText(x.label, 0, 1); c.restore(); }); }
   /* итог партии: конфетти / затемнение */
   const end = V.end || '';
   if (end && end !== A.lastEnd) { A.cf = end === 'win' ? 2.6 : 0; if (end === 'win') ring(A, 180, 280, '#ffd24a', 200, 5); A.sh = .5; }
@@ -5267,13 +5300,14 @@ function draw(c, V, A, t, dt){
   c.restore();
 }
 function hit(V, x, y){
-  if (V.mine) { const b = btns(V.st, V.me); for (let i = 0; i < b.length; i++) { const q = btnPos(b.length, i); if ((x - q.x) ** 2 + (y - q.y) ** 2 <= (q.r + 8) ** 2) return {btn: b[i].k}; } }
+  if (V.mine) { const b = btns(V.st, V.me); for (let i = 0; i < b.length; i++) { const q = btnPos(b.length, i); if (Math.abs(x - q.x) <= q.w / 2 + 6 && Math.abs(y - q.y) <= q.h / 2 + 10) return {btn: b[i].k}; } }
   const hl = handLay(V); for (let i = hl.length - 1; i >= 0; i--) { const h = hl[i]; if (Math.abs(x - h.x) <= (i === hl.length - 1 ? h.w / 2 : Math.max(10, (hl[i + 1].x - h.x) / 2 + 2)) && Math.abs(y - h.y) <= h.h / 2) return {card: h.id, ok: h.ok}; }
   return null;
 }
 const sim = (st, seat, f) => { st.h = st.h.map((x, i) => i === seat ? x : x.map(() => null)); return st; };
 const drop = (x, y, dy) => y < 395 || dy > 70;
-return {new: dkNew, move: dkMove, who: dkWho, atkOK: dkAtkOK, defOK: dkDefOK, S: dkS, R: dkR, bot, draw, hit, drop, msg, btns, W: VW, H: VH};
+const handAt = (V, x, y) => { if (y < 410) return null; const hl = handLay(V); let b = null, bd = 1e9; hl.forEach(h => { const d = Math.abs(x - h.x); if (d < bd) { bd = d; b = h; } }); return b && bd < 60 ? {id: b.id, ok: b.ok} : null; };
+return {new: dkNew, move: dkMove, who: dkWho, atkOK: dkAtkOK, defOK: dkDefOK, S: dkS, R: dkR, bot, draw, hit, drop, handAt, msg, btns, W: VW, H: VH};
 })();
 window.DKG = DKG;
 
@@ -5282,7 +5316,7 @@ window.DKG = DKG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1114';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1116';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10426,31 +10460,34 @@ q:'<path d="M11 38.500h23v-3.500H11z"/><path d="M13 35l-3.500-17.500 7.200 7 2.8
 k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h22v-3.500h-22z"/><path d="M13 35c-1.500-7 3-9.500 4-12.500-2-2.500-4.500-4-4.500-7 0-3 3-5 6.500-3l3.500 2 3.500-2c3.500-2 6.500 0 6.500 3 0 3-2.500 4.500-4.500 7 1 3 5.500 5.500 4 12.500z"/>'};
 
   /* ---------- Дурак с ботом (BETA, v1.1102) ---------- */
-  const DKLV = [['Новичок', 'Ходит открыто и бьёт чем попало', 1], ['Игрок', 'Считает козыри и вовремя бьёт младшей картой', 2], ['Мастер', 'Помнит сброс, бережёт козыри на конец', 4]];
+  const DKLV = [['Новичок', 'Ходит открыто и бьёт чем попало', 1], ['Любитель', 'Бережёт старшие козыри', 2], ['Игрок', 'Считает козыри и бьёт младшей картой', 3], ['Опытный', 'Просчитывает ходы наперёд', 5], ['Мастер', 'Помнит сброс и угадывает ваши карты', 8]];
   function mkDk(){ const g = {}, K = 'dk';
-    const lv0 = () => { try { const v = +localStorage.getItem('voob_dk_lv'); return v >= 0 && v < 3 ? v : 1; } catch (e) { return 1; } };
+    const lv0 = () => { try { const v = +localStorage.getItem('voob_dk_lv'); return v >= 0 && v < 5 ? v : 2; } catch (e) { return 2; } };
     const lay = () => { const top = 74, sc = Math.min(W / 360, (H - top - 8) / 560); return {sc, ox: (W - 360 * sc) / 2, oy: top + (H - top - 8 - 560 * sc) / 2}; };
     g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.lvp = g.lvl; g.lvb = 0; g.nb = false; g.res = null; g.st = null; g.bt = 0; g.rt = 0; g.first = true; g.fin = false; g.A = {P:{}, ghosts:[], pv:null}; g.dt = .016; };
     const begin = () => { g.st = DKG.new(g.first ? 0 : 1, Math.random); g.first = !g.first; g.res = null; g.fin = false; g.rt = 0; g.ph = 'play'; g.A = {P:{}, ghosts:[], pv:null}; g.bt = 1.1; };
     const after = () => { const st = g.st; g.bt = .75 + Math.random() * .6; if (st.win) { g.res = {k: st.win === '0' ? 'win' : st.win === '1' ? 'lose' : 'draw'}; g.rt = 1.5; } };
-    const view = () => { const st = g.st; return {drag: g.drag, st, me: 0, mine: DKG.who(st) === 0 && !g.res, end: g.res ? g.res.k : '', names: ['Ты', 'Бот'], ok: id => DKG.who(st) === 0 && (st.at === 0 ? DKG.atkOK(st, id) : DKG.defOK(st, id)), msg: g.res ? (g.res.k === 'win' ? 'Ты избавился от всех карт!' : g.res.k === 'lose' ? 'Ты остался в дураках' : 'Ничья — карты кончились у обоих') : null}; };
+    const view = () => { const st = g.st; return {drag: g.drag, hov: g.sc && !g.drag ? g.sc.id : null, st, me: 0, mine: DKG.who(st) === 0 && !g.res, end: g.res ? g.res.k : '', names: ['Ты', 'Бот'], ok: id => DKG.who(st) === 0 && (st.at === 0 ? DKG.atkOK(st, id) : DKG.defOK(st, id)), msg: g.res ? (g.res.k === 'win' ? 'Ты избавился от всех карт!' : g.res.k === 'lose' ? 'Ты остался в дураках' : 'Ничья — карты кончились у обоих') : null}; };
     g.tap = () => {};
     g.down = (x, y) => {
       if (g.dead) return;
-      if (g.ph === 'menu') { const h = lvHit2(3, x, y); if (h === 'go') { try { localStorage.setItem('voob_dk_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); begin(); } else if (h >= 0) { if (h !== g.lvl) g.lvb = 1; g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
+      if (g.ph === 'menu') { const h = lvHit2(5, x, y); if (h === 'go') { try { localStorage.setItem('voob_dk_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); begin(); } else if (h >= 0) { if (h !== g.lvl) g.lvb = 1; g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
       if (g.ph === 'over') { hap.tap(); begin(); return; }
       if (g.ph !== 'play' || g.res || !g.st) return;
-      const L = lay(), V = view(), vx = (x - L.ox) / L.sc, vy = (y - L.oy) / L.sc, r = DKG.hit(V, vx, vy); if (!r) return;
-      if (r.btn) { if (DKG.move(g.st, 0, r.btn, 0)) { sfx('land'); hap.tap(); after(); } return; }
-      if (r.card != null) { if (!r.ok) { hap.warn(); return; } g.drag = {id: r.card, x: vx, y: vy, sx: vx, sy: vy, t0: performance.now()}; hap.tap(); sfx('hop'); }
+      const L = lay(), V = view(), vx = (x - L.ox) / L.sc, vy = (y - L.oy) / L.sc, r = DKG.hit(V, vx, vy);
+      if (r && r.btn) { if (DKG.move(g.st, 0, r.btn, 0)) { sfx('land'); hap.tap(); after(); } return; }
+      const hc = DKG.handAt(V, vx, vy); if (hc) { g.sc = {id: hc.id, ok: hc.ok, sx: vx, sy: vy}; hap.tap(); }
     };
-    g.move = (x, y) => { if (!g.drag) return; const L = lay(); g.drag.x = (x - L.ox) / L.sc; g.drag.y = (y - L.oy) / L.sc; };
-    g.up = () => { const d = g.drag; if (!d) return; g.drag = null; if (!g.st || g.res || DKG.who(g.st) !== 0) return; if (DKG.drop(d.x, d.y, d.sy - d.y)) { if (DKG.move(g.st, 0, g.st.at === 0 ? 'atk' : 'def', d.id)) { sfx('land'); hap.tap(); after(); } } };
+    g.move = (x, y) => { const L = lay(), vx = (x - L.ox) / L.sc, vy = (y - L.oy) / L.sc;
+      if (g.drag) { g.drag.x = vx; g.drag.y = vy; return; } if (!g.sc || !g.st || g.res) return; const V = view();
+      if (g.sc.sy - vy > 34) { if (!g.sc.ok) { if (!g.sc.w) { g.sc.w = 1; hap.warn(); } return; } g.drag = {id: g.sc.id, x: vx, y: vy, sx: g.sc.sx, sy: g.sc.sy}; sfx('hop'); return; }
+      const hc = DKG.handAt(V, vx, Math.max(vy, 430)); if (hc && hc.id !== g.sc.id) { g.sc.id = hc.id; g.sc.ok = hc.ok; g.sc.w = 0; hap.tap(); } };
+    g.up = () => { const d = g.drag; g.sc = null; if (!d) return; g.drag = null; if (!g.st || g.res || DKG.who(g.st) !== 0) return; if (DKG.drop(d.x, d.y, d.sy - d.y)) { if (DKG.move(g.st, 0, g.st.at === 0 ? 'atk' : 'def', d.id)) { sfx('land'); hap.tap(); after(); } } };
     g.update = dt => { g.t += dt; g.dt = dt; if (g.ph === 'menu') { g.lvp += (g.lvl - g.lvp) * Math.min(1, dt * 14); g.lvb = Math.max(0, (g.lvb || 0) - dt * 3.2); } stepFx(g, dt);
       if (g.dead || g.ph !== 'play') return;
       if (g.res) { g.rt -= dt; if (g.rt <= 0 && !g.fin) { g.fin = true; const k = g.res.k;
         if (k === 'lose') { g.dieT = 'Остался в дураках'; onDie(g, K); g.newBest = g.nb; }
-        else { g.ph = 'over'; if (k === 'win') { g.pts = [1, 2, 4][g.lvl]; g.score += g.pts; sfx('perfect', 2); hap.ok(); for (let q = 0; q < 4; q++) bstP(g, W * (.2 + .2 * q), 90, 12, ['#ffd24a', '#4cd98a', '#ff5468', '#7fb5ff'][q], 120); if (g.score > (s.best[K] || 0)) { s.best[K] = g.score; save(); g.nb = true; pushBest(K); } } } }
+        else { g.ph = 'over'; if (k === 'win') { g.pts = [1, 2, 3, 5, 8][g.lvl]; g.score += g.pts; sfx('perfect', 2); hap.ok(); for (let q = 0; q < 4; q++) bstP(g, W * (.2 + .2 * q), 90, 12, ['#ffd24a', '#4cd98a', '#ff5468', '#7fb5ff'][q], 120); if (g.score > (s.best[K] || 0)) { s.best[K] = g.score; save(); g.nb = true; pushBest(K); } } } }
         return; }
       if (g.st && DKG.who(g.st) === 1) { g.bt -= dt; if (g.bt <= 0) { const a = DKG.bot(g.st, 1, g.lvl); if (a && DKG.move(g.st, 1, a.m, a.c)) { sfx('land'); after(); } else g.bt = .5; } }
     };
@@ -15624,7 +15661,7 @@ function a_flightArrow(now){
   /* ---------- Дурак по сети (BETA, v1.1102): сервер хранит колоду, у каждого видна только своя рука ---------- */
   let DKS = null;
   const dkSeat = r => r.state.p.indexOf(UK);
-  const dkView = s => { const r = N.room, me = dkSeat(r), st = s.st; return {drag: s.drag, st, me, mine: !s.pend && r.status === 'playing' && DKG.who(st) === me, end: r.status === 'done' ? (outcome(r) === 'w' ? 'win' : outcome(r) === 'l' ? 'lose' : 'draw') : '', names: ['Ты', raw(oppOf(r))], ok: id => DKG.who(st) === me && (st.at === me ? DKG.atkOK(st, id) : DKG.defOK(st, id)), msg: r.status === 'done' ? '' : null}; };
+  const dkView = s => { const r = N.room, me = dkSeat(r), st = s.st; return {drag: s.drag, hov: s.sc && !s.drag ? s.sc.id : null, st, me, mine: !s.pend && r.status === 'playing' && DKG.who(st) === me, end: r.status === 'done' ? (outcome(r) === 'w' ? 'win' : outcome(r) === 'l' ? 'lose' : 'draw') : '', names: ['Ты', raw(oppOf(r))], ok: id => DKG.who(st) === me && (st.at === me ? DKG.atkOK(st, id) : DKG.defOK(st, id)), msg: r.status === 'done' ? '' : null}; };
   const dkBusy = () => !!(N.room && N.room.game === 'dk' && DKS && N.s === DKS && performance.now() < DKS.busy);
   function dkLoop(){
     const cv = q('#ntsc'), s = DKS; if (!cv || !s || N.s !== s) return;
@@ -15652,13 +15689,15 @@ function a_flightArrow(now){
     cvs.addEventListener('pointerdown', e => {
       const r_ = N.room; if (DKS !== s || !r_ || r_.game !== 'dk' || r_.status !== 'playing' || s.pend) return;
       const V = dkView(s); if (!V.mine) return; const [x, y] = vxy(e);
-      const h = DKG.hit(V, x, y); if (!h) return;
-      if (h.btn) { sendDk(V, h); return; }
-      if (h.card != null) { if (!h.ok) { hap.warn(); return; } s.drag = {id: h.card, x, y, sx: x, sy: y}; try { cvs.setPointerCapture(e.pointerId); } catch (_) {} hap.tap(); }
+      const h = DKG.hit(V, x, y);
+      if (h && h.btn) { sendDk(V, h); return; }
+      const hc = DKG.handAt(V, x, y); if (hc) { s.sc = {id: hc.id, ok: hc.ok, sx: x, sy: y}; try { cvs.setPointerCapture(e.pointerId); } catch (_) {} hap.tap(); }
     });
-    cvs.addEventListener('pointermove', e => { if (!s.drag) return; const [x, y] = vxy(e); s.drag.x = x; s.drag.y = y; });
-    const dkUp = () => { const d = s.drag; if (!d) return; s.drag = null; const r_ = N.room; if (DKS !== s || !r_ || r_.game !== 'dk' || r_.status !== 'playing' || s.pend) return; const V = dkView(s); if (!V.mine) return; if (DKG.drop(d.x, d.y, d.sy - d.y)) sendDk(V, {card: d.id, ok: true}); };
-    cvs.addEventListener('pointerup', dkUp); cvs.addEventListener('pointercancel', () => { s.drag = null; });
+    cvs.addEventListener('pointermove', e => { const [x, y] = vxy(e); if (s.drag) { s.drag.x = x; s.drag.y = y; return; } if (!s.sc) return;
+      if (s.sc.sy - y > 34) { if (!s.sc.ok) { if (!s.sc.w) { s.sc.w = 1; hap.warn(); } return; } s.drag = {id: s.sc.id, x, y, sx: s.sc.sx, sy: s.sc.sy}; return; }
+      const hc = DKG.handAt(dkView(s), x, Math.max(y, 430)); if (hc && hc.id !== s.sc.id) { s.sc.id = hc.id; s.sc.ok = hc.ok; s.sc.w = 0; hap.tap(); } });
+    const dkUp = () => { const d = s.drag; s.sc = null; if (!d) return; s.drag = null; const r_ = N.room; if (DKS !== s || !r_ || r_.game !== 'dk' || r_.status !== 'playing' || s.pend) return; const V = dkView(s); if (!V.mine) return; if (DKG.drop(d.x, d.y, d.sy - d.y)) sendDk(V, {card: d.id, ok: true}); };
+    cvs.addEventListener('pointerup', dkUp); cvs.addEventListener('pointercancel', () => { s.drag = null; s.sc = null; });
     s.raf = requestAnimationFrame(dkLoop);
   }
   function uDk(r){
