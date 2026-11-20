@@ -4983,7 +4983,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1070';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1071';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12968,6 +12968,13 @@ async function init(){
   if (tg) {
     try { tg.ready(); tg.expand(); } catch (e) {}
     try { if (ver('7.7')) tg.disableVerticalSwipes(); } catch (e) {}
+    /* v1.1071: приложение и игры рассчитаны на портрет — при повороте они растягивались; фиксируем портрет (Mini Apps 8.0+), если телефон сейчас вертикально */
+    try {
+      if (!inWeb && !inWebApp && ver('8.0') && typeof tg.lockOrientation === 'function') {
+        const lockP = () => { try { if (!tg.isOrientationLocked && window.innerHeight >= window.innerWidth) tg.lockOrientation(); } catch (e) {} };
+        lockP(); window.addEventListener('resize', lockP);
+      }
+    } catch (e) {}
     try { tg.onEvent('themeChanged', () => { if (db.settings.theme === 'auto') { applyTheme(); render(); } }); } catch (e) {}
     try { if (ver('6.1')) tg.BackButton.onClick(() => { if ($('#cg').classList.contains('show')) $('#cg').classList.remove('show'); else if (sheetCtx) { if (!stepBack()) closeSheet(); } else if (S.fprof) fpBack(); else closeSheet(); }); } catch (e) {}
   }
