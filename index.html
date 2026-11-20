@@ -4128,6 +4128,7 @@ html.web .ax-pg{max-width:720px;margin:0 auto;padding-top:6px}html.web .ax-hub .
 .ch-sq i{position:absolute;font:700 9px/1 -apple-system,system-ui,sans-serif;font-style:normal;opacity:.75;pointer-events:none;color:#6a6ea6}.ch-sq.d i{color:#e6e1f2}.ch-sq i.f{right:3px;bottom:2px}.ch-sq i.r{left:3px;top:3px}
 .ch-p{width:92%;height:92%;position:relative;z-index:2;pointer-events:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.38));transition:transform .15s}
 .ch-sq.sl .ch-p{transform:translateY(-6%) scale(1.08)}
+.nt-gm:has(#chbd){background-image:radial-gradient(circle at 50% 46%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 62%),radial-gradient(circle,rgba(255,255,255,.07) 1.2px,transparent 1.6px);background-size:100% 100%,26px 26px}
 .ch-p .p{stroke-width:1.5;stroke-linejoin:round}.ch-p.w .p{fill:#fbf4e4;stroke:#2a2438}.ch-p.b .p{fill:#262849;stroke:#07070f}
 .ch-p .p .e{fill:none;stroke:#2a2438;stroke-width:1.4;stroke-linecap:round}.ch-p.b .p .e{stroke:#c9cbe8}.ch-p .p circle.e{fill:#2a2438;stroke:none}.ch-p.b .p circle.e{fill:#c9cbe8}
 .ch-p.mine{filter:drop-shadow(0 2px 2px rgba(0,0,0,.38)) drop-shadow(0 0 0 transparent)}
@@ -4993,7 +4994,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1081';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1082';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10117,10 +10118,10 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     const lv0 = () => { try { const v = +localStorage.getItem('voob_che_lv'); return v >= 0 && v < 5 ? v : 1; } catch (e) { return 1; } };
     g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.nb = false; g.res = null; g.anim = null; g.S = chNew(); g.hist = []; g.legal = []; g.sel = -1; g.last = []; g.bt = 0; g.ghost = []; g.promo = null; g.chk = false; 'KQRBNP'.split('').forEach(chImg); 'kqrbnp'.split('').forEach(chImg); };
     const begin = () => { g.S = chNew(); g.hist = [chKey(g.S)]; g.legal = chLegal(g.S); g.sel = -1; g.last = []; g.res = null; g.anim = null; g.ghost = []; g.promo = null; g.chk = false; g.ph = 'play'; g.bt = 0; };
-    const move = m => {
+    const move = (m, byBot) => {
       const S0 = g.S, w = S0.turn === 'w', n = chMake(S0, m), list = [{p: S0.b[m.f], f: m.f, t: m.t}];
       if (m.fl === 'cs') list.push({p: w ? 'R' : 'r', f: m.t + 1, t: m.t - 1}); if (m.fl === 'cl') list.push({p: w ? 'R' : 'r', f: m.t - 2, t: m.t + 1});
-      g.anim = {list, cap: n.cap ? {p: n.cap, i: m.fl === 'ep' ? m.t + (w ? 8 : -8) : m.t} : null, t: 0, pr: m.pr ? (w ? m.pr.toUpperCase() : m.pr) : ''};
+      g.anim = {list, cap: n.cap ? {p: n.cap, i: m.fl === 'ep' ? m.t + (w ? 8 : -8) : m.t} : null, t: 0, d: byBot ? .6 : .26, pr: m.pr ? (w ? m.pr.toUpperCase() : m.pr) : ''};
       g.S = n; g.hist.push(chKey(n)); g.last = [m.f, m.t]; g.sel = -1; g.promo = null; g.legal = chLegal(n); g.chk = chInCheck(n);
       if (!g.legal.length) g.res = {k: g.chk ? (w ? 'win' : 'lose') : 'draw', why: g.chk ? 'mat' : 'pat'};
       else if (n.half >= 100 || chInsuff(n.b) || g.hist.filter(k => k === g.hist[g.hist.length - 1]).length >= 3) g.res = {k: 'draw', why: 'rule'};
@@ -10140,15 +10141,16 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     };
     g.update = dt => { g.t += dt; stepFx(g, dt); g.ghost = g.ghost.filter(q => (q.l -= dt) > 0);
       if (g.dead || g.ph !== 'play') return;
-      if (g.anim) { g.anim.t += dt; if (g.anim.t >= .26) { const a = g.anim, G2 = geo(); g.anim = null; if (a.cap) { const [px, py] = sq(G2, a.cap.i); bstP(g, px + G2.t / 2, py + G2.t / 2, 12, isW(a.cap.p) ? '#f4efe6' : C.ac, 150); g.sh = .5; }
+      if (g.anim) { g.anim.t += dt; if (g.anim.t >= g.anim.d + .02) { const a = g.anim, G2 = geo(); g.anim = null; if (a.cap) { const [px, py] = sq(G2, a.cap.i); bstP(g, px + G2.t / 2, py + G2.t / 2, 12, isW(a.cap.p) ? '#f4efe6' : C.ac, 150); g.sh = .5; }
           if (g.res) { const k = g.res.k; if (k === 'lose') { g.dieT = 'Тебе мат'; onDie(g, K); g.newBest = g.nb; } else { g.ph = 'over'; if (k === 'win') { g.pts = CHLV[g.lvl][2]; g.score += g.pts; sfx('perfect', 2); hap.ok(); if (g.score > (s.best[K] || 0)) { s.best[K] = g.score; save(); g.nb = true; pushBest(K); } } } }
           else if (g.S.turn === 'b') g.bt = .5; }
         return; }
-      if (g.S.turn === 'b' && !g.res) { g.bt -= dt; if (g.bt <= 0) { const m = chBot(g.S, g.lvl); if (m) move(m); } }
+      if (g.S.turn === 'b' && !g.res) { g.bt -= dt; if (g.bt <= 0) { const m = chBot(g.S, g.lvl); if (m) move(m, true); } }
     };
     g.draw = c => {
-      c.save(); shk(c, g); bg2(c, 'rgba(110,90,230,.5)', .3); drawStars(c, g, g.t * 6); const G2 = geo(), t = G2.t; c.textAlign = 'center';
-      if (g.ph === 'menu') { lvDraw(c, g, {title: 'Шахматы', sub: 'Против бота. Выбери уровень', lv: CHLV, note: 'Победы копят очки серии. Проигрыш — серия обнуляется'}); c.restore(); return; }
+      c.save(); shk(c, g); const G2 = geo(), t = G2.t; c.textAlign = 'center';
+      if (g.ph === 'menu') { bg2(c, 'rgba(110,90,230,.5)', .3); drawStars(c, g, g.t * 6); lvDraw(c, g, {title: 'Шахматы', sub: 'Против бота. Выбери уровень', lv: CHLV, note: 'Победы копят очки серии. Проигрыш — серия обнуляется'}); c.restore(); return; }
+      glow(c, W / 2, G2.y0 + G2.S / 2, G2.S * .95, C.ac, .16); c.fillStyle = C.tx; c.globalAlpha = .07; for (let yy = 14; yy < H; yy += 26) for (let xx = 14; xx < W; xx += 26) { c.beginPath(); c.arc(xx, yy, 1.2, 0, 7); c.fill(); } c.globalAlpha = 1; c.textAlign = 'center';
       c.fillStyle = C.mu; c.font = '700 13px ' + C.ff; c.fillText(CHLV[g.lvl][0].toUpperCase() + ' · СЕРИЯ ' + g.score, W / 2, G2.y0 - 40);
       const my = g.S.turn === 'w' && !g.res && !g.anim && g.ph === 'play'; c.fillStyle = g.chk && my ? C.rd : C.tx; c.font = '800 19px ' + C.ff;
       c.fillText(g.ph === 'over' ? (g.res.k === 'win' ? 'Мат боту!' : 'Ничья') : my ? (g.chk ? 'Шах! Твой ход' : 'Твой ход') : 'Бот думает' + '.'.repeat(1 + Math.floor(g.t * 3) % 3), W / 2, G2.y0 - 16);
@@ -10168,7 +10170,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       const A = g.anim, hide = new Set(A ? A.list.map(z => z.t) : []);
       g.ghost.forEach(q => { c.globalAlpha = Math.max(0, q.l / .3); pc(q.p, q.x, q.y); }); c.globalAlpha = 1;
       for (let i = 0; i < 64; i++) { const p = g.S.b[i]; if (!p || hide.has(i)) continue; const [px, py] = sq(G2, i); pc(p, px + t / 2, py + t / 2 + (g.sel === i ? -3 : 0), g.sel === i ? 1.08 : 1); }
-      if (A) { const u = Math.min(1, A.t / .24), e = u * u * (3 - 2 * u); if (A.cap && u < .6) { const [px, py] = sq(G2, A.cap.i); c.globalAlpha = 1 - u / .6; pc(A.cap.p, px + t / 2, py + t / 2); c.globalAlpha = 1; }
+      if (A) { const u = Math.min(1, A.t / A.d), e = u * u * (3 - 2 * u); if (A.cap && u < .6) { const [px, py] = sq(G2, A.cap.i); c.globalAlpha = 1 - u / .6; pc(A.cap.p, px + t / 2, py + t / 2); c.globalAlpha = 1; }
         A.list.forEach((z, k) => { const [ax, ay] = sq(G2, z.f), [bx, by] = sq(G2, z.t); pc(k === 0 && A.pr && u > .9 ? A.pr : z.p, ax + (bx - ax) * e + t / 2, ay + (by - ay) * e + t / 2 - Math.sin(e * Math.PI) * t * .12, 1.06); }); }
       drawFx(c, g);
       if (g.promo) { const bx = G2.x0 + G2.S / 2 - 2 * t * .9, by = G2.y0 + G2.S / 2 - t * .6; c.globalAlpha = .82; c.fillStyle = C.bg; rr(c, bx - 12, by - 12, t * 3.6 + 24, t * 1.2 + 24, 18); c.fill(); c.globalAlpha = 1; for (let k = 0; k < 4; k++) { const px = bx + k * t * .9; rr(c, px + 2, by, t * .9 - 4, t * 1.2, 12); c.fillStyle = C.s2; c.fill(); c.strokeStyle = C.ac; c.lineWidth = 1.4; c.stroke(); pc('QRBN'[k], px + t * .45, by + t * .6, .95); } }
@@ -13879,7 +13881,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     q('#chm0').innerHTML = mine(myc) + (sc > 0 ? `<b>+${sc}</b>` : ''); q('#chm1').innerHTML = mine(myc === 'w' ? 'b' : 'w') + (sc < 0 ? `<b>+${-sc}</b>` : '');
     if (fresh && +st.last.by !== +UK) {
       const a = q('.ch-sq[data-i="' + st.last.from + '"]'), z = q('.ch-sq[data-i="' + st.last.to + '"]'), pc = z && z.querySelector('.ch-p');
-      if (a && z && pc) { const ra = a.getBoundingClientRect(), rz = z.getBoundingClientRect(); pc.style.zIndex = 4; pc.animate([{transform:`translate(${ra.left - rz.left}px,${ra.top - rz.top}px)`}, {transform:'none'}], {duration:280, easing:'cubic-bezier(.3,1.15,.4,1)'}); }
+      if (a && z && pc) { const ra = a.getBoundingClientRect(), rz = z.getBoundingClientRect(); pc.style.zIndex = 4; pc.animate([{transform:`translate(${ra.left - rz.left}px,${ra.top - rz.top}px)`}, {transform:'none'}], {duration:560, easing:'cubic-bezier(.33,1.04,.4,1)'}); }
       (st.check ? hap.warn : st.last.cap ? hap.med : hap.imp)();
     }
     const my = r.status === 'playing' && st.turn === myc, el = q('#ntst'), rs = q('#chrs');
