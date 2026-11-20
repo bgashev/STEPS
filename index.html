@@ -4628,6 +4628,13 @@ html.web .vc-ch b{font-size:15px}html.web .vc-ch b.wr{color:#ff9d5c}html.web .vc
 html.web .vc-ch u{display:block;height:6px;border-radius:99px;background:var(--surface2);margin-top:6px;overflow:hidden;text-decoration:none}html.web .vc-ch u s{display:block;height:100%;border-radius:99px;background:var(--accent)}
 html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{background:color-mix(in srgb,var(--surface) 70%,transparent)!important;-webkit-backdrop-filter:blur(34px) saturate(1.4);backdrop-filter:blur(34px) saturate(1.4);border:1px solid var(--border);box-shadow:0 24px 60px -24px rgba(0,0,0,.4),0 2px 10px rgba(0,0,0,.08)}
 @media(max-width:1180px){html.web .vc-top{flex-direction:column;align-items:flex-start}html.web .vc-chips{grid-template-columns:1fr}}
+/* v1.1054: вода на карточке — плавное добавление */
+.gla g[style*="translateY"]{transition:transform .95s cubic-bezier(.3,.9,.3,1)}
+.ax-bt.bw .big.axbump{animation:axbump .8s cubic-bezier(.3,1.6,.5,1)}
+@keyframes axbump{0%{transform:scale(1)}35%{transform:scale(1.12);text-shadow:0 0 22px rgba(160,210,255,.9)}100%{transform:scale(1)}}
+.ax-bt.bw .big{transform-origin:0 60%}
+.axwplus{position:absolute;z-index:5;transform:translateX(-50%);font:800 18px Unbounded,system-ui,sans-serif;color:#fff;text-shadow:0 2px 14px rgba(70,150,255,.9);pointer-events:none;animation:axwp 1.1s cubic-bezier(.2,.8,.3,1) both}
+@keyframes axwp{0%{opacity:0;transform:translate(-50%,6px) scale(.6)}20%{opacity:1}100%{opacity:0;transform:translate(-50%,-62px) scale(1.15)}}
 /* v1.1002: Приложения — равные карточки + перестановка */
 .a-wt{--gl:rgba(31,168,116,.65);background:linear-gradient(150deg,#6fe3b0,#1fa874)}
 .a-h{background:linear-gradient(150deg,#b9a4ff,#6d4fe6)}
@@ -4886,7 +4893,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1053';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1054';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12035,7 +12042,22 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     axscanx: () => { hap.tap(); closeScan(); },
     axtor: () => torch(),
     axzoom: el => { try { const tr = SC.stream && SC.stream.getVideoTracks()[0]; if (!tr) return; tr.applyConstraints({advanced:[{zoom:+el.dataset.v}]}); document.querySelectorAll('#axs-z button').forEach(b => b.classList.toggle('on', b === el)); hap.tap(); } catch (e) {} },
-    axbw: () => { addWater(250); hap.imp(); render(); if (S.tab !== 'apps') openSheetApps(); },
+    axbw: el => {
+      const was = wd(), goal = waterGoal().goal, t = el && el.closest ? el.closest('.ax-bt.bw') : null;
+      addWater(250); hap.imp(); const nv = wd();
+      if (!t || S.tab !== 'apps') { render(); if (S.tab !== 'apps') openSheetApps(); return; }
+      /* плавно, на месте: счётчик, процент, уровень в капле, всплеск «+250» */
+      const big = t.querySelector('.big'), sm = t.querySelector('.z small'), p0 = clamp(was / goal, 0, 1), p1 = clamp(nv / goal, 0, 1), tx = big && big.firstChild, t0 = performance.now(), D = 900;
+      const lq = t.querySelector('.liq'); if (lq) lq.style.height = Math.max(10, Math.round(p1 * 100)) + '%';
+      const lv = t.querySelector('.gla g[style*="translateY"]'); if (lv) lv.style.transform = `translateY(${(92 - p1 * 72).toFixed(1)}px)`;
+      if (big) { big.classList.remove('axbump'); void big.offsetWidth; big.classList.add('axbump'); }
+      const step = now => { const k = Math.min(1, (now - t0) / D), e = 1 - Math.pow(1 - k, 3), v = was + (nv - was) * e;
+        if (tx && tx.nodeType === 3) tx.nodeValue = P0(Math.round(v)); if (sm) sm.textContent = `из ${P0(goal)} · ${Math.round((p0 + (p1 - p0) * e) * 100)}%`;
+        if (k < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+      try { const b = el.getBoundingClientRect(), r = t.getBoundingClientRect(), f = document.createElement('span'); f.className = 'axwplus'; f.textContent = '+250'; f.style.left = (b.left - r.left + b.width / 2) + 'px'; f.style.top = (b.top - r.top) + 'px'; t.appendChild(f); setTimeout(() => f.remove(), 1200); } catch (e) {}
+      if (nv >= goal && was < goal) { setTimeout(() => { hap.ok(); toast('Норма воды выполнена'); }, 500); }
+    },
     axnum: () => { const c = ((document.getElementById('axs-n') || {}).value || '').replace(/\D/g, ''); if (c.length < 8) { toast('Введи номер из 8–13 цифр'); return; } closeScan(); lookup(c); }
   };
   function backToCal(){ ST.pr = null; ST.stack = ['cal']; ST.s = 'cal'; render(); window.scrollTo(0, 0); }
