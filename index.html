@@ -5305,9 +5305,10 @@ function hit(V, x, y){
   return null;
 }
 const sim = (st, seat, f) => { st.h = st.h.map((x, i) => i === seat ? x : x.map(() => null)); return st; };
+const holdTb = (old, nw) => { if (!old || !nw || !(nw.n > old.n) || nw.last !== 'bito' || nw.tb.length || !old.tb.some(p => p[1] < 0)) return null; const a = nw.bt.slice(old.bt.length); if (a.length < 2 || a.length % 2) return null; const t = []; for (let i = 0; i < a.length; i += 2) t.push([a[i], a[i + 1]]); return t; };
 const drop = (x, y, dy) => y < 395 || dy > 70;
 const handAt = (V, x, y) => { if (y < 410) return null; const hl = handLay(V); let b = null, bd = 1e9; hl.forEach(h => { const d = Math.abs(x - h.x); if (d < bd) { bd = d; b = h; } }); return b && bd < 60 ? {id: b.id, ok: b.ok} : null; };
-return {new: dkNew, move: dkMove, who: dkWho, atkOK: dkAtkOK, defOK: dkDefOK, S: dkS, R: dkR, bot, draw, hit, drop, handAt, msg, btns, W: VW, H: VH};
+return {new: dkNew, move: dkMove, who: dkWho, atkOK: dkAtkOK, defOK: dkDefOK, S: dkS, R: dkR, bot, draw, hit, drop, handAt, holdTb, msg, btns, W: VW, H: VH};
 })();
 window.DKG = DKG;
 
@@ -5316,7 +5317,7 @@ window.DKG = DKG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1116';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1117';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10467,29 +10468,31 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.lvp = g.lvl; g.lvb = 0; g.nb = false; g.res = null; g.st = null; g.bt = 0; g.rt = 0; g.first = true; g.fin = false; g.A = {P:{}, ghosts:[], pv:null}; g.dt = .016; };
     const begin = () => { g.st = DKG.new(g.first ? 0 : 1, Math.random); g.first = !g.first; g.res = null; g.fin = false; g.rt = 0; g.ph = 'play'; g.A = {P:{}, ghosts:[], pv:null}; g.bt = 1.1; };
     const after = () => { const st = g.st; g.bt = .75 + Math.random() * .6; if (st.win) { g.res = {k: st.win === '0' ? 'win' : st.win === '1' ? 'lose' : 'draw'}; g.rt = 1.5; } };
-    const view = () => { const st = g.st; return {drag: g.drag, hov: g.sc && !g.drag ? g.sc.id : null, st, me: 0, mine: DKG.who(st) === 0 && !g.res, end: g.res ? g.res.k : '', names: ['Ты', 'Бот'], ok: id => DKG.who(st) === 0 && (st.at === 0 ? DKG.atkOK(st, id) : DKG.defOK(st, id)), msg: g.res ? (g.res.k === 'win' ? 'Ты избавился от всех карт!' : g.res.k === 'lose' ? 'Ты остался в дураках' : 'Ничья — карты кончились у обоих') : null}; };
+    const dkM = (seat, m, c) => { const pre = JSON.parse(JSON.stringify(g.st)), ok = DKG.move(g.st, seat, m, c); if (ok) { const hd = DKG.holdTb(pre, g.st); if (hd) g.hold = {tb: hd, t: 1.15}; } return ok; };
+    const view = () => { const st0 = g.st, st = g.hold ? Object.assign({}, st0, {tb: g.hold.tb}) : st0; return {drag: g.drag, hov: g.sc && !g.drag ? g.sc.id : null, st, me: 0, mine: !g.hold && DKG.who(st0) === 0 && !g.res, end: g.res ? g.res.k : '', names: ['Ты', 'Бот'], ok: id => !g.hold && DKG.who(st0) === 0 && (st.at === 0 ? DKG.atkOK(st, id) : DKG.defOK(st, id)), msg: g.hold && !g.res ? 'Побито' : g.res ? (g.res.k === 'win' ? 'Ты избавился от всех карт!' : g.res.k === 'lose' ? 'Ты остался в дураках' : 'Ничья — карты кончились у обоих') : null}; };
     g.tap = () => {};
     g.down = (x, y) => {
       if (g.dead) return;
       if (g.ph === 'menu') { const h = lvHit2(5, x, y); if (h === 'go') { try { localStorage.setItem('voob_dk_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); begin(); } else if (h >= 0) { if (h !== g.lvl) g.lvb = 1; g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
       if (g.ph === 'over') { hap.tap(); begin(); return; }
-      if (g.ph !== 'play' || g.res || !g.st) return;
+      if (g.ph !== 'play' || g.res || !g.st || g.hold) return;
       const L = lay(), V = view(), vx = (x - L.ox) / L.sc, vy = (y - L.oy) / L.sc, r = DKG.hit(V, vx, vy);
-      if (r && r.btn) { if (DKG.move(g.st, 0, r.btn, 0)) { sfx('land'); hap.tap(); after(); } return; }
+      if (r && r.btn) { if (dkM( 0, r.btn, 0)) { sfx('land'); hap.tap(); after(); } return; }
       const hc = DKG.handAt(V, vx, vy); if (hc) { g.sc = {id: hc.id, ok: hc.ok, sx: vx, sy: vy}; hap.tap(); }
     };
     g.move = (x, y) => { const L = lay(), vx = (x - L.ox) / L.sc, vy = (y - L.oy) / L.sc;
       if (g.drag) { g.drag.x = vx; g.drag.y = vy; return; } if (!g.sc || !g.st || g.res) return; const V = view();
       if (g.sc.sy - vy > 34) { if (!g.sc.ok) { if (!g.sc.w) { g.sc.w = 1; hap.warn(); } return; } g.drag = {id: g.sc.id, x: vx, y: vy, sx: g.sc.sx, sy: g.sc.sy}; sfx('hop'); return; }
       const hc = DKG.handAt(V, vx, Math.max(vy, 430)); if (hc && hc.id !== g.sc.id) { g.sc.id = hc.id; g.sc.ok = hc.ok; g.sc.w = 0; hap.tap(); } };
-    g.up = () => { const d = g.drag; g.sc = null; if (!d) return; g.drag = null; if (!g.st || g.res || DKG.who(g.st) !== 0) return; if (DKG.drop(d.x, d.y, d.sy - d.y)) { if (DKG.move(g.st, 0, g.st.at === 0 ? 'atk' : 'def', d.id)) { sfx('land'); hap.tap(); after(); } } };
+    g.up = () => { const d = g.drag; g.sc = null; if (!d) return; g.drag = null; if (!g.st || g.res || DKG.who(g.st) !== 0) return; if (DKG.drop(d.x, d.y, d.sy - d.y)) { if (dkM( 0, g.st.at === 0 ? 'atk' : 'def', d.id)) { sfx('land'); hap.tap(); after(); } } };
     g.update = dt => { g.t += dt; g.dt = dt; if (g.ph === 'menu') { g.lvp += (g.lvl - g.lvp) * Math.min(1, dt * 14); g.lvb = Math.max(0, (g.lvb || 0) - dt * 3.2); } stepFx(g, dt);
       if (g.dead || g.ph !== 'play') return;
+      if (g.hold) { g.hold.t -= dt; if (g.hold.t <= 0) g.hold = null; }
       if (g.res) { g.rt -= dt; if (g.rt <= 0 && !g.fin) { g.fin = true; const k = g.res.k;
         if (k === 'lose') { g.dieT = 'Остался в дураках'; onDie(g, K); g.newBest = g.nb; }
         else { g.ph = 'over'; if (k === 'win') { g.pts = [1, 2, 3, 5, 8][g.lvl]; g.score += g.pts; sfx('perfect', 2); hap.ok(); for (let q = 0; q < 4; q++) bstP(g, W * (.2 + .2 * q), 90, 12, ['#ffd24a', '#4cd98a', '#ff5468', '#7fb5ff'][q], 120); if (g.score > (s.best[K] || 0)) { s.best[K] = g.score; save(); g.nb = true; pushBest(K); } } } }
         return; }
-      if (g.st && DKG.who(g.st) === 1) { g.bt -= dt; if (g.bt <= 0) { const a = DKG.bot(g.st, 1, g.lvl); if (a && DKG.move(g.st, 1, a.m, a.c)) { sfx('land'); after(); } else g.bt = .5; } }
+      if (g.st && !g.hold && DKG.who(g.st) === 1) { g.bt -= dt; if (g.bt <= 0) { const a = DKG.bot(g.st, 1, g.lvl); if (a && dkM( 1, a.m, a.c)) { sfx('land'); after(); } else g.bt = .5; } }
     };
     g.draw = c => {
       c.save(); shk(c, g); c.fillStyle = '#06291d'; c.fillRect(0, 0, W, H);
@@ -15661,7 +15664,8 @@ function a_flightArrow(now){
   /* ---------- Дурак по сети (BETA, v1.1102): сервер хранит колоду, у каждого видна только своя рука ---------- */
   let DKS = null;
   const dkSeat = r => r.state.p.indexOf(UK);
-  const dkView = s => { const r = N.room, me = dkSeat(r), st = s.st; return {drag: s.drag, hov: s.sc && !s.drag ? s.sc.id : null, st, me, mine: !s.pend && r.status === 'playing' && DKG.who(st) === me, end: r.status === 'done' ? (outcome(r) === 'w' ? 'win' : outcome(r) === 'l' ? 'lose' : 'draw') : '', names: ['Ты', raw(oppOf(r))], ok: id => DKG.who(st) === me && (st.at === me ? DKG.atkOK(st, id) : DKG.defOK(st, id)), msg: r.status === 'done' ? '' : null}; };
+  const dkSet = (s, ns) => { const hd = DKG.holdTb(s.st, ns); if (hd) s.hold = {tb: hd, until: performance.now() + 1150}; s.st = ns; };
+  const dkView = s => { const r = N.room, me = dkSeat(r), st0 = s.st, hold = s.hold && performance.now() < s.hold.until, st = hold ? Object.assign({}, st0, {tb: s.hold.tb}) : st0; return {drag: s.drag, hov: s.sc && !s.drag ? s.sc.id : null, st, me, mine: !hold && !s.pend && r.status === 'playing' && DKG.who(st0) === me, end: r.status === 'done' ? (outcome(r) === 'w' ? 'win' : outcome(r) === 'l' ? 'lose' : 'draw') : '', names: ['Ты', raw(oppOf(r))], ok: id => !hold && DKG.who(st0) === me && (st.at === me ? DKG.atkOK(st, id) : DKG.defOK(st, id)), msg: r.status === 'done' ? '' : hold ? 'Побито' : null}; };
   const dkBusy = () => !!(N.room && N.room.game === 'dk' && DKS && N.s === DKS && performance.now() < DKS.busy);
   function dkLoop(){
     const cv = q('#ntsc'), s = DKS; if (!cv || !s || N.s !== s) return;
@@ -15685,7 +15689,7 @@ function a_flightArrow(now){
         if (st.at === me) { m = 'atk'; st.tb.push([c, -1]); st.ph = st.tk ? 'a' : 'd'; } else { m = 'def'; const i = st.tb.findIndex(p => p[1] < 0); if (i >= 0) st.tb[i][1] = c; st.ph = 'a'; } }
       else return;
       s.st = st; s.pend = true; hap.tap();
-      act('dk', {m, c}).then(() => { s.pend = false; if (DKS === s && N.room && N.room.game === 'dk') s.st = N.room.state.dk; }); };
+      act('dk', {m, c}).then(() => { s.pend = false; if (DKS === s && N.room && N.room.game === 'dk') dkSet(s, N.room.state.dk); }); };
     cvs.addEventListener('pointerdown', e => {
       const r_ = N.room; if (DKS !== s || !r_ || r_.game !== 'dk' || r_.status !== 'playing' || s.pend) return;
       const V = dkView(s); if (!V.mine) return; const [x, y] = vxy(e);
@@ -15702,7 +15706,7 @@ function a_flightArrow(now){
   }
   function uDk(r){
     const s = DKS; if (!s || !q('#ntsc')) return;
-    if (!s.pend && r.state.dk) s.st = r.state.dk;
+    if (!s.pend && r.state.dk) dkSet(s, r.state.dk);
     if (r.status === 'done' && !s.dn) { s.dn = true; s.busy = performance.now() + 1500; }
     const t = q('#ntst'); if (t) t.textContent = r.status === 'playing' ? T('В колоде: {0}', s.st.deck.length) : '';
   }
