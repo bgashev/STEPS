@@ -1785,7 +1785,7 @@ async function routeLogout(body: any) {
 }
 
 /* ---------- v1.988: игры по сети (приглашение друга, комната, Крестики-нолики) ---------- */
-const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "che", "golf", "sea", "bil", "arc", "stk"]);
+const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "che", "golf", "sea", "bil", "arc", "stk", "dk"]);
 const STK_KINDS = 8;
 const arcWind = () => ({ v: +(0.2 + Math.random() * 2.8).toFixed(1), d: Math.random() < 0.5 ? -1 : 1 });
 /* v1.1101: поле 3×3 (3 в ряд), 4×4 (4 в ряд), 5×5 (4 в ряд) */
@@ -1997,7 +1997,80 @@ function seaValid(ships: unknown): number[][] | null {
   return sh;
 }
 const BIL_RACK: [number, number][] = [[150, 380], [150, 110], [158.25, 124.3], [166.5, 138.6], [141.75, 124.3], [133.5, 138.6], [150, 152.9], [150, 138.6]];
+/* ---------- Дурак (v1.1102): правила общие с клиентом ---------- */
+const dkS = (c: any) => Math.floor(c / 9), dkR = (c: any) => c % 9;
+const dkBeats = (a: any, d: any, tr: any) => { const sa = dkS(a), sd = dkS(d); return sa === sd ? dkR(d) > dkR(a) : sd === tr && sa !== tr; };
+function dkNew(first: any, rnd: any): any {
+  const deck: any = Array.from({ length: 36 }, (_: any, i: any) => i);
+  for (let i = 35; i > 0; i--) { const j = Math.floor(rnd() * (i + 1)), t = deck[i]; deck[i] = deck[j]; deck[j] = t; }
+  const h: any = [[], []];
+  for (let k = 0; k < 6; k++) { h[0].push(deck.pop()); h[1].push(deck.pop()); }
+  const tc = deck[0];
+  return { deck, tc, tr: dkS(tc), h, tb: [], at: first, ph: "a", tk: false, lim: Math.min(6, h[1 - first].length), win: "", bt: [], n: 0, last: "" };
+}
+const dkWho = (st: any) => (st.win ? -1 : st.ph === "a" ? st.at : 1 - st.at);
+const dkUn = (st: any) => st.tb.findIndex((p: any) => p[1] < 0);
+function dkAtkOK(st: any, c: any): boolean {
+  if (st.win || st.ph !== "a" || st.tb.length >= st.lim) return false;
+  if (!st.tb.length) return true;
+  if (!st.tk && st.h[1 - st.at].length === 0) return false;
+  return st.tb.some((p: any) => dkR(p[0]) === dkR(c) || (p[1] >= 0 && dkR(p[1]) === dkR(c)));
+}
+function dkDefOK(st: any, c: any): boolean {
+  if (st.win || st.ph !== "d") return false;
+  const i = dkUn(st);
+  return i >= 0 && dkBeats(st.tb[i][0], c, st.tr);
+}
+function dkClose(st: any) {
+  const df = 1 - st.at, all: any = [];
+  for (const p of st.tb) { all.push(p[0]); if (p[1] >= 0) all.push(p[1]); }
+  if (st.tk) { for (const c of all) st.h[df].push(c); } else { for (const c of all) st.bt.push(c); }
+  st.tb = []; st.last = st.tk ? "take" : "bito"; st.n++;
+  for (const s of [st.at, df]) while (st.h[s].length < 6 && st.deck.length) st.h[s].push(st.deck.pop());
+  if (!st.tk) st.at = df;
+  st.tk = false; st.ph = "a"; st.lim = Math.min(6, st.h[1 - st.at].length);
+  if (!st.deck.length) {
+    const e0 = !st.h[0].length, e1 = !st.h[1].length;
+    if (e0 && e1) st.win = "d"; else if (e0) st.win = "0"; else if (e1) st.win = "1";
+  }
+  if (st.win) st.ph = "x";
+}
+function dkAuto(st: any) {
+  for (let g = 0; g < 6 && !st.win; g++) {
+    if (st.ph === "d") { if (!st.h[1 - st.at].length) { st.tk = true; st.ph = "a"; continue; } break; }
+    if (st.ph !== "a" || !st.tb.length) break;
+    const can = st.tb.length < st.lim && (st.tk || st.h[1 - st.at].length > 0) && st.h[st.at].some((c: any) => dkAtkOK(st, c));
+    if (can) break;
+    dkClose(st);
+  }
+}
+function dkMove(st: any, seat: any, m: any, c: any): boolean {
+  if (st.win || (seat !== 0 && seat !== 1)) return false;
+  const h = st.h[seat];
+  if (m === "atk") {
+    if (seat !== st.at || !h.includes(c) || !dkAtkOK(st, c)) return false;
+    h.splice(h.indexOf(c), 1); st.tb.push([c, -1]); st.ph = st.tk ? "a" : "d";
+  } else if (m === "def") {
+    if (seat !== 1 - st.at || !h.includes(c) || !dkDefOK(st, c)) return false;
+    const i = dkUn(st); h.splice(h.indexOf(c), 1); st.tb[i][1] = c; st.ph = "a";
+  } else if (m === "take") {
+    if (seat !== 1 - st.at || st.ph !== "d") return false;
+    st.tk = true; st.ph = "a";
+  } else if (m === "end") {
+    if (seat !== st.at || st.ph !== "a" || !st.tb.length) return false;
+    dkClose(st);
+  } else return false;
+  dkAuto(st);
+  return true;
+}
+function dkMask(room: any, me: number) {
+  const st = room.state, dk = st?.dk, seat = Array.isArray(st?.p) ? st.p.indexOf(me) : -1;
+  if (!dk || seat < 0) return room;
+  const done = room.status === "done";
+  return { ...room, state: { ...st, dk: { ...dk, deck: dk.deck.map(() => null), bt: dk.bt.map(() => null), h: dk.h.map((hh: any, i: number) => (i === seat || done ? hh : hh.map(() => null))) } } };
+}
 function netView(room: any, me: number) {
+  if (room?.game === "dk") return dkMask(room, me);
   const f = room?.state?.fleets;
   if (!f || room.status === "done") return room;
   return { ...room, state: { ...room.state, fleets: { [me]: f[me] } } };
@@ -2013,6 +2086,7 @@ function netInit(game: string, host: number, guest: number, first: number, size 
   else if (game === "golf") st = { hole: 0, holes: 3, turn: first, p: [host, guest], ball: {}, str: {}, done: {}, tot: {}, last: null, win: "" };
   else if (game === "sea") st = { phase: "place", turn: first, p: [host, guest], fleets: {}, ready: {}, shots: { [host]: {}, [guest]: {} }, sunk: { [host]: [], [guest]: [] }, last: null, win: "" };
   else if (game === "arc") st = { p: [host, guest], turn: first, tc: 0, rounds: 2, per: 3, shot: 0, s: { [host]: 0, [guest]: 0 }, arrows: [], wind: arcWind(), log: [], last: null, win: "" };
+  else if (game === "dk") { const dk = dkNew(first === host ? 0 : 1, Math.random); st = { p: [host, guest], dk, turn: [host, guest][dkWho(dk)], win: "" }; }
   else if (game === "stk") st = { p: [host, guest], turn: first, k: Math.floor(Math.random() * STK_KINDS), objs: [], tc: 0, last: null, win: "", loser: 0 };
   else if (game === "bil") st = { turn: first, p: [host, guest], balls: BIL_RACK.map((b) => [b[0], b[1]]), last: null, win: "", foul: false };
   else st = tttInit(first, tttSize(size));
@@ -2218,6 +2292,13 @@ async function routeNetAct(body: any) {
       let status = "playing", win: any = "", loser = 0;
       if (fell) { status = "done"; win = other; loser = me; } else if (n + 1 >= 24) { status = "done"; win = "d"; }
       next = await netSave(room, { status, state: { ...st, objs: poses, turn: other, k: Math.floor(Math.random() * STK_KINDS), tc: st.tc + 1, last: { by: me, n: room.rev + 1, k: st.k, tr: { f: f2 } }, win, loser } });
+    }
+  }
+  else if (room.status === "playing" && room.game === "dk" && act === "dk") {
+    const st = room.state, seat = st.p.indexOf(me), m = String(body?.m ?? ""), c = Number(body?.c);
+    if (seat >= 0 && st.dk && dkWho(st.dk) === seat && dkMove(st.dk, seat, m, c)) {
+      const w = st.dk.win, win = w === "" ? "" : w === "d" ? "d" : st.p[Number(w)];
+      next = await netSave(room, { status: win ? "done" : "playing", state: { ...st, turn: win ? 0 : st.p[dkWho(st.dk)], win } });
     }
   }
   else if (room.status === "playing" && room.game === "sea" && act === "fleet") {
