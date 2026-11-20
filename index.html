@@ -4883,7 +4883,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1048';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1049';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -13371,8 +13371,10 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     bil:{get title(){ return T('Бильярд'); }, build:bBil, upd:uBil},
     golf:{get title(){ return T('Гольф'); }, build:bGolf, upd:uGolf}
   };
+  /* подпись «расстановки» игры: кто за кого играет. Меняется при реванше (смена сторон), тогда экран пересобираем */
+  const setupSig = r => { const s = r.state || {}; return r.game + ':' + (s.x != null ? 'x' + s.x : '') + (s.white != null ? 'w' + s.white : '') + (s.p ? 'p' + s.p.join(',') : '') + (s.first != null ? 'f' + s.first : ''); };
   function buildGame(){
-    const r = N.room, g = GM[r.game] || GM.ttt;
+    const r = N.room, g = GM[r.game] || GM.ttt; N.sg = setupSig(r);
     const d = layer('nt-lobby nt-gm', `<div class="nt-top"><i class="nt-x" data-nt="leave">✕</i><span>${g.title}</span></div><div class="nt-body"></div>`);
     d.style.setProperty('--dl', '.05s'); N.gk = r.game; g.build(d.querySelector('.nt-body')); updGame();
   }
@@ -13394,7 +13396,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     const prev = N.room; N.room = room;
     if (room.status === 'closed') { const by = prev && prev.status !== 'closed'; N.room = null; closeOv(); if (by) toast(T('Комната закрыта')); return; }
     if (room.status === 'lobby') { if (!q('#ntlb')) { lobby(); q('.nt-lobby').style.setProperty('--dl', '.05s'); } else updLobby(); }
-    else { if (!q('.nt-gm') || N.gk !== room.game) buildGame(); else updGame(); }
+    else { if (!q('.nt-gm') || N.gk !== room.game || N.sg !== setupSig(room) || (prev && prev.status === 'done' && room.status === 'playing')) buildGame(); else updGame(); }
   }
   async function act(a, extra){
     if (!N.room) return;
