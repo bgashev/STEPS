@@ -5671,12 +5671,12 @@ function ucard(c, id, x, y, w, h, rot, o){
   c.restore();
 }
 function handLay(V){
-  const h = sortH(V.st.h[V.me]), n = h.length, sp = Math.min(46, 276 / Math.max(1, n - 1)), o = [];
-  h.forEach((id, i) => { const t = i - (n - 1) / 2, ok = !!(V.ok && V.ok(id)); o.push({id, x: 180 + t * sp, y: 462 + Math.pow(Math.abs(t) * sp / 70, 2) * 12 - (ok && V.mine ? 16 : 0), w: 58, h: 84, r: t * sp / 330, ok}); });
+  const h = sortH(V.st.h[V.me]), n = h.length, sp = Math.min(40, 236 / Math.max(1, n - 1)), o = [];
+  h.forEach((id, i) => { const t = i - (n - 1) / 2, ok = !!(V.ok && V.ok(id)); o.push({id, x: 180 + t * sp, y: 456 + Math.pow(Math.abs(t) * sp / 110, 2) * 12 - (ok && V.mine ? 14 : 0), w: 54, h: 78, r: t * sp / 430, ok}); });
   return o;
 }
 function btns(st, me){ if (st.win || st.at !== me) return []; return st.drew ? [{k: 'pass', label: 'Пас', col: 'r'}] : [{k: 'draw', label: 'Взять', col: 'g'}]; }
-const btnPos = (n, i) => ({x: 180 + (i - (n - 1) / 2) * 118, y: 386, w: 106, h: 40, r: 20});
+const btnPos = (n, i) => ({x: 180 + (i - (n - 1) / 2) * 118, y: 372, w: 106, h: 38, r: 19});
 const sPos = i => ({x: 63 + i * 78, y: 318, r: 30});
 function msg(st, me){ if (st.win) return ''; if (st.at === me) return st.drew ? 'Сыграй взятую карту или «Пас»' : 'Твой ход — сыграй карту или возьми'; return 'Соперник ходит…'; }
 const cntW = n => n + ' ' + (n % 10 === 1 && n !== 11 ? 'карта' : n % 10 >= 2 && n % 10 <= 4 && (n < 10 || n > 20) ? 'карты' : 'карт');
@@ -5741,7 +5741,7 @@ function draw(c, V, A, t, dt){
   /* сообщение */
   const m = V.msg != null ? V.msg : msg(st, me);
   if (m !== A.msg) { A.msg = m; A.mt = 0; } A.mt = Math.min(1, A.mt + dt * 4); const mp = 1 + .12 * Math.pow(1 - A.mt, 2), ma = .3 + .7 * A.mt;
-  c.save(); c.translate(180, 344); c.scale(mp, mp); c.globalAlpha = ma; c.textAlign = 'center'; c.fillStyle = '#f2ecff'; let mz = 14; c.font = '800 ' + mz + 'px ' + FF; while (c.measureText(m).width > 300 && mz > 10) { mz -= .5; c.font = '800 ' + mz + 'px ' + FF; } c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 6; c.fillText(m, 0, 0); c.restore();
+  c.save(); c.translate(180, 330); c.scale(mp, mp); c.globalAlpha = ma; c.textAlign = 'center'; c.fillStyle = '#f2ecff'; let mz = 14; c.font = '800 ' + mz + 'px ' + FF; while (c.measureText(m).width > 300 && mz > 10) { mz -= .5; c.font = '800 ' + mz + 'px ' + FF; } c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 6; c.fillText(m, 0, 0); c.restore();
   if (V.mine && V.pq == null) { const b = btns(st, me); b.forEach((x, i) => { const q = btnPos(b.length, i), bp = 1 + Math.sin(T * 3.2 + i) * .02, sw = ((T * .55 + i * .3) % 1.6) - .3, red = x.col === 'r';
     c.save(); c.translate(q.x, q.y); c.scale(bp, bp); c.shadowColor = red ? 'rgba(255,90,100,.55)' : 'rgba(150,110,255,.5)'; c.shadowBlur = 16; c.shadowOffsetY = 4; rrp(c, -q.w / 2, -q.h / 2, q.w, q.h, q.h / 2);
     const g2 = c.createLinearGradient(0, -q.h / 2, 0, q.h / 2); g2.addColorStop(0, red ? '#ff7a84' : '#8a5cf0'); g2.addColorStop(1, red ? '#c9303c' : '#4524a8'); c.fillStyle = g2; c.fill(); c.shadowColor = 'transparent';
@@ -5788,7 +5788,7 @@ function hit(V, x, y){
   return null;
 }
 const drop = (x, y, dy) => y < 395 || dy > 70;
-const handAt = (V, x, y) => { if (y < 410 || V.pq != null) return null; const hl = handLay(V); let b = null, bd = 1e9; hl.forEach(h => { const d = Math.abs(x - h.x); if (d < bd) { bd = d; b = h; } }); return b && bd < 60 ? {id: b.id, ok: b.ok} : null; };
+const handAt = (V, x, y) => { if (y < 400 || V.pq != null) return null; const hl = handLay(V); let b = null, bd = 1e9; hl.forEach(h => { const d = Math.abs(x - h.x); if (d < bd) { bd = d; b = h; } }); return b && bd < 52 ? {id: b.id, ok: b.ok} : null; };
 
 return {new: (f, r) => uNew(f, r || Math.random), move: (st, seat, m, c, s) => uMove(st, seat, m, c, s, Math.random), ok: uOk, bot: uBot, draw, hit, drop, handAt, C: uC, R: uR, W: VW, H: VH, card: ucard};
 })();
@@ -5799,7 +5799,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1130';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1131';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
