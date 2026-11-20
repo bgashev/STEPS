@@ -4575,6 +4575,31 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 .ax-bn.hx .il-g .t.bk{z-index:1;width:50px;height:50px;right:4px;top:16px;--r:15deg;transform:rotate(15deg);filter:none;opacity:1;animation-delay:-5s}
 @keyframes c1fan{0%,100%{transform:rotate(var(--r)) translateY(0)}50%{transform:rotate(calc(var(--r) + 3deg)) translateY(-5px)}}
 @media (prefers-reduced-motion:reduce){.ax-bn.hx .ax-bt::before,.ax-bn.hx .ax-bt::after,.ax-bn.hx .il-wt path,.ax-bn.hx .il-g .t{animation:none!important}}
+/* v1.1015: «Кристалл» — стеклянные карточки приложений (иллюстрация не мешает тексту: слева приглушена маской, справа может уходить за край) */
+.ax-bn.hx .ax-bt{isolation:isolate;box-shadow:inset 0 1.5px 0 #ffffff55,inset 0 -1px 0 #00000040,0 14px 30px -16px var(--sh,#000)}
+.ax-bn.hx .ax-bt.bk{background:radial-gradient(75% 75% at 82% 52%,#ffb36a88,transparent 72%),radial-gradient(120% 90% at 0 0,#ffffff2a,transparent 55%),radial-gradient(100% 80% at 0 100%,#00000050,transparent 60%),linear-gradient(160deg,#f89a5c,#d24c68 56%,#7a2a62);--sh:#c8446a}
+.ax-bn.hx .ax-bt.bw{background:radial-gradient(75% 75% at 82% 52%,#4a9bff88,transparent 72%),radial-gradient(120% 90% at 0 0,#ffffff2a,transparent 55%),radial-gradient(100% 80% at 0 100%,#00000050,transparent 60%),linear-gradient(160deg,#2f56b8,#1a3a86 55%,#0c1e4f);--sh:#2a5fe0}
+.ax-bn.hx .ax-bt.bwt{background:radial-gradient(75% 75% at 82% 52%,#5ff0c088,transparent 72%),radial-gradient(120% 90% at 0 0,#ffffff2a,transparent 55%),radial-gradient(100% 80% at 0 100%,#00000050,transparent 60%),linear-gradient(160deg,#2fc4a2,#16877a 55%,#0b4850);--sh:#24a58a}
+.ax-bn.hx .ax-bt.bh{background:radial-gradient(75% 75% at 82% 40%,#9a86ff99,transparent 72%),radial-gradient(120% 90% at 0 0,#ffffff2a,transparent 55%),radial-gradient(100% 80% at 0 100%,#00000050,transparent 60%),linear-gradient(160deg,#7059f2,#4638c4 55%,#26277f);--sh:#6a55e8}
+.ax-bn.hx .ax-bt.bh.gold{background:radial-gradient(75% 75% at 82% 40%,#ffd25a88,transparent 72%),radial-gradient(120% 90% at 0 0,#ffffff2a,transparent 55%),radial-gradient(100% 80% at 0 100%,#00000050,transparent 60%),linear-gradient(160deg,#8a6df0,#6a4fc9 45%,#b97a2c);--sh:#e8a63c}
+.ax-bn.hx .ax-bt.bs{background:radial-gradient(75% 75% at 82% 40%,#ff8ae088,transparent 72%),radial-gradient(120% 90% at 0 0,#ffffff2a,transparent 55%),radial-gradient(100% 80% at 0 100%,#00000050,transparent 60%),linear-gradient(160deg,#e05bb0,#a03aa0 55%,#4a2a8c);--sh:#c64fa0}
+.ax-bn.hx .ax-bt.bg{background:radial-gradient(75% 75% at 82% 40%,#9a86ff99,transparent 72%),radial-gradient(120% 90% at 0 0,#ffffff2a,transparent 55%),radial-gradient(100% 80% at 0 100%,#00000050,transparent 60%),linear-gradient(160deg,#6f58ee,#4a38bc 55%,#271f7e);--sh:#5a46e0}
+.ax-bn.hx .ax-bt.lift{box-shadow:0 26px 50px -14px rgba(0,0,0,.65),0 0 0 1.5px rgba(255,255,255,.35)}
+.ax-bn.hx .ax-bt .ax-at.sm{box-shadow:inset 0 1.5px 0 #ffffff80,inset 0 -2px 0 #00000026,0 4px 10px -4px #0008}
+.gla{position:absolute;z-index:-1;pointer-events:none;transition:transform .5s cubic-bezier(.3,1.6,.5,1);-webkit-mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.3) 24%,#000 52%);mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.3) 24%,#000 52%)}
+.gla svg{width:100%;height:100%;overflow:visible;animation:glfl 6s ease-in-out infinite}
+.ax-bt:active .gla{transform:scale(1.07) rotate(5deg)}
+.gla.pk{right:-40px;bottom:-20px;width:128px;height:128px}
+.gla.pw{right:-30px;bottom:-16px;width:128px;height:128px}
+.gla.pv{right:-10px;top:6px;width:116px;height:77px}
+.gla.pt{right:-34px;top:-14px;width:150px;height:150px}
+.ax-bn.hx .ax-bt.bh .gla.pt{top:-22px;width:124px;height:124px}
+@keyframes glfl{50%{transform:translateY(-4px) rotate(2deg)}}
+@keyframes glwv{to{transform:translateX(-56px)}}
+@keyframes gltw{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1)}}
+.glwv{animation:glwv 3.2s linear infinite}
+.gltw{animation:gltw 2.8s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@media (prefers-reduced-motion:reduce){.gla svg,.glwv,.gltw{animation:none!important}}
 </style>
 </head>
 <body><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="hlg"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient><radialGradient id="shg"><stop offset="0" stop-color="#2a1450" stop-opacity=".62"/><stop offset="1" stop-color="#2a1450" stop-opacity="0"/></radialGradient></defs></svg><div id="texl" aria-hidden="true"></div><div id="wbg" aria-hidden="true"></div>
@@ -4589,7 +4614,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1014';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1015';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11041,6 +11066,32 @@ const AX = (function(){
     if (!h) return '';
     return `<div class="ax-rb"><span class="ax-rt"><span class="ax-gi"><i></i><i></i><i></i><i></i></span>Приложения</span><button type="button" class="ax-ra" data-act="appsheet">все ›</button></div>${h ? `<div class="ax-rr${wide ? ' w' : ''}${(h.match(/class="ax-rc"/g) || []).length === 1 ? ' one' : ''}">${h}</div>` : ''}`;
   }
+  /* v1.1015: «Кристалл» — стеклянные 3D-иллюстрации карточек «Приложений» */
+  const GLX = (() => {
+    let U = 0;
+    const mix = (h, t, q) => { const n = parseInt(h.slice(1), 16), r = n >> 16, g = n >> 8 & 255, b = n & 255; return '#' + [r, g, b].map(c => Math.round(c + (q - c) * t).toString(16).padStart(2, '0')).join(''); };
+    const lt = (h, t) => mix(h, t, 255);
+    const glass = (d, tint, inner) => {
+      const id = ++U, inn = inner || '';
+      return `<clipPath id="glc${id}"><path d="${d}"/></clipPath><radialGradient id="glf${id}" cx=".5" cy=".5" r=".62"><stop offset="0" stop-color="${tint}" stop-opacity=".05"/><stop offset=".62" stop-color="${tint}" stop-opacity=".2"/><stop offset="1" stop-color="${lt(tint, .35)}" stop-opacity=".7"/></radialGradient>` +
+        `<path d="${d}" fill="${tint}" opacity=".65" filter="url(#glb8)"/><path d="${d}" fill="url(#glf${id})"/><path d="${d}" fill="url(#glF)" opacity=".7"/>` +
+        `<g clip-path="url(#glc${id})"><path d="${d}" fill="none" stroke="${lt(tint, .65)}" stroke-width="13" opacity=".8" filter="url(#glb3)"/><path d="${d}" fill="none" stroke="#fff" stroke-width="2.4" opacity=".35" transform="translate(2.2 3.2)"/><ellipse cx="50" cy="96" rx="34" ry="12" fill="${lt(tint, .7)}" opacity=".45" filter="url(#glb3)"/>${inn}</g>` +
+        `<path d="${d}" fill="none" stroke="#fff" stroke-width="5" opacity=".5" filter="url(#glb2)"/><path d="${d}" fill="none" stroke="url(#glE)" stroke-width="2.4"/><path d="${d}" fill="none" stroke="url(#glR)" stroke-width="1" opacity=".9"/>`;
+    };
+    const mark = (dd, w, col) => { col = col || '#fff'; const a = ' stroke-linecap="round" stroke-linejoin="round" fill="none"'; return `<path d="${dd}" stroke="${col}" stroke-width="${w + 2}"${a} opacity=".5" filter="url(#glb3)"/><path d="${dd}" stroke="${col}" stroke-width="${w}"${a}/>`; };
+    const sp = (x, y, s, dl) => `<path class="gltw" style="animation-delay:${dl}s" d="M${x} ${y - s}Q${x} ${y} ${x + s} ${y}Q${x} ${y} ${x} ${y + s}Q${x} ${y} ${x - s} ${y}Q${x} ${y} ${x} ${y - s}z" fill="#fff"/>`;
+    const defs = `<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="glF" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".62"/><stop offset=".5" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity=".07"/></linearGradient><linearGradient id="glE" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".98"/><stop offset=".45" stop-color="#fff" stop-opacity=".2"/><stop offset="1" stop-color="#fff" stop-opacity=".7"/></linearGradient><linearGradient id="glR" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#7fe9ff"/><stop offset=".55" stop-color="#ff8ae6"/><stop offset="1" stop-color="#fff"/></linearGradient><linearGradient id="glW" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8fd8ff"/><stop offset="1" stop-color="#2f6bff"/></linearGradient><linearGradient id="glA" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b8ffe6" stop-opacity=".55"/><stop offset="1" stop-color="#b8ffe6" stop-opacity="0"/></linearGradient><linearGradient id="glL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".2"/><stop offset=".5" stop-color="#d6fff0"/><stop offset="1" stop-color="#fff"/></linearGradient><filter id="glb2" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="1.6"/></filter><filter id="glb3" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3"/></filter><filter id="glb8" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="9"/></filter></defs></svg>`;
+    const st = (d, o, w, c) => `<path d="${d}" stroke="${c || '#fff'}" stroke-opacity="${o}" stroke-width="${w}" stroke-linecap="round" fill="none"/>`;
+    return {
+      defs,
+      apple: () => `<svg viewBox="0 0 100 100">${glass('M50 30C40 22 22 28 22 50c0 19 13 36 24 36 3 0 4-2 8-2s5 2 8 2c11 0 24-17 24-36 0-22-18-28-28-20-2 1-5 1-8 0z', '#ffa060')}${glass('M52 28c0-10 8-17 17-17 0 9-7 17-17 17z', '#ffd080')}${st('M29 44c2-9 9-13 16-13', .9, 3.6)}<circle cx="30" cy="55" r="2" fill="#fff" opacity=".75"/>${sp(88, 24, 4, 0)}${sp(14, 70, 3, 1.2)}</svg>`,
+      drop: p => { const y = 92 - clamp(p, 0, 1) * 72; return `<svg viewBox="0 0 100 100">${glass('M50 8C50 8 20 42 20 64a30 30 0 0060 0C80 42 50 8 50 8z', '#4a98ff', `<g style="transform:translateY(${y.toFixed(1)}px)"><g class="glwv"><path d="M-10 0q7-7 14 0t14 0 14 0 14 0 14 0 14 0 14 0 14 0 14 0 14 0V100H-10z" fill="url(#glW)" opacity=".92"/></g></g>`)}${st('M32 58c0 9 4 16 11 19', .92, 3.6)}${st('M44 24c-5 6-9 11-10 18', .7, 3)}${sp(84, 30, 4, .4)}</svg>`; },
+      chart: () => { const L = 'M0 20C14 18 18 30 30 28S46 24 58 34 74 36 92 42 108 44 120 50'; return `<svg viewBox="0 0 120 80"><path d="${L}V80H0z" fill="url(#glA)"/><path d="${L}" stroke="#a8ffe0" stroke-width="9" stroke-linecap="round" fill="none" opacity=".6" filter="url(#glb3)"/><path d="${L}" stroke="url(#glL)" stroke-width="3.4" stroke-linecap="round" fill="none"/><circle cx="116" cy="49" r="4.5" fill="#fff"/><circle cx="116" cy="49" r="10" fill="#fff" opacity=".4" filter="url(#glb3)"/></svg>`; },
+      orb: (f, gold) => { const C = 2 * Math.PI * 29, off = C * (1 - clamp(f, 0, 1)), col = gold ? '#ffe08a' : '#fff', gl = gold ? '#ffc94a' : '#a99bff'; const ring = `<circle cx="50" cy="50" r="29" fill="none" stroke="#fff" stroke-opacity=".18" stroke-width="6"/>${f > 0 ? `<circle cx="50" cy="50" r="29" fill="none" stroke="${col}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${C.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}" transform="rotate(-90 50 50)" style="filter:drop-shadow(0 0 5px ${gl})"/>` : ''}`; return `<svg viewBox="0 0 100 100">${glass('M10 50a40 40 0 1080 0a40 40 0 10-80 0', gl, '<circle cx="50" cy="50" r="29" fill="none" stroke="#fff" stroke-opacity=".14" stroke-width="12"/>')}${ring}${mark('M35 51l11 11 20-24', 6.5, col)}${st('M20 36a34 34 0 0122-17', .85, 3)}${sp(86, 22, 4, .2)}${sp(16, 78, 3, 1.4)}</svg>`; },
+      bag: () => { const h = 'M37 38v-8a13 13 0 0126 0v8'; return `<svg viewBox="0 0 100 100"><g transform="rotate(9 50 55)"><path d="${h}" stroke="#ff9ae8" stroke-width="7" fill="none" stroke-linecap="round" opacity=".55" filter="url(#glb3)"/><path d="${h}" stroke="url(#glE)" stroke-width="5" fill="none" stroke-linecap="round"/>${glass('M24 38h52l5 48a6 6 0 01-6 7H25a6 6 0 01-6-7z', '#ff7ad0')}${mark('M38 56l12 14 12-14', 5.5)}${st('M28 46c0 10 1 20 3 28', .65, 3)}</g>${sp(88, 40, 4, .6)}</svg>`; },
+      pad: () => `<svg viewBox="0 0 100 100">${glass('M24 34C14 34 6 60 8 76c2 11 15 11 22 2l8-10h24l8 10c7 9 20 9 22-2 2-16-6-42-16-42z', '#9a7dff')}${mark('M31 46v18M22 55h18', 5.5)}<circle cx="70" cy="48" r="4.6" fill="#fff" opacity=".95"/><circle cx="80" cy="57" r="4.6" fill="#fff" opacity=".95"/>${st('M24 38c7-4 15-4 22-3', .9, 3)}${sp(88, 26, 4, .8)}</svg>`
+    };
+  })();
   function sheetHTML(){
     const a = A(), w = wd(), wg = waterGoal(), d = day(), g = d.g, wlast = (() => { try { const es = weightsSorted(); return es.length ? es[es.length - 1] : null; } catch (e) { return null; } })(), wp = Math.round(clamp(w / wg.goal, 0, 1) * 100);
     const sw = (k, on) => `<span class="ax-sw${on ? ' on' : ''}" data-act="axpin" data-k="${k}"></span>`;
@@ -11052,15 +11103,16 @@ const AX = (function(){
     const shopArt = `<svg class="il il-s" viewBox="0 0 80 100"><defs><linearGradient id="ils1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd98a"/><stop offset="1" stop-color="#ff86a8"/></linearGradient></defs><circle cx="50" cy="50" r="44" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="1.4"/><circle cx="50" cy="50" r="33" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1.4"/><circle cx="50" cy="50" r="22" fill="#2a1236" stroke="url(#ils1)" stroke-width="4.5"/><circle cx="50" cy="45" r="6.6" fill="#fff" fill-opacity=".92"/><path d="M37 61Q50 50 63 61" fill="#fff" fill-opacity=".92"/><path d="M26 18L27.6 22.4L32 24L27.6 25.6L26 30L24.4 25.6L20 24L24.4 22.4Z" fill="#fff" fill-opacity=".9"/></svg>`;
     const WV = c => `<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M0 7Q12.5 0 25 7T50 7T75 7T100 7T125 7T150 7T175 7T200 7V14H0Z" fill="${c}"/></svg>`;
     const mb = (l, v, m, c) => `<div class="m"><span>${l}</span><em><i style="width:${clamp(v * 100 / Math.max(1, m), 0, 100)}%;background:${c}"></i></em></div>`;
+    const GA = (old, pos, svg) => inWeb ? old : `<div class="gla ${pos}">${svg()}</div>`;
     const hubT = {
-      w: `<div data-k="w" class="ax-bt bw" data-act="appopen" data-s="water"><div class="liq" style="height:${Math.max(10, wp)}%">${WV('#58a0ff')}${WV('#9ccbff')}</div>${wglass}
+      w: `<div data-k="w" class="ax-bt bw" data-act="appopen" data-s="water">${GA(`<div class="liq" style="height:${Math.max(10, wp)}%">${WV('#58a0ff')}${WV('#9ccbff')}</div>${wglass}`, 'pw', () => GLX.drop(wp / 100))}
         <div class="z"><div class="h"><span class="ax-at sm a-w">${AI('drop', 18)}</span>Вода</div><div><div class="big">${P0(w)}<i> мл</i></div><small>из ${P0(wg.goal)} · ${wp}%</small></div><button type="button" class="pl" data-act="axbw">+250 мл</button></div></div>`,
-      k: `<div data-k="k" class="ax-bt bk" data-act="appopen" data-s="cal">${bcode}<div class="h"><span class="ax-at sm a-c">${AI('cal', 18)}</span>Калории</div>
+      k: `<div data-k="k" class="ax-bt bk" data-act="appopen" data-s="cal">${GA(bcode, 'pk', GLX.apple)}<div class="h"><span class="ax-at sm a-c">${AI('cal', 18)}</span>Калории</div>
         <div class="big">${P0(Math.abs(d.rem))}<i> ${d.rem < 0 ? 'сверх' : 'осталось'}</i></div>
         <div class="ms">${mb('Б', d.t.p, g.p, '#7cc0ff')}${mb('Ж', d.t.f, g.f, '#ffd36b')}${mb('У', d.t.c, g.c, '#6fcf97')}</div></div>`,
-      wt: `<div data-k="wt" class="ax-bt bwt" data-act="appweight">${wspark}<div class="h"><span class="ax-at sm a-wt">${IC('scale', 18)}</span>Вес</div><div class="big">${wlast ? f1(wlast.kg) : '—'}<i> ${wlast ? 'кг' : 'добавь первый'}</i></div><small class="wsm">${wlast ? 'последнее взвешивание' : 'следи за динамикой'}</small></div>`,
-      g: `<div data-k="g" class="ax-bt bg" data-act="appopen" data-s="games">${gtiles}<div class="h"><span class="ax-at sm a-g">${AI('pad', 18)}</span><span class="n">${GL.length || 12} игр</span></div><div class="gt">Игры<small>играть →</small></div></div>`,
-      s: `<div data-k="s" class="ax-bt bs" data-act="appopen" data-s="shop">${shopArt}<div class="h"><span class="ax-at sm a-s">${AI('shop', 18)}</span><span class="n">рамки · фоны · комплекты</span></div><div class="gt">Магазин<small>выбрать →</small></div></div>`,
+      wt: `<div data-k="wt" class="ax-bt bwt" data-act="appweight">${GA(wspark, 'pv', GLX.chart)}<div class="h"><span class="ax-at sm a-wt">${IC('scale', 18)}</span>Вес</div><div class="big">${wlast ? f1(wlast.kg) : '—'}<i> ${wlast ? 'кг' : 'добавь первый'}</i></div><small class="wsm">${wlast ? 'последнее взвешивание' : 'следи за динамикой'}</small></div>`,
+      g: `<div data-k="g" class="ax-bt bg" data-act="appopen" data-s="games">${GA(gtiles, 'pt', GLX.pad)}<div class="h"><span class="ax-at sm a-g">${AI('pad', 18)}</span><span class="n">${GL.length || 12} игр</span></div><div class="gt">Игры<small>играть →</small></div></div>`,
+      s: `<div data-k="s" class="ax-bt bs" data-act="appopen" data-s="shop">${GA(shopArt, 'pt', GLX.bag)}<div class="h"><span class="ax-at sm a-s">${AI('shop', 18)}</span><span class="n">рамки · фоны · комплекты</span></div><div class="gt">Магазин<small>выбрать →</small></div></div>`,
       h: (() => { let nd = 0, n = 0, bs = 0, days = ''; try {
         const D = hbList().filter(x => x.k !== 'quit'); n = D.length; nd = D.filter(x => hbDone(x)).length;
         bs = hbList().reduce((m, x) => Math.max(m, x.k === 'quit' ? hbDays(x) : hbStreak(x)), 0);
@@ -11072,11 +11124,12 @@ const AX = (function(){
           const cls = 'd' + (td ? ' td' : '') + (fu ? ' fu' : '') + (!n ? ' em' : td && nd >= n ? ' dn' : td ? ' pu' : '');
           days += `<div class="${cls}"><div class="p">${f > 0 ? `<u style="--f:${Math.round((td ? (n ? nd / n : 0) : f) * 100)}%"></u>` : ''}</div><span>${lt}</span></div>`;
         }
-      } catch (e) {} return `<div data-k="h" class="ax-bt bh bhw" data-act="appopen" data-s="hab"><div class="h"><span class="ax-at sm a-h">${AI('hab', 18)}</span>Привычки</div><div class="bhm">${n ? `<div class="big">${nd}<i> из ${n}</i></div>${bs ? `<span class="bhf"><svg viewBox="0 0 24 24"><defs><linearGradient id="bhfg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff7a1a"/><stop offset="1" stop-color="#ffd24a"/></linearGradient></defs><path fill="url(#bhfg)" d="M12 2c1 3.2 4.6 5 4.6 9.6A4.6 4.6 0 0112 16.2a4.6 4.6 0 01-4.6-4.6c0-1.6.6-2.6 1.4-3.6.4 1.1 1 1.6 1.7 1.8C10.2 7 10.6 4 12 2zM12 21.5a6.5 6.5 0 01-6.5-6.5c0-1.4.4-2.5 1-3.4.2 1.8 1.5 3.4 3.4 3.4 1.6 0 2.7-1 3.1-2.4.8.9 2.5 1.8 2.5 3.8a6.5 6.5 0 01-3.5 5.1z" transform="scale(.9) translate(1.3 1)"/></svg>${bs}</span>` : ''}` : `<div class="big">—</div><small>заведи первую</small>`}</div><div class="bhd">${days}</div></div>`; })()
+      } catch (e) {} return `<div data-k="h" class="ax-bt bh bhw${n && nd >= n ? ' gold' : ''}" data-act="appopen" data-s="hab">${GA('', 'pt', () => GLX.orb(n ? nd / n : 0, n > 0 && nd >= n))}<div class="h"><span class="ax-at sm a-h">${AI('hab', 18)}</span>Привычки</div><div class="bhm">${n ? `<div class="big">${nd}<i> из ${n}</i></div>${bs ? `<span class="bhf"><svg viewBox="0 0 24 24"><defs><linearGradient id="bhfg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ff7a1a"/><stop offset="1" stop-color="#ffd24a"/></linearGradient></defs><path fill="url(#bhfg)" d="M12 2c1 3.2 4.6 5 4.6 9.6A4.6 4.6 0 0112 16.2a4.6 4.6 0 01-4.6-4.6c0-1.6.6-2.6 1.4-3.6.4 1.1 1 1.6 1.7 1.8C10.2 7 10.6 4 12 2zM12 21.5a6.5 6.5 0 01-6.5-6.5c0-1.4.4-2.5 1-3.4.2 1.8 1.5 3.4 3.4 3.4 1.6 0 2.7-1 3.1-2.4.8.9 2.5 1.8 2.5 3.8a6.5 6.5 0 01-3.5 5.1z" transform="scale(.9) translate(1.3 1)"/></svg>${bs}</span>` : ''}` : `<div class="big">—</div><small>заведи первую</small>`}</div><div class="bhd">${days}</div></div>`; })()
     };
     const hubTiles = () => hubOrder().map(k => hubT[k]).join('');
     return `<div class="ax-sh"><div class="ax-st">Приложения</div><div class="ax-ss">всё под рукой — без лишних вкладок</div>
     ${inWeb || hubHintSeen() ? '' : `<div class="ax-hint">Зажми карточку и перетащи, чтобы поменять порядок</div>`}
+    ${inWeb ? '' : GLX.defs}
     <div class="ax-bn${inWeb ? '' : ' hx'}" id="ax-bn">
     ${hubTiles()}
     </div>
