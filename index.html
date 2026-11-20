@@ -4657,6 +4657,12 @@ html[data-mode=dark] .nt-vfl{background:var(--accent);animation-name:ntvfld}
 .nt-sc.sh.s1::before{inset:16%;border-radius:40%}
 .nt-sc.sh:not(.s0):not(.sz):not(.s1)::after{content:"";position:absolute;z-index:2;inset:34%;border-radius:30%;background:linear-gradient(180deg,#5b6f93,#2f3f63)}
 .nt-sc.rv{opacity:.82}
+.nt-sg.pl{touch-action:none;user-select:none;-webkit-user-select:none}.nt-sc.lf{opacity:.25}.nt-sc.st{animation:seastl .45s ease-out}@keyframes seastl{40%{transform:scale(1.16);z-index:3}}
+.nt-fxo{position:absolute;inset:0;pointer-events:none;z-index:60;overflow:hidden}.nt-fxo i{position:absolute;border-radius:50%;will-change:transform,opacity}
+.nt-fxo .bm{background:radial-gradient(circle,#fff7c9 0,#ffc14a 30%,#ff5a1f 60%,rgba(255,60,20,0) 72%)}.nt-fxo .br{border:3px solid rgba(255,190,90,.9)}.nt-fxo .wr{border:2px solid rgba(200,235,255,.9)}.nt-fxo .sp{background:#ffd24a}.nt-fxo .sm{background:rgba(70,60,66,.75)}.nt-fxo .dr{background:#d7efff}
+.nt-fxo .ban{position:absolute;left:0;right:0;top:30%;text-align:center;font-weight:900;font-size:30px;letter-spacing:.02em;text-shadow:0 2px 0 rgba(0,0,0,.5),0 0 16px currentColor}
+.nt-flt{position:absolute;z-index:61;pointer-events:none;border-radius:99px;background:linear-gradient(180deg,#fbfdff,#c7d6ec 45%,#8499ba);box-shadow:0 12px 22px rgba(0,12,40,.55);transform:scale(1.08)}
+.nt-hl{position:absolute;z-index:59;pointer-events:none;border-radius:10px;border:2px solid;transition:left .08s,top .08s}.nt-hl.ok{background:rgba(80,230,150,.28);border-color:rgba(120,255,180,.95)}.nt-hl.bad{background:rgba(255,80,96,.3);border-color:rgba(255,110,120,.95)}
 /* промах: круги по воде */
 .nt-sc.mi::after{content:"";position:absolute;z-index:2;left:50%;top:50%;width:24%;height:24%;margin:-12% 0 0 -12%;border-radius:50%;border:1.5px solid rgba(225,246,255,.9);background:rgba(225,246,255,.18);animation:searip 2.6s ease-out infinite}
 @keyframes searip{0%{box-shadow:0 0 0 0 rgba(225,246,255,.55)}100%{box-shadow:0 0 0 13px rgba(225,246,255,0)}}
@@ -5425,7 +5431,7 @@ const sortH = h => h.slice().sort((a, b) => (kS(a) - kS(b)) || (kR(a) - kR(b)));
 const SCOL = ['#e8ecf2', '#e8ecf2', '#ff6470', '#ff6470'];
 function handLay(V){
   const h = sortH(V.st.h[V.me]), n = h.length, sp = Math.min(46, 276 / Math.max(1, n - 1)), o = [];
-  h.forEach((id, i) => { const t = i - (n - 1) / 2, ok = !!(V.ok && V.ok(id)); o.push({id, x: 180 + t * sp, y: 478 + Math.pow(Math.abs(t) * sp / 70, 2) * 12 - (ok && V.mine ? 16 : 0), w: 58, h: 84, r: t * sp / 330, ok}); });
+  h.forEach((id, i) => { const t = i - (n - 1) / 2, ok = !!(V.ok && V.ok(id)); o.push({id, x: 180 + t * sp, y: 462 + Math.pow(Math.abs(t) * sp / 70, 2) * 12 - (ok && V.mine ? 16 : 0), w: 58, h: 84, r: t * sp / 330, ok}); });
   return o;
 }
 function btns(st, me){
@@ -5493,7 +5499,7 @@ function draw(c, V, A, t, dt){
   const meter = (x, y, w, v, name, col, lab) => { A.sm = A.sm || {}; const k = name; A.sm[k] = A.sm[k] == null ? v : A.sm[k] + (v - A.sm[k]) * Math.min(1, dt * 5); const f = Math.min(1, A.sm[k] / 105), hot = f > .8;
     c.fillStyle = 'rgba(255,255,255,.7)'; c.font = '700 10.5px ' + FF; c.textAlign = 'left'; c.fillText(lab, x, y - 6); c.textAlign = 'right'; c.fillStyle = hot ? '#ff7a84' : '#fff'; c.font = '800 12px ' + FF; c.fillText(Math.round(A.sm[k]) + ' / 105', x + w, y - 6);
     rrp(c, x, y, w, 7, 3.5); c.fillStyle = 'rgba(0,0,0,.35)'; c.fill(); if (f > 0) { rrp(c, x, y, Math.max(7, w * f), 7, 3.5); const g2 = c.createLinearGradient(x, 0, x + w, 0); g2.addColorStop(0, col); g2.addColorStop(1, hot ? '#ff4d5e' : col); c.fillStyle = g2; if (hot) { c.shadowColor = '#ff4d5e'; c.shadowBlur = 8 + 4 * Math.sin(T * 7); } c.fill(); c.shadowBlur = 0; } };
-  meter(206, 52, 132, st.sc[opp], 'o', '#7fd8ff', 'ОЧКИ'); meter(22, 543, 316, st.sc[me], 'm', '#ffd24a', 'ТЫ · ОЧКИ');
+  meter(206, 52, 132, st.sc[opp], 'o', '#7fd8ff', 'ОЧКИ'); meter(22, 539, 316, st.sc[me], 'm', '#ffd24a', 'ТЫ · ОЧКИ');
   /* сообщение */
   const m = V.msg != null ? V.msg : msg(st, me);
   if (m !== A.msg) { A.msg = m; A.mt = 0; } A.mt = Math.min(1, A.mt + dt * 4); const mp = 1 + .12 * Math.pow(1 - A.mt, 2), ma = .3 + .7 * A.mt;
@@ -5562,7 +5568,7 @@ window.K5G = K5G;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1124';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1126';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -15453,8 +15459,63 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       if (ok) return ships;
     }
   }
-  function bSea(b){ const r = N.room, st = r.state; N.sea = {mine: seaRand(), seen: 0};
-    b.innerHTML = chips(r, st.p, ['', '']) + `<div class="nt-sw" id="ntsw"></div><div class="nt-st" id="ntst"></div><div class="nt-sbt" id="ntsb"></div>`; }
+  /* ---------- v1.1125: ручная расстановка и эффекты боя ---------- */
+  const seaOkP = (mine, k, r, c, n, h) => { if (r < 0 || c < 0 || (h ? c + n > 8 || r > 7 : r + n > 8 || c > 7)) return false; const occ = new Set(); mine.forEach((x, j) => { if (j !== k) seaCells(x).forEach(i => occ.add(i)); });
+    for (const i of seaCells([r, c, n, h])) for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) { const r1 = (i >> 3) + dr, c1 = (i & 7) + dc; if (r1 >= 0 && r1 < 8 && c1 >= 0 && c1 < 8 && occ.has(r1 * 8 + c1)) return false; } return true; };
+  function seaFx(r, L){
+    const me = +UK, mineShot = +L.by === me, grid = q(mineShot ? '#ntso' : '#ntsg'); if (!grid || !N.ov) return;
+    const gr = grid.getBoundingClientRect(), orr = N.ov.getBoundingClientRect(), cs = gr.width / 8, P = i => ({x: gr.left - orr.left + ((i & 7) + .5) * cs, y: gr.top - orr.top + ((i >> 3) + .5) * cs});
+    let o = N.ov.querySelector('.nt-fxo'); if (!o) { o = document.createElement('div'); o.className = 'nt-fxo'; N.ov.appendChild(o); }
+    const mk = (cls, x, y, sz) => { const e = document.createElement('i'); e.className = cls; e.style.cssText = 'left:' + (x - sz / 2) + 'px;top:' + (y - sz / 2) + 'px;width:' + sz + 'px;height:' + sz + 'px'; o.appendChild(e); return e; };
+    const an = (e, kf, opt) => { const a = e.animate(kf, Object.assign({fill: 'both'}, opt)); a.onfinish = () => e.remove(); };
+    const shake = (a, d) => { try { grid.animate([{transform: 'none'}, {transform: 'translate(' + a + 'px,' + (-a * .6) + 'px)'}, {transform: 'translate(' + (-a) + 'px,' + (a * .5) + 'px)'}, {transform: 'none'}], {duration: d || 240}); } catch (e) {} };
+    const boom = (i, big, dl) => { const p = P(i), sz = cs * (big ? 2.5 : 1.8);
+      an(mk('bm', p.x, p.y, sz), [{transform: 'scale(.2)', opacity: 1}, {transform: 'scale(1.15)', opacity: .9, offset: .4}, {transform: 'scale(1.5)', opacity: 0}], {duration: big ? 760 : 600, delay: dl});
+      an(mk('br', p.x, p.y, cs), [{transform: 'scale(.4)', opacity: .95}, {transform: 'scale(' + (big ? 4 : 2.6) + ')', opacity: 0}], {duration: big ? 700 : 520, delay: dl, easing: 'ease-out'});
+      for (let k = 0; k < (big ? 8 : 5); k++) { const a = Math.random() * 6.283, d = cs * (.8 + Math.random() * 1.2); an(mk('sp', p.x, p.y, 5), [{transform: 'translate(0,0)', opacity: 1}, {transform: 'translate(' + Math.cos(a) * d + 'px,' + (Math.sin(a) * d - cs * .3) + 'px)', opacity: 0}], {duration: 520, delay: dl, easing: 'ease-out'}); }
+      for (let k = 0; k < 2; k++) an(mk('sm', p.x + (Math.random() - .5) * cs * .4, p.y, cs * .5), [{transform: 'translate(0,0) scale(.5)', opacity: 0}, {transform: 'translate(0,' + (-cs * .4) + 'px) scale(1)', opacity: .6, offset: .3}, {transform: 'translate(' + (Math.random() - .5) * cs + 'px,' + (-cs * 1.2) + 'px) scale(1.7)', opacity: 0}], {duration: 1300, delay: dl + k * 90}); };
+    if (L.res === 'miss') { const p = P(L.i);
+      an(mk('wr', p.x, p.y, cs), [{transform: 'scale(.2)', opacity: .95}, {transform: 'scale(2.1)', opacity: 0}], {duration: 700, easing: 'ease-out'}); an(mk('wr', p.x, p.y, cs), [{transform: 'scale(.2)', opacity: .7}, {transform: 'scale(1.4)', opacity: 0}], {duration: 700, delay: 110, easing: 'ease-out'});
+      for (let k = 0; k < 7; k++) { const dx = (Math.random() - .5) * cs * 1.8, up = cs * (.8 + Math.random() * .9); an(mk('dr', p.x, p.y, 4.5), [{transform: 'translate(0,0)', opacity: 1}, {transform: 'translate(' + dx * .5 + 'px,' + (-up) + 'px)', opacity: 1, offset: .45, easing: 'ease-out'}, {transform: 'translate(' + dx + 'px,' + (cs * .1) + 'px)', opacity: 0}], {duration: 650}); }
+      hap.seq([['i', 'light', 0]]); return; }
+    boom(L.i, false, 0); shake(3);
+    if (L.res === 'sunk') { const victim = mineShot ? r.state.p.find(x => +x !== me) : me, list = (r.state.sunk && r.state.sunk[victim]) || [], sh = list[list.length - 1];
+      if (sh) { const cells = seaCells(sh); cells.forEach((i, k) => boom(i, k === cells.length - 1, 140 + k * 120)); const mid = P(cells[(cells.length - 1) >> 1]), T0 = 140 + cells.length * 120;
+        setTimeout(() => { if (!o.isConnected) return; shake(6, 340); an(mk('br', mid.x, mid.y, cs), [{transform: 'scale(.4)', opacity: 1}, {transform: 'scale(7)', opacity: 0}], {duration: 900, easing: 'ease-out'});
+          const b = document.createElement('div'); b.className = 'ban'; b.textContent = mineShot ? T('ПОТОПЛЕН!') : T('КОРАБЛЬ ПОТЕРЯН'); b.style.color = mineShot ? '#ffd24a' : '#ff6a78'; o.appendChild(b); an(b, [{transform: 'scale(.4)', opacity: 0}, {transform: 'scale(1.2)', opacity: 1, offset: .22}, {transform: 'scale(1)', opacity: 1, offset: .7}, {transform: 'scale(1.05)', opacity: 0}], {duration: 1500}); }, T0); }
+      hap.seq([['i', 'heavy', 0], ['i', 'heavy', 120], ['i', 'heavy', 120], ['i', 'rigid', 120], ['n', mineShot ? 'success' : 'error', 140]]); }
+    else hap.seq([['i', 'heavy', 0]]);
+  }
+  const seaBusy = () => !!(N.room && N.room.game === 'sea' && N.sea && performance.now() < (N.sea.busy || 0));
+  function seaPlaceInit(w){
+    const S = N.sea; let pk = null, flt = null, hl = null;
+    const gridEl = () => q('#ntsg'), live = () => N.room && N.room.game === 'sea' && N.room.status === 'playing' && N.room.state.phase === 'place' && !N.room.state.ready[+UK];
+    const cellAt = e => { const g0 = gridEl(); if (!g0) return null; const rc = g0.getBoundingClientRect(), cs = rc.width / 8; return {col: Math.floor((e.clientX - rc.left) / cs), row: Math.floor((e.clientY - rc.top) / cs), rc, cs}; };
+    const clr = () => { if (flt) { flt.remove(); flt = null; } if (hl) { hl.remove(); hl = null; } };
+    const refresh = () => { updGame(); };
+    const pulse = cells => { S.stl = cells; refresh(); setTimeout(() => { S.stl = null; if (N.sea === S) refresh(); }, 480); };
+    const rel = (rc, x, y) => { const orr = N.ov.getBoundingClientRect(); return {x: rc.left - orr.left + x, y: rc.top - orr.top + y}; };
+    w.addEventListener('pointerdown', e => { if (!live() || !e.target.closest('#ntsg')) return; const c = cellAt(e); if (!c || c.col < 0 || c.col > 7 || c.row < 0 || c.row > 7) return; const idx = c.row * 8 + c.col, k = S.mine.findIndex(x => seaCells(x).includes(idx)); if (k < 0) return;
+      pk = {k, off: seaCells(S.mine[k]).indexOf(idx), sx: e.clientX, sy: e.clientY, drag: false, tg: null}; try { w.setPointerCapture(e.pointerId); } catch (_) {} hap.tap(); });
+    w.addEventListener('pointermove', e => { if (!pk || !live()) return; const c = cellAt(e); if (!c) return; const sh = S.mine[pk.k], n = sh[2], h = sh[3];
+      if (!pk.drag && Math.hypot(e.clientX - pk.sx, e.clientY - pk.sy) > 9) { pk.drag = true; S.lf = seaCells(sh); refresh(); hap.lift && hap.lift();
+        flt = document.createElement('div'); flt.className = 'nt-flt'; N.ov.appendChild(flt); hl = document.createElement('div'); hl.className = 'nt-hl ok'; N.ov.appendChild(hl); }
+      if (!pk.drag) return;
+      const fp = rel(c.rc, e.clientX - c.rc.left - (h ? (pk.off + .5) * c.cs : c.cs * .5), e.clientY - c.rc.top - (h ? c.cs * .5 : (pk.off + .5) * c.cs));
+      flt.style.cssText = 'left:' + fp.x + 'px;top:' + (fp.y - c.cs * .25) + 'px;width:' + (h ? n * c.cs : c.cs) + 'px;height:' + (h ? c.cs : n * c.cs) + 'px';
+      const r0 = Math.max(0, Math.min(h ? 7 : 8 - n, h ? c.row : c.row - pk.off)), c0 = Math.max(0, Math.min(h ? 8 - n : 7, h ? c.col - pk.off : c.col)), ok = seaOkP(S.mine, pk.k, r0, c0, n, h), key = r0 * 8 + c0;
+      if (!pk.tg || pk.tg.key !== key) { if (pk.tg) hap.swap && hap.swap(); } pk.tg = {key, r: r0, c: c0, ok};
+      const hp = rel(c.rc, c0 * c.cs, r0 * c.cs); hl.className = 'nt-hl ' + (ok ? 'ok' : 'bad'); hl.style.cssText = 'left:' + hp.x + 'px;top:' + hp.y + 'px;width:' + (h ? n * c.cs : c.cs) + 'px;height:' + (h ? c.cs : n * c.cs) + 'px'; });
+    const end = () => { if (!pk) return; const p0 = pk; pk = null; clr(); S.lf = null; if (!live()) { refresh(); return; } const sh = S.mine[p0.k], n = sh[2], h = sh[3];
+      if (p0.drag) { if (p0.tg && p0.tg.ok) { S.mine = S.mine.map((x, j) => j === p0.k ? [p0.tg.r, p0.tg.c, n, h] : x); hap.drop && hap.drop(); pulse(seaCells(S.mine[p0.k])); } else { hap.warn(); refresh(); } return; }
+      const h2 = h ? 0 : 1; let r0 = sh[0], c0 = sh[1], ok = seaOkP(S.mine, p0.k, r0, c0, n, h2);
+      if (!ok) { r0 = Math.min(r0, h2 ? 7 : 8 - n); c0 = Math.min(c0, h2 ? 8 - n : 7); ok = seaOkP(S.mine, p0.k, r0, c0, n, h2); }
+      if (ok) { S.mine = S.mine.map((x, j) => j === p0.k ? [r0, c0, n, h2] : x); hap.imp(); pulse(seaCells(S.mine[p0.k])); }
+      else { hap.warn(); const g0 = gridEl(); if (g0) g0.animate([{transform: 'none'}, {transform: 'translateX(-5px)'}, {transform: 'translateX(5px)'}, {transform: 'translateX(-3px)'}, {transform: 'none'}], {duration: 300}); } };
+    w.addEventListener('pointerup', end); w.addEventListener('pointercancel', end);
+  }
+  function bSea(b){ const r = N.room, st = r.state; N.sea = {mine: seaRand(), seen: 0, busy: 0, dn: false, lf: null, stl: null};
+    b.innerHTML = chips(r, st.p, ['', '']) + `<div class="nt-sw" id="ntsw"></div><div class="nt-st" id="ntst"></div><div class="nt-sbt" id="ntsb"></div>`; seaPlaceInit(q('#ntsw')); }
   function seaGrid(id, cls, cells){ return `<div class="nt-sg ${cls}" id="${id}">${cells.map((c, i) => `<div class="nt-sc ${c}" data-nt="sc" data-i="${i}"></div>`).join('')}</div>`; }
   function uSea(r){
     const st = r.state, w = q('#ntsw'), S = N.sea; if (!w) return;
@@ -15466,17 +15527,20 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     ((st.sunk && st.sunk[opp]) || []).forEach(s => seaCells(s).forEach((i, k, a) => { oc[i] = 'hi sk ' + (a.length === 1 ? 's1' : (s[3] ? 'sh-h' : 'sh-v') + (k === 0 ? ' s0' : k === a.length - 1 ? ' sz' : '')); }));
     if (r.status === 'done' && st.fleets && st.fleets[opp]) st.fleets[opp].forEach(s => seaCells(s).forEach((i, k, a) => { if (!/hi/.test(oc[i])) oc[i] += ' sh rv ' + (a.length === 1 ? 's1' : (s[3] ? 'sh-h' : 'sh-v') + (k === 0 ? ' s0' : k === a.length - 1 ? ' sz' : '')); }));
     if (st.phase === 'place') {
-      w.innerHTML = `<div class="nt-sl">${T('Твой флот')}</div>` + seaGrid('ntsg', 'big', mc.map(c => c.replace(/ (hi|mi)/g, '')));
+      if (S.lf) S.lf.forEach(i => { mc[i] += ' lf'; }); if (S.stl) S.stl.forEach(i => { mc[i] += ' st'; });
+      const sig = 'p' + JSON.stringify(S.mine) + (S.lf ? 'l' + S.lf.join() : '') + (S.stl ? 's' + S.stl.join() : '') + (st.ready[me] ? 'r' : '');
+      if (w.dataset.sig !== sig) { w.dataset.sig = sig; w.innerHTML = `<div class="nt-sl">${T('Твой флот')}</div>` + seaGrid('ntsg', 'big pl', mc.map(c => c.replace(/ (hi|mi)/g, ''))); }
       const bt = q('#ntsb'), done = st.ready[me];
       bt.innerHTML = done ? '' : `<div class="nt-btn ghost" data-nt="shuf">${T('Перемешать')}</div><div class="nt-btn" data-nt="sgo">${T('Флот готов')}</div>`;
       q('#ntst').textContent = done ? T('Ждём, пока {0} расставит флот…', raw(opp)) : T('Расставь флот');
     } else {
       q('#ntsb').innerHTML = '';
-      w.innerHTML = `<div class="nt-sl">${T('Вражеские воды')}</div>` + seaGrid('ntso', 'big' + (my ? ' my' : ''), oc) + `<div class="nt-sl">${T('Твой флот')}</div>` + seaGrid('ntsg', 'sm', mc);
+      w.dataset.sig = ''; w.innerHTML = `<div class="nt-sl">${T('Вражеские воды')}</div>` + seaGrid('ntso', 'big' + (my ? ' my' : ''), oc) + `<div class="nt-sl">${T('Твой флот')}</div>` + seaGrid('ntsg', 'sm', mc);
       q('#ntst').textContent = r.status === 'playing' ? (my ? T('Твой выстрел') : T('Ходит {0}', raw(st.turn))) : '';
       const L = st.last; if (L && S.seen !== L.n) { S.seen = L.n; const el = q((+L.by === me ? '#ntso' : '#ntsg') + ' [data-i="' + L.i + '"]');
         if (el) el.animate([{transform:'scale(1.9)', filter:'brightness(2)'}, {transform:'scale(1)', filter:'none'}], {duration:420, easing:'ease-out'});
-        (L.res === 'miss' ? hap.imp : L.res === 'hit' ? (+L.by === me ? hap.ok : hap.med) : hap.warn)(); }
+        seaFx(r, L); }
+      if (r.status === 'done' && !S.dn) { S.dn = true; S.busy = performance.now() + 2300; setTimeout(() => { if (N.sea === S) updGame(); }, 2400); }
     }
   }
   /* бильярд */
@@ -16165,7 +16229,7 @@ function a_flightArrow(now){
     const r = N.room; if (!r || !q('.nt-gm')) return;
     (GM[r.game] || GM.ttt).upd(r);
     let res = q('.nt-res');
-    if (r.status === 'done' && !arcBusy() && !stkBusy() && !dkBusy() && !k5Busy()) {
+    if (r.status === 'done' && !arcBusy() && !stkBusy() && !dkBusy() && !k5Busy() && !seaBusy()) {
       const o = outcome(r), t = o === 'd' ? [T('Ничья'), T('Бывает. Реванш?')] : o === 'w' ? [T('Победа!'), T('Красиво сыграно')] : [T('Поражение'), T('Реванш?')];
       if (!res) { res = document.createElement('div'); res.className = 'nt-res'; res.innerHTML = `<h3></h3><p></p>` + (isHost() ? `<div class="nt-bts"><div class="nt-btn ghost" data-nt="tolobby">${T('Выйти')}</div><div class="nt-btn" data-nt="rematch">${T('Реванш')}</div></div>` : `<div class="nt-wt"><span class="wr"><i></i><i></i><b></b></span><span>${T('Ждём выбор хоста')}</span><span class="nt-dots"><i></i><i></i><i></i></span></div>`); q('.nt-gm').appendChild(res); victory(r, o, t); }
       res.querySelector('h3').textContent = t[0]; res.querySelector('p').textContent = r.game === 'golf' ? T('Удары: ты {0} · соперник {1}', r.state.tot[UK] || 0, r.state.tot[oppOf(r)] || 0) : r.game === 'stk' ? (!r.state.loser ? T('Башня выстояла') : +r.state.loser === +UK ? T('Твой предмет упал') : T('У соперника упал предмет')) : r.game === 'arc' ? T('Очки: ты {0} · соперник {1}', r.state.s[UK] || 0, r.state.s[oppOf(r)] || 0) : r.game === 'che' ? (chWhy(r) || t[1]) : t[1];
