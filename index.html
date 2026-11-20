@@ -4958,7 +4958,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1062';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1063';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12912,7 +12912,7 @@ async function init(){
   scheduleSync(100);
   try { if (inWeb && !inWebApp) showWebLogin(); /* v1.744: WEB только после входа через Telegram */ } catch (e) {}
   if (inTG) setTimeout(() => { loadFriends(); loadFeed(true); }, 900);   // к моменту перехода во вкладку всё уже свежее
-  try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); else if (/^n_\d{1,12}$/.test(sp || '')) { window.NETLINK = +String(sp).slice(2); } else if (/^d_\d{1,12}$/.test(sp || '')) { setTimeout(() => { try { AX.acts.appopen({dataset: {s: 'hab'}}); } catch (e) {} }, 800); } else if (/^(games|g_[a-z0-9]{2,12})$/i.test(sp || '')) { const gl = String(sp).toLowerCase(); setTimeout(() => runGameLink(gl === 'games' ? '*' : gl.slice(2)), 700); } else { const TM = {stats:'stats', apps:'apps', home:'home', friends:'friends', me:'me', profile:'me'}, tk = TM[String(sp || '').toLowerCase()]; if (tk) setTimeout(() => { try { ACT.tab({dataset: {tab: tk}}); } catch (e) {} }, 600); else if (/^(settings|me_settings)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'me') ACT.tab({dataset: {tab: 'me'}}); ACT.meset(); } catch (e) {} }, 700); } } catch (e) {}
+  try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); else if (/^n_\d{1,12}$/.test(sp || '')) { window.NETLINK = +String(sp).slice(2); } else if (/^d_\d{1,12}$/.test(sp || '')) { setTimeout(() => { try { AX.acts.appopen({dataset: {s: 'hab'}}); } catch (e) {} }, 800); } else if (/^(games|g_[a-z0-9]{2,12})$/i.test(sp || '')) { const gl = String(sp).toLowerCase(); setTimeout(() => runGameLink(gl === 'games' ? '*' : gl.slice(2)), 700); } else { const TM = {stats:'stats', apps:'apps', home:'home', friends:'friends', me:'me', profile:'me'}, tk = TM[String(sp || '').toLowerCase()]; if (tk) setTimeout(() => { try { ACT.tab({dataset: {tab: tk}}); } catch (e) {} }, 600); else if (/^(add|new)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'home') ACT.tab({dataset: {tab: 'home'}}); ACT.add(); } catch (e) {} }, 800); else if (/^(settings|me_settings)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'me') ACT.tab({dataset: {tab: 'me'}}); ACT.meset(); } catch (e) {} }, 700); } } catch (e) {}
   if (!hasCloud) return;
   try {
     const c = await cloudLoad();
