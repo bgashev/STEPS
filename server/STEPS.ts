@@ -1617,11 +1617,88 @@ async function routeLogout(body: any) {
 }
 
 /* ---------- v1.988: игры по сети (приглашение друга, комната, Крестики-нолики) ---------- */
-const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt"]);
+const NET_POP_S = 60, NET_TTL_S = 600, NET_ONLINE_S = 25, NET_GAMES = new Set(["ttt", "hl", "chk", "golf"]);
 const tttLines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 const tttResult = (b: string[]) => { for (const [a, c, d] of tttLines) if (b[a] && b[a] === b[c] && b[a] === b[d]) return b[a]; return b.every((x) => x) ? "d" : ""; };
 const tttInit = (x: number) => ({ board: Array(9).fill(""), turn: "X", x, win: "" });
 const netIso = (agoS: number) => new Date(Date.now() - agoS * 1000).toISOString();
+/* ---- шашки (русские): сервер считает все допустимые ходы ---- */
+function chkLegal(b: string[], col: string): number[][] {
+  const opp = col === "w" ? "b" : "w", D = [[-1, -1], [-1, 1], [1, -1], [1, 1]], promo = col === "w" ? 0 : 7;
+  const inb = (r: number, c: number) => r >= 0 && r < 8 && c >= 0 && c < 8;
+  const isOpp = (p: string) => p !== "" && p.toLowerCase() === opp;
+  const caps = (pos: number, king: boolean, taken: Set<number>, board: string[]): number[][] => {
+    const out: number[][] = [], r0 = Math.floor(pos / 8), c0 = pos % 8;
+    for (const [dr, dc] of D) {
+      let r = r0 + dr, c = c0 + dc;
+      if (king) while (inb(r, c) && board[r * 8 + c] === "") { r += dr; c += dc; }
+      if (!inb(r, c)) continue;
+      const k = r * 8 + c;
+      if (!isOpp(board[k]) || taken.has(k)) continue;
+      let lr = r + dr, lc = c + dc;
+      const res: { path: number[]; more: boolean }[] = [];
+      while (inb(lr, lc) && board[lr * 8 + lc] === "") {
+        const L = lr * 8 + lc, t2 = new Set(taken); t2.add(k);
+        const sub = caps(L, king || Math.floor(L / 8) === promo, t2, board);
+        if (sub.length) sub.forEach((s) => res.push({ path: [pos, ...s], more: true })); else res.push({ path: [pos, L], more: false });
+        if (!king) break;
+        lr += dr; lc += dc;
+      }
+      const any = res.some((x) => x.more);
+      res.filter((x) => !any || x.more).forEach((x) => out.push(x.path));
+    }
+    return out;
+  };
+  const all: number[][] = [];
+  for (let p = 0; p < 64; p++) {
+    const v = b[p];
+    if (!v || v.toLowerCase() !== col) continue;
+    const bd = b.slice(); bd[p] = "";
+    all.push(...caps(p, v !== v.toLowerCase(), new Set(), bd));
+  }
+  if (all.length) return all;
+  const fwd = col === "w" ? -1 : 1;
+  for (let p = 0; p < 64; p++) {
+    const v = b[p];
+    if (!v || v.toLowerCase() !== col) continue;
+    const king = v !== v.toLowerCase(), r0 = Math.floor(p / 8), c0 = p % 8;
+    for (const [dr, dc] of D) {
+      if (!king && dr !== fwd) continue;
+      let r = r0 + dr, c = c0 + dc;
+      while (inb(r, c) && b[r * 8 + c] === "") { all.push([p, r * 8 + c]); if (!king) break; r += dr; c += dc; }
+    }
+  }
+  return all;
+}
+function chkApply(b: string[], path: number[], col: string) {
+  const nb = b.slice(), piece = nb[path[0]], took: number[] = [];
+  nb[path[0]] = "";
+  for (let i = 0; i < path.length - 1; i++) {
+    const a = path[i], z = path[i + 1];
+    const dr = Math.sign(Math.floor(z / 8) - Math.floor(a / 8)), dc = Math.sign((z % 8) - (a % 8));
+    let r = Math.floor(a / 8) + dr, c = (a % 8) + dc;
+    while (r * 8 + c !== z) { if (nb[r * 8 + c]) took.push(r * 8 + c); r += dr; c += dc; }
+  }
+  took.forEach((k) => nb[k] = "");
+  const last = col === "w" ? 0 : 7;
+  let p = piece;
+  if (p === p.toLowerCase() && path.some((s) => Math.floor(s / 8) === last)) p = p.toUpperCase();
+  nb[path[path.length - 1]] = p;
+  return { nb, took, man: piece === piece.toLowerCase() };
+}
+
+function netInit(game: string, host: number, guest: number, first: number): any {
+  let st: any;
+  if (game === "hl") st = { cur: 1 + Math.floor(Math.random() * 13), turn: first, p: [host, guest], s: [0, 0], goal: 7, last: null, win: "" };
+  else if (game === "chk") {
+    const b: string[] = Array(64).fill("");
+    for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) if ((r + c) % 2 === 1) { if (r < 3) b[r * 8 + c] = "b"; else if (r > 4) b[r * 8 + c] = "w"; }
+    st = { b, turn: "w", white: first, win: "", q: 0, last: null, legal: chkLegal(b, "w") };
+  } else if (game === "golf") st = { hole: 0, holes: 3, turn: first, p: [host, guest], ball: {}, str: {}, done: {}, tot: {}, last: null, win: "" };
+  else st = tttInit(first);
+  st.first = first;
+  return st;
+}
 async function netEdit(inv: any, text: string) {
   if (inv?.tg_msg_id) await tg("editMessageText", { chat_id: inv.to_id, message_id: inv.tg_msg_id, text, reply_markup: { inline_keyboard: [] } }).catch(() => {});
 }
@@ -1728,9 +1805,47 @@ async function routeNetAct(body: any) {
   if (act === "leave") next = await netSave(room, { status: "closed" });
   else if (act === "game" && host && room.status === "lobby" && NET_GAMES.has(String(body?.game))) next = await netSave(room, { game: String(body.game), guest_ready: false });
   else if (act === "ready" && !host && room.status === "lobby") next = await netSave(room, { guest_ready: !room.guest_ready });
-  else if (act === "start" && host && room.status === "lobby" && room.game && room.guest_ready) next = await netSave(room, { status: "playing", state: tttInit(room.host_id) });
-  else if (act === "rematch" && room.status === "done") next = await netSave(room, { status: "playing", state: tttInit(room.state?.x === room.host_id ? room.guest_id : room.host_id) });
-  else if (act === "move" && room.status === "playing") {
+  else if (act === "start" && host && room.status === "lobby" && room.game && room.guest_ready) next = await netSave(room, { status: "playing", state: netInit(room.game, room.host_id, room.guest_id, room.host_id) });
+  else if (act === "rematch" && room.status === "done") next = await netSave(room, { status: "playing", state: netInit(room.game, room.host_id, room.guest_id, (room.state?.first ?? room.state?.x) === room.host_id ? room.guest_id : room.host_id) });
+  else if (room.status === "playing" && room.game === "hl" && act === "guess") {
+    const st = room.state, dir = String(body?.dir);
+    if (st.turn === me && (dir === "hi" || dir === "lo")) {
+      let nx = 1 + Math.floor(Math.random() * 13);
+      while (nx === st.cur) nx = 1 + Math.floor(Math.random() * 13);
+      const ok = (dir === "hi") === (nx > st.cur), idx = me === st.p[0] ? 0 : 1, s2 = st.s.slice();
+      if (ok) s2[idx]++;
+      const other = idx === 0 ? st.p[1] : st.p[0], win = s2[idx] >= st.goal ? me : "";
+      next = await netSave(room, { status: win ? "done" : "playing", state: { ...st, cur: nx, s: s2, turn: ok ? me : other, last: { prev: st.cur, next: nx, dir, ok, by: me }, win } });
+    }
+  }
+  else if (room.status === "playing" && room.game === "chk" && act === "move") {
+    const st = room.state, col = st.white === me ? "w" : "b", path = Array.isArray(body?.path) ? body.path.map(Number) : [];
+    const key = JSON.stringify(path);
+    if (st.turn === col && (st.legal ?? []).some((m: number[]) => JSON.stringify(m) === key)) {
+      const { nb, took, man } = chkApply(st.b, path, col), nxt = col === "w" ? "b" : "w", legal = chkLegal(nb, nxt);
+      const q = took.length || man ? 0 : (st.q ?? 0) + 1;
+      const win = !legal.length ? me : q >= 60 ? "d" : "";
+      next = await netSave(room, { status: win ? "done" : "playing", state: { ...st, b: nb, turn: nxt, legal: win ? [] : legal, q, last: { path, took, by: me }, win } });
+    }
+  }
+  else if (room.status === "playing" && room.game === "golf" && act === "shot") {
+    const st = room.state, num = (v: unknown, lim: number) => Math.max(-lim, Math.min(lim, Number(v) || 0));
+    if (st.turn === me && !st.done?.[me]) {
+      const other = me === st.p[0] ? st.p[1] : st.p[0], sunk = !!body?.sunk;
+      const x = num(body?.x, 400), y = num(body?.y, 600);
+      const str = { ...st.str, [me]: (st.str?.[me] ?? 0) + 1 }, ball = { ...st.ball, [me]: [x, y] }, done: any = { ...st.done };
+      if (sunk || str[me] >= 7) done[me] = true;
+      const last = { by: me, hole: st.hole, x0: num(body?.x0, 400), y0: num(body?.y0, 600), vx: num(body?.vx, 3000), vy: num(body?.vy, 3000), x, y, sunk, n: room.rev + 1 };
+      let hole = st.hole, tot = { ...st.tot }, turn: number = done[other] ? me : other, status = "playing", win: any = "", nball: any = ball, nstr: any = str, ndone: any = done;
+      if (done[st.p[0]] && done[st.p[1]]) {
+        for (const pid of st.p) tot[pid] = (tot[pid] ?? 0) + (str[pid] ?? 0);
+        if (hole + 1 >= st.holes) { status = "done"; turn = me; win = tot[st.p[0]] === tot[st.p[1]] ? "d" : tot[st.p[0]] < tot[st.p[1]] ? st.p[0] : st.p[1]; }
+        else { hole++; nball = {}; nstr = {}; ndone = {}; turn = st.p[hole % 2]; }
+      }
+      next = await netSave(room, { status, state: { ...st, hole, tot, ball: nball, str: nstr, done: ndone, turn, last, win } });
+    }
+  }
+  else if (act === "move" && room.status === "playing" && room.game === "ttt") {
     const st = room.state, i = Number(body?.i), mine = st.x === me ? "X" : "O";
     if (Number.isInteger(i) && i >= 0 && i < 9 && st.turn === mine && !st.board[i]) {
       const board = st.board.slice(); board[i] = mine;
