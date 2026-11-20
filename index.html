@@ -4993,7 +4993,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1079';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1080';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10099,8 +10099,8 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       c.textAlign = 'left'; c.fillStyle = C.tx; c.font = '800 17px ' + C.ff; c.fillText(lv[0], L.bx + 56, y + L.rh * .36);
       let fs = 12.5, mw = L.bw - 56 - 62; c.font = '500 ' + fs + 'px ' + C.ff; while (c.measureText(lv[1]).width > mw && fs > 9.5) { fs -= .5; c.font = '500 ' + fs + 'px ' + C.ff; } c.fillStyle = C.mu; c.fillText(lv[1], L.bx + 56, y + L.rh * .7);
       c.textAlign = 'right'; c.fillStyle = sel ? C.tx : C.mu; c.font = '800 16px ' + C.ff; c.fillText('+' + lv[2], L.bx + L.bw - 18, y + L.rh / 2 + 1); c.textAlign = 'center'; c.textBaseline = 'alphabetic'; }
-    rr(c, L.bx, L.py, L.bw, L.ph, 18); const gr = c.createLinearGradient(L.bx, 0, L.bx + L.bw, 0); gr.addColorStop(0, C.ac); gr.addColorStop(1, C.ac); c.fillStyle = gr; c.fill();
-    c.fillStyle = '#fff'; c.font = '800 18px ' + C.ff; c.textBaseline = 'middle'; c.fillText('Играть · ' + o.lv[g.lvl][0], W / 2, L.py + L.ph / 2 + 1); c.textBaseline = 'alphabetic';
+    c.save(); c.shadowColor = C.ac; c.shadowBlur = 18; rr(c, L.bx, L.py, L.bw, L.ph, 18); c.fillStyle = C.ac; c.fill(); c.restore();
+    c.fillStyle = C.bg; c.font = '900 18px ' + C.ff; c.textBaseline = 'middle'; c.fillText('Играть · ' + o.lv[g.lvl][0] + '  ›', W / 2, L.py + L.ph / 2 + 1); c.textBaseline = 'alphabetic';
     c.fillStyle = C.mu; c.font = '500 12.5px ' + C.ff; c.fillText(o.note, W / 2, L.py + L.ph + 28);
   }
   function lvHit(n, x, y){ const L = lvGeo(n); if (x < L.bx || x > L.bx + L.bw) return -1; for (let i = 0; i < n; i++) { const yy = L.y0 + i * (L.rh + L.gap); if (y >= yy && y <= yy + L.rh) return i; } if (y >= L.py && y <= L.py + L.ph) return 'go'; return -1; }
