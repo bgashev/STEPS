@@ -5002,7 +5002,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1090';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1091';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9533,7 +9533,7 @@ const REST = (function(){
     {k:'dunk', beta:true, pro:true, n:'Данк', d:'Оттяни и брось мяч в кольцо. Чистый бросок — серия', f:mkDunk},
     {k:'hit', beta:true, pro:true, n:'Баскет', d:'Тап — мяч подпрыгивает. Попади в кольцо на стене', f:mkHit},
     {k:'chk', beta:true, n:'Шашки', d:'Партия против бота. Три уровня, серия побед', f:mkChk},
-    {k:'che', beta:true, n:'Шахматы', d:'Партия против бота. Пять уровней, серия побед', f:mkChe},
+    {k:'che', beta:true, n:'Шахматы', d:'Партия против бота. Семь уровней, серия побед', f:mkChe},
   ];
   const QUIPS = ['Рекорд — это круто, но подход сам себя не сделает.', 'Мышцы остывают, пока ты тут красуешься.', 'Ещё раз? Время есть. Пока есть.', 'Штанга скучает без тебя.', 'Хорошо играешь. Так же и подход закрой.', 'VOOB считает подходы. Ты — рекорды.', 'Между подходами в VOOB можно всё. Кроме лени.'];
   let G = null, GI = -1, raf = 0, lastT = 0, cv, cx, W, H, DPR = 1, quip = '', C = {}, gm = null, keyH = null, cd = 0, cdN = 0, pz = false;
@@ -10096,9 +10096,106 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     else sc = rate([1, 1, 2, 3][lvl > 0 ? lvl - 1 : 0] + (lvl === 0 ? 0 : 0), 0);
     let bi = 0; sc.forEach((v, i) => { if (v > sc[bi]) bi = i; }); return mv[bi];
   }
+  /* ---------- v1.1091: уровни 6–7 (Эксперт, Гроссмейстер): сильный поиск в фоновом потоке ---------- */
+  function chNP(b, w){ for (let i = 0; i < 64; i++) { const p = b[i]; if (p && isW(p) === w) { const t = p.toLowerCase(); if (t !== 'p' && t !== 'k') return 1; } } return 0; }
+  function chEval2(S){
+    const b = S.b, fw = [0, 0, 0, 0, 0, 0, 0, 0], fb = [0, 0, 0, 0, 0, 0, 0, 0]; let sc = 0, np = 0, wb = 0, bb = 0, wk = -1, bk = -1;
+    for (let i = 0; i < 64; i++) { const p = b[i]; if (!p) continue; const t = p.toLowerCase(); if (t === 'p') (isW(p) ? fw : fb)[i & 7]++; else if (t !== 'k') np += CHVAL[t]; if (p === 'K') wk = i; else if (p === 'k') bk = i; }
+    for (let i = 0; i < 64; i++) {
+      const p = b[i]; if (!p) continue; const w = isW(p), t = p.toLowerCase(), r = i >> 3, c = i & 7, adv = w ? 7 - r : r, cen = 7 - Math.abs(2 * r - 7) / 2 - Math.abs(2 * c - 7) / 2, own = w ? fw : fb, en = w ? fb : fw; let v = CHVAL[t];
+      if (t === 'p') {
+        v += adv * 7 + (c > 1 && c < 6 ? adv * 2 : 0);
+        if (own[c] > 1) v -= 12; if ((c === 0 || !own[c - 1]) && (c === 7 || !own[c + 1])) v -= 10;
+        let pass = true; const d = w ? -1 : 1; for (let rr = r + d; rr >= 0 && rr < 8 && pass; rr += d) for (let cc = Math.max(0, c - 1); cc <= Math.min(7, c + 1); cc++) if (b[rr * 8 + cc] === (w ? 'p' : 'P')) { pass = false; break; }
+        if (pass) v += [0, 5, 10, 20, 38, 65, 110, 0][adv] + (np < 1500 ? adv * 6 : 0);
+      } else if (t === 'n') v += cen * 9;
+      else if (t === 'b') { v += cen * 5; if (w) wb++; else bb++; }
+      else if (t === 'r') { v += (adv === 6 ? 18 : 0) + (!own[c] ? (!en[c] ? 22 : 12) : 0); }
+      else if (t === 'q') v += cen * 2;
+      else { if (np > 1600) { let sh = 0; const d = w ? -1 : 1, rr = r + d; if (rr >= 0 && rr < 8) for (let cc = Math.max(0, c - 1); cc <= Math.min(7, c + 1); cc++) if (b[rr * 8 + cc] === (w ? 'P' : 'p')) sh++; v += ((w ? r === 7 : r === 0) ? 14 : -22) + (c === 6 || c === 2 ? 12 : 0) + sh * 11; } else v += cen * 9; }
+      sc += w ? v : -v;
+    }
+    if (wb > 1) sc += 28; if (bb > 1) sc -= 28;
+    if (np < 1500 && wk >= 0 && bk >= 0 && Math.abs(sc) > 300) {
+      const lw = sc > 0, ek = lw ? bk : wk, lk = lw ? wk : bk, er = ek >> 3, ec = ek & 7, ekd = Math.abs(2 * er - 7) + Math.abs(2 * ec - 7), kd = Math.abs((lk >> 3) - er) + Math.abs((lk & 7) - ec), bo = ekd * 8 + (14 - kd) * 4; sc += lw ? bo : -bo;
+    }
+    sc += S.turn === 'w' ? 10 : -10;
+    return S.turn === 'w' ? sc : -sc;
+  }
+  function chOrd2(S, mv, ttm, ply, cx){
+    const b = S.b, k = cx.kil[ply] || [];
+    for (const m of mv) { let v = 0; const cp = b[m.t];
+      if (ttm && m.f === ttm.f && m.t === ttm.t && m.pr === ttm.pr) v = 1e7;
+      else if (cp || m.fl === 'ep') v = 2e5 + 10 * CHVAL[(cp || 'p').toLowerCase()] - CHVAL[b[m.f].toLowerCase()] / 10;
+      else { const id = m.f * 64 + m.t; v = k[0] === id ? 9e4 : k[1] === id ? 8e4 : cx.hist[id]; }
+      if (m.pr) v += m.pr === 'q' ? 3e5 : 0; m.o = v; }
+    mv.sort((x, y) => y.o - x.o);
+  }
+  function chQ2(S, al, be, cx){
+    if (cx.out) return 0; if ((++cx.n & 1023) === 0 && Date.now() > cx.dl) { cx.out = true; return 0; }
+    const st = chEval2(S); if (st >= be) return st; if (st + 1100 < al) return al; if (st > al) al = st;
+    const w = S.turn === 'w', mv = chGen(S, true); chOrd2(S, mv, null, 0, cx);
+    for (const m of mv) { const n = chMake(S, m); if (chAtt(n.b, chKing(n.b, w), !w)) continue; const v = -chQ2(n, -be, -al, cx); if (cx.out) return 0; if (v >= be) return v; if (v > al) al = v; }
+    return al;
+  }
+  function chS2(S, d, al, be, ply, cx, nul){
+    const key = chKey(S); if (ply > 0 && cx.rep[key] >= 1) return 0;
+    cx.rep[key] = (cx.rep[key] || 0) + 1; const v = chS2i(S, d, al, be, ply, cx, nul, key); cx.rep[key]--; return v;
+  }
+  function chS2i(S, d, al, be, ply, cx, nul, key){
+    if (cx.out) return 0; if ((++cx.n & 1023) === 0 && Date.now() > cx.dl) { cx.out = true; return 0; }
+    if (S.half >= 100) return 0;
+    const w = S.turn === 'w', inchk = chAtt(S.b, chKing(S.b, w), !w); if (inchk && ply < 30) d++;
+    if (d <= 0) return chQ2(S, al, be, cx);
+    const e = cx.tt.get(key); let ttm = null;
+    if (e) { ttm = e.m; if (e.d >= d && ply > 0 && (e.f === 0 || (e.f === 1 && e.v >= be) || (e.f === 2 && e.v <= al))) return e.v; }
+    if (nul && !inchk && d >= 3 && be < 20000 && chNP(S.b, w)) { const n = {b: S.b, turn: w ? 'b' : 'w', cs: S.cs, ep: -1, half: S.half + 1, full: S.full}, v = -chS2(n, d - 3, -be, -be + 1, ply + 1, cx, false); if (cx.out) return 0; if (v >= be) return v; }
+    const mv = chGen(S); chOrd2(S, mv, ttm, ply, cx);
+    let best = -1e9, bm = null, any = false, fl = 2, i = 0;
+    for (const m of mv) {
+      const n = chMake(S, m); if (chAtt(n.b, chKing(n.b, w), !w)) continue; any = true; const q = !S.b[m.t] && !m.pr && m.fl !== 'ep'; let v;
+      if (i === 0) v = -chS2(n, d - 1, -be, -al, ply + 1, cx, true);
+      else { const r = (i >= 4 && d >= 3 && q && !inchk) ? 1 : 0; v = -chS2(n, d - 1 - r, -al - 1, -al, ply + 1, cx, true); if (!cx.out && v > al && r) v = -chS2(n, d - 1, -al - 1, -al, ply + 1, cx, true); if (!cx.out && v > al && v < be) v = -chS2(n, d - 1, -be, -al, ply + 1, cx, true); }
+      i++; if (cx.out) return 0;
+      if (v > best) { best = v; bm = m; } if (v > al) { al = v; fl = 0; }
+      if (al >= be) { if (q) { const id = m.f * 64 + m.t, k = cx.kil[ply] || []; cx.kil[ply] = [id, k[0] === id ? k[1] : k[0]]; cx.hist[id] += d * d; } fl = 1; break; }
+    }
+    if (!any) return inchk ? -30000 + ply : 0;
+    cx.tt.set(key, {d, v: best, f: fl, m: bm}); if (cx.tt.size > 300000) cx.tt.clear();
+    return best;
+  }
+  function chRoot2(S, hist, ms, maxd){
+    const t0 = Date.now(), cx = {n: 0, out: false, dl: t0 + ms, tt: new Map(), rep: {}, kil: [], hist: new Int32Array(4096)};
+    for (const k of hist) cx.rep[k] = (cx.rep[k] || 0) + 1;
+    const mv = chLegal(S); if (mv.length < 2) return mv[0] || null; let best = mv[0];
+    for (let d = 1; d <= maxd; d++) {
+      mv.sort((a, b) => (b === best) - (a === best) || (b.sc || 0) - (a.sc || 0)); let al = -1e9, cb = null, cs = -1e9, full = true;
+      for (let i = 0; i < mv.length; i++) {
+        const m = mv[i], n = chMake(S, m); let v;
+        if (i === 0) v = -chS2(n, d - 1, -1e9, 1e9, 1, cx, true);
+        else { v = -chS2(n, d - 1, -al - 1, -al, 1, cx, true); if (!cx.out && v > al) v = -chS2(n, d - 1, -1e9, -al, 1, cx, true); }
+        if (cx.out) { full = false; break; }
+        m.sc = v; if (v > cs) { cs = v; cb = m; } if (v > al) al = v;
+      }
+      if (cb && (full || cb !== mv[0])) best = cb; if (!full || cs > 29000 || Date.now() - t0 > ms * .45) break;
+    }
+    return {f: best.f, t: best.t, pr: best.pr, fl: best.fl};
+  }
+  const CHW = {w: null, id: 0, cur: 0};
+  const chSrc = () => 'const CHN=' + JSON.stringify(CHN) + ',CHK=' + JSON.stringify(CHK) + ',CHB=' + JSON.stringify(CHB) + ',CHR=' + JSON.stringify(CHR) + ',CHVAL=' + JSON.stringify(CHVAL) + ';const isW=' + isW + ';const chKing=' + chKing + ';const chKey=' + chKey + ';\n' + [chAtt, chGen, chMake, chLegal, chNP, chEval2, chOrd2, chQ2, chS2, chS2i, chRoot2].map(f => f.toString()).join('\n') + '\nonmessage=function(e){var d=e.data,m=null;try{m=chRoot2(d.S,d.hist,d.ms,d.maxd)}catch(x){}postMessage({id:d.id,m:m})};';
+  function chThink(S, hist, ms, maxd, cb){
+    const fb = () => { let m = null; try { m = chRoot2(S, hist, Math.min(ms, 1300), Math.min(maxd, 6)); } catch (e) {} cb(m || chBot(S, 4, 700)); };
+    try {
+      if (!CHW.w) CHW.w = new Worker(URL.createObjectURL(new Blob([chSrc()], {type: 'text/javascript'})));
+      const id = ++CHW.id; CHW.cur = id;
+      CHW.w.onmessage = e => { if (e.data.id === CHW.cur) { CHW.cur = 0; if (e.data.m) cb(e.data.m); else fb(); } };
+      CHW.w.onerror = () => { CHW.w = null; if (CHW.cur === id) { CHW.cur = 0; fb(); } };
+      CHW.w.postMessage({id, S, hist, ms, maxd});
+    } catch (e) { CHW.w = null; fb(); }
+  }
   /* общее меню выбора уровня для шашек и шахмат */
-  const LVC = [['#4cd98a', '#ffd24a', '#ff5468'], ['#4cd98a', '#a8e04c', '#ffd24a', '#ff9a3d', '#ff5468']];
-  function lvGeo(n){ const bw = Math.min(W - 40, 340), bx = (W - bw) / 2, y0 = Math.max(96, H * .2), rh = Math.max(46, Math.min(66, (H * .5) / n - 10)), gap = 10, py = y0 + n * (rh + gap) + 6; return {bw, bx, y0, rh, gap, py, ph: 54}; }
+  const LVC = [['#4cd98a', '#ffd24a', '#ff5468'], ['#4cd98a', '#a8e04c', '#ffd24a', '#ff9a3d', '#ff5468', '#d94cff', '#8a5bff']];
+  function lvGeo(n){ const bw = Math.min(W - 40, 340), bx = (W - bw) / 2, y0 = Math.max(96, H * .2), rh = Math.max(n > 6 ? 38 : 46, Math.min(66, (H * .5) / n - 10)), gap = 10, py = y0 + n * (rh + gap) + 6; return {bw, bx, y0, rh, gap, py, ph: 54}; }
   function lvDraw(c, g, o){
     const n = o.lv.length, L = lvGeo(n), cols = LVC[n > 3 ? 1 : 0]; c.textAlign = 'center';
     c.fillStyle = C.tx; c.font = '800 28px ' + C.ff; c.fillText(o.title, W / 2, L.y0 - 54); c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.fillText(o.sub, W / 2, L.y0 - 28);
@@ -10113,7 +10210,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     c.fillStyle = C.mu; c.font = '500 12.5px ' + C.ff; c.fillText(o.note, W / 2, L.py + L.ph + 28);
   }
   function lvHit(n, x, y){ const L = lvGeo(n); if (x < L.bx || x > L.bx + L.bw) return -1; for (let i = 0; i < n; i++) { const yy = L.y0 + i * (L.rh + L.gap); if (y >= yy && y <= yy + L.rh) return i; } if (y >= L.py && y <= L.py + L.ph) return 'go'; return -1; }
-  const CHLV = [['Новичок', 'Ходит почти наугад', 1], ['Любитель', 'Видит угрозы на ход вперёд', 2], ['Клуб', 'Считает на 2 хода вперёд', 3], ['Сильный', 'Считает на 3 хода вперёд', 5], ['Мастер', 'Думает глубоко, ошибается редко', 8]];
+  const CHLV = [['Новичок', 'Ходит почти наугад', 1], ['Любитель', 'Видит угрозы на ход вперёд', 2], ['Клуб', 'Считает на 2 хода вперёд', 3], ['Сильный', 'Считает на 3 хода вперёд', 5], ['Мастер', 'Думает глубоко, ошибается редко', 8], ['Эксперт', 'Считает на 6+ ходов, не прощает промахов', 13], ['Гроссмейстер', 'Почти не ошибается. Удачи', 21]];
   const CHI = {};
   function chImg(p){
     if (CHI[p]) return CHI[p]; const w = isW(p), t = p.toLowerCase(), f = w ? '#fbf4e4' : '#262849', st = w ? '#2a2438' : '#07070f', e = w ? '#2a2438' : '#c9cbe8';
@@ -10123,9 +10220,9 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
   function mkChe(){ const g = {}, K = 'che';
     const geo = () => { const S = Math.min(W - 24, H * .6), t = S / 8, x0 = (W - S) / 2, y0 = Math.max(0, (H - S - 170) * .34) + 80; return {S, t, x0, y0}; };
     const sq = (G2, i) => [G2.x0 + (i & 7) * G2.t, G2.y0 + (i >> 3) * G2.t];
-    const lv0 = () => { try { const v = +localStorage.getItem('voob_che_lv'); return v >= 0 && v < 5 ? v : 1; } catch (e) { return 1; } };
+    const lv0 = () => { try { const v = +localStorage.getItem('voob_che_lv'); return v >= 0 && v < CHLV.length ? v : 1; } catch (e) { return 1; } };
     g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.nb = false; g.res = null; g.anim = null; g.S = chNew(); g.hist = []; g.legal = []; g.sel = -1; g.last = []; g.bt = 0; g.ghost = []; g.promo = null; g.chk = false; 'KQRBNP'.split('').forEach(chImg); 'kqrbnp'.split('').forEach(chImg); };
-    const begin = () => { g.S = chNew(); g.hist = [chKey(g.S)]; g.legal = chLegal(g.S); g.sel = -1; g.last = []; g.res = null; g.anim = null; g.ghost = []; g.promo = null; g.chk = false; g.ph = 'play'; g.bt = 0; g.intro = 0; g.land = null; g.rings = []; g.trN = {}; g.trT = {}; };
+    const begin = () => { g.S = chNew(); g.hist = [chKey(g.S)]; g.legal = chLegal(g.S); g.sel = -1; g.last = []; g.res = null; g.anim = null; g.ghost = []; g.promo = null; g.chk = false; g.thk = false; g.ph = 'play'; g.bt = 0; g.intro = 0; g.land = null; g.rings = []; g.trN = {}; g.trT = {}; };
     const move = (m, byBot) => {
       const S0 = g.S, w = S0.turn === 'w', n = chMake(S0, m), list = [{p: S0.b[m.f], f: m.f, t: m.t}];
       if (m.fl === 'cs') list.push({p: w ? 'R' : 'r', f: m.t + 1, t: m.t - 1}); if (m.fl === 'cl') list.push({p: w ? 'R' : 'r', f: m.t - 2, t: m.t + 1});
@@ -10138,7 +10235,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     g.tap = () => {};
     g.down = (x, y) => {
       if (g.dead) return;
-      if (g.ph === 'menu') { const h = lvHit(5, x, y); if (h === 'go') { try { localStorage.setItem('voob_che_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); begin(); } else if (h >= 0) { g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
+      if (g.ph === 'menu') { const h = lvHit(CHLV.length, x, y); if (h === 'go') { try { localStorage.setItem('voob_che_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); begin(); } else if (h >= 0) { g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
       if (g.ph === 'over') { hap.tap(); begin(); return; }
       if (g.ph !== 'play' || g.S.turn !== 'w' || g.anim || g.res) return;
       const G2 = geo();
@@ -10153,7 +10250,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
           if (g.res) { const k = g.res.k; if (k === 'lose') { g.dieT = 'Тебе мат'; onDie(g, K); g.newBest = g.nb; } else { g.ph = 'over'; if (k === 'win') { for (let q = 0; q < 4; q++) bstP(g, W * (.2 + .2 * q), H * .22, 12, ['#ffd24a', '#4cd98a', '#ff5468', '#6ab8ff'][q], 230); g.pts = CHLV[g.lvl][2]; g.score += g.pts; sfx('perfect', 2); hap.ok(); if (g.score > (s.best[K] || 0)) { s.best[K] = g.score; save(); g.nb = true; pushBest(K); } } } }
           else if (g.S.turn === 'b') g.bt = .5; }
         return; }
-      if (g.S.turn === 'b' && !g.res) { g.bt -= dt; if (g.bt <= 0) { const m = chBot(g.S, g.lvl); if (m) move(m, true); } }
+      if (g.S.turn === 'b' && !g.res) { g.bt -= dt; if (g.bt <= 0) { if (g.lvl >= 5) { if (!g.thk) { g.thk = true; const tok = g.S; chThink(g.S, g.hist, g.lvl === 5 ? 2500 : 6000, g.lvl === 5 ? 9 : 40, m => { g.thk = false; if (m && g.S === tok && g.ph === 'play' && !g.dead && !g.res && g.S.turn === 'b') move(m, true); }); } } else { const m = chBot(g.S, g.lvl); if (m) move(m, true); } } }
     };
     g.draw = c => {
       c.save(); shk(c, g); const G2 = geo(), t = G2.t; c.textAlign = 'center';
