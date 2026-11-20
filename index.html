@@ -4409,10 +4409,13 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 @keyframes ntthink{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 transparent)}50%{transform:scale(1.045);filter:drop-shadow(0 0 14px color-mix(in srgb,var(--accent) 55%,transparent))}}
 .nt-gl.nt-scan .nt-gc:not(.off){animation:ntscan 5s ease-in-out infinite}
 @keyframes ntscan{0%,22%,100%{transform:none;border-color:var(--border);box-shadow:none}8%,14%{transform:translateY(-6px) scale(1.03);border-color:var(--accent);box-shadow:0 12px 30px color-mix(in srgb,var(--accent) 30%,transparent)}}
-.nt-btn.nt-nudge{position:relative;overflow:hidden;animation:ntnudge 1.8s ease-out infinite}
-@keyframes ntnudge{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 55%,transparent)}70%,100%{box-shadow:0 0 0 18px transparent}}
-.nt-btn.nt-nudge::after{content:'';position:absolute;top:0;bottom:0;left:-45%;width:35%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.38),transparent);transform:skewX(-18deg);animation:ntsweep 2.2s ease-in-out infinite;pointer-events:none}
-@keyframes ntsweep{0%,35%{left:-45%}80%,100%{left:125%}}
+.nt-btn.nt-nudge{position:relative;overflow:hidden;box-shadow:0 6px 18px color-mix(in srgb,var(--accent) 38%,transparent);animation:ntbreath 2.4s ease-in-out infinite}
+@keyframes ntbreath{0%,100%{transform:scale(1)}50%{transform:scale(1.025)}}
+.nt-btn.nt-nudge:active{animation:none;transform:scale(.96)}
+.nt-btn.nt-nudge::before{content:'→';position:absolute;right:22px;top:50%;margin-top:-.62em;font-size:20px;line-height:1.2;animation:ntarr 1.3s ease-in-out infinite;pointer-events:none}
+@keyframes ntarr{0%,100%{transform:translateX(0);opacity:.55}50%{transform:translateX(6px);opacity:1}}
+.nt-btn.nt-nudge::after{content:'';position:absolute;top:0;bottom:0;left:-45%;width:30%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.3),transparent);transform:skewX(-18deg);animation:ntsweep 2.6s ease-in-out infinite;pointer-events:none}
+@keyframes ntsweep{0%,40%{left:-45%}85%,100%{left:125%}}
 .nt-lb{margin-top:auto;width:100%}.nt-lb .nt-btn{padding:17px 0}
 .nt-lobby>*:not(.nt-peer){animation:ntup .6s var(--dl,.5s) both}
 .nt-peer{position:absolute;top:calc(env(safe-area-inset-top,0px) + 54px);left:20px;right:20px;background:#e0524b;color:#fff;border-radius:14px;padding:9px 12px;font-size:12px;text-align:center}
@@ -4641,7 +4644,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1022';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1023';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -12922,7 +12925,13 @@ const NET = (() => {
   }
   async function act(a, extra){
     if (!N.room) return;
-    try { const j = await apiAuth('/net/act', Object.assign({room:N.room.id, act:a}, extra || {})); if (j.room) apply(j.room); } catch (e) { toast(e.message || T('Нет связи')); }
+    const was = N.room;
+    if (was.status === 'lobby' && q('#ntlb')) {   /* мгновенный отклик: показываем выбор сразу, сервер подтвердит следом */
+      if (a === 'game' && extra && extra.game) { N.room = Object.assign({}, was, {game:extra.game, guest_ready:false}); updLobby(); }
+      else if (a === 'ready') { N.room = Object.assign({}, was, {guest_ready:!was.guest_ready}); updLobby(); }
+    }
+    try { const j = await apiAuth('/net/act', Object.assign({room:was.id, act:a}, extra || {})); if (j.room) apply(j.room); }
+    catch (e) { if (N.room && N.room !== was && N.room.id === was.id && N.room.status === 'lobby') { N.room = was; if (q('#ntlb')) updLobby(); } toast(e.message || T('Нет связи')); }
   }
   function leave(){ const id = N.room && N.room.id; N.room = null; closeOv(); hideCap(); if (id) apiAuth('/net/act', {room:id, act:'leave'}).catch(() => {}); }
   /* ---------- опрос сервера ---------- */
