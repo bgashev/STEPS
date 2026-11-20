@@ -3942,7 +3942,7 @@ html.web #tabs .tbi{top:262px}
 .st-days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px}
 .st-days i{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;color:var(--muted);background:var(--surface2);border:1px solid var(--border)}
 .st-days i svg{stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.st-days i.rw{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
+.st-days i.wrd{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
 .st-days i.dn{background:var(--accent);color:var(--bg);border-color:var(--accent)}
 .st-days i.now{outline:2px solid var(--accent);outline-offset:2px}
 .st-wk .btn{width:100%;min-height:48px;border-radius:16px}
@@ -7317,7 +7317,7 @@ function startHTML(ws, doneToday, mob, plsug){
     const day = Math.min(7, w.day), got = new Set(w.days.filter(x => x.claimed).map(x => x.day)), by = {}; w.days.forEach(x => { by[x.day] = x; });
     const ready = w.days.find(x => !x.claimed && x.day <= w.day), next = w.days.find(x => !x.claimed && x.day > w.day);
     h += P.wk = `<div class="card st-wk"><div class="st-wh"><span class="st-wi">${IC('gift', 18)}</span><div><b>Неделя новичка</b><small>день ${day} из 7 · награды за то, что ты здесь</small></div></div>
-      <div class="st-days">${[1,2,3,4,5,6,7].map(d => `<i class="${by[d] ? 'rw' : ''}${got.has(d) ? ' dn' : ''}${d === day ? ' now' : ''}">${got.has(d) ? IC('check', 13) : by[d] ? IC(WK_ICON[by[d].t], 13) : d}</i>`).join('')}</div>
+      <div class="st-days">${[1,2,3,4,5,6,7].map(d => `<i class="${by[d] ? 'wrd' : ''}${got.has(d) ? ' dn' : ''}${d === day ? ' now' : ''}">${got.has(d) ? IC('check', 13) : by[d] ? IC(WK_ICON[by[d].t], 13) : d}</i>`).join('')}</div>
       ${ready ? `<button type="button" class="btn primary" data-act="wclaim" data-day="${ready.day}">${IC(WK_ICON[ready.t], 17)}Забрать · ${esc(ready.title)}</button>`
         : next ? `<div class="st-wn">${IC(WK_ICON[next.t], 14)}<span>Следующая награда — день ${next.day}: ${esc(next.title)}</span></div>` : ''}</div>`;
   }
