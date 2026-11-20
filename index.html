@@ -13822,7 +13822,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     try { const j = await apiAuth('/net/act', Object.assign({room:was.id, act:a}, extra || {})); if (lp === 'g') N.lp.n--; else if (lp === 'r') N.lp.rn--; lp = ''; if (j.room) apply(j.room); }
     catch (e) { if (lp === 'g') N.lp.n--; else if (lp === 'r') N.lp.rn--; lp = ''; if (N.room && N.room !== was && N.room.id === was.id && N.room.status === 'lobby') { N.room = was; if (q('#ntlb')) updLobby(); } toast(e.message || T('Нет связи')); }
   }
-  function leave(){ const id = N.room && N.room.id; N.room = null; closeOv(); hideCap(); if (id) apiAuth('/net/act', {room:id, act:'leave'}).catch(() => {}); }
+  function leave(){ const id = N.room && N.room.id; N.room = null; N.busy = false; closeOv(); hideCap(); if (id) apiAuth('/net/act', {room:id, act:'leave'}).catch(() => {}); }
   /* ---------- опрос сервера ---------- */
   function handle(j){
     if (!N.room) {
@@ -13841,14 +13841,17 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     } else { N.peer = j.peer_s || 0; if (j.room && j.room.gone) { N.room = null; closeOv(); toast(T('Комната закрыта')); } else if (j.room) apply(j.room); }
   }
   async function poll(){
-    if (N.busy || !inTG) return; N.busy = true;
-    try { handle(await apiAuth('/net/poll', N.room ? {room:N.room.id, rev:N.room.rev} : {})); } catch (e) {}
-    N.busy = false;
+    if (N.busy || !inTG) return; N.busy = true; const tk = N.pt = (N.pt || 0) + 1, rid = N.room && N.room.id; N.perr = false;
+    try {   /* в комнате — long-poll: сервер держит запрос, пока не изменится ход (≈0,3 с), и сразу отвечает */
+      const j = await apiAuth('/net/poll', rid ? {room:rid, rev:N.room.rev, lp:1} : {});
+      if (!rid || (N.room && N.room.id === rid)) handle(j);
+    } catch (e) { N.perr = true; }
+    if (N.pt === tk) N.busy = false;
   }
   function sched(d){
     clearTimeout(N.t);
     const fast = N.room || N.out, none = FR.data && !frs().length;
-    N.t = setTimeout(async () => { if (!document.hidden) await poll(); sched(); }, d != null ? d : fast ? 1000 : none ? 45000 : 6000);
+    N.t = setTimeout(async () => { if (!document.hidden) await poll(); sched(); }, d != null ? d : N.perr ? 1500 : N.room ? 40 : N.out ? 1000 : none ? 45000 : 6000);
   }
   document.addEventListener('visibilitychange', () => { if (!document.hidden && N.started) { clearTimeout(N.t); sched(0); } });
   document.addEventListener('click', e => {
