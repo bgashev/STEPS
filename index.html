@@ -4604,6 +4604,7 @@ html[data-mode=dark] .nt-vfl{background:var(--accent);animation-name:ntvfld}
 .nt-gm.nt-arcopp::after{content:"";position:absolute;inset:0;pointer-events:none;box-shadow:inset 0 0 38px 10px rgba(51,184,255,.7);animation:ntarcp 1.4s ease-in-out infinite;z-index:1}@keyframes ntarcp{50%{box-shadow:inset 0 0 52px 16px rgba(51,184,255,.4)}}
 .nt-beta{font-style:normal;font-size:9px;font-weight:850;letter-spacing:.1em;margin-left:7px;padding:3px 6px 2px;border-radius:99px;background:linear-gradient(135deg,#ff8a2a,#ff4d6a);color:#fff;vertical-align:middle}.nt-gc .th .bta{position:absolute;top:8px;left:8px;z-index:2;font-size:9px;font-weight:800;letter-spacing:.1em;color:#fff;background:rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.3);border-radius:99px;padding:3px 6px 2px;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .nt-drop{position:absolute;left:50%;bottom:6%;transform:translateX(-50%);padding:13px 40px;border:0;border-radius:14px;background:linear-gradient(#ff5468,#d93450);color:#fff;font:900 16px system-ui;letter-spacing:.08em;box-shadow:0 6px 0 #9c2238,0 14px 24px rgba(0,0,0,.3);cursor:pointer;transition:opacity .2s}.nt-drop:active{transform:translateX(-50%) translateY(3px);box-shadow:0 3px 0 #9c2238}.nt-drop.off{opacity:0;pointer-events:none}
+.nt-rot{position:absolute;bottom:calc(6% + 2px);left:calc(50% - 150px);width:54px;height:54px;border-radius:50%;border:0;background:rgba(20,20,40,.55);backdrop-filter:blur(8px);color:#fff;font:700 26px system-ui;box-shadow:0 8px 18px rgba(0,0,0,.3);transition:opacity .2s}.nt-rot.r{left:auto;right:calc(50% - 150px)}.nt-rot:active{transform:scale(.92)}.nt-rot.off{opacity:0;pointer-events:none}
 .nt-btn,.nt-fr,.nt-gc,.nt-sq,.nt-cell,.nt-x{cursor:pointer}.nt-gcv{cursor:crosshair}
 @media(min-width:700px){html.web .nt-lobby{padding-left:calc(50% - 230px);padding-right:calc(50% - 230px)}html.web .nt-sh,html.web .nt-res{left:calc(50% - 230px);right:calc(50% - 230px);border-radius:28px 28px 0 0}html.web .nt-cd{left:calc(50% - 190px);right:calc(50% - 190px)}html.web .nt-ck{width:min(440px,calc(100vh - 300px))}html.web .nt-gcv{width:min(360px,calc((100vh - 270px)*.682))}html.web .nt-fr:hover,html.web .nt-gc:hover{filter:brightness(1.08)}}
 .nt-sw{width:100%;display:flex;flex-direction:column;align-items:center;margin-top:12px}.nt-sl{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:8px 0 6px}
@@ -5025,7 +5026,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1097';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1098';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14881,7 +14882,7 @@ function a_flightArrow(now){
     M.Events.on(eng, 'collisionStart', e => { for (const p of e.pairs) if ((p.bodyA.parent === nb || p.bodyB.parent === nb) && !s.hit) { s.hit = 1; sBurst(s, nb.position.x, nb.position.y + 12); hap.imp(); } });
     s.eng = eng; s.frames = []; s.steps = 0; s.still = 0; s.fellAt = 0; s.hit = 0; s.acc = 0; s.phase = 'sim'; hap.tap();
     sRec(s);
-    const dr = q('#ntdrop'); if (dr) dr.classList.add('off');
+    const dr = q('#ntdrop'); if (dr) dr.classList.add('off'); document.querySelectorAll('.nt-rot').forEach(x => x.classList.add('off'));
   }
   function sRec(s){ const f = []; for (const b of s.bodies) f.push(Math.round(b.position.x * 10), Math.round(b.position.y * 10), Math.round(b.angle * 100)); s.frames.push(f); }
   function sFinish(s){
@@ -14903,7 +14904,7 @@ function a_flightArrow(now){
     if (r.status !== 'playing') return;
     const mine = +st.turn === +UK, key = st.tc + ':' + st.turn; s.turn = mine ? 'me' : 'opp';
     if (s.bn !== key) { s.bn = key; s.a0 = Math.random() * 6.28; s.sw0 = s.t; s.hx = 180; gbanner(mine ? T('Твой ход') : T('Ход {0}', raw(st.turn))); const gm = q('.nt-gm'); if (gm) gm.classList.toggle('nt-arcopp', !mine); }
-    const dr = q('#ntdrop'); if (dr) dr.classList.toggle('off', !mine);
+    const dr = q('#ntdrop'); if (dr) dr.classList.toggle('off', !mine); document.querySelectorAll('.nt-rot').forEach(x => x.classList.toggle('off', !mine));
   }
   function sHud(r){
     const st = r && r.state; if (!st || !st.p) return;
@@ -14964,13 +14965,20 @@ function a_flightArrow(now){
     const r = N.room, st = r.state; if (SKS && SKS.raf) cancelAnimationFrame(SKS.raf);
     SKS = N.s = {objs:(st.objs || []).map(o => ({k:o.k, x:o.x, y:o.y, a:o.a})), cur:st.k, a0:Math.random() * 6.28, sw0:0, hx:180, phase:'idle', pend:false, repQ:[], seen:(st.last && st.last.n) || 0, turn:+st.turn === +UK ? 'me' : 'opp', bgT:+st.turn === +UK ? 0 : 1, cam:1, parts:[], bn:'', t:performance.now() / 1000, lt:0, wait:0, raf:0, kinds:[], bodies:[]};
     const s = SKS;
-    b.innerHTML = chips(r, st.p, ['', '']) + `<div class="nt-aw"><canvas class="nt-acv" id="ntsc"></canvas><button type="button" class="nt-drop off" id="ntdrop">DROP</button><div class="nt-gbn" id="ntgb"></div></div><div class="nt-st" id="ntst" style="margin-top:12px;font-size:14px"></div>`;
+    b.innerHTML = chips(r, st.p, ['', '']) + `<div class="nt-aw"><canvas class="nt-acv" id="ntsc"></canvas><button type="button" class="nt-drop off" id="ntdrop">DROP</button><button type="button" class="nt-rot off" id="ntrl" aria-label="Повернуть влево">↺</button><button type="button" class="nt-rot r off" id="ntrr" aria-label="Повернуть вправо">↻</button><div class="nt-gbn" id="ntgb"></div></div><div class="nt-st" id="ntst" style="margin-top:12px;font-size:14px"></div>`;
     q('#ntdrop').addEventListener('click', sDrop);
     const cvs = q('#ntsc'); cvs.style.touchAction = 'none';
-    const mv = e => { const r_ = N.room; if (SKS !== s || !r_ || r_.status !== 'playing' || +r_.state.turn !== +UK || s.phase !== 'idle' || s.pend || s.repQ.length) return; const bx = cvs.getBoundingClientRect(), gx = (e.clientX - bx.left) / bx.width * AW; s.hx = Math.max(SPL.x0 + 12, Math.min(SPL.x1 - 12, 180 + (gx - 180) / s.cam)); if (!skMoved) { skMoved = 1; } };
-    cvs.addEventListener('pointerdown', e => { s.drag = 1; try { cvs.setPointerCapture(e.pointerId); } catch (x) {} mv(e); });
+    /* v1.1098: двигать — тянуть пальцем; крутить — кнопки ↺ ↻ или тянуть двумя пальцами/колесо; сбросить — кнопка DROP или смах вниз */
+    const can = () => { const r_ = N.room; return SKS === s && r_ && r_.status === 'playing' && +r_.state.turn === +UK && s.phase === 'idle' && !s.pend && !s.repQ.length; };
+    const mv = e => { if (!can()) return; const bx = cvs.getBoundingClientRect(), gx = (e.clientX - bx.left) / bx.width * AW; s.hx = Math.max(SPL.x0 + 12, Math.min(SPL.x1 - 12, 180 + (gx - 180) / (s.cam || 1))); skMoved = 1; };
+    const rot = d => { if (!can()) return; s.a0 += d; hap.tap(); skMoved = 1; };
+    cvs.addEventListener('pointerdown', e => { s.drag = 1; s.dy0 = e.clientY; s.dt0 = performance.now(); try { cvs.setPointerCapture(e.pointerId); } catch (x) {} mv(e); });
     cvs.addEventListener('pointermove', e => { if (s.drag) mv(e); });
-    const up = () => { s.drag = 0; }; cvs.addEventListener('pointerup', up); cvs.addEventListener('pointercancel', up);
+    cvs.addEventListener('wheel', e => { e.preventDefault(); rot(e.deltaY > 0 ? .3927 : -.3927); }, {passive:false});
+    const up = e => { if (s.drag && e && e.type === 'pointerup' && can() && e.clientY - s.dy0 > 90 && performance.now() - s.dt0 < 450) sDrop(); s.drag = 0; };
+    cvs.addEventListener('pointerup', up); cvs.addEventListener('pointercancel', up);
+    q('#ntrl').addEventListener('click', () => rot(-Math.PI / 4)); q('#ntrr').addEventListener('click', () => rot(Math.PI / 4));
+    let tw = null; cvs.addEventListener('touchmove', e => { if (e.touches.length !== 2) { tw = null; return; } e.preventDefault(); const a = Math.atan2(e.touches[1].clientY - e.touches[0].clientY, e.touches[1].clientX - e.touches[0].clientX); if (tw != null && can()) { s.a0 += a - tw; skMoved = 1; } tw = a; }, {passive:false}); cvs.addEventListener('touchend', () => { tw = null; });
     loadMT().then(() => { if (N.s === s) { for (let k = 0; k < SKN; k++) if (!skOff[k]) sBody(k); } }).catch(() => toast(T('Нет связи')));
     s.raf = requestAnimationFrame(sloop);
   }
