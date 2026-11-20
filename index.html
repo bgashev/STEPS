@@ -4734,7 +4734,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1034';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1035';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11502,7 +11502,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
       const wd = (dt.getDay() + 6) % 7, t0 = todayN(), lb = HWK(), sk = hbAllStreak(D), all = nd === D.length;
       const fr = n => { const a = D.filter(x => Math.floor((x.cr || 0) / 864e5) <= n); return a.length ? Math.round(a.filter(x => hbDone(x, isoOf(n))).length / a.length * 100) : null; };
       h += `<div class="hb-wk">${lb.map((d, i) => { const n = t0 - wd + i, p = n > t0 ? null : fr(n), c = p === 100 ? ' ok' : n > t0 || p === null ? ' x' : (p === 0 && n < t0 ? ' ms' : ''); return `<div${n === t0 ? ' class="tl"' : ''}>${d}<span class="r${c}${n === t0 ? ' t' : ''}" style="--p:${p || 0}"><span>${new Date((n * 864e5) + 432e5).getUTCDate()}</span></span></div>`; }).join('')}</div>`;
-      h += `<div class="hb-sec">Серии<em>${D.length}</em></div><div class="hb-car"><div class="hb-sc all"><div class="e">🔥</div><div class="n">${sk}</div><b>Все вместе</b><small>${hbPl(sk)}</small></div>${D.map(x => { const s2 = hbStreak(x), wk = []; for (let k = 6; k >= 0; k--) wk.push(hbDone(x, isoOf(t0 - k))); return `<div class="hb-sc" style="--hc:${HBC[x.c] || HBC.g}" data-act="habopen" data-id="${x.id}"><div class="dots">${wk.map(v => `<i${v ? ' class="f"' : ''}></i>`).join('')}</div><div class="e">${x.e}</div><div class="n">${s2}</div><b>${esc(x.t)}</b><small>${hbPl(s2)}</small></div>`; }).join('')}</div>`;
+      h += `<div class="hb-sec">Серии<em>${D.length}</em></div><div class="hb-car">${D.map(x => { const s2 = hbStreak(x), wk = []; for (let k = 6; k >= 0; k--) wk.push(hbDone(x, isoOf(t0 - k))); return `<div class="hb-sc" style="--hc:${HBC[x.c] || HBC.g}" data-act="habopen" data-id="${x.id}"><div class="dots">${wk.map(v => `<i${v ? ' class="f"' : ''}></i>`).join('')}</div><div class="e">${x.e}</div><div class="n">${s2}</div><b>${esc(x.t)}</b><small>${hbPl(s2)}</small></div>`; }).join('')}</div>`;
     }
     h += duHTML();
     if (Q.length) h += `<div class="hb-sec" style="margin-top:14px">Держусь<em>${Q.length}</em></div><div class="hb-pin">${Q.map(q => `<div class="hb-pq" style="--hc:${HBC[q.c] || HBC.r}" data-act="habopen" data-id="${q.id}"><span class="e">${q.e}</span><b>${esc(q.t)}</b><small>чист уже</small><div class="hb-clk" data-hclock="${q.id}">${hbClock(q)}</div></div>`).join('')}</div>`;
