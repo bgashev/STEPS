@@ -5317,7 +5317,7 @@ window.DKG = DKG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1117';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1118';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11634,16 +11634,15 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       c.fillStyle = 'rgba(255,255,255,.35)'; c.beginPath(); c.moveTo(0, ln - 18); c.lineTo(-4, ln - 3); c.lineTo(0, ln - 6); c.closePath(); c.fill(); };
     g.draw = c => { c.save(); shk(c, g, 8); const hu = (g.lv * 47 + 215) % 360; bg2(c, hsl(hu, 70, 38), .5); drawStars(c, g, g.t * 20); const x = PX(), y = PY(), r = R(), br = g.brk > 0 ? g.brk / .8 : 1, TT = g.t;
       c.save(); c.translate(x, y + g.bump * 4); const sc = (1 + g.bump * .045) * (g.brk > 0 ? 1 + (1 - br) * .5 : 1); c.scale(sc, sc); c.globalAlpha = br;
-      glow(c, 0, 0, r * 1.8, hsl(hu, 85, 58), .3 + g.bump * .2); c.rotate(g.rot);
-      c.shadowColor = hsl(hu, 90, 60); c.shadowBlur = 22; c.fillStyle = '#1a1530'; c.beginPath(); c.arc(0, 0, r + 8, 0, 7); c.fill(); c.shadowBlur = 0;
-      c.strokeStyle = hsl(hu, 90, 68); c.lineWidth = 3; c.beginPath(); c.arc(0, 0, r + 8, 0, 7); c.stroke();
-      for (let i = 0; i < 20; i++) { const a = i * TW2 / 20, on = .5 + .5 * Math.sin(TT * 5 - i * .6); c.fillStyle = hsl(hu + 40, 100, 62 + on * 22); c.globalAlpha = br * (.45 + on * .55); c.beginPath(); c.arc(Math.cos(a) * (r + 8), Math.sin(a) * (r + 8), 2.2, 0, 7); c.fill(); } c.globalAlpha = br;
-      const c1 = hsl(hu, 78, 56), c2 = hsl(hu + 150, 55, 28), c3 = hsl(hu + 40, 85, 62), c4 = hsl(hu + 190, 60, 36), bands = [[.8, 1], [.55, .8], [.22, .55]];
-      for (let i = 0; i < 20; i++) { const a0 = i * TW2 / 20, a1 = a0 + TW2 / 20; bands.forEach((b, bi) => { const odd = (i + bi) % 2; c.fillStyle = bi === 1 ? (odd ? c3 : c4) : (odd ? c1 : c2); c.beginPath(); c.arc(0, 0, r * b[1], a0, a1); c.arc(0, 0, r * b[0], a1, a0, true); c.closePath(); c.fill(); }); }
-      c.strokeStyle = 'rgba(20,14,40,.55)'; c.lineWidth = 1.4; [1, .8, .55, .22].forEach(q => { c.beginPath(); c.arc(0, 0, r * q, 0, 7); c.stroke(); });
-      for (let i = 0; i < 20; i++) { const a = i * TW2 / 20; c.beginPath(); c.moveTo(Math.cos(a) * r * .22, Math.sin(a) * r * .22); c.lineTo(Math.cos(a) * r, Math.sin(a) * r); c.stroke(); }
-      const bl = c.createRadialGradient(-r * .05, -r * .05, 1, 0, 0, r * .22); bl.addColorStop(0, '#fff6c2'); bl.addColorStop(.5, '#ffd24a'); bl.addColorStop(1, '#ff5468'); c.fillStyle = bl; c.beginPath(); c.arc(0, 0, r * .22, 0, 7); c.fill(); c.strokeStyle = '#fff'; c.lineWidth = 1.6; c.globalAlpha = br * .8; c.stroke(); c.globalAlpha = br;
-      c.save(); c.rotate(-g.rot); c.fillStyle = '#fff'; c.shadowColor = 'rgba(0,0,0,.6)'; c.shadowBlur = 6; c.font = '900 ' + Math.round(r * .2) + 'px ' + C.ff; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(5 + g.lv * 5, 0, 1); c.restore(); c.textBaseline = 'alphabetic';
+      glow(c, 0, 0, r * 1.6, hsl(hu, 70, 50), .16 + g.bump * .14); c.rotate(g.rot);
+      c.shadowColor = hsl(hu, 80, 55); c.shadowBlur = 14; c.fillStyle = '#17142a'; c.beginPath(); c.arc(0, 0, r + 8, 0, 7); c.fill(); c.shadowBlur = 0;
+      c.strokeStyle = hsl(hu, 55, 55); c.lineWidth = 2; c.beginPath(); c.arc(0, 0, r + 8, 0, 7); c.stroke();
+      const wA = hsl(hu, 42, 33), wB = hsl(hu, 38, 25), core = hsl(hu, 34, 15);
+      for (let i = 0; i < 20; i++) { const a0 = i * TW2 / 20, a1 = a0 + TW2 / 20; c.fillStyle = i % 2 ? wA : wB; c.beginPath(); c.arc(0, 0, r, a0, a1); c.arc(0, 0, r * .7, a1, a0, true); c.closePath(); c.fill(); }
+      c.fillStyle = core; c.beginPath(); c.arc(0, 0, r * .7, 0, 7); c.fill();
+      c.strokeStyle = 'rgba(255,255,255,.12)'; c.lineWidth = 1.2; [r * .7, r * .42].forEach(q => { c.beginPath(); c.arc(0, 0, q, 0, 7); c.stroke(); });
+      c.fillStyle = hsl(hu, 75, 64); c.shadowColor = hsl(hu, 90, 60); c.shadowBlur = 12; c.beginPath(); c.arc(0, 0, r * .2, 0, 7); c.fill(); c.shadowBlur = 0;
+      c.save(); c.rotate(-g.rot); c.fillStyle = hsl(hu, 40, 12); c.font = '900 ' + Math.round(r * .19) + 'px ' + C.ff; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(5 + g.lv * 5, 0, 1); c.restore(); c.textBaseline = 'alphabetic';
       g.st.forEach((a, i) => { c.save(); c.rotate(a); c.fillStyle = 'rgba(0,0,0,.28)'; c.beginPath(); c.arc(r - 8, 0, 5, 0, 7); c.fill(); c.translate(r - 10, 0); c.rotate(-Math.PI / 2); dartDraw(c, DC[i % 5], LEN + 10); c.restore(); });
       g.co.forEach(q => { if (q.got) return; const pu = 1 + .12 * Math.sin(TT * 6 + q.a * 3); c.save(); c.rotate(q.a); c.translate(r + 14, 0); c.scale(pu, pu); c.shadowColor = GD; c.shadowBlur = 16; c.fillStyle = GD; c.beginPath(); for (let k = 0; k < 10; k++) { const rad = k % 2 ? 6 : 13, an = k * Math.PI / 5 - Math.PI / 2; c.lineTo(Math.cos(an) * rad, Math.sin(an) * rad); } c.closePath(); c.fill(); c.shadowBlur = 0; c.fillStyle = 'rgba(255,255,255,.55)'; c.beginPath(); c.arc(-2, -3, 2.4, 0, 7); c.fill(); c.restore(); });
       c.restore();
