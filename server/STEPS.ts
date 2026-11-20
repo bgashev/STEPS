@@ -53,9 +53,58 @@ const STR: Record<string, { per: "reps" | "secs"; max: number; xp: number }> = {
 const TIME: Record<string, { xp: number; maxSpeed: number }> = { bike: { xp: 0.9, maxSpeed: 45 }, yoga: { xp: 0.6, maxSpeed: 0 },
   jumprope: { xp: 1.1, maxSpeed: 0 }, stepper: { xp: 0.8, maxSpeed: 0 }, swim: { xp: 1.0, maxSpeed: 0 } };   // v1.451
 const KG_ACTS = new Set(["dumbbell", "barbell"]);   // силовые с весом
+
+/* ---------- v1.1062: свои активности ----------
+   Определение — запись синка kind = 'cact' (id c<tg>_<n>), данные: { name, icon, color, tpl, inten, cat, def, arch }.
+   Тренировка со своей активностью (w.act = id) считается по шаблону; очки со сниженным коэффициентом и дневным потолком. */
+type CTpl = { per?: "reps" | "secs"; max: number; xp: number; kg?: boolean; time?: boolean };
+const CACT_TPL: Record<string, CTpl> = {
+  reps: { per: "reps", max: 100, xp: 0.25 },
+  rw: { per: "reps", max: 100, xp: 0.25, kg: true },
+  hold: { per: "secs", max: 600, xp: 0.125 },
+  time: { time: true, max: 240, xp: 0.5 },
+};
+const CACT_DAY_XP = 60;                  // очков в день от своих активностей, не больше
+const CACT_FREE = 1, CACT_PRO = 5;
+const CACT_ICONS = new Set(("run steps bike swim jumprope stepper burpee dumbbell barbell kettle plate squat pushup pullup plank abs yoga sneaker " +
+  "ball basketball volleyball tennis baseball rugby bowling racket shuttle hockey bow sword flag cone skateboard scooter helmet whistle " +
+  "skate snowboard surf wave oar snow drop mountain leaf sun moon paw tent backpack compass fish bottle route " +
+  "punchbag kick dance lotus stopwatch watch apple shaker heart pulse flame bolt target trophy medal sparkle hourglass note").split(" "));
+const CACT_CATS = new Set(["Кардио", "Силовые", "Гибкость"]);
+const CACT_BAD = /(х[уy]й|пизд|еб[аыуо]н|ебат|бля[дт]|сук[аи]|муд[аи]к|гандон|fuck|shit|bitch|cunt|nigg|https?:|www\.|t\.me|@)/i;
+const cactIdOk = (id: string, tgId?: number) => tgId ? id.startsWith(`c${tgId}_`) && /^c\d{4,12}_\d{1,6}$/.test(id) : /^c\d{4,12}_\d{1,6}$/.test(id);
+const cactNameErr = (n: unknown) => {
+  const t = typeof n === "string" ? n.trim() : "";
+  if (t.length < 2 || t.length > 18) return "Название — от 2 до 18 символов";
+  if (CACT_BAD.test(t)) return "Такое название нельзя использовать";
+  return "";
+};
+// определение, очищенное до известных полей, либо null
+function cactClean(d: any) {
+  if (!d || typeof d !== "object" || cactNameErr(d.name) || !CACT_TPL[d.tpl] || !CACT_ICONS.has(d.icon)) return null;
+  if (!(typeof d.color === "string" && (/^#[0-9a-fA-F]{6}$/.test(d.color) || /^hsl\(\d{1,3} 68% 72%\)$/.test(d.color)))) return null;
+  const inten = Number(d.inten);
+  if (!(inten === 0 || inten === 1 || inten === 2)) return null;
+  const def = d.def && typeof d.def === "object" ? d.def : {};
+  const num = (v: any, lo: number, hi: number, dflt: number) => { const x = Number(v); return Number.isFinite(x) ? Math.min(hi, Math.max(lo, x)) : dflt; };
+  return { name: String(d.name).trim(), icon: d.icon, color: d.color, tpl: d.tpl, inten,
+    cat: CACT_CATS.has(d.cat) ? d.cat : "Силовые", arch: !!d.arch,
+    def: { min: num(def.min, 1, 240, 30), sets: Math.round(num(def.sets, 1, 20, 3)), reps: Math.round(num(def.reps, 1, 100, 12)),
+      kg: num(def.kg, 0, 150, 20), secs: Math.round(num(def.secs, 5, 600, 45)) } };
+}
+// карта «id активности → шаблон» из записей пользователя
+function custFrom(recs: any[]): Record<string, CTpl> {
+  const m: Record<string, CTpl> = {};
+  for (const r of recs) if (r.kind === "cact" && !r.deleted) { const t = CACT_TPL[r.data?.tpl]; if (t && cactIdOk(String(r.id))) m[String(r.id)] = t; }
+  return m;
+}
+// описания «как у STR / TIME» для обычных и своих активностей
+const strDef = (act: string, cx: Record<string, CTpl>) => STR[act] ?? (cx[act]?.per ? { per: cx[act].per!, max: cx[act].max, xp: cx[act].xp } : undefined);
+const timeDef = (act: string, cx: Record<string, CTpl>) => TIME[act] ?? (cx[act]?.time ? { xp: cx[act].xp, maxSpeed: 0 } : undefined);
+const kgAct = (act: string, cx: Record<string, CTpl>) => KG_ACTS.has(act) || !!cx[act]?.kg;
 // v1.421: подходы могут быть разными — список sl [12, 10, 8]; иначе sets × reps
-function strTotal(w: any) {
-  const st = STR[w.act];
+function strTotal(w: any, cx: Record<string, CTpl> = {}) {
+  const st = strDef(w.act, cx);
   if (!st) return 0;
   if (Array.isArray(w.sl) && w.sl.length) return w.sl.reduce((a: number, x: any) => a + (Number(x) || 0), 0);
   return (Number(w.sets) || 0) * (Number(st.per === "reps" ? w.reps : w.secs) || 0);
@@ -654,16 +703,16 @@ async function onCallback(q: any) {
 }
 
 /* ---------- XP, уровни, анти-чит ---------- */
-function workoutXp(w: any) {
-  const st = STR[w.act];
+function workoutXp(w: any, cx: Record<string, CTpl> = {}) {
+  const st = strDef(w.act, cx);
   if (st) {
-    const total = strTotal(w);
-    const kgf = KG_ACTS.has(w.act) ? 1 + Math.min(MAX_KG, Math.max(0, Number(w.kg) || 0)) / 20 : 1;
+    const total = strTotal(w, cx);
+    const kgf = kgAct(w.act, cx) ? 1 + Math.min(MAX_KG, Math.max(0, Number(w.kg) || 0)) / 20 : 1;
     return total > 0 ? Math.max(3, Math.min(150, Math.round(total * st.xp * kgf))) : 0;
   }
   const m = Math.max(0, Math.min(AC.maxMin, Number(w.minutes) || 0));
   if (m < 1) return 0;
-  const tm = TIME[w.act];
+  const tm = timeDef(w.act, cx);
   if (tm) return Math.max(3, Math.min(150, Math.round(m * tm.xp)));
   const sp = Math.max(1, Number(w.speed) || 5), inc = Math.max(0, Number(w.incline) || 0);
   const f = Math.pow(sp / 5, 0.8) * (1 + inc * 0.06);
@@ -677,11 +726,11 @@ function levelOf(xp: number) {
   return { level: lvl, xp: Math.round(xp), into: x, need };
 }
 // Поля тренировки в допустимых пределах; created (сек) не позже чем через 3 дня после даты
-function fieldsOk(w: any, today: number) {
+function fieldsOk(w: any, today: number, cx: Record<string, CTpl> = {}) {
   const d = dnum(w.date), m = Number(w.minutes), s = Number(w.speed), i = Number(w.incline ?? 0);
   if (d === null || d > today) return false;
   if (!(m >= AC.minMin && m <= AC.maxMin)) return false;
-  const st = STR[w.act];
+  const st = strDef(w.act, cx);
   if (st) {
     const n = Number(w.sets), v = Number(st.per === "reps" ? w.reps : w.secs), kg = Number(w.kg ?? 0);
     if (Array.isArray(w.sl)) {
@@ -693,7 +742,7 @@ function fieldsOk(w: any, today: number) {
     const c0 = Number(w.created) || 0;
     return !(c0 > 0 && Math.floor(c0 * 1000 / DAY) - d > AC.lateDays);
   }
-  const tm = TIME[w.act];
+  const tm = timeDef(w.act, cx);
   if (tm) {
     if (!(s >= 0 && s <= tm.maxSpeed)) return false;
   } else {
@@ -705,8 +754,8 @@ function fieldsOk(w: any, today: number) {
   return true;
 }
 // Оставляет только честные тренировки: поля в пределах, не больше 6 и 300 минут в день
-function honest(ws: any[], today: number) {
-  const ok = ws.filter((w) => fieldsOk(w, today))
+function honest(ws: any[], today: number, cx: Record<string, CTpl> = {}) {
+  const ok = ws.filter((w) => fieldsOk(w, today, cx))
     .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : (Number(a.created) || 0) - (Number(b.created) || 0)));
   const per = new Map<string, { n: number; m: number }>();
   return ok.filter((w) => {
@@ -739,7 +788,7 @@ function goalCycles(days: number[], perDay: Map<number, number>, today: number, 
 
 function cleanWorkouts(recs: any[], today: number) {
   const raw = recs.filter((r) => r.kind === "workout" && !r.deleted).map((r) => r.data || {});
-  return honest(raw, today);
+  return honest(raw, today, custFrom(recs));
 }
 function statsOf(recs: any[], today: number, bonus = 0) {
   const ws = cleanWorkouts(recs, today);
@@ -749,10 +798,13 @@ function statsOf(recs: any[], today: number, bonus = 0) {
   let wMin = 0, wN = 0, wKm = 0, last: any = null, xp = bonus;
   let mMin = 0, mN = 0, mKm = 0;
   const mKey = new Date(today * DAY).toISOString().slice(0, 7);
+  const cx = custFrom(recs), cDay = new Map<string, number>();
   for (const w of ws) {
     const d = dnum(w.date)!;
     per.set(d, (per.get(d) ?? 0) + 1);
-    xp += workoutXp(w);
+    let wx = workoutXp(w, cx);
+    if (cx[w.act]) { const used = cDay.get(w.date) ?? 0, give = Math.max(0, Math.min(wx, CACT_DAY_XP - used)); cDay.set(w.date, used + give); wx = give; }   // потолок очков от своих активностей за день
+    xp += wx;
     if (d > today - 7) { wMin += Number(w.minutes) || 0; wN++; wKm += (Number(w.speed) || 0) * (Number(w.minutes) || 0) / 60; }
     if (String(w.date).startsWith(mKey)) { mMin += Number(w.minutes) || 0; mN++; mKm += (Number(w.speed) || 0) * (Number(w.minutes) || 0) / 60; }
     if (!last || w.date > last.date || (w.date === last.date && (w.created ?? 0) > (last.created ?? 0))) last = w;
@@ -772,6 +824,17 @@ const FRAMES = new Set(["classic"]);
 function frameOf(recs: any[]) {
   const f = recs.find((r) => r.kind === "meta" && r.id === "settings" && !r.deleted)?.data?.frame;
   return typeof f === "string" && FRAMES.has(f) ? f : null;
+}
+// имя, иконка и цвет своих активностей, которые встретились у человека в недавнем и любимом (чтобы друзья видели их по-человечески)
+function cactsFor(recs: any[], acts: string[]) {
+  const out: Record<string, { n: string; i: string; c: string; t: string; m: number }> = {};
+  for (const a of new Set(acts)) {
+    if (!cactIdOk(String(a))) continue;
+    const r = recs.find((x) => x.kind === "cact" && String(x.id) === a && !x.deleted);
+    const c = r && cactClean(r.data);
+    if (c) out[a] = { n: c.name, i: c.icon, c: c.color, t: c.tpl, m: c.inten };
+  }
+  return out;
 }
 function detailsOf(recs: any[], today: number) {
   const ws = cleanWorkouts(recs, today);
@@ -807,6 +870,7 @@ function detailsOf(recs: any[], today: number) {
     records: { longest: rec(lo, Number(lo?.minutes) || 0), farthest: rec(fa, fa ? km(fa) : 0),
       fastest: rec(fs, Number(fs?.speed) || 0), steepest: rec(st, Number(st?.incline) || 0), best_days_row: bestRun },
     months, recent, fav,
+    cacts: cactsFor(recs, [...recent.map((x: any) => x.act), ...fav.map((x: any) => x.act)]),
   };
 }
 
@@ -815,7 +879,7 @@ async function loadRecs(ids: number[]): Promise<Map<number, any[]>> {
   if (!ids.length) return new Map();
   for (let from = 0; from < 100000; from += 1000) {
     const { data, error } = await db.from("records").select("tg_id, kind, id, data, deleted")
-      .in("tg_id", ids).in("kind", ["workout", "meta"]).range(from, from + 999);
+      .in("tg_id", ids).in("kind", ["workout", "meta", "cact"]).range(from, from + 999);
     if (error) throw error;
     recs.push(...(data ?? []));
     if (!data || data.length < 1000) break;
@@ -1471,6 +1535,33 @@ async function routeCronRemind(req: Request) {
   return json({ status: "ok", sent });
 }
 
+// v1.1062: проверка записей «своих активностей»: форма, id, название, лимит (1 бесплатно / 5 PRO; архивные не считаются)
+async function vetCustom(tgId: number, rows: any[]) {
+  let active = false;
+  try { active = !!(await proStatus(tgId))?.active; } catch { active = false; }
+  const limit = active ? CACT_PRO : CACT_FREE;
+  const { data: ex } = await db.from("records").select("id, data, deleted").eq("tg_id", tgId).eq("kind", "cact").limit(200);
+  const live = new Map<string, boolean>();                       // id → считается в лимите
+  for (const r of ex ?? []) live.set(String(r.id), !r.deleted && !r.data?.arch);
+  const out: any[] = [];
+  for (const r of rows) {
+    if (r?.kind !== "cact") { out.push(r); continue; }
+    const id = String(r.id ?? "");
+    if (!cactIdOk(id, tgId)) continue;
+    if (r.deleted) { out.push(r); live.set(id, false); continue; }
+    const c = cactClean(r.data);
+    if (!c) continue;
+    const was = live.get(id) === true, now = !c.arch;
+    if (now && !was) {                                            // новая или возвращаемая из архива
+      const n = [...live.values()].filter(Boolean).length;
+      if (n >= limit) continue;
+    }
+    live.set(id, now);
+    out.push({ ...r, data: c });
+  }
+  return out;
+}
+
 async function routeSync(body: any) {
   const tgId = await sessionUser(body?.token);
   if (!tgId) return noSession();
@@ -1479,8 +1570,10 @@ async function routeSync(body: any) {
   let pushed = 0;
   purgeDue().catch(() => {});
   const frozenNow = await isLocked(tgId);          // М6: во время заморозки записи не принимаются
-  if (rows.length && !frozenNow) {
-    const { data, error } = await db.rpc("sync_push", { p_tg: tgId, p_rows: rows });
+  let rowsOut = rows;
+  if (rows.some((r: any) => r?.kind === "cact") && !frozenNow) rowsOut = await vetCustom(tgId, rows);
+  if (rowsOut.length && !frozenNow) {
+    const { data, error } = await db.rpc("sync_push", { p_tg: tgId, p_rows: rowsOut });
     if (error) return fail("Ошибка записи: " + error.message, 500);
     pushed = data ?? 0;
   }
