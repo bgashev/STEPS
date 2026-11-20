@@ -4956,6 +4956,9 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 .sfzov.show .sp{animation:sfzgrow .9s cubic-bezier(.2,.9,.25,1) forwards}
 .sfzov.show .sp:nth-child(2){animation-delay:.1s}.sfzov.show .sp:nth-child(3){animation-delay:.18s}.sfzov.show .sp:nth-child(4){animation-delay:.26s}.sfzov.show .sp:nth-child(5){animation-delay:.34s}.sfzov.show .sp:nth-child(6){animation-delay:.42s}.sfzov.show .sp:nth-child(7){animation-delay:.5s}.sfzov.show .sp:nth-child(8){animation-delay:.58s}
 @keyframes sfzgrow{60%{opacity:.95}100%{transform:scale(1);opacity:.55}}
+.sfzn{display:inline-flex;align-items:center;gap:6px;margin-top:8px;border:1px solid color-mix(in srgb,#9fd8ff 40%,var(--border));background:color-mix(in srgb,#9fd8ff 8%,transparent);color:#9fd8ff;border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.sfzs{text-align:center;padding:6px 4px 10px}.sfzs-i{width:64px;height:64px;margin:0 auto 10px;border-radius:20px;display:grid;place-items:center;background:color-mix(in srgb,#9fd8ff 14%,var(--surface2));color:#9fd8ff}
+.sfzs-r{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 8px}.sfzs-r>div{background:var(--surface2);border-radius:16px;padding:12px 8px}.sfzs-r b{display:block;font-size:26px;font-weight:900;color:#9fd8ff}.sfzs-r small{color:var(--muted);font-size:12px}
 .sfzov .num{font-size:54px;font-weight:900;letter-spacing:-.03em;line-height:1;color:var(--text)}
 .sfzov .num small{font-size:18px;font-weight:700;color:var(--muted);margin-left:6px}
 .sfzov h3{font-size:19px;margin-top:10px;color:var(--text)}
@@ -4983,7 +4986,7 @@ html.web .vc-ch.ice:not(.off) i{color:#9fd8ff}html.web .vc-ch.ice{border-color:c
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1072';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1073';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -5209,7 +5212,8 @@ function goalInfo(ws){
 function perDay(ws){ const m = new Map(); for (const w of ws) { const d = dn(w.date); m.set(d, (m.get(d) || 0) + 1); } return m; }
 function goalHistory(ws){ const c = goalCycles(ws); return [c.done, c.best, c.run]; }
 /* v1.1070: заморозка серии. SFZ.days — дни, закрытые заморозкой (сервер решает сам, клиент только показывает). */
-const SFZ = {days:new Set(), left:0, allow:1, fresh:[], at:0, busy:false, shown:false, ok:false,
+const SFZ = {days:new Set(), left:0, allow:1, extra:0, fresh:[], at:0, busy:false, shown:false, ok:false, after:null,
+  total(){ return SFZ.left + SFZ.extra; },
   recent(){ const t = todayN(); return SFZ.days.has(t - 1) || SFZ.days.has(t); }};
 /* Серия = подряд идущие дни с тренировкой. Дни отдыха (после 5 подряд) и дни под заморозкой — «мост»: серию не рвут, но в счёт не идут. */
 function dayStreaks(ws){
@@ -6497,6 +6501,7 @@ const RF_WHY = [['nofx', 'Оплата прошла, но не появилос�
 function payName(x){
   if (x.src === 'pro') return 'VOOB PRO · ' + (x.plan === 'year' ? 'год' : 'месяц');
   if (x.kind === 'games') return 'Все PRO-игры';
+  if (x.kind === 'sfz') return 'Заморозка серии';
   if (x.kind === 'game') { const g = (typeof REST !== 'undefined' ? REST.list() : []).find(a => a.k === x.item); return 'Игра «' + (g ? g.n : x.item) + '»'; }
   const f = FRAMES.find(a => a[0] === x.item), b = BG_KEYS.find(a => a[0] === x.item);
   const nm = x.kind === 'bg' ? (b ? b[1] : x.item) : (f ? f[1] : x.item);
@@ -7322,9 +7327,10 @@ function loadSfz(force){
   SFZ.busy = true; SFZ.at = Date.now();
   apiAuth('/sfz/status', {}).then(j => {
     if (!j || j.error) return;
-    SFZ.days = new Set((j.days || []).map(Number)); SFZ.left = j.left | 0; SFZ.allow = j.allow | 0; SFZ.fresh = j.fresh || []; SFZ.ok = true;
+    SFZ.days = new Set((j.days || []).map(Number)); SFZ.left = j.left | 0; SFZ.allow = j.allow | 0; SFZ.extra = j.extra | 0; SFZ.fresh = j.fresh || []; SFZ.ok = true;
   }).catch(() => {}).finally(() => {
     SFZ.busy = false;
+    if (SFZ.after) { const f = SFZ.after; SFZ.after = null; try { f(); } catch (e) {} }
     if (S.tab === 'home' && !S.fprof && !sheetCtx) render();
     if (SFZ.fresh.length && !SFZ.shown) setTimeout(showSfzMoment, 700);
   });
@@ -7339,9 +7345,29 @@ function showSfzMoment(){
   o.innerHTML = `<div class="crys"><svg viewBox="0 0 190 190"><defs><linearGradient id="sfzg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d9f2ff"/><stop offset="1" stop-color="#6fb8ee"/></linearGradient></defs>${sp}</svg>
     <div class="fl2">${IC('flame', 78)}</div></div>
     <div class="num">${cur}<small>дн.</small></div><h3>Серия спасена</h3><p>Вчера без тренировки — заморозка закрыла этот день.</p>
-    <p class="lf"><span>Заморозок в этом месяце:</span> <b>${SFZ.left}</b>/${SFZ.allow}</p>
+    <p class="lf"><span>Заморозок осталось:</span> <b>${SFZ.total()}</b></p>
     <button type="button" data-act="sfzok">Понятно</button>`;
   document.body.appendChild(o); void o.offsetWidth; o.classList.add('show'); hap.ok();
+}
+function openSfzSheet(){
+  hap.tap();
+  if (!SHOP.ok && !SFZ.shopTry) { SFZ.shopTry = true; loadShop().then(() => { if (sheetCtx && sheetCtx.type === 'sfz') openSfzSheet(); }); }
+  const price = SHOP.prices.sfz || 15, full = SFZ.extra >= 5, can = SHOP.ok && !full;
+  openSheet(`<div class="sfzs"><div class="sfzs-i">${IC('snow', 34)}</div><h2>Заморозки серии</h2>
+    <div class="cap">Пропустил день — заморозка закроет его сама, и серия не прервётся. Нужна серия от 2 дней.</div>
+    <div class="sfzs-r"><div><b>${SFZ.left}</b><small>в этом месяце</small></div><div><b>${SFZ.extra}</b><small>в запасе</small></div></div>
+    <div class="hint" style="margin-bottom:14px">${isPro() ? 'С PRO — 3 бесплатные в месяц' : 'Бесплатно — 1 в месяц, с PRO — 3'}</div>
+    <button type="button" class="btn primary" style="width:100%"${can ? '' : ' disabled'} data-act="sfzbuy">${full ? 'Запас полон' : '<span>Купить заморозку</span> · ⭐ ' + price}</button></div>`, {type:'sfz'});
+}
+async function sfzBuy(){
+  hap.imp();
+  try {
+    const j = await apiAuth('/shop/invoice', {kind:'sfz'});
+    if (!j.link) throw new Error(j.error || 'нет счёта');
+    const paid = () => { hap.ok(); toast('❄ Заморозка в запасе'); SFZ.after = () => { if (sheetCtx && sheetCtx.type === 'sfz') openSfzSheet(); }; loadSfz(true); };
+    if (ver('6.1') && tg.openInvoice) tg.openInvoice(j.link, st => { if (st === 'paid') paid(); });
+    else { openTG(j.link); toast('Оплати в Telegram и вернись сюда'); }
+  } catch (e) { toast('Не получилось: ' + e.message); }
 }
 function closeSfzMoment(){
   const o = $('#sfzov'); if (!o) return; hap.tap(); SFZ.fresh = [];
@@ -7434,6 +7460,7 @@ function viewHome(web){
   let note = '';
   if (rest.has(t)) note = `<div class="note">${IC('rest', 15)}Сегодня день отдыха — восстанавливайся</div>`;
   else if (rest.has(t + 1)) note = `<div class="note">${IC('rest', 15)}5 дней подряд — завтра и послезавтра отдых</div>`;
+  else if (cur >= 2 && SFZ.ok) note = `<button type="button" class="sfzn" data-act="sfzsheet">${IC('snow', 15)}<span>Заморозок серии:</span> ${SFZ.total()}</button>`;
 
   const noGoal = !(db.settings.goal || {}).set;
   loadWelcome(); loadReferral(); loadSfz();
@@ -7452,7 +7479,7 @@ function viewHome(web){
     actionsH = `<div class="actions"><button class="btn ghost" data-act="plans">${IC('plan')}План${upPlans(ws).length ? `<span class="pn">${upPlans(ws).length}</span>` : ''}</button>${ws.length ? `<button class="btn ghost" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat')}Повторить</button>` : ''}</div>`;
   const heroH = () => {
     const pl = upPlans(ws).length, c = HC;
-    const chips = c ? `<div class="vc-chips"><div class="vc-ch${c.cur ? '' : ' off'}${c.cur && SFZ.recent() ? ' ice' : ''}"><i>${IC(c.cur && SFZ.recent() ? 'snow' : 'flame', 17)}</i><div><b${c.cur && !c.today ? ' class="wr"' : ''}>${c.cur}${c.cur ? ' дн.' : ''}</b><small>серия${SFZ.ok && SFZ.allow ? `<span> · ❄ ${SFZ.left}</span>` : ''}</small></div></div><div class="vc-ch w"><i>${IC('bolt', 17)}</i><div><b>Уровень ${c.L.level}<em>ещё ${num(c.L.need - c.L.into, 0)} XP</em></b><u><s style="width:${Math.round(c.L.into * 100 / Math.max(1, c.L.need))}%"></s></u></div></div>${c.nx ? `<div class="vc-ch" title="${esc(c.nx.title)}"><i>${IC(c.nx.icon, 17)}</i><div><b>${c.nx.text}</b><small>${esc(c.nx.title)}</small></div></div>` : ''}</div>` : '';
+    const chips = c ? `<div class="vc-chips"><div class="vc-ch${c.cur ? '' : ' off'}${c.cur && SFZ.recent() ? ' ice' : ''}" data-act="sfzsheet" style="cursor:pointer"><i>${IC(c.cur && SFZ.recent() ? 'snow' : 'flame', 17)}</i><div><b${c.cur && !c.today ? ' class="wr"' : ''}>${c.cur}${c.cur ? ' дн.' : ''}</b><small>серия${SFZ.ok && SFZ.allow ? `<span> · ❄ ${SFZ.total()}</span>` : ''}</small></div></div><div class="vc-ch w"><i>${IC('bolt', 17)}</i><div><b>Уровень ${c.L.level}<em>ещё ${num(c.L.need - c.L.into, 0)} XP</em></b><u><s style="width:${Math.round(c.L.into * 100 / Math.max(1, c.L.need))}%"></s></u></div></div>${c.nx ? `<div class="vc-ch" title="${esc(c.nx.title)}"><i>${IC(c.nx.icon, 17)}</i><div><b>${c.nx.text}</b><small>${esc(c.nx.title)}</small></div></div>` : ''}</div>` : '';
     return `<div class="vc${done ? ' done' : ''}"><div class="vc-glow"></div><div class="vc-top"><div class="vc-ring">${segRing(info.shown, g.count, done, pct)}</div><div class="vc-tx"><span class="vc-k">${IC('target', 14)}Цель недели · ${Math.min(info.shown, g.count)} из ${g.count}</span>${gtxt}
       <div class="vc-cta"><button type="button" class="vc-go" data-act="add">${IC('plus', 17)}Начать тренировку</button><div class="vc-seg"><button type="button" data-act="plans">${IC('plan', 15)}План${pl ? `<span class="pn">${pl}</span>` : ''}</button>${ws.length ? `<button type="button" data-act="repeat" aria-label="Повторить последнюю тренировку">${IC('repeat', 15)}Повторить</button>` : ''}${canSum ? `<button type="button" data-act="gsum">${IC(S.gsum ? 'close' : 'sparkle', 15)}${S.gsum ? 'Скрыть итоги' : 'Итоги'}</button>` : ''}<button type="button" class="ic" data-act="goaled" aria-label="Изменить цель">${IC('edit', 15)}</button></div></div></div></div>
       <div class="vc-strip">${goalStrip(ws, g.days)}${note}</div></div>${chips}`;
@@ -11164,6 +11191,8 @@ const ACT = {
   gpplan: el => { GP.plan = el.dataset.v; gpRefresh(); hap.tap(); },
   gprdx: () => { hap.tap(); closeProOverlay(); },
   sfzok: () => closeSfzMoment(),
+  sfzsheet: () => openSfzSheet(),
+  sfzbuy: () => sfzBuy(),
   socno: () => { hap.tap(); const r = $('#soc-res'), i = $('#soc-in'); if (r) r.innerHTML = ''; if (i) { i.focus(); i.select(); } },
   socsave: el => socSave(el.dataset.net, el.dataset.h),
   socdel: el => {                       // удаление — в два касания: сначала «Точно убрать?», через 3 с кнопка возвращается
@@ -14074,6 +14103,8 @@ Object.assign(I18N.en, {"Серия спасена": "Streak saved", "Вчера
 Object.assign(I18N.kk, {"Серия спасена": "Серия сақталды", "Вчера без тренировки — заморозка закрыла этот день.": "Кеше жаттығу болмады — мұздату сол күнді жауып тұр.", "Заморозок в этом месяце:": "Осы айдағы мұздатулар:"});
 Object.assign(I18N.en, {"❄ заморожена": "❄ frozen"});
 Object.assign(I18N.kk, {"❄ заморожена": "❄ мұздатылған"});
+Object.assign(I18N.en, {"Заморозок осталось:": "Freezes left:", "Заморозки серии": "Streak freezes", "Пропустил день — заморозка закроет его сама, и серия не прервётся. Нужна серия от 2 дней.": "Miss a day and a freeze covers it, so your streak survives. Needs a streak of 2+ days.", "в этом месяце": "this month", "в запасе": "in stock", "Купить заморозку": "Buy a freeze", "Запас полон": "Stock is full", "Заморозок серии:": "Streak freezes:", "С PRO — 3 бесплатные в месяц": "PRO gives 3 free per month", "Бесплатно — 1 в месяц, с PRO — 3": "Free: 1 per month, 3 with PRO", "Заморозка в запасе": "Freeze in stock"});
+Object.assign(I18N.kk, {"Заморозок осталось:": "Мұздату қалды:", "Заморозки серии": "Серия мұздатулары", "Пропустил день — заморозка закроет его сама, и серия не прервётся. Нужна серия от 2 дней.": "Күн өтіп кетсе, мұздату оны жабады, серия үзілмейді. Серия кемінде 2 күн болуы керек.", "в этом месяце": "осы айда", "в запасе": "қорда", "Купить заморозку": "Мұздату сатып алу", "Запас полон": "Қор толы", "Заморозок серии:": "Серия мұздатулары:", "С PRO — 3 бесплатные в месяц": "PRO-мен айына 3 тегін", "Бесплатно — 1 в месяц, с PRO — 3": "Тегін — айына 1, PRO-мен — 3"});
 delete _lc.en; delete _lc.kk;
 (function(){
   try { const u = new URL(location.href); if (u.searchParams.has('_v')) { u.searchParams.delete('_v'); history.replaceState(null, '', u.pathname + u.search + u.hash); } } catch (e) {}   // метка запасного обновления — убираем из адреса

@@ -408,8 +408,13 @@ async function routeShopStatus(body: any) {
 async function routeShopInvoice(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
-  const kind = String(body?.kind ?? ""), item = String(body?.item ?? "");
-  if (!["frame", "bg", "kit", "game", "games"].includes(kind) || !SHOP_RE.test(item)) return fail("Неизвестный предмет");
+  const kind = String(body?.kind ?? ""); let item = String(body?.item ?? "");
+  if (kind === "sfz") {                                      // v1.1073: запасная заморозка серии — покупается много раз, у каждой покупки свой код
+    if (Number(body?.for ?? 0)) return fail("Заморозку нельзя подарить");
+    if ((await sfzExtra(me)) >= SFZ_EXTRA_MAX) return fail(`Запас заморозок уже полный (${SFZ_EXTRA_MAX})`, 409);
+    item = "z" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  }
+  if (!["frame", "bg", "kit", "game", "games", "sfz"].includes(kind) || !SHOP_RE.test(item)) return fail("Неизвестный предмет");
   if (kind === "game" && !SHOP_GAMES.has(item)) return fail("Неизвестная игра");
   if (kind === "games" && item !== "all") return fail("Неизвестный предмет");
   if (await isLocked(me)) return fail("Оплата недоступна, пока подписка заморожена или аккаунт ждёт удаления", 423);
@@ -421,11 +426,11 @@ async function routeShopInvoice(body: any) {
     if ((await deactivatedSet([to])).size) return fail("Пользователь недоступен", 404);
   }
   if (await shopHas(to || me, kind, item)) return fail(to ? "Это уже есть у друга" : "Это уже у тебя", 409);
-  const what = kind === "frame" ? "Рамка для аватарки" : kind === "kit" ? "Комплект: рамка и фон" : kind === "game" ? "Игра в VOOB" : kind === "games" ? "Все PRO-игры VOOB" : "Фон профиля";
+  const what = kind === "frame" ? "Рамка для аватарки" : kind === "kit" ? "Комплект: рамка и фон" : kind === "game" ? "Игра в VOOB" : kind === "games" ? "Все PRO-игры VOOB" : kind === "sfz" ? "Заморозка серии" : "Фон профиля";
   const title = to ? (kind === "frame" ? "Подарок: рамка для друга" : kind === "kit" ? "Подарок: комплект" : kind === "game" ? "Подарок: игра для друга" : kind === "games" ? "Подарок: все PRO-игры" : "Подарок: фон для друга") : what;
   const fu = to ? await userInfo(to) as any : null;
   const r = await tg("createInvoiceLink", {
-    title, description: (to ? `${what}${kind === "game" || kind === "games" ? "" : " в VOOB"} для ${displayName(fu)}. Останется у друга навсегда.` : kind === "game" || kind === "games" ? `${what}: играй между подходами и в разделе «Игры». Остаётся у тебя навсегда, без подписки.` : `${what} в VOOB. Остаётся у тебя навсегда.`).slice(0, 255),
+    title, description: (kind === "sfz" ? "Запасная заморозка: сама закроет один пропущенный день, и серия не прервётся. Копится в запасе." : to ? `${what}${kind === "game" || kind === "games" ? "" : " в VOOB"} для ${displayName(fu)}. Останется у друга навсегда.` : kind === "game" || kind === "games" ? `${what}: играй между подходами и в разделе «Игры». Остаётся у тебя навсегда, без подписки.` : `${what} в VOOB. Остаётся у тебя навсегда.`).slice(0, 255),
     payload: to ? `shop:${kind}:${item}:${me}:${to}` : `shop:${kind}:${item}:${me}`,
     provider_token: "", currency: "XTR", prices: [{ label: title, amount: stars }],
   });
@@ -456,7 +461,7 @@ async function routeShopLooks(body: any) {
   return json({ bgs, frs });
 }
 function parseShopPayload(s: string) {
-  const m = /^shop:(frame|bg|kit|game|games):([a-z0-9]{3,16}):(\d+)(?::(\d+))?$/.exec(s || "");
+  const m = /^shop:(frame|bg|kit|game|games|sfz):([a-z0-9]{3,16}):(\d+)(?::(\d+))?$/.exec(s || "");
   return m ? { kind: m[1], item: m[2], tg: Number(m[3]), to: m[4] ? Number(m[4]) : 0 } : null;
 }
 
@@ -503,6 +508,11 @@ async function onPaid(msg: any) {
     const row = Array.isArray(data) ? data[0] : data;
     if (row?.dup) return;
     const word = sh.kind === "frame" ? "Рамка" : sh.kind === "kit" ? "Комплект" : sh.kind === "game" ? "Игра" : sh.kind === "games" ? "Все игры" : "Фон";
+    if (sh.kind === "sfz") {                                 // v1.1073: запасная заморозка серии
+      await tg("sendMessage", { chat_id: msg.chat.id, text: "❄ Готово! Запасная заморозка в запасе. Пропустишь день — она сама спасёт серию.", reply_markup: openBtnMk() });
+      if (ADMIN_TG_ID) tg("sendMessage", { chat_id: ADMIN_TG_ID, text: `❄ Заморозка серии · ${sp.total_amount}⭐\n(id ${msg.from.id})\ncharge: ${sp.telegram_payment_charge_id}` }).catch(() => {});
+      return;
+    }
     if (sh.to) {                                             // v1.792: подарок другу
       await db.from("shop_owned").update({ payer_id: msg.from.id }).eq("charge_id", sp.telegram_payment_charge_id);
       const fu = await userInfo(sh.to) as any, me = await userInfo(msg.from.id) as any;
@@ -568,7 +578,7 @@ async function adminRefund(chatId: number, charge: string) {
     const rr = await tg("refundStarPayment", { user_id: so.payer_id ?? so.tg_id, telegram_payment_charge_id: charge });
     if (!rr?.ok) return tg("sendMessage", { chat_id: chatId, text: "Telegram: " + (rr?.description ?? "ошибка") });
     await db.from("shop_owned").update({ refunded_at: new Date().toISOString() }).eq("id", so.id);
-    const rw = so.kind === "frame" ? "рамку" : so.kind === "kit" ? "комплект" : "фон";
+    const rw = so.kind === "frame" ? "рамку" : so.kind === "kit" ? "комплект" : so.kind === "sfz" ? "заморозку серии" : "фон";
     notify(so.payer_id ?? so.tg_id, `↩️ Возврат ${so.stars}⭐ за ${rw} оформлен. Звёзды вернутся на баланс Telegram.`);
     if (so.payer_id && so.payer_id !== so.tg_id) notify(so.tg_id, `Подарок (${rw}) отозван: платёж был возвращён.`);
     return tg("sendMessage", { chat_id: chatId, text: `Возврат сделан: ${so.kind}:${so.item}, ${so.stars}⭐. Предмет отнят.` });
@@ -657,6 +667,7 @@ async function routeRefundRequest(body: any) {
     }
   } else flags.push("сбой: сроки и лимиты не проверялись");
   flags.push(`с оплаты ${Math.round(ageH)} ч`);
+  if (src === "shop" && rec.kind === "sfz" && (await sfzExtra(rec.tg_id)) === 0) flags.push("заморозка уже потрачена");
   if (src === "shop" && !rec.payer_id || (src === "shop" && rec.payer_id === rec.tg_id)) {
     const { data: st } = await db.from("records").select("data, deleted").eq("tg_id", rec.tg_id).eq("kind", "meta").eq("id", "settings").maybeSingle();
     const d: any = st && !st.deleted ? st.data : null;
@@ -1495,7 +1506,15 @@ async function routeReferral(body: any) {
 /* ---------- v1.1070: заморозка серии ----------
    Один пропущенный день (вчера) закрывается заморозкой: серия не рвётся, XP и тренировки не начисляются.
    Лимит в месяц: 1 у всех, 3 у PRO. Нужна серия минимум 2 дня до пропуска. Решает только сервер. */
-const SFZ_FREE = 1, SFZ_PRO = 3;
+const SFZ_FREE = 1, SFZ_PRO = 3, SFZ_EXTRA_MAX = 5;
+// запас купленных заморозок = покупки минус потраченные (paid = true в streak_freezes)
+async function sfzExtra(me: number) {
+  const [{ count: bought }, { count: spent }] = await Promise.all([
+    db.from("shop_owned").select("id", { count: "exact", head: true }).eq("tg_id", me).eq("kind", "sfz").is("refunded_at", null),
+    db.from("streak_freezes").select("day", { count: "exact", head: true }).eq("tg_id", me).eq("paid", true),
+  ]);
+  return Math.max(0, (bought ?? 0) - (spent ?? 0));
+}
 const sfzMonth = (day: number) => { const d = new Date(day * DAY); return Math.floor(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1) / DAY); };
 async function sfzProOn(me: number) {
   const { data: s } = await db.from("pro_subs").select("until, frozen_at").eq("tg_id", me).maybeSingle();
@@ -1509,27 +1528,30 @@ async function sfzWorkDays(me: number) {
 async function sfzSync(me: number, workDays?: Set<number>) {
   const today = lday(Date.now()), y = today - 1;
   const days = workDays ?? await sfzWorkDays(me);
-  const { data: rows } = await db.from("streak_freezes").select("day, seen").eq("tg_id", me).order("day", { ascending: false }).limit(400);
+  const { data: rows } = await db.from("streak_freezes").select("day, seen, paid").eq("tg_id", me).order("day", { ascending: false }).limit(400);
   const frozen = new Set<number>((rows ?? []).map((r: any) => Number(r.day)));
+  const free = new Set<number>((rows ?? []).filter((r: any) => !r.paid).map((r: any) => Number(r.day)));   // месячные (бесплатные) заморозки
   const allow = (await sfzProOn(me)) ? SFZ_PRO : SFZ_FREE;
-  const usedIn = (m: number) => [...frozen].filter((d) => sfzMonth(d) === m).length;
+  const usedIn = (m: number) => [...free].filter((d) => sfzMonth(d) === m).length;
+  let extra = await sfzExtra(me);
   let applied: number | null = null, run = 0;
-  if (!days.has(y) && !frozen.has(y) && days.size && usedIn(sfzMonth(y)) < allow) {
+  if (!days.has(y) && !frozen.has(y) && days.size && (usedIn(sfzMonth(y)) < allow || extra > 0)) {
     for (let d = y - 1; days.has(d) || frozen.has(d); d--) if (days.has(d)) run++;
     if (run >= 2) {
-      const { error } = await db.from("streak_freezes").insert({ tg_id: me, day: y });
-      if (!error) { applied = y; frozen.add(y); }
+      const paid = usedIn(sfzMonth(y)) >= allow;            // месячные кончились — тратим купленную
+      const { error } = await db.from("streak_freezes").insert({ tg_id: me, day: y, paid });
+      if (!error) { applied = y; frozen.add(y); if (paid) extra--; else free.add(y); }
     }
   }
   const fresh = (rows ?? []).filter((r: any) => !r.seen).map((r: any) => Number(r.day));
   if (applied != null) fresh.push(applied);
-  return { days: [...frozen].filter((d) => d >= today - 120), left: Math.max(0, allow - usedIn(sfzMonth(today))), allow, fresh, applied, run };
+  return { days: [...frozen].filter((d) => d >= today - 120), left: Math.max(0, allow - usedIn(sfzMonth(today))), allow, extra: Math.max(0, extra), fresh, applied, run };
 }
 async function routeSfzStatus(body: any) {
   const me = await sessionUser(body?.token);
   if (!me) return noSession();
   const r = await sfzSync(me);
-  return json({ status: "ok", days: r.days, left: r.left, allow: r.allow, fresh: r.fresh, run: r.run });
+  return json({ status: "ok", days: r.days, left: r.left, allow: r.allow, extra: r.extra, fresh: r.fresh, run: r.run });
 }
 async function routeSfzSeen(body: any) {
   const me = await sessionUser(body?.token);
