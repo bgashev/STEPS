@@ -1,4 +1,4 @@
-// VOOB — общая база продуктов для сканера штрихкодов (Supabase Edge Function voob-food) · v2
+// VOOB — общая база продуктов для сканера штрихкодов (Supabase Edge Function voob-food) · v3
 // Таблица: food_products(code pk, name, brand, k,p,f,c на 100 г/мл, u, src, conf, added_by).
 // act: lookup {codes[]} · search {q} (без входа; отдаются только проверенные) · contribute {token, ...} (нужна сессия) · seed {key, country, from, to} (разовый импорт OFF).
 // Правила доверия: значения из Open Food Facts сервер берёт сам и они главнее любых пользовательских; продукт, которого нет в OFF, остаётся pending, пока его независимо не подтвердят 2 разных человека.
@@ -24,6 +24,7 @@ async function sessionUser(token: unknown): Promise<number | null> {
   const { data } = await db.from("sessions").select("tg_id").eq("token_hash", await sha256(token)).maybeSingle();
   return data ? (data.tg_id as number) : null;
 }
+let lastOffSearch = 0;
 const DAY_LIMIT = 80;
 const UA = "VOOB-app/1.0 (Telegram Mini App, voob.kz)";
 const pub = (r: any) => ({ code: r.code, name: r.name, brand: r.brand, k: +r.k, p: +r.p, f: +r.f, c: +r.c, u: r.u, src: r.src, conf: r.conf });
@@ -89,7 +90,19 @@ Deno.serve(async (req) => {
     const { data, error } = await db.from("food_products").select("*").eq("status", "ok")
       .or(`name.ilike.%${esc(q)}%,brand.ilike.%${esc(q)}%`).order("conf", { ascending: false }).limit(15);
     if (error) return fail("db", 500);
-    return json({ items: (data ?? []).map(pub) });
+    let items = (data ?? []).map(pub);
+    // v3: в нашей базе мало — спрашиваем поиск Open Food Facts и запоминаем ответ для всех (не чаще раза в 7 с на экземпляр: у OFF жёсткий лимит поиска)
+    if (items.length < 4 && q.length >= 3 && Date.now() - lastOffSearch > 7000) {
+      lastOffSearch = Date.now();
+      const j = await offFetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=20&fields=${FIELDS}&sort_by=unique_scans_n`, 5500);
+      const rows = ((j?.products ?? []) as any[]).map((p) => offRow(p)).filter(Boolean) as any[];
+      if (rows.length) {
+        await db.from("food_products").upsert(rows, { onConflict: "code" });
+        const have = new Set(items.map((x: any) => x.code));
+        items = items.concat(rows.filter((r) => !have.has(r.code)).map(pub)).slice(0, 15);
+      }
+    }
+    return json({ items });
   }
 
   if (act === "contribute") {
@@ -127,7 +140,7 @@ Deno.serve(async (req) => {
   if (act === "seed") {                                                               // импорт OFF; auto — по курсору из food_admin (вызывается pg_cron каждые 2 мин)
     const { data: key } = await db.from("food_admin").select("v").eq("k", "seed").maybeSingle();
     if (!key || !b.key || String(b.key) !== key.v) return fail("forbidden", 403);
-    const PLAN: [string, number][] = [["kazakhstan", 999], ["russia", 150]];            // страны и максимум страниц (популярные идут первыми)
+    const PLAN: [string, number][] = [["kazakhstan", 999], ["russia", 150], ["belarus", 60], ["uzbekistan", 40], ["kyrgyzstan", 30], ["ukraine", 60], ["turkey", 60]];   // v3: страны и максимум страниц (популярные идут первыми)
     const { data: cur } = await db.from("food_admin").select("v").eq("k", "cursor").maybeSingle();
     let [ci, pg] = String(cur?.v ?? "0:1").split(":").map(Number);
     if (ci >= PLAN.length) return json({ done: true });

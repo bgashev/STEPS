@@ -4339,7 +4339,7 @@ html[data-mode="light"] .upd-c{box-shadow:0 20px 40px -18px rgba(50,40,110,.38),
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.983';
+const APP = 'VOOB (by BGASHEV) Mini App v1.984';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11048,7 +11048,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   async function offGuess(name){ try { const j = await jget('https://world.openfoodfacts.org/cgi/search.pl?search_terms=' + encodeURIComponent(name) + '&search_simple=1&action=process&json=1&page_size=8&fields=' + OFFF); for (const p of ((j && j.products) || [])) { const m = offMap('', {product:p}); if (m && !m.partial) return m; } } catch (e) {} return null; }
   async function nameByCode(code){ try { const j = await jget('https://api.upcitemdb.com/prod/trial/lookup?upc=' + encodeURIComponent(code), 7000); const it = j && j.items && j.items[0]; if (it && it.title) return {nm:it.title.trim(), br:(it.brand || '').trim(), u:unitOf(it.size || it.title)}; } catch (e) {} return null; }
   const FOODAPI = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-food';
-  async function foodSrv(body){ if (!inTG) return null; const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), 6000); try { const r = await fetch(FOODAPI, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), signal:ctl.signal}); return r.ok ? await r.json() : null; } catch (e) { return null; } finally { clearTimeout(t); } }
+  async function foodSrv(body){ if (!inTG) return null; const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), body && body.act === 'search' ? 9500 : 6000); try { const r = await fetch(FOODAPI, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), signal:ctl.signal}); return r.ok ? await r.json() : null; } catch (e) { return null; } finally { clearTimeout(t); } }
   const fromSrv = x => ({code:x.code, nm:x.name, br:x.brand || '', k:+x.k, p:+x.p, f:+x.f, c:+x.c, u:x.u === 'мл' ? 'мл' : '', src:'off', shared:true});
   function contribute(pr, src){ if (!inTG || !pr || !pr.code || !(pr.k >= 0) || pr.est) return; (async () => { try { const tok = await ensureToken(); await foodSrv({act:'contribute', token:tok, code:String(pr.code), name:pr.nm, brand:pr.br || '', k:pr.k, p:pr.p || 0, f:pr.f || 0, c:pr.c || 0, u:pr.u === 'мл' ? 'мл' : 'г', src}); } catch (e) {} })(); }
   let _sq = 0;
