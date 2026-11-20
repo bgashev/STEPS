@@ -4958,7 +4958,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1063';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1064';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -13333,23 +13333,49 @@ const NET = (() => {
     }
     el.innerHTML = h;
   }
+  /* плавный ход: шашка едет по всему пути (в т.ч. серия взятий), побитые тают в момент пролёта, дамка появляется с «хлопком» */
+  function chkAnim(pb, st){
+    const p = st.last.path, took = st.last.took || [];
+    if (!pb || !p || p.length < 2 || !pb[p[0]] || !q('#ntck') || matchMedia('(prefers-reduced-motion:reduce)').matches) return 0;
+    const sq = i => q('.nt-sq[data-i="' + i + '"]'), z = sq(p[p.length - 1]), pc = z && z.querySelector('.nt-pc'); if (!pc) return 0;
+    const rz = z.getBoundingClientRect(), pts = p.map(i => { const e = sq(i); if (!e) return null; const r = e.getBoundingClientRect(); return [r.left - rz.left, r.top - rz.top]; });
+    if (pts.some(x => !x)) return 0;
+    const jump = p.slice(1).map((i, k) => Math.abs((i >> 3) - (p[k] >> 3)) > 1), dur = jump.map(j => j ? 400 : 330), cum = [0]; dur.forEach((d, k) => cum.push(cum[k] + d));
+    const tot = cum[cum.length - 1], tr = (x, y, sc) => `translate(${x}px,${y}px) scale(${sc})`, kf = [{offset:0, transform:tr(pts[0][0], pts[0][1], 1), easing:'ease-in'}];
+    dur.forEach((d, k) => { const a = pts[k], b = pts[k + 1], sc = jump[k] ? 1.16 : 1.07;
+      kf.push({offset:(cum[k] + d / 2) / tot, transform:tr((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, sc), easing:'ease-out'});
+      kf.push({offset:cum[k + 1] / tot, transform:tr(b[0], b[1], 1), easing:'ease-in'}); });
+    pc.style.zIndex = 6; const an = pc.animate(kf, {duration:tot, fill:'backwards'}); an.onfinish = an.oncancel = () => { pc.style.zIndex = ''; };
+    took.forEach(t => {
+      const se = sq(t), g0 = pb[t]; if (!se || !g0) return;
+      const tr_ = t >> 3, tc = t & 7; let k = jump.length - 1;
+      for (let j = 0; j < p.length - 1; j++) { const ar = p[j] >> 3, ac = p[j] & 7, br = p[j + 1] >> 3, bc = p[j + 1] & 7;
+        if (Math.abs(tr_ - ar) === Math.abs(tc - ac) && (tr_ - ar) * (tr_ - br) < 0 && (tc - ac) * (tc - bc) < 0) { k = j; break; } }
+      const g = document.createElement('span'); g.className = 'nt-pc ' + (g0.toLowerCase() === 'w' ? 'w' : 'b') + (g0 !== g0.toLowerCase() ? ' k' : '');
+      g.style.cssText = 'position:absolute;left:11%;top:11%;z-index:2;pointer-events:none'; g.innerHTML = g0 !== g0.toLowerCase() ? CROWN : ''; se.appendChild(g);
+      const ga = g.animate([{opacity:1, transform:'scale(1)'}, {opacity:1, transform:'scale(1.1)', offset:.25}, {opacity:0, transform:'scale(.45)'}], {duration:280, delay:cum[k] + dur[k] * .55, fill:'both', easing:'ease-out'}); ga.onfinish = ga.oncancel = () => g.remove();
+    });
+    const me = pb[p[0]], now = st.b[p[p.length - 1]], sv = pc.querySelector('svg');
+    if (sv && me === me.toLowerCase() && now && now !== now.toLowerCase()) sv.animate([{transform:'scale(0) rotate(-50deg)', opacity:0}, {transform:'scale(1.35) rotate(8deg)', opacity:1, offset:.6}, {transform:'none', opacity:1}], {duration:420, delay:tot, fill:'backwards', easing:'ease-out'});
+    return tot;
+  }
   function uChk(r){
     const st = r.state; if (!q('#ntck')) return;
     const nw = st.b.filter(x => x.toLowerCase() === 'w').length, nb = st.b.filter(x => x.toLowerCase() === 'b').length;
     q('#nts0').textContent = T('белые') + ' · ' + nw; q('#nts1').textContent = T('чёрные') + ' · ' + nb;
     q('#ntp0').classList.toggle('on', r.status === 'playing' && st.turn === 'w'); q('#ntp1').classList.toggle('on', r.status === 'playing' && st.turn === 'b');
     const fresh = st.last && N.cs.seen !== r.rev; N.cs.seen = r.rev; N.cs.pre = [];
-    drawChk();
-    if (fresh && +st.last.by !== +UK) {
-      const p = st.last.path, a = q('.nt-sq[data-i="' + p[0] + '"]'), z = q('.nt-sq[data-i="' + p[p.length - 1] + '"]'), pc = z && z.querySelector('.nt-pc');
-      if (a && z && pc) { const ra = a.getBoundingClientRect(), rz = z.getBoundingClientRect(); pc.animate([{transform:`translate(${ra.left - rz.left}px,${ra.top - rz.top}px)`}, {transform:'none'}], {duration:300, easing:'cubic-bezier(.3,1.2,.4,1)'}); }
-      (st.last.took && st.last.took.length ? hap.med : hap.imp)();
+    const pb = N.cs.pb; N.cs.pb = st.b.slice();
+    if (fresh || Date.now() > (N.cs.until || 0)) drawChk();   /* пока едет шашка, перерисовку без нового хода пропускаем, иначе анимация оборвётся */
+    if (fresh) {
+      const ms = chkAnim(pb, st); if (ms) N.cs.until = Date.now() + ms + 450;
+      if (+st.last.by !== +UK) (st.last.took && st.last.took.length ? hap.med : hap.imp)();
     }
     const my = r.status === 'playing' && st.turn === (+st.white === +UK ? 'w' : 'b');
     q('#ntst').textContent = r.status === 'playing' ? (my ? T('Твой ход') : T('Ходит {0}', raw(st.turn === 'w' ? st.white : (+st.white === +r.host_id ? r.guest_id : r.host_id)))) : '';
   }
   function chkTap(i){
-    const r = N.room, st = r.state; if (!r || r.status !== 'playing' || N.pend) return;
+    const r = N.room, st = r.state; if (!r || r.status !== 'playing' || N.pend || Date.now() < (N.cs.until || 0)) return;
     if (st.turn !== (+st.white === +UK ? 'w' : 'b')) return;
     const pre = N.cs.pre, all = st.legal || [], legal = all.filter(m => pre.every((s, k) => m[k] === s));
     if (!pre.length) { if (legal.some(m => m[0] === i)) { N.cs.pre = [i]; hap.tap(); drawChk(); } return; }
