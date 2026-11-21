@@ -3918,6 +3918,32 @@ html.web #tabs .tbi{top:262px}
 .shp-pro{margin-top:22px;border:1px dashed var(--border);border-radius:18px;padding:14px 18px;color:var(--muted);font-size:13px}.shp-pro b{color:var(--text);font-weight:600}
 @media(max-width:900px){.shp-sl,.shp-sl.on{grid-template-columns:1fr;min-height:0}.shp-slides{min-height:480px}.shp-sa{order:-1;min-height:210px;padding-top:22px}.shp-sav{transform:scale(.8)}.shp-sx{padding:4px 22px 40px}.shp-sx h2{font-size:34px}.shp-th{flex-basis:176px}.shp-sl.on .shp-sav{animation:none}}
 
+.shp-kt,.shp-pz,.shp-dots{display:none}.fav .fi.lt{background:linear-gradient(145deg,#8e8bff,#4b46c9);color:#fff;font-weight:850}
+@media(max-width:900px){
+.shp-slides{min-height:0}
+.shp-sl,.shp-sl.on{grid-template-columns:1fr;grid-auto-flow:row;justify-items:center;text-align:center;gap:12px;padding:20px 20px 24px;align-content:start}
+.shp-sl:not(.on){position:absolute}
+.shp-sl::before{background:linear-gradient(180deg,rgba(8,8,12,.15),rgba(8,8,12,.5))}
+.shp-sx{display:contents;padding:0}
+.shp-tg{order:1;justify-self:center}
+.shp-sa{order:2;min-height:0;padding:4px 0 0}.shp-sav{transform:none}
+.shp-sx h2{order:3;font-size:40px;letter-spacing:-.035em;margin:2px 0 0}
+.shp-kt{order:4;display:block;color:rgba(255,255,255,.72);font-size:13px;font-weight:600;margin-top:-6px}
+.shp-pz{order:5;display:flex;align-items:baseline;justify-content:center;gap:9px}.shp-pz b{font-size:34px;font-weight:850;color:#fff;letter-spacing:-.02em}.shp-pz s{color:rgba(255,255,255,.5);font-size:17px;font-weight:650}.shp-pz u{text-decoration:none;font-size:12px;font-weight:850;color:#0b1400;background:#a3e635;border-radius:99px;padding:4px 9px;align-self:center}
+.shp-stats{display:none}
+.shp-ab{order:6;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.shp-ab .shp-btn{padding:0 12px;height:46px;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.shp-ab .shp-btn:first-child{grid-column:1/-1;height:56px;font-size:16px;background:#fff;color:#07070c}
+.shp-ab .shp-btn[data-act=cardgift]::before{content:'🎁'}.shp-ab .shp-btn[data-act=shopview]::before{content:'👁'}
+.shp-ab .shp-btn[disabled]{background:rgba(163,230,53,.14)!important;color:#a3e635!important;border:1px solid rgba(163,230,53,.5);opacity:1!important;font-weight:850}
+.shp-ab .shp-btn[disabled]::before{content:'✓'}
+.shp-sl.ownk .shp-pz{display:none}
+.shp-ln{order:7;width:100%;justify-content:center;gap:8px;padding-top:12px;border-top:1px solid rgba(255,255,255,.12)}
+.shp-ln button{text-decoration:none;font-weight:700;color:rgba(255,255,255,.88);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:99px;padding:7px 12px}
+.shp-strip{display:none}
+.shp-dots{display:flex;gap:6px;justify-content:center;margin:12px 0 2px}.shp-dots button{width:6px;height:6px;padding:0;border:0;border-radius:99px;background:rgba(255,255,255,.28);transition:width .25s,background .25s;cursor:pointer}.shp-dots button.on{width:20px;background:#fff}
+}
+
 /* v1.832: «Старт» — первый шаг, неделя новичка, серия, игра дня */
 .st-first{position:relative;overflow:hidden;text-align:center;padding:22px 18px 18px;border-radius:26px;background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 16%,var(--surface)),var(--surface) 70%)}
 .st-first .st-ring{width:64px;height:64px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;color:var(--bg);background:var(--accent);box-shadow:0 0 0 8px color-mix(in srgb,var(--accent) 16%,transparent);animation:stPulse 2.6s ease-in-out infinite}
@@ -5812,7 +5838,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1149';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1150';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -8633,9 +8659,10 @@ function historyHTML0(ws){
 
 function shpGo(c, i){   // v1.808: карусель магазина
   const sl = c.querySelectorAll('.shp-sl'); if (!sl.length) return; i = (i % sl.length + sl.length) % sl.length; c.dataset.i = i;
-  sl.forEach((x, n) => x.classList.toggle('on', n === i)); c.querySelectorAll('.shp-th').forEach((x, n) => x.classList.toggle('on', n === i));
+  sl.forEach((x, n) => x.classList.toggle('on', n === i)); c.querySelectorAll('.shp-th').forEach((x, n) => x.classList.toggle('on', n === i)); c.querySelectorAll('.shp-dots button').forEach((x, n) => x.classList.toggle('on', n === i));
   const st = c.querySelector('.shp-strip'), t = st && st.children[i]; if (t) st.scrollTo({left: t.offsetLeft - (st.clientWidth - t.offsetWidth) / 2, behavior: 'smooth'});
 }
+document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.dataset && t.dataset.l && t.parentNode && t.parentNode.classList.contains('fi')) { t.parentNode.classList.add('lt'); t.parentNode.textContent = t.dataset.l; } }, true);
 document.addEventListener('animationend', e => { if (e.animationName === 'shpPg') { const c = e.target.closest('.shp-car'); if (c) shpGo(c, +c.dataset.i + 1); } });
 function shpSkySync(){   // v1.807: звёздное небо на ВСЮ страницу магазина (fixed за интерфейсом, только тёмная тема)
   const on = S.tab === 'shop' && !S.fprof && themeMode() === 'dark';
@@ -8674,7 +8701,7 @@ function viewShop(){   // v1.782: «Магазин» (вариант «Журн�
   const mineHTML = mineN ? [mKits.length ? `<div class="shp-grid bg">${mKits.map(kc).join('')}</div>` : '', mFr.length ? `<div class="shp-lab"><b>Рамки</b></div><div class="shp-grid fr">${mFr.map(fc).join('')}</div>` : '', mBg.length ? `<div class="shp-lab"><b>Фоны</b></div><div class="shp-grid bg">${mBg.map(bc).join('')}</div>` : ''].join('') : `<div class="shp-empty">${SHOP.ok ? 'Пока ничего не куплено' : 'Загружаем покупки…'}</div>`;
   const pick = (i) => paired[(i * 7 + 3) % paired.length] || fr[i] || fr[0];
   const slide = (f, n, tot) => { const bn = (BG_KEYS.find(x => x[0] === f[0]) || BG_KEYS[0]), sum = SHOP.prices.frame + SHOP.prices.bg, pc = kp && kp < sum ? Math.round((1 - kp / sum) * 100) : 0, mine = kitHas(f[0]);
-    return `<div class="shp-sl${n ? '' : ' on'}"><div class="shp-sbg">${bgFx(bn[0])}</div><div class="shp-sx"><span class="shp-tg">${n ? 'ПОДБОРКА' : 'НОВИНКА'} · ${n + 1} / ${tot}</span><h2>${esc(f[1])}</h2>
+    return `<div class="shp-sl${n ? '' : ' on'}${mine ? ' ownk' : ''}"><div class="shp-sbg">${bgFx(bn[0])}</div><div class="shp-sx"><span class="shp-tg">${n ? 'ПОДБОРКА' : 'НОВИНКА'} · ${n + 1} / ${tot}</span><h2>${esc(f[1])}</h2>${kp ? `<div class="shp-kt">комплект: рамка + фон</div><div class="shp-pz"><b>⭐ ${kp}</b>${pc ? `<s>⭐ ${sum}</s><u>−${pc}%</u>` : ''}</div>` : ''}
       <div class="shp-stats">${kp ? `<div><b>⭐ ${kp}</b>комплект</div>` : ''}${pc ? `<div class="sv"><b>−${pc}%</b>выгода</div>` : ''}<div><b>⭐ ${SHOP.prices.frame} / ${SHOP.prices.bg}</b>по отдельности</div></div>
       <div class="shp-ab">${kp ? (mine ? `<button type="button" class="shp-btn" disabled style="opacity:.7;cursor:default">${isPro() ? 'Открыто в PRO' : 'Комплект у тебя'}</button>` : `<button type="button" class="shp-btn" data-act="shopbuy" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}">Купить комплект</button>`) : ''}${kp ? `<button type="button" class="shp-btn g" data-act="cardgift" data-kind="kit" data-k="${f[0]}">Подарить</button>` : ''}<button type="button" class="shp-btn g" data-act="shopview" data-kind="kit" data-k="${f[0]}" data-n="${esc(f[1])}">Примерить</button></div>
       <div class="shp-ln"><button type="button" data-act="shopbuy" data-kind="frame" data-k="${f[0]}" data-n="${esc(f[1])}">${has('frame', f[0]) ? 'рамка у тебя' : 'только рамка · ⭐ ' + SHOP.prices.frame}</button><button type="button" data-act="shopbuy" data-kind="bg" data-k="${bn[0]}" data-n="${esc(bn[1])}">${has('bg', bn[0]) ? 'фон у тебя' : 'только фон · ⭐ ' + SHOP.prices.bg}</button></div></div>
@@ -8682,7 +8709,7 @@ function viewShop(){   // v1.782: «Магазин» (вариант «Журн�
   const picks = []; for (let i = 0; picks.length < Math.min(10, paired.length || 1) && i < 60; i++) { const f = pick(i); if (!picks.includes(f)) picks.push(f); }
   const th = (f, n) => { const bn = (BG_KEYS.find(x => x[0] === f[0]) || BG_KEYS[0]); return `<button type="button" class="shp-th${n ? '' : ' on'}" data-act="shpslide" data-i="${n}"><span class="shp-thm">${bgFx(bn[0])}</span><span><b>${esc(f[1])}</b><small>${kp ? 'комплект · ⭐ ' + kp : 'рамка · ⭐ ' + SHOP.prices.frame}</small></span></button>`; };
   return `<div class="shp-wrap" data-t="all"><div class="head"><div><h1>Магазин</h1><div class="sub">Рамки, фоны и комплекты для твоего профиля. Купил один раз, остаются навсегда</div></div></div>
-  <div class="shp-car" data-i="0"><div class="shp-slides">${picks.map((f, n) => slide(f, n, picks.length)).join('')}</div><div class="shp-strip">${picks.map(th).join('')}</div></div>
+  <div class="shp-car" data-i="0"><div class="shp-slides">${picks.map((f, n) => slide(f, n, picks.length)).join('')}</div><div class="shp-dots">${picks.map((f, n) => `<button type="button" class="${n ? '' : 'on'}" data-act="shpslide" data-i="${n}" aria-label="${n + 1}"></button>`).join('')}</div><div class="shp-strip">${picks.map(th).join('')}</div></div>
   <div class="shp-tabs"><button type="button" class="on" data-act="shoptab" data-t="all">Всё</button><button type="button" data-act="shoptab" data-t="kit">Комплекты · ${kits.length}</button><button type="button" data-act="shoptab" data-t="fr">Рамки · ${fr.length}</button><button type="button" data-act="shoptab" data-t="bg">Фоны · ${bgs.length}</button><button type="button" data-act="shoptab" data-t="game">Игры · ${REST.list().filter(x => x.pro).length}</button><button type="button" class="shp-mine" data-act="shoptab" data-t="mine">${IC('check', 14)}Мои покупки${mineN ? ' · ' + mineN : ''}</button></div>
   <section class="shp-sec s-kit"><div class="shp-lab"><b>Комплекты</b><span>рамка и фон одного стиля${kp ? ' за ⭐ ' + kp + ' вместо ' + (SHOP.prices.frame + SHOP.prices.bg) : ''}</span></div><div class="shp-grid bg">${kits.map(kc).join('')}</div></section>
   <section class="shp-sec s-fr"><div class="shp-lab"><b>Рамки</b><span>двигаются и светятся, как в профиле</span></div><div class="shp-grid fr">${fr.map(fc).join('')}</div></section>
@@ -9152,7 +9179,7 @@ async function loadMyProfile(id){
 /* v1.524: рамка — сначала предпросмотр (крупно + в профиле + в списке), «Применить» внизу; без PRO — кнопка открытия PRO */
 function frAv(k, px, lv, photo, name){
   const fc = frameCls(k, k ? 0 : lv.level), sp = fc.indexOf('" style="'), cls = sp < 0 ? fc : fc.slice(0, sp), extra = sp < 0 ? '' : fc.slice(sp + 9) + ';';   // v1.529: tierStyle даёт свой style — сливаем, иначе размер терялся
-  return `<div class="fav${cls}" style="${extra}width:${px}px;height:${px}px;font-size:${Math.round(px * .38)}px"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="">` : esc((name[0] || 'V').toUpperCase())}</div></div>`;
+  return `<div class="fav${cls}" style="${extra}width:${px}px;height:${px}px;font-size:${Math.round(px * .38)}px"><div class="fi">${photo ? `<img src="${esc(photo)}" alt="" data-l="${esc((name[0] || 'V').toUpperCase())}">` : esc((name[0] || 'V').toUpperCase())}</div></div>`;
 }
 function frPrevHTML(k, st){
   st = st || {};
