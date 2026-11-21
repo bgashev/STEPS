@@ -4908,7 +4908,7 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-pane.go{animation:hbin .4s cubic-bezier(.2,.9,.25,1)}@keyframes hbin{from{opacity:0;transform:translateX(22px)}}
 .hb-hero{width:128px;height:128px;border-radius:42px;margin:4px auto 18px;display:grid;place-items:center;font-size:64px;background:linear-gradient(150deg,color-mix(in srgb,var(--hc) 55%,#fff),var(--hc));box-shadow:0 20px 50px -14px var(--hc)}
 .hb-bi{display:block;width:100%;border:0;border-bottom:2px solid var(--border);border-radius:0;background:none;color:var(--text);font:800 24px Unbounded,system-ui,sans-serif;letter-spacing:-1px;padding:8px 0 12px;margin:0 0 16px;outline:none;text-align:center;height:auto}.hb-bi:focus{border-color:var(--hc)}
-.hb-em{display:flex;gap:8px;overflow-x:auto;margin:0 -18px;padding:6px 18px;scrollbar-width:none}.hb-em::-webkit-scrollbar{display:none}
+.hb-em{display:flex;gap:8px;overflow-x:auto;margin:0 -18px;padding:6px 18px;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x;-webkit-overflow-scrolling:touch}html.web .hb-em{cursor:grab}html.web .hb-em.drag{cursor:grabbing;user-select:none}html.web .hb-em.drag button{pointer-events:none}.hb-em::-webkit-scrollbar{display:none}
 .hb-em button{flex:none;width:54px;height:54px;border-radius:19px;border:1.5px solid var(--border);background:var(--surface);font-size:25px;cursor:pointer;padding:0;transition:.2s}.hb-em button.on{border-color:var(--hc);background:color-mix(in srgb,var(--hc) 22%,var(--surface));transform:translateY(-3px)}
 .hb-sw{display:flex;gap:10px}.hb-sw i{flex:1;aspect-ratio:1;max-width:44px;border-radius:50%;background:var(--c);cursor:pointer;transition:.2s}.hb-sw i.on{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--c);transform:scale(.88)}
 .hb-lv{height:72px;border-radius:26px;display:flex;align-items:center;gap:12px;padding:0 14px;background:linear-gradient(100deg,var(--hc),color-mix(in srgb,var(--hc) 62%,#fff));color:#0a0a0f}.hb-lv .e{width:44px;height:44px;border-radius:15px;background:rgba(255,255,255,.4);display:grid;place-items:center;font-size:23px;flex:none}.hb-lv b{display:block;font-size:16px}.hb-lv small{font-size:12.5px;color:rgba(10,10,15,.6)}.hb-lv .ck{margin-left:auto;width:36px;height:36px;border-radius:50%;background:#0a0a0f;color:#fff;display:grid;place-items:center;flex:none}
@@ -5996,7 +5996,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1220';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1221';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14720,6 +14720,14 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     <div class="hb-nav">${N.s ? `<button type="button" class="hb-btn g hb-bk" data-act="habnx" data-d="-1">←</button>` : `<button type="button" class="hb-btn g hb-bk" data-act="habx">✕</button>`}<button type="button" class="hb-btn${N.s === last && duo ? ' hb-vs2' : ''}" data-act="${N.s === last ? 'habsave' : 'habnx'}" data-d="1">${N.s === last ? (duo ? 'Создать и позвать' : 'Создать') : 'Дальше'}</button></div></div>`, {type:'habnew'});
     N.an = 0;
   }
+  /* v1.1221: лента иконок привычки в WEB: колесо мыши и перетаскивание */
+  (() => {
+    let d = null;
+    document.addEventListener('wheel', e => { const r = e.target.closest && e.target.closest('.hb-em'); if (!r || r.scrollWidth <= r.clientWidth) return; const dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY; if (!dx) return; r.scrollLeft += dx; e.preventDefault(); }, {passive:false});
+    document.addEventListener('mousedown', e => { if (e.button) return; const r = e.target.closest && e.target.closest('.hb-em'); if (!r) return; d = {r, x:e.clientX, s:r.scrollLeft, m:0}; });
+    window.addEventListener('mousemove', e => { if (!d) return; const dx = e.clientX - d.x; if (!d.m && Math.abs(dx) > 5) { d.m = 1; d.r.classList.add('drag'); } if (d.m) d.r.scrollLeft = d.s - dx; });
+    window.addEventListener('mouseup', e => { if (!d) return; const r = d.r, m = d.m; d = null; r.classList.remove('drag'); if (m) { const k = ev => { ev.stopPropagation(); ev.preventDefault(); }; r.addEventListener('click', k, {capture:true, once:true}); setTimeout(() => r.removeEventListener('click', k, true), 0); } });
+  })();
   /* ---------- v1.1005: споры по привычкам (режим «Дуэль») ---------- */
   let DU = {list:(lsGet('voob_du_' + (typeof UK !== 'undefined' ? UK : 0)) || []).filter(d => d && d.status === 'active'), at:0, shown:new Set()}, DN = null;
   const duItem = id => DU.list.find(x => x.id === +id);
