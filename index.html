@@ -4897,6 +4897,7 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-dt .dt-hold{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;transition:transform .08s,opacity .15s}.hb-dt .dt-hold.hold{transform:scale(.88)}.hb-dt .dt-hold.off{opacity:.35}
 .hb-hm2{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}.hb-hm2 button{aspect-ratio:1;border:0;border-radius:12px;background:var(--surface2);color:var(--muted);font:600 12px Inter,system-ui,sans-serif;display:grid;place-items:center;position:relative;transition:transform .2s cubic-bezier(.3,1.5,.5,1),background .25s}.hb-hm2 button:active{transform:scale(.88)}.hb-hm2 button.f{background:var(--hc);color:#0a0a0f}.hb-hm2 button.p{background:color-mix(in srgb,var(--hc) 38%,var(--surface2))}.hb-hm2 button.t{box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--hc)}.hb-hm2 button.fu{opacity:.28}.hb-hm2 button.lk{opacity:.5}.hb-hm2 button.pl::after{content:'';position:absolute;bottom:3px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--hc)}.hb-hm2 button.f.pl::after{background:#0a0a0f}.hb-hw{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:5px;text-align:center;font-size:10.5px;color:var(--muted);font-weight:600}.hb-wkp{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;margin:0 0 12px;font-size:12.5px;color:var(--muted)}.hb-wkp b{color:var(--text);font:700 15px Inter,system-ui,sans-serif}.hb-wkp i{grid-column:1/3;height:7px;border-radius:9px;background:var(--surface2);overflow:hidden;display:block}.hb-wkp u{display:block;height:100%;width:calc(var(--p)*100%);background:var(--hc);border-radius:9px;transition:width .5s cubic-bezier(.3,1.2,.4,1)}
 .hb-sch{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}.hb-sch button{border:1.5px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:9px 14px;font:600 13px Inter,system-ui,sans-serif;transition:background .25s,color .25s,border-color .25s}.hb-sch button.on{background:var(--text);color:var(--bg);border-color:var(--text)}.hb-sd{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:10px}.hb-sd button{aspect-ratio:1;border:1.5px solid var(--border);background:var(--surface);color:var(--text);border-radius:14px;font:700 12px Inter,system-ui,sans-serif;transition:.25s}.hb-sd button.on{background:var(--hc);color:#0a0a0f;border-color:var(--hc)}.hb-chw{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:12px}.hb-chw button{border:1.5px solid var(--border);background:var(--surface);border-radius:14px;padding:7px 0 6px;display:grid;place-items:center;gap:2px;color:var(--muted);transition:.25s}.hb-chw button small{font-size:10px;font-weight:600}.hb-chw button b{font-size:17px;filter:grayscale(1);opacity:.35;transition:.25s}.hb-chw button.on{border-color:#ff9d5c;background:rgba(255,157,92,.16);color:var(--text)}.hb-chw button.on b{filter:none;opacity:1}.hb-chw button:disabled{opacity:.35}.hb-hm2 button.ch{background:rgba(255,157,92,.32);color:var(--text)}.hb-cells i.ch{background:#ff9d5c!important}
+.dt-tile.nat{position:relative;overflow:hidden}.dt-tile .dt-nat{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:16px;border:0;padding:0;margin:0;background:none;-webkit-appearance:none;appearance:none;z-index:2}
 .dt-sp{display:block;height:14px;font-size:11px;font-style:normal;color:var(--accent);margin-top:2px}
 .dt-two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.dt-tile{border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:16px;padding:12px;text-align:left;font:inherit}
 .dt-tile small{display:block;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}.dt-tile small::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;background:var(--accent)}.dt-tile.e small::before{background:var(--text)}
@@ -5879,7 +5880,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1171';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1172';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14314,13 +14315,14 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   const dtEnd = o => dtAdd(dtStart(o), (o.days || 14) - 1);
   const dtFmt = d => { const f = {day:'numeric', month:'short'}; if (d.getFullYear() !== new Date().getFullYear()) f.year = 'numeric'; try { return d.toLocaleDateString(dtLoc(), f); } catch (e) { return d.getDate() + '.' + (d.getMonth() + 1); } };
   const dtRel = d => { const t = dtToday(); if (dtSame(d, t)) return HT('сегодня'); if (dtSame(d, dtAdd(t, 1))) return HT('завтра'); try { return d.toLocaleDateString(dtLoc(), {weekday:'short'}); } catch (e) { return ''; } };
-  const hbDUI = (o, cx) => { const st = dtStart(o), en = dtEnd(o), tile = (t, d) => `<button type="button" class="dt-tile ${t[0]}" data-act="dtopen" data-cx="${cx}" data-t="${t}"><small>${HT(t === 'start' ? 'Старт' : 'Финиш')}</small><b class="dt-${t[0]}">${dtFmt(d)}</b><span class="dt-${t[0]}r">${dtRel(d)}</span></button>`;
+  const hbDUI = (o, cx) => { const st = dtStart(o), en = dtEnd(o), tile = (t, d) => { const inner = `<small>${HT(t === 'start' ? 'Старт' : 'Финиш')}</small><b class="dt-${t[0]}">${dtFmt(d)}</b><span class="dt-${t[0]}r">${dtRel(d)}</span>`; if (dtMob()) { const r = dtRng(o, t); return `<div class="dt-tile ${t[0]} nat">${inner}<input type="date" class="dt-nat" data-cx="${cx}" data-t="${t}" min="${dtIso(r[0])}" max="${dtIso(r[1])}" value="${dtIso(r[2])}" aria-label="${HT(t === 'start' ? 'Старт' : 'Финиш')}"></div>`; } return `<button type="button" class="dt-tile ${t[0]}" data-act="dtopen" data-cx="${cx}" data-t="${t}">${inner}</button>`; };
     return `<div class="hb-dt" data-cx="${cx}"><div class="hb-stp hb-dstp"><button type="button" class="dt-hold${o.days <= 3 ? ' off' : ''}" data-act="dayhold" data-cx="${cx}" data-d="-1" aria-label="Меньше">−</button><div><input id="hb-dd" type="number" inputmode="numeric" min="3" max="365" value="${o.days}" data-cx="${cx}"><small>${HT('дней')}</small><i class="dt-sp"></i></div><button type="button" class="dt-hold${o.days >= 365 ? ' off' : ''}" data-act="dayhold" data-cx="${cx}" data-d="1" aria-label="Больше">+</button></div><div class="dt-two">${tile('start', st)}${tile('end', en)}</div></div><div class="hb-lb" style="margin-top:12px">🍕 ${HT('Чит-дни')}</div><div class="hb-sch">${[[0, 'Нет'], [1, '1 в неделю'], [2, '2 в неделю']].map(x => `<button type="button" class="${(o.ch || 0) === x[0] ? 'on' : ''}" data-act="duch" data-cx="${cx}" data-n="${x[0]}">${HT(x[1])}</button>`).join('')}</div><div class="cap" style="font-size:12px;margin:6px 0 0">${HT('Чит-день засчитывается как выполненный, срыв в этот день не считается')}</div>`; };
   function dtUp(cx){
     const o = dtO(cx), r = document.querySelector('.hb-dt[data-cx="' + cx + '"]'); if (!o || !r) return;
     const st = dtStart(o), en = dtEnd(o), inp = r.querySelector('#hb-dd'), q = k => r.querySelector(k);
     if (inp && document.activeElement !== inp) inp.value = o.days;
     q('.dt-s').textContent = dtFmt(st); q('.dt-sr').textContent = dtRel(st); q('.dt-e').textContent = dtFmt(en); q('.dt-er').textContent = dtRel(en);
+    r.querySelectorAll('.dt-nat').forEach(i => { const g = dtRng(o, i.dataset.t); i.min = dtIso(g[0]); i.max = dtIso(g[1]); i.value = dtIso(g[2]); });
     r.querySelectorAll('.dt-hold').forEach(b => b.classList.toggle('off', (+b.dataset.d < 0 && o.days <= 3) || (+b.dataset.d > 0 && o.days >= 365)));
   }
   document.addEventListener('pointerdown', e => {
@@ -14377,6 +14379,8 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     setTimeout(() => { old.remove(); nw.style.cssText = ''; v.style.height = ''; DTB = false; }, D + 20);
   }
   /* v1.1167: на iPhone/iPad и Android — системный выбор даты, на компьютере (Windows и т.д.) — свой календарь */
+  const dtIso = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  function dtRng(o, t){ const T0 = dtToday(); return t === 'start' ? [T0, dtAdd(T0, 60), dtStart(o)] : [dtAdd(dtStart(o), 2), dtAdd(dtStart(o), 364), dtEnd(o)]; }
   const dtMob = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   function dtNative(cx, t){
     const o = dtO(cx); if (!o) return; hap.tap();
@@ -14407,6 +14411,8 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     dtUp(DTC.cx); if (scrub) { dtPaint(); dtHead(); } else dtRender();
   }
   function hbDRe(cx){ if (cx === 'du') { if (DN) duNew(DN.hid); } else { const st = document.getElementById('hb-st'); if (st && HBN) HBN.stake = st.value; hbNewSheet(); } }
+  document.addEventListener('change', e => { const t = e.target; if (!t || !t.classList || !t.classList.contains('dt-nat')) return; const o = dtO(t.dataset.cx), m = /^(\d+)-(\d+)-(\d+)$/.exec(t.value || ''); if (!o || !m) return;
+    const d = new Date(+m[1], +m[2] - 1, +m[3]); DTC = {cx:t.dataset.cx, t:t.dataset.t, y:d.getFullYear(), m:d.getMonth()}; DTB = false; dtPick(d.getTime()); DTC = null; dtUp(t.dataset.cx); });
   document.addEventListener('change', e => { const t = e.target; if (!t || t.id !== 'hb-dd') return; const cx = t.dataset.cx, o = cx === 'du' ? DN : HBN; if (!o) return; o.days = Math.max(3, Math.min(365, Math.floor(+t.value) || 14)); o.cu = 1; hbDRe(cx); });
   document.addEventListener('voob-fr', () => { if (!sheetCtx) return; if (sheetCtx.type === 'habnew' && HBN) hbNewSheet(1); else if (sheetCtx.type === 'dunew' && DN) duNew(DN.hid); });
   function hbSchUI(N){
