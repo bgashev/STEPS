@@ -5879,7 +5879,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1169';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1170';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14428,8 +14428,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     if (key === 'mode') { cap = 'Можно в одиночку, а можно сразу с другом: цель на двоих мотивирует сильнее.'; b = `<div class="hb-md">${[['solo', '🧍', 'Для себя', 'Тихо и без свидетелей'], ['duel', '⚔️', q ? 'Кто дольше' : 'Дуэль', q ? 'Кто дольше продержится без срыва' : 'Кто больше дней выполнит, тот и победил'], ['team', '🤝', 'Вместе', 'Общая цель: нужно 70% дней у каждого']].map(m => { const off = q && m[0] === 'team'; return `<div class="hb-mc${N.m === m[0] ? ' on' : ''}${off ? ' off' : ''}" data-act="habmode" data-m="${m[0]}"><span class="ic"><i style="font-style:normal">${m[1]}</i></span><div><b>${m[2]}</b><small>${off ? HT('Недоступно для привычек «бросить»') : m[3]}</small></div></div>`; }).join('')}</div>`; }
     else if (key === 'name') b = `<div class="hb-seg${q ? ' q' : ''}" style="margin-bottom:14px"><button type="button" class="${q ? '' : 'on'}" data-act="habty" data-k="do">Делать</button><button type="button" class="${q ? 'on' : ''}" data-act="habty" data-k="quit">Бросить</button></div>${hero}
       <div class="hb-lb">Название</div><label class="hb-nf" style="--hc:${hc}"><span>✎</span><input id="hb-t" maxlength="40" placeholder="${q ? 'Например: без сладкого' : 'Например: читать 20 минут'}" value="${esc(N.t)}"></label>
-      ${ico}${col}
-      <div class="hb-lb">Или возьми готовое</div><div class="hb-ch">${tpl.map(x => `<button type="button" data-act="habtpl" data-i="${HBT.indexOf(x)}">${x[1]} <span>${x[0]}</span></button>`).join('')}</div>`;
+      ${ico}${col}`;
     else if (key === 'when') b = `<div class="hb-lv" style="--hc:${hc}"><span class="e">${N.e}</span><div><b>${esc(N.t) || 'Читать 20 минут'}</b><small>${N.g > 1 ? N.g + ' раз в день' : 'раз в день'} · ${HBP[N.p].toLowerCase()}</small></div><span class="ck">✓</span></div>
       <div class="hb-lb">Когда</div><div class="hb-wh">${[['m', '🌅'], ['d', '☀️'], ['e', '🌙']].map(x => `<button type="button" class="${N.p === x[0] ? 'on' : ''}" data-act="habpart" data-p="${x[0]}"><span>${x[1]}</span>${HBP[x[0]]}</button>`).join('')}</div>
       <div class="hb-lb">Сколько раз в день</div><div class="hb-stp"><button type="button" data-act="habgoal" data-d="-1">−</button><div><b>${N.g}</b><small>${N.g === 1 ? 'раз в день' : 'раз(а) в день'}</small></div><button type="button" data-act="habgoal" data-d="1">+</button></div>${hbSchUI(N)}`;
