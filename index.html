@@ -5893,7 +5893,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1178';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1179';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14568,7 +14568,6 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     openSheet(`<div class="hb-sh"><h2>${esc(d.emoji)} ${esc(d.title)}</h2><div class="cap">${act ? (d.today < d.starts_on ? HT('старт') + ' ' + duDay(d.starts_on) + ' · ' + d.days + ' дн.' : 'осталось ' + Math.max(0, d.ends_on - d.today + 1) + ' дн.') : (done ? 'спор завершён' : 'ждёт ответа')}${d.stake ? ' · 🎯 ' + esc(d.stake) : ''}</div>${res}
     <div class="hb-vs"><div><span class="du-avb">${duAv(UK, tgUser && tgUser.first_name, 1)}</span><b>Ты</b>${sv ? (act ? '<small class="hb-ok">держусь</small>' : '') : `<em>${d.my_done != null ? d.my_done : d.my_days.length}${tm ? '<small style="font-size:13px;color:var(--muted)"> / ' + d.need + '</small>' : ''}</em>`}</div><i>${tm ? '+' : 'VS'}</i><div><span class="du-avb">${duAv(d.peer, d.peer_name, 1)}</span><b>${esc(d.peer_name)}</b>${sv ? (act ? '<small class="hb-ok">держится</small>' : '') : `<em>${d.peer_done != null ? d.peer_done : d.peer_days.length}${tm ? '<small style="font-size:13px;color:var(--muted)"> / ' + d.need + '</small>' : ''}</em>`}</div></div>
     ${sv ? `<div class="hb-res" style="font-size:24px">${el()}<small>${act ? 'чистое время спора' : 'спор шёл'}</small></div><div class="hb-bar" style="--hc:var(--accent)"><i style="width:${Math.min(100, Math.round(((d.today - d.starts_on + (d.status === 'done' ? 0 : 0)) / d.days) * 100))}%"></i></div>` : `${tm ? `<div class="hb-bar" style="--hc:var(--green,#5FC98A)"><i style="width:${Math.min(100, Math.round((Math.min(d.my_done != null ? d.my_done : d.my_days.length, d.need) + Math.min(d.peer_done != null ? d.peer_done : d.peer_days.length, d.need)) / (2 * d.need) * 100))}%"></i></div><div class="cap" style="margin:6px 0 10px">Общий прогресс: нужно ${d.need} дн. у каждого</div>` : ''}<div class="hb-lb">Ты</div>${row(1)}<div class="hb-lb">${esc(d.peer_name)}</div>${row(2)}`}
-    ${act ? `<button type="button" class="hb-btn g" data-act="dunudge" data-id="${d.id}">👋 Подтолкнуть</button>` : ''}
     ${done ? `<button type="button" class="hb-btn" data-act="durematch" data-id="${d.id}">Реванш</button>` : ''}
     ${ev.length ? `<div class="hb-lb" style="margin-top:14px">События</div><div class="hb-feed">${ev.map(e => `<div><b>${e.kind === 'nudge' ? '👋' : e.kind === 'cheat' ? '🍕' : '✅'} ${e.mine ? 'Ты' : esc(d.peer_name)} ${e.kind === 'nudge' ? 'подтолкнул' : e.kind === 'cheat' ? 'взял чит-день' : 'отметил привычку'}</b><small>${when(e.at)}</small></div>`).join('')}</div>` : ''}
     <button type="button" class="hb-btn l" data-act="habx">Закрыть</button></div>`, {type:'duroom'});
