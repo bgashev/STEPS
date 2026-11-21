@@ -1645,8 +1645,9 @@ async function routeSync(body: any) {
   let pushed = 0;
   purgeDue().catch(() => {});
   const frozenNow = await isLocked(tgId);          // М6: во время заморозки записи не принимаются
-  let rowsOut = rows;
-  if (rows.some((r: any) => r?.kind === "cact") && !frozenNow) rowsOut = await vetCustom(tgId, rows);
+  let rowsOut = rows.filter((r: any) => r?.kind !== "habit" || (typeof r.id === "string" && /^h[a-z0-9]{2,24}$/.test(r.id) && JSON.stringify(r.data ?? {}).length < 60000));
+  if (rowsOut.filter((r: any) => r?.kind === "habit").length > 200) rowsOut = rowsOut.filter((r: any) => r?.kind !== "habit");
+  if (rows.some((r: any) => r?.kind === "cact") && !frozenNow) rowsOut = await vetCustom(tgId, rowsOut);
   if (rowsOut.length && !frozenNow) {
     const { data, error } = await db.rpc("sync_push", { p_tg: tgId, p_rows: rowsOut });
     if (error) return fail("Ошибка записи: " + error.message, 500);

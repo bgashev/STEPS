@@ -6002,7 +6002,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1234';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1235';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -6429,7 +6429,7 @@ async function cloudLoad(){
 
 /* ================================================ синхронизация с сервером == */
 const TOK = 'steps_tok_' + (tgUser ? tgUser.id : 'local');
-const COLL = {workout:() => db.workouts, weight:() => db.weights, plan:() => db.plans, cact:() => db.cacts};
+const COLL = {workout:() => db.workouts, weight:() => db.weights, plan:() => db.plans, cact:() => db.cacts, habit:() => (window.__hbList ? window.__hbList() : [])};
 let srvState = inTG ? 'load' : 'off', srvUser = null, lastSync = 0, syncing = false, syncAgain = false, syncTimer = null;
 
 function touch(kind, item){                 // запись изменена на этом устройстве
@@ -6567,6 +6567,7 @@ function applyRemote(rows){
     delete db.sync.dirty[key];
     changed = true;
   }
+  if (rows.some(r => r.kind === 'habit') && window.__hbApplied) window.__hbApplied();
   if (changed && typeof CX !== 'undefined') CX.reg();
   return changed;
 }
@@ -6596,6 +6597,7 @@ async function syncNow(){
     let tok = await ensureToken(false);
     if (!db.sync.init) { markAllDirty(); db.sync.init = true; db.sync.app = 1; }
     else if (!db.sync.app) { try { appScan(true); } catch (e) {} db.sync.app = 1; }
+    if (!db.sync.hab && window.__hbMarkAll) { window.__hbMarkAll(); db.sync.hab = 1; }
     const rows = pendingRows(), snap = rows.map(r => [r.kind + ':' + r.id, r.updated]);
     const body = {since:db.sync.rev || 0, rows};
     let res;
@@ -14500,8 +14502,18 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   const HBE = {do:['💧','📖','🏃','🧘','🌙','🥗','🎸','💊','🧠','📝','🛏️','🚶','🏋️','🚴','🏊','🍎','🥛','☀️','🦷','🧹','💻','🎨','🎹','🌱','🐕','📞','🧺','🙏','🎧','🧴'], quit:['🍬','🚭','📵','🍺','🍔','☕','🎮','💸','🍟','🥤','💬','🛍️','🍕','🍫','🍷','📱','📺','🛋️','⏰','😤','🍰','🧁','🎰','💨','🥃','🍦','🛒','🐌']};
   const HBT = [['Вода','💧','b','do','d',8,'стаканов'],['Чтение','📖','v','do','e',1,'20 минут'],['Зарядка','🤸','g','do','m',1,'10 минут'],['Медитация','🧘','o','do','m',1,'5 минут'],['Лечь до 23:00','🌙','p','do','e',1,'режим сна'],['Без сахара','🍬','r','quit'],['Без курения','🚭','r','quit'],['Без соцсетей перед сном','📵','r','quit']];
   let HB = null, HBN = null, HBTM = 0;
-  function hbLoad(){ if (HB) return HB; try { const o = JSON.parse(localStorage.getItem(HBK) || 'null'); HB = o && Array.isArray(o.list) ? o : {v:1, list:[]}; } catch (e) { HB = {v:1, list:[]}; } return HB; }
-  function hbSave(){ try { localStorage.setItem(HBK, JSON.stringify(HB)); } catch (e) {} }
+  function hbLoad(){ if (HB) return HB; try { const o = JSON.parse(localStorage.getItem(HBK) || 'null'); HB = o && Array.isArray(o.list) ? o : {v:1, list:[]}; } catch (e) { HB = {v:1, list:[]}; } if (typeof hbSnap === 'function' && !HBSIG) { try { hbSnap(); } catch (e) {} } return HB; }
+  /* v1.1235: привычки едут между устройствами: запись синка kind = 'habit' (id привычки, data = вся привычка), побеждает последнее изменение */
+  let HBSIG = null;
+  const hbSig = h => { const o = Object.assign({}, h); delete o.updated; return JSON.stringify(o); };
+  function hbSnap(){ HBSIG = {}; hbLoad().list.forEach(h => { HBSIG[h.id] = hbSig(h); }); }
+  function hbSave(){
+    try { localStorage.setItem(HBK, JSON.stringify(HB)); } catch (e) {}
+    try { if (!HBSIG) return; let ch = false; HB.list.forEach(h => { if (!h || !h.id) return; const g = hbSig(h); if (HBSIG[h.id] !== g) { HBSIG[h.id] = g; touch('habit', h); ch = true; } }); if (ch) { persist(); scheduleSync(1500); } } catch (e) {}
+  }
+  window.__hbList = () => { hbLoad(); if (!HBSIG) hbSnap(); return HB.list; };
+  window.__hbApplied = () => { hbSnap(); try { localStorage.setItem(HBK, JSON.stringify(HB)); } catch (e) {} try { hbRemSync(); } catch (e) {} };
+  window.__hbMarkAll = () => { hbLoad(); if (!HBSIG) hbSnap(); HB.list.forEach(h => { if (h && h.id) { if (!h.updated) h.updated = Math.max(1, +h.cr || 1); touch('habit', h); } }); };
   const hbList = () => hbLoad().list.filter(h => !h.ar);
   const hbGet = id => hbLoad().list.find(h => h.id === id);
   const hbVal = (h, iso) => +((h.log || {})[iso || isoT()]) || 0;
@@ -14559,7 +14571,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     const L = hbList(), D = L.filter(h => h.k !== 'quit'), Q = L.filter(h => h.k === 'quit'), nd = D.filter(h => hbDone(h)).length, dt = new Date();
     const dtxt = (() => { try { return dt.toLocaleDateString(({ru:'ru-RU', en:'en-GB', kk:'kk-KZ'})[curLang()] || 'ru-RU', {weekday:'long', day:'numeric', month:'long'}); } catch (e) { return ''; } })();
     let h = back() + `<div class="hb-h"><div><small>${dtxt}</small><h1>Привычки</h1></div><button type="button" class="hb-add" data-act="habnew" aria-label="Новая привычка">${I('plus', 20)}</button></div>`;
-    duPoll(); if (!window.__hrs) { window.__hrs = 1; hbRemSync(); }
+    duPoll(); if (inTG && Date.now() - lastSync > 20000) scheduleSync(100); if (!window.__hrs) { window.__hrs = 1; hbRemSync(); }
     if (!L.length) return h + duHTML() + `<div class="hb-emp"><div class="hb-gh">${[['📖', '#a78bfa'], ['💧', '#34d98b'], ['🏃', '#ffb454']].map(x => `<div class="hb-gr" style="--c:${x[1]}"><span class="e">${x[0]}</span><div class="t"><i></i><i></i></div><span class="ck"></span></div>`).join('')}</div><div class="hb-gb">Отмечай дела,<br>держи серию</div><div class="hb-gs2"><p>Один тап в день — остальное посчитает VOOB.</p><div class="hb-tl"><div class="hb-tc" style="--c:#34d98b"><div class="ti">💧</div><b>Делай</b></div><div class="hb-tc" style="--c:#ff6b6b"><div class="ti">🚭</div><b>Бросай</b></div><div class="hb-tc" style="--c:#a78bfa"><div class="ti">⚔️</div><b>Спорь</b></div></div></div><button type="button" class="hb-btn hb-gcta" data-act="habnew">${I('plus', 18)}Создать привычку</button></div>`;
     if (D.length) {
       const wd = (dt.getDay() + 6) % 7, t0 = todayN(), lb = HWK(), sk = hbAllStreak(D), all = nd === D.length;
