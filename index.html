@@ -4848,6 +4848,8 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-du.vs{background:linear-gradient(135deg,color-mix(in srgb,#8b6cff 18%,var(--surface)),color-mix(in srgb,#ff5d8f 10%,var(--surface)));border-color:color-mix(in srgb,#8b6cff 30%,var(--border))}
 .hb-du.vs .n{font-family:Unbounded,system-ui,sans-serif;font-weight:800;font-size:24px;letter-spacing:-1px}
 .hb-du.dgl{position:relative;gap:14px;padding:14px 16px 20px;border-radius:24px;background:#111116;border:1px solid #23232c;overflow:hidden}
+.hb-du.dgl.dgin{animation:dgin .8s cubic-bezier(.2,1.1,.3,1) both}@keyframes dgin{0%{opacity:0;transform:translateY(18px) scale(.95);filter:blur(8px)}60%{opacity:1;filter:blur(0)}100%{opacity:1;transform:none;filter:none}}
+.hb-du.dgl.dgin .dg-hl b{animation:growX 1.1s cubic-bezier(.2,.8,.2,1) .35s backwards}
 .dgl .dg-pr{display:flex;flex:none}.dgl .du-av .fav{width:46px;height:46px;font-size:17px}.dgl .dg-pr .du-av+.du-av{margin-left:-14px}
 .dgl .t{flex:1;min-width:0}.dgl .t b{font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dgl .t small{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;margin-top:2px}
 .dgl .dg-cd{text-align:right;flex:none}.dgl .dg-cd small{display:block;color:var(--muted);font-size:11px;font-weight:600}.dgl .dg-cd b{font-family:Unbounded,system-ui,sans-serif;font-weight:800;font-size:17px;letter-spacing:-1px;background:linear-gradient(90deg,#fff,#B4A7EE);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -5913,7 +5915,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1187';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1188';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14546,7 +14548,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     N.an = 0;
   }
   /* ---------- v1.1005: споры по привычкам (режим «Дуэль») ---------- */
-  let DU = {list:[], at:0}, DN = null;
+  let DU = {list:(lsGet('voob_du_' + (typeof UK !== 'undefined' ? UK : 0)) || []).filter(d => d && d.status === 'active'), at:0, shown:new Set()}, DN = null;
   const duItem = id => DU.list.find(x => x.id === +id);
   const duHab = id => hbLoad().list.find(h => h.du === +id);
   function duLink(){
@@ -14558,7 +14560,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   }
   async function duPoll(force){
     if (!inTG) return; if (!force && Date.now() - DU.at < 4000) return; DU.at = Date.now();
-    try { const j = await apiAuth('/duel/list', {}); DU.list = j.duels || []; duLink(); duSync(); if (ST.s === 'hab' && !sheetCtx) render(); } catch (e) {}
+    try { const j = await apiAuth('/duel/list', {}); DU.list = j.duels || []; lsSet('voob_du_' + UK, DU.list.filter(d => d.status === 'active')); duLink(); duSync(); if (ST.s === 'hab' && !sheetCtx) render(); } catch (e) {}
   }
   setInterval(() => { if (ST.s === 'hab' && !document.hidden) duPoll(); }, 12000);
   const duFmt = ms => { ms = Math.max(0, ms); const p = n => String(n).padStart(2, '0'); return Math.floor(ms / 864e5) + HDU() + ' ' + p(Math.floor(ms % 864e5 / 36e5)) + ':' + p(Math.floor(ms % 36e5 / 6e4)) + ':' + p(Math.floor(ms % 6e4 / 1e3)); };
@@ -14575,8 +14577,9 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     out.forEach(d => { h += `<div class="hb-du${DU.fresh === d.id ? ' fresh' : ''}"><div class="t"><b>⏳ «${esc(d.title)}» · ${esc(d.peer_name)}</b><small>Ждём ответ</small></div><div class="hb-bt"><button type="button" class="hb-mini" data-act="ducancel" data-id="${d.id}">Отменить</button></div></div>`; });
     act.forEach(d => { const left = Math.max(0, d.ends_on - d.today + 1), sv = d.kind === 'survive', tm = d.kind === 'team', pre = d.today < d.starts_on, dd = d.starts_on - d.today, mn = d.my_done != null ? d.my_done : d.my_days.length, pn = d.peer_done != null ? d.peer_done : d.peer_days.length;
       const pg = pre ? 0 : Math.max(2, Math.min(100, Math.round((d.today - d.starts_on + 1) / d.days * 100)));
-      h += `<div class="hb-du vs dgl${DU.fresh === d.id ? ' fresh' : ''}" data-act="duroom" data-id="${d.id}"><span class="dg-pr"><span class="du-av">${duAv(UK, tgUser && tgUser.first_name)}</span><span class="du-av">${duAv(d.peer, d.peer_name)}</span></span><div class="t"><b>${esc(d.emoji || '')} ${esc(d.title)}</b><small>${esc(d.peer_name)}${d.stake ? ' · 🎯 ' + esc(d.stake) : ''}${!sv && !pre ? ' · ' + mn + ' : ' + pn : ''}</small></div><div class="dg-cd"><small>${pre ? HT('до старта') : HT('осталось')}</small><b>${pre ? (dd === 1 ? HT('завтра') : dd + ' ' + HDU()) : left + ' ' + HDU()}</b></div><i class="dg-hl"><b style="width:${pg}%"></b></i></div>`; });
+      h += `<div class="hb-du vs dgl${DU.fresh === d.id ? ' fresh' : ''}${DU.shown.has(d.id) ? '' : ' dgin'}" data-act="duroom" data-id="${d.id}"><span class="dg-pr"><span class="du-av">${duAv(UK, tgUser && tgUser.first_name)}</span><span class="du-av">${duAv(d.peer, d.peer_name)}</span></span><div class="t"><b>${esc(d.emoji || '')} ${esc(d.title)}</b><small>${esc(d.peer_name)}${d.stake ? ' · 🎯 ' + esc(d.stake) : ''}${!sv && !pre ? ' · ' + mn + ' : ' + pn : ''}</small></div><div class="dg-cd"><small>${pre ? HT('до старта') : HT('осталось')}</small><b>${pre ? (dd === 1 ? HT('завтра') : dd + ' ' + HDU()) : left + ' ' + HDU()}</b></div><i class="dg-hl"><b style="width:${pg}%"></b></i></div>`; });
     dn.forEach(d => { const tm = d.kind === 'team', w = tm ? (d.draw ? 'Цель достигнута' : 'Цель не достигнута') : d.draw ? (d.kind === 'survive' ? 'Оба продержались' : 'Ничья') : (d.winner === d.peer ? 'Поражение' : 'Победа'); h += `<div class="hb-du" data-act="duroom" data-id="${d.id}"><div class="t"><b>${tm ? (d.draw ? '🤝' : '😬') : d.draw ? '🤝' : d.winner === d.peer ? '😬' : '🏆'} ${w} · «${esc(d.title)}»</b><small>${d.kind === 'survive' ? '' : (d.my_done != null ? d.my_done : d.my_days.length) + ' : ' + (d.peer_done != null ? d.peer_done : d.peer_days.length) + ' · '}${esc(d.peer_name)}</small></div><span style="color:var(--muted)">›</span></div>`; });
+    L.forEach(d => DU.shown.add(d.id));
     return h;
   }
   const drBg = id => { const k = +id === +UK ? myBg() : (BGS.get(+id) || ''); return k ? `<div class="nt-vbg">${bgFx(k)}</div>` : ''; };
