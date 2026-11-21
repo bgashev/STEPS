@@ -5071,6 +5071,9 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 .stk-fl{position:fixed;left:10px;right:10px;z-index:99999;border-radius:24px;padding:12px;background:rgba(40,36,64,.92);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border:1px solid rgba(139,108,255,.5);box-shadow:0 14px 40px rgba(0,0,0,.6);opacity:0;transform:translateY(30px) scale(.96);transition:opacity .3s,transform .3s cubic-bezier(.2,.9,.25,1.1);max-width:560px;margin:0 auto}.stk-fl.on{opacity:1;transform:none}
 .stk-h{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px;color:var(--muted)}.stk-h .w{color:#ff7b7b}
 .stk-r{display:flex;gap:8px;align-items:flex-end}.stk-r textarea{flex:1;resize:none;display:block;min-height:44px;max-height:92px;line-height:1.3;border:1.5px solid rgba(139,108,255,.5);background:rgba(12,12,18,.7);color:#fff;border-radius:16px;padding:11px 14px;font:15px/1.3 inherit;outline:0;overflow:hidden;scrollbar-width:none}.stk-r textarea::-webkit-scrollbar{display:none;width:0}.stk-r button{height:44px;border:0;border-radius:14px;background:#fff;color:#000;font-weight:800;padding:0 16px;cursor:pointer}
+/* v1.1206: пустые привычки — кнопка всегда на виду */
+.hb-emp .hb-gcta{position:sticky;bottom:calc(92px + env(safe-area-inset-bottom));z-index:5;box-shadow:0 12px 30px rgba(0,0,0,.55),0 0 0 6px color-mix(in srgb,var(--bg) 70%,transparent)}
+@media(min-width:900px){html.web .hb-emp .hb-gcta{position:relative;bottom:auto;box-shadow:none}}
 .hd .hd-row{display:flex;align-items:center;font:800 11px Manrope,system-ui,sans-serif;letter-spacing:.2em;color:rgba(255,255,255,.75)}.hd .hd-row i{width:8px;height:8px;border-radius:50%;background:#fff;margin-right:8px;box-shadow:0 0 10px #fff}
 .hd .hd-big{display:inline-block;font:800 44px Unbounded,system-ui,sans-serif;letter-spacing:-3px;line-height:1;margin:8px 0 0}.hd .hd-big small{display:inline;font-size:17px;letter-spacing:-1px;color:rgba(255,255,255,.75);margin-left:4px}
 .hd .hd-tm{display:inline-block;margin-left:10px;font:600 19px Unbounded,system-ui,sans-serif;letter-spacing:-1px;font-variant-numeric:tabular-nums;opacity:.92}
@@ -5978,7 +5981,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1205';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1206';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14500,7 +14503,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     const dtxt = (() => { try { return dt.toLocaleDateString(({ru:'ru-RU', en:'en-GB', kk:'kk-KZ'})[curLang()] || 'ru-RU', {weekday:'long', day:'numeric', month:'long'}); } catch (e) { return ''; } })();
     let h = back() + `<div class="hb-h"><div><small>${dtxt}</small><h1>Привычки</h1></div><button type="button" class="hb-add" data-act="habnew" aria-label="Новая привычка">${I('plus', 20)}</button></div>`;
     duPoll(); if (!window.__hrs) { window.__hrs = 1; hbRemSync(); }
-    if (!L.length) return h + duHTML() + `<div class="hb-emp"><div class="hb-gh">${[['📖', '#a78bfa'], ['💧', '#34d98b'], ['🏃', '#ffb454']].map(x => `<div class="hb-gr" style="--c:${x[1]}"><span class="e">${x[0]}</span><div class="t"><i></i><i></i></div><span class="ck"></span></div>`).join('')}</div><div class="hb-gb">Отмечай дела,<br>держи серию</div><div class="hb-gs2"><p>Один тап в день — остальное посчитает VOOB.</p><div class="hb-tl"><div class="hb-tc" style="--c:#34d98b"><div class="ti">💧</div><b>Делай</b><small>вода, чтение, зарядка</small></div><div class="hb-tc" style="--c:#ff6b6b"><div class="ti">🚭</div><b>Бросай</b><small>счётчик «без» — вживую</small></div><div class="hb-tc" style="--c:#a78bfa"><div class="ti">⚔️</div><b>Спорь</b><small>дуэль с другом</small></div></div></div><button type="button" class="hb-btn hb-gcta" data-act="habnew">${I('plus', 18)}Создать привычку</button></div>`;
+    if (!L.length) return h + duHTML() + `<div class="hb-emp"><div class="hb-gh">${[['📖', '#a78bfa'], ['💧', '#34d98b'], ['🏃', '#ffb454']].map(x => `<div class="hb-gr" style="--c:${x[1]}"><span class="e">${x[0]}</span><div class="t"><i></i><i></i></div><span class="ck"></span></div>`).join('')}</div><div class="hb-gb">Отмечай дела,<br>держи серию</div><div class="hb-gs2"><p>Один тап в день — остальное посчитает VOOB.</p><div class="hb-tl"><div class="hb-tc" style="--c:#34d98b"><div class="ti">💧</div><b>Делай</b></div><div class="hb-tc" style="--c:#ff6b6b"><div class="ti">🚭</div><b>Бросай</b></div><div class="hb-tc" style="--c:#a78bfa"><div class="ti">⚔️</div><b>Спорь</b></div></div></div><button type="button" class="hb-btn hb-gcta" data-act="habnew">${I('plus', 18)}Создать привычку</button></div>`;
     if (D.length) {
       const wd = (dt.getDay() + 6) % 7, t0 = todayN(), lb = HWK(), sk = hbAllStreak(D), all = nd === D.length;
       const fr = n => { const a = D.filter(x => Math.floor((x.cr || 0) / 864e5) <= n && (hbSc(x).t === 'd' || (hbSc(x).t !== 'w' && hbPlanned(x, n)))); return a.length ? Math.round(a.filter(x => hbDone(x, isoOf(n))).length / a.length * 100) : null; };
