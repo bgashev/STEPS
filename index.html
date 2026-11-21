@@ -14371,6 +14371,20 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     v.animate([{height:h0 + 'px'}, {height:h1 + 'px'}], {duration:D, easing:E}); v.style.height = h1 + 'px'; dtHead();
     setTimeout(() => { old.remove(); nw.style.cssText = ''; v.style.height = ''; DTB = false; }, D + 20);
   }
+  /* v1.1167: на iPhone/iPad и Android — системный выбор даты, на компьютере (Windows и т.д.) — свой календарь */
+  const dtMob = () => /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || '') || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  function dtNative(cx, t){
+    const o = dtO(cx); if (!o) return; hap.tap();
+    const ref = t === 'start' ? dtStart(o) : dtEnd(o), T0 = dtToday(), lo = t === 'start' ? T0 : dtAdd(dtStart(o), 2), hi = t === 'start' ? dtAdd(T0, 60) : dtAdd(dtStart(o), 364);
+    const f = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    let i = document.getElementById('dtnat'); if (i) i.remove();
+    i = document.createElement('input'); i.type = 'date'; i.id = 'dtnat'; i.min = f(lo); i.max = f(hi); i.value = f(ref);
+    i.style.cssText = 'position:fixed;left:50%;top:50%;width:2px;height:2px;opacity:0;border:0;padding:0;z-index:-1';
+    i.addEventListener('change', () => { const m = /^(\d+)-(\d+)-(\d+)$/.exec(i.value); if (m) { const d = new Date(+m[1], +m[2] - 1, +m[3]); DTC = {cx, t, y:d.getFullYear(), m:d.getMonth()}; DTB = false; dtPick(d.getTime()); DTC = null; dtUp(cx); } setTimeout(() => i.remove(), 400); });
+    i.addEventListener('blur', () => setTimeout(() => i.remove(), 600));
+    document.body.appendChild(i);
+    try { if (i.showPicker) i.showPicker(); else { i.focus(); i.click(); } } catch (e) { i.remove(); dtOpen(cx, t); }
+  }
   function dtOpen(cx, t){
     const o = dtO(cx); if (!o) return; hap.tap(); const ref = t === 'start' ? dtStart(o) : dtEnd(o); DTC = {cx, t, y:ref.getFullYear(), m:ref.getMonth()}; DTB = false;
     let ov = document.getElementById('dtov'); if (ov) ov.remove(); ov = document.createElement('div'); ov.id = 'dtov';
