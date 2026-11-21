@@ -5084,6 +5084,7 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 .hb-sc b,.hb-sc small{text-shadow:0 1px 10px rgba(0,0,0,.35)}.hb-sc .n{font-size:50px;background:linear-gradient(160deg,#fff 25%,color-mix(in srgb,var(--hc) 40%,#fff));-webkit-background-clip:text;background-clip:text}
 .hb-sc b{font-size:14px;margin-top:8px;max-width:112px}.hb-sc small{color:rgba(255,255,255,.7);font-size:11.5px;display:block;max-width:112px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(prefers-reduced-motion:reduce){.hb-sc::after,.hb-sc .hart svg{animation:none}}
+.drs{display:flex;gap:8px;margin:12px 0 4px}.drs span{flex:1;border-radius:18px;padding:10px 6px;text-align:center;background:var(--surface);border:1px solid var(--border)}.drs b{display:block;font:800 15px Unbounded,system-ui,sans-serif}.drs small{display:block;color:var(--muted);font-size:11.5px;margin-bottom:2px;order:2}
 .hd .hd-row{display:flex;align-items:center;font:800 11px Manrope,system-ui,sans-serif;letter-spacing:.2em;color:rgba(255,255,255,.75)}.hd .hd-row i{width:8px;height:8px;border-radius:50%;background:#fff;margin-right:8px;box-shadow:0 0 10px #fff}
 .hd .hd-big{display:inline-block;font:800 44px Unbounded,system-ui,sans-serif;letter-spacing:-3px;line-height:1;margin:8px 0 0}.hd .hd-big small{display:inline;font-size:17px;letter-spacing:-1px;color:rgba(255,255,255,.75);margin-left:4px}
 .hd .hd-tm{display:inline-block;margin-left:10px;font:600 19px Unbounded,system-ui,sans-serif;letter-spacing:-1px;font-variant-numeric:tabular-nums;opacity:.92}
@@ -5991,7 +5992,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1208';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1209';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14745,6 +14746,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     return r.mine ? `<div class="drq"><b>🔑 Твоя галочка есть, ждём ${duFirst(d)}</b><div class="drq-ch">${ch}</div>${duKeys(d, 1, 0, '✓', '…')}<small>Пока ${duFirst(d)} не ответил, действуют старые условия</small><button type="button" class="hb-btn g" data-act="dureqx" data-id="${r.id}" data-d="${d.id}">Отозвать запрос</button></div>`
       : `<div class="drq"><b>🔑 ${esc(d.peer_name)} предлагает ${r.kind === 'delete' ? 'удалить спор' : 'изменить спор'}</b><div class="drq-ch">${ch}</div>${duKeys(d, 0, 1, '?', '✓')}<div class="drq-bt"><button type="button" class="hb-btn g" data-act="dureqr" data-id="${r.id}" data-d="${d.id}" data-a="0">Против</button><button type="button" class="hb-btn" data-act="dureqr" data-id="${r.id}" data-d="${d.id}" data-a="1">Согласен</button></div></div>`;
   }
+  const duHs = h => `<div class="drs"><span><small>рекорд</small><b>${Math.max(h.b || 0, hbDays(h))} ${HDU()}</b></span><span><small>срывов</small><b>${(h.rl || []).length}</b></span><span><small>вместе</small><b>${hbDays(h)} ${HDU()}</b></span></div><button type="button" class="hb-btn g" data-act="habrel" data-id="${h.id}">Срыв — начать заново</button>`;
   let DM = null;
   function duRefresh(id){ return apiAuth('/duel/get', {id}).then(j => { (DU.ev = DU.ev || {})[id] = j.events || []; const i = DU.list.findIndex(x => x.id === id); if (i >= 0 && j.duel) DU.list[i] = j.duel; duRoomDraw(j, 1); }).catch(() => {}); }
   function duMgSheet(){
@@ -14770,6 +14772,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     ${sv ? hero2 : `<div class="dr-hero"><i class="dr-gl">${drBg(UK)}</i><i class="dr-gr">${drBg(d.peer)}</i><i class="dr-seam"></i><div class="dr-p l"><span class="du-avb">${duAv(UK, tgUser && tgUser.first_name, 1)}</span><b>Ты</b>${sv ? (act ? '<small class="hb-ok">держусь</small>' : '') : `<em>${d.my_done != null ? d.my_done : d.my_days.length}${tm ? '<small> / ' + d.need + '</small>' : ''}</em>`}</div><div class="dr-vsb">${tm ? '+' : 'VS'}</div><div class="dr-p r"><span class="du-avb">${duAv(d.peer, d.peer_name, 1)}</span><b>${esc(d.peer_name)}</b>${sv ? (act ? '<small class="hb-ok">держится</small>' : '') : `<em>${d.peer_done != null ? d.peer_done : d.peer_days.length}${tm ? '<small> / ' + d.need + '</small>' : ''}</em>`}</div>${sv ? `<div class="dr-glass">${el()}</div>` : ''}</div>`}
     ${tr}
     ${act ? duCtl(d) : ''}
+    ${sv && hb0 ? duHs(hb0) : ''}
     ${sv ? '' : `${tm ? `<div class="hb-bar" style="--hc:var(--green,#5FC98A)"><i style="width:${Math.min(100, Math.round((Math.min(d.my_done != null ? d.my_done : d.my_days.length, d.need) + Math.min(d.peer_done != null ? d.peer_done : d.peer_days.length, d.need)) / (2 * d.need) * 100))}%"></i></div><div class="cap" style="margin:6px 0 10px">Общий прогресс: нужно ${d.need} дн. у каждого</div>` : ''}<div class="hb-lb">Ты</div>${row(1)}<div class="hb-lb">${esc(d.peer_name)}</div>${row(2)}`}
     ${done ? `<button type="button" class="hb-btn" data-act="durematch" data-id="${d.id}">Реванш</button>` : ''}
     ${ev.length ? `<div class="hb-lb" style="margin-top:14px">События</div><div class="hb-feed">${ev.map(e => `<div><b>${e.kind === 'nudge' ? '👋' : e.kind === 'cheat' ? '🍕' : '✅'} ${e.mine ? 'Ты' : esc(d.peer_name)} ${e.kind === 'nudge' ? 'подтолкнул' : e.kind === 'cheat' ? 'взял чит-день' : 'отметил привычку'}</b><small>${when(e.at)}</small></div>`).join('')}</div>` : ''}
@@ -14979,7 +14982,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
       if (h.du && t0 - n > 1) { toast(HT('В споре можно отмечать только вчера и сегодня')); return; }
       const iso = isoOf(n), g = h.g || 1, was = hbDone(h, iso); h.log = h.log || {}; if (was) delete h.log[iso]; else h.log[iso] = g; hbSave(); was ? hap.imp() : hap.ok();
       if (h.du) duSync(); if (h.rm != null) hbRemSync(); hbDetail(h); render(); },
-    habopen: el => { const h = hbGet(el.dataset.id); if (h) { hap.tap(); hbDetail(h); } },
+    habopen: el => { const h = hbGet(el.dataset.id); if (h) { hap.tap(); const qd = duQuit(h); if (qd) duRoom(qd.id); else hbDetail(h); } },
     habchk: el => { const h = hbGet(el.dataset.id); if (!h) return; const iso = isoT(), g = h.g || 1, was = hbDone(h); h.log = h.log || {}; let v = hbVal(h, iso); v = g > 1 ? (v >= g ? 0 : v + 1) : (v ? 0 : 1); if (v) h.log[iso] = v; else delete h.log[iso]; hbSave(); const now = hbDone(h); now && !was ? hap.ok() : hap.imp(); if (h.du) duSync(); if (h.rm != null) hbRemSync(); render(); { const rb = document.querySelector('.hb-ck[data-id="' + h.id + '"]'), rr = rb && rb.closest('.hb-r'); if (rr && v) rr.classList.add('fresh'); } if (now && !was) { const b = document.querySelector('.hb-ck[data-id="' + h.id + '"]'); if (b) { b.classList.add('pop'); hbBurst(b); } const D = hbList().filter(x => x.k !== 'quit'); if (D.length > 1 && D.every(x => hbDone(x))) toast(HT('День закрыт — все привычки выполнены')); } },
     habnew: () => { hap.tap(); HBN = null; hbNewSheet(); },
     habty: el => { hap.tap(); HBN = HBN || {k:'do', t:'', e:HBE.do[0], p:'d', g:1, c:'g', s:0, m:'solo', days:14, stake:'', to:0}; const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; const k = el.dataset.k; if (k === HBN.k) return; HBN.k = k; HBN.e = HBE[k][0]; HBN.c = k === 'quit' ? 'r' : 'g'; if (k === 'quit' && HBN.m === 'team') HBN.m = 'duel';
