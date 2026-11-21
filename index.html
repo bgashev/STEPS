@@ -5859,7 +5859,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1157';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1158';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10850,19 +10850,135 @@ const REST = (function(){
     const geo = () => { const S = Math.min(W - 24, H * .6), t = S / 8, x0 = (W - S) / 2, y0 = Math.max(0, (H - S - 110) * .34) + 62; return {S, t, x0, y0}; };
     const lv0 = () => { try { const v = +localStorage.getItem('voob_chk_lv'); return v >= 0 && v < 5 ? v : 2; } catch (e) { return 2; } };
     const sq = (G2, i) => [G2.x0 + (i & 7) * G2.t, G2.y0 + (i >> 3) * G2.t];
-    g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.lvp = g.lvl; g.lvb = 0; g.nb = false; g.res = null; g.anim = null; g.b = ckNew(); g.pre = []; g.legal = []; g.last = []; g.turn = 'w'; g.q = 0; g.bt = 0; g.ghost = []; };
-    const begin = () => { g.b = ckNew(); g.turn = 'w'; g.q = 0; g.pre = []; g.last = []; g.res = null; g.anim = null; g.ghost = []; g.legal = ckLegal(g.b, 'w'); g.ph = 'play'; g.bt = 0; };
+    g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.lvp = g.lvl; g.lvb = 0; g.nb = false; g.res = null; g.anim = null; g.b = ckNew(); g.pre = []; g.legal = []; g.last = []; g.turn = 'w'; g.q = 0; g.bt = 0; g.ghost = []; g.M = []; g.rvTok = (g.rvTok || 0) + 1; g.rvDead = false; Object.defineProperty(g, 'rv', {value: null, writable: true, configurable: true, enumerable: false}); };
+    const begin = () => { g.M = []; g.rvTok = (g.rvTok || 0) + 1; g.rv = null; g.rvDead = false; g.b = ckNew(); g.turn = 'w'; g.q = 0; g.pre = []; g.last = []; g.res = null; g.anim = null; g.ghost = []; g.legal = ckLegal(g.b, 'w'); g.ph = 'play'; g.bt = 0; };
     const move = (path, col) => {
-      const G2 = geo(), r = ckApply(g.b, path, col); g.q = r.took.length || r.man ? 0 : g.q + 1;
+      const G2 = geo(), r = ckApply(g.b, path, col); g.M.push({path: path.slice(), col}); g.q = r.took.length || r.man ? 0 : g.q + 1;
       g.anim = {path, piece: r.piece, t: 0, took: r.took.map(i => ({i, p: g.b[i]})), n: path.length - 1};
       g.b = r.nb; g.last = path; g.pre = []; g.turn = col === 'w' ? 'b' : 'w'; g.legal = ckLegal(g.b, g.turn); sfx(r.took.length ? 'thunk' : 'land'); hap.tap();
       if (!g.legal.length) g.res = {k: col === 'w' ? 'win' : 'lose'}; else if (g.q >= 60) g.res = {k: 'draw'};
     };
+    /* ---------- разбор партии ---------- */
+    const CKRV = [['Лучший ход', '#4cd98a'], ['Отличный ход', '#4cd98a'], ['Хороший ход', '#9ad66a'], ['Неточность', '#ffd24a'], ['Ошибка', '#ff9a3d'], ['Грубая ошибка', '#ff5468']], GRN = '#2fe07a';
+    const ckWP = v => 100 / (1 + Math.exp(-v / 140)), ckEv = v => Math.abs(v) >= 8000 ? (v > 0 ? '+В' : '−В') : (v >= 0 ? '+' : '−') + (Math.abs(v) / 100).toFixed(1);
+    const ckNm = p => p.map(i => 'abcdefgh'[i & 7] + (8 - (i >> 3))).join(Math.abs((p[1] >> 3) - (p[0] >> 3)) >= 2 ? ':' : '-');
+    const ckPl = n => n + (n === 1 ? ' шашку' : n < 5 ? ' шашки' : ' шашек');
+    const rvG = () => { const S = Math.max(200, Math.min(W - 54, H - 188 - 206) - 22), x0 = (W - S) / 2 + 8, y0 = 188; return {S, t: S / 8, x0, y0, by: y0 + S + 90}; };
+    const rvBt = () => { const G2 = rvG(), bw = (Math.min(W - 32, 360) - 16) / 3, sx = (W - (bw * 3 + 16)) / 2; return {prev: {x: sx, y: G2.by, w: bw, h: 36}, next: {x: sx + bw + 8, y: G2.by, w: bw, h: 36}, err: {x: sx + 2 * (bw + 8), y: G2.by, w: bw, h: 36}, exit: {x: W / 2 - 110, y: G2.by + 44, w: 220, h: 36}}; };
+    const inB = (b, x, y) => x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h;
+    const rvPrep = () => {
+      const n = g.M.length; if (n < 2) return;
+      const P = [ckNew()]; for (let i = 0; i < n; i++) P.push(ckApply(P[i], g.M[i].path, g.M[i].col).nb);
+      const tok = ++g.rvTok, rv = {P, n, V: [], B: [], S: [], done: 0, ready: false, cur: n, ev: 50, t0: g.t, cls: [], loss: [], acc: 0, cnt: [0, 0, 0, 0], bad: [], W: [], why: [], tc: 0, alt: 0, altK: 0}; g.rv = rv;
+      const same = (a, b) => !!a && !!b && a.length === b.length && a.every((x, k) => x === b[k]);
+      const fin = () => { let aS = 0, aN = 0;
+        for (let i = 0; i < n; i++) { rv.why[i] = ''; if (i % 2) { rv.cls[i] = -1; rv.loss[i] = 0; continue; }
+          const sc = rv.S[i]; if (!sc) { rv.cls[i] = 0; rv.loss[i] = 0; continue; }
+          const pi = sc.mv.findIndex(x => same(x, g.M[i].path)), bi = sc.bi, eq = pi < 0 || pi === bi || sc.ss[pi] === sc.ss[bi], ls = eq ? 0 : Math.max(0, ckWP(-sc.ss[bi]) - ckWP(-sc.ss[pi]));
+          rv.loss[i] = ls; rv.cls[i] = eq ? 0 : ls < 2 ? 1 : ls < 10 ? 2 : ls < 20 ? 3 : ls < 30 ? 4 : 5;
+          if (rv.cls[i] <= 2) rv.cnt[0]++; else rv.cnt[rv.cls[i] - 2]++; if (rv.cls[i] >= 3) rv.bad.push(i); aS += Math.max(0, Math.min(100, 103.1668 * Math.exp(-0.04354 * ls) - 3.1669)); aN++;
+          if (rv.cls[i] >= 3) { const best = sc.mv[bi], tb = ckApply(P[i], best, 'w').took.length, tp = ckApply(P[i], g.M[i].path, 'w').took.length, rp = i + 1 < n ? g.M[i + 1].path : null, tr = rp ? ckApply(P[i + 1], rp, 'b').took.length : 0, kc = !!P[i + 2] && P[i + 2].filter(x => x === 'B').length > P[i + 1].filter(x => x === 'B').length;
+            rv.why[i] = tb > tp ? 'Упущено взятие: можно было забрать ' + ckPl(tb) : rp && tr > tp ? (tr === 1 ? 'Шашка теряется' : 'Теряются ' + tr + (tr < 5 ? ' шашки' : ' шашек')) + ' после ' + ckNm(rp) : rp && kc ? 'Бот получает дамку после ' + ckNm(rp) : 'Оценка просела: ' + ckEv(rv.V[i]) + ' → ' + ckEv(rv.V[i + 1]); } }
+        rv.acc = aN ? Math.round(aS / aN) : 0; rv.W = rv.V.map(ckWP); rv.ready = true; rv.t0 = g.t; if (!rv.nav) rv.cur = rv.bad.length ? rv.bad[0] + 1 : n; };
+      const step = i => { if (g.rvTok !== tok) return; if (i > n) { fin(); return; }
+        const turn = i % 2 ? 'b' : 'w', nx = turn === 'w' ? 'b' : 'w', mv = ckLegal(P[i], turn);
+        if (!mv.length) { rv.V[i] = turn === 'w' ? -9000 : 9000; rv.done = i + 1; setTimeout(() => step(i + 1), 0); return; }
+        const DL = Date.now() + (turn === 'w' ? 180 : 90); let d = 3, prev = null, cur = [];
+        const fine = ss => { if (turn === 'w') { let bi = 0; ss.forEach((v, j) => { if (v < ss[bi]) bi = j; }); rv.S[i] = {mv, ss, bi}; rv.B[i] = mv[bi]; rv.V[i] = -ss[bi]; } else { rv.V[i] = -Math.max(...ss); rv.B[i] = null; } rv.done = i + 1; setTimeout(() => step(i + 1), 0); };
+        const fn = () => { if (g.rvTok !== tok) return; const cx = {n: 0, out: false, dl: prev ? DL : 0}, s = ckAB(ckApply(P[i], mv[cur.length], turn).nb, nx, d - 1, -1e9, 1e9, cx);
+          if (cx.out) { fine(prev); return; } cur.push(s);
+          if (cur.length === mv.length) { prev = cur; cur = []; if (Date.now() > DL || d >= 8) { fine(prev); return; } d++; }
+          setTimeout(fn, 0); };
+        fn(); };
+      step(0);
+    };
+    const rvEnter = dead => { if (!g.rv) rvPrep(); if (!g.rv) return; g.ph = 'rev'; g.dead = false; g.rvDead = dead; g.rv.nav = false; g.rv.t0 = g.t; hap.tap(); sfx('spark', 3); };
+    g.revBtn = (c, cx, cy) => { const b = {x: cx - 110, y: cy - 21, w: 220, h: 42}; g.rvB = b; const pu = .5 + .5 * Math.sin(g.t * 4); const rv = g.rv, rdy = rv && rv.ready;
+      c.save(); c.shadowColor = C.ac; c.shadowBlur = rdy ? 10 + 8 * pu : 4; rr(c, b.x, b.y, b.w, b.h, 21); c.fillStyle = C.s2; c.fill(); c.shadowBlur = 0; c.lineWidth = 2; c.strokeStyle = C.ac; c.stroke();
+      if (rv && !rdy) { c.save(); rr(c, b.x, b.y, b.w, b.h, 21); c.clip(); c.fillStyle = 'rgba(140,120,255,.28)'; c.fillRect(b.x, b.y, b.w * Math.min(1, rv.done / (rv.n + 1)), b.h); c.restore(); }
+      c.fillStyle = C.tx; c.font = '800 15px ' + C.ff; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(rdy ? 'Разбор партии' : 'Разбор партии · ' + (rv ? Math.round(100 * rv.done / (rv.n + 1)) + '%' : '…'), cx, cy + 1); c.restore(); c.textBaseline = 'alphabetic'; };
+    g.revOpen = (x, y) => { const b = g.rvB; if (b && g.M.length > 1 && inB(b, x, y)) { rvEnter(!!g.dead); return true; } return false; };
+    const rvBm = () => { const rv = g.rv; if (!rv || !rv.ready || rv.cur < 1 || (rv.cur - 1) % 2) return null; return rv.cls[rv.cur - 1] >= 3 ? rv.B[rv.cur - 1] || null : null; };
+    g.revDown = (x, y) => { const rv = g.rv; if (!rv) { g.ph = 'menu'; return; } const B = rvBt(), G2 = rvG();
+      if (inB(B.exit, x, y)) { hap.tap(); if (g.rvDead) g.init(); else begin(); return; }
+      if (!rv.ready) return;
+      if (rvBm()) { const cy0 = G2.y0 + G2.S + 54; if (y >= cy0 - 4 && y <= cy0 + 34) { if (x >= W - 148 && x <= W - 24) { rv.alt = x > W - 86 ? 1 : 0; hap.tap(); sfx('hop'); return; } if (x >= 24 && x <= W - 156) { rv.alt = 1; hap.tap(); sfx('hop'); return; } } }
+      const go = k => { rv.nav = true; rv.cur = Math.max(0, Math.min(rv.n, k)); rv.tc = g.t; hap.tap(); sfx('hop'); };
+      if (inB(B.prev, x, y)) go(rv.cur - 1); else if (inB(B.next, x, y)) go(rv.cur + 1);
+      else if (inB(B.err, x, y)) { if (rv.bad.length) { const nx = rv.bad.find(i => i + 1 > rv.cur); go((nx != null ? nx : rv.bad[0]) + 1); sfx('spark', 4); } else hap.warn(); }
+      else if (y >= 112 && y <= 182 && x >= 16 && x <= W - 16) go(Math.round((x - 24) / (W - 48) * rv.n)); };
+    const ckPc = (c, t, p, x, y, s2) => { const w = p.toLowerCase() === 'w', k = p !== p.toLowerCase(), R = t * .38 * (s2 || 1);
+      c.fillStyle = 'rgba(0,0,0,.35)'; c.beginPath(); c.ellipse(x, y + R * .42, R * .98, R * .55, 0, 0, 7); c.fill();
+      c.fillStyle = w ? '#b7ad98' : '#15101f'; c.beginPath(); c.arc(x, y + R * .16, R, 0, 7); c.fill();
+      const gr = c.createRadialGradient(x - R * .35, y - R * .45, R * .1, x, y, R * 1.05); if (w) { gr.addColorStop(0, '#ffffff'); gr.addColorStop(1, '#d9d0bd'); } else { gr.addColorStop(0, '#5a4a86'); gr.addColorStop(1, '#201833'); } c.fillStyle = gr; c.beginPath(); c.arc(x, y - R * .06, R, 0, 7); c.fill();
+      c.strokeStyle = w ? 'rgba(120,105,80,.5)' : 'rgba(255,255,255,.18)'; c.lineWidth = 1.6; c.beginPath(); c.arc(x, y - R * .06, R * .68, 0, 7); c.stroke();
+      if (k) { c.fillStyle = w ? '#c28a1c' : '#ffd25a'; c.beginPath(); const cy = y - R * .08, u = R * .5; c.moveTo(x - u, cy + u * .55); c.lineTo(x - u * 1.05, cy - u * .5); c.lineTo(x - u * .45, cy); c.lineTo(x, cy - u * .8); c.lineTo(x + u * .45, cy); c.lineTo(x + u * 1.05, cy - u * .5); c.lineTo(x + u, cy + u * .55); c.closePath(); c.fill(); } };
+    g.drawRev = c => {
+      const rv = g.rv, G2 = rvG(), t = G2.t, T = g.t; c.textAlign = 'center'; bg2(c, 'rgba(110,90,230,.4)', .3);
+      c.fillStyle = C.tx; c.font = '800 20px ' + C.ff; c.fillText('Разбор партии', W / 2, 34);
+      if (!rv) return; const cur = rv.cur, n = rv.n, rdy = rv.ready, mA = cur > 0 ? g.M[cur - 1].path : null, mine = cur > 0 && (cur - 1) % 2 === 0, cl = rdy && mine ? rv.cls[cur - 1] : -1, bm = rdy && mine && cl >= 3 ? rv.B[cur - 1] : null;
+      if (rv.altC !== cur) { rv.altC = cur; rv.alt = 0; } if (!bm) rv.alt = 0; rv.altK += (rv.alt - rv.altK) * .12; if (Math.abs(rv.alt - rv.altK) < .003) rv.altK = rv.alt; const ek = rv.altK * rv.altK * (3 - 2 * rv.altK);
+      /* шапка */
+      if (!rdy) { const NP = n + 1, pr = Math.min(1, rv.done / NP), k = Math.min(NP, rv.done), sz = Math.min(7, 340 / NP), tw = NP * sz - 2, tx = (W - tw) / 2;
+        c.fillStyle = C.mu; c.font = '600 13px ' + C.ff; c.fillText('Движок оценивает каждую позицию', W / 2, 70);
+        for (let i = 0; i < NP; i++) { const on = i < k, hot = i === k, h = on ? 14 : hot ? 18 + 4 * Math.sin(T * 14) : 8; c.fillStyle = on ? C.ac : hot ? '#fff' : 'rgba(255,255,255,.12)'; if (hot) { c.save(); c.shadowColor = C.ac; c.shadowBlur = 12; } rr(c, tx + i * sz, 100 - h / 2, Math.max(2, sz - 2), h, 2.5); c.fill(); if (hot) c.restore(); }
+        c.fillStyle = C.tx; c.font = '900 26px ' + C.ff; c.fillText(Math.round(pr * 100) + '%', W / 2, 142); c.fillStyle = C.mu; c.font = '600 11px ' + C.ff; c.fillText('ПОЗИЦИЯ ' + Math.min(NP, k + 1) + ' / ' + NP, W / 2, 162); }
+      else { const e = Math.min(1, (T - rv.t0) * 1.6), ee = 1 - Math.pow(1 - e, 3), ac = rv.acc, col = ac >= 80 ? '#4cd98a' : ac >= 60 ? '#ffd24a' : ac >= 40 ? '#ff9a3d' : '#ff5468';
+        c.lineWidth = 7; c.lineCap = 'round'; c.strokeStyle = 'rgba(255,255,255,.1)'; c.beginPath(); c.arc(56, 80, 30, 0, 7); c.stroke(); c.strokeStyle = col; c.shadowColor = col; c.shadowBlur = 10; c.beginPath(); c.arc(56, 80, 30, -1.5708, -1.5708 + 6.2832 * ac / 100 * ee); c.stroke(); c.shadowBlur = 0;
+        c.fillStyle = C.tx; c.font = '900 22px ' + C.ff; c.textBaseline = 'middle'; c.fillText(Math.round(ac * ee), 56, 81); c.textBaseline = 'alphabetic'; c.fillStyle = C.mu; c.font = '700 10px ' + C.ff; c.fillText('ТОЧНОСТЬ', 56, 122);
+        const cw = (W - 112 - 16) / 2, ch = [[rv.cnt[0], 'Хорошие', '#4cd98a'], [rv.cnt[1], 'Неточности', CKRV[3][1]], [rv.cnt[2], 'Ошибки', CKRV[4][1]], [rv.cnt[3], 'Грубые', CKRV[5][1]]];
+        ch.forEach((q, k) => { const x = 104 + (k % 2) * (cw + 8), y = 54 + (k >> 1) * 36; rr(c, x, y, cw, 30, 15); c.fillStyle = C.s2; c.fill(); c.fillStyle = q[2]; c.beginPath(); c.arc(x + 15, y + 15, 6, 0, 7); c.fill(); c.textAlign = 'left'; c.fillStyle = C.tx; c.font = '800 14px ' + C.ff; c.fillText(q[0], x + 28, y + 20); c.fillStyle = C.mu; c.font = '600 12px ' + C.ff; c.fillText(q[1], x + 28 + c.measureText(q[0]).width + 6, y + 20); c.textAlign = 'center'; });
+        const gx = 24, gw = W - 48, gy = 130, gh = 44; rr(c, gx - 8, gy - 6, gw + 16, gh + 12, 12); c.fillStyle = 'rgba(0,0,0,.25)'; c.fill();
+        const px = i => gx + gw * i / Math.max(1, n), py = i => gy + gh * (1 - rv.W[i] / 100), vis = Math.floor(n * ee);
+        c.beginPath(); c.moveTo(px(0), gy + gh); for (let i = 0; i <= vis; i++) c.lineTo(px(i), py(i)); c.lineTo(px(vis), gy + gh); c.closePath(); c.fillStyle = 'rgba(235,230,255,.18)'; c.fill();
+        c.strokeStyle = 'rgba(255,255,255,.16)'; c.lineWidth = 1; c.beginPath(); c.moveTo(gx, gy + gh / 2); c.lineTo(gx + gw, gy + gh / 2); c.stroke();
+        c.strokeStyle = '#e6e1f2'; c.lineWidth = 2; c.lineJoin = 'round'; c.beginPath(); for (let i = 0; i <= vis; i++) i ? c.lineTo(px(i), py(i)) : c.moveTo(px(i), py(i)); c.stroke();
+        rv.bad.forEach(i => { if (i + 1 > vis) return; c.fillStyle = CKRV[rv.cls[i]][1]; c.beginPath(); c.arc(px(i + 1), py(i + 1), 3.6, 0, 7); c.fill(); });
+        c.strokeStyle = C.ac; c.lineWidth = 2; c.beginPath(); c.moveTo(px(cur), gy - 4); c.lineTo(px(cur), gy + gh + 4); c.stroke(); c.fillStyle = C.ac; c.beginPath(); c.arc(px(cur), py(cur), 4.5, 0, 7); c.fill(); }
+      /* шкала оценки и доска */
+      const ws0 = rdy ? rv.W[cur] : 50, ws = rdy && cur > 0 ? ws0 + (rv.W[cur - 1] - ws0) * ek : ws0; rv.ev += (ws - rv.ev) * .2; const ex = G2.x0 - 16; rr(c, ex, G2.y0, 9, G2.S, 4); c.fillStyle = '#16141f'; c.fill(); c.save(); rr(c, ex, G2.y0, 9, G2.S, 4); c.clip(); c.fillStyle = '#f2eefc'; c.fillRect(ex, G2.y0 + G2.S * (1 - rv.ev / 100), 9, G2.S * rv.ev / 100); c.restore();
+      rr(c, G2.x0 - 8, G2.y0 - 8, G2.S + 16, G2.S + 16, 18); const fg = c.createLinearGradient(0, G2.y0, 0, G2.y0 + G2.S); fg.addColorStop(0, C.s2); fg.addColorStop(1, C.bg); c.fillStyle = fg; c.fill(); c.strokeStyle = C.bd; c.lineWidth = 1.5; c.stroke();
+      c.save(); rr(c, G2.x0, G2.y0, G2.S, G2.S, 10); c.clip();
+      const sq = i => [G2.x0 + (i & 7) * t + t / 2, G2.y0 + (i >> 3) * t + t / 2], tint = (p, col, al) => { if (!p || al < .01) return; c.globalAlpha = al; c.fillStyle = col; p.forEach(i => c.fillRect(G2.x0 + (i & 7) * t, G2.y0 + (i >> 3) * t, t + .5, t + .5)); c.globalAlpha = 1; };
+      for (let i = 0; i < 64; i++) { const px = G2.x0 + (i & 7) * t, py = G2.y0 + (i >> 3) * t, dark = ((i >> 3) + (i & 7)) % 2 === 1; c.fillStyle = dark ? 'rgba(110,90,230,.5)' : 'rgba(255,255,255,.07)'; c.fillRect(px, py, t + .5, t + .5); if (dark) { const sh = c.createLinearGradient(0, py, 0, py + t); sh.addColorStop(0, 'rgba(0,0,0,0)'); sh.addColorStop(1, 'rgba(0,0,0,.22)'); c.fillStyle = sh; c.fillRect(px, py, t + .5, t + .5); } }
+      if (rdy && mA) { if (mine && cl >= 0) tint(mA, CKRV[cl][1], .5 * (1 - ek)); else tint(mA, '#ffd25a', .25); if (bm) tint(bm, GRN, .5 * ek); }
+      const Pc = rv.P[cur];
+      if (bm && ek > .001) { const Pb = rv.P[cur - 1], rA = ckApply(Pb, mA, 'w'), rB = ckApply(Pb, bm, 'w'), end = m => m[m.length - 1];
+        for (let i = 0; i < 64; i++) { const pc = Pb[i]; if (!pc) continue; const da = i === mA[0] ? end(mA) : rA.took.includes(i) ? -1 : i, db = i === bm[0] ? end(bm) : rB.took.includes(i) ? -1 : i; if (da < 0 && db < 0) continue;
+          const pa = sq(da < 0 ? i : da), pb = sq(db < 0 ? i : db), x = pa[0] + (pb[0] - pa[0]) * ek, y = pa[1] + (pb[1] - pa[1]) * ek, gl = ek < .5 ? (da >= 0 ? rA.nb[da] : pc) : (db >= 0 ? rB.nb[db] : pc), al = da < 0 ? ek : db < 0 ? 1 - ek : 1, lf = (i === mA[0] || i === bm[0]) ? Math.sin(Math.PI * ek) * .25 : 0;
+          c.save(); c.globalAlpha = al; ckPc(c, t, gl, x, y - lf * t, 1 + lf * .4); c.restore(); } }
+      else for (let i = 0; i < 64; i++) { const p = Pc[i]; if (!p) continue; const [x, y] = sq(i); ckPc(c, t, p, x, y, 1); }
+      if (bm && ek < .98) { const pts = bm.map(sq), L = pts.length, a0 = pts[L - 2], b0 = pts[L - 1], dx = b0[0] - a0[0], dy = b0[1] - a0[1], dd = Math.hypot(dx, dy), ux = dx / dd, uy = dy / dd, k = Math.min(1, (T - rv.tc) * 3);
+        c.save(); c.globalAlpha = .88 * (1 - ek) * k; c.strokeStyle = GRN; c.fillStyle = GRN; c.lineWidth = t * .14; c.lineCap = 'round'; c.lineJoin = 'round'; c.shadowColor = GRN; c.shadowBlur = 10; c.beginPath(); c.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < L - 1; i++) c.lineTo(pts[i][0], pts[i][1]); c.lineTo(b0[0] - ux * 10, b0[1] - uy * 10); c.stroke();
+        c.beginPath(); c.moveTo(b0[0], b0[1]); c.lineTo(b0[0] - ux * 13 - uy * 7, b0[1] - uy * 13 + ux * 7); c.lineTo(b0[0] - ux * 13 + uy * 7, b0[1] - uy * 13 - ux * 7); c.closePath(); c.fill(); c.restore(); }
+      if (!rdy) { const by = G2.y0 + G2.S * ((T * .55) % 1), bh = 70, gr = c.createLinearGradient(0, by - bh, 0, by + 4); gr.addColorStop(0, 'rgba(180,167,238,0)'); gr.addColorStop(1, 'rgba(180,167,238,.42)'); c.fillStyle = gr; c.fillRect(G2.x0, by - bh, G2.S, bh + 4);
+        for (let i = 0; i < 64; i++) { const cy = G2.y0 + (i >> 3) * t + t / 2, d = by - cy; if (d > 0 && d < bh * 1.4) { c.fillStyle = 'rgba(180,167,238,' + (.28 * (1 - d / (bh * 1.4))).toFixed(3) + ')'; c.fillRect(G2.x0 + (i & 7) * t + 2, G2.y0 + (i >> 3) * t + 2, t - 4, t - 4); } }
+        c.fillStyle = 'rgba(255,255,255,.9)'; c.shadowColor = C.ac; c.shadowBlur = 14; c.fillRect(G2.x0, by, G2.S, 2); c.shadowBlur = 0; }
+      else { const fl = rv.was ? Math.max(0, 1 - (T - rv.t0) * 1.6) : 0; if (fl > 0) { c.fillStyle = 'rgba(255,255,255,' + (.5 * fl).toFixed(3) + ')'; c.fillRect(G2.x0, G2.y0, G2.S, G2.S); } }
+      c.restore();
+      if (!rdy) { rv.was = 1; const L = 12, br = .5 + .5 * Math.sin(T * 3), x1 = G2.x0 - 8, y1 = G2.y0 - 8, x2 = G2.x0 + G2.S + 8, y2 = G2.y0 + G2.S + 8; c.save(); c.strokeStyle = C.ac; c.lineWidth = 2.5; c.lineCap = 'round'; c.globalAlpha = .6 + .4 * br;
+        [[x1, y1, 1, 1], [x2, y1, -1, 1], [x1, y2, 1, -1], [x2, y2, -1, -1]].forEach(a => { c.beginPath(); c.moveTo(a[0], a[1] + a[3] * L); c.lineTo(a[0], a[1]); c.lineTo(a[0] + a[2] * L, a[1]); c.stroke(); }); c.restore(); }
+      /* подпись хода */
+      const iy = G2.y0 + G2.S + 24; c.textAlign = 'center';
+      if (cur === 0) { c.fillStyle = C.tx; c.font = '800 16px ' + C.ff; c.fillText('Начальная позиция', W / 2, iy); }
+      else if (rdy) { const sn = ek > .5 ? 'Лучший ход' : (Math.floor((cur - 1) / 2) + 1) + (mine ? '. ' : '… ') + ckNm(mA); c.font = '800 16px ' + C.ff; const w1 = c.measureText(sn).width, lab = ek > .5 ? ckNm(rv.B[cur - 1]) : mine ? CKRV[cl][0] : 'Ход бота', w2 = c.measureText('  ·  ' + lab).width, x1 = W / 2 - (w1 + w2) / 2;
+        c.textAlign = 'left'; c.fillStyle = C.tx; c.fillText(sn, x1, iy); c.fillStyle = ek > .5 ? GRN : mine ? CKRV[cl][1] : C.mu; c.fillText('  ·  ' + lab, x1 + w1, iy); c.textAlign = 'center'; c.fillStyle = C.mu;
+        const ev = ckEv(rv.V[cur]), tx2 = bm ? (ek > .5 ? 'Так оценка остаётся ' + ckEv(rv.V[cur - 1]) + ' вместо ' + ev : rv.why[cur - 1]) : 'Оценка позиции: ' + ev + ' (для белых)'; c.font = '600 13px ' + C.ff; const tw2 = c.measureText(tx2).width; if (tw2 > W - 32) c.font = '600 ' + Math.max(9, Math.floor(13 * (W - 32) / tw2)) + 'px ' + C.ff; c.fillText(tx2, W / 2, iy + 19);
+        if (bm) { const cx = 24, cy = G2.y0 + G2.S + 54, cw = W - 48 - 132, sx = W - 148; rr(c, cx, cy, cw, 28, 14); c.fillStyle = 'rgba(47,224,122,.13)'; c.fill(); c.lineWidth = 1.2; c.strokeStyle = 'rgba(47,224,122,.4)'; c.stroke();
+          c.fillStyle = GRN; c.beginPath(); c.arc(cx + 15, cy + 14, 9, 0, 7); c.fill(); c.fillStyle = '#0d2a18'; c.font = '900 11px ' + C.ff; c.textBaseline = 'middle'; c.fillText('★', cx + 15, cy + 15); c.textBaseline = 'alphabetic';
+          c.textAlign = 'left'; c.font = '600 12px ' + C.ff; c.fillStyle = C.mu; c.fillText('Лучше было', cx + 31, cy + 18.5); const lw = c.measureText('Лучше было ').width; c.fillStyle = GRN; c.font = '900 14px ' + C.ff; c.fillText(ckNm(rv.B[cur - 1]), cx + 31 + lw, cy + 19); c.fillStyle = C.mu; c.font = '700 12px ' + C.ff; c.textAlign = 'right'; c.fillText(ckEv(rv.V[cur - 1]), cx + cw - 12, cy + 18.5); c.textAlign = 'center';
+          rr(c, sx, cy, 124, 28, 14); c.fillStyle = C.s2; c.fill(); rr(c, sx + 3 + ek * 58, cy + 3, 60, 22, 11); c.fillStyle = ek > .5 ? GRN : C.ac; c.fill(); c.font = '800 12px ' + C.ff; c.fillStyle = ek < .5 ? C.bg : C.mu; c.fillText('Твой', sx + 33, cy + 18); c.fillStyle = ek > .5 ? '#0d2a18' : C.mu; c.fillText('Лучший', sx + 91, cy + 18); } }
+      /* кнопки */
+      const B = rvBt(), btn = (b, txt, on, col) => { rr(c, b.x, b.y, b.w, b.h, 14); c.fillStyle = on ? (col || C.s2) : 'rgba(255,255,255,.04)'; c.fill(); c.lineWidth = 1.4; c.strokeStyle = on ? C.bd : 'rgba(255,255,255,.06)'; c.stroke(); c.fillStyle = on ? C.tx : 'rgba(255,255,255,.3)'; c.font = '800 15px ' + C.ff; c.textBaseline = 'middle'; c.fillText(txt, b.x + b.w / 2, b.y + b.h / 2 + 1); c.textBaseline = 'alphabetic'; };
+      btn(B.prev, '‹  Назад', rdy && cur > 0); btn(B.next, 'Вперёд  ›', rdy && cur < n); btn(B.err, rdy && rv.bad.length ? 'Ошибка ⚠' : 'Нет ошибок', rdy && rv.bad.length > 0, 'rgba(255,154,61,.22)');
+      rr(c, B.exit.x, B.exit.y, B.exit.w, B.exit.h, 18); c.fillStyle = C.ac; c.fill(); c.fillStyle = C.bg; c.font = '900 15px ' + C.ff; c.textBaseline = 'middle'; c.fillText(g.rvDead ? 'В меню' : 'Ещё партия', W / 2, B.exit.y + B.exit.h / 2 + 1); c.textBaseline = 'alphabetic';
+    };
     g.tap = () => {};
     g.down = (x, y) => {
       if (g.dead) return;
+      if (g.ph === 'rev') { g.revDown(x, y); return; }
       if (g.ph === 'menu') { const h = lvHit2(5, x, y); if (h === 'go') { try { localStorage.setItem('voob_chk_lv', g.lvl); } catch (e) {} hap.tap(); sfx('spark', 3); begin(); } else if (h >= 0) { if (h !== g.lvl) g.lvb = 1; g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
-      if (g.ph === 'over') { hap.tap(); begin(); return; }
+      if (g.ph === 'over') { if (g.revOpen(x, y)) return; hap.tap(); begin(); return; }
       if (g.ph !== 'play' || g.turn !== 'w' || g.anim || g.res) return;
       const G2 = geo(), cc = Math.floor((x - G2.x0) / G2.t), rr_ = Math.floor((y - G2.y0) / G2.t); if (cc < 0 || cc > 7 || rr_ < 0 || rr_ > 7) return; const i = rr_ * 8 + cc, pre = g.pre, legal = g.legal.filter(m => pre.every((s, k) => m[k] === s));
       if (!pre.length) { if (legal.some(m => m[0] === i)) { g.pre = [i]; hap.tap(); } return; }
@@ -10874,7 +10990,7 @@ const REST = (function(){
       if (g.dead || g.ph !== 'play') return;
       if (g.anim) { g.anim.t += dt; const G2 = geo(); g.anim.took.forEach(o => { if (!o.d && g.anim.t > .12 + .22 * (g.anim.n - .4) * (o.k || 0)) {} });
         if (g.anim.t >= g.anim.n * .26 + .12) { const a = g.anim; g.anim = null; a.took.forEach(o => { const [px, py] = sq(G2, o.i); bstP(g, px + G2.t / 2, py + G2.t / 2, 10, o.p.toLowerCase() === 'w' ? '#f4efe6' : C.ac, 140); }); if (a.took.length) g.sh = .6;
-          if (g.res) { const k = g.res.k; if (k === 'lose') { g.dieT = 'Бот выиграл'; onDie(g, K); g.newBest = g.nb; } else { g.ph = 'over'; if (k === 'win') { g.pts = CKP[g.lvl]; g.score += g.pts; sfx('perfect', 2); hap.ok(); if (g.score > (s.best[K] || 0)) { s.best[K] = g.score; save(); g.nb = true; pushBest(K); } } } }
+          if (g.res) { if (!g.rv) rvPrep(); const k = g.res.k; if (k === 'lose') { g.dieT = 'Бот выиграл'; onDie(g, K); g.newBest = g.nb; } else { g.ph = 'over'; if (k === 'win') { g.pts = CKP[g.lvl]; g.score += g.pts; sfx('perfect', 2); hap.ok(); if (g.score > (s.best[K] || 0)) { s.best[K] = g.score; save(); g.nb = true; pushBest(K); } } } }
           else if (g.turn === 'b') g.bt = .5; }
         return; }
       if (g.turn === 'b' && !g.res) { g.bt -= dt; if (g.bt <= 0) { const m = ckBot(g.b, g.lvl); if (m) move(m, 'b'); else g.res = {k: 'win'}; } }
@@ -10883,6 +10999,7 @@ const REST = (function(){
       c.save(); shk(c, g); bg2(c, 'rgba(110,90,230,.5)', .3); drawStars(c, g, g.t * 6); const G2 = geo(), t = G2.t;
       c.textAlign = 'center';
       if (g.ph === 'menu') { lvDraw2(c, g, {title: 'Шашки', sub: 'Против бота', lv: CKLV3, note: 'Победы копят очки серии. Проигрыш — серия обнуляется'}); c.restore(); return; }
+      if (g.ph === 'rev') { g.drawRev(c); c.restore(); return; }
       /* шапка */
       c.fillStyle = C.mu; c.font = '700 13px ' + C.ff; c.fillText(CKLV[g.lvl][0].toUpperCase() + ' · СЕРИЯ ' + g.score, W / 2, G2.y0 - 40);
       const my = g.turn === 'w' && !g.res && !g.anim && g.ph === 'play'; c.fillStyle = C.tx; c.font = '800 19px ' + C.ff; c.fillText(g.ph === 'over' ? (g.res && g.res.k === 'win' ? 'Победа!' : 'Ничья') : my ? 'Твой ход' : '', W / 2, G2.y0 - 16); if (g.turn === 'b' && !g.res && g.ph === 'play') thinkDots(c, g, W / 2, G2.y0 - 16);
@@ -10912,6 +11029,7 @@ const REST = (function(){
         piece(A.piece, ax + (bx2 - ax) * e + t / 2, ay + (by2 - ay) * e + t / 2 - Math.sin(e * Math.PI) * t * .22, 1.08); }
       drawFx(c, g);
       if (g.ph === 'over') { c.globalAlpha = .72; c.fillStyle = C.bg; rr(c, G2.x0, G2.y0 + G2.S / 2 - 70, G2.S, 140, 22); c.fill(); c.globalAlpha = 1; const win = g.res && g.res.k === 'win'; c.fillStyle = C.tx; c.font = '800 26px ' + C.ff; c.fillText(win ? 'Победа!' : 'Ничья', W / 2, G2.y0 + G2.S / 2 - 22); c.fillStyle = win ? C.gr : C.mu; c.font = '800 18px ' + C.ff; c.fillText(win ? '+' + g.pts + ' · серия ' + g.score : 'Очки не меняются', W / 2, G2.y0 + G2.S / 2 + 8); c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.fillText('Тап — следующая партия', W / 2, G2.y0 + G2.S / 2 + 44); }
+      if (g.ph === 'over' && g.M.length > 1) g.revBtn(c, W / 2, G2.y0 + G2.S + 84);
       c.textAlign = 'center'; c.fillStyle = C.mu; c.font = '500 12.5px ' + C.ff; c.fillText('Бить обязательно · дамка ходит на любое расстояние', W / 2, G2.y0 + G2.S + 34);
       c.restore(); };
     return g; }
