@@ -4919,6 +4919,14 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-fl{display:flex;gap:6px;overflow-x:auto;margin:-8px -18px 0;padding:18px 18px 16px;scrollbar-width:none}.hb-fl>div:first-child{margin-left:auto}.hb-fl>div:last-child{margin-right:auto}.hb-fl::-webkit-scrollbar{display:none}.hb-fl>div{flex:none;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-weight:600;cursor:pointer;width:76px}.hb-fl>div.on{color:var(--text)}.hb-fl>div.on .hb-avt{box-shadow:0 0 0 3px var(--bg),0 0 0 5px #ff5d8f;transform:scale(1.06)}
 .hb-avt{width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font:800 22px Unbounded,system-ui,sans-serif;color:#0a0a0f;background:var(--a);transition:.25s}
 .hb-fl .fav{width:60px;height:60px;font-size:22px;transition:.25s}.hb-fl>div.on .fav{box-shadow:0 0 0 3px var(--bg),0 0 0 5px #ff5d8f;transform:scale(1.06)}.hb-fl .fav .lvb,.hb-fr .fav .lvb{display:none}.hb-fl>div{position:relative;border-radius:22px;padding:8px 0 6px;transition:background .3s,opacity .3s,color .3s}.hb-fl:has(.on)>div:not(.on){opacity:.42}.hb-fl>div.on{background:linear-gradient(160deg,rgba(139,108,255,.3),rgba(255,93,143,.24));box-shadow:inset 0 0 0 1.5px rgba(255,93,143,.6);color:var(--text);font-weight:800}.hb-fl>div.on::after{content:'✓';position:absolute;top:2px;left:calc(50% + 14px);width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:800 13px/1 Inter,system-ui,sans-serif;color:#fff;background:linear-gradient(135deg,#8b6cff,#ff5d8f);box-shadow:0 0 0 2.5px var(--bg);animation:hbpop .4s cubic-bezier(.3,1.6,.5,1)}@keyframes hbpop{from{transform:scale(0)}}.hb-fr .fav{width:44px;height:44px;font-size:17px}
+/* v1.1201: выбранный друг — мягкое свечение (контейнер с запасом, чтобы ореол не обрезался) */
+.hb-fl{margin:-40px -46px -26px;padding:52px 46px 44px}
+.hb-fl>div{padding:6px 0}.hb-fl:has(.on)>div:not(.on){filter:saturate(.5)}
+.hb-fl>div.on{isolation:isolate;background:none;box-shadow:none;color:var(--text);font-weight:800}
+.hb-fl>div.on .fav{transform:scale(1.1);box-shadow:0 0 0 2px var(--bg),0 0 0 4px #c9a7ff,0 0 22px 4px rgba(167,139,250,.55),0 0 44px 8px rgba(255,93,143,.28)}
+.hb-fl>div.on::before{content:"";position:absolute;z-index:-1;left:50%;top:-6px;width:108px;height:108px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(167,139,250,.3),transparent);pointer-events:none;animation:hbglow 2.6s ease-in-out infinite}@keyframes hbglow{50%{opacity:.5;transform:translateX(-50%) scale(1.12)}}
+.hb-fl>div.on::after{top:2px;left:calc(50% + 16px)}
+@media(prefers-reduced-motion:reduce){.hb-fl>div.on::before{animation:none}}
 /* v1.1162: срок спора */
 .hb-dt .hb-dstp{margin:0 0 10px}.hb-dt .hb-dstp input{font:600 40px Inter,system-ui,sans-serif;letter-spacing:-.5px}
 .hb-dt .dt-hold{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;transition:transform .08s,opacity .15s}.hb-dt .dt-hold.hold{transform:scale(.88)}.hb-dt .dt-hold.off{opacity:.35}
@@ -5945,7 +5953,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1200';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1201';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
