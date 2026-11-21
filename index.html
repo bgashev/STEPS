@@ -5859,7 +5859,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1159';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1160';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10918,7 +10918,7 @@ const REST = (function(){
       c.fillStyle = C.tx; c.font = '800 20px ' + C.ff; c.fillText('Разбор партии', W / 2, 34);
       if (rv && rv.fk) { if (T >= rv.rvT) { rv.fk = 0; rv.ready = true; rv.t0 = T; } else rv.done = Math.floor(Math.min(1, (T - (rv.rvT - 1.5)) / 1.5) * (rv.n + 1)); }
       if (!rv) return; const cur = rv.cur, n = rv.n, rdy = rv.ready, mA = cur > 0 ? g.M[cur - 1].path : null, mine = cur > 0 && (cur - 1) % 2 === 0, cl = rdy && mine ? rv.cls[cur - 1] : -1, bm = rdy && mine && cl >= 3 ? rv.B[cur - 1] : null;
-      if (rv.altC !== cur) { rv.altC = cur; rv.alt = 0; } if (!bm) rv.alt = 0; rv.altK += (rv.alt - rv.altK) * .12; if (Math.abs(rv.alt - rv.altK) < .003) rv.altK = rv.alt; const ek = rv.altK * rv.altK * (3 - 2 * rv.altK);
+      if (rv.altC !== cur) { rv.altC = cur; rv.alt = 0; } if (!bm) { rv.alt = 0; rv.altK = 0; } rv.altK += (rv.alt - rv.altK) * .12; if (Math.abs(rv.alt - rv.altK) < .003) rv.altK = rv.alt; const ek = bm ? rv.altK * rv.altK * (3 - 2 * rv.altK) : 0;
       /* шапка */
       if (!rdy) { const NP = n + 1, pr = Math.min(1, rv.done / NP), k = Math.min(NP, rv.done), sz = Math.min(7, 340 / NP), tw = NP * sz - 2, tx = (W - tw) / 2;
         c.fillStyle = C.mu; c.font = '600 13px ' + C.ff; c.fillText('Движок оценивает каждую позицию', W / 2, 70);
@@ -12046,7 +12046,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       rr(c, G2.x0 - 6, G2.y0 - 6, G2.S + 12, G2.S + 12, 14); c.fillStyle = C.s2; c.fill();
       c.save(); rr(c, G2.x0, G2.y0, G2.S, G2.S, 8); c.clip();
       const bm = rv.ready && mine && cls >= 3 ? rv.B[cur - 1] : null, lc = cls >= 0 ? RVK[cls][1] : C.ac;
-      if (rv.altC !== cur) { rv.altC = cur; rv.alt = 0; } if (!bm) rv.alt = 0; rv.altK = (rv.altK || 0) + ((bm ? rv.alt : 0) - (rv.altK || 0)) * .12; if (Math.abs((bm ? rv.alt : 0) - rv.altK) < .003) rv.altK = bm ? rv.alt : 0; const ek0 = rv.altK * rv.altK * (3 - 2 * rv.altK), GR = RVK[0][1];
+      if (rv.altC !== cur) { rv.altC = cur; rv.alt = 0; } if (!bm) { rv.alt = 0; rv.altK = 0; } rv.altK = (rv.altK || 0) + ((bm ? rv.alt : 0) - (rv.altK || 0)) * .12; if (Math.abs((bm ? rv.alt : 0) - rv.altK) < .003) rv.altK = bm ? rv.alt : 0; const ek0 = bm ? rv.altK * rv.altK * (3 - 2 * rv.altK) : 0, GR = RVK[0][1];
       for (let i = 0; i < 64; i++) { const px = G2.x0 + (i & 7) * t, py = G2.y0 + (i >> 3) * t, dark = ((i >> 3) + (i & 7)) % 2 === 1; c.fillStyle = dark ? '#8d92cc' : '#e6e1f2'; c.fillRect(px, py, t + .5, t + .5);
         if (m && (i === m.f || i === m.t)) { c.globalAlpha = .55 * (1 - ek0); c.fillStyle = lc; c.fillRect(px, py, t + .5, t + .5); c.globalAlpha = 1; }
         if (bm && ek0 > .01 && (i === bm.f || i === bm.t)) { c.globalAlpha = .5 * ek0; c.fillStyle = GR; c.fillRect(px, py, t + .5, t + .5); c.globalAlpha = 1; } }
