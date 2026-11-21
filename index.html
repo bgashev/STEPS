@@ -4890,6 +4890,22 @@ html.web .hm .vc-ch,html.web .hm .fticker,html.web #view .hmw .fticker{backgroun
 .hb-fl{display:flex;gap:12px;overflow-x:auto;margin:0 -18px;padding:4px 18px 8px;scrollbar-width:none}.hb-fl::-webkit-scrollbar{display:none}.hb-fl>div{flex:none;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-weight:600;cursor:pointer;width:64px}.hb-fl>div.on{color:var(--text)}.hb-fl>div.on .hb-avt{box-shadow:0 0 0 3px var(--bg),0 0 0 5px #ff5d8f;transform:scale(1.06)}
 .hb-avt{width:60px;height:60px;border-radius:50%;display:grid;place-items:center;font:800 22px Unbounded,system-ui,sans-serif;color:#0a0a0f;background:var(--a);transition:.25s}
 .hb-fl .fav{width:60px;height:60px;font-size:22px;transition:.25s}.hb-fl>div.on .fav{box-shadow:0 0 0 3px var(--bg),0 0 0 5px #ff5d8f;transform:scale(1.06)}.hb-fl .fav .lvb,.hb-fr .fav .lvb{display:none}.hb-fr .fav{width:44px;height:44px;font-size:17px}
+/* v1.1162: срок спора */
+.hb-dt .hb-dstp{margin:0 0 10px}.hb-dt .hb-dstp input{font:600 40px Inter,system-ui,sans-serif;letter-spacing:-.5px}
+.hb-dt .dt-hold{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:manipulation;transition:transform .08s,opacity .15s}.hb-dt .dt-hold.hold{transform:scale(.88)}.hb-dt .dt-hold.off{opacity:.35}
+.dt-sp{display:block;height:14px;font-size:11px;font-style:normal;color:var(--accent);margin-top:2px}
+.dt-two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.dt-tile{border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:16px;padding:12px;text-align:left;font:inherit}
+.dt-tile small{display:block;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}.dt-tile small::before{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;background:var(--accent)}.dt-tile.e small::before{background:var(--text)}
+.dt-tile b{display:block;font:600 18px Inter,system-ui,sans-serif;margin:7px 0 2px}.dt-tile span{font-size:12px;color:var(--muted)}
+#dtov{position:fixed;inset:0;z-index:9960;display:flex;align-items:flex-end;justify-content:center}.dtbg{position:absolute;inset:0;background:rgba(0,0,0,.6);opacity:0;transition:opacity .22s}#dtov.open .dtbg{opacity:1}
+.dtp{position:relative;width:100%;max-width:560px;background:var(--bg);border-radius:26px 26px 0 0;padding:10px 18px calc(20px + env(safe-area-inset-bottom));transform:translateY(105%);transition:transform .3s cubic-bezier(.2,.8,.2,1)}#dtov.open .dtp{transform:none}
+.dtg{display:block;width:40px;height:4px;border-radius:4px;background:var(--border);margin:0 auto 12px}.dtp h3{margin:4px 0 0;font:600 20px Inter,system-ui,sans-serif}
+.dt-ch{display:flex;align-items:center;justify-content:space-between;margin:12px 0 6px}.dt-ch b{font:600 15px Inter,system-ui,sans-serif;text-transform:capitalize}.dt-ch button{width:36px;height:36px;border-radius:50%;border:0;background:var(--border);color:var(--text);font-size:18px}.dt-ch button:disabled{opacity:.3}
+.dtv{position:relative;overflow:hidden;touch-action:pan-y}.dt-cw{display:grid;grid-template-columns:repeat(7,1fr);row-gap:4px;text-align:center}.dt-cw>span{font-size:11px;color:var(--muted);padding:4px 0;text-transform:uppercase}
+.dt-cw .dc{height:40px;display:grid;place-items:center}.dt-cw .dc button{width:38px;height:38px;border-radius:50%;border:0;background:transparent;color:var(--text);font:500 14px Inter,system-ui,sans-serif;position:relative}.dt-cw .dc button:disabled{opacity:.3}
+.dt-cw .dc.r{background:color-mix(in srgb,var(--accent) 18%,transparent)}.dt-cw .dc.s{border-radius:999px 0 0 999px}.dt-cw .dc.e{border-radius:0 999px 999px 0}.dt-cw .dc.s.e{border-radius:999px}
+.dt-cw .dc.s button{background:var(--accent);color:#fff}.dt-cw .dc.e button{background:var(--text);color:var(--bg)}.dt-cw .dc.t button::after{content:'';position:absolute;bottom:4px;left:50%;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--muted)}
+.dt-sum{display:flex;align-items:baseline;justify-content:space-between;margin:10px 0 12px;font-size:13px;color:var(--muted)}.dt-sum b{font:600 18px Inter,system-ui,sans-serif;color:var(--text)}
 .hb-dstp{margin:-4px 0 12px}.hb-dstp input{width:96px;border:0;background:none;color:var(--text);font:800 30px Unbounded,system-ui,sans-serif;letter-spacing:-1px;text-align:center;outline:none;padding:0;-moz-appearance:textfield;appearance:textfield}.hb-dstp input::-webkit-inner-spin-button,.hb-dstp input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 .hb-sw i.cu{background:conic-gradient(#ff5d5d,#ffb347,#f6e24b,#4cd98a,#4cc9f0,#7b6cff,#ff5dc8,#ff5d5d)}.hb-sw i.cu.on{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--c)}
 .hb-gs2 p{margin:0 0 14px}.hb-ft{list-style:none;margin:0;padding:0;display:grid;gap:10px}.hb-ft li{display:flex;gap:12px;align-items:flex-start}.hb-ft li>span{flex:none;width:36px;height:36px;border-radius:12px;background:var(--surface);border:1px solid var(--border);display:grid;place-items:center;font-size:18px}.hb-ft b{display:block;color:var(--text);font-size:14.5px;margin-bottom:1px}.hb-ft small{display:block;font-size:13px;line-height:1.35}
@@ -5859,7 +5875,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1161';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1162';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14205,7 +14221,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   const hbDone = (h, iso) => hbVal(h, iso) >= (h.g || 1);
   function hbStreak(h){ let n = todayN(), c = 0; if (!hbDone(h, isoOf(n))) n--; while (hbDone(h, isoOf(n)) && c < 3650) { c++; n--; } return c; }
   function hbBest(h){ const ks = Object.keys(h.log || {}).filter(k => hbDone(h, k)).sort(); let b = 0, c = 0, pv = null; ks.forEach(k => { const n = Math.round(Date.parse(k) / 864e5); c = pv !== null && n === pv + 1 ? c + 1 : 1; pv = n; if (c > b) b = c; }); return b; }
-  function hbDays(h){ return Math.floor((Date.now() - (h.s || Date.now())) / 864e5); }
+  function hbDays(h){ return Math.max(0, Math.floor((Date.now() - (h.s || Date.now())) / 864e5)); }
   function hbClock(h){ const ms = Math.max(0, Date.now() - (h.s || Date.now())), d = Math.floor(ms / 864e5), p = n => String(n).padStart(2, '0'); return d + HDU() + ' ' + p(Math.floor(ms % 864e5 / 36e5)) + ':' + p(Math.floor(ms % 36e5 / 6e4)) + ':' + p(Math.floor(ms % 6e4 / 1e3)); }
   const HT = (k, v) => { let o = ''; try { o = trText(k, curLang()); } catch (e) { o = k; } return v === undefined ? o : o.replace('{0}', v); };
   const HDU = () => ({ru:'д', en:'d', kk:'к'})[curLang()] || 'д';
@@ -14253,7 +14269,82 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   function hbPaint(){ const hc = hbCol(HBN.c), wz = document.querySelector('.hb-wz'); if (wz) wz.style.setProperty('--hc', hc); document.querySelectorAll('.hb-hero,.hb-nf').forEach(x => x.style.setProperty('--hc', hc)); document.querySelectorAll('.hb-sw i').forEach(x => { const cu = x.classList.contains('cu'), on = cu ? !HBC[HBN.c] : x.dataset.c === HBN.c; x.classList.toggle('on', on); if (cu) x.style.setProperty('--c', on ? HBN.c : '#fff'); }); }
   document.addEventListener('input', e => { if (e.target && e.target.id === 'hb-hue' && HBN) { HBN.hue = +e.target.value; HBN.c = hbHex(HBN.hue); HBN.cs = 1; hbPaint(); } });
   /* v1.1095: срок спора — 7 / 14 / 30 дней или свой (3–365) */
-  const hbDUI = (o, cx) => { const P = [7, 14, 30], cu = !P.includes(o.days) || !!o.cu; return `<div class="hb-ch">${P.map(n => `<button type="button" class="${!cu && o.days === n ? 'on' : ''}" data-act="dayset" data-cx="${cx}" data-n="${n}">${n} дн.</button>`).join('')}<button type="button" class="${cu ? 'on' : ''}" data-act="dayset" data-cx="${cx}" data-n="0">Свой срок</button></div>${cu ? `<div class="hb-stp hb-dstp"><button type="button" data-act="dayset" data-cx="${cx}" data-d="-1" aria-label="Меньше">−</button><div><input id="hb-dd" type="number" inputmode="numeric" min="3" max="365" value="${o.days}" data-cx="${cx}"><small>дней</small></div><button type="button" data-act="dayset" data-cx="${cx}" data-d="1" aria-label="Больше">+</button></div>` : ''}`; };
+  /* v1.1162: срок спора — зажатие ± (число бежит), старт и финиш датами, календарь шторкой */
+  const dtO = cx => cx === 'du' ? DN : HBN;
+  const dtLoc = () => ({ru:'ru-RU', en:'en-GB', kk:'kk-KZ'})[curLang()] || 'ru-RU';
+  const dtToday = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+  const dtAdd = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+  const dtDiff = (a, b) => Math.round((b - a) / 864e5);
+  const dtSame = (a, b) => a.getTime() === b.getTime();
+  const dtStart = o => dtAdd(dtToday(), Math.max(0, Math.min(60, o.sd || 0)));
+  const dtEnd = o => dtAdd(dtStart(o), (o.days || 14) - 1);
+  const dtFmt = d => { const f = {day:'numeric', month:'short'}; if (d.getFullYear() !== new Date().getFullYear()) f.year = 'numeric'; try { return d.toLocaleDateString(dtLoc(), f); } catch (e) { return d.getDate() + '.' + (d.getMonth() + 1); } };
+  const dtRel = d => { const t = dtToday(); if (dtSame(d, t)) return HT('сегодня'); if (dtSame(d, dtAdd(t, 1))) return HT('завтра'); try { return d.toLocaleDateString(dtLoc(), {weekday:'short'}); } catch (e) { return ''; } };
+  const hbDUI = (o, cx) => { const st = dtStart(o), en = dtEnd(o), tile = (t, d) => `<button type="button" class="dt-tile ${t[0]}" data-act="dtopen" data-cx="${cx}" data-t="${t}"><small>${HT(t === 'start' ? 'Старт' : 'Финиш')}</small><b class="dt-${t[0]}">${dtFmt(d)}</b><span class="dt-${t[0]}r">${dtRel(d)}</span></button>`;
+    return `<div class="hb-dt" data-cx="${cx}"><div class="hb-stp hb-dstp"><button type="button" class="dt-hold${o.days <= 3 ? ' off' : ''}" data-act="dayhold" data-cx="${cx}" data-d="-1" aria-label="Меньше">−</button><div><input id="hb-dd" type="number" inputmode="numeric" min="3" max="365" value="${o.days}" data-cx="${cx}"><small>${HT('дней')}</small><i class="dt-sp"></i></div><button type="button" class="dt-hold${o.days >= 365 ? ' off' : ''}" data-act="dayhold" data-cx="${cx}" data-d="1" aria-label="Больше">+</button></div><div class="dt-two">${tile('start', st)}${tile('end', en)}</div></div>`; };
+  function dtUp(cx){
+    const o = dtO(cx), r = document.querySelector('.hb-dt[data-cx="' + cx + '"]'); if (!o || !r) return;
+    const st = dtStart(o), en = dtEnd(o), inp = r.querySelector('#hb-dd'), q = k => r.querySelector(k);
+    if (inp && document.activeElement !== inp) inp.value = o.days;
+    q('.dt-s').textContent = dtFmt(st); q('.dt-sr').textContent = dtRel(st); q('.dt-e').textContent = dtFmt(en); q('.dt-er').textContent = dtRel(en);
+    r.querySelectorAll('.dt-hold').forEach(b => b.classList.toggle('off', (+b.dataset.d < 0 && o.days <= 3) || (+b.dataset.d > 0 && o.days >= 365)));
+  }
+  document.addEventListener('pointerdown', e => {
+    const b = e.target.closest && e.target.closest('.dt-hold'); if (b) {
+      e.preventDefault(); const cx = b.dataset.cx, dir = +b.dataset.d, o = dtO(cx); if (!o) return;
+      try { b.setPointerCapture(e.pointerId); } catch (_) {}
+      const r = b.closest('.hb-dt'), sp = r && r.querySelector('.dt-sp'); let ticks = 0, t;
+      const step = n => { const was = o.days || 14; o.days = Math.max(3, Math.min(365, was + n)); dtUp(cx); if (DTC && DTC.cx === cx) dtRender(); return o.days !== was; };
+      const stop = () => { clearTimeout(t); b.classList.remove('hold'); if (sp) sp.textContent = ''; ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(n => b.removeEventListener(n, stop)); };
+      const loop = () => { ticks++; const k = ticks > 24 ? 5 : 1; if (!step(dir * k)) { stop(); return; } if (sp) sp.textContent = k > 1 ? '×5' : ''; if (k > 1 || ticks % 3 === 0) hap.tap(); t = setTimeout(loop, ticks < 12 ? 110 : ticks < 24 ? 70 : 85); };
+      b.classList.add('hold'); hap.tap(); step(dir); t = setTimeout(loop, 380);
+      ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(n => b.addEventListener(n, stop));
+      return;
+    }
+    const v = e.target.closest && e.target.closest('.dtv'); DTW = v ? {x:e.clientX, y:e.clientY} : null;
+  });
+  document.addEventListener('pointerup', e => { if (!DTW) return; const dx = e.clientX - DTW.x, dy = e.clientY - DTW.y; DTW = null; if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.5) dtNav(dx < 0 ? 1 : -1); });
+  document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest('.dt-hold')) e.preventDefault(); });
+  document.addEventListener('keydown', e => { const b = e.target.closest && e.target.closest('.dt-hold'); if (b && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); const o = dtO(b.dataset.cx); if (o) { o.days = Math.max(3, Math.min(365, (o.days || 14) + +b.dataset.d)); dtUp(b.dataset.cx); } } });
+  let DTC = null, DTW = null, DTB = false;
+  const dtMonthIdx = (y, m) => { const t = new Date(); return (y - t.getFullYear()) * 12 + m - t.getMonth(); };
+  function dtGrid(y, m){
+    const o = dtO(DTC.cx), st = dtStart(o), en = dtEnd(o), T0 = dtToday(), isS = DTC.t === 'start';
+    const lo = isS ? T0 : dtAdd(st, 2), hi = isS ? dtAdd(T0, 60) : dtAdd(st, 364), off = (new Date(y, m, 1).getDay() + 6) % 7, dim = new Date(y, m + 1, 0).getDate();
+    let h = '<div class="dt-cw">'; for (let i = 0; i < 7; i++) { let w = ''; try { w = new Date(2024, 0, 1 + i).toLocaleDateString(dtLoc(), {weekday:'narrow'}); } catch (_) {} h += `<span>${w}</span>`; }
+    for (let i = 0; i < off; i++) h += '<div></div>';
+    for (let d = 1; d <= dim; d++) { const dt = new Date(y, m, d), a = dtSame(dt, st), z = dtSame(dt, en), r = dt >= st && dt <= en, x = dt < lo || dt > hi; h += `<div class="dc${r ? ' r' : ''}${a ? ' s' : ''}${z ? ' e' : ''}${dtSame(dt, T0) ? ' t' : ''}"><button type="button" data-act="dtday" data-d="${dt.getTime()}"${x ? ' disabled' : ''}>${d}</button></div>`; }
+    return h + '</div>';
+  }
+  function dtHead(){
+    const ov = document.getElementById('dtov'); if (!ov || !DTC) return; const o = dtO(DTC.cx), i = dtMonthIdx(DTC.y, DTC.m), bs = ov.querySelectorAll('.dt-ch button'), t = ov.querySelector('.dt-ch b');
+    bs[0].disabled = i <= 0; bs[1].disabled = i >= 13; try { t.textContent = new Date(DTC.y, DTC.m, 1).toLocaleDateString(dtLoc(), {month:'long', year:'numeric'}); } catch (_) {}
+    ov.querySelector('#dtt').textContent = HT(DTC.t === 'start' ? 'Когда старт?' : 'Когда финиш?');
+    ov.querySelector('#dtr').textContent = dtFmt(dtStart(o)) + ' → ' + dtFmt(dtEnd(o)); ov.querySelector('#dtn').textContent = o.days + ' ' + HDU();
+  }
+  function dtRender(){ const ov = document.getElementById('dtov'); if (!ov || !DTC) return; const v = ov.querySelector('.dtv'); if (DTB) { return; } v.innerHTML = dtGrid(DTC.y, DTC.m); dtHead(); }
+  function dtNav(n){
+    if (!DTC || DTB) return; let m = DTC.m + n, y = DTC.y; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } const i = dtMonthIdx(y, m); if (i < 0 || i > 13) return;
+    DTC.y = y; DTC.m = m; const v = document.querySelector('#dtov .dtv'); if (!v || !v.firstElementChild) { dtRender(); return; }
+    DTB = true; const old = v.firstElementChild, h0 = v.offsetHeight, tmp = document.createElement('div'); tmp.innerHTML = dtGrid(y, m); const nw = tmp.firstElementChild, E = 'cubic-bezier(.25,.8,.25,1)', D = 300, dx = n * 36;
+    v.style.height = h0 + 'px'; [old, nw].forEach(g => { g.style.cssText = 'position:absolute;left:0;right:0;top:0'; }); v.appendChild(nw); const h1 = nw.offsetHeight;
+    old.animate([{transform:'translateX(0)', opacity:1}, {transform:'translateX(' + (-dx) + 'px)', opacity:0}], {duration:D, easing:E, fill:'forwards'});
+    nw.animate([{transform:'translateX(' + dx + 'px)', opacity:0}, {transform:'translateX(0)', opacity:1}], {duration:D, easing:E});
+    v.animate([{height:h0 + 'px'}, {height:h1 + 'px'}], {duration:D, easing:E}); v.style.height = h1 + 'px'; dtHead();
+    setTimeout(() => { old.remove(); nw.style.cssText = ''; v.style.height = ''; DTB = false; }, D + 20);
+  }
+  function dtOpen(cx, t){
+    const o = dtO(cx); if (!o) return; hap.tap(); const ref = t === 'start' ? dtStart(o) : dtEnd(o); DTC = {cx, t, y:ref.getFullYear(), m:ref.getMonth()}; DTB = false;
+    let ov = document.getElementById('dtov'); if (ov) ov.remove(); ov = document.createElement('div'); ov.id = 'dtov';
+    ov.innerHTML = `<div class="dtbg" data-act="dtclose"></div><div class="dtp"><i class="dtg"></i><h3 id="dtt"></h3><div class="dt-ch"><button type="button" data-act="dtpm" data-n="-1">‹</button><b></b><button type="button" data-act="dtpm" data-n="1">›</button></div><div class="dtv"></div><div class="dt-sum"><span id="dtr"></span><b id="dtn"></b></div><button type="button" class="hb-btn" data-act="dtclose">${HT('Готово')}</button></div>`;
+    document.body.appendChild(ov); dtRender(); requestAnimationFrame(() => ov.classList.add('open'));
+  }
+  function dtClose(){ const ov = document.getElementById('dtov'), cx = DTC && DTC.cx; DTC = null; DTB = false; if (ov) { ov.classList.remove('open'); setTimeout(() => ov.remove(), 260); } if (cx) dtUp(cx); }
+  function dtPick(ts){
+    if (!DTC) return; const o = dtO(DTC.cx), d = new Date(+ts); hap.tap();
+    if (DTC.t === 'start') o.sd = Math.max(0, Math.min(60, dtDiff(dtToday(), d))); else o.days = Math.max(3, Math.min(365, dtDiff(dtStart(o), d) + 1));
+    dtUp(DTC.cx); dtRender();
+  }
   function hbDRe(cx){ if (cx === 'du') { if (DN) duNew(DN.hid); } else { const st = document.getElementById('hb-st'); if (st && HBN) HBN.stake = st.value; hbNewSheet(); } }
   document.addEventListener('change', e => { const t = e.target; if (!t || t.id !== 'hb-dd') return; const cx = t.dataset.cx, o = cx === 'du' ? DN : HBN; if (!o) return; o.days = Math.max(3, Math.min(365, Math.floor(+t.value) || 14)); o.cu = 1; hbDRe(cx); });
   document.addEventListener('voob-fr', () => { if (!sheetCtx) return; if (sheetCtx.type === 'habnew' && HBN) hbNewSheet(1); else if (sheetCtx.type === 'dunew' && DN) duNew(DN.hid); });
@@ -14278,7 +14369,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     else { const fl = (FR.data && FR.data.friends) || []; if (!FR.data && inTG && !N.fl) { N.fl = 1; loadFriends().then(() => { if (sheetCtx && sheetCtx.type === 'habnew') hbNewSheet(); }).catch(() => {}); }
       cap = 'Друг получит приглашение в Telegram и увидит только прогресс по этой привычке.'; if (fl.length) { try { askBadges(fl.map(f => f.tg_id)); loadFriendPhotos(); } catch (e) {} }
       b = `<div class="hb-lb">Друзья в VOOB</div>${fl.length ? `<div class="hb-fl">${fl.map((f, i) => `<div class="${N.to === f.tg_id ? 'on' : ''}" data-act="habfr" data-id="${f.tg_id}">${favHTML(f)}${esc(String(f.name || '').split(' ')[0])}</div>`).join('')}</div>` : `<div class="cap">${FR.data ? 'Пока нет друзей в VOOB — добавь друга во вкладке «Друзья»' : 'Загружаю друзей…'}</div>`}
-      <div class="hb-lb">Срок</div>${hbDUI(N, 'hb')}
+      ${hbDUI(N, 'hb')}
       <div class="hb-lb">Ставка (по желанию)</div><input class="hb-bs" id="hb-st" maxlength="60" placeholder="Проигравший ставит кофе" value="${esc(N.stake || '')}">`; }
     openSheet(`<div class="hb-sh hb-wz" style="--hc:${hc}"><div class="hb-dash">${stp.map((_, i) => `<i class="${i <= N.s ? 'f' : ''}"></i>`).join('')}</div><div class="hb-q">${Q[key]}</div>${cap ? `<div class="cap" style="margin:-8px 0 14px">${cap}</div>` : ''}<div class="hb-pane${N.an ? ' go' : ''}">${b}</div>
     <div class="hb-nav">${N.s ? `<button type="button" class="hb-btn g hb-bk" data-act="habnx" data-d="-1">←</button>` : `<button type="button" class="hb-btn g hb-bk" data-act="habx">✕</button>`}<button type="button" class="hb-btn${N.s === last && duo ? ' hb-vs2' : ''}" data-act="${N.s === last ? 'habsave' : 'habnx'}" data-d="1">${N.s === last ? (duo ? 'Создать и позвать' : 'Создать') : 'Дальше'}</button></div></div>`, {type:'habnew'});
@@ -14292,7 +14383,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     DU.list.forEach(d => { if (d.status !== 'active' || duHab(d.id)) return; const sv = d.kind === 'survive'; hbLoad().list.push({id:'h' + Date.now().toString(36) + Math.floor(Math.random() * 99), t:d.title, e:d.emoji, c:sv ? 'r' : 'v', k:sv ? 'quit' : 'do', p:'d', g:d.goal || 1, u:'', s:sv ? (d.started_at || Date.now()) : 0, b:0, log:{}, rl:[], cr:Date.now(), du:d.id}); hbSave(); });
   }
   function duSync(){
-    DU.list.forEach(d => { if (d.status !== 'active' || d.kind === 'survive') return; const h = duHab(d.id); if (!h) return; const v = hbVal(h); if (v !== d.my_today) { const was = d.my_today; d.my_today = v; apiAuth('/duel/log', {id:d.id, v, back:0}).catch(() => { d.my_today = was; }); } });
+    DU.list.forEach(d => { if (d.status !== 'active' || d.kind === 'survive' || d.today < d.starts_on) return; const h = duHab(d.id); if (!h) return; const v = hbVal(h); if (v !== d.my_today) { const was = d.my_today; d.my_today = v; apiAuth('/duel/log', {id:d.id, v, back:0}).catch(() => { d.my_today = was; }); } });
   }
   async function duPoll(force){
     if (!inTG) return; if (!force && Date.now() - DU.at < 4000) return; DU.at = Date.now();
@@ -14300,14 +14391,15 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   }
   setInterval(() => { if (ST.s === 'hab' && !document.hidden) duPoll(); }, 12000);
   const duFmt = ms => { ms = Math.max(0, ms); const p = n => String(n).padStart(2, '0'); return Math.floor(ms / 864e5) + HDU() + ' ' + p(Math.floor(ms % 864e5 / 36e5)) + ':' + p(Math.floor(ms % 36e5 / 6e4)) + ':' + p(Math.floor(ms % 6e4 / 1e3)); };
+  const duDay = n => { try { return new Date(n * 864e5).toLocaleDateString(dtLoc(), {day:'numeric', month:'short', timeZone:'UTC'}); } catch (e) { return ''; } };
   const duIni = n => esc(String(n || '?').trim().charAt(0).toUpperCase() || '?');
   function duHTML(){
     const L = DU.list; if (!L.length) return '';
     const inc = L.filter(d => d.status === 'pending' && !d.mine), out = L.filter(d => d.status === 'pending' && d.mine), act = L.filter(d => d.status === 'active'), dn = L.filter(d => d.status === 'done').slice(0, 2);
     let h = `<div class="hb-sec">Споры<em>${inc.length + out.length + act.length}</em></div>`;
-    inc.forEach(d => { h += `<div class="hb-du"><div class="t"><b>⚔️ ${esc(d.peer_name)} зовёт: «${esc(d.title)}»</b><small>${d.days} дн.${d.stake ? ' · ' + esc(d.stake) : ''}</small></div><div class="hb-bt"><button type="button" class="hb-mini on" data-act="duacc" data-id="${d.id}">Принять</button><button type="button" class="hb-mini" data-act="dudec" data-id="${d.id}">Нет</button></div></div>`; });
+    inc.forEach(d => { h += `<div class="hb-du"><div class="t"><b>⚔️ ${esc(d.peer_name)} зовёт: «${esc(d.title)}»</b><small>${d.days} дн.${d.start_day > d.today ? ' · ' + HT('старт') + ' ' + duDay(d.start_day) : ''}${d.stake ? ' · ' + esc(d.stake) : ''}</small></div><div class="hb-bt"><button type="button" class="hb-mini on" data-act="duacc" data-id="${d.id}">Принять</button><button type="button" class="hb-mini" data-act="dudec" data-id="${d.id}">Нет</button></div></div>`; });
     out.forEach(d => { h += `<div class="hb-du"><div class="t"><b>⏳ «${esc(d.title)}» · ${esc(d.peer_name)}</b><small>Ждём ответ</small></div><div class="hb-bt"><button type="button" class="hb-mini" data-act="ducancel" data-id="${d.id}">Отменить</button></div></div>`; });
-    act.forEach(d => { const left = Math.max(0, d.ends_on - d.today + 1), sv = d.kind === 'survive', tm = d.kind === 'team'; h += `<div class="hb-du vs" data-act="duroom" data-id="${d.id}"><span class="hb-av">${duIni(tgUser && tgUser.first_name)}</span><b class="n">${sv ? '<span class="hb-ok">●</span>' : d.my_days.length}</b><i>${tm ? '+' : 'VS'}</i><b class="n">${sv ? '<span class="hb-ok">●</span>' : d.peer_days.length}</b><span class="hb-av o">${duIni(d.peer_name)}</span><div class="t"><b>${esc(d.title)}</b><small>${esc(d.peer_name)} · осталось ${left} дн.</small></div></div>`; });
+    act.forEach(d => { const left = Math.max(0, d.ends_on - d.today + 1), sv = d.kind === 'survive', tm = d.kind === 'team'; h += `<div class="hb-du vs" data-act="duroom" data-id="${d.id}"><span class="hb-av">${duIni(tgUser && tgUser.first_name)}</span><b class="n">${sv ? '<span class="hb-ok">●</span>' : d.my_days.length}</b><i>${tm ? '+' : 'VS'}</i><b class="n">${sv ? '<span class="hb-ok">●</span>' : d.peer_days.length}</b><span class="hb-av o">${duIni(d.peer_name)}</span><div class="t"><b>${esc(d.title)}</b><small>${esc(d.peer_name)} · ${d.today < d.starts_on ? HT('старт') + ' ' + duDay(d.starts_on) : 'осталось ' + left + ' дн.'}</small></div></div>`; });
     dn.forEach(d => { const tm = d.kind === 'team', w = tm ? (d.draw ? 'Цель достигнута' : 'Цель не достигнута') : d.draw ? (d.kind === 'survive' ? 'Оба продержались' : 'Ничья') : (d.winner === d.peer ? 'Поражение' : 'Победа'); h += `<div class="hb-du" data-act="duroom" data-id="${d.id}"><div class="t"><b>${tm ? (d.draw ? '🤝' : '😬') : d.draw ? '🤝' : d.winner === d.peer ? '😬' : '🏆'} ${w} · «${esc(d.title)}»</b><small>${d.kind === 'survive' ? '' : d.my_days.length + ' : ' + d.peer_days.length + ' · '}${esc(d.peer_name)}</small></div><span style="color:var(--muted)">›</span></div>`; });
     return h;
   }
@@ -14319,7 +14411,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     const row = i => `<div class="hb-cells">${cells.map(c => `<i class="${c[i] ? 'f' : (c[0] < d.today ? 'm' : '')}${c[0] === d.today ? ' t' : ''}"></i>`).join('')}</div>`;
     const res = done ? `<div class="hb-res">${tm ? (d.draw ? '🤝 Цель достигнута вместе' : '😬 Цель не достигнута') : d.draw ? (sv ? '🤝 Оба продержались' : '🤝 Ничья') : d.winner === d.peer ? '😬 Поражение' : '🏆 Победа'}${d.stake && (tm ? !d.draw : !d.draw) ? `<small>🎯 ${esc(d.stake)}</small>` : ''}</div>` : '';
     const when = t => { try { return new Date(t).toLocaleString(({ru:'ru-RU', en:'en-GB', kk:'kk-KZ'})[curLang()] || 'ru-RU', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); } catch (e) { return ''; } };
-    openSheet(`<div class="hb-sh"><h2>${esc(d.emoji)} ${esc(d.title)}</h2><div class="cap">${act ? 'осталось ' + Math.max(0, d.ends_on - d.today + 1) + ' дн.' : (done ? 'спор завершён' : 'ждёт ответа')}${d.stake ? ' · 🎯 ' + esc(d.stake) : ''}</div>${res}
+    openSheet(`<div class="hb-sh"><h2>${esc(d.emoji)} ${esc(d.title)}</h2><div class="cap">${act ? (d.today < d.starts_on ? HT('старт') + ' ' + duDay(d.starts_on) + ' · ' + d.days + ' дн.' : 'осталось ' + Math.max(0, d.ends_on - d.today + 1) + ' дн.') : (done ? 'спор завершён' : 'ждёт ответа')}${d.stake ? ' · 🎯 ' + esc(d.stake) : ''}</div>${res}
     <div class="hb-vs"><div><span class="hb-av big">${duIni(tgUser && tgUser.first_name)}</span><b>Ты</b>${sv ? (act ? '<small class="hb-ok">держусь</small>' : '') : `<em>${d.my_days.length}${tm ? '<small style="font-size:13px;color:var(--muted)"> / ' + d.need + '</small>' : ''}</em>`}</div><i>${tm ? '+' : 'VS'}</i><div><span class="hb-av big o">${duIni(d.peer_name)}</span><b>${esc(d.peer_name)}</b>${sv ? (act ? '<small class="hb-ok">держится</small>' : '') : `<em>${d.peer_days.length}${tm ? '<small style="font-size:13px;color:var(--muted)"> / ' + d.need + '</small>' : ''}</em>`}</div></div>
     ${sv ? `<div class="hb-res" style="font-size:24px">${el()}<small>${act ? 'чистое время спора' : 'спор шёл'}</small></div><div class="hb-bar" style="--hc:var(--accent)"><i style="width:${Math.min(100, Math.round(((d.today - d.starts_on + (d.status === 'done' ? 0 : 0)) / d.days) * 100))}%"></i></div>` : `${tm ? `<div class="hb-bar" style="--hc:var(--green,#5FC98A)"><i style="width:${Math.min(100, Math.round((Math.min(d.my_days.length, d.need) + Math.min(d.peer_days.length, d.need)) / (2 * d.need) * 100))}%"></i></div><div class="cap" style="margin:6px 0 10px">Общий прогресс: нужно ${d.need} дн. у каждого</div>` : ''}<div class="hb-lb">Ты</div>${row(1)}<div class="hb-lb">${esc(d.peer_name)}</div>${row(2)}`}
     ${act ? `<button type="button" class="hb-btn g" data-act="dunudge" data-id="${d.id}">👋 Подтолкнуть</button>` : ''}
@@ -14333,7 +14425,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     const h = hbGet(hid) || {}; if (!DN || DN.hid !== hid || again) DN = {hid, days:14, stake:'', to:0, t:h.t || '', e:h.e || '✅', g:h.g || 1, kind:h.k === 'quit' ? 'survive' : 'duel'}; if (DN.kind !== 'survive' && again && again !== true) DN.kind = again;
     const fl = (FR.data && FR.data.friends) || [], st = document.getElementById('du-st'); if (st) DN.stake = st.value; if (fl.length) { try { askBadges(fl.map(f => f.tg_id)); loadFriendPhotos(); } catch (e) {} }
     openSheet(`<div class="hb-sh"><h2>Бросить вызов</h2><div class="cap">«${esc(DN.t)}» — ${DN.kind === 'survive' ? 'кто дольше продержится без срыва' : DN.kind === 'team' ? 'выполняйте вместе: нужно не меньше 70% дней у каждого' : 'кто больше дней выполнит привычку'}</div>${DN.kind === 'survive' ? '' : `<div class="hb-seg"><button type="button" class="${DN.kind === 'duel' ? 'on' : ''}" data-act="dukind" data-k="duel">⚔️ Дуэль</button><button type="button" class="${DN.kind === 'team' ? 'on' : ''}" data-act="dukind" data-k="team">🤝 Вместе</button></div>`}
-    <div class="hb-lb">Срок</div>${hbDUI(DN, 'du')}
+    ${hbDUI(DN, 'du')}
     <div class="hb-lb">Ставка (по желанию)</div><input class="hb-in" id="du-st" maxlength="60" placeholder="Проигравший ставит кофе" value="${esc(DN.stake)}">
     <div class="hb-lb">Кому вызов</div>${fl.length ? fl.map(f => `<div class="hb-fr${DN.to === f.tg_id ? ' on' : ''}" data-act="dupick" data-id="${f.tg_id}">${favHTML(f)}<b>${esc(f.name)}</b></div>`).join('') : '<div class="cap">Пока нет друзей в VOOB — добавь друга во вкладке «Друзья»</div>'}
     <div class="cap" style="font-size:12px;margin:6px 0 0">🔒 Друг увидит только прогресс по этой привычке и только пока идёт спор.</div>
@@ -14529,8 +14621,13 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     habnx: el => { const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; const d = +el.dataset.d, st = document.getElementById('hb-st'); if (st) HBN.stake = st.value; if (d > 0 && hbSteps(HBN)[HBN.s || 0] === 'name' && !(HBN.t || '').trim()) { toast(HT('Назови привычку')); return; } hap.tap(); HBN.s = Math.max(0, (HBN.s || 0) + d); HBN.an = 1; hbNewSheet(); },
     habmode: el => { if (el.dataset.m !== 'solo' && !inTG) { toast(HT('Споры доступны в Telegram')); return; } hap.tap(); HBN.m = el.dataset.m; document.querySelectorAll('.hb-mc').forEach(x => x.classList.toggle('on', x === el)); const dh = document.querySelector('.hb-dash'); if (dh) { const n = hbSteps(HBN).length; while (dh.children.length > n) dh.lastElementChild.remove(); while (dh.children.length < n) dh.appendChild(document.createElement('i')); } },
     habfr: el => { hap.tap(); HBN.to = +el.dataset.id; const st = document.getElementById('hb-st'); if (st) HBN.stake = st.value; hbNewSheet(); },
+    dayhold: () => {},
+    dtopen: el => { dtOpen(el.dataset.cx, el.dataset.t); },
+    dtclose: () => { dtClose(); },
+    dtpm: el => { dtNav(+el.dataset.n); },
+    dtday: el => { dtPick(el.dataset.d); },
     dayset: el => { hap.tap(); const cx = el.dataset.cx, o = cx === 'du' ? DN : HBN; if (!o) return; if (el.dataset.d) { o.days = Math.max(3, Math.min(365, (o.days || 14) + +el.dataset.d)); o.cu = 1; } else if (+el.dataset.n) { o.days = +el.dataset.n; o.cu = 0; } else o.cu = 1; hbDRe(cx); },
-    habsave: () => { const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; const stI = document.getElementById('hb-st'); if (stI) HBN.stake = stI.value; const nm = (HBN.t || '').trim(); if (!nm) { toast(HT('Назови привычку')); return; } const q = HBN.k === 'quit', duo = HBN.m && HBN.m !== 'solo'; if (duo && !HBN.to) { toast(HT('Выбери друга')); return; } const nh = {id:'h' + Date.now().toString(36) + Math.floor(Math.random() * 99), t:nm.slice(0, 40), e:HBN.e, c:q && !HBN.cs ? 'r' : (HBN.c || 'g'), k:HBN.k, p:q ? 'd' : HBN.p, g:q ? 1 : (HBN.g || 1), u:HBN.u || '', s:q ? Date.now() : 0, b:0, log:{}, rl:[], cr:Date.now()}; hbLoad().list.push(nh); hbSave(); const D0 = duo ? {kind:q ? 'survive' : HBN.m, to:HBN.to, title:nh.t, emoji:nh.e, goal:nh.g, days:HBN.days || 14, stake:HBN.stake || ''} : null; HBN = null; hap.ok(); closeSheet(); render(); if (D0) apiAuth('/duel/create', D0).then(j => { if (j && j.id) { nh.du = j.id; hbSave(); } toast(HT('Вызов отправлен')); duPoll(true); }).catch(e => toast(e && e.message ? e.message : HT('Нет связи'))); },
+    habsave: () => { const t = document.getElementById('hb-t'); if (t) HBN.t = t.value; const stI = document.getElementById('hb-st'); if (stI) HBN.stake = stI.value; const nm = (HBN.t || '').trim(); if (!nm) { toast(HT('Назови привычку')); return; } const q = HBN.k === 'quit', duo = HBN.m && HBN.m !== 'solo'; if (duo && !HBN.to) { toast(HT('Выбери друга')); return; } const nh = {id:'h' + Date.now().toString(36) + Math.floor(Math.random() * 99), t:nm.slice(0, 40), e:HBN.e, c:q && !HBN.cs ? 'r' : (HBN.c || 'g'), k:HBN.k, p:q ? 'd' : HBN.p, g:q ? 1 : (HBN.g || 1), u:HBN.u || '', s:q ? Date.now() : 0, b:0, log:{}, rl:[], cr:Date.now()}; hbLoad().list.push(nh); hbSave(); const D0 = duo ? {kind:q ? 'survive' : HBN.m, to:HBN.to, title:nh.t, emoji:nh.e, goal:nh.g, days:HBN.days || 14, stake:HBN.stake || '', start_in:HBN.sd || 0} : null; HBN = null; hap.ok(); closeSheet(); render(); if (D0) apiAuth('/duel/create', D0).then(j => { if (j && j.id) { nh.du = j.id; hbSave(); } toast(HT('Вызов отправлен')); duPoll(true); }).catch(e => toast(e && e.message ? e.message : HT('Нет связи'))); },
     habrel: el => { const h = hbGet(el.dataset.id); if (!h) return; hap.tap(); const sd = h.du && duItem(h.du); const risk = sd && sd.kind === 'survive' && sd.status === 'active'; openSheet(`<div class="hb-sh"><h2 style="text-align:center">${risk ? 'Срыв закончит спор' : 'Бывает. Что дальше?'}</h2><div class="cap" style="text-align:center">${risk ? esc(HT('Тебе засчитают поражение, победит соперник.')) : esc(HT('Срыв — не конец. Рекорд {0} д останется, а счётчик начнёт заново.', Math.max(h.b || 0, hbDays(h))))}</div><button type="button" class="hb-btn" data-act="habrelok" data-id="${h.id}">Начать заново</button><button type="button" class="hb-btn l" data-act="habx">Это случайное нажатие</button></div>`, {type:'habrel'}); },
     habrelok: el => { const h = hbGet(el.dataset.id); if (!h) return; if (h.du) { const sd = duItem(h.du); if (sd && sd.kind === 'survive' && sd.status === 'active') apiAuth('/duel/slip', {id:h.du}).then(() => duPoll(true)).catch(() => {}); } h.b = Math.max(h.b || 0, hbDays(h)); h.rl = (h.rl || []).concat(Date.now()).slice(-200); h.s = Date.now(); hbSave(); hap.ok(); closeSheet(); render(); },
     habdel: el => { const h = hbGet(el.dataset.id); if (!h) return; if (!h.ar) { hap.warn(); openSheet(`<div class="hb-sh" style="--hc:${hbCol(h.c, 'g')}"><div style="text-align:center;padding:8px 0 4px"><span class="hb-e" style="width:64px;height:64px;font-size:32px;margin:0 auto">${h.e}</span><h2 style="margin:14px 0 4px">Удалить привычку?</h2><div style="font-weight:800;margin-bottom:6px">${esc(h.t)}</div><div class="cap" style="margin:0 0 20px">Она уйдёт в архив. Историю мы сохраним, а вернуть привычку можно в любой момент.</div></div><button type="button" class="hb-btn" data-act="habdel2" data-id="${h.id}" style="background:#ff4d63;color:#fff">Да, удалить</button><button type="button" class="hb-btn l" data-act="habx">Отмена</button></div>`, {type:'hab'}); return; } acts.habdel2(el); },
@@ -14548,7 +14645,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     dunew: el => { hap.tap(); duNew(el.dataset.id, true); },
     dukind: el => { hap.tap(); DN.kind = el.dataset.k; duNew(DN.hid); },
     dupick: el => { hap.tap(); DN.to = +el.dataset.id; duNew(DN.hid); },
-    dusend: () => { const st = document.getElementById('du-st'); if (st) DN.stake = st.value; if (!DN.to) { toast(HT('Выбери друга')); return; } hap.tap(); apiAuth('/duel/create', {kind:DN.kind, to:DN.to, title:DN.t, emoji:DN.e, goal:DN.g, days:DN.days, stake:DN.stake}).then(j => { const h = hbGet(DN.hid); if (h && j.id) { h.du = j.id; hbSave(); } hap.ok(); closeSheet(); toast(HT('Вызов отправлен')); duPoll(true); }).catch(e => toast(e && e.message ? e.message : HT('Нет связи'))); },
+    dusend: () => { const st = document.getElementById('du-st'); if (st) DN.stake = st.value; if (!DN.to) { toast(HT('Выбери друга')); return; } hap.tap(); apiAuth('/duel/create', {kind:DN.kind, to:DN.to, title:DN.t, emoji:DN.e, goal:DN.g, days:DN.days, stake:DN.stake, start_in:DN.sd || 0}).then(j => { const h = hbGet(DN.hid); if (h && j.id) { h.du = j.id; hbSave(); } hap.ok(); closeSheet(); toast(HT('Вызов отправлен')); duPoll(true); }).catch(e => toast(e && e.message ? e.message : HT('Нет связи'))); },
     dunudge: el => { hap.tap(); apiAuth('/duel/nudge', {id:+el.dataset.id}).then(j => toast(HT(j.status === 'wait' ? 'Подталкивать можно раз в 6 часов' : 'Подтолкнул'))).catch(() => toast(HT('Нет связи'))); },
     durematch: el => { const d = duItem(+el.dataset.id); if (!d) return; hap.tap(); let h = duHab(d.id); if (!h) { h = {id:'h' + Date.now().toString(36), t:d.title, e:d.emoji, c:'v', k:'do', p:'d', g:d.goal || 1, u:'', s:0, b:0, log:{}, rl:[], cr:Date.now()}; hbLoad().list.push(h); } h.du = 0; hbSave(); DN = null; duNew(h.id, true); },
     appgsug: () => { hap.tap(); openFeedback('idea', null, 'game'); },
@@ -17243,6 +17340,8 @@ Object.assign(I18N.kk, {"Один тап в день — остальное по
 Object.assign(I18N.en, {"Цветные карты": "Colour cards", "Цветные карты на двоих": "Colour cards for two", "В колоде: {0}": "In deck: {0}"});
 Object.assign(I18N.kk, {"Цветные карты": "Түсті карталар", "Цветные карты на двоих": "Екі кісілік түсті карталар", "В колоде: {0}": "Колодада: {0}"});
 Object.assign(I18N.kk, {"Свой срок": "Өз мерзімім", "дней": "күн", "Свой цвет": "Өз түсім", "Отмечай дела,": "Істерді белгіле,", "держи серию": "сериясын сақта", "Заводи ежедневные дела и отмечай их одним касанием — VOOB считает серии и показывает прогресс.": "Күнделікті істерді қосып, бір басумен белгіле — VOOB серияны санап, прогресті көрсетеді.", "Делай": "Істе", "вода, чтение, зарядка: раз или несколько раз в день": "су, оқу, жаттығу: күніне бір немесе бірнеше рет", "Бросай": "Тастай бер", "живой счётчик покажет, сколько ты уже держишься": "тірі санауыш қанша күн шыдағаныңды көрсетеді", "Спорь": "Таласа бер", "вызови друга: кто дольше продержится или чаще выполнит": "досыңды сынға шақыр: кім ұзағырақ шыдайды немесе жиірек орындайды", "Создать привычку": "Әдет жасау", "Удалить": "Жою", "Ещё раз — удалить": "Қайта бас — жойылады", "удалена": "жойылды", "читаем каждую идею": "әр идеяны оқимыз", "увидит только разработчик": "тек әзірлеуші көреді", "Крестики-нолики": "Крестики-нолики", "Против бота": "Ботқа қарсы", "Ты — крестики · первый ход чередуется": "Сен — крестиктерсің · бірінші жүріс кезектеседі", "Бот выиграл": "Бот жеңді", "Почти не ошибается": "Қателесе қоймайды", "Видит угрозы и сам не зевает": "Қауіпті көреді, өзі қателеспейді"});
+Object.assign(I18N.en, {"сегодня": "today", "завтра": "tomorrow", "Старт": "Start", "Финиш": "Finish", "Когда старт?": "When does it start?", "Когда финиш?": "When does it end?", "Готово": "Done", "старт": "starts"});
+Object.assign(I18N.kk, {"сегодня": "бүгін", "завтра": "ертең", "Старт": "Бастау", "Финиш": "Аяқтау", "Когда старт?": "Қашан басталады?", "Когда финиш?": "Қашан аяқталады?", "Готово": "Дайын", "старт": "басталады"});
 delete _lc.en; delete _lc.kk;
 (function(){
   try { const u = new URL(location.href); if (u.searchParams.has('_v')) { u.searchParams.delete('_v'); history.replaceState(null, '', u.pathname + u.search + u.hash); } } catch (e) {}   // метка запасного обновления — убираем из адреса
