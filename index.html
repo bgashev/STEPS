@@ -2290,6 +2290,8 @@ html.web .ib.shim:has(.ibl){width:auto;padding:0 18px 0 14px;gap:8px;display:inl
 
 /* v1.434: лист с полем ввода всегда над клавиатурой (высоту клавиатуры даёт visualViewport) */
 #sheet{bottom:var(--kb,0px);max-height:calc(92vh - var(--kb,0px));transition:transform .32s cubic-bezier(.2,.8,.2,1),bottom .22s ease,max-height .45s cubic-bezier(.2,.8,.2,1)}
+ #sheet.hbfs{top:0;bottom:0!important;height:var(--hbh,100dvh);max-height:none!important;max-width:none;border-radius:0;border-top:0;display:flex;flex-direction:column;padding:calc(var(--tg-content-safe-area-inset-top,0px) + var(--tg-safe-area-inset-top,0px) + 12px) 18px calc(16px + env(safe-area-inset-bottom));overscroll-behavior:contain;transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+#sheet.hbfs>.grab{display:none}#sheet.hbfs .hb-wz{flex:1 0 auto;min-height:0}#sheet.hbfs .hb-nav{position:sticky;bottom:-16px;background:linear-gradient(transparent,var(--bg) 18px);padding-bottom:calc(16px + env(safe-area-inset-bottom));margin-bottom:-16px;z-index:2}
 .ssh-save{width:100%;min-height:52px;justify-content:center;margin-top:12px}
 .ssh-hint.bad{color:var(--red)}
 /* v1.434: «Цель недели» на главной */
@@ -5877,7 +5879,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1168';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1169';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10141,6 +10143,9 @@ function openSheet(html, ctx, keep){
   { const sh0 = $('#sheet'); if (!keep && S.liveCtx && S.live && ctx !== S.liveCtx && sh0.querySelector('#lv')) { const fr = document.createDocumentFragment(); while (sh0.firstChild) fr.appendChild(sh0.firstChild); liveNodes = fr; } }
   sheetCtx = ctx;
   $('#sheet').classList.remove('top');
+  { const fs = !inWeb && !!ctx && (ctx.type === 'habnew' || ctx.type === 'dunew'), was = $('#sheet').classList.contains('hbfs') && $('#sw').classList.contains('open');   // v1.1168: создание привычки/спора — полноэкранное окно, высота фиксируется один раз (клавиатура не двигает вёрстку)
+    if (fs && !was) document.documentElement.style.setProperty('--hbh', Math.round(Math.max(window.innerHeight, (window.Telegram && Telegram.WebApp && Telegram.WebApp.viewportStableHeight) || 0)) + 'px');
+    $('#sheet').classList.toggle('hbfs', fs); }
   $('#sheet').classList.remove('xl', 'gw');
   $('#sheet').classList.toggle('aw', !!(inWeb && ctx && ctx.type === 'acts'));   // WEB: широкое окно выбора активности
   $('#sheet').classList.toggle('wkw', !!(inWeb && ctx && ctx.type === 'workout' && STR[ctx.act]));   // до открытия: окно не меняет размер во время появления
@@ -17318,7 +17323,7 @@ function sheetGlide(ty, tm){
     rs.setProperty('--kb', (kb > 60 ? kb : 0) + 'px');
     sheetGlide(vv.offsetTop + vv.height / 2, vv.height);   // окно-по-центру не прыгает вслед за клавиатурой, а плавно «доезжает»
     document.documentElement.classList.toggle('kbo', kb > 60);
-    const a = document.activeElement; if (kb > 60 && a && a.matches('input,textarea') && a.closest('#sheet') && !$('#sheet').classList.contains('top')) setTimeout(() => a.scrollIntoView({block:'center', behavior:'smooth'}), 60); };
+    const a = document.activeElement; if (kb > 60 && a && a.matches('input,textarea') && a.closest('#sheet') && !$('#sheet').classList.contains('top') && !$('#sheet').classList.contains('hbfs')) setTimeout(() => a.scrollIntoView({block:'center', behavior:'smooth'}), 60); };
   upd();
   vv.addEventListener('resize', upd); vv.addEventListener('scroll', upd);
   document.addEventListener('focusin', e => { if (e.target.matches && e.target.matches('#sheet input,#sheet textarea')) setTimeout(upd, 300); });
