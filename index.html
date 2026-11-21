@@ -5879,7 +5879,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1170';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1171';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -17165,10 +17165,39 @@ function a_flightArrow(now){
   };
   /* подпись «расстановки» игры: кто за кого играет. Меняется при реванше (смена сторон), тогда экран пересобираем */
   const setupSig = r => { const s = r.state || {}; return r.game + ':' + (s.x != null ? 'x' + s.x : '') + (s.white != null ? 'w' + s.white : '') + (s.p ? 'p' + s.p.join(',') : '') + (s.first != null ? 'f' + s.first : '') + (s.n ? 'n' + s.n : ''); };
+  /* ---------- старт партии: «Сшивка» (шашки, шахматы) ---------- */
+  function seamIntro(el, rad){
+    try {
+      if (!el || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+      const cells = [...el.children].filter(c => c.matches && c.matches('.nt-sq,.ch-sq')); if (cells.length !== 64) return;
+      const keep = {ov: el.style.overflow, cp: el.style.clipPath, wcp: el.style.webkitClipPath, pos: el.style.position, pe: el.style.pointerEvents};
+      el.style.overflow = 'visible'; el.style.clipPath = 'none'; el.style.webkitClipPath = 'none'; el.style.pointerEvents = 'none';
+      if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+      const an = [], corner = [];
+      cells.forEach(c => {
+        const rr = (parseInt(c.style.gridRow) || 1) - 1, cc = (parseInt(c.style.gridColumn) || 1) - 1, top = rr < 4, sd = Math.abs(rr - 3.5) - .5, sy = top ? -520 : 520, py = top ? -44 : 44;
+        if ((rr === 0 || rr === 7) && (cc === 0 || cc === 7)) { c.style['border' + (rr ? 'Bottom' : 'Top') + (cc ? 'Right' : 'Left') + 'Radius'] = rad + 'px'; corner.push(c); }
+        an.push(c.animate([{opacity: 0, transform: `translateY(${sy}px)`, filter: 'blur(14px)'}, {opacity: 1, transform: 'none', filter: 'blur(0)', offset: .6}, {opacity: 1, transform: 'none', filter: 'blur(0)'}], {duration: 850, delay: (3 - sd) * 90 + cc * 22, easing: 'cubic-bezier(.2,.85,.25,1)', fill: 'both'}).finished);
+        const pc = c.querySelector('.nt-pc,.ch-p');
+        if (pc) an.push(pc.animate([{opacity: 0, transform: `translateY(${py}px) scale(1.5)`, filter: 'blur(5px)'}, {opacity: 1, transform: `translateY(${-py * .06}px) scale(.96)`, filter: 'blur(0)', offset: .7}, {opacity: 1, transform: 'none', filter: 'blur(0)'}], {duration: 550, delay: 1700 + cc * 45, easing: 'cubic-bezier(.3,1.3,.5,1)', fill: 'both'}).finished);
+      });
+      const fl = document.createElement('i'), ln = document.createElement('i');
+      fl.style.cssText = 'position:absolute;left:-6%;top:50%;width:112%;height:110px;margin-top:-55px;background:radial-gradient(ellipse at center,rgba(185,166,255,.45),transparent 70%);z-index:8;opacity:0;pointer-events:none';
+      ln.style.cssText = 'position:absolute;left:-6%;top:50%;width:112%;height:3px;margin-top:-1.5px;border-radius:3px;background:linear-gradient(90deg,transparent,#fff,#b9a6ff,#5eead4,transparent);box-shadow:0 0 24px 4px rgba(185,166,255,.65);z-index:9;opacity:0;pointer-events:none';
+      el.appendChild(fl); el.appendChild(ln);
+      an.push(fl.animate([{opacity: 0, transform: 'scaleY(.1)'}, {opacity: 1, transform: 'scaleY(1)', offset: .3}, {opacity: 0, transform: 'scaleY(1.6)'}], {duration: 1100, delay: 1150, fill: 'both'}).finished);
+      an.push(ln.animate([{opacity: 0, transform: 'scaleX(0)'}, {opacity: 1, transform: 'scaleX(.8)', offset: .25}, {opacity: 1, transform: 'scaleX(1.05)', offset: .55}, {opacity: 0, transform: 'scaleX(1.5)'}], {duration: 1100, delay: 1150, easing: 'ease', fill: 'both'}).finished);
+      try { setTimeout(() => hap.med(), 1150); setTimeout(() => hap.imp(), 1500); } catch (e) {}
+      const done = () => { fl.remove(); ln.remove(); corner.forEach(c => { c.style.borderRadius = ''; }); cells.forEach(c => { try { c.getAnimations().forEach(x => x.cancel()); const pc = c.querySelector('.nt-pc,.ch-p'); if (pc) pc.getAnimations().forEach(x => x.cancel()); } catch (e) {} });
+        el.style.overflow = keep.ov; el.style.clipPath = keep.cp; el.style.webkitClipPath = keep.wcp; el.style.position = keep.pos; el.style.pointerEvents = keep.pe; };
+      Promise.all(an).then(done, done); setTimeout(() => { if (fl.isConnected) done(); }, 4200);
+    } catch (e) {}
+  }
   function buildGame(){
     const r = N.room, g = GM[r.game] || GM.ttt; N.sg = setupSig(r);
     const d = layer('nt-lobby nt-gm', `<div class="nt-top"><i class="nt-x" data-nt="leave">✕</i><span>${g.title}${g.beta ? '<em class="nt-beta">BETA</em>' : ''}</span></div><div class="nt-body"></div>`);
     d.style.setProperty('--dl', '.05s'); N.gk = r.game; g.build(d.querySelector('.nt-body')); updGame();
+    try { const st = r.state || {}; if ((r.game === 'chk' || r.game === 'che') && r.status === 'playing' && !st.last) seamIntro(q(r.game === 'chk' ? '#ntck' : '#chbd'), r.game === 'chk' ? 16 : 18); } catch (e) {}
   }
   function updGame(){
     const r = N.room; if (!r || !q('.nt-gm')) return;
