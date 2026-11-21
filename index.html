@@ -5877,7 +5877,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1166';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1167';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14696,7 +14696,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     habmode: el => { if (el.classList.contains('off')) { hap.tap(); toast(HT('Для «бросить» «Вместе» недоступно')); return; } if (el.dataset.m !== 'solo' && !inTG) { toast(HT('Споры доступны в Telegram')); return; } hap.tap(); HBN.m = el.dataset.m; document.querySelectorAll('.hb-mc').forEach(x => x.classList.toggle('on', x === el)); const dh = document.querySelector('.hb-dash'); if (dh) { const n = hbSteps(HBN).length; while (dh.children.length > n) dh.lastElementChild.remove(); while (dh.children.length < n) dh.appendChild(document.createElement('i')); } },
     habfr: el => { hap.tap(); HBN.to = +el.dataset.id; const st = document.getElementById('hb-st'); if (st) HBN.stake = st.value; hbNewSheet(); },
     dayhold: () => {},
-    dtopen: el => { dtOpen(el.dataset.cx, el.dataset.t); },
+    dtopen: el => { if (dtMob()) dtNative(el.dataset.cx, el.dataset.t); else dtOpen(el.dataset.cx, el.dataset.t); },
     dtclose: () => { dtClose(); },
     dtpm: el => { dtNav(+el.dataset.n); },
     dtday: el => { if (Date.now() - DTX < 400) return; dtPick(el.dataset.d); },
