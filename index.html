@@ -5936,7 +5936,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1198';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1199';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10202,7 +10202,7 @@ function openSheet(html, ctx, keep){
   $('#sheet').classList.remove('top');
   { const fs = !inWeb && !!ctx && (ctx.type === 'habnew' || ctx.type === 'dunew'), was = $('#sheet').classList.contains('hbfs') && $('#sw').classList.contains('open');   // v1.1168: создание привычки/спора — полноэкранное окно, высота фиксируется один раз (клавиатура не двигает вёрстку)
     if (fs && !was) document.documentElement.style.setProperty('--hbh', Math.round(Math.max(window.innerHeight, (window.Telegram && Telegram.WebApp && Telegram.WebApp.viewportStableHeight) || 0)) + 'px');
-    $('#sheet').classList.toggle('hbfs', fs); }
+    $('#sheet').classList.toggle('hbfs', fs); if (!fs) { $('#sheet').style.height = ''; $('#sheet').style.top = ''; } }
   $('#sheet').classList.remove('xl', 'gw');
   $('#sheet').classList.toggle('aw', !!(inWeb && ctx && ctx.type === 'acts'));   // WEB: широкое окно выбора активности
   $('#sheet').classList.toggle('wkw', !!(inWeb && ctx && ctx.type === 'workout' && STR[ctx.act]));   // до открытия: окно не меняет размер во время появления
@@ -17574,7 +17574,8 @@ function sheetGlide(ty, tm){
     rs.setProperty('--kb', (kb > 60 ? kb : 0) + 'px');
     sheetGlide(vv.offsetTop + vv.height / 2, vv.height);   // окно-по-центру не прыгает вслед за клавиатурой, а плавно «доезжает»
     document.documentElement.classList.toggle('kbo', kb > 60);
-    const a = document.activeElement; if (kb > 60 && a && a.matches('input,textarea') && a.closest('#sheet') && !$('#sheet').classList.contains('top') && !$('#sheet').classList.contains('hbfs')) setTimeout(() => a.scrollIntoView({block:'center', behavior:'smooth'}), 60); };
+    { const sh = $('#sheet'); if (sh && sh.classList.contains('hbfs')) { if (kb > 60) { sh.style.height = Math.round(vv.height) + 'px'; sh.style.top = Math.round(vv.offsetTop) + 'px'; } else { sh.style.height = ''; sh.style.top = ''; } } }   // v1.1199: полноэкранный мастер ужимается до видимой области, кнопки и поле остаются над клавиатурой
+    const a = document.activeElement; if (kb > 60 && a && a.matches('input,textarea') && a.closest('#sheet') && !$('#sheet').classList.contains('top')) setTimeout(() => a.scrollIntoView({block:'center', behavior:'smooth'}), $('#sheet').classList.contains('hbfs') ? 260 : 60); };
   upd();
   vv.addEventListener('resize', upd); vv.addEventListener('scroll', upd);
   document.addEventListener('focusin', e => { if (e.target.matches && e.target.matches('#sheet input,#sheet textarea')) setTimeout(upd, 300); });
