@@ -5893,7 +5893,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1177';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1178';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10983,7 +10983,7 @@ const REST = (function(){
       step(0);
     };
     const rvEnter = dead => { if (!g.rv) rvPrep(); if (!g.rv) return; g.ph = 'rev'; g.dead = false; g.rvDead = dead; g.rv.nav = false; g.rv.t0 = g.t; g.rv.fk = 1; g.rv.fin = 0; g.rv.dp = 0; g.rv.rvT = g.t + 3; hap.tap(); sfx('spark', 3); };
-    g.revBtn = (c, cx, cy) => { const b = {x: cx - 110, y: cy - 21, w: 220, h: 42}; g.rvB = b; const pu = .5 + .5 * Math.sin(g.t * 4); const rv = g.rv, rdy = rv && rv.ready;
+    g.revBtn = (c, cx, cy) => { g.rvB = null; return; const b = {x: cx - 110, y: cy - 21, w: 220, h: 42}; g.rvB = b; const pu = .5 + .5 * Math.sin(g.t * 4); const rv = g.rv, rdy = rv && rv.ready;
       c.save(); c.shadowColor = C.ac; c.shadowBlur = rdy ? 10 + 8 * pu : 4; rr(c, b.x, b.y, b.w, b.h, 21); c.fillStyle = C.s2; c.fill(); c.shadowBlur = 0; c.lineWidth = 2; c.strokeStyle = C.ac; c.stroke();
       if (rv && !rdy) { c.save(); rr(c, b.x, b.y, b.w, b.h, 21); c.clip(); c.fillStyle = 'rgba(140,120,255,.28)'; c.fillRect(b.x, b.y, b.w * Math.min(1, rv.done / (rv.n + 1)), b.h); c.restore(); }
       c.fillStyle = C.tx; c.font = '800 15px ' + C.ff; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(rdy ? 'Разбор партии' : 'Разбор партии · ' + (rv ? Math.round(100 * rv.done / (rv.n + 1)) + '%' : '…'), cx, cy + 1); c.restore(); c.textBaseline = 'alphabetic'; };
@@ -12097,7 +12097,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       step(0);
     };
     const rvEnter = dead => { if (!g.rv) rvPrep(); if (!g.rv) return; g.ph = 'rev'; g.dead = false; g.rvDead = dead; g.rv.nav = false; g.rv.t0 = g.t; g.rv.fk = 1; g.rv.fin = 0; g.rv.dp = 0; g.rv.rvT = g.t + 3; hap.tap(); sfx('spark', 3); };
-    g.revBtn = (c, cx, cy) => { const b = {x: cx - 110, y: cy - 21, w: 220, h: 42}; g.rvB = b; const pu = .5 + .5 * Math.sin(g.t * 4); const rv = g.rv, rdy = rv && rv.ready;
+    g.revBtn = (c, cx, cy) => { g.rvB = null; return; const b = {x: cx - 110, y: cy - 21, w: 220, h: 42}; g.rvB = b; const pu = .5 + .5 * Math.sin(g.t * 4); const rv = g.rv, rdy = rv && rv.ready;
       c.save(); c.shadowColor = C.ac; c.shadowBlur = rdy ? 10 + 8 * pu : 4; rr(c, b.x, b.y, b.w, b.h, 21); c.fillStyle = C.s2; c.fill(); c.shadowBlur = 0; c.lineWidth = 2; c.strokeStyle = C.ac; c.stroke();
       if (rv && !rdy) { c.save(); rr(c, b.x, b.y, b.w, b.h, 21); c.clip(); c.fillStyle = 'rgba(140,120,255,.28)'; c.fillRect(b.x, b.y, b.w * Math.min(1, rv.done / (rv.n + 1)), b.h); c.restore(); }
       c.fillStyle = C.tx; c.font = '800 15px ' + C.ff; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(rdy ? 'Разбор партии' : 'Разбор партии · ' + (rv ? Math.round(100 * rv.done / (rv.n + 1)) + '%' : '…'), cx, cy + 1); c.restore(); c.textBaseline = 'alphabetic'; };
