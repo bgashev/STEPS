@@ -5805,7 +5805,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1146';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1147';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11957,7 +11957,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
           c.fillStyle = C.tx; c.font = '800 14px ' + C.ff; c.fillText(NM[k], mx, cy + ch - 24); c.fillStyle = qn ? GD : C.mu; c.font = '700 11.5px ' + C.ff; c.fillText((qn ? 'лучший · ' : '') + VAL[k] + ' оч.', mx, cy + ch - 9); c.restore(); } }
       if (g.ph === 'over') { c.globalAlpha = .75; c.fillStyle = C.bg; rr(c, G2.x0, G2.y0 + G2.S / 2 - 70, G2.S, 140, 22); c.fill(); c.globalAlpha = 1; const win = g.res.k === 'win'; c.fillStyle = C.tx; c.font = '800 26px ' + C.ff; c.fillText(win ? 'Мат боту!' : g.res.why === 'pat' ? 'Пат — ничья' : 'Ничья', W / 2, G2.y0 + G2.S / 2 - 22); c.fillStyle = win ? C.gr : C.mu; c.font = '800 18px ' + C.ff; c.fillText(win ? '+' + g.pts + ' · серия ' + g.score : 'Очки не меняются', W / 2, G2.y0 + G2.S / 2 + 8); c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.fillText('Тап — следующая партия', W / 2, G2.y0 + G2.S / 2 + 44); }
       if (g.ph === 'over' && g.M.length > 1) g.revBtn(c, W / 2, G2.y0 + G2.S + 104);
-      c.fillStyle = C.mu; c.font = '500 12.5px ' + C.ff; c.fillText('Ты играешь белыми · пешка дойдёт до края — станет фигурой', W / 2, G2.y0 + G2.S + 66);
+      if (!g.promo) { const ht = 'Ты играешь белыми · пешка дойдёт до края — станет фигурой'; let hs = 12.5; c.fillStyle = C.mu; c.font = '500 ' + hs + 'px ' + C.ff; const hw = c.measureText(ht).width; if (hw > G2.S) { hs = Math.max(9, Math.floor(hs * G2.S / hw * 10) / 10); c.font = '500 ' + hs + 'px ' + C.ff; } c.textAlign = 'center'; c.fillText(ht, W / 2, G2.y0 + G2.S + 66); }
       c.restore(); };
     return g; }
   /* 5 · Прицел */
