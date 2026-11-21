@@ -6000,7 +6000,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1225';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1226';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -15879,16 +15879,17 @@ function showWebLogin(){
 
 /* ============================================================ запуск ==== */
 /* v1.694 WEB: у вкладок свои адреса (app.voob.kz/friends, /settings …). В Telegram адрес не трогаем */
-const ROUTES = {'/':{t:'home', n:''}, '/stats':{t:'stats', n:'Итоги'}, '/weight':{t:'weight', n:'Вес'}, '/friends':{t:'friends', n:'Друзья'}, '/shop':{t:'shop', n:'Магазин'}, '/apps':{t:'apps', n:'Приложения'}, '/games':{t:'apps', games:1, n:'Игры'}, '/settings':{t:'me', set:1, n:'Настройки'}, '/personalization':{t:'me', set:1, pers:1, n:'Персонализация'}};
-let pendHandle = null, PUBH = null, pendGame = null;   // v1.762: ссылка на профиль app.voob.kz/@ник
+const ROUTES = {'/':{t:'home', n:''}, '/stats':{t:'stats', n:'Итоги'}, '/weight':{t:'weight', n:'Вес'}, '/friends':{t:'friends', n:'Друзья'}, '/shop':{t:'shop', n:'Магазин'}, '/apps':{t:'apps', n:'Приложения'}, '/games':{t:'apps', games:1, n:'Игры'}, '/water':{t:'apps', sec:'water', n:'Вода'}, '/habits':{t:'apps', sec:'hab', n:'Привычки'}, '/calories':{t:'apps', sec:'cal', n:'Калории'}, '/settings':{t:'me', set:1, n:'Настройки'}, '/personalization':{t:'me', set:1, pers:1, n:'Персонализация'}};
+let pendHandle = null, PUBH = null, pendGame = null, pendSec = null;   // v1.762: ссылка на профиль app.voob.kz/@ник
 const HRX = /^\/@([A-Za-z][A-Za-z0-9_]{2,19})$/;
 const frHandle = f => f && (f.handle || f.username) || '';
 function pathNow(){
   if (pendHandle) return '/@' + pendHandle;
+  if (pendSec) return SEC_PATH[pendSec] || '/apps';
   if (pendGame) return pendGame === '*' ? '/games' : '/games/' + pendGame;
   if (S.fprof) { const f = FR.data && FR.data.friends.find(x => x.tg_id === S.fprof), h = frHandle(f); if (h) return '/@' + h; }
   if (PUBH && sheetCtx && sheetCtx.type === 'pub') return '/@' + PUBH;
-  try { const gk = REST.cur(); if (gk) return '/games/' + gk; if (S.app && AX.st() === 'games') return '/games'; } catch (e) {}   // v1.979: ссылки на «Игры» и каждую игру
+  try { const gk = REST.cur(); if (gk) return '/games/' + gk; if (S.app && AX.st() === 'games') return '/games'; if (S.app && SEC_PATH[AX.st()]) return SEC_PATH[AX.st()]; } catch (e) {}   // v1.979: ссылки на «Игры» и каждую игру
   if (S.tab === 'me' && S.pers) return '/personalization';
   if (S.tab === 'me' && S.meSet) return '/settings';
   if (S.tab === 'stats' || S.tab === 'weight' || S.tab === 'friends' || S.tab === 'shop' || S.tab === 'apps') return '/' + S.tab;
@@ -15916,10 +15917,11 @@ function routeApply(path){
   const gm = /^\/games\/([a-z0-9]{2,12})$/i.exec((path || '').replace(/\/+$/, ''));
   if (gm) { S.tab = 'apps'; S.meSet = false; S.pers = false; S.fprof = null; pendGame = gm[1].toLowerCase(); return true; }
   const r = ROUTES[(path || '/').replace(/\/+$/, '') || '/']; if (!r) return false;
+  pendSec = r.sec || null;
   if (r.games) pendGame = '*';
   S.tab = r.t; S.meSet = !!r.set; S.pers = !!r.pers; S.fprof = null; return true;
 }
-if (inWeb) window.addEventListener('popstate', () => { try { REST.quit(); if (S.app) AX.leave(); } catch (e) {} if (!routeApply(location.pathname)) return; try { if (sheetCtx) closeSheet(); } catch (e) {} fabMini(false); _rTab = null; render(); window.scrollTo(0, 0); try { resolvePend(); } catch (e) {} try { if (pendGame) { const k = pendGame; pendGame = null; runGameLink(k); } } catch (e) {} });
+if (inWeb) window.addEventListener('popstate', () => { try { REST.quit(); if (S.app) AX.leave(); } catch (e) {} if (!routeApply(location.pathname)) return; try { if (sheetCtx) closeSheet(); } catch (e) {} fabMini(false); _rTab = null; try { if (pendSec) { const k = pendSec; pendSec = null; setTimeout(() => runSecLink(k), 50); } } catch (e) {} render(); window.scrollTo(0, 0); try { resolvePend(); } catch (e) {} try { if (pendGame) { const k = pendGame; pendGame = null; runGameLink(k); } } catch (e) {} });
 // v1.755: экран «Настраиваем твой профиль» поверх размытого приложения (WEB, первый вход без локальных данных)
 function pflShow(){
   if (document.getElementById('pfl')) return;
@@ -15949,6 +15951,11 @@ function splashShow(){
   } catch (e) {}
 }
 /* v1.979: ссылки на раздел «Игры» и на каждую игру. WEB: app.voob.kz/games, /games/<ключ>; Telegram: ?startapp=games, ?startapp=g_<ключ> */
+/* v1.1226: ссылки на «Воду», «Привычки», «Калории». WEB: app.voob.kz/water, /habits, /calories; Telegram: ?startapp=water, habits, calories */
+const SEC_KEYS = {water:'water', hab:'hab', habits:'hab', cal:'cal', calories:'cal'}, SEC_PATH = {water:'/water', hab:'/habits', cal:'/calories'};
+function runSecLink(k){
+  try { k = SEC_KEYS[String(k).toLowerCase()] || k; if (sheetCtx) closeSheet(); if (S.fprof) S.fprof = null; S.tab = 'apps'; S.meSet = false; S.pers = false; AX.acts.appopen({dataset: {s: k}}); } catch (e) {}
+}
 function runGameLink(k){
   try {
     if (sheetCtx) closeSheet();
@@ -15966,6 +15973,7 @@ function runGameLink(k){
 }
 async function init(){
   try { if (inWeb) routeApply(location.pathname); } catch (e) {}
+  try { if (inWeb && pendSec) { const k = pendSec; pendSec = null; setTimeout(() => runSecLink(k), 900); } } catch (e) {}
   try { if (inWeb && pendGame) { const k = pendGame; pendGame = null; setTimeout(() => runGameLink(k), 900); } } catch (e) {}
   if (tg) {
     try { tg.ready(); tg.expand(); } catch (e) {}
@@ -16007,7 +16015,7 @@ async function frBeat(){
 }
 if (inTG) { setTimeout(frBeat, 3500); setInterval(frBeat, 40000); document.addEventListener('visibilitychange', () => { if (document.hidden) FPOP.on = null; else setTimeout(frBeat, 1500); }); }
   if (inTG) setTimeout(() => { loadFriends(); loadFeed(true); }, 900);   // к моменту перехода во вкладку всё уже свежее
-  try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); else if (/^n_\d{1,12}$/.test(sp || '')) { window.NETLINK = +String(sp).slice(2); } else if (/^d_\d{1,12}$/.test(sp || '')) { setTimeout(() => { try { AX.acts.appopen({dataset: {s: 'hab'}}); } catch (e) {} }, 800); } else if (/^(games|g_[a-z0-9]{2,12})$/i.test(sp || '')) { const gl = String(sp).toLowerCase(); setTimeout(() => runGameLink(gl === 'games' ? '*' : gl.slice(2)), 700); } else { const TM = {stats:'stats', apps:'apps', home:'home', friends:'friends', me:'me', profile:'me'}, tk = TM[String(sp || '').toLowerCase()]; if (tk) setTimeout(() => { try { ACT.tab({dataset: {tab: tk}}); } catch (e) {} }, 600); else if (/^(add|new)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'home') ACT.tab({dataset: {tab: 'home'}}); ACT.add(); } catch (e) {} }, 800); else if (/^(settings|me_settings)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'me') ACT.tab({dataset: {tab: 'me'}}); ACT.meset(); } catch (e) {} }, 700); } } catch (e) {}
+  try { const sp = tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param; const m = /^u_([A-Za-z][A-Za-z0-9_]{2,19})$/.exec(sp || ''); if (m) setTimeout(() => openPublicProfile(m[1]), 500); else if (/^n_\d{1,12}$/.test(sp || '')) { window.NETLINK = +String(sp).slice(2); } else if (/^d_\d{1,12}$/.test(sp || '')) { setTimeout(() => { try { AX.acts.appopen({dataset: {s: 'hab'}}); } catch (e) {} }, 800); } else if (/^(water|habits?|cal|calories)$/i.test(sp || '')) { setTimeout(() => runSecLink(String(sp).toLowerCase()), 700); } else if (/^(games|g_[a-z0-9]{2,12})$/i.test(sp || '')) { const gl = String(sp).toLowerCase(); setTimeout(() => runGameLink(gl === 'games' ? '*' : gl.slice(2)), 700); } else { const TM = {stats:'stats', apps:'apps', home:'home', friends:'friends', me:'me', profile:'me'}, tk = TM[String(sp || '').toLowerCase()]; if (tk) setTimeout(() => { try { ACT.tab({dataset: {tab: tk}}); } catch (e) {} }, 600); else if (/^(add|new)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'home') ACT.tab({dataset: {tab: 'home'}}); ACT.add(); } catch (e) {} }, 800); else if (/^(settings|me_settings)$/i.test(sp || '')) setTimeout(() => { try { if (S.tab !== 'me') ACT.tab({dataset: {tab: 'me'}}); ACT.meset(); } catch (e) {} }, 700); } } catch (e) {}
   if (!hasCloud) return;
   try {
     const c = await cloudLoad();
