@@ -5075,13 +5075,13 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 .hb-emp .hb-gcta{position:sticky;bottom:calc(92px + env(safe-area-inset-bottom));z-index:5;box-shadow:0 12px 30px rgba(0,0,0,.55),0 0 0 6px color-mix(in srgb,var(--bg) 70%,transparent)}
 @media(min-width:900px){html.web .hb-emp .hb-gcta{position:relative;bottom:auto;box-shadow:none}}
 /* v1.1207: «Серии» в стиле VOOB Glass: стеклянная иллюстрация, зерно, блик */
-.hb-sc{width:176px;height:156px;border-radius:26px;padding:14px 14px 13px;background:linear-gradient(155deg,color-mix(in srgb,var(--hc) 62%,#0c0c12),color-mix(in srgb,var(--hc) 16%,#0c0c12) 80%);border:1px solid color-mix(in srgb,var(--hc) 40%,transparent);color:#fff;-webkit-clip-path:inset(0 round 26px);clip-path:inset(0 round 26px)}
+.hb-sc{width:176px;height:156px;border-radius:26px;padding:14px 14px 13px;background:linear-gradient(95deg,rgba(8,8,14,.46),rgba(8,8,14,.12) 62%,transparent),linear-gradient(155deg,color-mix(in srgb,var(--hc) 62%,#0c0c12),color-mix(in srgb,var(--hc) 16%,#0c0c12) 80%);border:1px solid color-mix(in srgb,var(--hc) 40%,transparent);color:#fff;-webkit-clip-path:inset(0 round 26px);clip-path:inset(0 round 26px)}
 .hb-sc>*:not(.hart){position:relative;z-index:1}
 .hb-sc::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;mix-blend-mode:overlay;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 .hb-sc::after{content:"";position:absolute;top:0;bottom:0;width:36%;left:-50%;pointer-events:none;background:linear-gradient(100deg,transparent,rgba(255,255,255,.07),transparent);transform:skewX(-12deg);animation:hdsh 6s ease-in-out 1.5s infinite}
-.hb-sc .hart{position:absolute;z-index:0;pointer-events:none;right:-20px;bottom:-16px;width:116px;height:116px;opacity:.92;-webkit-mask-image:radial-gradient(closest-side,#000 62%,transparent);mask-image:radial-gradient(closest-side,#000 62%,transparent)}.hb-sc .hart svg{width:100%;height:100%;overflow:visible;animation:glfl 4.6s ease-in-out infinite}
+.hb-sc .hart{position:absolute;z-index:0;pointer-events:none;box-sizing:content-box;right:-30px;bottom:-30px;width:140px;height:140px;padding:44px 0;margin:-44px 0;-webkit-mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.3) 24%,#000 54%);mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.3) 24%,#000 54%)}.hb-sc .hart svg{width:100%;height:100%;overflow:visible;animation:glfl 4.6s ease-in-out infinite}
 .hb-sc .dots{position:relative;right:auto;top:auto;gap:4px}.hb-sc .dots i{width:6px;height:6px;background:rgba(255,255,255,.28)}.hb-sc .dots i.f{background:#fff;box-shadow:0 0 6px rgba(255,255,255,.7)}
-.hb-sc .n{font-size:50px;background:linear-gradient(160deg,#fff 25%,color-mix(in srgb,var(--hc) 40%,#fff));-webkit-background-clip:text;background-clip:text}
+.hb-sc b,.hb-sc small{text-shadow:0 1px 10px rgba(0,0,0,.35)}.hb-sc .n{font-size:50px;background:linear-gradient(160deg,#fff 25%,color-mix(in srgb,var(--hc) 40%,#fff));-webkit-background-clip:text;background-clip:text}
 .hb-sc b{font-size:14px;margin-top:8px;max-width:112px}.hb-sc small{color:rgba(255,255,255,.7);font-size:11.5px;display:block;max-width:112px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(prefers-reduced-motion:reduce){.hb-sc::after,.hb-sc .hart svg{animation:none}}
 .hd .hd-row{display:flex;align-items:center;font:800 11px Manrope,system-ui,sans-serif;letter-spacing:.2em;color:rgba(255,255,255,.75)}.hd .hd-row i{width:8px;height:8px;border-radius:50%;background:#fff;margin-right:8px;box-shadow:0 0 10px #fff}
@@ -5991,7 +5991,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1207';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1208';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
