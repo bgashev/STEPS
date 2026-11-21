@@ -5996,7 +5996,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1215';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1216';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11041,10 +11041,22 @@ const REST = (function(){
     const geo = () => { const S = Math.min(W - 24, H * .6), t = S / 8, x0 = (W - S) / 2, y0 = Math.max(0, (H - S - 110) * .34) + 62; return {S, t, x0, y0}; };
     const lv0 = () => { try { const v = +localStorage.getItem('voob_chk_lv'); return v >= 0 && v < 5 ? v : 2; } catch (e) { return 2; } };
     const sq = (G2, i) => [G2.x0 + (i & 7) * G2.t, G2.y0 + (i >> 3) * G2.t];
-    g.init = () => { base0(g); g.ph = 'menu'; g.th = stGet(K).th; g.sw = 0; g.lvl = lv0(); g.lvp = g.lvl; g.lvb = 0; g.nb = false; g.res = null; g.anim = null; g.b = ckNew(); g.pre = []; g.legal = []; g.last = []; g.turn = 'w'; g.q = 0; g.bt = 0; g.ghost = []; g.M = []; g.rvTok = (g.rvTok || 0) + 1; g.rvDead = false; Object.defineProperty(g, 'rv', {value: null, writable: true, configurable: true, enumerable: false}); };
-    const begin = () => { g.M = []; g.rvTok = (g.rvTok || 0) + 1; g.rv = null; g.rvDead = false; g.b = ckNew(); g.turn = 'w'; g.q = 0; g.pre = []; g.last = []; g.res = null; g.anim = null; g.ghost = []; g.legal = ckLegal(g.b, 'w'); g.ph = 'play'; g.bt = 0; g.sm = 0; };
+    g.init = () => { base0(g); g.dust = null; g.ph = 'menu'; g.th = stGet(K).th; g.sw = 0; g.lvl = lv0(); g.lvp = g.lvl; g.lvb = 0; g.nb = false; g.res = null; g.anim = null; g.b = ckNew(); g.pre = []; g.legal = []; g.last = []; g.turn = 'w'; g.q = 0; g.bt = 0; g.ghost = []; g.M = []; g.rvTok = (g.rvTok || 0) + 1; g.rvDead = false; Object.defineProperty(g, 'rv', {value: null, writable: true, configurable: true, enumerable: false}); };
+    const begin = () => { g.M = []; g.rvTok = (g.rvTok || 0) + 1; g.rv = null; g.rvDead = false; g.b = ckNew(); g.turn = 'w'; g.q = 0; g.pre = []; g.last = []; g.res = null; g.anim = null; g.ghost = []; g.legal = ckLegal(g.b, 'w'); g.ph = 'play'; g.bt = 0; g.sm = 0; { const D = dMake(g.b, 'in'); g.dust = D.P.length > 200 ? D : null; } };
     const startGame = f => { g.sw = f === 'bot'; begin(); g.ovT = 0; g.auto = 0; if (g.sw) { g.turn = 'b'; g.legal = ckLegal(g.b, 'b'); g.bt = SEAM_END + .6; } };
     const toSetup = () => { const s0 = stGet(K); g.sd = {f: s0.f, th: s0.th}; g.ph = 'setup'; g.sm = 99; hap.tap(); sfx('spark', 3); };
+    const pieceF = (c, t, p, x, y, s2) => { const w = (p.toLowerCase() === 'w') !== !!g.sw, k = p !== p.toLowerCase(), R = t * .38 * (s2 || 1);
+        c.fillStyle = 'rgba(0,0,0,.35)'; c.beginPath(); c.ellipse(x, y + R * .42, R * .98, R * .55, 0, 0, 7); c.fill();
+        c.fillStyle = w ? '#b7ad98' : '#15101f'; c.beginPath(); c.arc(x, y + R * .16, R, 0, 7); c.fill();
+        const gr = c.createRadialGradient(x - R * .35, y - R * .45, R * .1, x, y, R * 1.05); if (w) { gr.addColorStop(0, '#ffffff'); gr.addColorStop(1, '#d9d0bd'); } else { gr.addColorStop(0, '#5a4a86'); gr.addColorStop(1, '#201833'); } c.fillStyle = gr; c.beginPath(); c.arc(x, y - R * .06, R, 0, 7); c.fill();
+        c.strokeStyle = w ? 'rgba(120,105,80,.5)' : 'rgba(255,255,255,.18)'; c.lineWidth = 1.6; c.beginPath(); c.arc(x, y - R * .06, R * .68, 0, 7); c.stroke();
+        if (k) { c.fillStyle = w ? '#c28a1c' : '#ffd25a'; c.beginPath(); const cy = y - R * .08, u = R * .5; c.moveTo(x - u, cy + u * .55); c.lineTo(x - u * 1.05, cy - u * .5); c.lineTo(x - u * .45, cy); c.lineTo(x, cy - u * .8); c.lineTo(x + u * .45, cy); c.lineTo(x + u * 1.05, cy - u * .5); c.lineTo(x + u, cy + u * .55); c.closePath(); c.fill(); } };
+    /* v1.1215: фишки рассыпаются в частицы и собираются заново */
+    const dSamp = {};
+    const dPts = p => { const k = p + (g.sw ? 1 : 0); if (dSamp[k]) return dSamp[k]; const cv = document.createElement('canvas'); cv.width = cv.height = 48; const x = cv.getContext('2d', {willReadFrequently: true}); pieceF(x, 48, p, 24, 24, 1); const d = x.getImageData(0, 0, 48, 48).data, o = []; for (let j = 0; j < 48; j += 2) for (let i = 0; i < 48; i += 2) { const q = (j * 48 + i) * 4; if (d[q + 3] > 130) { let r = d[q], gg = d[q + 1], b = d[q + 2]; if (r + gg + b < 260) { r = 150; gg = 140; b = 226; } o.push([i / 48 - .5, j / 48 - .5, 'rgb(' + r + ',' + gg + ',' + b + ')']); } } return dSamp[k] = o; };
+    const dMake = (b, m) => { const G2 = geo(), t = G2.t, f = t / 39, P = []; for (let i = 0; i < 64; i++) { const p = b[i]; if (!p) continue; const [px, py] = sq(G2, i), cx = px + t / 2, cy = py + t / 2, col = i & 7; dPts(p).forEach(q => { const x = cx + q[0] * t, y = cy + q[1] * t, rn = Math.random(); P.push(m === 'out' ? {hx: x, hy: y, vx: (60 + rn * 200) * f, vy: (-140 + Math.random() * 180) * f, d: (x - G2.x0) / G2.S * .7 + Math.random() * .25, sw: Math.random() * 6, c: q[2]} : {hx: x, hy: y, sx: G2.x0 + G2.S * (.6 + rn * .5), sy: -20 + Math.random() * (H + 40), d: .85 + col * .08 + Math.random() * .2, sw: Math.random() * 6, c: q[2]}); }); } return {m, P, f, T: 0}; };
+    const dDraw = c => { const D = g.dust; if (!D) return; const T = D.T, f = D.f, z = 2.6 * f; c.save(); if (D.m === 'out') D.P.forEach(p => { const s = T - p.d; let x = p.hx, y = p.hy, a = 1; if (s > 0) { a = 1 - s / 1.3; if (a <= 0) return; x += p.vx * s + 70 * f * s * s; y += p.vy * s * .6 - 30 * f * s * s + Math.sin(s * 6 + p.sw) * 12 * f * s; } c.globalAlpha = a; c.fillStyle = p.c; c.fillRect(x, y, z, z); }); else D.P.forEach(p => { const u = Math.max(0, Math.min(1, (T - p.d) / 1.3)), e = u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2, w = (1 - e) * Math.sin(T * 8 + p.sw) * 18 * f; c.globalAlpha = Math.min(1, .2 + .8 * e + (T < p.d ? 0 : .3)); c.fillStyle = p.c; c.fillRect(p.sx + (p.hx - p.sx) * e, p.sy + (p.hy - p.sy) * e + w, z, z); }); c.restore(); };
+    const dStart = () => { const D = g.b ? dMake(g.b, 'out') : null; if (!D || D.P.length < 100) { toSetup(); return; } g.dust = D; hap.tap(); sfx('spark', 2); };
     const move = (path, col) => {
       const G2 = geo(), r = ckApply(g.b, path, col); g.M.push({path: path.slice(), col}); g.q = r.took.length || r.man ? 0 : g.q + 1;
       g.anim = {path, piece: r.piece, t: 0, took: r.took.map(i => ({i, p: g.b[i]})), n: path.length - 1};
@@ -11171,12 +11183,12 @@ const REST = (function(){
     };
     g.tap = () => {};
     g.down = (x, y) => {
-      if (g.dead || g.sm < SEAM_END) return;
+      if (g.dead || g.sm < SEAM_END || g.dust) return;
       if (g.ph === 'rev') { g.revDown(x, y); return; }
       if (g.ph === 'coin') return;
       if (g.ph === 'setup') { stDown(g, K, x, y, startGame); return; }
       if (g.ph === 'menu') { const h = lvHit2(5, x, y); if (h === 'go') { try { localStorage.setItem('voob_chk_lv', g.lvl); } catch (e) {} toSetup(); } else if (h >= 0) { if (h !== g.lvl) g.lvb = 1; g.lvl = h; hap.tap(); sfx('spark', h + 1); } return; }
-      if (g.ph === 'over') { if (g.revOpen(x, y)) return; toSetup(); return; }
+      if (g.ph === 'over') { if (g.revOpen(x, y)) return; dStart(); return; }
       if (g.ph !== 'play' || g.turn !== 'w' || g.anim || g.res) return;
       const G2 = geo(), cc = Math.floor((x - G2.x0) / G2.t), rr_ = Math.floor((y - G2.y0) / G2.t); if (cc < 0 || cc > 7 || rr_ < 0 || rr_ > 7) return; const i = rr_ * 8 + cc, pre = g.pre, legal = g.legal.filter(m => pre.every((s, k) => m[k] === s));
       if (!pre.length) { if (legal.some(m => m[0] === i)) { g.pre = [i]; hap.tap(); } return; }
@@ -11184,7 +11196,7 @@ const REST = (function(){
       const np = pre.concat(i); if (legal.some(m => np.every((s, k) => m[k] === s))) { const full = legal.some(m => m.length === np.length && np.every((s, k) => m[k] === s)); if (full) move(np, 'w'); else { g.pre = np; hap.tap(); } return; }
       if (pre.length === 1 && g.legal.some(m => m[0] === i)) { g.pre = [i]; hap.tap(); }
     };
-    g.update = dt => { g.t += dt; seamStep(g, dt); stStep(g, dt, startGame); if (g.ph === 'menu') { g.lvp += (g.lvl - g.lvp) * Math.min(1, dt * 14); g.lvb = Math.max(0, (g.lvb || 0) - dt * 3.2); } stepFx(g, dt); g.ghost = g.ghost.filter(q => (q.l -= dt) > 0);
+    g.update = dt => { g.t += dt; if (g.dust) { const D = g.dust; D.T += dt; if (D.m === 'out') { if (D.T > 1.6) { g.dust = null; toSetup(); } } else if (D.T > 2.95) g.dust = null; } seamStep(g, dt); stStep(g, dt, startGame); if (g.ph === 'menu') { g.lvp += (g.lvl - g.lvp) * Math.min(1, dt * 14); g.lvb = Math.max(0, (g.lvb || 0) - dt * 3.2); } stepFx(g, dt); g.ghost = g.ghost.filter(q => (q.l -= dt) > 0);
       if ((g.ph === 'over' || g.dead) && g.M && g.M.length > 1 && !g.auto) { g.ovT = (g.ovT || 0) + dt; if (g.ovT > 1.8) { g.auto = 1; rvEnter(!!g.dead); } }
       if (g.dead || g.ph !== 'play') return;
       if (g.anim) { g.anim.t += dt; const G2 = geo(); g.anim.took.forEach(o => { if (!o.d && g.anim.t > .12 + .22 * (g.anim.n - .4) * (o.k || 0)) {} });
@@ -11212,17 +11224,13 @@ const REST = (function(){
         if (pre[0] === i) { c.fillStyle = 'rgba(255,255,255,.24)'; c.fillRect(px, py, t + .5, t + .5); }
         if (tg.has(i)) { c.fillStyle = 'rgba(80,230,150,.85)'; c.beginPath(); c.arc(px + t / 2, py + t / 2, t * .15 + Math.sin(g.t * 6) * 1.2, 0, 7); c.fill(); } if (SF) c.restore(); }
       c.restore();
-      const piece = (p, x, y, s2) => { const w = (p.toLowerCase() === 'w') !== !!g.sw, k = p !== p.toLowerCase(), R = t * .38 * (s2 || 1);
-        c.fillStyle = 'rgba(0,0,0,.35)'; c.beginPath(); c.ellipse(x, y + R * .42, R * .98, R * .55, 0, 0, 7); c.fill();
-        c.fillStyle = w ? '#b7ad98' : '#15101f'; c.beginPath(); c.arc(x, y + R * .16, R, 0, 7); c.fill();
-        const gr = c.createRadialGradient(x - R * .35, y - R * .45, R * .1, x, y, R * 1.05); if (w) { gr.addColorStop(0, '#ffffff'); gr.addColorStop(1, '#d9d0bd'); } else { gr.addColorStop(0, '#5a4a86'); gr.addColorStop(1, '#201833'); } c.fillStyle = gr; c.beginPath(); c.arc(x, y - R * .06, R, 0, 7); c.fill();
-        c.strokeStyle = w ? 'rgba(120,105,80,.5)' : 'rgba(255,255,255,.18)'; c.lineWidth = 1.6; c.beginPath(); c.arc(x, y - R * .06, R * .68, 0, 7); c.stroke();
-        if (k) { c.fillStyle = w ? '#c28a1c' : '#ffd25a'; c.beginPath(); const cy = y - R * .08, u = R * .5; c.moveTo(x - u, cy + u * .55); c.lineTo(x - u * 1.05, cy - u * .5); c.lineTo(x - u * .45, cy); c.lineTo(x, cy - u * .8); c.lineTo(x + u * .45, cy); c.lineTo(x + u * 1.05, cy - u * .5); c.lineTo(x + u, cy + u * .55); c.closePath(); c.fill(); } };
+      const piece = (p, x, y, s2) => pieceF(c, t, p, x, y, s2);
       const A = g.anim, hide = A ? A.path[A.path.length - 1] : -1;
       g.ghost.forEach(q => { c.globalAlpha = Math.max(0, q.l / .35); piece(q.p, q.x, q.y); }); c.globalAlpha = 1;
-      for (let i = 0; i < 64; i++) { const p = g.b[i]; if (!p || i === hide) continue; const [px, py] = sq(G2, i), cx_ = px + t / 2, cy_ = py + t / 2, lift = pre[0] === i ? -4 : 0;
+      for (let i = 0; i < 64; i++) { const p = g.b[i]; if (!p || i === hide || g.dust) continue; const [px, py] = sq(G2, i), cx_ = px + t / 2, cy_ = py + t / 2, lift = pre[0] === i ? -4 : 0;
         if (og.has(i)) { c.strokeStyle = 'rgba(80,230,150,' + (.55 + .35 * Math.sin(g.t * 5)) + ')'; c.lineWidth = 2.6; c.beginPath(); c.arc(cx_, cy_, t * .44, 0, 7); c.stroke(); }
         { const PF = g.sm < SEAM_END ? seamPiece(g, i) : null; if (PF) { if (PF.a > 0) { c.globalAlpha = PF.a; piece(p, cx_, cy_ + lift + PF.dy, (pre[0] === i ? 1.06 : 1) * PF.sc); c.globalAlpha = 1; } } else piece(p, cx_, cy_ + lift, pre[0] === i ? 1.06 : 1); } }
+      dDraw(c);
       if (A) { const seg = Math.min(A.n - 1, Math.floor(Math.max(0, A.t - .06) / .26)), u = Math.min(1, Math.max(0, (A.t - .06 - seg * .26) / .26)), e = u * u * (3 - 2 * u), [ax, ay] = sq(G2, A.path[seg]), [bx2, by2] = sq(G2, A.path[seg + 1]);
         A.took.forEach(o => { if (!o.g) { const [px, py] = sq(G2, o.i); if (A.t > .06 + seg * .26 + .1 || A.t > A.n * .26) { o.g = 1; g.ghost.push({p: o.p, x: px + t / 2, y: py + t / 2, l: .35}); } } });
         if (!A.took.every(o => o.g)) A.took.forEach(o => { if (!o.g) { const [px, py] = sq(G2, o.i); piece(o.p, px + t / 2, py + t / 2); } });
