@@ -5859,7 +5859,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1155';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1156';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11895,7 +11895,10 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       c.fillStyle = C.tx; c.font = '800 20px ' + C.ff; c.fillText('Разбор партии', W / 2, 34);
       if (!rv) return; const cur = rv.cur, S = rv.P[cur], m = cur > 0 ? g.M[cur - 1] : null, mine = cur > 0 && rv.P[cur - 1].turn === 'w', cls = rv.ready && cur > 0 ? rv.cls[cur - 1] : -1;
       /* шапка */
-      if (!rv.ready) { const pr = rv.done / (rv.n + 1); c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.fillText('Движок оценивает каждую позицию…', W / 2, 78); rr(c, W / 2 - 110, 92, 220, 8, 4); c.fillStyle = 'rgba(255,255,255,.1)'; c.fill(); rr(c, W / 2 - 110, 92, Math.max(8, 220 * pr), 8, 4); c.fillStyle = C.ac; c.fill(); c.fillStyle = C.tx; c.font = '800 14px ' + C.ff; c.fillText(Math.round(pr * 100) + '%', W / 2, 124); }
+      if (!rv.ready) { const NP = rv.n + 1, pr = Math.min(1, rv.done / NP), k = Math.min(NP, rv.done), sz = Math.min(7, 340 / NP), tw = NP * sz - 2, tx = (W - tw) / 2;
+        c.fillStyle = C.mu; c.font = '600 13px ' + C.ff; c.fillText('Движок оценивает каждую позицию', W / 2, 70);
+        for (let i = 0; i < NP; i++) { const on = i < k, hot = i === k, h = on ? 14 : hot ? 18 + 4 * Math.sin(T * 14) : 8; c.fillStyle = on ? C.ac : hot ? '#fff' : 'rgba(255,255,255,.12)'; if (hot) { c.save(); c.shadowColor = C.ac; c.shadowBlur = 12; } rr(c, tx + i * sz, 100 - h / 2, Math.max(2, sz - 2), h, 2.5); c.fill(); if (hot) c.restore(); }
+        c.fillStyle = C.tx; c.font = '900 26px ' + C.ff; c.fillText(Math.round(pr * 100) + '%', W / 2, 142); c.fillStyle = C.mu; c.font = '600 11px ' + C.ff; c.fillText('ПОЗИЦИЯ ' + Math.min(NP, k + 1) + ' / ' + NP, W / 2, 162); }
       else { const e = Math.min(1, (T - rv.t0) * 1.6), ee = 1 - Math.pow(1 - e, 3), ac = rv.acc, col = ac >= 80 ? '#4cd98a' : ac >= 60 ? '#ffd24a' : ac >= 40 ? '#ff9a3d' : '#ff5468';
         c.lineWidth = 7; c.lineCap = 'round'; c.strokeStyle = 'rgba(255,255,255,.1)'; c.beginPath(); c.arc(56, 80, 30, 0, 7); c.stroke(); c.strokeStyle = col; c.shadowColor = col; c.shadowBlur = 10; c.beginPath(); c.arc(56, 80, 30, -1.5708, -1.5708 + 6.2832 * ac / 100 * ee); c.stroke(); c.shadowBlur = 0;
         c.fillStyle = C.tx; c.font = '900 22px ' + C.ff; c.textBaseline = 'middle'; c.fillText(Math.round(ac * ee), 56, 81); c.textBaseline = 'alphabetic'; c.fillStyle = C.mu; c.font = '700 10px ' + C.ff; c.fillText('ТОЧНОСТЬ', 56, 122);
@@ -11929,6 +11932,16 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
         if (an && fwd) for (let i = 0; i < 64; i++) { const pc = rv.P[an.a].b[i]; if (pc && rv.P[an.b].b[i] !== pc && !pairs.some(z => z.f === i)) { const s1 = pos(i); dp(pc, s1[0], s1[1], 1 - e, 0); } } }
       if (bm) { const k = Math.min(1, (T - rv.tc) * 4), ax = G2.x0 + (bm.f & 7) * t + t / 2, ay = G2.y0 + (bm.f >> 3) * t + t / 2, bx = G2.x0 + (bm.t & 7) * t + t / 2, by = G2.y0 + (bm.t >> 3) * t + t / 2, ex2 = ax + (bx - ax) * k, ey = ay + (by - ay) * k, a = Math.atan2(by - ay, bx - ax);
         c.save(); c.globalAlpha = .88; c.strokeStyle = '#2fe07a'; c.fillStyle = '#2fe07a'; c.lineWidth = t * .16; c.lineCap = 'round'; c.shadowColor = '#2fe07a'; c.shadowBlur = 10; c.beginPath(); c.moveTo(ax, ay); c.lineTo(ex2 - Math.cos(a) * t * .22, ey - Math.sin(a) * t * .22); c.stroke(); c.translate(ex2, ey); c.rotate(a); c.beginPath(); c.moveTo(t * .1, 0); c.lineTo(-t * .3, -t * .22); c.lineTo(-t * .3, t * .22); c.closePath(); c.fill(); c.restore(); }
+      /* сканер: луч по доске, пока идёт анализ; вспышка в конце */
+      { const sc = !rv.ready, fl = rv.ready && rv.was ? Math.max(0, 1 - (T - rv.t0) * 1.6) : 0; if (sc) rv.was = 1;
+        if (sc || fl > 0) { c.save(); rr(c, G2.x0, G2.y0, G2.S, G2.S, 8); c.clip();
+          if (sc) { const by = G2.y0 + G2.S * ((T * .55) % 1), bh = 70, gr = c.createLinearGradient(0, by - bh, 0, by + 4); gr.addColorStop(0, 'rgba(180,167,238,0)'); gr.addColorStop(1, 'rgba(180,167,238,.42)'); c.fillStyle = gr; c.fillRect(G2.x0, by - bh, G2.S, bh + 4);
+            for (let i = 0; i < 64; i++) { const cy = G2.y0 + (i >> 3) * t + t / 2, d = by - cy; if (d > 0 && d < bh * 1.4) { c.fillStyle = 'rgba(180,167,238,' + (.28 * (1 - d / (bh * 1.4))).toFixed(3) + ')'; c.fillRect(G2.x0 + (i & 7) * t + 2, G2.y0 + (i >> 3) * t + 2, t - 4, t - 4); } }
+            c.fillStyle = 'rgba(255,255,255,.9)'; c.shadowColor = C.ac; c.shadowBlur = 14; c.fillRect(G2.x0, by, G2.S, 2); c.shadowBlur = 0; }
+          if (fl > 0) { c.fillStyle = 'rgba(255,255,255,' + (.5 * fl).toFixed(3) + ')'; c.fillRect(G2.x0, G2.y0, G2.S, G2.S); }
+          c.restore(); }
+        if (sc) { const L = 12, br = .5 + .5 * Math.sin(T * 3), x1 = G2.x0 - 6, y1 = G2.y0 - 6, x2 = G2.x0 + G2.S + 6, y2 = G2.y0 + G2.S + 6; c.save(); c.strokeStyle = C.ac; c.lineWidth = 2.5; c.lineCap = 'round'; c.globalAlpha = .6 + .4 * br;
+          [[x1, y1, 1, 1], [x2, y1, -1, 1], [x1, y2, 1, -1], [x2, y2, -1, -1]].forEach(a => { c.beginPath(); c.moveTo(a[0], a[1] + a[3] * L); c.lineTo(a[0], a[1]); c.lineTo(a[0] + a[2] * L, a[1]); c.stroke(); }); c.restore(); } }
       /* подпись хода */
       const iy = G2.y0 + G2.S + 24; c.textAlign = 'center';
       if (cur === 0) { c.fillStyle = C.tx; c.font = '800 16px ' + C.ff; c.fillText('Начальная позиция', W / 2, iy); }
