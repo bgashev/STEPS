@@ -5859,7 +5859,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1160';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1161';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10892,7 +10892,7 @@ const REST = (function(){
         fn(); };
       step(0);
     };
-    const rvEnter = dead => { if (!g.rv) rvPrep(); if (!g.rv) return; g.ph = 'rev'; g.dead = false; g.rvDead = dead; g.rv.nav = false; g.rv.t0 = g.t; if (g.rv.ready) { g.rv.ready = false; g.rv.fk = 1; g.rv.rvT = g.t + 1.5; } hap.tap(); sfx('spark', 3); };
+    const rvEnter = dead => { if (!g.rv) rvPrep(); if (!g.rv) return; g.ph = 'rev'; g.dead = false; g.rvDead = dead; g.rv.nav = false; g.rv.t0 = g.t; g.rv.fk = 1; g.rv.fin = 0; g.rv.dp = 0; g.rv.rvT = g.t + 3; hap.tap(); sfx('spark', 3); };
     g.revBtn = (c, cx, cy) => { const b = {x: cx - 110, y: cy - 21, w: 220, h: 42}; g.rvB = b; const pu = .5 + .5 * Math.sin(g.t * 4); const rv = g.rv, rdy = rv && rv.ready;
       c.save(); c.shadowColor = C.ac; c.shadowBlur = rdy ? 10 + 8 * pu : 4; rr(c, b.x, b.y, b.w, b.h, 21); c.fillStyle = C.s2; c.fill(); c.shadowBlur = 0; c.lineWidth = 2; c.strokeStyle = C.ac; c.stroke();
       if (rv && !rdy) { c.save(); rr(c, b.x, b.y, b.w, b.h, 21); c.clip(); c.fillStyle = 'rgba(140,120,255,.28)'; c.fillRect(b.x, b.y, b.w * Math.min(1, rv.done / (rv.n + 1)), b.h); c.restore(); }
@@ -10916,7 +10916,9 @@ const REST = (function(){
     g.drawRev = c => {
       const rv = g.rv, G2 = rvG(), t = G2.t, T = g.t; c.textAlign = 'center'; bg2(c, 'rgba(110,90,230,.4)', .3);
       c.fillStyle = C.tx; c.font = '800 20px ' + C.ff; c.fillText('Разбор партии', W / 2, 34);
-      if (rv && rv.fk) { if (T >= rv.rvT) { rv.fk = 0; rv.ready = true; rv.t0 = T; } else rv.done = Math.floor(Math.min(1, (T - (rv.rvT - 1.5)) / 1.5) * (rv.n + 1)); }
+      if (rv && rv.fk) { if (rv.ready) { rv.ready = false; rv.fin = 1; rv.tf = T; rv.p0 = rv.dp || 0; }
+        if (rv.fin) { if (T >= rv.rvT) { rv.fk = 0; rv.fin = 0; rv.ready = true; rv.t0 = T; } else { const pp = rv.p0 + (1 - rv.p0) * Math.min(1, (T - rv.tf) / Math.max(.01, rv.rvT - rv.tf)); rv.done = Math.floor(pp * (rv.n + 1)); } } }
+      if (rv) rv.dp = Math.min(1, rv.done / (rv.n + 1));
       if (!rv) return; const cur = rv.cur, n = rv.n, rdy = rv.ready, mA = cur > 0 ? g.M[cur - 1].path : null, mine = cur > 0 && (cur - 1) % 2 === 0, cl = rdy && mine ? rv.cls[cur - 1] : -1, bm = rdy && mine && cl >= 3 ? rv.B[cur - 1] : null;
       if (rv.altC !== cur) { rv.altC = cur; rv.alt = 0; } if (!bm) { rv.alt = 0; rv.altK = 0; } rv.altK += (rv.alt - rv.altK) * .12; if (Math.abs(rv.alt - rv.altK) < .003) rv.altK = rv.alt; const ek = bm ? rv.altK * rv.altK * (3 - 2 * rv.altK) : 0;
       /* шапка */
@@ -11996,7 +11998,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
         chThink(P[i], hist.slice(0, i + 1), 200, 8, r => { if (g.rvTok !== tok) return; rv.V[i] = r ? r.v : 0; rv.B[i] = r ? r.m : null; rv.done = i + 1; setTimeout(() => step(i + 1), 0); }, true); };
       step(0);
     };
-    const rvEnter = dead => { if (!g.rv) rvPrep(); if (!g.rv) return; g.ph = 'rev'; g.dead = false; g.rvDead = dead; g.rv.nav = false; g.rv.t0 = g.t; if (g.rv.ready) { g.rv.ready = false; g.rv.fk = 1; g.rv.rvT = g.t + 1.5; } hap.tap(); sfx('spark', 3); };
+    const rvEnter = dead => { if (!g.rv) rvPrep(); if (!g.rv) return; g.ph = 'rev'; g.dead = false; g.rvDead = dead; g.rv.nav = false; g.rv.t0 = g.t; g.rv.fk = 1; g.rv.fin = 0; g.rv.dp = 0; g.rv.rvT = g.t + 3; hap.tap(); sfx('spark', 3); };
     g.revBtn = (c, cx, cy) => { const b = {x: cx - 110, y: cy - 21, w: 220, h: 42}; g.rvB = b; const pu = .5 + .5 * Math.sin(g.t * 4); const rv = g.rv, rdy = rv && rv.ready;
       c.save(); c.shadowColor = C.ac; c.shadowBlur = rdy ? 10 + 8 * pu : 4; rr(c, b.x, b.y, b.w, b.h, 21); c.fillStyle = C.s2; c.fill(); c.shadowBlur = 0; c.lineWidth = 2; c.strokeStyle = C.ac; c.stroke();
       if (rv && !rdy) { c.save(); rr(c, b.x, b.y, b.w, b.h, 21); c.clip(); c.fillStyle = 'rgba(140,120,255,.28)'; c.fillRect(b.x, b.y, b.w * Math.min(1, rv.done / (rv.n + 1)), b.h); c.restore(); }
@@ -12021,7 +12023,9 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     g.drawRev = c => {
       const rv = g.rv, G2 = rvG(), t = G2.t, T = g.t; c.textAlign = 'center'; bg2(c, 'rgba(110,90,230,.4)', .3);
       c.fillStyle = C.tx; c.font = '800 20px ' + C.ff; c.fillText('Разбор партии', W / 2, 34);
-      if (rv && rv.fk) { if (T >= rv.rvT) { rv.fk = 0; rv.ready = true; rv.t0 = T; } else rv.done = Math.floor(Math.min(1, (T - (rv.rvT - 1.5)) / 1.5) * (rv.n + 1)); }
+      if (rv && rv.fk) { if (rv.ready) { rv.ready = false; rv.fin = 1; rv.tf = T; rv.p0 = rv.dp || 0; }
+        if (rv.fin) { if (T >= rv.rvT) { rv.fk = 0; rv.fin = 0; rv.ready = true; rv.t0 = T; } else { const pp = rv.p0 + (1 - rv.p0) * Math.min(1, (T - rv.tf) / Math.max(.01, rv.rvT - rv.tf)); rv.done = Math.floor(pp * (rv.n + 1)); } } }
+      if (rv) rv.dp = Math.min(1, rv.done / (rv.n + 1));
       if (!rv) return; const cur = rv.cur, S = rv.P[cur], m = cur > 0 ? g.M[cur - 1] : null, mine = cur > 0 && rv.P[cur - 1].turn === 'w', cls = rv.ready && cur > 0 ? rv.cls[cur - 1] : -1;
       /* шапка */
       if (!rv.ready) { const NP = rv.n + 1, pr = Math.min(1, rv.done / NP), k = Math.min(NP, rv.done), sz = Math.min(7, 340 / NP), tw = NP * sz - 2, tx = (W - tw) / 2;
