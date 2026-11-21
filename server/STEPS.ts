@@ -2186,7 +2186,7 @@ function netInit(game: string, host: number, guest: number, first: number, size 
     for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) if ((r + c) % 2 === 1) { if (r < 3) b[r * 8 + c] = "b"; else if (r > 4) b[r * 8 + c] = "w"; }
     st = { b, turn: "w", white: first, win: "", q: 0, last: null, legal: chkLegal(b, "w") };
   } else if (game === "che") st = chInit(first);
-  else if (game === "golf") st = { hole: 0, holes: 3, turn: first, p: [host, guest], ball: {}, str: {}, done: {}, tot: {}, last: null, win: "" };
+  else if (game === "golf") st = { hole: 0, holes: 10, turn: first, p: [host, guest], ball: {}, str: {}, done: {}, tot: {}, last: null, win: "" };
   else if (game === "sea") st = { phase: "place", turn: first, p: [host, guest], fleets: {}, ready: {}, shots: { [host]: {}, [guest]: {} }, sunk: { [host]: [], [guest]: [] }, last: null, win: "" };
   else if (game === "arc") st = { p: [host, guest], turn: first, tc: 0, rounds: 2, per: 3, shot: 0, s: { [host]: 0, [guest]: 0 }, arrows: [], wind: arcWind(), log: [], last: null, win: "" };
   else if (game === "dk") { const dk = dkNew(first === host ? 0 : 1, Math.random); st = { p: [host, guest], dk, turn: [host, guest][dkWho(dk)], win: "" }; }
