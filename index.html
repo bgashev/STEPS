@@ -5904,7 +5904,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1182';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1183';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14569,9 +14569,15 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     return h;
   }
   const drBg = id => { const k = +id === +UK ? myBg() : (BGS.get(+id) || ''); return k ? `<div class="nt-vbg">${bgFx(k)}</div>` : ''; };
-  async function duRoom(id){
-    let j; try { j = await apiAuth('/duel/get', {id}); } catch (e) { toast(HT('Нет связи')); return; }
-    if (j.duel && !BGS_KNOWN.has(+j.duel.peer)) { try { await loadBgs([+j.duel.peer]); } catch (e) {} }
+  function duRoom(id){
+    const c = DU.list.find(x => x.id === id);
+    if (c) { duRoomDraw({duel: c, events: DU.ev && DU.ev[id] || []}); if (!BGS_KNOWN.has(+c.peer)) loadBgs([+c.peer]).then(() => { if (sheetCtx && sheetCtx.type === 'duroom' && sheetCtx.id === id && !(sheetCtx.rev)) { const sc = $('#sheet').scrollTop; duRoomDraw({duel: DU.list.find(x => x.id === id) || c, events: DU.ev && DU.ev[id] || []}, 1); $('#sheet').scrollTop = sc; } }).catch(() => {}); }
+    apiAuth('/duel/get', {id}).then(j => {
+      (DU.ev = DU.ev || {})[id] = j.events || [];
+      if (!c || (sheetCtx && sheetCtx.type === 'duroom' && sheetCtx.id === id)) { const sc = $('#sheet').scrollTop; duRoomDraw(j, 1); if (c) $('#sheet').scrollTop = sc; }
+    }).catch(() => { if (!c) toast(HT('Нет связи')); });
+  }
+  function duRoomDraw(j, redo){
     const d = j.duel, ev = j.events || [], act = d.status === 'active', done = d.status === 'done', cells = [];
     for (let n = d.starts_on; n <= d.ends_on; n++) cells.push([n, d.my_days.includes(n), d.peer_days.includes(n), (d.my_cheats || []).includes(n), (d.peer_cheats || []).includes(n)]);
     const sv = d.kind === 'survive', tm = d.kind === 'team', el = ms => `<em data-duclk="${d.started_at},${d.ended_at || ''}">${duFmt((d.ended_at || Date.now()) - d.started_at)}</em>`, lost = done && !d.draw && d.winner === d.peer;
@@ -14585,7 +14591,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     ${sv ? '' : `${tm ? `<div class="hb-bar" style="--hc:var(--green,#5FC98A)"><i style="width:${Math.min(100, Math.round((Math.min(d.my_done != null ? d.my_done : d.my_days.length, d.need) + Math.min(d.peer_done != null ? d.peer_done : d.peer_days.length, d.need)) / (2 * d.need) * 100))}%"></i></div><div class="cap" style="margin:6px 0 10px">Общий прогресс: нужно ${d.need} дн. у каждого</div>` : ''}<div class="hb-lb">Ты</div>${row(1)}<div class="hb-lb">${esc(d.peer_name)}</div>${row(2)}`}
     ${done ? `<button type="button" class="hb-btn" data-act="durematch" data-id="${d.id}">Реванш</button>` : ''}
     ${ev.length ? `<div class="hb-lb" style="margin-top:14px">События</div><div class="hb-feed">${ev.map(e => `<div><b>${e.kind === 'nudge' ? '👋' : e.kind === 'cheat' ? '🍕' : '✅'} ${e.mine ? 'Ты' : esc(d.peer_name)} ${e.kind === 'nudge' ? 'подтолкнул' : e.kind === 'cheat' ? 'взял чит-день' : 'отметил привычку'}</b><small>${when(e.at)}</small></div>`).join('')}</div>` : ''}
-    <button type="button" class="hb-btn l" data-act="habx">Закрыть</button></div>`, {type:'duroom'});
+    <button type="button" class="hb-btn l" data-act="habx">Закрыть</button></div>`, {type:'duroom', id:d.id});
   }
   /* v1.1173: анимация запуска спора — аватары слетаются, вспышка, плашка летит в список, карточка появляется с подсветкой */
   function duLaunch(D){
