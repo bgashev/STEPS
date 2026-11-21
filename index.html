@@ -5928,7 +5928,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1191';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1192';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14458,7 +14458,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
       h += `<div class="hb-sec">Серии<em>${D.length}</em></div><div class="hb-car">${D.map(x => { const s2 = hbStreak(x), wk = []; for (let k = 6; k >= 0; k--) wk.push(hbDone(x, isoOf(t0 - k))); return `<div class="hb-sc" style="--hc:${hbCol(x.c, 'g')}" data-act="habopen" data-id="${x.id}"><div class="dots">${wk.map(v => `<i${v ? ' class="f"' : ''}></i>`).join('')}</div><div class="e">${x.e}</div><div class="n">${s2}</div><b>${esc(x.t)}</b><small>${hbPlh(x, s2)}</small></div>`; }).join('')}</div>`;
     }
     h += duHTML();
-    if (Q.length) h += `<div class="hb-sec" style="margin-top:14px">Держусь<em>${Q.length}</em></div><div class="hb-pin hdp">${GLX.defs}${Q.map(q => { const ms = Math.max(0, Date.now() - (q.s || Date.now())), dd = Math.floor(ms / 864e5), p2 = n => String(n).padStart(2, '0'); return `<div class="hb-pq hd" style="--hc:${hbCol(q.c, 'r')}" data-act="habopen" data-id="${q.id}" data-hdc="${q.id}"><div class="hart">${GLX.hold(q.e, hbCol(q.c, 'r'))}</div><div class="hd-row"><i></i>ЧИСТ УЖЕ</div><div class="hd-big"><span class="hd-d">${dd}</span><small>${HDU()}</small></div><div class="hd-tm">${p2(Math.floor(ms % 864e5 / 36e5))}:${p2(Math.floor(ms % 36e5 / 6e4))}:${p2(Math.floor(ms % 6e4 / 1e3))}</div><b>${esc(q.t)}</b><div class="hd-ds">${[0, 1, 2, 3, 4, 5, 6].map(k => `<i${k < Math.min(dd, 7) ? ' class="on"' : ''}></i>`).join('')}</div></div>`; }).join('')}</div>`;
+    if (Q.length) h += `<div class="hb-sec" style="margin-top:14px">Держусь<em>${Q.length}</em></div><div class="hb-pin hdp">${GLX.defs}${Q.map(q => { const ms = Math.max(0, Date.now() - (q.s || Date.now())), dd = Math.floor(ms / 864e5), p2 = n => String(n).padStart(2, '0'); return `<div class="hb-pq hd" style="--hc:${hbCol(q.c, 'r')}" data-act="habopen" data-id="${q.id}" data-hdc="${q.id}"><div class="hart">${GLX.hold(q.e, hbCol(q.c, 'r'))}</div><div class="hd-row"><i></i>${HT('ДЕРЖУСЬ УЖЕ')}</div><div class="hd-big"><span class="hd-d">${dd}</span><small>${HDU()}</small></div><div class="hd-tm">${p2(Math.floor(ms % 864e5 / 36e5))}:${p2(Math.floor(ms % 36e5 / 6e4))}:${p2(Math.floor(ms % 6e4 / 1e3))}</div><b>${esc(q.t)}</b><div class="hd-ds">${[0, 1, 2, 3, 4, 5, 6].map(k => `<i${k < Math.min(dd, 7) ? ' class="on"' : ''}></i>`).join('')}</div></div>`; }).join('')}</div>`;
     if (D.length) h += `<div class="hb-sec">Сегодня<em>${nd}/${D.length}</em></div><div class="hb-gs">${['m', 'd', 'e'].map(p => { const g = D.filter(x => (x.p || 'd') === p); return g.length ? `<div class="hb-g${g.every(x => hbDone(x)) ? ' ok' : ''}"><h4>${HBP[p]}</h4>${g.map(hbRow).join('')}</div>` : ''; }).join('')}</div>`;
     return h;
   }
