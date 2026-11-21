@@ -5911,7 +5911,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1184';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1185';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14586,7 +14586,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
     }).catch(() => { if (!c) toast(HT('Нет связи')); });
   }
   function duRoomDraw(j, redo){
-    const d = j.duel, ev = j.events || [], act = d.status === 'active', done = d.status === 'done', cells = [];
+    const d = j.duel, ev = (j.events || []).filter(e => e.kind !== 'nudge'), act = d.status === 'active', done = d.status === 'done', cells = [];
     for (let n = d.starts_on; n <= d.ends_on; n++) cells.push([n, d.my_days.includes(n), d.peer_days.includes(n), (d.my_cheats || []).includes(n), (d.peer_cheats || []).includes(n)]);
     const sv = d.kind === 'survive', tm = d.kind === 'team', el = ms => `<em data-duclk="${d.started_at},${d.ended_at || ''}">${duFmt((d.ended_at || Date.now()) - d.started_at)}</em>`, lost = done && !d.draw && d.winner === d.peer;
     const row = i => `<div class="hb-cells">${cells.map(c => `<i class="${c[i] ? 'f' : (c[0] < d.today ? 'm' : '')}${c[i + 2] ? ' ch' : ''}${c[0] === d.today ? ' t' : ''}"></i>`).join('')}</div>`;
