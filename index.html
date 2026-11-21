@@ -5085,6 +5085,8 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 .hb-sc b{font-size:14px;margin-top:8px;max-width:112px}.hb-sc small{color:rgba(255,255,255,.7);font-size:11.5px;display:block;max-width:112px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @media(prefers-reduced-motion:reduce){.hb-sc::after,.hb-sc .hart svg{animation:none}}
 .drs{display:flex;gap:8px;margin:12px 0 4px}.drs span{flex:1;border-radius:18px;padding:10px 6px;text-align:center;background:var(--surface);border:1px solid var(--border)}.drs b{display:block;font:800 15px Unbounded,system-ui,sans-serif}.drs small{display:block;color:var(--muted);font-size:11.5px;margin-bottom:2px;order:2}
+/* v1.1210: окно не пропускает свайпы на страницу под собой */
+#sheet{overscroll-behavior:contain}#sbd{touch-action:none}#sw.open{touch-action:pan-y}
 .hd .hd-row{display:flex;align-items:center;font:800 11px Manrope,system-ui,sans-serif;letter-spacing:.2em;color:rgba(255,255,255,.75)}.hd .hd-row i{width:8px;height:8px;border-radius:50%;background:#fff;margin-right:8px;box-shadow:0 0 10px #fff}
 .hd .hd-big{display:inline-block;font:800 44px Unbounded,system-ui,sans-serif;letter-spacing:-3px;line-height:1;margin:8px 0 0}.hd .hd-big small{display:inline;font-size:17px;letter-spacing:-1px;color:rgba(255,255,255,.75);margin-left:4px}
 .hd .hd-tm{display:inline-block;margin-left:10px;font:600 19px Unbounded,system-ui,sans-serif;letter-spacing:-1px;font-variant-numeric:tabular-nums;opacity:.92}
@@ -5992,7 +5994,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1209';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1210';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -17891,6 +17893,20 @@ init();
     setTimeout(pos, 300);
   }
   document.addEventListener('focusin', e => { const t = e.target; if (t && t.tagName === 'INPUT' && IDS.includes(t.id)) { t.blur(); stkOpen(t); } });
+})();
+
+/* v1.1210: пока открыто окно, свайп вне прокручиваемого содержимого не двигает страницу под ним */
+(function(){
+  let y0 = 0;
+  const can = (el, dy) => { for (; el && el !== document.body; el = el.parentElement) { const cs = getComputedStyle(el); if (/(auto|scroll)/.test(cs.overflowY) && el.scrollHeight > el.clientHeight + 1) { if (dy > 0 ? el.scrollTop > 0 : el.scrollTop + el.clientHeight < el.scrollHeight - 1) return true; } if (/(auto|scroll)/.test(cs.overflowX) && el.scrollWidth > el.clientWidth + 1) return true; if (el.id === 'sheet') break; } return false; };
+  document.addEventListener('touchstart', e => { y0 = e.touches[0].clientY; }, {passive:true, capture:true});
+  document.addEventListener('touchmove', e => {
+    const sw = document.getElementById('sw'); if (!sw || !sw.classList.contains('open') || e.touches.length > 1) return;
+    const t = e.target; if (!t || !t.closest) return;
+    if (t.closest('input,textarea,select,[contenteditable],canvas,[data-nodrag]')) return;
+    if (!t.closest('#sheet')) { e.preventDefault(); return; }
+    if (!can(t, e.touches[0].clientY - y0)) e.preventDefault();
+  }, {passive:false});
 })();
 </script>
 </body>
