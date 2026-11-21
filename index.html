@@ -5087,6 +5087,8 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 .drs{display:flex;gap:8px;margin:12px 0 4px}.drs span{flex:1;border-radius:18px;padding:10px 6px;text-align:center;background:var(--surface);border:1px solid var(--border)}.drs b{display:block;font:800 15px Unbounded,system-ui,sans-serif}.drs small{display:block;color:var(--muted);font-size:11.5px;margin-bottom:2px;order:2}
 /* v1.1210: окно не пропускает свайпы на страницу под собой */
 #sheet{overscroll-behavior:contain}#sbd{touch-action:none}#sw.open{touch-action:pan-y}
+/* v1.1212: имя в профиле друга не липнет к рамке аватарки */
+.hero:not(.me) .hero-nm{margin-top:14px}
 .hd .hd-row{display:flex;align-items:center;font:800 11px Manrope,system-ui,sans-serif;letter-spacing:.2em;color:rgba(255,255,255,.75)}.hd .hd-row i{width:8px;height:8px;border-radius:50%;background:#fff;margin-right:8px;box-shadow:0 0 10px #fff}
 .hd .hd-big{display:inline-block;font:800 44px Unbounded,system-ui,sans-serif;letter-spacing:-3px;line-height:1;margin:8px 0 0}.hd .hd-big small{display:inline;font-size:17px;letter-spacing:-1px;color:rgba(255,255,255,.75);margin-left:4px}
 .hd .hd-tm{display:inline-block;margin-left:10px;font:600 19px Unbounded,system-ui,sans-serif;letter-spacing:-1px;font-variant-numeric:tabular-nums;opacity:.92}
@@ -5994,7 +5996,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1211';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1212';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
