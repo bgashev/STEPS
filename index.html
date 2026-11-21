@@ -5843,7 +5843,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1151';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1152';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -11830,7 +11830,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     const sq = (G2, i) => [G2.x0 + (i & 7) * G2.t, G2.y0 + (i >> 3) * G2.t];
     const lv0 = () => { try { const v = +localStorage.getItem('voob_che_lv'); return v >= 0 && v < CHLV.length ? v : 1; } catch (e) { return 1; } };
     const rsGeo = () => { const G2 = geo(); return {x: W / 2 - 78, y: G2.y0 + G2.S + 84, w: 156, h: 40}; };
-    const cfGeo = () => { const cw = Math.min(W - 48, 320), ch = 184, cx = (W - cw) / 2, cy = H / 2 - ch / 2, bw = (cw - 48) / 2, bh = 48; return {cw, ch, cx, cy, bw, bh, nx: cx + 16, yx: cx + cw - 16 - bw, by: cy + ch - 16 - bh}; };
+    const cfGeo = () => { const cw = Math.min(W - 48, 320), ch = 224, cx = (W - cw) / 2, cy = H / 2 - ch / 2, bw = (cw - 48) / 2, bh = 48; return {cw, ch, cx, cy, bw, bh, nx: cx + 16, yx: cx + cw - 16 - bw, by: cy + ch - 16 - bh}; };
     const promoGeo = () => { const SH = Math.min(240, H * .36), e0 = g.pa == null ? 1 : g.pa, ee = 1 - Math.pow(1 - e0, 3) * (1 + 1.2 * (1 - e0)), pe = g.pk >= 0 ? Math.max(0, g.pd / .3) : 1, k = Math.max(0, Math.min(1.04, ee)) * pe, top = H - SH * k, gp = 10, cw = (W - 32 - gp * 3) / 4, ch = Math.min(118, SH * .52); return {SH, top, k, gp, cw, ch, x0: 16, cy: top + SH - ch - 22}; };
     g.init = () => { base0(g); g.ph = 'menu'; g.lvl = lv0(); g.lvp = g.lvl; g.lvb = 0; g.nb = false; g.res = null; g.anim = null; g.S = chNew(); g.hist = []; g.legal = []; g.sel = -1; g.last = []; g.bt = 0; g.ghost = []; g.promo = null; g.chk = false; g.M = []; g.rvTok = (g.rvTok || 0) + 1; g.rvDead = false; Object.defineProperty(g, 'rv', {value: null, writable: true, configurable: true, enumerable: false}); 'KQRBNP'.split('').forEach(chImg); 'kqrbnp'.split('').forEach(chImg); };
     const begin = () => { g.S = chNew(); g.hist = [chKey(g.S)]; g.M = []; g.rvTok = (g.rvTok || 0) + 1; g.rv = null; g.rvDead = false; g.legal = chLegal(g.S); g.sel = -1; g.last = []; g.res = null; g.anim = null; g.ghost = []; g.promo = null; g.chk = false; g.thk = false; g.pm = null; g.bD = 2.5; g.ph = 'play'; g.bt = 0; g.intro = 0; g.land = null; g.rings = []; g.trN = {}; g.trT = {}; };
@@ -12012,7 +12012,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       if (g.ph === 'play' && !g.res && !g.promo && !g.dead) { const R0 = rsGeo(); c.save(); rr(c, R0.x, R0.y, R0.w, R0.h, 20); c.fillStyle = 'rgba(255,255,255,.06)'; c.fill(); c.lineWidth = 1.2; c.strokeStyle = 'rgba(255,255,255,.2)'; c.stroke(); c.fillStyle = C.mu; c.font = '700 14px ' + C.ff; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('🏳 Сдаться', R0.x + R0.w / 2, R0.y + R0.h / 2 + 1); c.restore(); }
       if (g.cf) { const D = cfGeo(), e = Math.min(1, (g.t - g.cf.t0) * 5), ee = 1 - Math.pow(1 - e, 3); c.save(); c.globalAlpha = .62 * e; c.fillStyle = '#05050a'; c.fillRect(0, 0, W, H); c.globalAlpha = e; c.translate(W / 2, H / 2 + (1 - ee) * 16); c.scale(.94 + .06 * ee, .94 + .06 * ee); c.translate(-W / 2, -H / 2);
         c.shadowColor = 'rgba(0,0,0,.7)'; c.shadowBlur = 36; rr(c, D.cx, D.cy, D.cw, D.ch, 26); c.fillStyle = '#1b1b26'; c.fill(); c.shadowBlur = 0; c.lineWidth = 1; c.strokeStyle = 'rgba(255,255,255,.12)'; c.stroke();
-        c.textAlign = 'center'; c.textBaseline = 'alphabetic'; c.font = '34px ' + C.ff; c.fillStyle = '#fff'; c.fillText('🏳️', W / 2, D.cy + 52); c.font = '800 22px ' + C.ff; c.fillText('Сдаться?', W / 2, D.cy + 86); c.fillStyle = C.mu; c.font = '500 13.5px ' + C.ff; c.fillText('Партия будет засчитана как поражение,', W / 2, D.cy + 108); c.fillText('серия обнулится.', W / 2, D.cy + 126);
+        c.textAlign = 'center'; c.textBaseline = 'alphabetic'; c.font = '34px ' + C.ff; c.fillStyle = '#fff'; c.fillText('🏳️', W / 2, D.cy + 54); c.font = '800 22px ' + C.ff; c.fillText('Сдаться?', W / 2, D.cy + 92); c.fillStyle = C.mu; c.font = '500 13.5px ' + C.ff; c.fillText('Партия будет засчитана как поражение,', W / 2, D.cy + 120); c.fillText('серия обнулится.', W / 2, D.cy + 140);
         rr(c, D.nx, D.by, D.bw, D.bh, 24); c.fillStyle = '#2a2a38'; c.fill(); c.fillStyle = '#fff'; c.font = '800 15px ' + C.ff; c.textBaseline = 'middle'; c.fillText('Продолжить', D.nx + D.bw / 2, D.by + D.bh / 2 + 1);
         rr(c, D.yx, D.by, D.bw, D.bh, 24); c.fillStyle = '#ff4d63'; c.fill(); c.fillStyle = '#fff'; c.fillText('Да, сдаться', D.yx + D.bw / 2, D.by + D.bh / 2 + 1); c.restore(); }
       c.restore(); };
