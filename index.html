@@ -5020,16 +5020,16 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 /* v1.1011: «Кого позвать?» — крупный лист, выбор одного друга, кнопка «Позвать X в игру», плашки 60px */
 /* v1.1191: «Держусь» — типографика + стеклянные иллюстрации */
 .hb-pin.hdp{flex-direction:column;overflow:visible;margin:0;padding:2px 0 8px;gap:10px}
-.hb-pq.hd{position:relative;overflow:hidden;width:auto;min-height:196px;padding:20px 20px 16px;border-radius:28px;background:linear-gradient(155deg,color-mix(in srgb,var(--hc) 62%,#0c0c12),color-mix(in srgb,var(--hc) 18%,#0c0c12) 78%);border:1px solid color-mix(in srgb,var(--hc) 40%,transparent);color:#fff;-webkit-clip-path:inset(0 round 28px);clip-path:inset(0 round 28px)}
+.hb-pq.hd{position:relative;overflow:hidden;width:auto;min-height:0;padding:16px 18px 14px;border-radius:28px;background:linear-gradient(155deg,color-mix(in srgb,var(--hc) 62%,#0c0c12),color-mix(in srgb,var(--hc) 18%,#0c0c12) 78%);border:1px solid color-mix(in srgb,var(--hc) 40%,transparent);color:#fff;-webkit-clip-path:inset(0 round 28px);clip-path:inset(0 round 28px)}
 .hb-pq.hd>*:not(.hart){position:relative;z-index:1}
 .hb-pq.hd::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;mix-blend-mode:overlay;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 .hb-pq.hd::after{content:"";position:absolute;top:0;bottom:0;width:36%;left:-50%;pointer-events:none;background:linear-gradient(100deg,transparent,rgba(255,255,255,.07),transparent);transform:skewX(-12deg);animation:hdsh 6s ease-in-out 1s infinite}@keyframes hdsh{0%{left:-50%}55%,100%{left:130%}}
-.hd .hart{position:absolute;z-index:0;pointer-events:none;box-sizing:content-box;right:-34px;bottom:-24px;width:190px;height:190px;padding:56px 0;margin:-56px 0;-webkit-mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.3) 24%,#000 52%);mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.3) 24%,#000 52%)}.hd .hart svg{width:100%;height:100%;overflow:visible;animation:glfl 4.6s ease-in-out infinite}
+.hd .hart{position:absolute;z-index:0;pointer-events:none;box-sizing:content-box;right:-34px;bottom:-34px;width:170px;height:170px;padding:56px 0;margin:-56px 0;-webkit-mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.3) 24%,#000 52%);mask-image:linear-gradient(90deg,transparent 0,rgba(0,0,0,.3) 24%,#000 52%)}.hd .hart svg{width:100%;height:100%;overflow:visible;animation:glfl 4.6s ease-in-out infinite}
 .hd .hd-row{display:flex;align-items:center;font:800 11px Manrope,system-ui,sans-serif;letter-spacing:.2em;color:rgba(255,255,255,.75)}.hd .hd-row i{width:8px;height:8px;border-radius:50%;background:#fff;margin-right:8px;box-shadow:0 0 10px #fff}
-.hd .hd-big{font:800 54px Unbounded,system-ui,sans-serif;letter-spacing:-3px;line-height:1;margin:14px 0 2px}.hd .hd-big small{font-size:20px;letter-spacing:-1px;color:rgba(255,255,255,.75);margin-left:4px}
-.hd .hd-tm{font:600 22px Unbounded,system-ui,sans-serif;letter-spacing:-1px;font-variant-numeric:tabular-nums;opacity:.92}
-.hb-pq.hd b{font-size:16px;font-weight:800;margin:14px 0 0;color:#fff}
-.hd .hd-ds{display:flex;gap:5px;margin-top:12px;max-width:58%}.hd .hd-ds i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.18)}.hd .hd-ds i.on{background:#fff}
+.hd .hd-big{display:inline-block;font:800 44px Unbounded,system-ui,sans-serif;letter-spacing:-3px;line-height:1;margin:8px 0 0}.hd .hd-big small{font-size:17px;letter-spacing:-1px;color:rgba(255,255,255,.75);margin-left:4px}
+.hd .hd-tm{display:inline-block;margin-left:10px;font:600 19px Unbounded,system-ui,sans-serif;letter-spacing:-1px;font-variant-numeric:tabular-nums;opacity:.92}
+.hb-pq.hd b{display:block;font-size:16px;font-weight:800;margin:8px 0 0;color:#fff}
+.hd .hd-ds{display:flex;gap:5px;margin-top:10px;max-width:58%}.hd .hd-ds i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.18)}.hd .hd-ds i.on{background:#fff}
 @media(prefers-reduced-motion:reduce){.hb-pq.hd::after,.hd .hart svg{animation:none}}
 /* v1.1010: «Приложения» — вариант C1 «Poster»: зерно и пробегающий блик на карточках, калории в одну строку (без полосок-сканера), график веса не лезет на текст, у «Игр» веер из настоящих обложек */
 .ax-bn.hx .ax-bt::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;mix-blend-mode:overlay;background:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
@@ -5932,7 +5932,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1195';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1196';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
