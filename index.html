@@ -5996,7 +5996,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1212';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1213';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -15274,6 +15274,7 @@ apple:'<path d="M9 5.8C7.6 4.4 3.4 4.8 3.6 9C3.8 12.4 6.4 15.8 9 14.8C11.6 15.8 
       <div class="cx-igrid">${ICONSET[tab][1].map((n, i) => `<button type="button" data-i="${n}" style="animation-delay:${i * 22}ms" class="${S.icon === n ? 'on' : ''}">${IC(n, 20)}</button>`).join('')}</div>
       <div class="cx-lbl">Цвет</div><div class="cx-cgrid">${COLORS.map(c => `<button type="button" data-c="${c}" class="${S.color === c ? 'on' : ''}" style="background:${c}"></button>`).join('')}<button type="button" data-c="hue" class="cx-rb${hueOn ? ' on' : ''}"></button></div>
       ${hueOn ? `<input type="range" class="cx-hue" id="cx-hue" min="0" max="360" value="${S.hue || hueOf(S.color) || 200}">` : ''}
+      ${mode === 'edit' ? `<div class="cx-ad"><button type="button" class="cx-arch cx-del" id="cx-del">Удалить активность</button></div>` : ''}
       <div class="cx-foot"><button type="button" class="btn primary" id="cx-next" ${ok ? '' : 'disabled'}>Далее</button></div>`;
       paintPrev();
     } else {
@@ -15359,7 +15360,7 @@ apple:'<path d="M9 5.8C7.6 4.4 3.4 4.8 3.6 9C3.8 12.4 6.4 15.8 9 14.8C11.6 15.8 
   function delAct(){
     const i = own().findIndex(c => c.id === editId); if (i < 0) return; const btn = $('#cx-del'); if (!btn) return;
     const n = db.workouts.filter(w => w.act === editId).length;
-    if (!btn.dataset.sure) { btn.dataset.sure = '1'; btn.classList.add('sure'); btn.textContent = n ? 'Ещё раз — удалю и ' + n + ' трен.' : 'Ещё раз — удалить'; hap.warn(); clearTimeout(delAct.tm); delAct.tm = setTimeout(() => { if (btn.isConnected) { delete btn.dataset.sure; btn.classList.remove('sure'); btn.textContent = 'Удалить'; } }, 3500); return; }
+    if (!btn.dataset.sure) { if (!btn.dataset.t0) btn.dataset.t0 = btn.textContent; btn.dataset.sure = '1'; btn.classList.add('sure'); btn.textContent = n ? 'Ещё раз — удалю и ' + n + ' трен.' : 'Ещё раз — удалить'; hap.warn(); clearTimeout(delAct.tm); delAct.tm = setTimeout(() => { if (btn.isConnected) { delete btn.dataset.sure; btn.classList.remove('sure'); btn.textContent = btn.dataset.t0 || 'Удалить'; } }, 3500); return; }
     const c = db.cacts[i], id = c.id; setPin(id, false);
     for (let k = db.workouts.length - 1; k >= 0; k--) if (db.workouts[k].act === id) { tombstone('workout', db.workouts[k]); db.workouts.splice(k, 1); }
     db.cacts.splice(i, 1); tombstone('cact', c); reg(); save(); closeSheet(); render0(); hap.warn(); toast(c.name + ' удалена');
