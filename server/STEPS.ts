@@ -2577,7 +2577,7 @@ function duelItem(d: any, me: number, lg: any[], names: Map<number, any>, rq?: a
     sch: { t: d.sch_t ?? "d", n: d.sch_n ?? null, d: d.sch_d ?? null, k: d.sch_k ?? null }, started_at: d.started_at ? new Date(d.started_at).getTime() : null, ended_at: d.ended_at ? new Date(d.ended_at).getTime() : null, mine: d.from_id === me, peer, peer_name: displayName(names.get(peer) ?? { tg_id: peer }), title: d.title, emoji: d.emoji, goal: d.goal, days: d.days, stake: d.stake,
     status: d.status, starts_on: d.starts_on, ends_on: d.ends_on, start_day: d.start_day ?? null, today, winner: d.winner, draw: d.draw, my_days: days(mine), peer_days: days(theirs),
     my_today: mine.find((x) => x.day === today)?.v ?? 0, peer_today: theirs.find((x) => x.day === today)?.v ?? 0,
-    req: rq ? { id: rq.id, kind: rq.kind, days: rq.days, stake: rq.stake, mine: rq.from_id === me, at: new Date(rq.created_at).getTime() } : null };
+    req: rq ? { id: rq.id, kind: rq.kind, days: rq.days, stake: rq.stake, title: rq.title ?? null, start_day: rq.start_day ?? null, mine: rq.from_id === me, at: new Date(rq.created_at).getTime() } : null };
 }
 const REQ_TTL = 48 * 3600e3;   // v1.1204: запрос на изменение/удаление живёт 48 часов
 async function duelReqs(ids: number[]) {
@@ -2730,19 +2730,24 @@ async function routeDuelReq(body: any) {   // v1.1204: предложить из
   const d = await duelFinish(d0);
   if (d.status !== "active") return fail("Спор уже не идёт", 409);
   const kind = body?.kind === "delete" ? "delete" : "edit", today = lday(Date.now());
-  let days: number | null = null, stake: string | null = null;
+  let days: number | null = null, stake: string | null = null, title: string | null = null, start: number | null = null;
   if (kind === "edit") {
     days = Math.floor(Number(body?.days)); stake = String(body?.stake ?? "").trim().slice(0, 60);
     if (!duelDaysOk(days)) return fail("Выбери срок спора");
-    if (d.starts_on + days - 1 < today) return fail("Срок не может закончиться раньше сегодняшнего дня", 400);
-    if (days === d.days && stake === (d.stake ?? "")) return fail("Ничего не изменилось", 400);
+    title = String(body?.title ?? d.title).trim().slice(0, 40);   // v1.1237: название и дата старта
+    start = body?.start_day == null ? Number(d.starts_on) : Math.floor(Number(body.start_day));
+    if (!title) return fail("Назови привычку");
+    if (!Number.isInteger(start) || start < Math.min(d.starts_on, today) || start > today + 60) return fail("Выбери дату старта", 400);
+    if (start + days - 1 < today) return fail("Срок не может закончиться раньше сегодняшнего дня", 400);
+    if (days === d.days && stake === (d.stake ?? "") && title === d.title && start === d.starts_on) return fail("Ничего не изменилось", 400);
   }
   const old = await duelReqs([d.id]);
   if (old.get(d.id)) return fail("Запрос уже ждёт ответа", 409);
-  const { data: r, error } = await db.from("habit_duel_requests").insert({ duel_id: d.id, from_id: me, kind, days, stake }).select("*").maybeSingle();
+  const { data: r, error } = await db.from("habit_duel_requests").insert({ duel_id: d.id, from_id: me, kind, days, stake, title, start_day: start }).select("*").maybeSingle();
   if (error || !r) return fail("Не получилось отправить запрос", 500);
   const peer = d.from_id === me ? d.to_id : d.from_id, name = displayName(await userInfo(me));
-  const text = kind === "delete" ? `🗑 ${name} предлагает удалить спор «${d.title}»` : `✏️ ${name} предлагает изменить спор «${d.title}»: ${days !== d.days ? `срок ${d.days} → ${days} дн.` : ""}${stake !== (d.stake ?? "") ? `${days !== d.days ? ", " : ""}ставка: ${stake || "без ставки"}` : ""}`;
+  const diff = kind === "delete" ? "" : [title !== d.title ? `название «${title}»` : "", start !== d.starts_on ? `старт ${dayLabel(start!)}` : "", start! + days! - 1 !== d.ends_on ? `финиш ${dayLabel(start! + days! - 1)}` : "", days !== d.days ? `срок ${d.days} → ${days} дн.` : "", stake !== (d.stake ?? "") ? (stake ? `ставка: ${stake}` : "без ставки") : ""].filter(Boolean).join(", ");
+  const text = kind === "delete" ? `🗑 ${name} предлагает удалить спор «${d.title}»` : `✏️ ${name} предлагает изменить спор «${d.title}»: ${diff}`;
   await tg("sendMessage", { chat_id: peer, text: `${text}\nНужно твоё согласие.`, reply_markup: { inline_keyboard: [[{ text: "Открыть спор", url: `https://t.me/${await botName()}/VOOB?startapp=d_${d.id}` }]] } }).catch(() => null);
   return json({ status: "ok", id: r.id });
 }
@@ -2765,9 +2770,11 @@ async function routeDuelReqResp(body: any) {
     notify(r.from_id, `🗑 ${name} согласился(ась): спор «${d.title}» удалён`);
     return json({ status: "deleted" });
   }
-  const days = Number(r.days), ends = d.starts_on + days - 1;
-  await db.from("habit_duels").update({ days, ends_on: ends, stake: r.stake ?? d.stake }).eq("id", d.id).eq("status", "active");
-  notify(r.from_id, `✏️ ${name} согласился(ась): спор «${d.title}» изменён (${days} дн.${r.stake ? `, ставка: ${r.stake}` : ""})`);
+  const days = Number(r.days), start = Number(r.start_day ?? d.starts_on), ends = start + days - 1, title = r.title || d.title, t0 = lday(Date.now());
+  if (ends < t0) return json({ status: "expired" });
+  const moved = start !== d.starts_on ? { starts_on: start, start_day: start, started_at: start === t0 ? new Date().toISOString() : new Date(start * DAY - TZ_MS).toISOString() } : {};
+  await db.from("habit_duels").update({ days, ends_on: ends, title, stake: r.stake ?? d.stake, ...moved }).eq("id", d.id).eq("status", "active");
+  notify(r.from_id, `✏️ ${name} согласился(ась): спор «${title}» изменён (${dayLabel(start)} – ${dayLabel(ends)}, ${days} дн.${r.stake ? `, ставка: ${r.stake}` : ""})`);
   return json({ status: "edited" });
 }
 async function routeDuelReqCancel(body: any) {
