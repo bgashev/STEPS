@@ -6198,7 +6198,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1268';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1269';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -13395,6 +13395,57 @@ function open(host, top, onPick, onPlay){
       c.restore(); };
     return g; }
 
+  /* v1.1269: заставка «Шахмат» — «Линия» */
+  const CHE_INTRO = (() => {
+  const TAU = Math.PI * 2, cl = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v)), seg = (t, a, b) => cl((t - a) / (b - a)), lp = (a, b, k) => a + (b - a) * k;
+  const eo = k => 1 - Math.pow(1 - k, 4), io = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2, sine = k => .5 - Math.cos(k * Math.PI) / 2;
+  const SERIF = 'Cormorant Garamond, "Playfair Display", Georgia, "Times New Roman", serif';
+  const PT = {}; const path = t => { if (PT[t]) return PT[t]; const body = new Path2D(), det = new Path2D(); (CHP2[t].match(/<(path|circle)[^>]*>/g) || []).forEach(m => { const e = /class="e"/.test(m), p = e ? det : body, d = / d="([^"]+)"/.exec(m); if (d) p.addPath(new Path2D(d[1])); else { const x = +/cx="([^"]+)"/.exec(m)[1], y = +/cy="([^"]+)"/.exec(m)[1], r = +/ r="([^"]+)"/.exec(m)[1], q = new Path2D(); q.arc(x, y, r, 0, TAU); p.addPath(q); } }); return PT[t] = {body, det}; };
+  const at = (c, x, y, h) => { const k = h / 36; c.translate(x, y); c.scale(k, k); c.translate(-22.5, -38.5); return k; };
+  let once = {};
+  const hit = (key, t, when, k) => { if (t >= when && !once[key]) { once[key] = 1; if (t - when < .2) sfx(k); } };
+  const word = (c, s, y, px, col, t, a, spread) => { const k = eo(seg(t, a, a + 1.1)); if (k <= 0) return; c.save(); c.font = '500 ' + px + 'px ' + SERIF; c.textBaseline = 'middle'; c.textAlign = 'center'; const ws = [...s].map(ch => c.measureText(ch).width); let sp = px * (spread || .34) * lp(1.5, 1, k), sum = ws.reduce((q, w) => q + w, 0); if (sum + sp * (s.length - 1) > W - 48) sp = Math.max(2, (W - 48 - sum) / (s.length - 1)); let x = W / 2 - (sum + sp * (s.length - 1)) / 2;
+    [...s].forEach((ch, i) => { c.globalAlpha = eo(seg(t, a + i * .05, a + .7 + i * .05)); c.fillStyle = col; c.fillText(ch, x + ws[i] / 2, y + (1 - c.globalAlpha) * 8); x += ws[i] + sp; }); c.restore(); };
+  const small = (c, s, y, col, al) => { if (al <= 0) return; c.save(); c.globalAlpha = al; c.font = '600 10.5px system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = col; c.fillText(s.split('').join('  '), W / 2, y); c.restore(); };
+  const rule = (c, y, w, col, k) => { if (k <= 0) return; c.fillStyle = col; c.fillRect(W / 2 - w * k / 2, y, w * k, 1); };
+  const T3 = () => ({en: ['CHESS'], kk: ['ШАХМАТ']})[curLang()] || ['ШАХМАТЫ'];
+  function lineArt(c, t){
+    const open = io(seg(t, 2.85, 3.55)), base = H * .56, h = Math.min(210, H * .31), P = path('k');
+    const pane = top => { c.save(); c.translate(0, (top ? -1 : 1) * open * H / 2); c.beginPath(); c.rect(0, top ? -2 : H / 2, W, H / 2 + 2); c.clip(); c.fillStyle = '#0c0d10'; c.fillRect(0, 0, W, H);
+      c.strokeStyle = 'rgba(255,255,255,.045)'; c.lineWidth = 1; const q = W / 6, gk = eo(seg(t, 0, 1.2)); c.beginPath(); for (let i = 1; i < 6; i++) { c.moveTo(i * q + .5, H / 2 - H / 2 * gk); c.lineTo(i * q + .5, H / 2 + H / 2 * gk); } for (let y = base % q; y < H; y += q) { c.moveTo(W / 2 - W / 2 * gk, y + .5); c.lineTo(W / 2 + W / 2 * gk, y + .5); } c.stroke();
+      c.save(); const k = at(c, W / 2, base, h), d = io(seg(t, .25, 1.85)), fill = sine(seg(t, 1.75, 2.35)); if (fill > 0) { const g = c.createLinearGradient(8, 4, 36, 40); g.addColorStop(0, '#f6e3b6'); g.addColorStop(.5, '#c9a25e'); g.addColorStop(1, '#8a6a34'); c.globalAlpha = fill; c.fillStyle = g; c.fill(P.body); c.globalAlpha = 1; }
+      if (d > 0) { c.strokeStyle = '#e5c88c'; c.lineWidth = 1.3 / k; c.lineCap = 'round'; c.setLineDash([260 * d, 600]); c.stroke(P.body); c.setLineDash([]); } c.restore();
+      rule(c, base + 18, 150, 'rgba(229,200,140,.7)', eo(seg(t, 1.7, 2.4))); word(c, T3()[0], base + 62, 33, '#f3ead8', t, 1.65); small(c, 'VOOB', base + 98, '#8f8672', seg(t, 2.2, 2.7)); c.restore(); };
+    pane(true); pane(false);
+    if (open > 0 && open < 1) { c.fillStyle = 'rgba(229,200,140,' + (1 - open) + ')'; c.fillRect(0, H / 2 - open * H / 2 - 1, W, 1.5); c.fillRect(0, H / 2 + open * H / 2, W, 1.5); }
+    hit('l0', t, .3, 'spark'); hit('l1', t, 1.85, 'hop');
+  }
+  return {dur: 3.55, draw: lineArt, reset(){ once = {}; }};
+  })();
+  /* v1.1269: заставка «Шашек» — «Затмение», уход кругом */
+  const CHK_INTRO = (() => {
+  const TAU = Math.PI * 2, cl = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v)), seg = (t, a, b) => cl((t - a) / (b - a)), lp = (a, b, k) => a + (b - a) * k;
+  const eo = k => 1 - Math.pow(1 - k, 4), io = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+  const SERIF = 'Cormorant Garamond, "Playfair Display", Georgia, "Times New Roman", serif';
+  let once = {};
+  const hit = (key, t, when, k) => { if (t >= when && !once[key]) { once[key] = 1; if (t - when < .2) sfx(k); } };
+  const word = (c, y, col, t, a) => { if (t <= a) return; c.save(); c.font = '500 36px ' + SERIF; c.textBaseline = 'middle'; c.textAlign = 'center'; const L = [...(({en: 'CHECKERS', kk: 'ДОЙБЫ'})[curLang()] || 'ШАШКИ')], ws = L.map(ch => c.measureText(ch).width), sum = ws.reduce((q, w) => q + w, 0), sp = Math.min(36 * .34 * lp(1.5, 1, eo(seg(t, a, a + 1.1))), Math.max(2, (W - 48 - sum) / (L.length - 1))); let x = W / 2 - (sum + sp * (L.length - 1)) / 2; L.forEach((ch, i) => { const k = eo(seg(t, a + i * .05, a + .7 + i * .05)); c.globalAlpha = k; c.fillStyle = col; c.fillText(ch, x + ws[i] / 2, y + (1 - k) * 8); x += ws[i] + sp; }); c.restore(); };
+  const sub = (c, y, col, al) => { if (al <= 0) return; c.save(); c.globalAlpha = al; c.font = '600 11px system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = col; c.fillText('V  O  O  B', W / 2, y); c.restore(); };
+  const rule = (c, y, w, col, k) => { if (k <= 0) return; c.fillStyle = col; c.fillRect(W / 2 - w * k / 2, y, w * k, 1); };
+  const circ = (c, x, y, r) => { c.beginPath(); c.arc(x, y, r, 0, TAU); };
+  /* шашка сверху: тело, фаска, два кольца */
+  const disc = (c, x, y, r, white) => { const g = c.createLinearGradient(x - r, y - r, x + r, y + r); g.addColorStop(0, white ? '#fffaf0' : '#34363d'); g.addColorStop(1, white ? '#bdae90' : '#07080a'); c.fillStyle = g; circ(c, x, y, r); c.fill(); c.lineWidth = 1; [.97, .72, .46].forEach((k, i) => { c.strokeStyle = white ? 'rgba(120,98,62,' + (.45 - i * .08) + ')' : 'rgba(255,255,255,' + (.2 - i * .04) + ')'; circ(c, x, y, r * k); c.stroke(); }); };
+  function mix(c, t){
+    const open = io(seg(t, 2.95, 3.7)), R = Math.hypot(W, H) * open, fade = 1 - io(seg(t, 2.9, 3.2)); c.save(); c.beginPath(); c.rect(0, 0, W, H); if (open > 0) c.arc(W / 2, H * .4, R, 0, TAU, true); c.clip('evenodd'); c.fillStyle = '#060607'; c.fillRect(0, 0, W, H);
+    const y = H * .4, r = Math.min(88, W * .22), m = io(seg(t, .45, 2.1)), off = r * .56 * m;
+    const ha = c.createRadialGradient(W / 2, y, r * .6, W / 2, y, r * 2.6); ha.addColorStop(0, 'rgba(232,208,160,' + .2 * seg(t, .1, 1.6) + ')'); ha.addColorStop(1, 'rgba(232,208,160,0)'); c.fillStyle = ha; c.fillRect(0, 0, W, H);
+    c.globalAlpha = fade; c.save(); c.globalAlpha *= eo(seg(t, 0, .9)); disc(c, W / 2 + off, y - off * .35, r * .985, true);
+    c.shadowColor = 'rgba(0,0,0,.65)'; c.shadowBlur = 24; c.fillStyle = '#08090b'; circ(c, W / 2 - off, y + off * .35, r); c.fill(); c.shadowBlur = 0; disc(c, W / 2 - off, y + off * .35, r, false);
+    c.strokeStyle = 'rgba(255,232,190,' + .8 * eo(seg(t, .2, 1.2)) + ')'; c.lineWidth = 1.2; c.beginPath(); const a = lp(-2.9, -.9, io(seg(t, .2, 2.3))); c.arc(W / 2 - off, y + off * .35, r, a, a + 1.5); c.stroke(); c.restore();
+    if (fade > 0) { c.save(); c.translate(0, (1 - fade) * -6); word(c, H * .7, 'rgba(241,232,214,' + fade + ')', t, 1.45); c.restore(); } rule(c, H * .7 + 29, 44, '#b3925a', eo(seg(t, 2, 2.6))); sub(c, H * .7 + 52, '#9c8a68', seg(t, 2.1, 2.6) * fade); c.restore(); if (open > 0 && open < 1) { c.strokeStyle = 'rgba(227,199,141,' + (1 - open) + ')'; c.lineWidth = 1.5; circ(c, W / 2, H * .4, R); c.stroke(); } hit('a1', t, 2.95, 'hop'); hit('a0', t, .5, 'spark');
+  }
+  return {dur: 3.7, draw: mix, reset(){ once = {}; }};
+  })();
   /* v1.1267: заставка «Баскета» «В лицо» — мяч из глубины площадки влетает в камеру */
   const BK_INTRO = (() => {
   const TAU = Math.PI * 2, cl = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v)), seg = (t, a, b) => cl((t - a) / (b - a)), lp = (a, b, k) => a + (b - a) * k;
@@ -13734,11 +13785,11 @@ function open(host, top, onPick, onPlay){
     pz = false; gm.innerHTML = '<div class="rt-gm"><div class="rt-gh"><button type="button" class="rt-gbn sq rk" data-r="grk" aria-label="Рейтинг друзей"><svg viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0V4zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3M12 14v4M8.5 20h7"/></svg></button><div class="rt-gtm"><span class="time" data-rt="t"></span><small>ДО ГОНГА</small></div><div class="rt-gsc" id="rtgsc"></div><div class="rt-gbs"><button type="button" class="rt-gbn sq" data-r="gmin" aria-label="Свернуть"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><button type="button" class="rt-gbn pr" data-r="gback"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>' + (apps ? 'Назад' : 'К отдыху') + '</button></div></div><i class="rt-gline"><b data-rt="ln"></b></i><canvas id="rtgc"></canvas></div>';
     document.body.appendChild(gm);
     cv = gm.querySelector('canvas'); DPR = Math.min(2, window.devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * DPR; cv.height = H * DPR; cx = cv.getContext('2d'); cx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    egg = null; eggT = 14 + Math.random() * 14; G = GAMES[i].f(); G.init(); cd = 0; if (sv) { try { Object.assign(G, JSON.parse(sv.d)); cd = 3; cdN = 0; } catch (e) { G = GAMES[i].f(); G.init(); } } G.itr = null; G.picking = false; G.needPick = false; if (GAMES[i].k === 'hit') { BKX.load(s.bk); if (!sv) { G.itr = 0; G.needPick = true; BK_INTRO.reset(); } } s.sv = null; save(); lastT = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
+    egg = null; eggT = 14 + Math.random() * 14; G = GAMES[i].f(); G.init(); cd = 0; if (sv) { try { Object.assign(G, JSON.parse(sv.d)); cd = 3; cdN = 0; } catch (e) { G = GAMES[i].f(); G.init(); } } G.itr = null; G.picking = false; G.needPick = false; if (GAMES[i].k === 'hit') { BKX.load(s.bk); if (!sv) { G.itr = 0; G.needPick = true; BK_INTRO.reset(); } } if ((GAMES[i].k === 'che' || GAMES[i].k === 'chk') && !sv) { G.itr = 0; (GAMES[i].k === 'che' ? CHE_INTRO : CHK_INTRO).reset(); } s.sv = null; save(); lastT = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
     const pp = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
     cv.addEventListener('pointerdown', e => { e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch (_) {} const [x, y] = pp(e); gdown(x, y); });
-    cv.addEventListener('pointermove', e => { if (!G || G.dead || cd > 0 || !G.move) return; const [x, y] = pp(e); G.move(x, y); });
-    const pu = e => { if (!G || G.dead || cd > 0 || !G.up) return; const [x, y] = pp(e); G.up(x, y); };
+    cv.addEventListener('pointermove', e => { if (!G || G.dead || cd > 0 || G.itr != null || !G.move) return; const [x, y] = pp(e); G.move(x, y); });
+    const pu = e => { if (!G || G.dead || cd > 0 || G.itr != null || !G.up) return; const [x, y] = pp(e); G.up(x, y); };
     cv.addEventListener('pointerup', pu); cv.addEventListener('pointercancel', pu);
     gm.querySelector('[data-r="gback"]').addEventListener('click', () => { hap.tap(); if (apps) { close(); return; } stopGame(); if (el) { el.style.display = ''; render(); } });
     gm.querySelector('[data-r="grk"]').addEventListener('click', () => { hap.tap(); openRank(); });
@@ -13834,7 +13885,7 @@ function open(host, top, onPick, onPlay){
   function loop(ts){
     if (!G) return; const dt = Math.min(.033, (ts - lastT) / 1000); lastT = ts;
     if (cd > 0) cd -= dt; else if (!pz) G.update(dt); cx.clearRect(0, 0, W, H); G.draw(cx); if (GAMES[GI] && GAMES[GI].beta) vbMark(cx, performance.now() / 1000); if (cd <= 0) eggStep(dt); eggDraw(cx);
-    if (G.itr != null) { if (!pz) G.itr += Math.max(0, dt); if (G.itr >= BK_INTRO.dur) G.itr = null; else BK_INTRO.draw(cx, G.itr, G); }
+    if (G.itr != null) { if (!pz) G.itr += Math.max(0, dt); const IT = GAMES[GI].k === 'che' ? CHE_INTRO : GAMES[GI].k === 'chk' ? CHK_INTRO : BK_INTRO; if (G.itr >= IT.dur) G.itr = null; else IT.draw(cx, G.itr, G); }
     if (cd > 0) { const n = Math.ceil(cd); if (n !== cdN) { cdN = n; hap.tap(); } cx.globalAlpha = .55; cx.fillStyle = C.bg; cx.fillRect(0, 0, W, H); cx.globalAlpha = 1; cx.textAlign = 'center'; cx.fillStyle = C.mu; cx.font = '700 15px ' + C.ff; cx.fillText('Продолжаем · приготовься', W / 2, H * .36); const fr = cd - Math.floor(cd), sc2 = 1 + fr * .35; cx.save(); cx.translate(W / 2, H * .36 + 74); cx.scale(sc2, sc2); cx.globalAlpha = .35 + .65 * (1 - fr); cx.fillStyle = C.ac; cx.font = '800 92px ' + C.ff; cx.fillText(n, 0, 0); cx.restore(); cx.globalAlpha = 1; }
     if (G.dead) { cx.globalAlpha = .8; cx.fillStyle = C.bg; cx.fillRect(0, 0, W, H); cx.globalAlpha = 1; cx.textAlign = 'center';
       cx.fillStyle = C.tx; cx.font = '800 26px ' + C.ff; cx.fillText(G.newBest ? 'Новый рекорд!' : (G.dieT || 'Мимо!'), W / 2, H * .36);
