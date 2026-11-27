@@ -5183,7 +5183,8 @@ html.web .gw-soon{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}html
 @media(min-width:900px){html.web .hb-car,html.web .hb-pin.hdp{grid-template-columns:repeat(4,minmax(0,1fr));margin:0;padding:2px 0 8px}}
 .hb-car .hb-sc>.hb-go{position:absolute;z-index:4;right:9px;bottom:25px;min-width:38px;height:38px;padding:0;border:0;border-radius:99px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;background:radial-gradient(circle,rgba(14,12,22,.78) 58%,transparent 61%),conic-gradient(#fff calc(var(--s,0)*1%),rgba(255,255,255,.28) 0);box-shadow:0 6px 18px rgba(0,0,0,.4);transition:transform .25s cubic-bezier(.3,1.8,.5,1)}
 .hb-car .hb-sc>.hb-go:active{transform:scale(.86)}
-.hb-go svg{width:17px;height:17px;opacity:.55}.hb-go i{font:700 22px/1 Manrope,system-ui,sans-serif;font-style:normal}.hb-go span{display:block;max-width:0;overflow:hidden;white-space:nowrap;font:800 12px Manrope,system-ui,sans-serif;transition:max-width .35s cubic-bezier(.3,1.2,.5,1),margin .35s}
+.hb-go svg{width:17px;height:17px;opacity:.55}.hb-go i{display:flex;align-items:center;justify-content:center;height:38px;font-style:normal}
+.hb-go i svg{display:block;width:18px;height:18px;opacity:1;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}.hb-go span{display:block;max-width:0;overflow:hidden;white-space:nowrap;font:800 12px Manrope,system-ui,sans-serif;transition:max-width .35s cubic-bezier(.3,1.2,.5,1),margin .35s}
 .hb-car .hb-sc>.hb-go.wk{background:#9b86ea;color:#0c0a14;box-shadow:0 6px 18px rgba(0,0,0,.45),0 0 0 4px rgba(155,134,234,.22)}.hb-go.wk i{width:38px;flex:none;text-align:center}
 @media(hover:hover){.hb-go.wk:hover span{max-width:90px;margin-right:13px}}
 .hb-car .hb-sc>.hb-go.ok{background:#34d98b;color:#06150e}.hb-go.ok svg{opacity:1}
@@ -6194,7 +6195,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1259';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1260';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14850,10 +14851,11 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   function hwkMark(w){ let c = 0; hwkList().forEach(h => { const iso = w.date, n = hwkN(iso); if (!(n <= todayN()) || (h.du && n < todayN() - 1)) return; h.log = h.log || {}; h.wid = h.wid || {}; if (h.log[iso] && !h.wid[iso]) return; h.log[iso] = Math.max(h.log[iso] || 0, h.g || 1); (h.wid[iso] = h.wid[iso] || []).includes(w.id) || h.wid[iso].push(w.id); c++; hbSave(); if (h.du) duSync(); }); return c; }
   function hwkUnlink(w){ let c = 0; hbLoad().list.forEach(h => { Object.keys(h.wid || {}).forEach(iso => { const a = h.wid[iso] || []; if (!a.includes(w.id)) return; h.wid[iso] = a.filter(x => x !== w.id); if (!h.wid[iso].length) { delete h.wid[iso]; delete h.log[iso]; } c++; hbSave(); if (h.du) duSync(); }); }); return c; }
   /* v1.1241: строк «Сегодня» нет — отметка и «+ Тренировка» живут на самой плитке */
+  const HPL = '<svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 3v12M3 9h12"/></svg>';   // v1.1260: плюс рисунком — буква «+» сидела ниже центра
   function hbGo(h){
     const dn = hbDone(h), g = h.g || 1;
-    if (h.wk && !dn) return `<button type="button" class="hb-go wk" data-act="hwkadd" aria-label="Добавить тренировку"><i>+</i><span>Тренировка</span></button>`;
-    return `<button type="button" class="hb-go${dn ? ' ok' : ''}" style="--s:${Math.round(Math.min(1, hbVal(h) / g) * 100)}" data-act="habchk" data-id="${h.id}" aria-label="Отметить">${dn ? HCK : g > 1 ? '<i>+</i>' : HCK}</button>`;
+    if (h.wk && !dn) return `<button type="button" class="hb-go wk" data-act="hwkadd" aria-label="Добавить тренировку"><i>${HPL}</i><span>Тренировка</span></button>`;
+    return `<button type="button" class="hb-go${dn ? ' ok' : ''}" style="--s:${Math.round(Math.min(1, hbVal(h) / g) * 100)}" data-act="habchk" data-id="${h.id}" aria-label="Отметить">${dn ? HCK : g > 1 ? '<i>' + HPL + '</i>' : HCK}</button>`;
   }
   /* v1.1242: у привычки из спора — полоса на весь срок спора и проценты */
   function hbDuBar(h){
