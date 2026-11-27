@@ -1745,6 +1745,8 @@ html.web .ib.shim:has(.ibl){width:auto;padding:0 18px 0 14px;gap:8px;display:inl
 #fab.mini .wd-add{background:var(--tabs-bg,var(--surface))!important;border:1px solid var(--border);box-shadow:0 14px 40px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.06)!important;color:var(--text)}
 #fab.mini .wd-add svg{opacity:.9}
 #fab.mini .wd-add:active{opacity:1}
+/* v1.1261: свёрнутый док — «Продолжить» не теряет зазор между точкой и словом и выглядит в пару к круглой «+» */
+html:not(.web) #fab.mini.has-go .wd-add.wd-go{gap:10px;padding:0 22px 0 20px!important;border:1px solid color-mix(in srgb,var(--accent) 24%,var(--border))!important;color:var(--text)!important}
 /* увеличение фото: загрузка */
 #zoom .zi{position:relative}
 #zoom .zi.ld img{filter:blur(10px) saturate(1.2);transform:scale(1.06)}
@@ -6195,7 +6197,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1260';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1261';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
