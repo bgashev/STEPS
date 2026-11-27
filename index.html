@@ -6198,7 +6198,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1265';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1266';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -13075,7 +13075,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       const st = stg(); if (st > g.stv) { g.stv = st; g.sb = {a: 0}; sfx('perfect', 7); conf(W / 2, H * .35, 30, hb0()); }
       g.old = h; h.fade = .5; g.h = newHoop(h); };
     const bump = (b, nx, ny, e) => { const vn = b.vx * nx + b.vy * ny; if (vn < 0) { b.vx -= (1 + e) * vn * nx; b.vy -= (1 + e) * vn * ny; g.dir = b.vx >= 0 ? 1 : -1; return true; } return false; };
-    g.update = dt => { g.t += dt; g.pe = g.pe || []; g.pn = (g.pn === undefined ? 4 : g.pn) - dt; if (g.pn <= 0 && !g.dead) { g.pn = rnd(5, 9); const k = Math.floor(Math.random() * 3); g.pe.push(k === 0 ? {k, l: 1.6, m: 1.6, y: rnd(H * .15, H * .7), d: Math.random() < .5 ? 1 : -1} : k === 1 ? {k, l: 1.3, m: 1.3, c: Array.from({length: 4}, () => ({x: rnd(0, W), y: rnd(-20, H * .4), v: rnd(380, 560)}))} : {k, l: 1.4, m: 1.4}); } g.pe.forEach(q => q.l -= dt); g.pe = g.pe.filter(q => q.l > 0); stepFx(g, dt); g.sq = Math.max(0, g.sq - dt * 4); g.fl = Math.max(0, g.fl - dt * 2.5); g.pop = Math.max(0, g.pop - dt * 3); if (g.sb) { g.sb.a += dt; if (g.sb.a > 2.4) g.sb = null; }
+    g.update = dt => { g.t += dt; g.pe = g.pe || []; g.pn = (g.pn === undefined ? 4 : g.pn) - dt; if (g.pn <= 0 && !g.dead) { g.pn = rnd(5, 9); const k = Math.random() < .5 ? 1 : 2; g.pe.push(k === 1 ? {k, l: 1.3, m: 1.3, c: Array.from({length: 4}, () => ({x: rnd(0, W), y: rnd(-20, H * .4), v: rnd(380, 560)}))} : {k, l: 1.4, m: 1.4}); } g.pe.forEach(q => q.l -= dt); g.pe = g.pe.filter(q => q.l > 0); stepFx(g, dt); g.sq = Math.max(0, g.sq - dt * 4); g.fl = Math.max(0, g.fl - dt * 2.5); g.pop = Math.max(0, g.pop - dt * 3); if (g.sb) { g.sb.a += dt; if (g.sb.a > 2.4) g.sb = null; }
       g.rp = g.rp.filter(q => (q.l -= dt) > 0); g.cf.forEach(p => { p.vy += 900 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt; p.l -= dt; }); g.cf = g.cf.filter(p => p.l > 0 && p.y < H + 20);
       if (g.old) { g.old.fade -= dt; if (g.old.fade <= 0) g.old = null; } const h = g.h; if (h.in < 1) h.in = Math.min(1, h.in + dt * 3); const hyPrev = h.y; h.y = h.y0 + h.amp * Math.sin(g.t * h.sp + h.ph); h.sw *= Math.exp(-dt * 3); h.pu = Math.max(0, h.pu - dt * 2);
       if (g.bar) g.bar.x = W / 2 + Math.sin(g.t * g.bar.sp * (1 + (stg() - 3) * .25) + g.bar.ph) * W * .28;
@@ -13121,7 +13121,6 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
       c.fillStyle = 'rgba(255,255,255,.05)'; for (let x = 14; x < W; x += 28) for (let y = 14; y < fy; y += 28) c.fillRect(x, y, 2, 2);
       if (g.lvl >= 3) { c.strokeStyle = 'rgba(255,255,255,.06)'; c.lineWidth = 2; const wd = Math.sin(g.t * .6); for (let i = 0; i < 7; i++) { const y = (i * 97 + g.t * 20) % (fy - 20), x = ((i * 131 + g.t * 160 * wd) % (W + 80) + W + 80) % (W + 80) - 40; c.beginPath(); c.moveTo(x, y); c.lineTo(x + 36 * Math.sign(wd || 1), y); c.stroke(); } }
       (g.pe || []).forEach(q => { const k = 1 - q.l / q.m, a = Math.sin(Math.PI * k); c.save();
-        if (q.k === 0) { const x = (q.d > 0 ? -140 : W + 140) + q.d * k * (W + 280), gr = c.createLinearGradient(x - 120, 0, x + 120, 0); gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(.5, 'rgba(255,255,255,' + (.16 * a) + ')'); gr.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = gr; c.translate(W / 2, q.y); c.rotate(.5); c.fillRect(-W, -260, 2 * W, 520); c.restore(); return; }
         if (q.k === 1) { c.lineCap = 'round'; q.c.forEach((m, i) => { const t = k * 1.3 - i * .08, x = m.x + t * 420, y = m.y + t * m.v, lg = c.createLinearGradient(x, y, x - 70, y - 70 * m.v / 420); lg.addColorStop(0, 'rgba(255,255,255,' + (.8 * a) + ')'); lg.addColorStop(1, 'rgba(255,255,255,0)'); c.strokeStyle = lg; c.lineWidth = 2.4; c.beginPath(); c.moveTo(x, y); c.lineTo(x - 70, y - 70 * m.v / 420); c.stroke(); }); c.restore(); return; }
         c.strokeStyle = 'rgba(255,255,255,' + (.25 * (1 - k)) + ')'; c.lineWidth = 3; c.beginPath(); c.arc(g.b.x, g.b.y, Math.max(0, 20 + k * 340), 0, 7); c.stroke(); c.restore(); });
       if (fire) { c.globalAlpha = .1 + .05 * Math.sin(g.t * 6); c.fillStyle = '#ff7a1a'; c.fillRect(0, 0, W, H); c.globalAlpha = 1; }
