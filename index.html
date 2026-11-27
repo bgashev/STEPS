@@ -6030,7 +6030,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1246';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1247';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -18101,10 +18101,12 @@ init();
     const T = now / 1000, light = document.documentElement.dataset.mode === 'light', img = light ? LT : DK, wind = Math.sin(T * .23) * 14 + Math.sin(T * .61) * 6;
     for (const f of F) {
       if (f.dead) continue;
-      const oy = f.y; f.x += (wind * (.3 + f.z) + Math.sin(T * (.6 + f.z) + f.p) * 12) * dt; f.y += f.sp * dt;
+      const oy = f.y; f.x += (wind * (.3 + f.z) + Math.sin(T * (.6 + f.z) + f.p) * 12 + (f.vx || 0)) * dt; f.y += (f.sp + (f.vy || 0)) * dt;
+      if (f.vx || f.vy) { const k = Math.pow(.2, dt); f.vx *= k; f.vy *= k; if (Math.abs(f.vx) + Math.abs(f.vy) < 2) f.vx = f.vy = 0; }
       let hit = false;
-      if (f.y > 0) for (const s of S) { const i = Math.floor((f.x - s.x) / s.w * N); if (i < 0 || i >= N) continue; const top = s.edge(i) - s.p.d[i] * env(i); if (oy <= top && f.y > top && s.p.t[i] < MAX) { for (let j = -5; j <= 5; j++) { const m = i + j; if (m >= 0 && m < N) s.p.t[m] = Math.min(MAX, s.p.t[m] + f.r * .09 * (1 + Math.cos(j / 6 * Math.PI)) / 2); } hit = true; break; } }
+      if (f.y > 0 && !f.once) for (const s of S) { const i = Math.floor((f.x - s.x) / s.w * N); if (i < 0 || i >= N) continue; const top = s.edge(i) - s.p.d[i] * env(i); if (oy <= top && f.y > top && s.p.t[i] < MAX) { for (let j = -5; j <= 5; j++) { const m = i + j; if (m >= 0 && m < N) s.p.t[m] = Math.min(MAX, s.p.t[m] + f.r * .09 * (1 + Math.cos(j / 6 * Math.PI)) / 2); } hit = true; break; } }
       if (hit || f.y > H + 20) { if (f.once) f.dead = 1; else Object.assign(f, flake(true)); continue; }
+      if (f.once && (f.x < -30 || f.x > W + 30)) { f.dead = 1; continue; }
       if (f.x < -30) f.x = W + 20; else if (f.x > W + 30) f.x = -20;
       const r = f.r * 1.5; cx.globalAlpha = alpha * (.35 + .55 * f.z); cx.drawImage(img, f.x - r, f.y - r, r * 2, r * 2);
     }
@@ -18112,7 +18114,7 @@ init();
     cx.globalAlpha = alpha;
     for (const s of S) {
       const t = s.p.t, d = s.p.d; let mx = 0;
-      for (let i = 0; i < N; i++) { const base = MAX * .62 * (.8 + .2 * Math.sin(i * .33 + s.p.s)); if (t[i] < base) t[i] = Math.min(base, t[i] + dt * .16); d[i] += (t[i] - d[i]) * Math.min(1, dt * .9); }
+      for (let i = 0; i < N; i++) { const base = MAX * .62 * (.8 + .2 * Math.sin(i * .33 + s.p.s)); if (t[i] < base) t[i] = Math.min(base, t[i] + dt * .16); d[i] += (t[i] - d[i]) * Math.min(1, dt * (d[i] > t[i] + 1 ? 5 : .9)); }
       const top = [], bot = [];
       for (let i = 0; i < N; i++) { const h = (d[Math.max(0, i - 1)] + d[i] * 2 + d[Math.min(N - 1, i + 1)]) / 4 * env(i), x = s.x + s.w * i / (N - 1), y = s.edge(i); if (h > mx) mx = h; top.push([x, y - h]); bot.push([x, y + Math.min(1.6, h * .3)]); }
       if (mx < .05) continue;
@@ -18123,11 +18125,44 @@ init();
     }
     cx.globalAlpha = 1;
   }
-  function start(){ if (cv) return; cv = document.createElement('canvas'); cv.id = 'snowfx'; cv.setAttribute('aria-hidden', 'true'); cv.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:9000'; document.body.appendChild(cv); cx = cv.getContext('2d'); alpha = 0; last = performance.now(); scanAt = 0; F = []; size(); raf = requestAnimationFrame(tick); }
-  function stop(){ cancelAnimationFrame(raf); if (cv) cv.remove(); cv = null; S = []; F = []; piles.clear(); }
+  /* v1.1247: встряхнул телефон — сугробы сдувает, потом они набираются заново */
+  function blow(){
+    if (!cv || alpha < .5) return; const dir = Math.random() < .5 ? -1 : 1;
+    for (const s of S) { if (!s.x) continue; const d = s.p.d; for (let i = 1; i < N - 1; i++) { const h = d[i] * env(i); if (h < 1.2) continue; for (let n = h > 5 && i % 2 ? 2 : 1; n--;) F.push({x:s.x + s.w * i / (N - 1) + R(-3, 3), y:s.edge(i) - R(0, h), z:R(.5, 1), p:R(0, 7), r:R(1.6, 3.6), sp:R(60, 130), vx:dir * R(60, 420) + R(-90, 90), vy:-R(140, 480), once:1}); } }
+    for (const f of F) if (!f.once) { f.vx = dir * R(80, 320) * (.4 + f.z); f.vy = -R(30, 220); }
+    piles.forEach(p => p.t.fill(0)); if (F.length > 520) F.splice(0, F.length - 520);
+    try { hap.imp(); } catch (e) {}
+  }
+  let G = null, jolts = [], quiet = 0;
+  function accel(x, y, z){
+    if (!isFinite(x + y + z)) return; if (!G) { G = [x, y, z]; return; }
+    const m = Math.hypot(x - G[0], y - G[1], z - G[2]); G = [G[0] * .8 + x * .2, G[1] * .8 + y * .2, G[2] * .8 + z * .2];
+    const now = performance.now(); if (m < 11 || now < quiet) return;
+    jolts = jolts.filter(t => now - t < 700); if (jolts.length && now - jolts[jolts.length - 1] < 90) return; jolts.push(now);
+    if (jolts.length >= 3) { jolts = []; quiet = now + 2200; blow(); }
+  }
+  /* в Telegram — встроенный акселерометр (без запроса разрешения), в браузере — датчик движения */
+  const onMotion = e => { const a = e.accelerationIncludingGravity; if (a && a.x != null) accel(a.x, a.y, a.z); };
+  let tga = null, listening = false;
+  const tgApp = () => { const t = window.Telegram && Telegram.WebApp; return t && t.initData && t.Accelerometer && t.isVersionAtLeast && t.isVersionAtLeast('8.0') ? t : null; };
+  function sense(on){
+    if (on === listening) return; listening = on; G = null; jolts = [];
+    const t = tgApp();
+    try {
+      if (t) {
+        if (on) { tga = () => accel(t.Accelerometer.x, t.Accelerometer.y, t.Accelerometer.z); t.onEvent('accelerometerChanged', tga); if (!t.Accelerometer.isStarted) t.Accelerometer.start({refresh_rate:60}); }
+        else { t.offEvent('accelerometerChanged', tga); if (typeof REST === 'undefined' || !REST.cur || !REST.cur()) t.Accelerometer.stop(); }
+      } else if (on) addEventListener('devicemotion', onMotion); else removeEventListener('devicemotion', onMotion);
+    } catch (e) {}
+  }
+  /* iPhone в обычном браузере отдаёт датчик только после разрешения по нажатию */
+  function askMotion(){ try { if (!tgApp() && window.DeviceMotionEvent && DeviceMotionEvent.requestPermission) DeviceMotionEvent.requestPermission().catch(() => {}); } catch (e) {} }
+  document.addEventListener('visibilitychange', () => { if (cv) sense(!document.hidden); });
+  function start(){ if (cv) return; cv = document.createElement('canvas'); cv.id = 'snowfx'; cv.setAttribute('aria-hidden', 'true'); cv.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:9000'; document.body.appendChild(cv); cx = cv.getContext('2d'); alpha = 0; last = performance.now(); scanAt = 0; F = []; size(); raf = requestAnimationFrame(tick); sense(true); }
+  function stop(){ sense(false); cancelAnimationFrame(raf); if (cv) cv.remove(); cv = null; S = []; F = []; piles.clear(); }
   addEventListener('resize', size);
   document.addEventListener('pointerdown', ev => { if (!cv) return; for (const s of S) { if (s.e.id === 'tabs' || !s.e.contains(ev.target) || !s.x) continue; const d = s.p.d; for (let i = 2; i < N - 2; i += 2) if (d[i] * env(i) > 2) F.push({x:s.x + s.w * i / (N - 1) + R(-3, 3), y:s.edge(i) + 4, z:.8, p:R(0, 7), r:R(2, 3.6), sp:R(90, 180), once:1}); s.p.t.fill(0); d.forEach((v, i) => d[i] = v * .15); break; } if (F.length > 320) F.splice(0, F.length - 320); }, true);
-  window.VSNOW = {on:isOn, set(v){ try { localStorage.setItem(KEY, v ? '1' : '0'); } catch (e) {} if (v) start(); }};
+  window.VSNOW = {on:isOn, set(v){ try { localStorage.setItem(KEY, v ? '1' : '0'); } catch (e) {} if (v) { askMotion(); start(); } }, blow};
   if (isOn()) start();
 })();
 </script>
