@@ -6198,7 +6198,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1271';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1272';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10940,7 +10940,7 @@ const REST = (function(){
       g.cam += (Math.max(0, g.st.length - 8) - g.cam) * Math.min(1, dt * 6); g.hb += ((195 + g.st.length * 3.2) - g.hb) * Math.min(1, dt * 1.5);
       (g.dust || []).forEach(q => { q.y -= q.v * dt; if (q.y < -6) { q.y = H + 6; q.x = Math.random() * W; } });
       g.fall.forEach(f => { f.vy += 1400 * dt; f.off += f.vy * dt; f.dx = (f.dx || 0) + (f.x + f.w / 2 < W / 2 ? -1 : 1) * 46 * dt; }); g.fall = g.fall.filter(f => f.off < H);
-      if (g.dead) return; const m = g.mv, sp = (105 + Math.min(g.st.length * 7, 210)) * (g.k || 1) * (1 + .12 * Math.sin(g.t * 3.1)); m.x += m.d * sp * dt;
+      if (g.dead || g.itr != null) return; const m = g.mv, sp = (105 + Math.min(g.st.length * 7, 210)) * (g.k || 1) * (1 + .12 * Math.sin(g.t * 3.1)); m.x += m.d * sp * dt;
       if (m.x < 0) { m.x = 0; m.d = 1; } if (m.x + m.w > W) { m.x = W - m.w; m.d = -1; } };
     const hue = k => (190 + k * 5.5) % 360;
     const blk = (c, u0, w, k, dy, fl, gold, al, mv) => { const th = BH - 3, h = hue(k), d = DP / 2, A = ip(u0, -d, k, dy), B = ip(u0 + w, -d, k, dy), Cc = ip(u0 + w, d, k, dy), D = ip(u0, d, k, dy);
@@ -10957,23 +10957,23 @@ const REST = (function(){
       g.st.forEach((b, k) => { const y = sy(k); if (y < -BH * 2 || y > H + BH * 6) return; const last = k === g.st.length - 1; blk(c, b.x, b.w, k, last ? Math.sin(g.bn * 3.14) * 4 : 0, last ? g.flash * .55 : 0, false); });
       g.fall.forEach(f => { blk(c, f.x + (f.dx || 0), f.w, f.lv, f.off, 0, false, Math.max(0, .9 - f.off / (H * .7))); });
       g.rip.forEach(q => { const t = 1 - q.l / .5, e = t * 22, d = DP / 2, P1 = ip(q.x - e, -d - e, q.k), P2 = ip(q.x + q.w + e, -d - e, q.k), P3 = ip(q.x + q.w + e, d + e, q.k), P4 = ip(q.x - e, d + e, q.k); c.globalAlpha = (1 - t) * .9; c.strokeStyle = '#fff'; c.lineWidth = 2.5; c.shadowColor = C.gr; c.shadowBlur = 12; c.beginPath(); c.moveTo(P1[0], P1[1]); c.lineTo(P2[0], P2[1]); c.lineTo(P3[0], P3[1]); c.lineTo(P4[0], P4[1]); c.closePath(); c.stroke(); c.shadowBlur = 0; }); c.globalAlpha = 1;
-      if (!g.dead) { const m = g.mv, k = g.st.length; if (g.turbo) { const q = ip(m.x + m.w / 2, 0, k); glow(c, q[0], q[1], m.w * .9, GD, .5); } blk(c, m.x, m.w, k, 0, g.turbo ? .12 * (1 + Math.sin(g.t * 14)) : 0, g.turbo); }
+      if (!g.dead && g.itr == null) { const m = g.mv, k = g.st.length; if (g.turbo) { const q = ip(m.x + m.w / 2, 0, k); glow(c, q[0], q[1], m.w * .9, GD, .5); } blk(c, m.x, m.w, k, 0, g.turbo ? .12 * (1 + Math.sin(g.t * 14)) : 0, g.turbo); }
       drawFx(c, g);
       if (g.ms > 0) { c.globalAlpha = Math.min(1, g.ms * 1.2); c.fillStyle = C.ac; c.font = '800 34px ' + C.ff; c.textAlign = 'center'; c.fillText(g.mf + ' этажей!', W / 2, 120 - (1.4 - g.ms) * 10); c.globalAlpha = 1; }
       if (g.flash > 0) { c.globalAlpha = Math.min(1, g.flash * 1.6); c.fillStyle = C.gr; c.font = '800 16px ' + C.ff; c.textAlign = 'center'; c.fillText(g.perf >= 3 ? 'ИДЕАЛЬНО ×' + g.perf + ' · блок шире' : 'ИДЕАЛЬНО', W / 2, 70 - (1 - g.flash) * 14); c.globalAlpha = 1; }
-      if (g.score === 0 && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — поставить блок', W / 2, H * .3); } c.restore(); };
+      if (g.score === 0 && !g.dead && g.itr == null) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — поставить блок', W / 2, H * .3); } c.restore(); };
     const colF = k => 'hsl(' + (255 + (k * 7) % 70) + ',68%,' + (70 - (k % 2) * 6) + '%)';
     const drawFlat = c => { c.save(); if (g.sh > 0) c.translate((Math.random() - .5) * 7 * g.sh, (Math.random() - .5) * 7 * g.sh); drawStars(c, g, g.cam * BH * 3);
       g.st.forEach((b, k) => { const y = sy(k); if (y < -BH || y > H + BH) return; c.fillStyle = colF(k); rr(c, b.x, y - BH + 2, b.w, BH - 3, 5); c.fill(); });
       g.fall.forEach(f => { c.globalAlpha = .8; c.fillStyle = colF(f.lv); rr(c, f.x, sy(f.lv) - BH + 2 + f.off, f.w, BH - 3, 5); c.fill(); c.globalAlpha = 1; });
-      if (!g.dead) { c.fillStyle = g.turbo ? GD : colF(g.st.length); if (g.turbo) glow(c, g.mv.x + g.mv.w / 2, sy(g.st.length) - BH / 2, g.mv.w * .8, GD, .45); rr(c, g.mv.x, sy(g.st.length) - BH + 2, g.mv.w, BH - 3, 5); c.fill(); }
+      if (!g.dead && g.itr == null) { c.fillStyle = g.turbo ? GD : colF(g.st.length); if (g.turbo) glow(c, g.mv.x + g.mv.w / 2, sy(g.st.length) - BH / 2, g.mv.w * .8, GD, .45); rr(c, g.mv.x, sy(g.st.length) - BH + 2, g.mv.w, BH - 3, 5); c.fill(); }
       g.rip.forEach(q => { const t = 1 - q.l / .5; c.globalAlpha = (1 - t) * .8; c.strokeStyle = C.gr; c.lineWidth = 2; rr(c, q.x - t * 10, sy(q.k) - BH + 2 - t * 8, q.w + t * 20, BH - 3 + t * 16, 8); c.stroke(); }); c.globalAlpha = 1; drawFx(c, g);
       if (g.ms > 0) { c.globalAlpha = Math.min(1, g.ms * 1.2); c.fillStyle = C.ac; c.font = '800 34px ' + C.ff; c.textAlign = 'center'; c.fillText(g.mf + ' этажей!', W / 2, 120 - (1.4 - g.ms) * 10); c.globalAlpha = 1; }
       if (g.flash > 0) { c.globalAlpha = Math.min(1, g.flash * 1.6); c.fillStyle = C.gr; c.font = '800 16px ' + C.ff; c.textAlign = 'center'; c.fillText(g.perf >= 3 ? 'ИДЕАЛЬНО ×' + g.perf + ' · блок шире' : 'ИДЕАЛЬНО', W / 2, 70 - (1 - g.flash) * 14); c.globalAlpha = 1; }
-      if (g.score === 0 && !g.dead) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — поставить блок', W / 2, H * .3); } c.restore(); };
+      if (g.score === 0 && !g.dead && g.itr == null) { c.fillStyle = C.mu; c.font = '600 14px ' + C.ff; c.textAlign = 'center'; c.fillText('Тап — поставить блок', W / 2, H * .3); } c.restore(); };
     const pill = () => ({x: W / 2 - 92, y: H * .3 + 26, w: 184, h: 34});
     g.draw = c => { (s.stk === 'f' ? drawFlat : drawIso)(c);
-      if (g.score === 0 && !g.dead) { const q = pill(); c.save(); c.fillStyle = 'rgba(255,255,255,.1)'; rr(c, q.x, q.y, q.w, q.h, 17); c.fill(); c.strokeStyle = 'rgba(255,255,255,.28)'; c.lineWidth = 1.2; c.stroke(); c.fillStyle = '#fff'; c.font = '700 13px ' + C.ff; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('Вид: ' + (s.stk === 'f' ? 'плоский' : 'изометрия') + '  ⇄', W / 2, q.y + q.h / 2 + 1); c.restore(); } };
+      if (g.score === 0 && !g.dead && g.itr == null) { const q = pill(); c.save(); c.fillStyle = 'rgba(255,255,255,.1)'; rr(c, q.x, q.y, q.w, q.h, 17); c.fill(); c.strokeStyle = 'rgba(255,255,255,.28)'; c.lineWidth = 1.2; c.stroke(); c.fillStyle = '#fff'; c.font = '700 13px ' + C.ff; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('Вид: ' + (s.stk === 'f' ? 'плоский' : 'изометрия') + '  ⇄', W / 2, q.y + q.h / 2 + 1); c.restore(); } };
     g.down = (x, y) => { const q = pill(); if (g.score === 0 && !g.dead && x >= q.x - 8 && x <= q.x + q.w + 8 && y >= q.y - 8 && y <= q.y + q.h + 8) { s.stk = s.stk === 'f' ? '' : 'f'; save(); hap.tap(); return; } g.tap(); };
     return g; }
 
@@ -13490,6 +13490,33 @@ return {HP, BL, BG, sk, load, open, label: () => TX[lang()].style};
   }
   return {dur: 3.8, draw: egg, reset(){ once = {}; }};
   })();
+  /* v1.1272: заставка «Башни» — «Поворот» */
+  const STK_INTRO = (() => {
+  const TAU = Math.PI * 2, cl = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v)), seg = (t, a, b) => cl((t - a) / (b - a)), lp = (a, b, k) => a + (b - a) * k;
+  const eo = k => 1 - Math.pow(1 - k, 3), io = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2, back = k => 1 + 2.7 * Math.pow(k - 1, 3) + 1.7 * Math.pow(k - 1, 2);
+  const S = .72, hue = k => (190 + k * 5.5) % 360;
+  let once = {};
+  const hit = (key, t, when, k) => { if (t >= when && !once[key]) { once[key] = 1; if (t - when < .2) sfx(k); } };
+  /* изометрия как в игре: (x, y) — центр верхней грани */
+  const pts = (x, y, w, d) => { const U = w * S / 2, V = d * S / 2, P = (u, v) => [x + (u - v) * .866, y + (u + v) * .5]; return [P(-U, -V), P(U, -V), P(U, V), P(-U, V)]; };
+  const quad = (c, q, col) => { c.beginPath(); q.forEach((p, i) => i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1])); c.closePath(); if (col) { c.fillStyle = col; c.fill(); } };
+  const box = (c, x, y, w, d, th, h) => { const [A, B, C2, D] = pts(x, y, w, d), dn = p => [p[0], p[1] + th];
+    quad(c, [D, C2, dn(C2), dn(D)], 'hsl(' + h + ',58%,45%)'); quad(c, [B, C2, dn(C2), dn(B)], 'hsl(' + h + ',60%,31%)'); quad(c, [A, B, C2, D], 'hsl(' + h + ',68%,62%)'); return [A, B, C2, D]; };
+  const BY = () => H - 158;   /* верх игрового нижнего блока */
+  const SERIF = 'Cormorant Garamond, "Playfair Display", Georgia, "Times New Roman", serif';
+  const word = (c, y, col, t, a, serif) => { if (t <= a) return; const px = serif ? 36 : 28; c.save(); c.font = (serif ? '500 ' + px + 'px ' + SERIF : '300 ' + px + 'px system-ui, sans-serif'); c.textBaseline = 'middle'; c.textAlign = 'center'; const L = [...(({en: 'TOWER', kk: 'МҰНАРА'})[curLang()] || 'БАШНЯ')], ws = L.map(ch => c.measureText(ch).width), sum = ws.reduce((q, w) => q + w, 0), sp = Math.min(px * (serif ? .34 : .6) * lp(1.5, 1, eo(seg(t, a, a + 1.1))), (W - 48 - sum) / (L.length - 1)); let x = W / 2 - (sum + sp * (L.length - 1)) / 2; const al = c.globalAlpha; L.forEach((ch, i) => { const k = eo(seg(t, a + i * .05, a + .7 + i * .05)); c.globalAlpha = al * k; c.fillStyle = col; c.fillText(ch, x + ws[i] / 2, y + (1 - k) * 8); x += ws[i] + sp; }); c.restore(); };
+  const sub = (c, y, col, al) => { if (al <= 0) return; c.save(); c.globalAlpha *= al; c.font = '600 11px system-ui, sans-serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillStyle = col; c.fillText('V  O  O  B', W / 2, y); c.restore(); };
+  function turn(c, t){
+    const gone = io(seg(t, 3.15, 3.7)), x = W / 2, N = 6, tilt = io(seg(t, 1.35, 2.2)), down = io(seg(t, 2.65, 3.3));
+    c.save(); c.globalAlpha = 1 - gone; c.fillStyle = '#0b0c10'; c.fillRect(0, 0, W, H); c.restore();
+    const cy = lp(lp(H * .45, BY() - (N - 1) * 14, tilt), BY(), down);
+    for (let k = 0; k < N; k++) { const a = .1 + k * .17, m = eo(seg(t, a, a + .65)); if (m <= 0) continue; const small = 1 - k / (N + .6), sw = lp(lp(168 * small, 150 * (1 - k * .07), tilt), 150, down), sd = lp(lp(168 * small, 120 * (1 - k * .07), tilt), 120, down), rot = (1 - m) * (k % 2 ? 1 : -1) * .9, z = lp(1.35, 1, m), y = cy - k * 28 * tilt * (1 - down), U = sw * S / 2 * z * lp(1.18, 1, tilt), V = sd * S / 2 * z * lp(1.18, 1, tilt), th = 23 * tilt;
+      const P = (u, v) => { const ru = u * Math.cos(rot) - v * Math.sin(rot), rv = u * Math.sin(rot) + v * Math.cos(rot); return [x + lp(ru, (ru - rv) * .866, tilt), y + lp(rv, (ru + rv) * .5, tilt)]; }, q = [P(-U, -V), P(U, -V), P(U, V), P(-U, V)], dn = p => [p[0], p[1] + th], h = 190 + k * 12;
+      c.save(); c.globalAlpha = m * (k ? 1 - seg(down, .75, 1) : s.stk === 'f' ? 1 - gone : 1); if (th > 0) { quad(c, [q[3], q[2], dn(q[2]), dn(q[3])], 'hsl(' + h + ',58%,45%)'); quad(c, [q[1], q[2], dn(q[2]), dn(q[1])], 'hsl(' + h + ',60%,31%)'); } c.shadowColor = 'rgba(0,0,0,.45)'; c.shadowBlur = 18 * (1 - tilt); quad(c, q, 'hsl(' + h + ',' + lp(42, 68, tilt) + '%,' + lp(24 + k * 9, 62, tilt) + '%)'); c.restore(); hit('d' + k, t, a + .4, 'hop'); }
+    c.save(); c.globalAlpha = 1 - gone; word(c, H * .18, '#f2ece0', t, 1.5, false); sub(c, H * .18 + 40, '#8d93a4', seg(t, 2.1, 2.6)); c.restore(); hit('dx', t, 1.4, 'record'); hit('dy', t, 3.15, 'thunk');
+  }
+  return {dur: 3.7, draw: turn, reset(){ once = {}; }};
+  })();
   /* v1.1267: заставка «Баскета» «В лицо» — мяч из глубины площадки влетает в камеру */
   const BK_INTRO = (() => {
   const TAU = Math.PI * 2, cl = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v)), seg = (t, a, b) => cl((t - a) / (b - a)), lp = (a, b, k) => a + (b - a) * k;
@@ -13821,7 +13848,7 @@ return {HP, BL, BG, sk, load, open, label: () => TX[lang()].style};
   function eggStep(dt){ const k = GAMES[GI] && GAMES[GI].k; if (!EGGK[k]) return; if (!egg) { eggT -= dt; if (eggT > 0) return; const d = Math.random() < .5 ? 1 : -1; egg = {x: d > 0 ? -90 : W + 90, y: H * (.1 + Math.random() * .14), d, t: 0, k: EGGK[k]}; return; } egg.t += dt; egg.x += egg.d * (W + 180) / 8 * dt; if (egg.x < -110 || egg.x > W + 110) { egg = null; eggT = 28 + Math.random() * 24; } }
   function eggDraw(c){ if (egg) eggArt(c, egg.k, egg.x, egg.y + Math.sin(egg.t * 2) * 6, egg.d, egg.t, .62); }
   function wrapT(c, t, x, y, mw, lh){ let l = ''; t.split(' ').forEach(w => { const n = l ? l + ' ' + w : w; if (c.measureText(n).width > mw && l) { c.fillText(l, x, y); y += lh; l = w; } else l = n; }); c.fillText(l, x, y); }
-  const itrOf = k => k === 'che' ? CHE_INTRO : k === 'chk' ? CHK_INTRO : k === 'flap' ? FLAP_INTRO : BK_INTRO;
+  const itrOf = k => k === 'che' ? CHE_INTRO : k === 'chk' ? CHK_INTRO : k === 'flap' ? FLAP_INTRO : k === 'stack' ? STK_INTRO : BK_INTRO;
   function openGame(i, sv){
     if (!run) return; const st = getComputedStyle(document.documentElement), v = n => st.getPropertyValue(n).trim() || '#888';
     C = {ac:v('--accent'), tx:v('--text'), mu:v('--muted'), bd:v('--border'), s2:v('--surface2'), bg:v('--bg'), gr:v('--green'), rd:v('--red'), ff:getComputedStyle(document.body).fontFamily || 'sans-serif'};
@@ -13830,7 +13857,7 @@ return {HP, BL, BG, sk, load, open, label: () => TX[lang()].style};
     pz = false; gm.innerHTML = '<div class="rt-gm"><div class="rt-gh"><button type="button" class="rt-gbn sq rk" data-r="grk" aria-label="Рейтинг друзей"><svg viewBox="0 0 24 24"><path d="M7 4h10v5a5 5 0 0 1-10 0V4zM17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3M12 14v4M8.5 20h7"/></svg></button><div class="rt-gtm"><span class="time" data-rt="t"></span><small>ДО ГОНГА</small></div><div class="rt-gsc" id="rtgsc"></div><div class="rt-gbs"><button type="button" class="rt-gbn sq" data-r="gmin" aria-label="Свернуть"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><button type="button" class="rt-gbn pr" data-r="gback"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>' + (apps ? 'Назад' : 'К отдыху') + '</button></div></div><i class="rt-gline"><b data-rt="ln"></b></i><canvas id="rtgc"></canvas></div>';
     document.body.appendChild(gm);
     cv = gm.querySelector('canvas'); DPR = Math.min(2, window.devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * DPR; cv.height = H * DPR; cx = cv.getContext('2d'); cx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    egg = null; eggT = 14 + Math.random() * 14; G = GAMES[i].f(); G.init(); cd = 0; if (sv) { try { Object.assign(G, JSON.parse(sv.d)); cd = 3; cdN = 0; } catch (e) { G = GAMES[i].f(); G.init(); } } G.itr = null; G.picking = false; G.needPick = false; if (GAMES[i].k === 'hit') { BKX.load(s.bk); if (!sv) { G.itr = 0; G.needPick = true; BK_INTRO.reset(); } } if (['che', 'chk', 'flap'].includes(GAMES[i].k) && !sv) { G.itr = 0; itrOf(GAMES[i].k).reset(); } s.sv = null; save(); lastT = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
+    egg = null; eggT = 14 + Math.random() * 14; G = GAMES[i].f(); G.init(); cd = 0; if (sv) { try { Object.assign(G, JSON.parse(sv.d)); cd = 3; cdN = 0; } catch (e) { G = GAMES[i].f(); G.init(); } } G.itr = null; G.picking = false; G.needPick = false; if (GAMES[i].k === 'hit') { BKX.load(s.bk); if (!sv) { G.itr = 0; G.needPick = true; BK_INTRO.reset(); } } if (['che', 'chk', 'flap', 'stack'].includes(GAMES[i].k) && !sv) { G.itr = 0; itrOf(GAMES[i].k).reset(); } s.sv = null; save(); lastT = performance.now(); cancelAnimationFrame(raf); raf = requestAnimationFrame(loop);
     const pp = e => { const r = cv.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
     cv.addEventListener('pointerdown', e => { e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch (_) {} const [x, y] = pp(e); gdown(x, y); });
     cv.addEventListener('pointermove', e => { if (!G || G.dead || cd > 0 || G.itr != null || !G.move) return; const [x, y] = pp(e); G.move(x, y); });
