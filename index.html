@@ -257,6 +257,27 @@ input[type=date].inp{display:block}
 .sv input{will-change:transform,filter,opacity;width:2.9em;min-width:0;text-align:right;background:none;border:0;color:var(--text);font:inherit;font-size:17px;font-weight:700;padding:0}
 .sv input:focus{outline:none}
 .sv em{font-style:normal;color:var(--muted);font-size:13px;white-space:nowrap}
+/* v1.1259: вопрос при выходе из идущей тренировки */
+.lvq{position:fixed;inset:0;z-index:9900;display:flex;align-items:flex-end;justify-content:center;background:rgba(5,5,8,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .3s}
+.lvq.on{opacity:1;pointer-events:auto}
+.lvq-c{width:100%;max-width:520px;max-height:100%;overflow-y:auto;padding:26px 20px calc(22px + env(safe-area-inset-bottom));border-radius:32px 32px 0 0;background:var(--surface);border:1px solid var(--border);border-bottom:0;color:var(--text);text-align:center;transform:translateY(100%);transition:transform .5s cubic-bezier(.3,1.25,.5,1)}
+.lvq.on .lvq-c{transform:none}.lvq.off .lvq-c{transform:translateY(100%);transition:transform .3s ease-in}
+html.web .lvq{align-items:center;padding:16px}html.web .lvq-c{max-width:400px;border-radius:32px;border-bottom:1px solid var(--border);transform:translateY(24px) scale(.94)}
+.lvq-r{position:relative;width:104px;height:104px;margin:0 auto 14px;display:grid;place-items:center}
+.lvq-r svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.lvq-r circle{fill:none;stroke:var(--off);stroke-width:6;stroke-linecap:round}
+.lvq-r circle.a{stroke:var(--red);stroke-dasharray:70 213;animation:lvqSpin 2.4s linear infinite}
+@keyframes lvqSpin{to{stroke-dashoffset:-283}}
+.lvq-r b{font-size:21px;font-weight:800;font-variant-numeric:tabular-nums}
+.lvq h3{display:block;text-align:center;margin:0 0 6px;font-size:21px;font-weight:800;letter-spacing:-.02em}
+.lvq p{margin:0 0 18px;color:var(--muted);font-size:13.5px;line-height:1.5}.lvq p span{display:block}
+.lvq button{display:block;width:100%;height:52px;margin-top:9px;border-radius:999px;border:1px solid var(--border);font:inherit;font-weight:800;font-size:15px;cursor:pointer;transition:transform .15s}
+.lvq button:active{transform:scale(.97)}
+.lvq .lvq-min{background:var(--accent);color:var(--on-accent);border-color:transparent}
+.lvq .lvq-kill{background:color-mix(in srgb,var(--red) 14%,transparent);border-color:color-mix(in srgb,var(--red) 50%,transparent);color:var(--red)}
+.lvq .lvq-stay{height:40px;background:none;border-color:transparent;color:var(--muted)}
+#sheet.lvgone{transform:translateY(55%) scale(.5) rotate(-4deg)!important;opacity:0!important;filter:blur(12px);transition:transform .45s ease-in,opacity .42s,filter .42s!important}
+@media (prefers-reduced-motion:reduce){.lvq-c,.lvq-r circle.a{transition:none!important;animation:none!important}}
 /* v1.1258: состояние на тренировке — «Капля»: тап и свайп по пяти точкам */
 .fpk{padding:6px 0 4px;border-radius:26px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 11%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,var(--c) 26%,var(--border));transition:background .35s,border-color .35s;touch-action:pan-y;cursor:pointer;outline:0;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .fpk:focus-visible{outline:2px solid var(--muted);outline-offset:3px}
@@ -6173,7 +6194,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1258';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1259';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -9370,6 +9391,8 @@ Object.assign(I18N.kk, {"Вы перестанете видеть успехи �
 Object.assign(I18N.en, {"Магазин": "Shop", "скоро": "soon", "Рамки, фоны и значки по одному, без подписки": "Frames, backgrounds and badges one by one, no subscription", "Скоро открытие": "Opening soon", "Не хочешь PRO целиком? Здесь можно будет взять одну рамку, один фон или значок, и они останутся у тебя навсегда.": "Don't want the whole PRO? Here you'll be able to get a single frame, background or badge, and it stays with you for good.", "Рамки": "Frames", "Фоны": "Backgrounds", "Значки": "Badges", "Сейчас у тебя временный ник — придумай свой, чтобы ссылку легко запомнить": "You have a temporary nick right now — pick your own so the link is easy to remember", "Вход по паролю": "Password sign-in", "Включён · логин": "On · login", "Не задан · логин будет": "Not set · login will be", "Задать": "Set", "Изменить": "Change", "Удалить": "Delete", "Сначала задай @username в профиле — он станет логином": "First set a @username in your profile — it becomes your login", "Для подтверждения пришлём 4-значный код в Telegram-бот.": "We'll send a 4-digit code to the Telegram bot to confirm.", "Код из бота": "Code from the bot", "Получить код в боте": "Get the code in the bot", "Код отправлен в бота VOOB.": "Code sent to the VOOB bot.", "Код уже отправлен — загляни в бота.": "The code is already sent — check the bot.", "Код не отправился — открой бота VOOB, нажми «Start» и попробуй снова": "The code wasn't sent — open the VOOB bot, press “Start” and try again", "Введи его ниже.": "Enter it below.", "Задать пароль": "Set password", "Сменить пароль": "Change password", "Удалить пароль": "Delete password", "Новый пароль (от 8 символов)": "New password (8+ characters)", "Повтори пароль": "Repeat password", "Пароли не совпадают": "Passwords don't match", "Пароль: минимум 8 символов": "Password: at least 8 characters", "Пароль нужен только для входа в WEB, Telegram остаётся основным входом": "The password is only for signing in to WEB; Telegram stays the main sign-in", "Сменить или удалить пароль можно только с кодом из бота": "You can change or delete the password only with a code from the bot", "Пароль сохранён": "Password saved", "Пароль удалён": "Password deleted", "Теперь в WEB можно войти по логину и паролю. Вход через Telegram работает как раньше.": "You can now sign in to WEB with a login and password. Telegram sign-in works as before.", "Вход по логину и паролю перестанет работать": "Login and password sign-in will stop working", "Вход через Telegram продолжит работать как раньше": "Telegram sign-in will keep working as before", "Задать пароль можно снова в любой момент": "You can set a password again at any time", "Неверный логин или пароль": "Wrong login or password", "Слишком много попыток. Подожди 15 минут.": "Too many attempts. Wait 15 minutes.", "Введи логин и пароль": "Enter your login and password", "Войти по логину и паролю": "Sign in with login and password", "Логин — твой @username в VOOB": "Your login is your @username in VOOB", "Логин — твой @username в VOOB. Пароль можно задать в настройках после входа через Telegram.": "Your login is your @username in VOOB. You can set a password in settings after signing in with Telegram.", "Пароль": "Password", "или": "or", "Вход через Google": "Sign in with Google", "Привязан": "Linked", "Не привязан · Telegram остаётся основным входом": "Not linked · Telegram stays the main sign-in", "Отвязать Google": "Unlink Google", "Не получилось привязать Google": "Couldn't link Google", "Вход в WEB теперь только через Telegram или Google.": "WEB sign-in is now only via Telegram or Google.", "Вход в WEB теперь только через Telegram. Привязать Google можно снова в любой момент.": "WEB sign-in is now only via Telegram. You can link Google again at any time.", "Привязать Google можно снова в любой момент": "You can link Google again at any time", "перестанет открывать этот аккаунт VOOB": "will stop opening this VOOB account"});
 Object.assign(I18N.kk, {"Магазин": "Дүкен", "скоро": "жақында", "Рамки, фоны и значки по одному, без подписки": "Жиектер, фондар және белгілер бір-бірден, жазылымсыз", "Скоро открытие": "Жақында ашылады", "Не хочешь PRO целиком? Здесь можно будет взять одну рамку, один фон или значок, и они останутся у тебя навсегда.": "PRO толық қажет емес пе? Мұнда бір жиекті, бір фонды немесе белгіні алуға болады, ол саған мәңгіге қалады.", "Рамки": "Жиектер", "Фоны": "Фондар", "Значки": "Белгілер", "Сейчас у тебя временный ник — придумай свой, чтобы ссылку легко запомнить": "Қазір сенде уақытша ник бар — сілтемені оңай есте сақтау үшін өзіңдікін ойлап тап", "Вход по паролю": "Құпиясөзбен кіру", "Включён · логин": "Қосулы · логин", "Не задан · логин будет": "Орнатылмаған · логин болады", "Задать": "Орнату", "Изменить": "Өзгерту", "Удалить": "Жою", "Сначала задай @username в профиле — он станет логином": "Алдымен профильде @username орнат — ол логин болады", "Для подтверждения пришлём 4-значный код в Telegram-бот.": "Растау үшін Telegram-ботқа 4 таңбалы код жібереміз.", "Код из бота": "Боттағы код", "Получить код в боте": "Кодты ботта алу", "Код отправлен в бота VOOB.": "Код VOOB ботына жіберілді.", "Код уже отправлен — загляни в бота.": "Код жіберіліп қойған — ботқа кіріп қара.", "Код не отправился — открой бота VOOB, нажми «Start» и попробуй снова": "Код жіберілмеді — VOOB ботын ашып, «Start» бас та, қайта байқап көр", "Введи его ниже.": "Оны төменге енгіз.", "Задать пароль": "Құпиясөз орнату", "Сменить пароль": "Құпиясөзді ауыстыру", "Удалить пароль": "Құпиясөзді жою", "Новый пароль (от 8 символов)": "Жаңа құпиясөз (8 таңбадан)", "Повтори пароль": "Құпиясөзді қайталаңыз", "Пароли не совпадают": "Құпиясөздер сәйкес келмейді", "Пароль: минимум 8 символов": "Құпиясөз: кемінде 8 таңба", "Пароль нужен только для входа в WEB, Telegram остаётся основным входом": "Құпиясөз тек WEB-ке кіру үшін қажет, Telegram негізгі кіру жолы болып қалады", "Сменить или удалить пароль можно только с кодом из бота": "Құпиясөзді тек боттағы кодпен ауыстыруға немесе жоюға болады", "Пароль сохранён": "Құпиясөз сақталды", "Пароль удалён": "Құпиясөз жойылды", "Теперь в WEB можно войти по логину и паролю. Вход через Telegram работает как раньше.": "Енді WEB-ке логин және құпиясөзбен кіруге болады. Telegram арқылы кіру бұрынғыдай жұмыс істейді.", "Вход по логину и паролю перестанет работать": "Логин және құпиясөзбен кіру жұмысын тоқтатады", "Вход через Telegram продолжит работать как раньше": "Telegram арқылы кіру бұрынғыдай жұмыс істейді", "Задать пароль можно снова в любой момент": "Құпиясөзді кез келген уақытта қайта орнатуға болады", "Неверный логин или пароль": "Логин немесе құпиясөз қате", "Слишком много попыток. Подожди 15 минут.": "Тым көп әрекет. 15 минут күт.", "Введи логин и пароль": "Логин мен құпиясөзді енгіз", "Войти по логину и паролю": "Логин және құпиясөзбен кіру", "Логин — твой @username в VOOB": "Логин — VOOB-тағы @username", "Логин — твой @username в VOOB. Пароль можно задать в настройках после входа через Telegram.": "Логин — VOOB-тағы @username. Құпиясөзді Telegram арқылы кіргеннен кейін баптауларда орнатуға болады.", "Пароль": "Құпиясөз", "или": "немесе", "Вход через Google": "Google арқылы кіру", "Привязан": "Байланған", "Не привязан · Telegram остаётся основным входом": "Байланбаған · Telegram негізгі кіру жолы болып қалады", "Отвязать Google": "Google-ды ажырату", "Не получилось привязать Google": "Google-ды байлау сәтсіз болды", "Вход в WEB теперь только через Telegram или Google.": "Енді WEB-ке тек Telegram немесе Google арқылы кіруге болады.", "Вход в WEB теперь только через Telegram. Привязать Google можно снова в любой момент.": "Енді WEB-ке тек Telegram арқылы кіруге болады. Google-ды кез келген уақытта қайта байлауға болады.", "Привязать Google можно снова в любой момент": "Google-ды кез келген уақытта қайта байлауға болады", "перестанет открывать этот аккаунт VOOB": "осы VOOB аккаунтын ашуды тоқтатады"});
 Object.assign(I18N.en, {"Одиночные": "Solo", "По сети": "Online", "Игры по сети — скоро": "Online games are coming soon"});
+Object.assign(I18N.en, {"Тренировка ещё идёт": "Workout still running", "Свернуть, продолжу позже": "Minimize, continue later", "Отменить тренировку": "Cancel workout", "Остаться": "Stay", "Ни один подход не отмечен": "No sets marked yet", "Если отменить, в истории ничего не останется": "If you cancel, nothing is saved to history", "Отмечено подходов: {0} из {1}": "Sets done: {0} of {1}", "Если отменить, они не сохранятся": "If you cancel, they won't be saved", "Тренировка отменена": "Workout cancelled"});
+Object.assign(I18N.kk, {"Тренировка ещё идёт": "Жаттығу әлі жүріп жатыр", "Свернуть, продолжу позже": "Жинап қою, кейін жалғастырамын", "Отменить тренировку": "Жаттығудан бас тарту", "Остаться": "Қалу", "Ни один подход не отмечен": "Бірде-бір тәсіл белгіленбеген", "Если отменить, в истории ничего не останется": "Бас тартсаң, тарихта ештеңе қалмайды", "Отмечено подходов: {0} из {1}": "Белгіленген тәсіл: {0} / {1}", "Если отменить, они не сохранятся": "Бас тартсаң, олар сақталмайды", "Тренировка отменена": "Жаттығу тоқтатылды"});
 Object.assign(I18N.kk, {"Одиночные": "Жеке", "По сети": "Желіде", "Игры по сети — скоро": "Желілік ойындар жақында"});
 Object.assign(I18N.en, {"Ты в PRO": "You're in PRO", "Все возможности открыты": "Everything is unlocked", "Продлить подписку": "Extend subscription", "Скрыть тарифы": "Hide plans"});
 Object.assign(I18N.kk, {"Ты в PRO": "Сен PRO-дасың", "Все возможности открыты": "Барлық мүмкіндік ашық", "Продлить подписку": "Жазылымды ұзарту", "Скрыть тарифы": "Тарифтерді жасыру"});
@@ -10492,11 +10515,11 @@ function openSheet(html, ctx, keep){
     sh.style.transform = ''; bd.style.opacity = '';
     if (up) { if (-dy > 36 || (v > .5 && -dy > 14)) { sh.classList.add('xl'); hap.imp(); } return; }
     const close = dy > 120 || (v > .55 && dy > 36);
-    if (close) { hap.tap(); if (sh.classList.contains('xl')) sh.classList.remove('xl'); else closeSheet(); } };
+    if (close) { hap.tap(); if (sh.classList.contains('xl')) sh.classList.remove('xl'); else if (!liveAsk()) closeSheet(); } };
   sh.addEventListener('touchend', fin); sh.addEventListener('touchcancel', fin);
 })();
 function closeSheet(){
-  S.addMode = null;
+  S.addMode = null; liveAskClose();
   $('#sw').classList.remove('open');
   setTimeout(() => { if (!sheetCtx) $('#sheet').classList.remove('full'); }, 340);
   sheetCtx = null;
@@ -10595,6 +10618,29 @@ function liveTick(){
 }
 /* идущая тренировка: окно можно смахнуть или закрыть уведомлением — тогда рядом с «+ Тренировка» появляется «Продолжить» */
 let liveNodes = null;
+/* v1.1259: выход из идущей тренировки — «Свернуть / Отменить / Остаться». Возвращает true, если выход перехвачен */
+function liveAskClose(){ const d = document.querySelector('.lvq'); if (!d) return; clearInterval(d._iv); d.classList.remove('on'); d.classList.add('off'); setTimeout(() => d.remove(), 320); }
+function liveAsk(){
+  if (document.querySelector('.lvq:not(.off)')) { liveAskClose(); return true; }   // повторное «назад» — остаться
+  if (!(S.live && sheetCtx && sheetCtx === S.liveCtx && $('#sheet').querySelector('#lv') && liveAlive())) return false;
+  const li = liveInfo(), d = document.createElement('div'), now = () => { const t = $('#lv-t'); return t ? t.textContent : ''; };
+  d.className = 'lvq';
+  d.innerHTML = `<div class="lvq-c" role="dialog" aria-modal="true"><div class="lvq-r"><svg viewBox="0 0 104 104"><circle cx="52" cy="52" r="45"/><circle class="a" cx="52" cy="52" r="45"/></svg><b>${now()}</b></div><h3>Тренировка ещё идёт</h3>`
+    + (li.done ? `<p><span>Отмечено подходов: ${li.done} из ${li.n}</span><span>Если отменить, они не сохранятся</span></p>` : `<p><span>Ни один подход не отмечен</span><span>Если отменить, в истории ничего не останется</span></p>`)
+    + `<button type="button" class="lvq-min" data-k="min">Свернуть, продолжу позже</button><button type="button" class="lvq-kill" data-k="kill">Отменить тренировку</button><button type="button" class="lvq-stay" data-k="stay">Остаться</button></div>`;
+  d.addEventListener('click', e => { e.stopPropagation(); const b = e.target.closest('[data-k]'), k = b ? b.dataset.k : e.target === d ? 'stay' : ''; if (!k) return;
+    liveAskClose(); if (k === 'min') { hap.tap(); closeSheet(); } else if (k === 'kill') liveCancel(); else hap.tap(); });
+  d._iv = setInterval(() => { d.querySelector('.lvq-r b').textContent = now(); }, 500);
+  document.body.appendChild(d); void d.offsetWidth; d.classList.add('on'); hap.imp();
+  return true;
+}
+function liveCancel(){
+  const L = S.live, sh = $('#sheet'); if (L) clearTimeout(L.tm);
+  S.live = null; S.liveCtx = null; liveNodes = null; try { REST.stop(); } catch (e) {}
+  sh.classList.add('lvgone'); closeSheet();
+  setTimeout(() => { if (!sheetCtx) sh.textContent = ''; sh.classList.remove('lvgone'); }, 460);
+  hap.seq([['i', 'heavy', 0], ['i', 'soft', 110]]); hap.vib([18, 50, 30]); toast('Тренировка отменена');
+}
 function liveRest(i){ const L = S.live, a = sheetCtx && sheetCtx.act; if (L && L.rs && i < L.rs.length) { if (L.rs[i] > 0) REST.start(a, L.rs[i]); } else REST.start(a); }
 function liveAlive(){ const L = S.live; return !!(L && S.liveCtx && Date.now() - L.t0 < 6 * 36e5 && (document.querySelector('#sheet #lv') || liveNodes)); }
 function liveInfo(){ const L = S.live, root = liveNodes || document.querySelector('#sheet'), n = root ? root.querySelectorAll('.slr.lv').length : 0, a0 = S.liveCtx && S.liveCtx.act; return {name: (ACTS.find(a => a[0] === a0) || ACTS[0])[1], done: L ? L.done : 0, n, min: L ? Math.floor((Date.now() - L.t0) / 6e4) : 0}; }
@@ -13502,7 +13548,7 @@ k:'<path d="M20.500 3.500h4v3h3v4h-3v3h-4v-3h-3v-4h3z"/><path d="M11.500 38.500h
     <div class="tgl${s.game ? ' on' : ''}" data-act="rtog" data-k="game" style="margin-top:12px"><span class="sw2"></span><b>Мини-игры «Сыграть до гонга»</b></div>
     <div class="cap" style="margin-top:8px">Игра идёт только пока длится отдых и закрывается вместе с таймером.</div>
     <div class="pbstd" style="margin-top:14px"><span class="pbsi">${IC('clock', 18)}</span><div class="pbst"><b>Отдых</b><small>для новых подходов</small></div><div class="pbcap"><button type="button" class="pbb" data-act="rtstd" data-d="-1" aria-label="Меньше">${IC('minus', 14)}</button><span class="pbsv" id="rt-std">${fmtRs(s.std || 90)}</span><button type="button" class="pbb" data-act="rtstd" data-d="1" aria-label="Больше">${IC('plus', 14)}</button></div></div></div>`;
-  return {cur: () => (run && apps && gm && GAMES[GI]) ? GAMES[GI].k : '', quit(){ if (run && apps) close(); }, start, card, s, std: () => s.std || 120, setStd(v){ s.std = v; save(); }, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH,
+  return {cur: () => (run && apps && gm && GAMES[GI]) ? GAMES[GI].k : '', quit(){ if (run && apps) close(); }, stop(){ if (run) close(); }, start, card, s, std: () => s.std || 120, setStd(v){ s.std = v; save(); }, toggle(k){ s[k] = s[k] ? 0 : 1; save(); }, open(){ return run; }, WATCH,
     dayInfo(){ const i = dayGi(), g = GAMES[i]; return {i, k:g.k, n:g.n, best:s.best[g.k] || 0, th:TH(g.k)}; },
     playDay(){ if (run) { min = false; view = 'rest'; render(); return; } start(null, 10800); free = true; apps = true; openGame(dayGi()); try { urlSync(); } catch (e) {} },   // v1.860: как play(): после выхода из игры окно закрывается, а не показывает таймер отдыха
     refresh(){ if (run && view === 'pick') render(); },
@@ -13847,7 +13893,7 @@ const ACT = {
   add: () => { hap.imp(); S.actsXl = false; openAddChoice(); },
   golive: () => { hap.imp(); if (!resumeLive()) updFab(); },
   addgo: el => { hap.tap(); S.addMode = el.dataset.m === 'past' ? 'past' : 'now'; S.actsXl = false; openActs(false); },
-  sback: () => { hap.tap(); stepBack(); },
+  sback: () => { hap.tap(); if (!liveAsk()) stepBack(); },
   actcat: el => { S.awCat = el.dataset.v; document.querySelectorAll('.aw-c button').forEach(b => b.setAttribute('aria-pressed', b === el)); awFilter(); hap.tap(); },
   actfav: el => { const k = el.dataset.v, f = favActs(), on = f.includes(k);
     if (!on && f.length >= favMax()) { hap.warn(); if (isPro()) toast('Закрепить можно до 5 видов — сначала открепи один'); else proToast('Больше одной закреплённой — с PRO', 'acts'); return; }
@@ -14264,7 +14310,7 @@ const ACT = {
   },
   import: () => $('#file').click(),
   copy: copyBackup,
-  close: closeSheet,
+  close: () => { if (!liveAsk()) closeSheet(); },
   cgok: () => $('#cg').classList.remove('show')
 };
 /* ===== v1.840: раздел «Приложения» — вода, калории (со сканером штрихкодов), игры ===== */
@@ -16448,7 +16494,7 @@ async function init(){
       }
     } catch (e) {}
     try { tg.onEvent('themeChanged', () => { if (db.settings.theme === 'auto') { applyTheme(); render(); } }); } catch (e) {}
-    try { if (ver('6.1')) tg.BackButton.onClick(() => { if ($('#cg').classList.contains('show')) $('#cg').classList.remove('show'); else if (sheetCtx) { if (!stepBack()) closeSheet(); } else if (S.fprof) fpBack(); else closeSheet(); }); } catch (e) {}
+    try { if (ver('6.1')) tg.BackButton.onClick(() => { if ($('#cg').classList.contains('show')) $('#cg').classList.remove('show'); else if (sheetCtx) { if (!liveAsk() && !stepBack()) closeSheet(); } else if (S.fprof) fpBack(); else closeSheet(); }); } catch (e) {}
   }
   try { const s = localStorage.getItem(LS); if (s) db = normalize(JSON.parse(s)); } catch (e) {}
   try { CX.reg(); } catch (e) {}
