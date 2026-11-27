@@ -6197,7 +6197,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1262';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1263';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -14764,7 +14764,7 @@ const NETP = Array.from({length: 14}, (_, i) => `<i class="pt" style="--x:${(i *
   function viewGames(){
     gameLoad(); const L = REST.list(); const day = L.find(x => x.day), gp = ST.gprev !== undefined ? ST.gprev : ST.gm;
     return back() + `<div class="ax-h1">Игры</div><div class="ax-sub">Играй когда угодно, не только между подходами</div>
-    <div class="ax-mode${gp === 'n' ? ' net' : ''}" role="tablist"><i class="mt"></i><button type="button" class="${gp === 'n' ? '' : 'on'}" role="tab" data-act="axgm" data-m="s">Одиночные</button><button type="button" class="${gp === 'n' ? 'on' : ''}" role="tab" data-act="axgm" data-m="n">По сети<small>Бета</small></button></div><div class="ax-gx${ST.gdir ? ' gin-' + ST.gdir : ''}">
+    <div class="ax-mode${gp === 'n' ? ' net' : ''}" role="tablist"><i class="mt"></i><button type="button" class="${gp === 'n' ? '' : 'on'}" role="tab" data-act="axgm" data-m="s">Одиночные</button><button type="button" class="${gp === 'n' ? 'on' : ''}" role="tab" data-act="axgm" data-m="n">По сети</button></div><div class="ax-gx${ST.gdir ? ' gin-' + ST.gdir : ''}">
     ${ST.gm === 'n' && inWeb ? gamesNetWebHTML() : ''}
     ${ST.gm === 'n' && !inWeb ? `${(inTG || inWeb) ? `<div class="nt-inv" data-act="axinv"><div class="nt-inv-in"><span class="nt-rings"><i></i><i></i></span><div class="nt-itx"><b>Пригласить</b><small>сыграть вдвоём</small></div><span class="nt-go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></div>` : ''}<div class="ax-nh">Выберите игру вдвоём. Остальные скоро.</div><div class="ax-gg">${[...NETG].sort((a, b) => { const o = ['ttt', 'chk', 'che', 'golf', 'sea', 'bil', 'arc', 'stk', 'dk', 'k5', 'un'], f = k => o.includes(k) ? o.indexOf(k) : 9; return f(a.a) - f(b.a); }).map(x => (['ttt', 'chk', 'che', 'hl', 'golf', 'sea', 'bil', 'arc', 'stk', 'dk', 'k5', 'un'].includes(x.a) && (inTG || inWeb)) ? `<div class="ax-gc nt-live" data-act="axinv" data-g="${x.a}"><div class="th">${(window.NETCV && window.NETCV[x.a]) || NETA[x.a] || ''}${NETREADY.has(x.a) ? '' : '<span class="bta">БЕТА</span>'}</div><b>${x.n}</b><small>Позови друга и играйте</small></div>` : `<div class="ax-gc ax-nt" data-act="axnt"><div class="th">${NETA[x.a]}${NETP}<span class="pro">В РАЗРАБОТКЕ</span></div><b>${x.n}</b><small>${x.d}</small></div>`).join('')}<div class="ax-gc ax-gs" data-act="appgsug"><div class="th"><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></div><b>Предложить</b><small>свою игру по сети</small></div></div><div style="height:56px"></div>` : ''}
     ${ST.gm === 'n' || !inWeb ? '' : gamesWebHTML(L, day)}
