@@ -1746,7 +1746,8 @@ html.web .ib.shim:has(.ibl){width:auto;padding:0 18px 0 14px;gap:8px;display:inl
 #fab.mini .wd-add svg{opacity:.9}
 #fab.mini .wd-add:active{opacity:1}
 /* v1.1261: свёрнутый док — «Продолжить» не теряет зазор между точкой и словом и выглядит в пару к круглой «+» */
-html:not(.web) #fab.mini.has-go .wd-add.wd-go{gap:10px;padding:0 22px 0 20px!important;border:1px solid color-mix(in srgb,var(--accent) 24%,var(--border))!important;color:var(--text)!important}
+html:not(.web) #fab.has-go .wd-add.wd-go{gap:10px;padding:0 22px 0 20px!important}   /* v1.1264: размеры одинаковые в обоих видах — при сворачивании кнопка только меняет цвет и не дёргается */
+html:not(.web) #fab.mini.has-go .wd-add.wd-go{border-color:color-mix(in srgb,var(--accent) 24%,var(--border))!important;color:var(--text)!important}
 /* увеличение фото: загрузка */
 #zoom .zi{position:relative}
 #zoom .zi.ld img{filter:blur(10px) saturate(1.2);transform:scale(1.06)}
@@ -6197,7 +6198,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1263';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1264';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10228,7 +10229,8 @@ function fabMini(on){
   const b = box.querySelector('button'); if (!b) { box.classList.toggle('mini', on); return; }
   const from = b.getBoundingClientRect().width;
   box.classList.toggle('mini', on);
-  b.style.width = 'auto'; const to = b.getBoundingClientRect().width;
+  // v1.1264: конечную ширину меряем на копии — у самой кнопки поля ещё «в пути», замер врал на несколько px, и в конце был рывок
+  const probe = b.cloneNode(true); probe.style.cssText = 'position:absolute;left:0;top:0;width:auto;visibility:hidden;transition:none!important'; box.appendChild(probe); const to = probe.getBoundingClientRect().width; probe.remove();
   b.style.width = from + 'px'; void b.offsetWidth; b.style.width = to + 'px';
   clearTimeout(fabMini.w); fabMini.w = setTimeout(() => { if (fabMiniOn === on) b.style.width = ''; }, 650);   // после анимации — снова авто-ширина, без «залипшего» размера
 }
