@@ -257,11 +257,21 @@ input[type=date].inp{display:block}
 .sv input{will-change:transform,filter,opacity;width:2.9em;min-width:0;text-align:right;background:none;border:0;color:var(--text);font:inherit;font-size:17px;font-weight:700;padding:0}
 .sv input:focus{outline:none}
 .sv em{font-style:normal;color:var(--muted);font-size:13px;white-space:nowrap}
-.feel{display:flex;gap:12px;align-items:center}
-.feel button{width:38px;height:38px;border-radius:50%;border:0;background:var(--off);transition:transform .18s,background .2s}
-.feel button.on{background:var(--c)}
-.feel button:active{transform:scale(1.25)}
-.feel-l{font-weight:650;font-size:14px;margin-left:4px}
+/* v1.1258: состояние на тренировке — «Капля»: тап и свайп по пяти точкам */
+.fpk{padding:6px 0 4px;border-radius:26px;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 11%,var(--surface)),var(--surface));border:1px solid color-mix(in srgb,var(--c) 26%,var(--border));transition:background .35s,border-color .35s;touch-action:pan-y;cursor:pointer;outline:0;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.fpk:focus-visible{outline:2px solid var(--muted);outline-offset:3px}
+.fpk .fpw{display:block;position:relative;height:30px;margin-top:6px;overflow:hidden;text-align:center}
+.fpk .fpw b{position:absolute;left:0;right:0;top:0;line-height:30px;font-weight:800;font-size:21px;letter-spacing:-.02em;color:var(--c);transition:transform .42s cubic-bezier(.3,1.35,.5,1),opacity .25s,filter .3s}
+.fpk .fpw b.in{transform:translateY(var(--from));opacity:0;filter:blur(6px)}
+.fpk .fpw b.out{transform:translateY(var(--to));opacity:0;filter:blur(6px)}
+html[data-mode=light] .fpk .fpw b{color:color-mix(in srgb,var(--c) 58%,#000)}
+.fpk .fptr{display:block;position:relative;height:80px;margin:0 8px 4px}
+.fpk .fpd{position:absolute;top:50%;width:12px;height:12px;margin:-6px;border-radius:50%;background:var(--k)}
+.fpk .fpdrop{position:absolute;top:50%;width:0;height:0}
+.fpk .fpdrop svg{position:absolute;left:-60px;top:-40px;width:120px;height:80px;overflow:visible;filter:drop-shadow(0 6px 12px color-mix(in srgb,var(--c) 55%,transparent))}
+.fpk .fprip{position:absolute;top:50%;width:44px;height:44px;margin:-22px;border-radius:50%;border:2px solid var(--c);pointer-events:none;animation:fprip .6s ease-out forwards}
+@keyframes fprip{from{transform:scale(.8);opacity:.8}to{transform:scale(1.9);opacity:0}}
+@media (prefers-reduced-motion:reduce){.fpk .fpw b{transition:none!important}.fpk .fprip{display:none}}
 .hint{font-size:12.5px;color:var(--muted);margin:-6px 0 14px}
 .fbd .who{display:flex;align-items:center;gap:11px;margin:2px 0 14px}.fbd .av{width:44px;height:44px;border-radius:50%;padding:2.5px;background:conic-gradient(from 200deg,#B4A7EE,#7FB5FF,#5FC98A,#B4A7EE);flex:none}.fbd .av i{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:var(--surface2);font-style:normal;font-weight:800;font-size:15px}
 .fbd .who b{display:block;font-size:15px}.fbd .who small{color:var(--green);font-size:11.5px}
@@ -1022,9 +1032,6 @@ html.web ::-webkit-scrollbar-corner{background:transparent}
 .wkg{display:grid;grid-template-columns:minmax(0,1fr);gap:0 24px;grid-template-areas:"d" "s" "f" "n"}
 .wkg>.wk-d{grid-area:d}.wkg>.wk-s{grid-area:s}.wkg>.wk-f{grid-area:f}.wkg>.wk-n{grid-area:n}
 html.web #sheet.wkw{max-width:560px}
-html.web #sheet.wkw .wk-f .feel{display:grid;grid-template-columns:repeat(5,34px);justify-content:space-between;gap:0}
-html.web #sheet.wkw .wk-f .feel button{width:34px;height:34px;min-width:0;padding:0}
-html.web #sheet.wkw .wk-f .feel-l{grid-column:1/-1;margin:2px 0 0}
 @media(min-width:900px){
   html.web #sheet.wkw{max-width:920px;padding:22px 28px 24px}
   html.web #sheet.wkw .wkg{grid-template-columns:260px minmax(0,1fr);grid-template-areas:"d s" "f s" "n s" ". s";align-items:start}
@@ -6166,7 +6173,7 @@ window.UNG = UNG;
 <script>
 'use strict';
 /* ============================================================ основа ==== */
-const APP = 'VOOB (by BGASHEV) Mini App v1.1257';
+const APP = 'VOOB (by BGASHEV) Mini App v1.1258';
 const API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/STEPS';
 const FEED_API = 'https://nszndchtspjtlravojda.supabase.co/functions/v1/voob-feed';   // лента друзей и лайки (v1.420)
 /* v1.694: WEB — возврат с 404.html (GitHub Pages) на нужный адрес, например /friends */
@@ -10497,11 +10504,65 @@ function closeSheet(){
   try { if (ver('6.1') && !S.fprof) tg.BackButton.hide(); } catch (e) {}
   try { updFab(); } catch (e) {}
 }
-function feelPicker(v){
-  return `<div class="f"><span>Состояние во время тренировки</span><div class="row"><div class="feel" id="f-feel" data-v="${v}">` +
-    [1,2,3,4,5].map(i => `<button type="button" class="${i <= v ? 'on' : ''}" style="--c:${FEEL[i][1]}" data-act="feel" data-v="${i}" aria-label="${FEEL[i][0]}"></button>`).join('') +
-    `</div><span class="feel-l" id="f-feel-l" style="color:${FEEL[v][1]}">${FEEL[v][0]}</span></div></div>`;
+/* v1.1258: «Капля». Значение 1…5 лежит в #f-feel[data-v]; позиция капли — плавная 0…4 */
+const FP_X = p => `calc(26px + (100% - 52px) * ${(p / 4).toFixed(4)})`;
+function fpColor(p){ const i = clamp(Math.floor(p), 0, 3), t = clamp(p - i, 0, 1), c = k => [1, 3, 5].map(n => parseInt(FEEL[k][1].substr(n, 2), 16)), a = c(i + 1), b = c(i + 2);
+  return `rgb(${a.map((x, k) => Math.round(x + (b[k] - x) * t)).join(',')})`; }
+function fpBlob(pos, vel, energy, t){   // тело капли с хвостом против движения, глаза и улыбка по настроению
+  const st = clamp(Math.abs(vel) * 1.6, 0, .55), dir = vel > 0 ? 1 : -1, R = 26, n = clamp(pos, 0, 4);
+  let d = '';
+  for (let i = 0; i <= 40; i++) { const a = i / 40 * Math.PI * 2, c = Math.cos(a), s = Math.sin(a), rx = R * (1 + (c * dir < 0 ? st * 1.5 * c * c : st * .25)), ry = R * (1 - st * .35), w = 1 + Math.sin(a * 3 + t / 110) * .07 * energy;
+    d += (i ? 'L' : 'M') + (c * rx * w).toFixed(1) + ' ' + (s * ry * w).toFixed(1); }
+  const ey = (3.4 * (1 - clamp(st * 1.4, 0, .8))).toFixed(2), my = (9 - (n - 2) * 1.3).toFixed(1);
+  return `<path d="${d}Z" fill="${fpColor(n)}"/><g fill="#17171c"><ellipse cx="-8" cy="-4" rx="2.8" ry="${ey}"/><ellipse cx="8" cy="-4" rx="2.8" ry="${ey}"/></g><path d="M-9 ${my} Q0 ${(9 + (n - 2) * 4.2).toFixed(1)} 9 ${my}" fill="none" stroke="#17171c" stroke-width="3" stroke-linecap="round"/>`;
 }
+const fpDot = (i, pos) => { const dist = Math.abs(i - pos), mag = Math.max(0, 1 - Math.abs(dist - 1)); return {s: `scale(${(1 + mag * .65).toFixed(3)})`, o: dist < .55 ? 0 : (.45 + mag * .45).toFixed(3)}; };
+function feelPicker(v){
+  v = clamp(Math.round(+v) || 3, 1, 5); const p = v - 1;
+  return `<div class="f"><span>Состояние во время тренировки</span><div class="fpk" id="f-feel" data-v="${v}" data-noswipe tabindex="0" role="slider" aria-label="Состояние" aria-valuemin="1" aria-valuemax="5" aria-valuenow="${v}" aria-valuetext="${FEEL[v][0]}" style="--c:${FEEL[v][1]}"><div class="fpw"><b>${FEEL[v][0]}</b></div><div class="fptr">`
+    + [0, 1, 2, 3, 4].map(i => { const q = fpDot(i, p); return `<i class="fpd" style="--k:${FEEL[i + 1][1]};left:${FP_X(i)};transform:${q.s};opacity:${q.o}"></i>`; }).join('')
+    + `<i class="fpdrop" style="left:${FP_X(p)}"><svg viewBox="-60 -40 120 80">${fpBlob(p, 0, 0, 0)}</svg></i></div></div></div>`;
+}
+(function(){
+  const st = el => el._fp || (el._fp = {pos: +el.dataset.v - 1, tgt: +el.dataset.v - 1, vel: 0, energy: 0, drag: false, raf: 0});
+  function draw(el, P, t){
+    const blob = el.querySelector('.fpdrop'); blob.style.left = FP_X(P.pos); blob.firstElementChild.innerHTML = fpBlob(P.pos, P.vel, P.energy, t);
+    el.style.setProperty('--c', fpColor(clamp(P.pos, 0, 4)));
+    el.querySelectorAll('.fpd').forEach((d, i) => { const q = fpDot(i, P.pos); d.style.transform = q.s; d.style.opacity = q.o; });
+  }
+  function run(el){ const P = st(el); if (P.raf) return;
+    const still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const step = t => { P.raf = 0; if (!el.isConnected) return;
+      if (still) { P.pos = P.tgt; P.vel = 0; P.energy = 0; }
+      else { P.vel += (P.tgt - P.pos) * (P.drag ? .30 : .17); P.vel *= P.drag ? .55 : .72; P.pos += P.vel; P.energy *= .93; }
+      const done = !P.drag && Math.abs(P.tgt - P.pos) < .002 && Math.abs(P.vel) < .002 && P.energy < .03;
+      if (done) { P.pos = P.tgt; P.vel = 0; P.energy = 0; }
+      draw(el, P, t); if (!done) P.raf = requestAnimationFrame(step); };
+    P.raf = requestAnimationFrame(step);
+  }
+  function set(el, i){ const v = i + 1, old = +el.dataset.v; if (v === old) return;
+    const P = st(el); el.dataset.v = v; P.energy = 1; el.setAttribute('aria-valuenow', v); el.setAttribute('aria-valuetext', FEEL[v][0]);
+    const w = el.querySelector('.fpw'), dir = v > old ? 1 : -1;
+    w.querySelectorAll('b').forEach(o => { o.style.setProperty('--to', (-26 * dir) + 'px'); o.classList.add('out'); setTimeout(() => o.remove(), 430); });
+    const b = document.createElement('b'); b.textContent = FEEL[v][0]; b.style.setProperty('--from', (26 * dir) + 'px'); b.className = 'in'; w.appendChild(b); void b.offsetWidth; b.className = '';
+    const r = document.createElement('i'); r.className = 'fprip'; r.style.left = FP_X(i); el.querySelector('.fptr').appendChild(r); setTimeout(() => r.remove(), 620);
+    if (v === 5) { hap.seq([['i', 'medium', 0], ['n', 'success', 90]]); hap.vib([12, 50, 18]); }   // отдача: щелчок на шаг, у краёв — заметнее
+    else if (v === 1) { hap.med(); hap.vib(22); } else { hap.imp(); hap.vib(9); }
+  }
+  function from(el, x){ const r = el.querySelector('.fptr').getBoundingClientRect(), p = clamp((x - r.left - 26) / Math.max(1, r.width - 52) * 4, 0, 4); st(el).tgt = p; set(el, Math.round(p)); run(el); }
+  let a = null;   // жест: выбираем только на горизонтальном движении или тапе — вертикальная прокрутка шторки ничего не меняет
+  document.addEventListener('pointerdown', e => { const el = e.target.closest && e.target.closest('.fpk'); if (!el || e.button > 0) return; a = {el, id: e.pointerId, x: e.clientX, y: e.clientY, on: false}; });
+  document.addEventListener('pointermove', e => { if (!a || e.pointerId !== a.id) return;
+    if (!a.on) { const mx = Math.abs(e.clientX - a.x), my = Math.abs(e.clientY - a.y); if (mx < 6 || mx < my) return; a.on = true; st(a.el).drag = true; try { a.el.setPointerCapture(a.id); } catch (x) {} }
+    from(a.el, e.clientX); });
+  const end = (e, ok) => { if (!a || e.pointerId !== a.id) return; const g = a; a = null; const P = st(g.el);
+    if (ok && !g.on && Math.hypot(e.clientX - g.x, e.clientY - g.y) < 10) from(g.el, e.clientX);
+    P.drag = false; P.tgt = +g.el.dataset.v - 1; run(g.el); };
+  document.addEventListener('pointerup', e => end(e, true));
+  document.addEventListener('pointercancel', e => end(e, false));
+  document.addEventListener('keydown', e => { const el = e.target.closest && e.target.closest('.fpk'), d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (!el || !d) return;
+    e.preventDefault(); e.stopPropagation(); const i = clamp(+el.dataset.v - 1 + d, 0, 4); st(el).tgt = i; set(el, i); run(el); }, true);
+})();
 /* v1.829: живая тренировка — подходы отмечаются по ходу, отдых запускается после каждого */
 function slRowsLive(sl, st, sk, act){
   const step = st[0] === 'secs' ? 5 : 1, kg = sk && KG_ACT[act], ks = act === 'barbell' ? 2.5 : 1, ck = IC('check', 20);
@@ -14147,11 +14208,6 @@ const ACT = {
   bar: el => {
     const cap = document.getElementById(el.dataset.cap); if (cap) cap.textContent = el.dataset.tip;
     el.parentElement.querySelectorAll('.bar.sel').forEach(b => b.classList.remove('sel')); el.classList.add('sel'); hap.tap();
-  },
-  feel: el => {
-    const v = +el.dataset.v, box = $('#f-feel'); box.dataset.v = v;
-    box.querySelectorAll('button').forEach((b, i) => b.classList.toggle('on', i < v));
-    const l = $('#f-feel-l'); l.textContent = FEEL[v][0]; l.style.color = FEEL[v][1]; hap.tap();
   },
   sex: el => { db.profile.sex = el.dataset.v; touchMeta('profile'); save(); render(); hap.tap(); },
   theme: el => { const was = themeMode(); db.settings.theme = el.dataset.v; if (lookSync()) touchMeta('settings'); save();
